@@ -169,8 +169,7 @@ namespace ClipboardManager.context
 
         private void InsertContent(string text, ContentTypes type)
         {
-            TableCopy copy = new TableCopy(text, type);
-            dataDB.Insert(copy);
+            dataDB.Insert(Utils.CreateTable(text, type));
         }
 
         private void DisplayStatusMessage(string text, string message = null)

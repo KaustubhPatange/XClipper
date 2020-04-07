@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WpfTesting.viewModels
+namespace Components.viewModels
 {
     public class ClipWindowViewModel
     {
@@ -25,10 +25,16 @@ namespace WpfTesting.viewModels
             dataDB = new SQLiteConnection(databasePath);
             return this;
         }
-
+        public List<TableCopy> FilterData(string text)
+        {
+            return dataDB.Table<TableCopy>().Where(s => s.Text.Contains(text)).Reverse().ToList();
+        }
         public List<TableCopy> ClipData
         {
-            get { return dataDB.Query<TableCopy>("select * from TableCopy"); }
+            get
+            {
+                return dataDB.Table<TableCopy>().Reverse().ToList();
+            }
         }
     }
 }

@@ -4,19 +4,129 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Components"
+       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal" 
+        TextOptions.TextRenderingMode="Auto"      
+        WindowStyle="None"
+        FontFamily="{DynamicResource MaterialDesignFont}"
         mc:Ignorable="d"
-        ResizeMode="NoResize"
-        Title="ClipWindow" Height="300" Width="280">
+        Topmost="True"
+      
+        ResizeMode="NoResize" ShowInTaskbar="False"
+        Title="ClipWindow" Deactivated="Window_Deactivated" Height="450"  Width="280" IsVisibleChanged="Window_IsVisibleChanged" KeyDown="Window_KeyDown" Closing="Window_Closing" >
+    <!-- SizeToContent="Height" -->
+
     <Window.Resources>
-        <DataTemplate x:Key="myFirstItemTemplate">
-            <StackPanel>
-                <TextBlock Text="{Binding Name}" />
-            </StackPanel>
-        </DataTemplate>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.DeepPurple.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="{x:Type local:ClipWindow}">
+                <Setter Property="Background" Value="#2D2D30"/>
+            </Style>
+            <Style TargetType="materialDesign:Card">
+                <Setter Property="Background" Value="#3F3F46"/>
+            </Style>
+            <Style x:Key="BigTextBlock" TargetType="TextBlock">
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="Width" Value="200"/>
+                <Setter Property="MaxHeight" Value="15"/>
+                <Setter Property="TextTrimming" Value="WordEllipsis"/>
+            </Style>
+            <Style x:Key="SmallTextBlock" TargetType="TextBlock">
+                <Setter Property="Foreground" Value="#A8AAAD"/>
+            </Style>
+            <Style TargetType="materialDesign:Ripple" BasedOn="{StaticResource {x:Type materialDesign:Ripple}}">
+                <Setter Property="materialDesign:RippleAssist.Feedback" Value="{DynamicResource RippleColor}" />
+            </Style>
+            <SolidColorBrush x:Key="RippleColor" Color="WhiteSmoke"/>
+        </ResourceDictionary>
     </Window.Resources>
     <Grid>
-        <!--SizeToContent="Height"-->
-        <ListView x:Name="myListView" ItemTemplate="{StaticResource myFirstItemTemplate}" >
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <DockPanel Grid.Column="0">
+            <Button Click="CloseButtonClick" BorderThickness="0" Background="Transparent" Padding="7 3 7 3" DockPanel.Dock="Right">
+                <materialDesign:PackIcon  Foreground="WhiteSmoke" Kind="Close"/>
+            </Button>
+            <!--<materialDesign:Ripple x:Name="_ripClose" DockPanel.Dock="Right" Padding="7 3 7 3" VerticalAlignment="Center" HorizontalAlignment="Right">
+                <materialDesign:PackIcon  Foreground="WhiteSmoke" Kind="Close"/>
+            </materialDesign:Ripple>-->
+            <TextBox TextChanged="SearchTextChanged" Margin="10,5,10,2" Foreground="Wheat" materialDesign:HintAssist.HintOpacity="0.4" DockPanel.Dock="Left" materialDesign:HintAssist.Hint="Search (Ctrl + Q)" x:Name="_tbSearchBox" KeyUp="Window_KeyDown"/>
+            <!--<materialDesign:Ripple>
+                <materialDesign:Ripple.Content>
+                </materialDesign:Ripple.Content>
+            </materialDesign:Ripple>-->
+            <!--<Button Height="20" Content="x"> </Button>-->
+        </DockPanel>
+        <!--<Popup IsOpen="False"   
+               x:Name="_myPopup"
+               HorizontalOffset="-15">
+            <Border Margin="-10" Padding="10" Background="#2D2D30" MaxWidth="500">
+                <StackPanel>
+                    <TextBlock x:Name="MainText" Foreground="#DCDCAA" MaxHeight="320" Text="{Binding Text}" Margin="0,0,0,8" TextWrapping="NoWrap"/>
+                    <Border BorderBrush="#3F3F46" BorderThickness="0.5" Margin="0, 5" />
+                    <WrapPanel>
+                        <TextBlock FontSize="11" Foreground="Gray" FontStyle="Italic" Text="Added: "/>
+                        <TextBlock x:Name="DateTimeText" FontSize="11" Foreground="Gray" FontStyle="Italic" Text="{Binding DateTime}"/>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+        </Popup>-->
+        <ListView ScrollViewer.CanContentScroll="False" Grid.Row="1" x:Name="_lvClip"
+                  ScrollViewer.VerticalScrollBarVisibility="Hidden" 
+                  SelectionChanged="_lvClip_SelectionChanged">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="{x:Type ListViewItem}">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                </Style>
+                
+            </ListView.ItemContainerStyle>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <materialDesign:Card Padding="10" Margin="3" 
+                                         x:Name="Item_MaterialCard"
+                                         MouseDoubleClick="ListViewItemDoubleClicked">
+                        <materialDesign:Card.ToolTip>
+                            <ToolTip Placement="Left"
+                                     HorizontalOffset="-15" 
+                                     HasDropShadow="True"  >
+                                <Border Margin="-10" Padding="10" Background="#2D2D30" MaxWidth="500">
+                                    <StackPanel>
+                                        <TextBlock Foreground="#DCDCAA" MaxHeight="320" Text="{Binding Text}" Margin="0,0,0,8" TextWrapping="NoWrap"/>
+                                        <Border BorderBrush="#3F3F46" BorderThickness="0.5" Margin="0, 5" />
+                                        <WrapPanel>
+                                            <TextBlock FontSize="11" Foreground="Gray" FontStyle="Italic" Text="Added: "/>
+                                            <TextBlock FontSize="11" Foreground="Gray" FontStyle="Italic" Text="{Binding DateTime}"/>
+                                        </WrapPanel>
+                                    </StackPanel>
+                                </Border>
+                            </ToolTip>
+                        </materialDesign:Card.ToolTip>
+                    <StackPanel Orientation="Vertical">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Button FontSize="11"  Padding="5, 1, 5, 1" Grid.Column="1" Height="17" x:Name="_btnContentType" Content="{Binding ContentType}" FontStyle="Italic"/>
+                                <TextBlock Grid.Column="0" Style="{StaticResource BigTextBlock}" x:Name="_tbTitle" Text="{Binding Text}"/>
+                            </Grid>
+                            <TextBlock Style="{StaticResource SmallTextBlock}" Width="225" MaxHeight="38" TextWrapping="Wrap" Margin="0 5 0 0" FontSize="11" x:Name="_tbText" Text="{Binding Text}"/>
+                        </StackPanel>
+                    </materialDesign:Card>
+                </DataTemplate>
+            </ListView.ItemTemplate>
         </ListView>
     </Grid>
 </Window>

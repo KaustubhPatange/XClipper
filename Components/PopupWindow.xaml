@@ -1,0 +1,32 @@
+﻿<Window x:Class="Components.PopupWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Components"
+        mc:Ignorable="d"
+        Background="#2D2D30"
+        ResizeMode="NoResize"
+        WindowStyle="None" ShowInTaskbar="False"
+        WindowStartupLocation="Manual"
+        KeyDown="Window_KeyDown"
+        Title="PopupWindow" Deactivated="Window_Deactivated" SizeToContent="Height" MaxHeight="400" Width="600">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="35"/>
+        </Grid.RowDefinitions>
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.Row="0"  >
+            <StackPanel Margin="7">
+                <TextBlock x:Name="_tbText" Foreground="#DCDCAA" Text="{Binding Text}"/>
+            </StackPanel>
+        </ScrollViewer>
+        <StackPanel Margin="5"  Grid.Row="1">
+            <Border BorderBrush="#3F3F46" BorderThickness="0.5"  />
+            <WrapPanel>
+                <TextBlock FontSize="11" Foreground="Gray" FontStyle="Italic" Text="Added: "/>
+                <TextBlock x:Name="_tbDateTime" FontSize="11" Foreground="Gray" FontStyle="Italic" Text="{Binding DateTime}"/>
+            </WrapPanel>
+        </StackPanel>
+    </Grid>
+</Window>
