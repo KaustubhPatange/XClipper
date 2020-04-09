@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Components"
-       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         TextElement.FontWeight="Regular"
         TextElement.FontSize="13"
         TextOptions.TextFormattingMode="Ideal" 
@@ -13,7 +13,7 @@
         FontFamily="{DynamicResource MaterialDesignFont}"
         mc:Ignorable="d"
         Topmost="True"
-      
+        PreviewKeyDown="Window_PreviewKeyDown"
         ResizeMode="NoResize" ShowInTaskbar="False"
         Title="ClipWindow" Deactivated="Window_Deactivated" Height="450"  Width="280" IsVisibleChanged="Window_IsVisibleChanged" KeyDown="Window_KeyDown" Closing="Window_Closing" >
     <!-- SizeToContent="Height" -->
@@ -90,14 +90,15 @@
                 <Style TargetType="{x:Type ListViewItem}">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                 </Style>
-                
             </ListView.ItemContainerStyle>
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <materialDesign:Card Padding="10" Margin="3" 
                                          x:Name="Item_MaterialCard"
+                                         Tag="{Binding Text}"
+                                                                             
                                          MouseDoubleClick="ListViewItemDoubleClicked">
-                        <materialDesign:Card.ToolTip>
+                        <!--<materialDesign:Card.ToolTip>
                             <ToolTip Placement="Left"
                                      HorizontalOffset="-15" 
                                      HasDropShadow="True"  >
@@ -112,7 +113,7 @@
                                     </StackPanel>
                                 </Border>
                             </ToolTip>
-                        </materialDesign:Card.ToolTip>
+                        </materialDesign:Card.ToolTip>-->
                     <StackPanel Orientation="Vertical">
                             <Grid>
                                 <Grid.ColumnDefinitions>

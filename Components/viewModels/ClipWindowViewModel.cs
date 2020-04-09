@@ -9,22 +9,40 @@ using System.Threading.Tasks;
 
 namespace Components.viewModels
 {
-    public class ClipWindowViewModel
+    public sealed class ClipWindowViewModel
     {
         private ClipBinder binder;
-
         private static string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
         private string databasePath;
 
         private SQLiteConnection dataDB;
+        private static ClipWindowViewModel instance = null;
+        public static ClipWindowViewModel GetInstance
+        {
+            get
+            {
+                if (instance == null)
+                    instance = new ClipWindowViewModel();
+                return instance;
+            }
+        }
 
-        public ClipWindowViewModel setBinder(ClipBinder binder)
+        private ClipWindowViewModel()
+        {}
+
+        public void setBinder(ClipBinder binder)
         {
             this.binder = binder;
             databasePath = Path.Combine(baseDirectory, "data.db");
             dataDB = new SQLiteConnection(databasePath);
-            return this;
+
         }
+        public void UpdateData(TableCopy model)
+        {
+            dataDB.Execute("update TableCopy set Text = ? where Id = ?", model.Text, model.Id);
+            binder.OnUpdate(ClipData);
+        }
+
         public List<TableCopy> FilterData(string text)
         {
             return dataDB.Table<TableCopy>().Where(s => s.Text.Contains(text)).Reverse().ToList();
@@ -36,5 +54,7 @@ namespace Components.viewModels
                 return dataDB.Table<TableCopy>().Reverse().ToList();
             }
         }
+    
     }
+   
 }

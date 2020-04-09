@@ -22,15 +22,15 @@ namespace Components
     // TODO: Use SendKeys.Send to send the text...
     public partial class ClipWindow : Window, ClipBinder
     {
-        private ClipWindowViewModel viewModel;
         private PopupWindow _popupWindow;
         private int lvIndex = -1;
+
 
         public ClipWindow()
         {
             InitializeComponent();
 
-            viewModel = new ClipWindowViewModel().setBinder(this);
+            ClipWindowViewModel.GetInstance.setBinder(this);
             _popupWindow = new PopupWindow();
 
             var screen = System.Windows.SystemParameters.WorkArea;
@@ -58,9 +58,9 @@ namespace Components
         {
             if (!string.IsNullOrWhiteSpace(_tbSearchBox.Text))
             {
-                _lvClip.ItemsSource = viewModel.FilterData(_tbSearchBox.Text);
+                _lvClip.ItemsSource = ClipWindowViewModel.GetInstance.FilterData(_tbSearchBox.Text);
             }
-            else _lvClip.ItemsSource = viewModel.ClipData;
+            else _lvClip.ItemsSource = ClipWindowViewModel.GetInstance.ClipData;
         }
 
         private void ListViewItemDoubleClicked(object sender, MouseButtonEventArgs e)
@@ -70,11 +70,23 @@ namespace Components
 
         private void Window_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            _lvClip.ItemsSource = viewModel.ClipData;
+            _lvClip.ItemsSource = ClipWindowViewModel.GetInstance.ClipData;
+        }
+
+        /** This callback will handle when data is changed from various sources.
+            One of the source is when data is edited when changed from PopUpWindow. */
+        public void OnUpdate(List<TableCopy> models)
+        {
+            int index = _lvClip.SelectedIndex;
+            _lvClip.ItemsSource = models;
+            _lvClip.SelectedIndex = index;
+            _popupWindow.Show();
+            _popupWindow.Focus();
         }
 
         private void _lvClip_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            Debug.WriteLine("Selection Changed");
             lvIndex = _lvClip.SelectedIndex;
 
             /** We are also hiding it here since Down key is not detected
@@ -86,17 +98,15 @@ namespace Components
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
             Debug.WriteLine("Pressed: " + e.Key.ToString());
+            Debug.WriteLine("Pressed: " + e.SystemKey.ToString());
 
-            // Hide the pop up window, when any key is pressed.
-            _popupWindow.Hide();
-            
             // This key bind will focus the SearchTextBox.
             if (e.Key == Key.Q && isCtrlPressed())
             {
                 _tbSearchBox.Focus();
                 _lvClip.SelectedIndex = -1;
             }
-            
+
             /** This key bind will bring focus to the first item from listview
              *  when Down is pressed from SearchTextBox or listview reaches
              *  it's last index.
@@ -105,7 +115,7 @@ namespace Components
             {
                 SetListViewFocus(0);
             }
-            
+
             /** This key bind will bring focus to the last item if user press
              *  Up key when first item is selected in listview.
              */
@@ -119,10 +129,15 @@ namespace Components
             {
                 if (_popupWindow.IsVisible)
                     _popupWindow.Hide();
-                else 
+                else
                     Close();
+            } 
+            else 
+            {
+                // Hide the pop up window, when any key is pressed except escape.
+                _popupWindow.Hide();
             }
-            
+
             // This key bind will do operations when Enter key is pressed.
             if ((e.Key == Key.Return || e.Key == Key.Enter) && _lvClip.SelectedItems.Count > 0)
             {
@@ -131,10 +146,26 @@ namespace Components
 
             if (e.Key == Key.Tab && isCtrlPressed() && _lvClip.SelectedItems.Count > 0)
             {
+                //for (int i = 0; i < _lvClip.SelectedItems.Count; i++)
+                //{
+                //    HideToolTip(i);
+                //}
                 ShowPopupWindow(_lvClip.SelectedItem as TableCopy);
             }
+
         }
 
+        /** Some key events are not detected by KeyDown so we use 
+            PreviewKeyDown instead. */
+        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            // If pop up window is open, and space is pressed. It will put popup to focus.
+            if (e.Key == Key.Space)
+            {
+                if (_popupWindow.IsVisible)
+                    _popupWindow.Focus();
+            }
+        }
         private void ForegroundMainOperations()
         {
             // If more item is selected then we will parse only text type only...
@@ -161,6 +192,20 @@ namespace Components
             }
         }
 
+        private void HideToolTip(int index)
+        {
+            ListViewItem item = _lvClip.ItemContainerGenerator.ContainerFromIndex(index) as ListViewItem;
+            if (item != null)
+            {
+                ContentPresenter templateParent = GetFrameworkElementByName<ContentPresenter>(item);
+                DataTemplate dataTemplate = _lvClip.ItemTemplate;
+                if (dataTemplate != null && templateParent != null)
+                {
+                    var card = dataTemplate.FindName("Item_MaterialCard", templateParent) as MaterialDesignThemes.Wpf.Card;
+                    (card.ToolTip as ToolTip).IsOpen = false;
+                }
+            }
+        }
         public void FindItem()
         {
             ListViewItem item = _lvClip.ItemContainerGenerator.ContainerFromIndex(_lvClip.SelectedIndex) as ListViewItem;
@@ -176,8 +221,8 @@ namespace Components
                 {
 
                     var card = dataTemplate.FindName("Item_MaterialCard", templateParent) as MaterialDesignThemes.Wpf.Card;
-                   // ContentPresenter templateParent = GetFrameworkElementByName<ContentPresenter>(_myPopup);
-                   
+                    // ContentPresenter templateParent = GetFrameworkElementByName<ContentPresenter>(_myPopup);
+
                     //var t = card.ToolTip as ToolTip;
                     //ToolTipService.SetToolTip(card, 1000);
                     //var tooltip = card.ToolTip as ToolTip;
@@ -195,26 +240,7 @@ namespace Components
             }
         }
 
-        private static T GetFrameworkElementByName<T>(FrameworkElement referenceElement) where T : FrameworkElement
-        {
-            FrameworkElement child = null;
-            for (Int32 i = 0; i < VisualTreeHelper.GetChildrenCount(referenceElement); i++)
-            {
-                child = VisualTreeHelper.GetChild(referenceElement, i) as FrameworkElement;
-                if (child != null && child.GetType() == typeof(T))
-                { break; }
-                else if (child != null)
-                {
-                    child = GetFrameworkElementByName<T>(child);
-                    if (child != null && child.GetType() == typeof(T))
-                    {
-                        break;
-                    }
-                }
-            }
-            return child as T;
-        }
-
+       
         /** This function will write text to the foreground window. */
         private void UpdateTextWindow(string text)
         {
@@ -255,10 +281,16 @@ namespace Components
          *  application is out of focus. */
         private void Window_Deactivated(object sender, EventArgs e)
         {
-           // Close();
+            // Close();
         }
 
-        public bool isCtrlPressed() => (Keyboard.IsKeyDown(Key.RightCtrl) || Keyboard.IsKeyDown(Key.LeftCtrl));
-        public bool isShitPressed() => (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift));
+      
+
+        private void Item_MaterialCard_MouseEnter(object sender, MouseEventArgs e)
+        {
+           // ShowPopupWindow(viewModel.FilterData((e.Source as MaterialDesignThemes.Wpf.Card).Tag.ToString())[0]);
+            Debug.WriteLine("Mouse Enter");
+        }
+
     }
 }
