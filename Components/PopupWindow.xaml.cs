@@ -1,5 +1,4 @@
 ﻿using ClipboardManager.models;
-using Components.helpers;
 using Components.viewModels;
 using System;
 using System.Collections.Generic;
@@ -16,14 +15,22 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
-using static Components.helpers.MainHelper;
+using static Components.MainHelper;
 
 namespace Components
 {
     public partial class PopupWindow : Window
     {
+        #region Variable Definitions
+
         private string SAVED_TEXT;
+        private DispatcherTimer popUpTimer;
         private TableCopy model;
+
+        #endregion
+
+
+        #region Constructor
         public PopupWindow()
         {
             InitializeComponent();
@@ -31,18 +38,12 @@ namespace Components
             var screen = System.Windows.SystemParameters.WorkArea;
             this.Left = screen.Right - 280 - this.Width - 20;
             this.Top = screen.Bottom - 450 - 10;
-
-           
         }
 
-        public void SetPopUp(TableCopy model)
-        {
-            this.model = model;
-            _tbText.Text = model.Text;
-            _tbDateTime.Text = model.DateTime;
-        }
+        #endregion
 
 
+        #region UI Events
         private void Window_Deactivated(object sender, EventArgs e)
         {
             //   Hide();
@@ -72,8 +73,34 @@ namespace Components
             ToggleEditMode(false);
         }
 
+        private void ScrollViewer_Loaded(object sender, RoutedEventArgs e)
+        {
+            ((Rectangle)_scrollViewer.Template.FindName("Corner", _scrollViewer)).Fill = "#2D2D30".GetColor();
+        }
+
+
+        private void CloseButton_Clicked(object sender, RoutedEventArgs e)
+        {
+            CloseWindow();
+        }
+
+        #endregion
+
+
+        #region UI Handling Functions
+
+        /** This function will setup supplied model with this window. */
+        public void SetPopUp(TableCopy model)
+        {
+            this.model = model;
+            _tbText.Text = model.Text;
+            _tbDateTime.Text = model.DateTime;
+        }
+
+        /** This will set TextBox editable based on the toggle button. */
         private void ToggleEditMode(bool IsInvokeFromShortcut)
         {
+            // Only text content is supported, otherwise return.
             if (model.ContentType != "Text")
             {
                 ShowToast("Editing is not supported for this format", true);
@@ -91,6 +118,7 @@ namespace Components
             }
         }
 
+        /** Handles to close edit mode, also performs save operations. */
         private void SetStopEditMode()
         {
             if (SAVED_TEXT != _tbText.Text)
@@ -104,7 +132,18 @@ namespace Components
             Keyboard.ClearFocus();
             _scrollViewer.Focus();
         }
-        private DispatcherTimer popUpTimer;
+
+        /** Set the textbox editable. */
+        private void SetEditMode()
+        {
+            SAVED_TEXT = _tbText.Text;
+            _tbText.IsReadOnly = false;
+            _scrollViewer.BorderThickness = new Thickness(0.5);
+            _tbText.SelectionStart = 0;
+            _tbText.Focus();
+        }
+
+        /** This will show the toast at the bottom of window. */
         private void ShowToast(string message, bool error = false)
         {
             if (_popUpMenu.IsOpen)
@@ -126,20 +165,7 @@ namespace Components
             };
         }
 
-        private void SetEditMode()
-        {
-            SAVED_TEXT = _tbText.Text;
-            _tbText.IsReadOnly = false;
-            _scrollViewer.BorderThickness = new Thickness(0.5);
-            _tbText.SelectionStart = 0;
-            _tbText.Focus();
-        }
-
-        private void ScrollViewer_Loaded(object sender, RoutedEventArgs e)
-        {
-            ((Rectangle)_scrollViewer.Template.FindName("Corner", _scrollViewer)).Fill = "#2D2D30".GetColor();
-        }
-
+        /** Handles the close of the window. */
         private void CloseWindow()
         {
             if (_toggleEditButton.IsChecked == true)
@@ -148,10 +174,7 @@ namespace Components
             Hide();
         }
 
-        private void CloseButton_Clicked(object sender, RoutedEventArgs e)
-        {
-            CloseWindow();
-        }
+        #endregion
 
     }
 }

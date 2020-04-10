@@ -8,7 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace Components.helpers
+namespace Components
 {
     public static class MainHelper
     {

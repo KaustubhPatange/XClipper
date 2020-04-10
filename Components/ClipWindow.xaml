@@ -9,13 +9,14 @@
         TextElement.FontSize="13"
         TextOptions.TextFormattingMode="Ideal" 
         TextOptions.TextRenderingMode="Auto"      
-        WindowStyle="None"
         FontFamily="{DynamicResource MaterialDesignFont}"
         mc:Ignorable="d"
+        WindowStyle="None"
         Topmost="True"
-        PreviewKeyDown="Window_PreviewKeyDown"
         ResizeMode="NoResize" ShowInTaskbar="False"
-        Title="ClipWindow" Deactivated="Window_Deactivated" Height="450"  Width="280" IsVisibleChanged="Window_IsVisibleChanged" KeyDown="Window_KeyDown" Closing="Window_Closing" >
+        Title="ClipWindow"
+        PreviewKeyDown="Window_PreviewKeyDown"
+        Height="450"  Width="280" IsVisibleChanged="Window_IsVisibleChanged" KeyDown="Window_KeyDown"  >
     <!-- SizeToContent="Height" -->
 
     <Window.Resources>

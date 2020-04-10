@@ -48,7 +48,7 @@ namespace ClipboardManager.context
             _macroEvents = new List<MacroEvent>();
             _hiddenWindow = new System.Windows.Window();
             _hiddenWindow.Hide();
-            _mainWindow.Hide();
+           // _mainWindow.Hide();
             _components = new System.ComponentModel.Container();
             dataDB = new SQLiteConnection(databasePath);
             dataDB.CreateTable<TableCopy>();
@@ -61,6 +61,7 @@ namespace ClipboardManager.context
                     eventHookFactory.Dispose();
                 Application.Exit();
             }));
+
 
             _notifyIcon = new NotifyIcon(_components)
             {
@@ -90,29 +91,36 @@ namespace ClipboardManager.context
                         return;
                     }
 
-                    if (isAltPressed(keyEvent, keys))
+                    if (keys == Keys.Oem3 && isCtrlPressed(keyEvent, keys))
                     {
-                        specialkeys = true;
-                        if (isShiftPressed(keyEvent, keys))
+                        if (_mainWindow.IsVisible)
                         {
-                            if (keys == Keys.Space)
-                            {
-                                suppresskey = true;
-                                _mainWindow.Show();
-                                // TODO: Show clipper window here...
-                            }
+                            _mainWindow.Close();
+                        }
+                        else
+                        {
+                            suppresskey = true;
+                            _mainWindow = new Components.ClipWindow();
+                            _mainWindow.ShowDialog();
                         }
                     }
-                    else specialkeys = false;
                 }
             };
             keyboardWatcher.Start(Hook.GlobalEvents());
+
+            
         }
 
         private bool isShiftPressed(KeyEventArgs keyEvent, Keys keys)
         {
             return keyEvent.Shift && keys != Keys.Shift && keys != Keys.LShiftKey &&
                     keys != Keys.RShiftKey && keys != Keys.ShiftKey;
+        }
+
+        private bool isCtrlPressed(KeyEventArgs keyEvent, Keys keys)
+        {
+            return keyEvent.Control && keys != Keys.Control && keys != Keys.LControlKey &&
+                    keys != Keys.RControlKey && keys != Keys.ControlKey;
         }
 
         private bool isAltPressed(KeyEventArgs keyEvent, Keys keys)
