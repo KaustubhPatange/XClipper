@@ -81,6 +81,7 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="helpers\BaseCard.cs" />
     <Compile Include="helpers\MessageType.cs" />
     <Compile Include="MaterialMessage.xaml.cs">
       <DependentUpon>MaterialMessage.xaml</DependentUpon>

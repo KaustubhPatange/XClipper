@@ -35,12 +35,23 @@ namespace Components.viewModels
             this.binder = binder;
             databasePath = Path.Combine(baseDirectory, "data.db");
             dataDB = new SQLiteConnection(databasePath);
+        }
 
+        public void DeleteData(TableCopy model)
+        {
+            dataDB.Delete(model);
+            binder.OnModelDeleted(ClipData);
+        }
+
+        public void DeleteData(List<TableCopy> models)
+        {
+            models.ForEach((model) => { dataDB.Delete(model); });
+            binder.OnModelDeleted(ClipData);
         }
         public void UpdateData(TableCopy model)
         {
             dataDB.Execute("update TableCopy set Text = ? where Id = ?", model.Text, model.Id);
-            binder.OnUpdate(ClipData);
+            binder.OnPopupTextEdited(ClipData);
         }
 
         public List<TableCopy> FilterData(string text)

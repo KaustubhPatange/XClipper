@@ -9,6 +9,8 @@ namespace Components.viewModels
 {
     public interface ClipBinder
     {
-        void OnUpdate(List<TableCopy> models);
+        void OnPopupTextEdited(List<TableCopy> models);
+
+        void OnModelDeleted(List<TableCopy> models);
     }
 }

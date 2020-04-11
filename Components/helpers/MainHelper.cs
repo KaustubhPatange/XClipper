@@ -33,7 +33,10 @@ namespace Components
             Text, Image, Files
 
         }
-
+        public static bool IsOpened(this Window window)
+        {
+            return Application.Current.Windows.Cast<Window>().Any(x => x.GetHashCode() == window.GetHashCode());
+        }
         public static T GetFrameworkElementByName<T>(FrameworkElement referenceElement) where T : FrameworkElement
         {
             FrameworkElement child = null;

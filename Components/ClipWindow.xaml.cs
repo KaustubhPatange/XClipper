@@ -1,18 +1,14 @@
 ﻿using ClipboardManager.models;
-using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Windows;
-using System.Windows.Media;
 using Components.viewModels;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Windows.Input;
 using System.Windows.Controls;
-using System.Runtime.InteropServices;
-using System.Windows.Interop;
+using System.Linq;
 using System.Text;
 using static Components.MainHelper;
 
@@ -20,8 +16,9 @@ namespace Components
 {
     public partial class ClipWindow : Window, ClipBinder
     {
+
         #region Variablel Definition
-        
+
         private PopupWindow _popupWindow;
         private MaterialMessage _materialMsgBox;
         private int lvIndex = -1;
@@ -43,7 +40,7 @@ namespace Components
 
             var screen = SystemParameters.WorkArea;
             this.Left = screen.Right - this.Width - 10;
-            this.Top = screen.Bottom -  this.Height - 10;
+            this.Top = screen.Bottom - this.Height - 10;
 
             // Focus on the search editbox at start
             _tbSearchBox.Focus();
@@ -53,6 +50,8 @@ namespace Components
 
 
         #region UI Events
+
+        #region Unlocalised
         private async void CloseButtonClick(object sender, RoutedEventArgs e)
         {
             await Task.Run(() =>
@@ -60,6 +59,9 @@ namespace Components
                 Thread.Sleep(400);
             });
             Close();
+
+            
+            //MaterialDesignThemes.Wpf.Card.LayoutTransformProperty
         }
 
         private void SearchTextChanged(object sender, TextChangedEventArgs e)
@@ -81,10 +83,9 @@ namespace Components
             _lvClip.ItemsSource = ClipWindowViewModel.GetInstance.ClipData;
         }
 
-
         private void _lvClip_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Debug.WriteLine("Selection Changed");
+            lvIndex = _lvClip.SelectedIndex;
             lvIndex = _lvClip.SelectedIndex;
 
             /** We are also hiding it here since Down key is not detected
@@ -93,6 +94,17 @@ namespace Components
             _popupWindow.Hide();
         }
 
+        /** We are not closing the application instead we are hiding it. So that live
+            data changes can be observed! */
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            e.Cancel = true;
+            Hide();
+        }
+
+        #endregion
+
+        #region Key Capture Events
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
             Debug.WriteLine("Pressed Key: " + e.Key.ToString());
@@ -125,8 +137,10 @@ namespace Components
             // This key bind will close the Window.
             if (e.Key == Key.Escape)
             {
-                if (_popupWindow.IsVisible || (_materialMsgBox!=null && _materialMsgBox.Visibility == Visibility.Visible))
+                if (_popupWindow.IsVisible)
+                {
                     _popupWindow.Hide();
+                }
                 else
                     Close();
             }
@@ -156,14 +170,16 @@ namespace Components
                     .SetType(MessageType.OKCancel)
                     .SetOwner(this)
                     .SetOnCancelClickListener(null)
-                    .SetOnOKClickListener(null)
+                    .SetOnOKClickListener(() =>
+                    {
+                        ClipWindowViewModel.GetInstance.DeleteData((from TableCopy s in _lvClip.SelectedItems select s).ToList());
+                    })
                     .ShowDialog();
             }
         }
 
-
         /** Some key events are not detected by KeyDown so we use 
-            PreviewKeyDown instead. */
+         PreviewKeyDown instead. */
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             Debug.WriteLine("WPKD: " + e.Key.ToString());
@@ -176,14 +192,7 @@ namespace Components
             }
         }
 
-
-        /** We are not closing the application instead we are hiding it. So that live
-            data changes can be observed! */
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            e.Cancel = true;
-            Hide();
-        }
+        #endregion
 
 
         ///** This event will automatically close this window when the whole
@@ -198,9 +207,16 @@ namespace Components
 
         #region UI Handling Functions
 
-        /** This callback will handle when data is changed from various sources.
-           One of the source is when data is edited when changed from PopUpWindow. */
-        public void OnUpdate(List<TableCopy> models)
+        /** This callback will handle event when data is deleted. */
+        public void OnModelDeleted(List<TableCopy> models)
+        {
+            _lvClip.ItemsSource = models;
+            _lvClip.SelectedIndex = 0;
+            _lvClip.Focus();
+        }
+
+        /** This callback will handle event when data is edited from PopUpWindow. */
+        public void OnPopupTextEdited(List<TableCopy> models)
         {
             int index = _lvClip.SelectedIndex;
             _lvClip.ItemsSource = models;
@@ -249,6 +265,11 @@ namespace Components
             }
         }
 
+        public void CloseWindow()
+        {
+            Hide();
+        }
+
         /** This will show popup window using the TableCopy model */
         public void ShowPopupWindow(TableCopy model)
         {
@@ -285,5 +306,10 @@ namespace Components
         }
 
         #endregion
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            Application.Current.Dispatcher.InvokeShutdown();
+        }
     }
 }

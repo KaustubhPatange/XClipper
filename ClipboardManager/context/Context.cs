@@ -22,8 +22,7 @@ namespace ClipboardManager.context
         private System.ComponentModel.IContainer _components;
         private ContextMenuStrip _contextmenustrip = new ContextMenuStrip();
         private SharpClipboard _clipboardFactory = new SharpClipboard();
-        private Components.ClipWindow _mainWindow = new Components.ClipWindow();
-
+        private Components.ClipWindow _mainWindow;
         private readonly KeyMouseFactory eventHookFactory = new KeyMouseFactory(Hook.GlobalEvents());
         private readonly KeyboardWatcher keyboardWatcher;
         private List<MacroEvent> _macroEvents; private bool isFirstLaunch = true;
@@ -48,7 +47,6 @@ namespace ClipboardManager.context
             _macroEvents = new List<MacroEvent>();
             _hiddenWindow = new System.Windows.Window();
             _hiddenWindow.Hide();
-           // _mainWindow.Hide();
             _components = new System.ComponentModel.Container();
             dataDB = new SQLiteConnection(databasePath);
             dataDB.CreateTable<TableCopy>();
@@ -57,8 +55,6 @@ namespace ClipboardManager.context
 
             _contextmenustrip.Items.Add(NewToolStripItem("Exit", (o, e) =>
             {
-                if (eventHookFactory != null)
-                    eventHookFactory.Dispose();
                 Application.Exit();
             }));
 
@@ -74,41 +70,45 @@ namespace ClipboardManager.context
             DisplayStatusMessage($"{_notifyIcon.Text}: Service started");
 
             keyboardWatcher = eventHookFactory.GetKeyboardWatcher();
-            keyboardWatcher.OnKeyboardInput += (s, e) =>
-            {
-                if (_macroEvents != null)
-                    _macroEvents.Add(e);
 
-                var keyEvent = (System.Windows.Forms.KeyEventArgs)e.EventArgs;
-                if (e.KeyMouseEventType.ToString().Contains("KeyUp"))
-                {
-                    var keys = keyEvent.KeyCode;
-
-                    // Suppress next event
-                    if (suppresskey)
-                    {
-                        suppresskey = false;
-                        return;
-                    }
-
-                    if (keys == Keys.Oem3 && isCtrlPressed(keyEvent, keys))
-                    {
-                        if (_mainWindow.IsVisible)
-                        {
-                            _mainWindow.Close();
-                        }
-                        else
-                        {
-                            suppresskey = true;
-                            _mainWindow = new Components.ClipWindow();
-                            _mainWindow.ShowDialog();
-                        }
-                    }
-                }
-            };
+            keyboardWatcher.OnKeyboardInput += KeyboardWatcher_OnKeyboardInput;
+            
             keyboardWatcher.Start(Hook.GlobalEvents());
 
-            
+            ThreadExit += Context_ThreadExit;
+        }
+
+        private void KeyboardWatcher_OnKeyboardInput(object sender, MacroEvent e)
+        {
+            if (_macroEvents != null)
+                _macroEvents.Add(e);
+
+            var keyEvent = (KeyEventArgs)e.EventArgs;
+            if (e.KeyMouseEventType.ToString().Contains("KeyUp"))
+            {
+                var keys = keyEvent.KeyCode;
+
+                if (keys == Keys.Oem3 && isCtrlPressed(keyEvent, keys))
+                {
+                    ShowClipWindow();
+                }
+            }
+        }
+
+        private void ShowClipWindow()
+        {
+            if (_mainWindow != null)
+                _mainWindow.Close();
+            _mainWindow = new Components.ClipWindow();
+            _mainWindow.Loaded += (o, e) => { keyboardWatcher.Stop(); };
+            _mainWindow.Closed += (o, e) => { keyboardWatcher.Start(Hook.GlobalEvents()); _mainWindow = null; };
+            _mainWindow.ShowDialog(); 
+        }
+        private void Context_ThreadExit(object sender, EventArgs e)
+        {
+            keyboardWatcher.Stop();
+            eventHookFactory.Dispose();
+            Debug.WriteLine("Exited Thread");
         }
 
         private bool isShiftPressed(KeyEventArgs keyEvent, Keys keys)

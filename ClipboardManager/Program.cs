@@ -29,8 +29,7 @@ namespace ClipboardManager
                 Application.SetCompatibleTextRenderingDefault(false);
                 try
                 {
-                    Context context = new Context();
-                    Application.Run(context);
+                    Application.Run(new Context());
                 }
                 catch (Exception exc)
                 {

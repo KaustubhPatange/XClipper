@@ -16,6 +16,7 @@
         ResizeMode="NoResize" ShowInTaskbar="False"
         Title="ClipWindow"
         PreviewKeyDown="Window_PreviewKeyDown"
+        Closed="Window_Closed"
         Height="450"  Width="280" IsVisibleChanged="Window_IsVisibleChanged" KeyDown="Window_KeyDown"  >
     <!-- SizeToContent="Height" -->
 
@@ -84,12 +85,17 @@
                 </StackPanel>
             </Border>
         </Popup>-->
-        <ListView ScrollViewer.CanContentScroll="False" Grid.Row="1" x:Name="_lvClip"
+        <ListView Margin="0 0 0 5" ScrollViewer.CanContentScroll="False" Grid.Row="1" x:Name="_lvClip"
                   ScrollViewer.VerticalScrollBarVisibility="Hidden" 
                   SelectionChanged="_lvClip_SelectionChanged">
             <ListView.ItemContainerStyle>
                 <Style TargetType="{x:Type ListViewItem}">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    <Setter Property="LayoutTransform">
+                        <Setter.Value>
+                            <ScaleTransform x:Name="transform" />
+                        </Setter.Value>
+                    </Setter>
                 </Style>
             </ListView.ItemContainerStyle>
             <ListView.ItemTemplate>
@@ -97,24 +103,23 @@
                     <materialDesign:Card Padding="10" Margin="3" 
                                          x:Name="Item_MaterialCard"
                                          Tag="{Binding Text}"
-                                                                             
                                          MouseDoubleClick="ListViewItemDoubleClicked">
-                        <!--<materialDesign:Card.ToolTip>
-                            <ToolTip Placement="Left"
-                                     HorizontalOffset="-15" 
-                                     HasDropShadow="True"  >
-                                <Border Margin="-10" Padding="10" Background="#2D2D30" MaxWidth="500">
-                                    <StackPanel>
-                                        <TextBlock Foreground="#DCDCAA" MaxHeight="320" Text="{Binding Text}" Margin="0,0,0,8" TextWrapping="NoWrap"/>
-                                        <Border BorderBrush="#3F3F46" BorderThickness="0.5" Margin="0, 5" />
-                                        <WrapPanel>
-                                            <TextBlock FontSize="11" Foreground="Gray" FontStyle="Italic" Text="Added: "/>
-                                            <TextBlock FontSize="11" Foreground="Gray" FontStyle="Italic" Text="{Binding DateTime}"/>
-                                        </WrapPanel>
-                                    </StackPanel>
-                                </Border>
-                            </ToolTip>
-                        </materialDesign:Card.ToolTip>-->
+                        <materialDesign:Card.Triggers>
+                            <EventTrigger RoutedEvent="Loaded">
+                                <EventTrigger.Actions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ThicknessAnimation DecelerationRatio="0" 
+                                                                Duration="0:0:0.2"
+                                                                From="200 3 -200 3"
+                                                                Timeline.DesiredFrameRate="10"
+                                                                To="3" Storyboard.TargetProperty="Margin"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger.Actions>
+                            </EventTrigger>
+                        </materialDesign:Card.Triggers>
+                     
                     <StackPanel Orientation="Vertical">
                             <Grid>
                                 <Grid.ColumnDefinitions>

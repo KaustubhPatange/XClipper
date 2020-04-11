@@ -12,12 +12,11 @@ using System.Windows.Input;
 
 namespace Components
 {
-
     public partial class MaterialMessage : Window
     {
         #region Variable Definition
 
-
+        public static bool isClosed = false;
 
         #endregion
 
@@ -32,13 +31,34 @@ namespace Components
 
             Closed += (o, e) => { Owner.Opacity = 1; };
 
-            PreviewKeyDown += (o, e) => { if (e.Key == Key.Escape) Close(); };
+            /** A WPF window cannot work correctly unless the WPF dispatcher
+             * loop provides it with notifications. It also transport this
+             * main UI KeyDown event here.
+             */
+            KeyDown += (o, e) => { if (e.Key == Key.Escape) Close(); };
+
+            this._btn_OK_Clicked.Focus();
         }
 
         #endregion
 
 
-        #region UI Functions
+        #region Builder
+
+        /** Pretty self explainatory function. I am basically more of an Android Developer
+         *  so couldn't get the hang of those Builder methods unless implemented here :) */
+
+        public MaterialMessage SetOnOpenListener(Action name)
+        {
+            Loaded += (o, e) => { name?.Invoke(); };
+            return this;
+        }
+
+        public MaterialMessage SetOnCloseListener(Action name)
+        {
+            Closed += (o, e) => { name?.Invoke(); };
+            return this;
+        }
 
         public MaterialMessage SetOwner(Window window)
         {
