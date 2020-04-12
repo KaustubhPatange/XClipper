@@ -12,7 +12,7 @@
         AllowsTransparency="True"
         WindowStartupLocation="CenterOwner"
         ShowInTaskbar="False"
-        Title="MaterialMsgBox" Height="120" Width="280">
+        Title="MaterialMsgBox" Height="120" Width="285">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

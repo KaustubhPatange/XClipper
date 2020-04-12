@@ -118,6 +118,61 @@
             </Style.Triggers>
         </Style>
 
+        <Style x:Key="{x:Type ToggleButton}" TargetType="{x:Type ToggleButton}">
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Width" Value="20"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                        <Border x:Name="Border" >
+                            <ContentPresenter Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center" RecognizesAccessKey="True"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsKeyboardFocused" Value="true">
+                                <Setter TargetName="Border" Property="BorderBrush" Value="#3F3F46" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter TargetName="Border" Property="Background" Value="#3F3F46" />
+                            </Trigger>
+                            <!--<Trigger Property="IsPressed" Value="true">
+                                    <Setter TargetName="Border" Property="Background" Value="#3F3F46" />
+                                    <Setter TargetName="Border" Property="BorderBrush" Value="#3F3F46" />
+                                </Trigger>-->
+                            <Trigger Property="IsChecked" Value="true">
+                                <Setter TargetName="Border" Property="Background" Value="#3F3F46"/>
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="{x:Type Button}" TargetType="{x:Type Button}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Border" >
+                            <ContentPresenter Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center" RecognizesAccessKey="True"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsKeyboardFocused" Value="true">
+                                <Setter TargetName="Border" Property="BorderBrush" Value="#3F3F46" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter TargetName="Border" Property="Background" Value="#3F3F46" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="true">
+                                <Setter TargetName="Border" Property="Background" Value="#3F3F46" />
+                                <Setter TargetName="Border" Property="BorderBrush" Value="#3F3F46" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
     </Window.Resources>
     <Grid x:Name="_grid">
         <Grid.RowDefinitions>
@@ -143,7 +198,18 @@
                       Loaded="ScrollViewer_Loaded"
                       x:Name="_scrollViewer"
                       MaxHeight="350" Margin="5" Grid.Row="0">
-            <TextBox Margin="3" AcceptsReturn="True" CaretBrush="WhiteSmoke" IsReadOnly="True" BorderThickness="0" Background="Transparent" x:Name="_tbText" Foreground="#DCDCAA" Padding="2"/>
+            <StackPanel>
+                <TextBox Visibility="Collapsed" Margin="3" AcceptsReturn="True" CaretBrush="WhiteSmoke" IsReadOnly="True" BorderThickness="0" Background="Transparent" x:Name="_tbText" Foreground="#DCDCAA" Padding="2"/>
+                <Image x:Name="_imgView" 
+                       
+                       Visibility="Collapsed"
+                       MaxHeight="300" 
+                       Margin="5" 
+                       MaxWidth="550" >
+                    
+                </Image>
+            </StackPanel>
+
         </ScrollViewer>
         <StackPanel Margin="5" Grid.Row="1">
             <Border BorderBrush="#3F3F46" BorderThickness="0.5"  />
@@ -151,64 +217,24 @@
                 <TextBlock DockPanel.Dock="Left" FontSize="11"  Margin="5 0 0 0" Foreground="Gray" FontStyle="Italic" Text="Added: "/>
                 <TextBlock  DockPanel.Dock="Left" x:Name="_tbDateTime" FontSize="11" Foreground="Gray" FontStyle="Italic" Text="{Binding DateTime}"/>
                 <Button Margin="5 0 0 0" ToolTip="Close (Escape)" DockPanel.Dock="Right" BorderThickness="0" Background="Transparent" HorizontalAlignment="Right" Click="CloseButton_Clicked">
-                    <Button.Template>
-                        <ControlTemplate TargetType="Button">
-                            <Border x:Name="Border" >
-                                <ContentPresenter Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center" RecognizesAccessKey="True"/>
-                            </Border>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsKeyboardFocused" Value="true">
-                                    <Setter TargetName="Border" Property="BorderBrush" Value="#3F3F46" />
-                                </Trigger>
-                                <Trigger Property="IsMouseOver" Value="true">
-                                    <Setter TargetName="Border" Property="Background" Value="#3F3F46" />
-                                </Trigger>
-                                <Trigger Property="IsPressed" Value="true">
-                                    <Setter TargetName="Border" Property="Background" Value="#3F3F46" />
-                                    <Setter TargetName="Border" Property="BorderBrush" Value="#3F3F46" />
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Button.Template>
+                   
                     <materialDesign:PackIcon HorizontalAlignment="Right" Foreground="WhiteSmoke" Kind="Close" Padding="8 4 8 4"/>
                 </Button>
-                <ToggleButton x:Name="_toggleEditButton" ToolTip="Toggle Edit Mode (Ctrl + E)" Click="EditButton_Clicked" BorderThickness="0" Background="Transparent" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="20">
-                    <ToggleButton.Template>
-                        <ControlTemplate TargetType="{x:Type ToggleButton}">
-                            <Border x:Name="Border" >
-                                <ContentPresenter Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center" RecognizesAccessKey="True"/>
-                            </Border>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsKeyboardFocused" Value="true">
-                                    <Setter TargetName="Border" Property="BorderBrush" Value="#3F3F46" />
-                                </Trigger>
-                                <Trigger Property="IsMouseOver" Value="true">
-                                    <Setter TargetName="Border" Property="Background" Value="#3F3F46" />
-                                </Trigger>
-                                <!--<Trigger Property="IsPressed" Value="true">
-                                    <Setter TargetName="Border" Property="Background" Value="#3F3F46" />
-                                    <Setter TargetName="Border" Property="BorderBrush" Value="#3F3F46" />
-                                </Trigger>-->
-                                <Trigger Property="IsChecked" Value="true">
-                                    <Setter TargetName="Border" Property="Background" Value="#3F3F46"/>
-                                </Trigger>
-                                
-                            </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                    </ToggleButton.Template>
-                    <!--<ToggleButton.Style>
-                        <Style TargetType="{x:Type ToggleButton}">
-                            <Setter Property="Background" Value="Green"/>
-                            <Style.Triggers>
-                                <Trigger Property="IsChecked" Value="true">
-                                    <Setter Property="Background" Value="Red"/>
-                                </Trigger>
-                            </Style.Triggers>
-
-                        </Style>
-                    </ToggleButton.Style>-->
+                <ToggleButton x:Name="_toggleEditButton"  
+                              ToolTip="Toggle Edit Mode (Ctrl + E)" 
+                              Click="EditButton_Clicked"
+                              DockPanel.Dock="Right" 
+                              Margin="5 0 0 0"
+                              HorizontalAlignment="Right" >
                     <materialDesign:PackIcon HorizontalAlignment="Right" Foreground="WhiteSmoke" Kind="Edit" Padding="8 4 8 4"/>
                 </ToggleButton>
+                <Button x:Name="_btnPreview"
+                              ToolTip="Preview (Enter)"
+                              DockPanel.Dock="Right"
+                              Click="PreviewButton_Clicked"
+                              HorizontalAlignment="Right">
+                    <materialDesign:PackIcon HorizontalAlignment="Right" Foreground="WhiteSmoke" Kind="Image" Padding="8 4 8 4" />
+                </Button>
             </DockPanel>
         </StackPanel>
     </Grid>

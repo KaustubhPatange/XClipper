@@ -1,18 +1,14 @@
 ﻿using ClipboardManager.models;
 using Components.viewModels;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using static Components.MainHelper;
@@ -35,8 +31,8 @@ namespace Components
         {
             InitializeComponent();
 
-            var screen = System.Windows.SystemParameters.WorkArea;
-            this.Left = screen.Right - 280 - this.Width - 20;
+            var screen = SystemParameters.WorkArea;
+            this.Left = screen.Right - 285 - this.Width - 20;
             this.Top = screen.Bottom - 450 - 10;
         }
 
@@ -56,6 +52,13 @@ namespace Components
             {
                 CloseWindow();
             }
+
+            // This key bind will open the image in default image view application
+            if ((e.Key == Key.Return || e.Key == Key.Enter) && model.ContentType == ContentType.Image)
+            {
+                Process.Start(model.ImagePath);
+            } 
+
             if (e.Key == Key.Down)
                 _scrollViewer.ScrollToVerticalOffset(_scrollViewer.VerticalOffset + 30);
             if (e.Key == Key.Up)
@@ -78,7 +81,10 @@ namespace Components
             ((Rectangle)_scrollViewer.Template.FindName("Corner", _scrollViewer)).Fill = "#2D2D30".GetColor();
         }
 
-
+        private void PreviewButton_Clicked(object sender, RoutedEventArgs e)
+        {
+            Process.Start(model.ImagePath);
+        }
         private void CloseButton_Clicked(object sender, RoutedEventArgs e)
         {
             CloseWindow();
@@ -93,15 +99,46 @@ namespace Components
         public void SetPopUp(TableCopy model)
         {
             this.model = model;
-            _tbText.Text = model.Text;
+            switch (model.ContentType)
+            {
+                case ContentType.Text:
+                    _tbText.Text = model.RawText;
+                    CommonTextFiles();
+                    break;
+                case ContentType.Image:
+                    _tbText.Collapsed();
+                    _imgView.Visible();
+                    _toggleEditButton.Collapsed();
+                    _btnPreview.Visible();
+
+                    _imgView.Source = (new ImageSourceConverter()).ConvertFromString(model.ImagePath) as ImageSource;
+                    break;
+                case ContentType.Files:
+                    var builder = new StringBuilder();
+                    model.LongText.Split(',').ToList().ForEach((line) => builder.Append(line).Append(Environment.NewLine));
+                    _tbText.Text = builder.ToString().Trim();
+
+                    _toggleEditButton.Collapsed();
+
+                    CommonTextFiles();
+                    break;
+            }
             _tbDateTime.Text = model.DateTime;
+        }
+
+        private void CommonTextFiles()
+        {
+            _btnPreview.Collapsed();
+            _tbText.Visible();
+            _imgView.Collapsed();
+            _toggleEditButton.Visible();
         }
 
         /** This will set TextBox editable based on the toggle button. */
         private void ToggleEditMode(bool IsInvokeFromShortcut)
         {
             // Only text content is supported, otherwise return.
-            if (model.ContentType != "Text")
+            if (model.ContentType == ContentType.Image)
             {
                 ShowToast("Editing is not supported for this format", true);
                 return;
@@ -109,7 +146,7 @@ namespace Components
             if (_toggleEditButton.IsChecked == false)
             {
                 SetEditMode();
-               if (IsInvokeFromShortcut) _toggleEditButton.IsChecked = true;
+                if (IsInvokeFromShortcut) _toggleEditButton.IsChecked = true;
             }
             else
             {
@@ -124,8 +161,40 @@ namespace Components
             if (SAVED_TEXT != _tbText.Text)
             {
                 // Perform a save operation...
-                model.Text = _tbText.Text;
-                ClipWindowViewModel.GetInstance.UpdateData(model);
+
+                if (string.IsNullOrWhiteSpace(_tbText.Text))
+                {
+                    ShowToast("Error: Cannot set a blank text", true);
+                    return;
+                }
+
+                switch (model.ContentType)
+                {
+                    // Save operation for Text files
+                    case ContentType.Text:
+                        model.Text = model.LongText = FormatText(_tbText.Text);
+                        model.RawText = _tbText.Text;
+                        break;
+                    case ContentType.Files:
+                        var fileContentOK = true;
+                        var lines = _tbText.Text.ToLines();
+                        var i = 0;
+                        foreach (string line in lines)
+                            if (!File.Exists(line)) { Debug.WriteLine($"Error ({i}): " + line); fileContentOK = false; break; } else i++; 
+                        if (fileContentOK)
+                        {
+                            model.Text = $"Copied Files - {lines.Length}";
+                            model.LongText = string.Join(",", lines);
+                            model.RawText = "";
+                        }
+                        else
+                        {
+                            _tbText.Text = SAVED_TEXT;
+                            ShowToast("Error: Invalid file path(s)", true);
+                        }
+                        break;
+                }
+                AppSingleton.GetInstance.UpdateData(model);
             }
             _tbText.IsReadOnly = true;
             _scrollViewer.BorderThickness = new Thickness(0);
@@ -176,5 +245,6 @@ namespace Components
 
         #endregion
 
+        
     }
 }

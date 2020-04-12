@@ -15,11 +15,10 @@
         Topmost="True"
         ResizeMode="NoResize" ShowInTaskbar="False"
         Title="ClipWindow"
+        Icon="pack://application:,,,/Resources/clipboard.png"
         PreviewKeyDown="Window_PreviewKeyDown"
         Closed="Window_Closed"
-        Height="450"  Width="280" IsVisibleChanged="Window_IsVisibleChanged" KeyDown="Window_KeyDown"  >
-    <!-- SizeToContent="Height" -->
-
+        Height="450"  Width="285" IsVisibleChanged="Window_IsVisibleChanged" KeyDown="Window_KeyDown"   >
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -50,8 +49,23 @@
             <SolidColorBrush x:Key="RippleColor" Color="WhiteSmoke"/>
         </ResourceDictionary>
     </Window.Resources>
-    <Grid>
-
+    <Grid  >
+        <!--<StackPanel Margin="10" Orientation="Horizontal">
+            <TextBlock Background="Purple" Foreground="Wheat" TextAlignment="Center" FontSize="7" Padding="2 3 2 0" Text="1" Margin="0 0 7 0"/>
+           
+        <StackPanel Orientation="Vertical">
+                <Grid >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Button FontSize="11"  Padding="5, 1, 5, 1" Grid.Column="1" Height="17" x:Name="_btnContentType" Content="Text" FontStyle="Italic"/>
+                    <TextBlock Grid.Column="0" Style="{StaticResource BigTextBlock}" x:Name="_tbTitle" Text="This is a text"/>
+                </Grid>
+                <TextBlock Style="{StaticResource SmallTextBlock}" Width="230" MaxHeight="38" TextWrapping="Wrap" Margin="0 5 0 0" FontSize="11" x:Name="_tbText" Text="This is a small Te"/>
+            </StackPanel>
+        </StackPanel>-->
+       
         <Grid.RowDefinitions>
             <RowDefinition Height="35"/>
             <RowDefinition Height="*"/>
@@ -61,33 +75,12 @@
             <Button Click="CloseButtonClick" BorderThickness="0" Background="Transparent" Padding="7 3 7 3" DockPanel.Dock="Right">
                 <materialDesign:PackIcon  Foreground="WhiteSmoke" Kind="Close"/>
             </Button>
-            <!--<materialDesign:Ripple x:Name="_ripClose" DockPanel.Dock="Right" Padding="7 3 7 3" VerticalAlignment="Center" HorizontalAlignment="Right">
-                <materialDesign:PackIcon  Foreground="WhiteSmoke" Kind="Close"/>
-            </materialDesign:Ripple>-->
             <TextBox TextChanged="SearchTextChanged" Margin="10,5,10,2" Foreground="Wheat" materialDesign:HintAssist.HintOpacity="0.4" DockPanel.Dock="Left" materialDesign:HintAssist.Hint="Search (Ctrl + Q)" x:Name="_tbSearchBox" KeyUp="Window_KeyDown"/>
-            <!--<materialDesign:Ripple>
-                <materialDesign:Ripple.Content>
-                </materialDesign:Ripple.Content>
-            </materialDesign:Ripple>-->
-            <!--<Button Height="20" Content="x"> </Button>-->
         </DockPanel>
-        <!--<Popup IsOpen="False"   
-               x:Name="_myPopup"
-               HorizontalOffset="-15">
-            <Border Margin="-10" Padding="10" Background="#2D2D30" MaxWidth="500">
-                <StackPanel>
-                    <TextBlock x:Name="MainText" Foreground="#DCDCAA" MaxHeight="320" Text="{Binding Text}" Margin="0,0,0,8" TextWrapping="NoWrap"/>
-                    <Border BorderBrush="#3F3F46" BorderThickness="0.5" Margin="0, 5" />
-                    <WrapPanel>
-                        <TextBlock FontSize="11" Foreground="Gray" FontStyle="Italic" Text="Added: "/>
-                        <TextBlock x:Name="DateTimeText" FontSize="11" Foreground="Gray" FontStyle="Italic" Text="{Binding DateTime}"/>
-                    </WrapPanel>
-                </StackPanel>
-            </Border>
-        </Popup>-->
         <ListView Margin="0 0 0 5" ScrollViewer.CanContentScroll="False" Grid.Row="1" x:Name="_lvClip"
-                  ScrollViewer.VerticalScrollBarVisibility="Hidden" 
-                  SelectionChanged="_lvClip_SelectionChanged">
+                  ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                 
+                  SelectionChanged="_lvClip_SelectionChanged" >
             <ListView.ItemContainerStyle>
                 <Style TargetType="{x:Type ListViewItem}">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -100,7 +93,7 @@
             </ListView.ItemContainerStyle>
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <materialDesign:Card Padding="10" Margin="3" 
+                    <materialDesign:Card Margin="4" 
                                          x:Name="Item_MaterialCard"
                                          Tag="{Binding Text}"
                                          MouseDoubleClick="ListViewItemDoubleClicked">
@@ -119,17 +112,37 @@
                                 </EventTrigger.Actions>
                             </EventTrigger>
                         </materialDesign:Card.Triggers>
-                     
-                    <StackPanel Orientation="Vertical">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="auto"/>
-                                </Grid.ColumnDefinitions>
-                                <Button FontSize="11"  Padding="5, 1, 5, 1" Grid.Column="1" Height="17" x:Name="_btnContentType" Content="{Binding ContentType}" FontStyle="Italic"/>
-                                <TextBlock Grid.Column="0" Style="{StaticResource BigTextBlock}" x:Name="_tbTitle" Text="{Binding Text}"/>
-                            </Grid>
-                            <TextBlock Style="{StaticResource SmallTextBlock}" Width="225" MaxHeight="38" TextWrapping="Wrap" Margin="0 5 0 0" FontSize="11" x:Name="_tbText" Text="{Binding Text}"/>
+
+                        <StackPanel x:Name="Item_StackPanel" Orientation="Horizontal">
+                            <TextBlock Margin="0 0 0 1" Background="#673AB7" 
+                                       Foreground="White" 
+                                       VerticalAlignment="Stretch"
+                                       TextAlignment="Center"
+                                       FontWeight="Bold"
+                                       FontSize="8" Padding="2 3 2 0" 
+                                       x:Name="Item_TextBlock"
+                                        />
+                            <Canvas>
+                                <Image Margin="0 0 0 0" Width="100" Height="55" Source="{Binding ImagePath}"/>
+                            </Canvas>
+
+                            <StackPanel Margin="10" Orientation="Vertical">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Button FontSize="11"  Padding="5, 1, 5, 1" Grid.Column="1" Height="17" x:Name="_btnContentType" Content="{Binding ContentType}" FontStyle="Italic"/>
+                                    <TextBlock Grid.Column="0" Style="{StaticResource BigTextBlock}" 
+                                               x:Name="_tbTitle" 
+                                               Text="{Binding Text}"/>
+                                </Grid>
+                                <TextBlock Style="{StaticResource SmallTextBlock}"
+                                           MaxWidth="230" MaxHeight="40" 
+                                           TextWrapping="Wrap" Margin="0 5 0 0" 
+                                           FontSize="11" x:Name="_tbText"
+                                           Text="{Binding LongText}"/>
+                            </StackPanel>
                         </StackPanel>
                     </materialDesign:Card>
                 </DataTemplate>

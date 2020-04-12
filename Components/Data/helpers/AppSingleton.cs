@@ -9,25 +9,25 @@ using System.Threading.Tasks;
 
 namespace Components.viewModels
 {
-    public sealed class ClipWindowViewModel
+    public sealed class AppSingleton
     {
         private ClipBinder binder;
         private static string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
         private string databasePath;
 
         private SQLiteConnection dataDB;
-        private static ClipWindowViewModel instance = null;
-        public static ClipWindowViewModel GetInstance
+        private static AppSingleton instance = null;
+        public static AppSingleton GetInstance
         {
             get
             {
                 if (instance == null)
-                    instance = new ClipWindowViewModel();
+                    instance = new AppSingleton();
                 return instance;
             }
         }
 
-        private ClipWindowViewModel()
+        private AppSingleton()
         {}
 
         public void setBinder(ClipBinder binder)
@@ -45,12 +45,13 @@ namespace Components.viewModels
 
         public void DeleteData(List<TableCopy> models)
         {
-            models.ForEach((model) => { dataDB.Delete(model); });
+            models.ForEach((model) => { dataDB.Delete(model);});
             binder.OnModelDeleted(ClipData);
         }
         public void UpdateData(TableCopy model)
         {
-            dataDB.Execute("update TableCopy set Text = ? where Id = ?", model.Text, model.Id);
+         //   dataDB.Update(model);
+            dataDB.Execute("update TableCopy set Text = ?, LongText = ?, RawText = ? where Id = ?", model.Text, model.LongText, model.RawText, model.Id);
             binder.OnPopupTextEdited(ClipData);
         }
 
@@ -58,6 +59,7 @@ namespace Components.viewModels
         {
             return dataDB.Table<TableCopy>().Where(s => s.Text.Contains(text)).Reverse().ToList();
         }
+
         public List<TableCopy> ClipData
         {
             get

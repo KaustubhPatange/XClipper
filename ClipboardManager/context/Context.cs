@@ -22,7 +22,8 @@ namespace ClipboardManager.context
         private System.ComponentModel.IContainer _components;
         private ContextMenuStrip _contextmenustrip = new ContextMenuStrip();
         private SharpClipboard _clipboardFactory = new SharpClipboard();
-        private Components.ClipWindow _mainWindow;
+        private Process ClipWindowProcess;
+      //  private Components.ClipWindow _mainWindow;
         private readonly KeyMouseFactory eventHookFactory = new KeyMouseFactory(Hook.GlobalEvents());
         private readonly KeyboardWatcher keyboardWatcher;
         private List<MacroEvent> _macroEvents; private bool isFirstLaunch = true;
@@ -97,12 +98,27 @@ namespace ClipboardManager.context
 
         private void ShowClipWindow()
         {
-            if (_mainWindow != null)
-                _mainWindow.Close();
-            _mainWindow = new Components.ClipWindow();
-            _mainWindow.Loaded += (o, e) => { keyboardWatcher.Stop(); };
-            _mainWindow.Closed += (o, e) => { keyboardWatcher.Start(Hook.GlobalEvents()); _mainWindow = null; };
-            _mainWindow.ShowDialog(); 
+            if (ClipWindowProcess!=null && !ClipWindowProcess.HasExited)
+                return;
+            ClipWindowProcess = new Process();
+            ClipWindowProcess.StartInfo.FileName = "XClipper.Components.exe";
+            ClipWindowProcess.Start();
+
+            /** Instead of creating separate assembly for Components I could've
+             *  merge the library in this application itself and could've used
+             *  the below code to execute it.
+             *  However there is some problem to this approach. Since I am 
+             *  Registering global keyhook events even if ShowDialog is called
+             *  it will always create a new instance of this hook thread which 
+             *  is leading to a lot of memory leaks, slow key capturing, form
+             *  lagging and stuff. So this above approach is made. */
+
+            //if (_mainWindow != null)
+            //    _mainWindow.Close();
+            //_mainWindow = new Components.ClipWindow();
+            //_mainWindow.Loaded += (o, e) => { keyboardWatcher.Stop(); };
+            //_mainWindow.Closed += (o, e) => { keyboardWatcher.Start(Hook.GlobalEvents()); _mainWindow = null; };
+            //_mainWindow.ShowDialog(); 
         }
         private void Context_ThreadExit(object sender, EventArgs e)
         {
@@ -149,10 +165,12 @@ namespace ClipboardManager.context
             if (e.ContentType == ContentTypes.Text)
             {
                 Debug.WriteLine("Type: Text");
+                if (!string.IsNullOrWhiteSpace(_clipboardFactory.ClipboardText.Trim()))
+                {
+                    Debug.WriteLine(_clipboardFactory.ClipboardText);
 
-                Debug.WriteLine(_clipboardFactory.ClipboardText);
-
-                InsertContent(_clipboardFactory.ClipboardText, ContentTypes.Text);
+                    InsertContent(Utils.CreateTable(_clipboardFactory.ClipboardText, ContentTypes.Text));
+                }
             }
             else if (e.ContentType == ContentTypes.Image)
             {
@@ -163,21 +181,21 @@ namespace ClipboardManager.context
                 string filePath = Path.Combine(baseDirectory, $"Images\\{DateTime.Now.ToFormattedDateTime()}.png");
                 _clipboardFactory.ClipboardImage.Save(filePath);
 
-                InsertContent(filePath, ContentTypes.Image);
+                InsertContent(Utils.CreateTable(filePath, ContentTypes.Image));
             }
             else if (e.ContentType == ContentTypes.Files)
             {
                 Debug.WriteLine("Type: Files");
 
-                InsertContent(string.Join(",", _clipboardFactory.ClipboardFiles.ToArray()), ContentTypes.Files);
+                InsertContent(Utils.CreateTable(_clipboardFactory.ClipboardFiles));
 
                 _clipboardFactory.ClipboardFiles.Clear();
             }
         }
 
-        private void InsertContent(string text, ContentTypes type)
+        private void InsertContent(TableCopy model)
         {
-            dataDB.Insert(Utils.CreateTable(text, type));
+            dataDB.Insert(model);
         }
 
         private void DisplayStatusMessage(string text, string message = null)
