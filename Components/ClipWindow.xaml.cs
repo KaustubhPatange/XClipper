@@ -11,15 +11,19 @@ using System.Windows.Controls;
 using System.Linq;
 using System.Text;
 using static Components.MainHelper;
+using static Components.CommonExtensions;
 using MaterialDesignThemes.Wpf;
 using System.Collections.Specialized;
 using System.IO;
 using Microsoft.Win32;
 using Microsoft.VisualBasic.FileIO;
-using System.Windows.Threading;
+using System.Windows.Media;
 
 namespace Components
 {
+    /** I can't use viewModel in this window! When I started coding this project I did static
+     *  data binding and this view class which completely broke the ViewModel and with this
+     *  code migrating to View Model will be pain in the ass. */
     public partial class ClipWindow : Window, ClipBinder
     {
 
@@ -28,6 +32,7 @@ namespace Components
         private PopupWindow _popupWindow;
         private MaterialMessage _materialMsgBox;
         private int lvIndex = -1;
+        private bool isMouseKeyDown;
 
         #endregion
 
@@ -53,10 +58,16 @@ namespace Components
 
             ((INotifyCollectionChanged)_lvClip.Items).CollectionChanged += ListView_CollectionChanged;
 
+            /** Since when scrolling in listview and moving mouse outside the scope
+              * changes the mouse enter event which eventually hides scrollbar.
+              * In order to prevent this we observer isMouseKeyDown variable. */
+
+            PreviewMouseDown += (o, e) => { isMouseKeyDown = true; };
+            PreviewMouseUp += (o, e) => { isMouseKeyDown = false; };
+
             // Focus on the search editbox at start
             _tbSearchBox.Focus();
         }
-
 
         #endregion
 
@@ -78,6 +89,21 @@ namespace Components
                 else
                     FindCardIdTextBlockItem(i).Text = (i + 1).ToString();
             }
+        }
+
+        /** Whenever mouse is placed on certain position on window, we will manipulate
+         *  ScollViewer on listview. */
+        private void Window_MouseEnter(object sender, MouseEventArgs e)
+        {
+            var point = e.GetPosition(sender as Window);
+
+            var scrollViewer = GetScrollViewer(_lvClip) as ScrollViewer;
+
+            if (scrollViewer == null || isMouseKeyDown) return;
+            if (point.X > 260)
+                scrollViewer.ShowVerticalScrollBar();
+            else
+                scrollViewer.HideVerticalScrollBar();
         }
 
         private async void CloseButtonClick(object sender, RoutedEventArgs e)
@@ -246,21 +272,8 @@ namespace Components
 
         #region UI Handling Functions
 
-        ///** This functionw ill be used to update source on listview. 
-        // *  As it also sets some other details along with it. */
-        //private void SetItemSource(List<TableCopy> models)
-        //{
-        //    _lvClip.ItemsSource = models;
-        //    var size = _lvClip.Items.Count;
-        //    if (size >= 10) size = 10;
-        //    for (int i = 0; i < size; i++)
-        //    {
-        //        if (i == 9)
-        //            FindCardIdTextBlockItem(i).Text = 0.ToString();
-        //        else
-        //            FindCardIdTextBlockItem(i).Text = (i + 1).ToString();
-        //    }
-        //}
+        /** This will return the Table Copy object from contextMenu */
+        private TableCopy GetTableCopyFromSender(object sender) => (TableCopy)((ContextMenu)(((MenuItem)sender).Parent)).Tag;
 
         /** A Function which will return ListView card item. */
         public TextBlock FindCardIdTextBlockItem(int index)
@@ -275,7 +288,6 @@ namespace Components
                     var panel = (dataTemplate.FindName("Item_MaterialCard", templateParent) as Card)
                         .FindName("Item_StackPanel") as StackPanel;
                     return panel.FindName("Item_TextBlock") as TextBlock;
-                    //ContentPresenter templateParent = GetFrameworkElementByName<ContentPresenter>(card);
                 }
             }
             return null;
@@ -377,10 +389,7 @@ namespace Components
                 };
                 if (fd.Show())
                 {
-                    foreach (string file in files)
-                    {
-                        FileSystem.CopyFile(file, Path.Combine(fd.FileName, Path.GetFileName(file)), UIOption.AllDialogs);
-                    }
+                    files.ForEach((file) => FileSystem.CopyFile(file, Path.Combine(fd.FileName, Path.GetFileName(file)), UIOption.AllDialogs));
 
                     // Finally Close the window...
                     Close();
@@ -392,10 +401,7 @@ namespace Components
                 WindowState = WindowState.Minimized;
 
                 // Copy all the files to the location...
-                foreach (string file in files)
-                {
-                    FileSystem.CopyFile(file, Path.Combine(pasteLocation, Path.GetFileName(file)), UIOption.AllDialogs);
-                }
+                files.ForEach((file) => FileSystem.CopyFile(file, Path.Combine(pasteLocation, Path.GetFileName(file)), UIOption.AllDialogs));
 
                 // Finally Close the window...
                 Close();
@@ -471,5 +477,15 @@ namespace Components
 
         #endregion
 
+
+        #region Menu Item Clicks
+        private void QuickInfo_MenuItemClicked(object sender, RoutedEventArgs e)
+        {
+            var model = GetTableCopyFromSender(sender);
+        }
+
+        #endregion
+
+      
     }
 }

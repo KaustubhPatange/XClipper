@@ -3,6 +3,28 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              StartupUri="ClipWindow.xaml">
     <Application.Resources>
-         
+        <ResourceDictionary>
+            
+            <Color x:Key="ColorBackground">#2D2D30</Color>
+            <SolidColorBrush x:Key="BackgroundBrush" Color="{StaticResource ColorBackground}"/>
+
+            <Color x:Key="ColorForeground">#3F3F46</Color>
+            <SolidColorBrush x:Key="ForegroundBrush" Color="{StaticResource ColorForeground}"/>
+
+            <Color x:Key="ColorTextSecondary">#A8AAAD</Color>
+            <SolidColorBrush x:Key="TextSecondaryBrush" Color="{StaticResource ColorTextSecondary}"/>
+
+            <Color x:Key="ColorItemShortcutText">#B59C5E</Color>
+            <SolidColorBrush x:Key="ItemShortcutTextBrush" Color="{StaticResource ColorItemShortcutText}"/>
+
+            <Color x:Key="ColorPopupText">#DCDCAA</Color>
+            <SolidColorBrush x:Key="PopupTextTextBrush" Color="{StaticResource ColorPopupText}"/>
+
+            <Color x:Key="ColorAccent">#673AB7</Color>
+            <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource ColorAccent}"/>
+
+            <Color x:Key="ColorError">#8E1400</Color>
+            <SolidColorBrush x:Key="ErrorBrush" Color="{StaticResource ColorError}"/>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

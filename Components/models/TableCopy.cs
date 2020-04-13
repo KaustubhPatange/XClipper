@@ -32,6 +32,8 @@ namespace ClipboardManager.models
         //[TextBlob(nameof(FilesBlobbed))]
         //public List<string> Files { get; set; }
         //public string FilesBlobbed { get; set; }
+
+        public TableCopy Model { get { return this; } }
     }
 
     public enum ContentType

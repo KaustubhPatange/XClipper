@@ -16,8 +16,8 @@
         ResizeMode="NoResize" ShowInTaskbar="False"
         Title="ClipWindow"
         Icon="pack://application:,,,/Resources/clipboard.png"
-        PreviewKeyDown="Window_PreviewKeyDown"
-        Closed="Window_Closed"
+        PreviewKeyDown="Window_PreviewKeyDown" 
+        Closed="Window_Closed" MouseMove="Window_MouseEnter"
         Height="450"  Width="285" IsVisibleChanged="Window_IsVisibleChanged" KeyDown="Window_KeyDown"   >
     <Window.Resources>
         <ResourceDictionary>
@@ -28,10 +28,10 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <Style TargetType="{x:Type local:ClipWindow}">
-                <Setter Property="Background" Value="#2D2D30"/>
+                <Setter Property="Background" Value="{StaticResource BackgroundBrush}"/>
             </Style>
             <Style TargetType="materialDesign:Card">
-                <Setter Property="Background" Value="#3F3F46"/>
+                <Setter Property="Background" Value="{StaticResource ForegroundBrush}"/>
             </Style>
             <Style x:Key="BigTextBlock" TargetType="TextBlock">
                 <Setter Property="Foreground" Value="White"/>
@@ -41,31 +41,56 @@
                 <Setter Property="TextTrimming" Value="WordEllipsis"/>
             </Style>
             <Style x:Key="SmallTextBlock" TargetType="TextBlock">
-                <Setter Property="Foreground" Value="#A8AAAD"/>
+                <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
             </Style>
             <Style TargetType="materialDesign:Ripple" BasedOn="{StaticResource {x:Type materialDesign:Ripple}}">
                 <Setter Property="materialDesign:RippleAssist.Feedback" Value="{DynamicResource RippleColor}" />
             </Style>
+            
             <SolidColorBrush x:Key="RippleColor" Color="WhiteSmoke"/>
+
+            <Style x:Key="{x:Type MenuItem}" TargetType="{x:Type MenuItem}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type MenuItem}">
+                            <Border x:Name="Border">
+                                <StackPanel x:Name="Panel" MinWidth="130" Margin="10 5 10 5" Orientation="Vertical">
+                                    <TextBlock Foreground="Wheat" FontSize="13.5" Text="{TemplateBinding local:MenuItemProperties.Title}"/>
+                                    <TextBlock Foreground="{StaticResource ItemShortcutTextBrush}" Margin="0 3 0 0" FontSize="10" Text="{TemplateBinding local:MenuItemProperties.Shortcut}"/>
+                                </StackPanel>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Border" Property="Background" Value="{StaticResource ForegroundBrush}" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <!--<Style x:Key="{x:Type Separator}" TargetType="{x:Type Separator}">
+                <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"/>
+                <Setter Property="Margin" Value="0,2,0,2"/>
+                <Setter Property="Focusable" Value="false"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Separator}">
+                            <Border 
+                    BorderBrush="{TemplateBinding BorderBrush}" 
+                    BorderThickness="{TemplateBinding BorderThickness}" 
+                    Background="{TemplateBinding Background}" 
+                    Height="1" 
+                    SnapsToDevicePixels="true"/>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>-->
+
         </ResourceDictionary>
+        
     </Window.Resources>
-    <Grid  >
-        <!--<StackPanel Margin="10" Orientation="Horizontal">
-            <TextBlock Background="Purple" Foreground="Wheat" TextAlignment="Center" FontSize="7" Padding="2 3 2 0" Text="1" Margin="0 0 7 0"/>
-           
-        <StackPanel Orientation="Vertical">
-                <Grid >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="auto"/>
-                    </Grid.ColumnDefinitions>
-                    <Button FontSize="11"  Padding="5, 1, 5, 1" Grid.Column="1" Height="17" x:Name="_btnContentType" Content="Text" FontStyle="Italic"/>
-                    <TextBlock Grid.Column="0" Style="{StaticResource BigTextBlock}" x:Name="_tbTitle" Text="This is a text"/>
-                </Grid>
-                <TextBlock Style="{StaticResource SmallTextBlock}" Width="230" MaxHeight="38" TextWrapping="Wrap" Margin="0 5 0 0" FontSize="11" x:Name="_tbText" Text="This is a small Te"/>
-            </StackPanel>
-        </StackPanel>-->
-       
+    
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="35"/>
             <RowDefinition Height="*"/>
@@ -75,11 +100,13 @@
             <Button Click="CloseButtonClick" BorderThickness="0" Background="Transparent" Padding="7 3 7 3" DockPanel.Dock="Right">
                 <materialDesign:PackIcon  Foreground="WhiteSmoke" Kind="Close"/>
             </Button>
-            <TextBox TextChanged="SearchTextChanged" Margin="10,5,10,2" Foreground="Wheat" materialDesign:HintAssist.HintOpacity="0.4" DockPanel.Dock="Left" materialDesign:HintAssist.Hint="Search (Ctrl + Q)" x:Name="_tbSearchBox" KeyUp="Window_KeyDown"/>
+            <TextBox TextChanged="SearchTextChanged" Margin="10,5,10,2" 
+                     Foreground="Wheat" materialDesign:HintAssist.HintOpacity="0.4" 
+                     DockPanel.Dock="Left" materialDesign:HintAssist.Hint="Search (Ctrl + Q)" 
+                     x:Name="_tbSearchBox" KeyUp="Window_KeyDown"/>
         </DockPanel>
-        <ListView Margin="0 0 0 5" ScrollViewer.CanContentScroll="False" Grid.Row="1" x:Name="_lvClip"
+        <ListView  Margin="0 0 0 5" ScrollViewer.CanContentScroll="False" Grid.Row="1" x:Name="_lvClip"
                   ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                 
                   SelectionChanged="_lvClip_SelectionChanged" >
             <ListView.ItemContainerStyle>
                 <Style TargetType="{x:Type ListViewItem}">
@@ -112,9 +139,20 @@
                                 </EventTrigger.Actions>
                             </EventTrigger>
                         </materialDesign:Card.Triggers>
+                        <materialDesign:Card.ContextMenu>
 
+                            <ContextMenu Tag="{Binding Model}" Background="{StaticResource BackgroundBrush}">
+
+                                <MenuItem local:MenuItemProperties.Title="Quick Info" 
+                                          local:MenuItemProperties.Shortcut="Ctrl + Tab" />
+                                <MenuItem local:MenuItemProperties.Title="Delete Entry" 
+                                          local:MenuItemProperties.Shortcut="Delete" />
+                                <Separator/>
+
+                            </ContextMenu>
+                        </materialDesign:Card.ContextMenu>
                         <StackPanel x:Name="Item_StackPanel" Orientation="Horizontal">
-                            <TextBlock Margin="0 0 0 1" Background="#673AB7" 
+                            <TextBlock Margin="0 0 0 1" Background="{StaticResource AccentBrush}" 
                                        Foreground="White" 
                                        VerticalAlignment="Stretch"
                                        TextAlignment="Center"
@@ -132,13 +170,15 @@
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <Button FontSize="11"  Padding="5, 1, 5, 1" Grid.Column="1" Height="17" x:Name="_btnContentType" Content="{Binding ContentType}" FontStyle="Italic"/>
+                                    <Button FontSize="11"  Padding="5, 1, 5, 1" Grid.Column="1" Height="17"
+                                            x:Name="_btnContentType" Content="{Binding ContentType}" 
+                                            FontStyle="Italic"/>
                                     <TextBlock Grid.Column="0" Style="{StaticResource BigTextBlock}" 
                                                x:Name="_tbTitle" 
                                                Text="{Binding Text}"/>
                                 </Grid>
                                 <TextBlock Style="{StaticResource SmallTextBlock}"
-                                           MaxWidth="230" MaxHeight="40" 
+                                           MaxWidth="230" MaxHeight="27" 
                                            TextWrapping="Wrap" Margin="0 5 0 0" 
                                            FontSize="11" x:Name="_tbText"
                                            Text="{Binding LongText}"/>

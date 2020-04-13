@@ -93,10 +93,15 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Data\Extensions\CommonExtensions.cs" />
+    <Compile Include="Data\Extensions\ScrollViewerExtensions.cs" />
+    <Compile Include="Data\Extensions\TypeSpecific\LoopExtensions.cs" />
+    <Compile Include="Data\Extensions\TypeSpecific\ValueConversionExtensions.cs" />
     <Compile Include="Data\helpers\ExplorerHelper.cs" />
     <Compile Include="Data\helpers\FolderSelectDialog.cs" />
     <Compile Include="Data\helpers\ShellWindows.cs" />
-    <Compile Include="Data\helpers\VisibilityExtensions.cs" />
+    <Compile Include="Data\Extensions\VisibilityExtensions.cs" />
+    <Compile Include="Data\unlocalized\MenuItemProperties.cs" />
     <Compile Include="Data\unlocalized\MessageType.cs" />
     <Compile Include="MaterialMessage.xaml.cs">
       <DependentUpon>MaterialMessage.xaml</DependentUpon>

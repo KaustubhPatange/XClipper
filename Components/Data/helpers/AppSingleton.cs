@@ -50,7 +50,6 @@ namespace Components.viewModels
         }
         public void UpdateData(TableCopy model)
         {
-         //   dataDB.Update(model);
             dataDB.Execute("update TableCopy set Text = ?, LongText = ?, RawText = ? where Id = ?", model.Text, model.LongText, model.RawText, model.Id);
             binder.OnPopupTextEdited(ClipData);
         }

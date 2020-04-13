@@ -12,7 +12,7 @@
         AllowsTransparency="True"
         WindowStartupLocation="CenterOwner"
         ShowInTaskbar="False"
-        Title="MaterialMsgBox" Height="120" Width="285">
+        Title="MaterialMsgBox" Height="120" Width="275">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -26,7 +26,7 @@
             </Style>
         </ResourceDictionary>
     </Window.Resources>
-    <Border Background="#3F3F46" CornerRadius="7">
+    <Border Background="{StaticResource ForegroundBrush}" CornerRadius="7">
         <Grid Margin="10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
@@ -38,7 +38,9 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Button x:Name="_btn_Cancel_Clicked"  BorderBrush="#2D2D30" Background="#2D2D30" Margin="0 0 5 0" Grid.Column="0" Height="25" FontSize="11" Content="CANCEL" />
+                <Button x:Name="_btn_Cancel_Clicked"  
+                        BorderBrush="{StaticResource BackgroundBrush}" 
+                        Background="{StaticResource BackgroundBrush}" Margin="0 0 5 0" Grid.Column="0" Height="25" FontSize="11" Content="CANCEL" />
                 <Button x:Name="_btn_OK_Clicked" Margin="5 0 0 0" Grid.Column="1" Height="25" FontSize="11" Content="OK" />
             </Grid>
         </Grid>

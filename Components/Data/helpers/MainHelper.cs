@@ -13,53 +13,28 @@ namespace Components
 {
     public static class MainHelper
     {
-        public static string AppBackground = "#2D2D30";
+        /** Return the DependencyObject if it is a ScrollViewer */
+        public static DependencyObject GetScrollViewer(DependencyObject o)
+        {
+            if (o is ScrollViewer)
+            { return o; }
 
-        /// <summary>
-        /// Extension method to return an enum value of type T for the given string.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public static T ToEnum<T>(this string value)
-        {
-            return (T)Enum.Parse(typeof(T), value, true);
-        }
-        public static SolidColorBrush GetColor(this string hexColor)
-        {
-            return (SolidColorBrush)(new BrushConverter().ConvertFrom(hexColor));
-        }
-        public static int ToInt(this string s) => Convert.ToInt32(s);
-        public enum ClipContentType
-        {
-            Text, Image, Files
-
-        }
-        public static bool IsOpened(this Window window)
-        {
-            return Application.Current.Windows.Cast<Window>().Any(x => x.GetHashCode() == window.GetHashCode());
-        }
-        public static T GetFrameworkElementByName<T>(FrameworkElement referenceElement) where T : FrameworkElement
-        {
-            FrameworkElement child = null;
-            for (Int32 i = 0; i < VisualTreeHelper.GetChildrenCount(referenceElement); i++)
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(o); i++)
             {
-                child = VisualTreeHelper.GetChild(referenceElement, i) as FrameworkElement;
-                if (child != null && child.GetType() == typeof(T))
-                { break; }
-                else if (child != null)
+                var child = VisualTreeHelper.GetChild(o, i);
+
+                var result = GetScrollViewer(child);
+                if (result == null)
                 {
-                    child = GetFrameworkElementByName<T>(child);
-                    if (child != null && child.GetType() == typeof(T))
-                    {
-                        break;
-                    }
+                    continue;
+                }
+                else
+                {
+                    return result;
                 }
             }
-            return child as T;
+            return null;
         }
-
-        public static string[] ToLines(this string text) => Regex.Split(text, "\r\n|\r|\n");
         public static bool isCtrlPressed() => (Keyboard.IsKeyDown(Key.RightCtrl) || Keyboard.IsKeyDown(Key.LeftCtrl));
         public static bool isShitPressed() => (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift));
 

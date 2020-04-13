@@ -15,6 +15,7 @@ using static Components.MainHelper;
 
 namespace Components
 {
+    /** Same reason as ClipWindow class, can't use View Model here */
     public partial class PopupWindow : Window
     {
         #region Variable Definitions
@@ -34,17 +35,43 @@ namespace Components
             var screen = SystemParameters.WorkArea;
             this.Left = screen.Right - 285 - this.Width - 20;
             this.Top = screen.Bottom - 450 - 10;
+
         }
 
         #endregion
 
 
         #region UI Events
+
+        #region Unlocalised
         private void Window_Deactivated(object sender, EventArgs e)
         {
             //   Hide();
         }
 
+        private void EditButton_Clicked(object sender, RoutedEventArgs e)
+        {
+            ToggleEditMode(false);
+        }
+
+        private void ScrollViewer_Loaded(object sender, RoutedEventArgs e)
+        {
+            var color = Application.Current.Resources["BackgroundBrush"] as SolidColorBrush;
+            ((Rectangle)_scrollViewer.Template.FindName("Corner", _scrollViewer)).Fill = color;
+        }
+
+        private void PreviewButton_Clicked(object sender, RoutedEventArgs e)
+        {
+            Process.Start(model.ImagePath);
+        }
+        private void CloseButton_Clicked(object sender, RoutedEventArgs e)
+        {
+            CloseWindow();
+        }
+
+        #endregion
+
+        #region Key Binds
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
             Debug.WriteLine("Popup Key Press: " + e.Key.ToString());
@@ -52,6 +79,11 @@ namespace Components
             {
                 CloseWindow();
             }
+
+            /** By using debug console I found out that Pressing Space on main Window transfer keydown event
+             *  to this window. Hence we also get same Space key press fired up here as well. 
+             */
+            if (e.Key == Key.Space) _tbFocusText.Hide();
 
             // This key bind will open the image in default image view application
             if ((e.Key == Key.Return || e.Key == Key.Enter) && model.ContentType == ContentType.Image)
@@ -71,24 +103,7 @@ namespace Components
                 ToggleEditMode(true);
         }
 
-        private void EditButton_Clicked(object sender, RoutedEventArgs e)
-        {
-            ToggleEditMode(false);
-        }
-
-        private void ScrollViewer_Loaded(object sender, RoutedEventArgs e)
-        {
-            ((Rectangle)_scrollViewer.Template.FindName("Corner", _scrollViewer)).Fill = "#2D2D30".GetColor();
-        }
-
-        private void PreviewButton_Clicked(object sender, RoutedEventArgs e)
-        {
-            Process.Start(model.ImagePath);
-        }
-        private void CloseButton_Clicked(object sender, RoutedEventArgs e)
-        {
-            CloseWindow();
-        }
+        #endregion
 
         #endregion
 
@@ -124,6 +139,7 @@ namespace Components
                     break;
             }
             _tbDateTime.Text = model.DateTime;
+            _tbFocusText.Visible();
         }
 
         private void CommonTextFiles()
@@ -221,9 +237,15 @@ namespace Components
             }
             _popUpMenu.IsOpen = true;
             if (error)
-                _popUpPanel.Background = "#8E1400".GetColor();
+            {
+                var color = Application.Current.Resources["ErrorBrush"] as SolidColorBrush;
+                _popUpPanel.Background = color;
+            }
             else
-                _popUpPanel.Background = "#3F3F46".GetColor();
+            {
+                var color = Application.Current.Resources["ForegroundBrush"] as SolidColorBrush;
+                _popUpPanel.Background = color;
+            }
             _popUpText.Text = message;
             popUpTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
             popUpTimer.Start();
@@ -245,6 +267,5 @@ namespace Components
 
         #endregion
 
-        
     }
 }

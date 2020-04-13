@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Components"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Background="#2D2D30"
+        Background="{StaticResource BackgroundBrush}"
         ResizeMode="NoResize"
         WindowStyle="None" ShowInTaskbar="False"
         WindowStartupLocation="Manual"
@@ -38,7 +38,7 @@
         <!-- ScrollBars -->
         <Style x:Key="{x:Type ScrollBar}" TargetType="{x:Type ScrollBar}">
             <Setter Property="Stylus.IsFlicksEnabled" Value="false" />
-            <Setter Property="Foreground" Value="#3F3F46" />
+            <Setter Property="Foreground" Value="{StaticResource ForegroundBrush}" />
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="Width" Value="8" />
             <Setter Property="Template">
@@ -130,17 +130,13 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsKeyboardFocused" Value="true">
-                                <Setter TargetName="Border" Property="BorderBrush" Value="#3F3F46" />
+                                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource ForegroundBrush}" />
                             </Trigger>
                             <Trigger Property="IsMouseOver" Value="true">
-                                <Setter TargetName="Border" Property="Background" Value="#3F3F46" />
+                                <Setter TargetName="Border" Property="Background" Value="{StaticResource ForegroundBrush}" />
                             </Trigger>
-                            <!--<Trigger Property="IsPressed" Value="true">
-                                    <Setter TargetName="Border" Property="Background" Value="#3F3F46" />
-                                    <Setter TargetName="Border" Property="BorderBrush" Value="#3F3F46" />
-                                </Trigger>-->
                             <Trigger Property="IsChecked" Value="true">
-                                <Setter TargetName="Border" Property="Background" Value="#3F3F46"/>
+                                <Setter TargetName="Border" Property="Background" Value="{StaticResource ForegroundBrush}"/>
                             </Trigger>
 
                         </ControlTemplate.Triggers>
@@ -158,14 +154,14 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsKeyboardFocused" Value="true">
-                                <Setter TargetName="Border" Property="BorderBrush" Value="#3F3F46" />
+                                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource ForegroundBrush}" />
                             </Trigger>
                             <Trigger Property="IsMouseOver" Value="true">
-                                <Setter TargetName="Border" Property="Background" Value="#3F3F46" />
+                                <Setter TargetName="Border" Property="Background" Value="{StaticResource ForegroundBrush}" />
                             </Trigger>
                             <Trigger Property="IsPressed" Value="true">
-                                <Setter TargetName="Border" Property="Background" Value="#3F3F46" />
-                                <Setter TargetName="Border" Property="BorderBrush" Value="#3F3F46" />
+                                <Setter TargetName="Border" Property="Background" Value="{StaticResource ForegroundBrush}" />
+                                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource ForegroundBrush}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -185,11 +181,10 @@
                VerticalOffset="10"
                PlacementTarget="{Binding ElementName=_grid}"
                AllowsTransparency="True">
-            <WrapPanel x:Name="_popUpPanel" Background="#3F3F46">
+            <WrapPanel x:Name="_popUpPanel" Background="{StaticResource ForegroundBrush}">
                 <TextBlock FontSize="11" Foreground="WhiteSmoke" Padding="7" x:Name="_popUpText"
                             TextAlignment="Center" 
                            Text="The data has been updated"/>
-                <!--<Button Margin="5" Content="Undo"/>-->
             </WrapPanel>
         </Popup>
 
@@ -199,20 +194,21 @@
                       x:Name="_scrollViewer"
                       MaxHeight="350" Margin="5" Grid.Row="0">
             <StackPanel>
-                <TextBox Visibility="Collapsed" Margin="3" AcceptsReturn="True" CaretBrush="WhiteSmoke" IsReadOnly="True" BorderThickness="0" Background="Transparent" x:Name="_tbText" Foreground="#DCDCAA" Padding="2"/>
+                <TextBox Visibility="Collapsed" Margin="3" AcceptsReturn="True" 
+                         CaretBrush="WhiteSmoke" IsReadOnly="True" BorderThickness="0" 
+                         Background="Transparent" x:Name="_tbText" Foreground="{StaticResource PopupTextTextBrush}" Padding="2"/>
+                
                 <Image x:Name="_imgView" 
-                       
                        Visibility="Collapsed"
                        MaxHeight="300" 
                        Margin="5" 
                        MaxWidth="550" >
-                    
                 </Image>
             </StackPanel>
 
         </ScrollViewer>
         <StackPanel Margin="5" Grid.Row="1">
-            <Border BorderBrush="#3F3F46" BorderThickness="0.5"  />
+            <Border BorderBrush="{StaticResource ForegroundBrush}" BorderThickness="0.5"  />
             <DockPanel Margin="0 5 0 0">
                 <TextBlock DockPanel.Dock="Left" FontSize="11"  Margin="5 0 0 0" Foreground="Gray" FontStyle="Italic" Text="Added: "/>
                 <TextBlock  DockPanel.Dock="Left" x:Name="_tbDateTime" FontSize="11" Foreground="Gray" FontStyle="Italic" Text="{Binding DateTime}"/>
@@ -235,6 +231,7 @@
                               HorizontalAlignment="Right">
                     <materialDesign:PackIcon HorizontalAlignment="Right" Foreground="WhiteSmoke" Kind="Image" Padding="8 4 8 4" />
                 </Button>
+                <TextBlock x:Name="_tbFocusText" FontSize="10" VerticalAlignment="Center" Foreground="Turquoise" HorizontalAlignment="Center" Text="...Press (Space) to Focus..."/>
             </DockPanel>
         </StackPanel>
     </Grid>
