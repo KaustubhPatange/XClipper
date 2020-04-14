@@ -1,13 +1,7 @@
 ﻿using SQLite;
 using SQLiteNetExtensions.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 namespace ClipboardManager.models
 {
-
     public class TableCopy
     {
         [PrimaryKey, AutoIncrement]
@@ -28,11 +22,10 @@ namespace ClipboardManager.models
         public string ImagePath { get; set; }
         // This will store the unformatted text.
         public string RawText { get; set; }
-        // This will store the file list (only specific to file type)
-        //[TextBlob(nameof(FilesBlobbed))]
-        //public List<string> Files { get; set; }
-        //public string FilesBlobbed { get; set; }
+        // This will tell if the given item is pinned or not.
+        public bool IsPinned { get; set; } = false;
 
+        // This will return this model for binding purpose.
         public TableCopy Model { get { return this; } }
     }
 

@@ -12,5 +12,7 @@ namespace Components.viewModels
         void OnPopupTextEdited(List<TableCopy> models);
 
         void OnModelDeleted(List<TableCopy> models);
+
+        void OnFilterTextEdit(string Text);
     }
 }

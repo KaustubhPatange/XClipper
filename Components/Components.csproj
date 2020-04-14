@@ -93,6 +93,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Data\Converters\BackgroundConverter.cs" />
+    <Compile Include="Data\Converters\ForegroundConverter.cs" />
+    <Compile Include="Data\Converters\IndexConverter.cs" />
     <Compile Include="Data\Extensions\CommonExtensions.cs" />
     <Compile Include="Data\Extensions\ScrollViewerExtensions.cs" />
     <Compile Include="Data\Extensions\TypeSpecific\LoopExtensions.cs" />
@@ -101,11 +104,18 @@
     <Compile Include="Data\helpers\FolderSelectDialog.cs" />
     <Compile Include="Data\helpers\ShellWindows.cs" />
     <Compile Include="Data\Extensions\VisibilityExtensions.cs" />
+    <Compile Include="Data\unlocalized\Constants.cs" />
+    <Compile Include="Data\unlocalized\CustomListView.cs" />
     <Compile Include="Data\unlocalized\MenuItemProperties.cs" />
     <Compile Include="Data\unlocalized\MessageType.cs" />
+    <Compile Include="Data\unlocalized\LockToggleButton.cs" />
+    <Compile Include="FilterWindow.xaml.cs">
+      <DependentUpon>FilterWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MaterialMessage.xaml.cs">
       <DependentUpon>MaterialMessage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="models\FilterModel.cs" />
     <Compile Include="PopupWindow.xaml.cs">
       <DependentUpon>PopupWindow.xaml</DependentUpon>
     </Compile>
@@ -149,11 +159,31 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="FilterWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MaterialMessage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PopupWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Styles\Buttons.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Styles\Colors.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Styles\MenuItems.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Styles\ScrollViewers.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

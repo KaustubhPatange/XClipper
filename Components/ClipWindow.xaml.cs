@@ -11,19 +11,22 @@ using System.Windows.Controls;
 using System.Linq;
 using System.Text;
 using static Components.MainHelper;
+using static Components.Constants;
 using static Components.CommonExtensions;
 using MaterialDesignThemes.Wpf;
-using System.Collections.Specialized;
 using System.IO;
 using Microsoft.Win32;
 using Microsoft.VisualBasic.FileIO;
-using System.Windows.Media;
 
 namespace Components
 {
     /** I can't use viewModel in this window! When I started coding this project I did static
      *  data binding and this view class which completely broke the ViewModel and with this
-     *  code migrating to View Model will be pain in the ass. */
+     *  code migrating to View Model will be pain in the ass.
+     *  
+     *  Their is also another issue, since this app is solely based on key press events. Doing
+     *  this using View Model would increase lots of complexity. As for eg: I can't bind
+     *  Ctrl + Q as Key only accepts single value. */
     public partial class ClipWindow : Window, ClipBinder
     {
 
@@ -31,6 +34,7 @@ namespace Components
 
         private PopupWindow _popupWindow;
         private MaterialMessage _materialMsgBox;
+        private FilterWindow _filterWindow;
         private int lvIndex = -1;
         private bool isMouseKeyDown;
 
@@ -39,24 +43,17 @@ namespace Components
 
         #region Constructor
 
-        /// <summary>
-        /// The main constructor of the window
-        /// </summary>
         public ClipWindow()
         {
             InitializeComponent();
 
-            AppSingleton.GetInstance.setBinder(this);
+            AppSingleton.GetInstance.SetBinder(this);
             _popupWindow = new PopupWindow();
+            _filterWindow = new FilterWindow();
 
             var screen = SystemParameters.WorkArea;
             this.Left = screen.Right - this.Width - 10;
             this.Top = screen.Bottom - this.Height - 10;
-
-            /** Could've used viewModel instead to bind the data, but for some
-             *  cases it becomes much complex, so I am going with simpler approach. */
-
-            ((INotifyCollectionChanged)_lvClip.Items).CollectionChanged += ListView_CollectionChanged;
 
             /** Since when scrolling in listview and moving mouse outside the scope
               * changes the mouse enter event which eventually hides scrollbar.
@@ -75,21 +72,6 @@ namespace Components
         #region UI Events
 
         #region Unlocalised
-
-        /** A notifier which will observe listview collection change */
-        private async void ListView_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            await Task.Delay(300);
-            var size = _lvClip.Items.Count;
-            if (size >= 10) size = 10;
-            for (int i = 0; i < size; i++)
-            {
-                if (i == 9)
-                    FindCardIdTextBlockItem(i).Text = 0.ToString();
-                else
-                    FindCardIdTextBlockItem(i).Text = (i + 1).ToString();
-            }
-        }
 
         /** Whenever mouse is placed on certain position on window, we will manipulate
          *  ScollViewer on listview. */
@@ -119,11 +101,56 @@ namespace Components
         {
             if (!string.IsNullOrWhiteSpace(_tbSearchBox.Text))
             {
-                _lvClip.ItemsSource = AppSingleton.GetInstance.FilterData(_tbSearchBox.Text);
+                switch(_tbSearchBox.Text)
+                {
+                    case CONTENT_FILTER_TEXT:
+                        _lvClip.ItemsSource = AppSingleton.GetInstance.FilterContentType(ContentType.Text);
+                        break;
+                    case CONTENT_FILTER_IMAGE:
+                        _lvClip.ItemsSource = AppSingleton.GetInstance.FilterContentType(ContentType.Image);
+                        break;
+                    case CONTENT_FILTER_FILES:
+                        _lvClip.ItemsSource = AppSingleton.GetInstance.FilterContentType(ContentType.Files);
+                        break;
+                    case CONTENT_FILTER_PINNED:
+                        _lvClip.ItemsSource = AppSingleton.GetInstance.FilterPinned();
+                        break;
+                    case CONTENT_FILTER_NON_PINNED:
+                        _lvClip.ItemsSource = AppSingleton.GetInstance.FilterUnpinned();
+                        break;
+                    case CONTENT_FILTER_OLDEST_FIRST:
+                        _lvClip.ItemsSource = AppSingleton.GetInstance.FilterOldest();
+                        break;
+                    case CONTENT_FILTER_TEXTLENGTH_DESC:
+                        _lvClip.ItemsSource = AppSingleton.GetInstance.FilterTextLengthDesc();
+                        break;
+                    case CONTENT_FILTER_TEXTLENGTH_ASC:
+                        _lvClip.ItemsSource = AppSingleton.GetInstance.FilterTextLengthAsc();
+                        break;
+                    default:
+                        _lvClip.ItemsSource = AppSingleton.GetInstance.FilterData(_tbSearchBox.Text);
+                        break;
+                }
             }
             else _lvClip.ItemsSource = AppSingleton.GetInstance.ClipData;
         }
-
+        private void ContentTypeButton_Clicked(object sender, RoutedEventArgs e)
+        {
+            var button = (Button)sender;
+            var type = button.Content.ToString().ToEnum<ContentType>();
+            switch(type)
+            {
+                case ContentType.Text:
+                    _tbSearchBox.Text = CONTENT_FILTER_TEXT;
+                    break;
+                case ContentType.Image:
+                    _tbSearchBox.Text = CONTENT_FILTER_IMAGE;
+                    break;
+                case ContentType.Files:
+                    _tbSearchBox.Text = CONTENT_FILTER_FILES;
+                    break;
+            }
+        }
         private void ListViewItemDoubleClicked(object sender, MouseButtonEventArgs e)
         {
             ForegroundMainOperations();
@@ -197,6 +224,10 @@ namespace Components
                 {
                     _popupWindow.Hide();
                 }
+                else if (_filterWindow.IsVisible)
+                {
+                    _filterWindow.Hide();
+                }
                 else
                     Close();
             }
@@ -221,16 +252,19 @@ namespace Components
             // This key bind will delete the selected items.
             if (e.Key == Key.Delete)
             {
-                MaterialMsgBox
-                    .SetMessage("Are you sure? This can't be undone")
-                    .SetType(MessageType.OKCancel)
-                    .SetOwner(this)
-                    .SetOnCancelClickListener(null)
-                    .SetOnOKClickListener(() =>
-                    {
-                        AppSingleton.GetInstance.DeleteData((from TableCopy s in _lvClip.SelectedItems select s).ToList());
-                    })
-                    .ShowDialog();
+                DeleteItemFunc();
+            }
+
+            // This key bind will toggle pin to the selected item.
+            if (e.Key == Key.P && isCtrlPressed())
+            {
+                TogglePinFunc();
+            }
+
+            // This key bind will show filter box
+            if (e.Key == Key.F && isCtrlPressed())
+            {
+                ShowFilterWindow();
             }
 
             // This key bind will handle Ctrl + Number key shortcut.
@@ -270,7 +304,60 @@ namespace Components
         #endregion
 
 
+        #region ClipBinder Implementations
+
+        /** This callback will change the text of Search TextBox*/
+        public void OnFilterTextEdit(string Text)
+        {
+            _tbSearchBox.Text = Text;
+        }
+
+        /** This callback will handle event when data is deleted. */
+        public void OnModelDeleted(List<TableCopy> models)
+        {
+            _lvClip.ItemsSource = models;
+            _lvClip.SelectedIndex = 0;
+            _lvClip.Focus();
+        }
+
+        /** This callback will handle event when data is edited from PopUpWindow. */
+        public void OnPopupTextEdited(List<TableCopy> models)
+        {
+            int index = _lvClip.SelectedIndex;
+            _lvClip.ItemsSource = models;
+            _lvClip.SelectedIndex = index;
+            _popupWindow.Show();
+            _popupWindow.Focus();
+        }
+
+        #endregion
+
+
         #region UI Handling Functions
+
+        /** This will handle Toggle pin operation */
+
+        private void TogglePinFunc()
+        {
+            if (_lvClip.SelectedIndex == -1) return;
+            AppSingleton.GetInstance.TogglePin(_lvClip.SelectedItem as TableCopy);
+        }
+
+        /** This will handle Delete operation */
+        private void DeleteItemFunc()
+        {
+            if (_lvClip.SelectedItems.Count <= 0) return;
+            MaterialMsgBox
+                  .SetMessage("Are you sure? This can't be undone")
+                  .SetType(MessageType.OKCancel)
+                  .SetOwner(this)
+                  .SetOnCancelClickListener(null)
+                  .SetOnOKClickListener(() =>
+                  {
+                      AppSingleton.GetInstance.DeleteData((from TableCopy s in _lvClip.SelectedItems select s).ToList());
+                  })
+                  .ShowDialog();
+        }
 
         /** This will return the Table Copy object from contextMenu */
         private TableCopy GetTableCopyFromSender(object sender) => (TableCopy)((ContextMenu)(((MenuItem)sender).Parent)).Tag;
@@ -291,24 +378,6 @@ namespace Components
                 }
             }
             return null;
-        }
-
-        /** This callback will handle event when data is deleted. */
-        public void OnModelDeleted(List<TableCopy> models)
-        {
-            _lvClip.ItemsSource = models;
-            _lvClip.SelectedIndex = 0;
-            _lvClip.Focus();
-        }
-
-        /** This callback will handle event when data is edited from PopUpWindow. */
-        public void OnPopupTextEdited(List<TableCopy> models)
-        {
-            int index = _lvClip.SelectedIndex;
-            _lvClip.ItemsSource = models;
-            _lvClip.SelectedIndex = index;
-            _popupWindow.Show();
-            _popupWindow.Focus();
         }
 
         /** This function will handle the onClick and Enter press on any item
@@ -367,9 +436,19 @@ namespace Components
             Hide();
         }
 
+        /** This will show filter window. */
+        public void ShowFilterWindow()
+        {
+            if (_lvClip.SelectedItems.Count <= 0) return;
+            _filterWindow.Show();
+            _filterWindow.SetUpWindow(_lvClip.SelectedIndex);
+        }
+
         /** This will show popup window using the TableCopy model */
         public void ShowPopupWindow(TableCopy model)
         {
+            if (_filterWindow.IsVisible)
+                _filterWindow.Hide();
             _popupWindow.SetPopUp(model);
             _popupWindow.Show();
         }
@@ -482,10 +561,24 @@ namespace Components
         private void QuickInfo_MenuItemClicked(object sender, RoutedEventArgs e)
         {
             var model = GetTableCopyFromSender(sender);
+            ShowPopupWindow(model);
+        }
+
+        private void DeleteItem_Clicked(object sender, RoutedEventArgs e)
+        {
+            DeleteItemFunc();
+        }
+
+        private void TogglePinItem_Clicked(object sender, RoutedEventArgs e)
+        {
+            TogglePinFunc();
+        }
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            ShowFilterWindow();
         }
 
         #endregion
 
-      
     }
 }

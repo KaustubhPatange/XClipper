@@ -13,163 +13,7 @@
         KeyDown="Window_KeyDown"
         Topmost="True"
         Title="PopupWindow" Deactivated="Window_Deactivated" SizeToContent="Height" MaxHeight="400" Width="600">
-    <Window.Resources>
-        
-        <!-- ScrollBar Thumb Style -->
-        <Style x:Key="ScrollThumbs" TargetType="{x:Type Thumb}">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Thumb}">
-                        <Grid x:Name="Grid">
-                            <Rectangle HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="Auto" Height="Auto" Fill="Transparent" />
-                            <Border x:Name="Rectangle1" CornerRadius="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="Auto" Height="Auto"  Background="{TemplateBinding Background}" />
-                        </Grid>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="Tag" Value="Horizontal">
-                                <Setter TargetName="Rectangle1" Property="Width" Value="Auto" />
-                                <Setter TargetName="Rectangle1" Property="Height" Value="7" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <!-- ScrollBars -->
-        <Style x:Key="{x:Type ScrollBar}" TargetType="{x:Type ScrollBar}">
-            <Setter Property="Stylus.IsFlicksEnabled" Value="false" />
-            <Setter Property="Foreground" Value="{StaticResource ForegroundBrush}" />
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="Width" Value="8" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type ScrollBar}">
-                        <Grid x:Name="GridRoot" Width="8" Background="{TemplateBinding Background}">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="0.00001*" />
-                            </Grid.RowDefinitions>
-
-                            <Track x:Name="PART_Track" Grid.Row="0" IsDirectionReversed="true" Focusable="false">
-                                <Track.Thumb>
-                                    <Thumb x:Name="Thumb" Background="{TemplateBinding Foreground}" Style="{DynamicResource ScrollThumbs}" />
-                                </Track.Thumb>
-                                <Track.IncreaseRepeatButton>
-                                    <RepeatButton x:Name="PageUp" Command="ScrollBar.PageDownCommand" Opacity="0" Focusable="false" />
-                                </Track.IncreaseRepeatButton>
-                                <Track.DecreaseRepeatButton>
-                                    <RepeatButton x:Name="PageDown" Command="ScrollBar.PageUpCommand" Opacity="0" Focusable="false" />
-                                </Track.DecreaseRepeatButton>
-                            </Track>
-                        </Grid>
-
-                        <ControlTemplate.Triggers>
-                            <Trigger SourceName="Thumb" Property="IsMouseOver" Value="true">
-                                <Setter Value="{DynamicResource ButtonSelectBrush}" TargetName="Thumb" Property="Background" />
-                            </Trigger>
-                            <Trigger SourceName="Thumb" Property="IsDragging" Value="true">
-                                <Setter Value="{DynamicResource DarkBrush}" TargetName="Thumb" Property="Background" />
-                            </Trigger>
-
-                            <Trigger Property="IsEnabled" Value="false">
-                                <Setter TargetName="Thumb" Property="Visibility" Value="Collapsed" />
-                            </Trigger>
-                            <Trigger Property="Orientation" Value="Horizontal">
-                                <Setter TargetName="GridRoot" Property="LayoutTransform">
-                                    <Setter.Value>
-                                        <RotateTransform Angle="-90" />
-                                    </Setter.Value>
-                                </Setter>
-                                <Setter TargetName="PART_Track" Property="LayoutTransform">
-                                    <Setter.Value>
-                                        <RotateTransform Angle="-90" />
-                                    </Setter.Value>
-                                </Setter>
-                                <Setter Property="Width" Value="Auto" />
-                                <Setter Property="Height" Value="8" />
-                                <Setter TargetName="Thumb" Property="Tag" Value="Horizontal" />
-                                <Setter TargetName="PageDown" Property="Command" Value="ScrollBar.PageLeftCommand" />
-                                <Setter TargetName="PageUp" Property="Command" Value="ScrollBar.PageRightCommand" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="NewButton" TargetType="Button">
-            <Setter Property="Background" Value="Red"/>
-            
-            <Style.Triggers>
-                <MultiTrigger>
-                    <MultiTrigger.Conditions>
-                        <Condition Property="IsPressed" Value="False" />
-                        <Condition Property="IsMouseOver" Value="True" />
-                    </MultiTrigger.Conditions>
-                    <Setter Property="Background" Value="Green" />
-                </MultiTrigger>
-                <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Button.Background" Value="Purple" />
-                    <Setter Property="Button.Effect">
-                        <Setter.Value>
-                            <DropShadowEffect Color="Black" Direction="320" ShadowDepth="0" BlurRadius="0" Opacity="0" />
-                        </Setter.Value>
-                    </Setter>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-
-        <Style x:Key="{x:Type ToggleButton}" TargetType="{x:Type ToggleButton}">
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Width" Value="20"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type ToggleButton}">
-                        <Border x:Name="Border" >
-                            <ContentPresenter Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center" RecognizesAccessKey="True"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsKeyboardFocused" Value="true">
-                                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource ForegroundBrush}" />
-                            </Trigger>
-                            <Trigger Property="IsMouseOver" Value="true">
-                                <Setter TargetName="Border" Property="Background" Value="{StaticResource ForegroundBrush}" />
-                            </Trigger>
-                            <Trigger Property="IsChecked" Value="true">
-                                <Setter TargetName="Border" Property="Background" Value="{StaticResource ForegroundBrush}"/>
-                            </Trigger>
-
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="{x:Type Button}" TargetType="{x:Type Button}">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="Border" >
-                            <ContentPresenter Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center" RecognizesAccessKey="True"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsKeyboardFocused" Value="true">
-                                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource ForegroundBrush}" />
-                            </Trigger>
-                            <Trigger Property="IsMouseOver" Value="true">
-                                <Setter TargetName="Border" Property="Background" Value="{StaticResource ForegroundBrush}" />
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="true">
-                                <Setter TargetName="Border" Property="Background" Value="{StaticResource ForegroundBrush}" />
-                                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource ForegroundBrush}" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-    </Window.Resources>
+   
     <Grid x:Name="_grid">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -193,6 +37,7 @@
                       Loaded="ScrollViewer_Loaded"
                       x:Name="_scrollViewer"
                       MaxHeight="350" Margin="5" Grid.Row="0">
+           
             <StackPanel>
                 <TextBox Visibility="Collapsed" Margin="3" AcceptsReturn="True" 
                          CaretBrush="WhiteSmoke" IsReadOnly="True" BorderThickness="0" 
@@ -212,23 +57,26 @@
             <DockPanel Margin="0 5 0 0">
                 <TextBlock DockPanel.Dock="Left" FontSize="11"  Margin="5 0 0 0" Foreground="Gray" FontStyle="Italic" Text="Added: "/>
                 <TextBlock  DockPanel.Dock="Left" x:Name="_tbDateTime" FontSize="11" Foreground="Gray" FontStyle="Italic" Text="{Binding DateTime}"/>
-                <Button Margin="5 0 0 0" ToolTip="Close (Escape)" DockPanel.Dock="Right" BorderThickness="0" Background="Transparent" HorizontalAlignment="Right" Click="CloseButton_Clicked">
+                <Button Style="{StaticResource ButtonStyle}" Margin="5 0 0 0" ToolTip="Close (Escape)" DockPanel.Dock="Right" BorderThickness="0" Background="Transparent" HorizontalAlignment="Right" Click="CloseButton_Clicked">
                    
                     <materialDesign:PackIcon HorizontalAlignment="Right" Foreground="WhiteSmoke" Kind="Close" Padding="8 4 8 4"/>
                 </Button>
-                <ToggleButton x:Name="_toggleEditButton"  
+                <local:LockableToggleButton x:Name="_toggleEditButton"  
+                              Style="{StaticResource ToggleButtonStyle}"
                               ToolTip="Toggle Edit Mode (Ctrl + E)" 
                               Click="EditButton_Clicked"
                               DockPanel.Dock="Right" 
+                              LockToggle="True"
                               Margin="5 0 0 0"
                               HorizontalAlignment="Right" >
                     <materialDesign:PackIcon HorizontalAlignment="Right" Foreground="WhiteSmoke" Kind="Edit" Padding="8 4 8 4"/>
-                </ToggleButton>
+                </local:LockableToggleButton>
                 <Button x:Name="_btnPreview"
-                              ToolTip="Preview (Enter)"
-                              DockPanel.Dock="Right"
-                              Click="PreviewButton_Clicked"
-                              HorizontalAlignment="Right">
+                        Style="{StaticResource ButtonStyle}"
+                        ToolTip="Preview (Enter)"
+                        DockPanel.Dock="Right"
+                        Click="PreviewButton_Clicked"
+                        HorizontalAlignment="Right">
                     <materialDesign:PackIcon HorizontalAlignment="Right" Foreground="WhiteSmoke" Kind="Image" Padding="8 4 8 4" />
                 </Button>
                 <TextBlock x:Name="_tbFocusText" FontSize="10" VerticalAlignment="Center" Foreground="Turquoise" HorizontalAlignment="Center" Text="...Press (Space) to Focus..."/>

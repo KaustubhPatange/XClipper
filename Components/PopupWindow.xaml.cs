@@ -51,7 +51,7 @@ namespace Components
 
         private void EditButton_Clicked(object sender, RoutedEventArgs e)
         {
-            ToggleEditMode(false);
+            ToggleEditMode();
         }
 
         private void ScrollViewer_Loaded(object sender, RoutedEventArgs e)
@@ -100,7 +100,7 @@ namespace Components
             if (e.Key == Key.Left)
                 _scrollViewer.ScrollToHorizontalOffset(_scrollViewer.HorizontalOffset - 30);
             if (e.Key == Key.E && isCtrlPressed())
-                ToggleEditMode(true);
+                ToggleEditMode();
         }
 
         #endregion
@@ -151,7 +151,7 @@ namespace Components
         }
 
         /** This will set TextBox editable based on the toggle button. */
-        private void ToggleEditMode(bool IsInvokeFromShortcut)
+        private void ToggleEditMode()
         {
             // Only text content is supported, otherwise return.
             if (model.ContentType == ContentType.Image)
@@ -162,12 +162,12 @@ namespace Components
             if (_toggleEditButton.IsChecked == false)
             {
                 SetEditMode();
-                if (IsInvokeFromShortcut) _toggleEditButton.IsChecked = true;
+                _toggleEditButton.IsChecked = true;
             }
             else
             {
                 SetStopEditMode();
-                if (IsInvokeFromShortcut) _toggleEditButton.IsChecked = false;
+                _toggleEditButton.IsChecked = false;
             }
         }
 
@@ -260,7 +260,7 @@ namespace Components
         private void CloseWindow()
         {
             if (_toggleEditButton.IsChecked == true)
-                ToggleEditMode(true);
+                ToggleEditMode();
             _popUpMenu.IsOpen = false;
             Hide();
         }

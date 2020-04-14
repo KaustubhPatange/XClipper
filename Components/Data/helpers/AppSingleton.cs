@@ -2,6 +2,7 @@
 using SQLite;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -11,59 +12,86 @@ namespace Components.viewModels
 {
     public sealed class AppSingleton
     {
-        private ClipBinder binder;
-        private static string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-        private string databasePath;
+        private ClipBinder Binder;
+        private static string BaseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+        private string DatabasePath;
 
         private SQLiteConnection dataDB;
-        private static AppSingleton instance = null;
+        private static AppSingleton Instance = null;
         public static AppSingleton GetInstance
         {
             get
             {
-                if (instance == null)
-                    instance = new AppSingleton();
-                return instance;
+                if (Instance == null)
+                    Instance = new AppSingleton();
+                return Instance;
             }
         }
 
         private AppSingleton()
         {}
 
-        public void setBinder(ClipBinder binder)
+        public void SetBinder(ClipBinder Binder)
         {
-            this.binder = binder;
-            databasePath = Path.Combine(baseDirectory, "data.db");
-            dataDB = new SQLiteConnection(databasePath);
+            this.Binder = Binder;
+            DatabasePath = Path.Combine(BaseDirectory, "data.db");
+            dataDB = new SQLiteConnection(DatabasePath);
         }
+
+        public void SetFilterText(string Text) => Binder.OnFilterTextEdit(Text);
+
+        #region Data Filtering
 
         public void DeleteData(TableCopy model)
         {
             dataDB.Delete(model);
-            binder.OnModelDeleted(ClipData);
+            Binder.OnModelDeleted(ClipData);
         }
-
         public void DeleteData(List<TableCopy> models)
         {
             models.ForEach((model) => { dataDB.Delete(model);});
-            binder.OnModelDeleted(ClipData);
+            Binder.OnModelDeleted(ClipData);
+        }
+        public void TogglePin(TableCopy model)
+        {
+            model.IsPinned = !model.IsPinned;
+            dataDB.Execute("update TableCopy set IsPinned = ? where Id = ?", model.IsPinned, model.Id);
+            Binder.OnModelDeleted(ClipData);
         }
         public void UpdateData(TableCopy model)
         {
             dataDB.Execute("update TableCopy set Text = ?, LongText = ?, RawText = ? where Id = ?", model.Text, model.LongText, model.RawText, model.Id);
-            binder.OnPopupTextEdited(ClipData);
+            Binder.OnPopupTextEdited(ClipData);
         }
 
-        public List<TableCopy> FilterData(string text)
+        public List<TableCopy> FilterTextLengthDesc()
         {
-            return dataDB.Table<TableCopy>().Where(s => s.Text.Contains(text)).Reverse().ToList();
+            var data = ClipData;
+            return data.OrderByDescending(x => x.RawText.Length).Where(x => x.ContentType == ContentType.Text).ToList();
         }
 
+        public List<TableCopy> FilterTextLengthAsc()
+        {
+            var data = ClipData;
+            return data.OrderBy(x=> x.RawText.Length).Where(x => x.ContentType == ContentType.Text).ToList();
+        }
+        public List<TableCopy> FilterOldest() => dataDB.Table<TableCopy>().ToList();
+        public List<TableCopy> FilterData(string text) => dataDB.Table<TableCopy>().Where(s => s.Text.ToLower().Contains(text.ToLower())).Reverse().ToList();
+        public List<TableCopy> FilterContentType(ContentType type) => dataDB.Table<TableCopy>().Where(s => s.ContentType == type).Reverse().ToList();
+        public List<TableCopy> FilterPinned() => dataDB.Table<TableCopy>().Where(s => s.IsPinned).Reverse().ToList();
+        public List<TableCopy> FilterUnpinned() => dataDB.Table<TableCopy>().Where(s => !s.IsPinned).Reverse().ToList();
+
+        #endregion
         public List<TableCopy> ClipData
         {
             get
             {
-                return dataDB.Table<TableCopy>().Reverse().ToList();
+                var pinnedItems = dataDB.Query<TableCopy>("select * from TableCopy where IsPinned = 1");
+                pinnedItems.Reverse();
+                var normalItems = dataDB.Query<TableCopy>("select * from TableCopy where IsPinned = 0");
+                normalItems.Reverse();
+                return pinnedItems.Concat(normalItems).ToList();
+             //   return dataDB.Table<TableCopy>().Reverse().ToList();
             }
         }
     
