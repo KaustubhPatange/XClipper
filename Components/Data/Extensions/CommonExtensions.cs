@@ -27,7 +27,13 @@ namespace Components
         {
             Text, Image, Files
         }
-   
+
+        public static string ToFormattedDateTime(this DateTime value)
+        {
+            //2020-04-01 225308
+            return value.ToString("yyyy-MM-dd HH-mm-ss");
+        }
+
         public static T GetFrameworkElementByName<T>(FrameworkElement referenceElement) where T : FrameworkElement
         {
             FrameworkElement child = null;

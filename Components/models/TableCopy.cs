@@ -15,9 +15,8 @@ namespace ClipboardManager.models
         public ContentType ContentType { get; set; }
         // Date and time in string when this clipboard has been added.
         public string DateTime { get; set; }
-        //// This will show the file count in the files. (Only specific to file type)
-        //public int FileCount { get; set; }
-
+        // This will store the last time this clip was used in string.
+        public string LastUsedDateTime { get; set; }
         // This will contain image path of the clipboard image file.
         public string ImagePath { get; set; }
         // This will store the unformatted text.

@@ -19,7 +19,7 @@ namespace ClipboardManager.context
             table.Text = $"Copied Files - {files.Count}";
             table.LongText = string.Join(",", files.ToArray());
             table.ContentType = ContentType.Files;
-            table.DateTime = DateTime.Now.ToFormattedDateTime();
+            table.DateTime = table.LastUsedDateTime = DateTime.Now.ToFormattedDateTime();
             return table;
         }
         public static TableCopy CreateTable(string RawData, ContentTypes type)
@@ -39,7 +39,7 @@ namespace ClipboardManager.context
                     table.ContentType = ContentType.Image;
                     break;
             }
-            table.DateTime = DateTime.Now.ToFormattedDateTime();
+            table.DateTime = table.LastUsedDateTime = DateTime.Now.ToFormattedDateTime();
             return table;
         }
     }

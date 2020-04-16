@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using static Components.Constants;
+using static Components.MainHelper;
 using System.Windows;
 using System.Windows.Input;
 using Components.viewModels;
@@ -16,9 +17,15 @@ namespace Components
         {
             InitializeComponent();
 
-            var screen = SystemParameters.WorkArea;
-            this.Left = screen.Right - 285 - this.Width - 20;
-            this.Top = screen.Bottom - 450 - 10;
+            double X = 0, Y = 0;
+
+            CalculateXY(ref X, ref Y, this);
+
+            this.Left = X;
+            this.Top = Y;
+
+            //this.Left = screen.Right - 285 - this.Width - 20;
+            //this.Top = screen.Bottom - 450 - 10;
 
             _lvFilter.MouseDoubleClick += _lvFilter_MouseDoubleClick;
 
@@ -26,6 +33,7 @@ namespace Components
             {
                 new FilterModel("Pinned", CONTENT_FILTER_PINNED),
                 new FilterModel("Non Pinned", CONTENT_FILTER_NON_PINNED),
+                new FilterModel("Newest First", CONTENT_FILTER_NEWEST_FIRST),
                 new FilterModel("Oldest First", CONTENT_FILTER_OLDEST_FIRST),
                 new FilterModel("Content Size (descending)", CONTENT_FILTER_TEXTLENGTH_DESC),
                 new FilterModel("Content Size (ascending)", CONTENT_FILTER_TEXTLENGTH_ASC),

@@ -39,6 +39,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="INIFileParser, Version=2.5.2.0, Culture=neutral, PublicKeyToken=79af7b307b65cf3c, processorArchitecture=MSIL">
+      <HintPath>..\packages\ini-parser.2.5.2\lib\net20\INIFileParser.dll</HintPath>
+    </Reference>
     <Reference Include="MaterialDesignColors, Version=1.2.3.1244, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MaterialDesignColors.1.2.3\lib\net45\MaterialDesignColors.dll</HintPath>
     </Reference>
@@ -106,6 +109,7 @@
     <Compile Include="Data\Extensions\VisibilityExtensions.cs" />
     <Compile Include="Data\unlocalized\Constants.cs" />
     <Compile Include="Data\unlocalized\CustomListView.cs" />
+    <Compile Include="Data\unlocalized\DefaultSettings.cs" />
     <Compile Include="Data\unlocalized\MenuItemProperties.cs" />
     <Compile Include="Data\unlocalized\MessageType.cs" />
     <Compile Include="Data\unlocalized\LockToggleButton.cs" />

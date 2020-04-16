@@ -6,11 +6,14 @@ using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using WK.Libraries.SharpClipboardNS;
-using static ClipboardManager.context.Extension;
+using static Components.DefaultSettings;
+using static Components.MainHelper;
+using static Components.CommonExtensions;
+using static ClipboardManager.WhatToStoreHelper;
+using static ClipboardManager.KeyboardHelpers;
 using static WK.Libraries.SharpClipboardNS.SharpClipboard;
 
 namespace ClipboardManager.context
@@ -23,7 +26,6 @@ namespace ClipboardManager.context
         private ContextMenuStrip _contextmenustrip = new ContextMenuStrip();
         private SharpClipboard _clipboardFactory = new SharpClipboard();
         private Process ClipWindowProcess;
-      //  private Components.ClipWindow _mainWindow;
         private readonly KeyMouseFactory eventHookFactory = new KeyMouseFactory(Hook.GlobalEvents());
         private readonly KeyboardWatcher keyboardWatcher;
         private List<MacroEvent> _macroEvents; private bool isFirstLaunch = true;
@@ -31,8 +33,6 @@ namespace ClipboardManager.context
         private static string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
         private string databasePath = Path.Combine(baseDirectory, "data.db");
         private SQLiteConnection dataDB;
-
-        private bool specialkeys = false, suppresskey = false;
 
         // Some settings
         private bool notify = true;
@@ -54,11 +54,7 @@ namespace ClipboardManager.context
 
             _clipboardFactory.ClipboardChanged += ClipboardChanged;
 
-            _contextmenustrip.Items.Add(NewToolStripItem("Exit", (o, e) =>
-            {
-                Application.Exit();
-            }));
-
+            SetClipboardOptions();
 
             _notifyIcon = new NotifyIcon(_components)
             {
@@ -67,6 +63,7 @@ namespace ClipboardManager.context
                 Text = "Clipper",
                 Visible = true,
             };
+            _notifyIcon.DoubleClick += (o, e) => ShowClipWindow();
 
             DisplayStatusMessage($"{_notifyIcon.Text}: Service started");
 
@@ -89,10 +86,23 @@ namespace ClipboardManager.context
             {
                 var keys = keyEvent.KeyCode;
 
-                if (keys == Keys.Oem3 && isCtrlPressed(keyEvent, keys))
-                {
-                    ShowClipWindow();
-                }
+                /** One of the wonderfull logic which came to my mind is implemented
+                 *  below. If you understand this you will say WOW WTF... */
+
+                if (IsCtrl && !isCtrlPressed(keyEvent, keys)) return;
+
+                if (IsAlt && !isAltPressed(keyEvent, keys)) return;
+
+                if (IsShift && !isShiftPressed(keyEvent, keys)) return;
+
+                if (keys != HotKey.ToEnum<Keys>()) return;
+
+                ShowClipWindow();
+
+                //if (keys == Keys.Oem3 && isCtrlPressed(keyEvent, keys))
+                //{
+                    
+                //}
             }
         }
 
@@ -124,26 +134,10 @@ namespace ClipboardManager.context
         {
             keyboardWatcher.Stop();
             eventHookFactory.Dispose();
+            if (!ClipWindowProcess.HasExited) ClipWindowProcess.Kill();
             Debug.WriteLine("Exited Thread");
         }
-
-        private bool isShiftPressed(KeyEventArgs keyEvent, Keys keys)
-        {
-            return keyEvent.Shift && keys != Keys.Shift && keys != Keys.LShiftKey &&
-                    keys != Keys.RShiftKey && keys != Keys.ShiftKey;
-        }
-
-        private bool isCtrlPressed(KeyEventArgs keyEvent, Keys keys)
-        {
-            return keyEvent.Control && keys != Keys.Control && keys != Keys.LControlKey &&
-                    keys != Keys.RControlKey && keys != Keys.ControlKey;
-        }
-
-        private bool isAltPressed(KeyEventArgs keyEvent, Keys keys)
-        {
-            return keyEvent.Alt && keys != Keys.RMenu && keys != Keys.LMenu &&
-                      keys != Keys.Alt;
-        }
+       
 
         private void ClipboardChanged(Object sender, ClipboardChangedEventArgs e)
         {
@@ -158,11 +152,12 @@ namespace ClipboardManager.context
 
             if (!toRecord)
                 return;
-            
+
+
             /* We will capture copy/cut Text, Image (eg: PrintScr) and Files
              * and save it to database.
              */
-            if (e.ContentType == ContentTypes.Text)
+            if (e.ContentType == ContentTypes.Text && ToStoreTextClips())
             {
                 Debug.WriteLine("Type: Text");
                 if (!string.IsNullOrWhiteSpace(_clipboardFactory.ClipboardText.Trim()))
@@ -172,7 +167,7 @@ namespace ClipboardManager.context
                     InsertContent(Utils.CreateTable(_clipboardFactory.ClipboardText, ContentTypes.Text));
                 }
             }
-            else if (e.ContentType == ContentTypes.Image)
+            else if (e.ContentType == ContentTypes.Image && ToStoreImageClips())
             {
                 Debug.WriteLine("Type: Image");
 
@@ -183,7 +178,7 @@ namespace ClipboardManager.context
 
                 InsertContent(Utils.CreateTable(filePath, ContentTypes.Image));
             }
-            else if (e.ContentType == ContentTypes.Files)
+            else if (e.ContentType == ContentTypes.Files && ToStoreFilesClips())
             {
                 Debug.WriteLine("Type: Files");
 
@@ -195,6 +190,11 @@ namespace ClipboardManager.context
 
         private void InsertContent(TableCopy model)
         {
+            // Implementation of setting TotalClipLength
+
+            var list = dataDB.Table<TableCopy>().OrderByDescending(s => ParseDateTimeText(s.LastUsedDateTime)).ToList();
+            if (list.Count >= TotalClipLength) list.RemoveAt(list.Count - 1);
+
             dataDB.Insert(model);
         }
 
@@ -211,6 +211,20 @@ namespace ClipboardManager.context
                     _notifyIcon.ShowBalloonTip(3000);
                 }
             });
+        }
+
+        private void SetClipboardOptions()
+        {
+            _contextmenustrip.Items.Add(NewToolStripItem("Show", (o, e) => ShowClipWindow()));
+            _contextmenustrip.Items.Add(new ToolStripSeparator());
+            _contextmenustrip.Items.Add(NewToolStripItem("Settings", (o, e) =>
+            { 
+
+            }));
+            _contextmenustrip.Items.Add(NewToolStripItem("Exit", (o, e) =>
+            {
+                Application.Exit();
+            }));
         }
 
         private ToolStripMenuItem NewToolStripItem(string Text, EventHandler handler)

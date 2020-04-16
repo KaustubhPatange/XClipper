@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
+using static Components.DefaultSettings;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Diagnostics;
 
 namespace Components
 {
@@ -34,6 +31,64 @@ namespace Components
                 }
             }
             return null;
+        }
+
+        public static long ParseDateTimeText(string text)
+        {
+            return text.Replace("-", "").Replace(" ", "").ToLong();
+        }
+        public static void CalculateXY(ref double X, ref double Y, Window window = null)
+        {
+            var screen = SystemParameters.WorkArea;
+            double mainX = Application.Current.MainWindow.Width;
+            double mainY = Application.Current.MainWindow.Height;
+            double dx = 0, dy = 0;
+            if (window != Application.Current.MainWindow)
+            {
+                switch(AppDisplayLocation)
+                {
+                    case XClipperLocation.BottomRight:
+                        dx = window.Width + 10;
+                        break;
+                    case XClipperLocation.BottomLeft:
+                        dx = mainX + 10;
+                        break;
+                    case XClipperLocation.TopRight:
+                        dx = window.Width + 10;
+                        break;
+                    case XClipperLocation.TopLeft:
+                        dx = mainX + 10;
+                        break;
+                    case XClipperLocation.Center:
+                        X = screen.Width / 2 - mainX / 2 + mainX + 10;
+                        Y = screen.Height /2 - mainY / 2;
+                        return;
+                }
+            }
+           
+            switch (AppDisplayLocation)
+            {
+                case XClipperLocation.BottomRight:
+                    X = screen.Right - mainX - dx - 10;
+                    Y = screen.Bottom - mainY - 10;
+                    break;
+                case XClipperLocation.BottomLeft:
+                    X = screen.Left + dx + 10;
+                    Y = screen.Bottom - mainY - 10;
+                    break;
+                case XClipperLocation.TopRight:
+                    X = screen.Right - mainX - dx - 10;
+                    Y = screen.Top + dy + 10;
+                    break;
+                case XClipperLocation.TopLeft:
+                    X = screen.Left + dx + 10;
+                    Y = screen.Top + 10;
+                    break;
+                case XClipperLocation.Center:
+                    X = screen.Width / 2 - window.Width / 2;
+                    Y = screen.Height / 2 - window.Height / 2;
+                    break;
+            }
         }
         public static bool isCtrlPressed() => (Keyboard.IsKeyDown(Key.RightCtrl) || Keyboard.IsKeyDown(Key.LeftCtrl));
         public static bool isShitPressed() => (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift));

@@ -32,9 +32,15 @@ namespace Components
         {
             InitializeComponent();
 
+            double X = 0, Y = 0;
+
+            CalculateXY(ref X, ref Y, this);
+
             var screen = SystemParameters.WorkArea;
-            this.Left = screen.Right - 285 - this.Width - 20;
-            this.Top = screen.Bottom - 450 - 10;
+
+            // this.Left = screen.Right - 285 - this.Width - 20;
+            this.Left = X;
+            this.Top = Y;
 
         }
 

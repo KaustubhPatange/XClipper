@@ -43,6 +43,9 @@
     <Reference Include="Gma.System.MouseKeyHook, Version=5.6.130.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MouseKeyHook.5.6.0\lib\net40\Gma.System.MouseKeyHook.dll</HintPath>
     </Reference>
+    <Reference Include="INIFileParser, Version=2.5.2.0, Culture=neutral, PublicKeyToken=79af7b307b65cf3c, processorArchitecture=MSIL">
+      <HintPath>..\packages\ini-parser.2.5.2\lib\net20\INIFileParser.dll</HintPath>
+    </Reference>
     <Reference Include="KeyMouseHook, Version=1.0.6.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\KeyMouseHook.1.0.6\lib\net40\KeyMouseHook.dll</HintPath>
     </Reference>
@@ -88,8 +91,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="context\Context.cs" />
-    <Compile Include="context\Extension.cs" />
     <Compile Include="context\Utils.cs" />
+    <Compile Include="Helpers\KeyboardHelpers.cs" />
+    <Compile Include="Helpers\WhatToStoreHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -133,9 +137,9 @@
     <Content Include="icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Components\Components.csproj">
+    <ProjectReference Include="..\Components\XClipper.Components.csproj">
       <Project>{2bfee04a-c059-4d0e-bd35-2c15b61e7a06}</Project>
-      <Name>Components</Name>
+      <Name>XClipper.Components</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

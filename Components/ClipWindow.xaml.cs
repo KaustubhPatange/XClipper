@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using static Components.MainHelper;
 using static Components.Constants;
+using static Components.DefaultSettings;
 using static Components.CommonExtensions;
 using MaterialDesignThemes.Wpf;
 using System.IO;
@@ -35,7 +36,6 @@ namespace Components
         private PopupWindow _popupWindow;
         private MaterialMessage _materialMsgBox;
         private FilterWindow _filterWindow;
-        private int lvIndex = -1;
         private bool isMouseKeyDown;
 
         #endregion
@@ -43,17 +43,25 @@ namespace Components
 
         #region Constructor
 
+        Stopwatch stops = new Stopwatch();
+
         public ClipWindow()
         {
+            stops.Start();
+
             InitializeComponent();
 
             AppSingleton.GetInstance.SetBinder(this);
             _popupWindow = new PopupWindow();
             _filterWindow = new FilterWindow();
 
-            var screen = SystemParameters.WorkArea;
-            this.Left = screen.Right - this.Width - 10;
-            this.Top = screen.Bottom - this.Height - 10;
+            
+            double X = 0, Y = 0;
+
+            CalculateXY(ref X, ref Y, this);
+
+            this.Left = X;
+            this.Top = Y;
 
             /** Since when scrolling in listview and moving mouse outside the scope
               * changes the mouse enter event which eventually hides scrollbar.
@@ -64,6 +72,14 @@ namespace Components
 
             // Focus on the search editbox at start
             _tbSearchBox.Focus();
+
+            Loaded += ClipWindow_Loaded;
+        }
+
+        private void ClipWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            stops.Stop();
+            Debug.WriteLine("Time ellapsed: " + stops.ElapsedMilliseconds);
         }
 
         #endregion
@@ -127,6 +143,9 @@ namespace Components
                     case CONTENT_FILTER_TEXTLENGTH_ASC:
                         _lvClip.ItemsSource = AppSingleton.GetInstance.FilterTextLengthAsc();
                         break;
+                    case CONTENT_FILTER_NEWEST_FIRST:
+                        _lvClip.ItemsSource = AppSingleton.GetInstance.FilterNewest();
+                        break;
                     default:
                         _lvClip.ItemsSource = AppSingleton.GetInstance.FilterData(_tbSearchBox.Text);
                         break;
@@ -163,13 +182,12 @@ namespace Components
 
         private void _lvClip_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            lvIndex = _lvClip.SelectedIndex;
-            lvIndex = _lvClip.SelectedIndex;
 
             /** We are also hiding it here since Down key is not detected
              *  when listview is in focus.
              */
             _popupWindow.Hide();
+            _filterWindow.Hide();
         }
 
         ///** We are not closing the application instead we are hiding it. So that live
@@ -380,6 +398,13 @@ namespace Components
             return null;
         }
 
+        /** This function will update the last used time of the TableCopy set. */
+        private void UpdateLastUsedTime(TableCopy model)
+        {
+            model.LastUsedDateTime = DateTime.Now.ToFormattedDateTime();
+            AppSingleton.GetInstance.UpdateLastUsedTime(model);
+        }
+
         /** This function will handle the onClick and Enter press on any item
          *  in the listView. */
         private void ForegroundMainOperations(int index = -1)
@@ -388,11 +413,14 @@ namespace Components
             if (_lvClip.SelectedItems.Count > 1 && index == -1)
             {
                 var builder = new StringBuilder();
-                foreach (TableCopy copy in _lvClip.SelectedItems)
+                foreach (TableCopy model in _lvClip.SelectedItems)
                 {
                     // if (copy.ContentType.ToEnum<ClipContentType>() == ClipContentType.Text)
-                    if (copy.ContentType == ContentType.Text)
-                        builder.Append(copy.Text).Append(Environment.NewLine);
+                    if (model.ContentType == ContentType.Text)
+                    {
+                        builder.Append(model.Text).Append(Environment.NewLine);
+                        UpdateLastUsedTime(model);
+                    }
                 }
                 UpdateTextWindow(builder.ToString());
             }
@@ -401,6 +429,7 @@ namespace Components
             {
                 if (index == -1) index = _lvClip.SelectedIndex;
                 var model = _lvClip.Items[index] as TableCopy;
+                UpdateLastUsedTime(model);
                 switch (model.ContentType)
                 {
                     case ContentType.Text: UpdateTextWindow(model.Text); break;
@@ -440,6 +469,8 @@ namespace Components
         public void ShowFilterWindow()
         {
             if (_lvClip.SelectedItems.Count <= 0) return;
+            if (_popupWindow.IsVisible)
+                _popupWindow.Hide();
             _filterWindow.Show();
             _filterWindow.SetUpWindow(_lvClip.SelectedIndex);
         }
