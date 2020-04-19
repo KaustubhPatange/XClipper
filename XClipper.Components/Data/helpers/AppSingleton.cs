@@ -5,16 +5,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using static Components.MainHelper;
+using static WK.Libraries.SharpClipboardNS.SharpClipboard;
 
 namespace Components.viewModels
 {
     public sealed class AppSingleton
     {
-        private ClipBinder Binder;
-        private static string BaseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+        private IClipBinder Binder;
         private string DatabasePath;
 
-        private SQLiteConnection dataDB;
+        public SQLiteConnection dataDB;
         private static AppSingleton Instance = null;
         public static AppSingleton GetInstance
         {
@@ -27,13 +27,18 @@ namespace Components.viewModels
         }
 
         private AppSingleton()
-        {}
+        { }
 
-        public void SetBinder(ClipBinder Binder)
+        public void Init()
         {
-            this.Binder = Binder;
-            DatabasePath = Path.Combine(BaseDirectory, "data.db");
+            DatabasePath = Path.Combine(App.BaseDirectory, "data.db");
             dataDB = new SQLiteConnection(DatabasePath);
+        }
+        public void SetBinder(IClipBinder Binder)
+        {
+            if (dataDB == null)
+                Init();
+            this.Binder = Binder;
         }
 
         public void SetFilterText(string Text) => Binder.OnFilterTextEdit(Text);
@@ -47,7 +52,7 @@ namespace Components.viewModels
         }
         public void DeleteData(List<TableCopy> models)
         {
-            models.ForEach((model) => { dataDB.Delete(model);});
+            models.ForEach((model) => { dataDB.Delete(model); });
             Binder.OnModelDeleted(ClipData);
         }
         public void TogglePin(TableCopy model)
@@ -76,7 +81,7 @@ namespace Components.viewModels
         public List<TableCopy> FilterTextLengthAsc()
         {
             var data = ClipData;
-            return data.OrderBy(x=> x.RawText.Length).Where(x => x.ContentType == ContentType.Text).ToList();
+            return data.OrderBy(x => x.RawText.Length).Where(x => x.ContentType == ContentType.Text).ToList();
         }
         public List<TableCopy> FilterOldest() => dataDB.Table<TableCopy>().ToList();
         public List<TableCopy> FilterNewest() => dataDB.Table<TableCopy>().ToList();
@@ -86,6 +91,7 @@ namespace Components.viewModels
         public List<TableCopy> FilterUnpinned() => dataDB.Table<TableCopy>().Where(s => !s.IsPinned).Reverse().ToList();
 
         #endregion
+
         public List<TableCopy> ClipData
         {
             get
@@ -101,7 +107,9 @@ namespace Components.viewModels
                 /** Instead of creating separate assembly for Components I could've * merge the library in this application itself and could've used * the below code to execute it. * However there is some problem to this approach. Since I am * Registering global keyhook events even if ShowDialog is called * it will always create a new instance of this hook thread which * is leading to a lot of memory leaks, slow key capturing, form * lagging and stuff. So this above approach is made. */
             }
         }
-    
+
+
+     
     }
-   
+
 }

@@ -16,6 +16,7 @@ using static Components.CommonExtensions;
 using static ClipboardManager.WhatToStoreHelper;
 using static ClipboardManager.KeyboardHelpers;
 using static WK.Libraries.SharpClipboardNS.SharpClipboard;
+using System.Linq;
 
 namespace ClipboardManager.context
 {
@@ -116,6 +117,8 @@ namespace ClipboardManager.context
             ClipWindowProcess.StartInfo.FileName = "XClipper.Components.exe";
             ClipWindowProcess.Start();
 
+            //ClipWindowProcess.StartInfo.CreateNoWindow = true;
+
             /** Instead of creating separate assembly for Components I could've
              *  merge the library in this application itself and could've used
              *  the below code to execute it.
@@ -193,8 +196,9 @@ namespace ClipboardManager.context
         private void InsertContent(TableCopy model)
         {
             // Implementation of setting TotalClipLength
-
-            var list = dataDB.Table<TableCopy>().OrderByDescending(s => ParseDateTimeText(s.LastUsedDateTime)).ToList();
+            var list = dataDB.Query<TableCopy>("select * from TableCopy").OrderByDescending(s => ParseDateTimeText(s.LastUsedDateTime)).ToList();
+        
+           // var list = dataDB.Table<TableCopy>().OrderByDescending(s => ParseDateTimeText(s.LastUsedDateTime)).ToList();
             if (list.Count >= TotalClipLength) list.RemoveAt(list.Count - 1);
 
             dataDB.Insert(model);

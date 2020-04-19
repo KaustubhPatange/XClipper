@@ -39,6 +39,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Gma.System.MouseKeyHook, Version=5.6.130.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MouseKeyHook.5.6.0\lib\net40\Gma.System.MouseKeyHook.dll</HintPath>
+    </Reference>
     <Reference Include="INIFileParser, Version=2.5.2.0, Culture=neutral, PublicKeyToken=79af7b307b65cf3c, processorArchitecture=MSIL">
       <HintPath>..\packages\ini-parser.2.5.2\lib\net20\INIFileParser.dll</HintPath>
     </Reference>
@@ -55,6 +58,9 @@
     <Reference Include="PropertyChanged, Version=1.52.1.0, Culture=neutral, PublicKeyToken=ee3ee20bcf148ddd, processorArchitecture=MSIL">
       <HintPath>..\packages\PropertyChanged.Fody.1.52.1\lib\netstandard10\PropertyChanged.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="SharpClipboard, Version=3.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpClipboard.3.5.0\lib\net20\SharpClipboard.dll</HintPath>
     </Reference>
     <Reference Include="SQLite-net, Version=1.6.292.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\sqlite-net-pcl.1.6.292\lib\netstandard1.1\SQLite-net.dll</HintPath>
@@ -78,6 +84,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Drawing.Design" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -109,13 +116,22 @@
     <Compile Include="Data\Converters\IndexConverter.cs" />
     <Compile Include="Data\helpers\ExplorerHelper.cs" />
     <Compile Include="Data\helpers\FolderSelectDialog.cs" />
+    <Compile Include="Data\helpers\KeyPressHelper.cs" />
+    <Compile Include="Data\helpers\MenuItemHelper.cs" />
+    <Compile Include="Data\unlocalized\ClipboardUtility.cs" />
     <Compile Include="Data\unlocalized\Constants.cs" />
     <Compile Include="Data\unlocalized\CustomListView.cs" />
+    <Compile Include="Data\unlocalized\KeyHookUtility.cs" />
     <Compile Include="Data\unlocalized\MenuItemProperties.cs" />
     <Compile Include="Data\unlocalized\LockToggleButton.cs" />
     <Compile Include="Data\unlocalized\NumericTextBox.cs" />
     <Compile Include="FilterWindow.xaml.cs">
       <DependentUpon>FilterWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Locales\app.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>app.resx</DependentUpon>
     </Compile>
     <Compile Include="MaterialMessage.xaml.cs">
       <DependentUpon>MaterialMessage.xaml</DependentUpon>
@@ -123,7 +139,6 @@
     <Compile Include="PopupWindow.xaml.cs">
       <DependentUpon>PopupWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Data\unlocalized\ClipBinder.cs" />
     <Compile Include="Data\helpers\AppSingleton.cs" />
     <Compile Include="SettingWindow.xaml.cs">
       <DependentUpon>SettingWindow.xaml</DependentUpon>
@@ -151,6 +166,10 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <EmbeddedResource Include="Locales\app.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>app.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -209,7 +228,9 @@
   <ItemGroup>
     <Resource Include="Resources\clipboard.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Resources\icon.ico" />
+  </ItemGroup>
   <ItemGroup>
     <COMReference Include="SHDocVw">
       <Guid>{EAB22AC0-30C1-11CF-A7EB-0000C05BAE0B}</Guid>

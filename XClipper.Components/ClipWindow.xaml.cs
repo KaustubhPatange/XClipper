@@ -14,6 +14,7 @@ using static Components.MainHelper;
 using static Components.Constants;
 using static Components.DefaultSettings;
 using static Components.CommonExtensions;
+using static Components.KeyPressHelper;
 using MaterialDesignThemes.Wpf;
 using System.IO;
 using Microsoft.Win32;
@@ -28,7 +29,7 @@ namespace Components
      *  Their is also another issue, since this app is solely based on key press events. Doing
      *  this using View Model would increase lots of complexity. As for eg: I can't bind
      *  Ctrl + Q as Key only accepts single value. */
-    public partial class ClipWindow : Window, ClipBinder
+    public partial class ClipWindow : Window, IClipBinder
     {
 
         #region Variablel Definition
@@ -110,7 +111,7 @@ namespace Components
             {
                 Thread.Sleep(400);
             });
-            Close();
+           CloseWindow();
         }
 
         private void SearchTextChanged(object sender, TextChangedEventArgs e)
@@ -197,11 +198,10 @@ namespace Components
         //    e.Cancel = true;
         //    Hide();
         //}
-
-        private void Window_Closed(object sender, EventArgs e)
-        {
-            Application.Current.Dispatcher.InvokeShutdown();
-        }
+        //private void Window_Closed(object sender, EventArgs e)
+        //{
+        //    Application.Current.Dispatcher.InvokeShutdown();
+        //}
 
         #endregion
 
@@ -211,8 +211,19 @@ namespace Components
             Debug.WriteLine("Pressed Key: " + e.Key.ToString());
             Debug.WriteLine("Pressed SystemKey: " + e.SystemKey.ToString());
 
+
+            // This key bind will show context menu
+            //if (e.Key == Key.Apps)
+            //{
+            //    if (_lvClip.SelectedItems.Count > 0)
+            //    {
+            //        var card = FindCardItem(_lvClip.SelectedIndex);
+            //        card.ContextMenu.
+            //    }
+            //}
+
             // This key bind will focus the SearchTextBox.
-            if (e.Key == Key.Q && isCtrlPressed())
+            if (e.Key == Key.Q && IsCtrlPressed())
             {
                 _tbSearchBox.Focus();
                 _lvClip.SelectedIndex = -1;
@@ -247,7 +258,7 @@ namespace Components
                     _filterWindow.Hide();
                 }
                 else
-                    Close();
+                   CloseWindow();
             }
             else
             {
@@ -262,7 +273,7 @@ namespace Components
             }
 
             // This key bind will show popup menu.
-            if (e.Key == Key.Tab && isCtrlPressed() && _lvClip.SelectedItems.Count > 0)
+            if (e.Key == Key.Tab && IsCtrlPressed() && _lvClip.SelectedItems.Count > 0)
             {
                 ShowPopupWindow(_lvClip.SelectedItem as TableCopy);
             }
@@ -274,19 +285,19 @@ namespace Components
             }
 
             // This key bind will toggle pin to the selected item.
-            if (e.Key == Key.P && isCtrlPressed())
+            if (e.Key == Key.P && IsCtrlPressed())
             {
                 TogglePinFunc();
             }
 
             // This key bind will show filter box
-            if (e.Key == Key.F && isCtrlPressed())
+            if (e.Key == Key.F && IsCtrlPressed())
             {
                 ShowFilterWindow();
             }
 
             // This key bind will handle Ctrl + Number key shortcut.
-            if (isNumericKeyPressed(e.Key) && isCtrlPressed())
+            if (IsNumericKeyPressed(e.Key) && IsCtrlPressed())
             {
                 var index = ParseNumericKey(e.Key);
                 if (index == 0)
@@ -316,7 +327,7 @@ namespace Components
         // *  application is out of focus. */
         //private void Window_Deactivated(object sender, EventArgs e)
         //{
-        //    // Close();
+        //    //CloseWindow();
         //}
 
         #endregion
@@ -381,7 +392,7 @@ namespace Components
         private TableCopy GetTableCopyFromSender(object sender) => (TableCopy)((ContextMenu)(((MenuItem)sender).Parent)).Tag;
 
         /** A Function which will return ListView card item. */
-        public TextBlock FindCardIdTextBlockItem(int index)
+        public Card FindCardItem(int index)
         {
             ListViewItem item = _lvClip.ItemContainerGenerator.ContainerFromIndex(index) as ListViewItem;
             if (item != null)
@@ -390,9 +401,9 @@ namespace Components
                 DataTemplate dataTemplate = _lvClip.ItemTemplate;
                 if (dataTemplate != null && templateParent != null)
                 {
-                    var panel = (dataTemplate.FindName("Item_MaterialCard", templateParent) as Card)
-                        .FindName("Item_StackPanel") as StackPanel;
-                    return panel.FindName("Item_TextBlock") as TextBlock;
+                    return (dataTemplate.FindName("Item_MaterialCard", templateParent) as Card);
+                    //    .FindName("Item_StackPanel") as StackPanel;
+                    //return panel.FindName("Item_TextBlock") as TextBlock;
                 }
             }
             return null;
@@ -460,9 +471,15 @@ namespace Components
             }
         }
 
+        public void SetupSource()
+        {
+            _lvClip.ItemsSource = AppSingleton.GetInstance.ClipData;
+        }
+
         public void CloseWindow()
         {
             Hide();
+            _lvClip.ItemsSource = null;
         }
 
         /** This will show filter window. */
@@ -502,7 +519,7 @@ namespace Components
                     files.ForEach((file) => FileSystem.CopyFile(file, Path.Combine(fd.FileName, Path.GetFileName(file)), UIOption.AllDialogs));
 
                     // Finally Close the window...
-                    Close();
+                   CloseWindow();
                 }
             }
             else
@@ -514,7 +531,7 @@ namespace Components
                 files.ForEach((file) => FileSystem.CopyFile(file, Path.Combine(pasteLocation, Path.GetFileName(file)), UIOption.AllDialogs));
 
                 // Finally Close the window...
-                Close();
+               CloseWindow();
             }
         }
 
@@ -540,7 +557,7 @@ namespace Components
                     File.Copy(imgPath, sfd.FileName, true);
 
                     // Finally Close the window...
-                    Close();
+                   CloseWindow();
                 }
             }
             else
@@ -552,7 +569,7 @@ namespace Components
                 File.Copy(imgPath, Path.Combine(pasteLocation, Path.GetFileName(imgPath)), true);
 
                 // Finally Close the window...
-                Close();
+               CloseWindow();
             }
         }
 
@@ -572,7 +589,7 @@ namespace Components
             Clipboard.SetText(clipboardText);
 
             // Finally Close the window...
-            Close();
+           CloseWindow();
         }
 
         /** This function will focus the item of listview. */

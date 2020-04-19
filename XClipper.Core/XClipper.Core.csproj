@@ -84,7 +84,9 @@
     <Compile Include="Data\Extensions\TypeSpecific\LoopExtensions.cs" />
     <Compile Include="Data\Extensions\TypeSpecific\ValueConversionExtensions.cs" />
     <Compile Include="Data\Extensions\VisibilityExtensions.cs" />
+    <Compile Include="Data\unlocalized\IClipBinder.cs" />
     <Compile Include="Data\unlocalized\MessageType.cs" />
+    <Compile Include="Helpers\WhatToStoreHelper.cs" />
     <Compile Include="models\FilterModel.cs" />
     <Compile Include="models\TableCopy.cs" />
     <Compile Include="Data\unlocalized\DefaultSettings.cs" />

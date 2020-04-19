@@ -17,7 +17,7 @@
         Title="ClipWindow"
         Icon="pack://application:,,,/Resources/clipboard.png"
         PreviewKeyDown="Window_PreviewKeyDown" 
-        Closed="Window_Closed" MouseMove="Window_MouseEnter"
+        MouseMove="Window_MouseEnter"
         Height="450"  Width="285" IsVisibleChanged="Window_IsVisibleChanged" KeyDown="Window_KeyDown"   >
     <Window.Resources>
         <ResourceDictionary>

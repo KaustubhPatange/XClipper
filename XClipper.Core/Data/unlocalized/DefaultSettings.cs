@@ -47,7 +47,7 @@ namespace Components
             var parser = new FileIniDataParser();
             return parser;
         }
-        public static void SetDefaults()
+        public static void WriteSettings()
         {
             var parser = InitParser();
             var data = parser.ReadFile(SettingsPath);
@@ -61,6 +61,20 @@ namespace Components
             data[SETTINGS][nameof(StartOnSystemStartup)] = StartOnSystemStartup.ToString();
             data[SETTINGS][nameof(PlayNotifySound)] = PlayNotifySound.ToString();
             parser.WriteFile(SettingsPath, data);
+        }
+
+        public static void LoadSettings()
+        {
+            var parser = InitParser();
+            var data = parser.ReadFile(SettingsPath);
+            AppDisplayLocation = data[SETTINGS][nameof(AppDisplayLocation)].ToEnum<XClipperLocation>();
+            WhatToStore = data[SETTINGS][nameof(WhatToStore)].ToEnum<XClipperStore>();
+            TotalClipLength = data[SETTINGS][nameof(TotalClipLength)].ToInt();
+            IsCtrl = data[SETTINGS][nameof(IsCtrl)].ToBool();
+            IsAlt = data[SETTINGS][nameof(IsAlt)].ToBool();
+            IsShift = data[SETTINGS][nameof(IsShift)].ToBool();
+            StartOnSystemStartup = data[SETTINGS][nameof(StartOnSystemStartup)].ToBool();
+            PlayNotifySound = data[SETTINGS][nameof(PlayNotifySound)].ToBool();
         }
 
         #endregion

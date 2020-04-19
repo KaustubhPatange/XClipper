@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
+using static Components.KeyPressHelper;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -105,7 +106,7 @@ namespace Components
                 _scrollViewer.ScrollToHorizontalOffset(_scrollViewer.HorizontalOffset + 30);
             if (e.Key == Key.Left)
                 _scrollViewer.ScrollToHorizontalOffset(_scrollViewer.HorizontalOffset - 30);
-            if (e.Key == Key.E && isCtrlPressed())
+            if (e.Key == Key.E && IsCtrlPressed())
                 ToggleEditMode();
         }
 
