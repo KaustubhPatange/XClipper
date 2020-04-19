@@ -30,7 +30,6 @@ namespace Components
 
         public static string ToFormattedDateTime(this DateTime value)
         {
-            //2020-04-01 225308
             return value.ToString("yyyy-MM-dd HH-mm-ss");
         }
 

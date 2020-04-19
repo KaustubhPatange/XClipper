@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 using WK.Libraries.SharpClipboardNS;
+using Components;
 using static Components.DefaultSettings;
 using static Components.MainHelper;
 using static Components.CommonExtensions;
@@ -25,6 +26,7 @@ namespace ClipboardManager.context
         private System.ComponentModel.IContainer _components;
         private ContextMenuStrip _contextmenustrip = new ContextMenuStrip();
         private SharpClipboard _clipboardFactory = new SharpClipboard();
+        private SettingWindow _settingWindow = new SettingWindow();
         private Process ClipWindowProcess;
         private readonly KeyMouseFactory eventHookFactory = new KeyMouseFactory(Hook.GlobalEvents());
         private readonly KeyboardWatcher keyboardWatcher;
@@ -218,8 +220,8 @@ namespace ClipboardManager.context
             _contextmenustrip.Items.Add(NewToolStripItem("Show", (o, e) => ShowClipWindow()));
             _contextmenustrip.Items.Add(new ToolStripSeparator());
             _contextmenustrip.Items.Add(NewToolStripItem("Settings", (o, e) =>
-            { 
-
+            {
+                _settingWindow.ShowDialog();
             }));
             _contextmenustrip.Items.Add(NewToolStripItem("Exit", (o, e) =>
             {

@@ -137,9 +137,13 @@
     <Content Include="icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Components\XClipper.Components.csproj">
+    <ProjectReference Include="..\XClipper.Components\XClipper.Components.csproj">
       <Project>{2bfee04a-c059-4d0e-bd35-2c15b61e7a06}</Project>
       <Name>XClipper.Components</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\XClipper.Core\XClipper.Core.csproj">
+      <Project>{f6b7ae1f-816e-46a1-b6a8-f7c84b1482f9}</Project>
+      <Name>XClipper.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
