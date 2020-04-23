@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Components.Properties {
+namespace Components.Locales {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace Components.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    internal class app {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Resources() {
+        internal app() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Components.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Components.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Components.Locales.app", typeof(app).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,32 +61,56 @@ namespace Components.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        ///   Looks up a localized string similar to Exit.
         /// </summary>
-        internal static System.Drawing.Bitmap clipboard {
+        internal static string app_exit {
             get {
-                object obj = ResourceManager.GetObject("clipboard", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
+                return ResourceManager.GetString("app_exit", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        ///   Looks up a localized string similar to Record.
         /// </summary>
-        internal static System.Drawing.Bitmap edit {
+        internal static string app_record {
             get {
-                object obj = ResourceManager.GetObject("edit", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
+                return ResourceManager.GetString("app_record", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        ///   Looks up a localized string similar to Settings.
         /// </summary>
-        internal static System.Drawing.Icon icon {
+        internal static string app_settings {
             get {
-                object obj = ResourceManager.GetObject("icon", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
+                return ResourceManager.GetString("app_settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Settings Reset complete! If it didn&apos;t try restarting the application.
+        /// </summary>
+        internal static string app_settings_reset {
+            get {
+                return ResourceManager.GetString("app_settings_reset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Settings applied! If it didn&apos;t try restarting the application.
+        /// </summary>
+        internal static string app_settings_save {
+            get {
+                return ResourceManager.GetString("app_settings_save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show.
+        /// </summary>
+        internal static string app_show {
+            get {
+                return ResourceManager.GetString("app_show", resourceCulture);
             }
         }
     }

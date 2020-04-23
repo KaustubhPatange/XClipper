@@ -86,6 +86,7 @@
     <Compile Include="Data\Extensions\VisibilityExtensions.cs" />
     <Compile Include="Data\unlocalized\IClipBinder.cs" />
     <Compile Include="Data\unlocalized\MessageType.cs" />
+    <Compile Include="Helpers\RegistryHelper.cs" />
     <Compile Include="Helpers\WhatToStoreHelper.cs" />
     <Compile Include="models\FilterModel.cs" />
     <Compile Include="models\TableCopy.cs" />

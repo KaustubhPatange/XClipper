@@ -3,9 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29926.136
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XClipper.App", "XClipper.App\XClipper.App.csproj", "{2C7CA3A5-DC79-4EF1-8AFC-B8D03FCCD0E7}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XClipper.Components", "XClipper.Components\XClipper.Components.csproj", "{2BFEE04A-C059-4D0E-BD35-2C15B61E7A06}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XClipper.App", "XClipper.App\XClipper.App.csproj", "{2BFEE04A-C059-4D0E-BD35-2C15B61E7A06}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6336EDA3-343F-47CF-9E18-4DDA279A944F}"
 	ProjectSection(SolutionItems) = preProject
@@ -20,10 +18,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{2C7CA3A5-DC79-4EF1-8AFC-B8D03FCCD0E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2C7CA3A5-DC79-4EF1-8AFC-B8D03FCCD0E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2C7CA3A5-DC79-4EF1-8AFC-B8D03FCCD0E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2C7CA3A5-DC79-4EF1-8AFC-B8D03FCCD0E7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2BFEE04A-C059-4D0E-BD35-2C15B61E7A06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2BFEE04A-C059-4D0E-BD35-2C15B61E7A06}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2BFEE04A-C059-4D0E-BD35-2C15B61E7A06}.Release|Any CPU.ActiveCfg = Release|Any CPU

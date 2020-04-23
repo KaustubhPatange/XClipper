@@ -1,7 +1,9 @@
 ﻿using System.Windows;
 using System.IO;
 using IniParser;
+using System.ComponentModel;
 using IniParser.Model;
+using System;
 
 namespace Components
 {
@@ -9,7 +11,7 @@ namespace Components
     {
         #region Variable Definitions
 
-        private static string SettingsPath = Path.Combine(Application.ResourceAssembly.Location, "XClipper.ini");
+        private static string SettingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "XClipper.ini");
         private const string SETTINGS = "Settings";
 
         #endregion
@@ -43,14 +45,13 @@ namespace Components
 
         private static FileIniDataParser InitParser()
         {
-            if (!File.Exists(SettingsPath)) File.Create(SettingsPath);
             var parser = new FileIniDataParser();
             return parser;
         }
         public static void WriteSettings()
         {
             var parser = InitParser();
-            var data = parser.ReadFile(SettingsPath);
+            var data = new IniData();
             data[SETTINGS][nameof(AppDisplayLocation)] = AppDisplayLocation.ToString();
             data[SETTINGS][nameof(WhatToStore)] = WhatToStore.ToString();
             data[SETTINGS][nameof(TotalClipLength)] = TotalClipLength.ToString();
@@ -65,6 +66,7 @@ namespace Components
 
         public static void LoadSettings()
         {
+            if (!File.Exists(SettingsPath)) return;  // Return if settings does not exist, so it will use defaults
             var parser = InitParser();
             var data = parser.ReadFile(SettingsPath);
             AppDisplayLocation = data[SETTINGS][nameof(AppDisplayLocation)].ToEnum<XClipperLocation>();
@@ -73,6 +75,7 @@ namespace Components
             IsCtrl = data[SETTINGS][nameof(IsCtrl)].ToBool();
             IsAlt = data[SETTINGS][nameof(IsAlt)].ToBool();
             IsShift = data[SETTINGS][nameof(IsShift)].ToBool();
+            HotKey = data[SETTINGS][nameof(HotKey)];
             StartOnSystemStartup = data[SETTINGS][nameof(StartOnSystemStartup)].ToBool();
             PlayNotifySound = data[SETTINGS][nameof(PlayNotifySound)].ToBool();
         }
@@ -84,18 +87,27 @@ namespace Components
 
     public enum XClipperStore
     {
-        Text,
-        Image,
-        Files,
-        All
+        [Description("Text Only")]
+        Text = 0,
+        [Description("Image Only")]
+        Image = 1,
+        [Description("Files Only")]
+        Files = 2,
+        [Description("Everything")]
+        All = 3
     }
 
     public enum XClipperLocation
     {
+        [Description("Bottom Right")]
         BottomRight = 0,
+        [Description("Bottom Left")]
         BottomLeft = 1,
+        [Description("Top Right")]
         TopRight = 2,
+        [Description("Top Left")]
         TopLeft = 3,
+        [Description("Center")]
         Center = 4
     }
 
