@@ -2,6 +2,7 @@
 using static Components.Constants;
 using static Components.MainHelper;
 using System.Windows;
+using static Components.App;
 using System.Windows.Input;
 using Components.viewModels;
 
@@ -24,20 +25,17 @@ namespace Components
             this.Left = X;
             this.Top = Y;
 
-            //this.Left = screen.Right - 285 - this.Width - 20;
-            //this.Top = screen.Bottom - 450 - 10;
-
             _lvFilter.MouseDoubleClick += _lvFilter_MouseDoubleClick;
 
             var list = new List<FilterModel>
             {
-                new FilterModel("Pinned", CONTENT_FILTER_PINNED),
-                new FilterModel("Non Pinned", CONTENT_FILTER_NON_PINNED),
-                new FilterModel("Newest First", CONTENT_FILTER_NEWEST_FIRST),
-                new FilterModel("Oldest First", CONTENT_FILTER_OLDEST_FIRST),
-                new FilterModel("Content Size (descending)", CONTENT_FILTER_TEXTLENGTH_DESC),
-                new FilterModel("Content Size (ascending)", CONTENT_FILTER_TEXTLENGTH_ASC),
-                new FilterModel("None", "")
+                new FilterModel(rm.GetString("filter_pin"), CONTENT_FILTER_PINNED),
+                new FilterModel(rm.GetString("filter_unpin"), CONTENT_FILTER_NON_PINNED),
+                new FilterModel(rm.GetString("filter_new"), CONTENT_FILTER_NEWEST_FIRST),
+                new FilterModel(rm.GetString("filter_old"), CONTENT_FILTER_OLDEST_FIRST),
+                new FilterModel(rm.GetString("filter_cs_desc"), CONTENT_FILTER_TEXTLENGTH_DESC),
+                new FilterModel(rm.GetString("filter_cs_asc"), CONTENT_FILTER_TEXTLENGTH_ASC),
+                new FilterModel(rm.GetString("filter_none"), "")
             };
 
             _lvFilter.ItemsSource = list;
@@ -71,7 +69,7 @@ namespace Components
 
         public void SetUpWindow(int Index)
         {
-            _tbFilter.Text = $"Filter Index: {Index + 1}";
+            _tbFilter.Text = $"{rm.GetString("filter_index")}: {Index + 1}";
             _lvFilter.Focus();
         }
 

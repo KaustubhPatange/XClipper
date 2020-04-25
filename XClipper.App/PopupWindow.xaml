@@ -1,85 +1,147 @@
-﻿<Window x:Class="Components.PopupWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Components"
-        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        mc:Ignorable="d"
-        Background="{StaticResource BackgroundBrush}"
-        ResizeMode="NoResize"
-        WindowStyle="None" ShowInTaskbar="False"
-        WindowStartupLocation="Manual"
-        KeyDown="Window_KeyDown"
-        Topmost="True"
-        Title="PopupWindow" Deactivated="Window_Deactivated" SizeToContent="Height" MaxHeight="400" Width="600">
-   
+﻿<Window
+    x:Class="Components.PopupWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Components"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="PopupWindow"
+    Width="600"
+    MaxHeight="400"
+    Background="{StaticResource BackgroundBrush}"
+    Deactivated="Window_Deactivated"
+    KeyDown="Window_KeyDown"
+    ResizeMode="NoResize"
+    ShowInTaskbar="False"
+    SizeToContent="Height"
+    Topmost="True"
+    WindowStartupLocation="Manual"
+    WindowStyle="None"
+    mc:Ignorable="d">
+
     <Grid x:Name="_grid">
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="35"/>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="35" />
         </Grid.RowDefinitions>
 
-        <Popup Name="_popUpMenu"
-               Placement="Bottom"
-               VerticalOffset="10"
-               PlacementTarget="{Binding ElementName=_grid}"
-               AllowsTransparency="True">
+        <Popup
+            Name="_popUpMenu"
+            AllowsTransparency="True"
+            Placement="Bottom"
+            PlacementTarget="{Binding ElementName=_grid}"
+            VerticalOffset="10">
             <WrapPanel x:Name="_popUpPanel" Background="{StaticResource ForegroundBrush}">
-                <TextBlock FontSize="11" Foreground="WhiteSmoke" Padding="7" x:Name="_popUpText"
-                            TextAlignment="Center" 
-                           Text="The data has been updated"/>
+                <TextBlock
+                    x:Name="_popUpText"
+                    Padding="7"
+                    FontSize="11"
+                    Foreground="WhiteSmoke"
+                    Text="The data has been updated"
+                    TextAlignment="Center" />
             </WrapPanel>
         </Popup>
 
-        <ScrollViewer ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                      ScrollViewer.VerticalScrollBarVisibility="Auto"
-                      Loaded="ScrollViewer_Loaded"
-                      x:Name="_scrollViewer"
-                      MaxHeight="350" Margin="5" Grid.Row="0">
-           
+        <ScrollViewer
+            x:Name="_scrollViewer"
+            Grid.Row="0"
+            MaxHeight="350"
+            Margin="5"
+            Loaded="ScrollViewer_Loaded"
+            ScrollViewer.HorizontalScrollBarVisibility="Auto"
+            ScrollViewer.VerticalScrollBarVisibility="Auto">
+
             <StackPanel>
-                <TextBox Visibility="Collapsed" Margin="3" AcceptsReturn="True" 
-                         CaretBrush="WhiteSmoke" IsReadOnly="True" BorderThickness="0" 
-                         Background="Transparent" x:Name="_tbText" Foreground="{StaticResource PopupTextTextBrush}" Padding="2"/>
-                
-                <Image x:Name="_imgView" 
-                       Visibility="Collapsed"
-                       MaxHeight="300" 
-                       Margin="5" 
-                       MaxWidth="550" >
-                </Image>
+                <TextBox
+                    x:Name="_tbText"
+                    Margin="3"
+                    Padding="2"
+                    AcceptsReturn="True"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    CaretBrush="WhiteSmoke"
+                    Foreground="{StaticResource PopupTextTextBrush}"
+                    IsReadOnly="True"
+                    Visibility="Collapsed" />
+
+                <Image
+                    x:Name="_imgView"
+                    MaxWidth="550"
+                    MaxHeight="300"
+                    Margin="5"
+                    Visibility="Collapsed" />
             </StackPanel>
 
         </ScrollViewer>
-        <StackPanel Margin="5" Grid.Row="1">
-            <Border BorderBrush="{StaticResource ForegroundBrush}" BorderThickness="0.5"  />
-            <DockPanel Margin="0 5 0 0">
-                <TextBlock DockPanel.Dock="Left" FontSize="11"  Margin="5 0 0 0" Foreground="Gray" FontStyle="Italic" Text="Added: "/>
-                <TextBlock  DockPanel.Dock="Left" x:Name="_tbDateTime" FontSize="11" Foreground="Gray" FontStyle="Italic" Text="{Binding DateTime}"/>
-                <Button Style="{StaticResource ButtonStyle}" Margin="5 0 0 0" ToolTip="Close (Escape)" DockPanel.Dock="Right" BorderThickness="0" Background="Transparent" HorizontalAlignment="Right" Click="CloseButton_Clicked">
-                   
-                    <materialDesign:PackIcon HorizontalAlignment="Right" Foreground="WhiteSmoke" Kind="Close" Padding="8 4 8 4"/>
+        <StackPanel Grid.Row="1" Margin="5">
+            <Border BorderBrush="{StaticResource ForegroundBrush}" BorderThickness="0.5" />
+            <DockPanel Margin="0,5,0,0">
+                <TextBlock
+                    Margin="5,0,3,0"
+                    DockPanel.Dock="Left"
+                    FontSize="11"
+                    FontStyle="Italic"
+                    Foreground="Gray"
+                    Text="{DynamicResource popup_added}" />
+                <TextBlock
+                    x:Name="_tbDateTime"
+                    DockPanel.Dock="Left"
+                    FontSize="11"
+                    FontStyle="Italic"
+                    Foreground="Gray"
+                    Text="{Binding DateTime}" />
+                <Button
+                    Margin="5,0,0,0"
+                    HorizontalAlignment="Right"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Click="CloseButton_Clicked"
+                    DockPanel.Dock="Right"
+                    Style="{StaticResource ButtonStyle}"
+                    ToolTip="Close (Escape)">
+
+                    <materialDesign:PackIcon
+                        Padding="8,4,8,4"
+                        HorizontalAlignment="Right"
+                        Foreground="WhiteSmoke"
+                        Kind="Close" />
                 </Button>
-                <local:LockableToggleButton x:Name="_toggleEditButton"  
-                              Style="{StaticResource ToggleButtonStyle}"
-                              ToolTip="Toggle Edit Mode (Ctrl + E)" 
-                              Click="EditButton_Clicked"
-                              DockPanel.Dock="Right" 
-                              LockToggle="True"
-                              Margin="5 0 0 0"
-                              HorizontalAlignment="Right" >
-                    <materialDesign:PackIcon HorizontalAlignment="Right" Foreground="WhiteSmoke" Kind="Edit" Padding="8 4 8 4"/>
+                <local:LockableToggleButton
+                    x:Name="_toggleEditButton"
+                    Margin="5,0,0,0"
+                    HorizontalAlignment="Right"
+                    Click="EditButton_Clicked"
+                    DockPanel.Dock="Right"
+                    LockToggle="True"
+                    Style="{StaticResource ToggleButtonStyle}"
+                    ToolTip="Toggle Edit Mode (Ctrl + E)">
+                    <materialDesign:PackIcon
+                        Padding="8,4,8,4"
+                        HorizontalAlignment="Right"
+                        Foreground="WhiteSmoke"
+                        Kind="Edit" />
                 </local:LockableToggleButton>
-                <Button x:Name="_btnPreview"
-                        Style="{StaticResource ButtonStyle}"
-                        ToolTip="Preview (Enter)"
-                        DockPanel.Dock="Right"
-                        Click="PreviewButton_Clicked"
-                        HorizontalAlignment="Right">
-                    <materialDesign:PackIcon HorizontalAlignment="Right" Foreground="WhiteSmoke" Kind="Image" Padding="8 4 8 4" />
+                <Button
+                    x:Name="_btnPreview"
+                    HorizontalAlignment="Right"
+                    Click="PreviewButton_Clicked"
+                    DockPanel.Dock="Right"
+                    Style="{StaticResource ButtonStyle}"
+                    ToolTip="Preview (Enter)">
+                    <materialDesign:PackIcon
+                        Padding="8,4,8,4"
+                        HorizontalAlignment="Right"
+                        Foreground="WhiteSmoke"
+                        Kind="Image" />
                 </Button>
-                <TextBlock x:Name="_tbFocusText" FontSize="10" VerticalAlignment="Center" Foreground="Turquoise" HorizontalAlignment="Center" Text="...Press (Space) to Focus..."/>
+                <TextBlock
+                    x:Name="_tbFocusText"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    FontSize="10"
+                    Foreground="Turquoise"
+                    Text="{DynamicResource popup_space_focus}" />
             </DockPanel>
         </StackPanel>
     </Grid>

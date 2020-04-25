@@ -1,16 +1,22 @@
-﻿<Window x:Class="Components.FilterWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Components"
-        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        mc:Ignorable="d" ResizeMode="NoResize"
-        Topmost="True"
-        WindowStyle="None"  ShowInTaskbar="False"
-        Background="{StaticResource BackgroundBrush}"
-        KeyDown="FilterWindow_KeyDown"
-        Title="FilterWindow" MaxHeight="350" SizeToContent="Height" Width="200">
+﻿<Window
+    x:Class="Components.FilterWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Components"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="FilterWindow"
+    Width="200"
+    MaxHeight="350"
+    Background="{StaticResource BackgroundBrush}"
+    KeyDown="FilterWindow_KeyDown"
+    ResizeMode="NoResize"
+    ShowInTaskbar="False"
+    SizeToContent="Height"
+    Topmost="True"
+    WindowStyle="None"
+    mc:Ignorable="d">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -23,18 +29,28 @@
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
-        <StackPanel Margin="5 5 5 0" Grid.Row="0">
-            <TextBlock Margin="2" Text="Filter Items by:" FontSize="14" Foreground="Wheat" />
-            <Border Margin="0 7 0 5" BorderBrush="{StaticResource ForegroundBrush}" BorderThickness="0.5"  />
+        <StackPanel Grid.Row="0" Margin="5,5,5,0">
+            <TextBlock
+                Margin="2"
+                FontSize="14"
+                Foreground="Wheat"
+                Text="{DynamicResource filter_title}" />
+            <Border
+                Margin="0,7,0,5"
+                BorderBrush="{StaticResource ForegroundBrush}"
+                BorderThickness="0.5" />
         </StackPanel>
-        <ListView x:Name="_lvFilter" Grid.Row="1"  Background="{StaticResource BackgroundBrush}">
+        <ListView
+            x:Name="_lvFilter"
+            Grid.Row="1"
+            Background="{StaticResource BackgroundBrush}">
             <ListView.ItemContainerStyle>
                 <Style TargetType="{x:Type ListViewItem}">
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                     <Setter Property="LayoutTransform">
                         <Setter.Value>
                             <ScaleTransform x:Name="transform" />
@@ -46,32 +62,43 @@
                 <DataTemplate>
                     <Border>
                         <StackPanel Margin="7">
-                            <TextBlock Foreground="WhiteSmoke" FontSize="12" Text="{Binding Text}"/>
+                            <TextBlock
+                                FontSize="12"
+                                Foreground="WhiteSmoke"
+                                Text="{Binding Text}" />
                         </StackPanel>
                     </Border>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <StackPanel Margin="5" Grid.Row="2">
-            <Border Margin="0 0 0 5" BorderBrush="{StaticResource ForegroundBrush}" BorderThickness="0.5"  />
+        <StackPanel Grid.Row="2" Margin="5">
+            <Border
+                Margin="0,0,0,5"
+                BorderBrush="{StaticResource ForegroundBrush}"
+                BorderThickness="0.5" />
 
             <DockPanel>
-                <TextBlock FontSize="10"
-                           x:Name="_tbFilter"
-                           FontStyle="Italic"
-                           Margin="3 0 0 0"
-                           Foreground="{StaticResource TextSecondaryBrush}"
-                           VerticalAlignment="Center" Text="Filter"
-                           DockPanel.Dock="Left" />
-                <Button x:Name="_btnPreview"
-                        Style="{StaticResource ButtonStyle}"
-                        ToolTip="Close (Escape)"
-                        DockPanel.Dock="Right"
-                        Click="CloseButton_Clicked"
-                        HorizontalAlignment="Right">
-                    <materialDesign:PackIcon HorizontalAlignment="Right"
-                                         Foreground="WhiteSmoke" Kind="Close" 
-                                         Padding="8 4 8 4" />
+                <TextBlock
+                    x:Name="_tbFilter"
+                    Margin="3,0,0,0"
+                    VerticalAlignment="Center"
+                    DockPanel.Dock="Left"
+                    FontSize="10"
+                    FontStyle="Italic"
+                    Foreground="{StaticResource TextSecondaryBrush}"
+                    Text="Filter" />
+                <Button
+                    x:Name="_btnPreview"
+                    HorizontalAlignment="Right"
+                    Click="CloseButton_Clicked"
+                    DockPanel.Dock="Right"
+                    Style="{StaticResource ButtonStyle}"
+                    ToolTip="Close (Escape)">
+                    <materialDesign:PackIcon
+                        Padding="8,4,8,4"
+                        HorizontalAlignment="Right"
+                        Foreground="WhiteSmoke"
+                        Kind="Close" />
                 </Button>
             </DockPanel>
         </StackPanel>

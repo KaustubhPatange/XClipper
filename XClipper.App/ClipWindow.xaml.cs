@@ -10,6 +10,7 @@ using System.Windows.Input;
 using System.Windows.Controls;
 using System.Linq;
 using System.Text;
+using static Components.App;
 using static Components.MainHelper;
 using static Components.Constants;
 using static Components.DefaultSettings;
@@ -23,13 +24,12 @@ using System.Windows.Media;
 
 namespace Components
 {
-    /** I can't use viewModel in this window! When I started coding this project I did static
-     *  data binding and this view class which completely broke the ViewModel and with this
-     *  code migrating to View Model will be pain in the ass.
+    /** Can't bind the viewModel to this class because of some complexity issues.
      *  
      *  Their is also another issue, since this app is solely based on key press events. Doing
      *  this using View Model would increase lots of complexity. As for eg: I can't bind
      *  Ctrl + Q as Key only accepts single value. */
+
     public partial class ClipWindow : Window, IClipBinder
     {
 
@@ -90,13 +90,6 @@ namespace Components
             var point = e.GetPosition(sender as Window);
 
             var scrollViewer = GetScrollViewer(_lvClip) as ScrollViewer;
-            //if (scrollViewer != null)
-            //    scrollViewer.Loaded += (o, e) =>
-            //    {
-            //        Debug.WriteLine("ScrollViewer Loaded");
-            //        var color = Application.Current.Resources["BackgroundBrush"] as SolidColorBrush;
-            //        ((System.Windows.Shapes.Rectangle)scrollViewer.Template.FindName("Corner", scrollViewer)).Fill = color;
-            //    };
 
             if (scrollViewer == null || isMouseKeyDown) return;
             if (point.X > 260)
@@ -190,18 +183,6 @@ namespace Components
             _popupWindow.Hide();
             _filterWindow.Hide();
         }
-
-        ///** We are not closing the application instead we are hiding it. So that live
-        //    data changes can be observed! */
-        //private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        //{
-        //    e.Cancel = true;
-        //    Hide();
-        //}
-        //private void Window_Closed(object sender, EventArgs e)
-        //{
-        //    Application.Current.Dispatcher.InvokeShutdown();
-        //}
 
         #endregion
 
@@ -322,14 +303,6 @@ namespace Components
 
         #endregion
 
-
-        ///** This event will automatically close this window when the whole
-        // *  application is out of focus. */
-        //private void Window_Deactivated(object sender, EventArgs e)
-        //{
-        //    //CloseWindow();
-        //}
-
         #endregion
 
 
@@ -377,7 +350,7 @@ namespace Components
         {
             if (_lvClip.SelectedItems.Count <= 0) return;
             MaterialMsgBox
-                  .SetMessage("Are you sure? This can't be undone")
+                  .SetMessage(rm.GetString("clip_msg_confirm"))
                   .SetType(MessageType.OKCancel)
                   .SetOwner(this)
                   .SetOnCancelClickListener(null)
@@ -511,7 +484,7 @@ namespace Components
             {
                 var fd = new FolderSelectDialog
                 {
-                    Title = "Select a folder to copy the files"
+                    Title = rm.GetString("clip_folder_copy")
                 };
                 if (fd.Show())
                 {
@@ -549,7 +522,7 @@ namespace Components
                 {
                     FileName = Path.GetFileName(imgPath),
                     Filter = $"{ext}|{ext}",
-                    Title = "Choose a paste location"
+                    Title = rm.GetString("clip_cpl")
                 };
                 if (sfd.ShowDialog() == true)
                 {

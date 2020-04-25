@@ -1,4 +1,5 @@
 ﻿using Gma.System.MouseKeyHook;
+using Loamen.KeyMouseHook;
 using System;
 using System.Diagnostics;
 using System.Windows.Forms;
@@ -7,12 +8,12 @@ using static Components.KeyPressHelper;
 
 namespace Components
 {
-    // TODO: Remove this class after testing
     public class KeyHookUtility
     {
         #region Variable Declaration
 
-        private IKeyboardMouseEvents m_GlobalHook;
+        private KeyMouseFactory eventHookFactory;
+        private KeyboardWatcher keyboardWatcher;
         private Action block;
 
         #endregion
@@ -23,32 +24,41 @@ namespace Components
         {
             this.block = block;
 
-            m_GlobalHook = Hook.GlobalEvents();
-            m_GlobalHook.KeyDown += M_GlobalHook_KeyDown;
+            eventHookFactory = new KeyMouseFactory(Hook.GlobalEvents());
+            keyboardWatcher = eventHookFactory.GetKeyboardWatcher();
+            keyboardWatcher.OnKeyboardInput += KeyboardWatcher_OnKeyboardInput;
+
+            keyboardWatcher.Start(Hook.GlobalEvents());
         }
 
         public void Unsubscribe()
         {
-            m_GlobalHook.KeyDown -= M_GlobalHook_KeyDown;
-            m_GlobalHook.Dispose();
+            keyboardWatcher.Stop();
+            keyboardWatcher.Dispose();
+            eventHookFactory.Dispose();
         }
 
         #endregion
 
         #region Keyboard Capture Events
 
-        private void M_GlobalHook_KeyDown(object sender, KeyEventArgs e)
+        private void KeyboardWatcher_OnKeyboardInput(object sender, MacroEvent e)
         {
-            if (IsCtrl && !IsCtrlPressed()) return;
+            var keyEvent = (KeyEventArgs)e.EventArgs;
+            if (e.KeyMouseEventType == MacroEventType.KeyUp)
+            {
+                var key = keyEvent.KeyCode;
 
-            if (IsAlt && !IsAltPressed()) return;
+                if (IsCtrl && !IsCtrlPressed()) return;
 
-            if (IsShift && !IsShitPressed()) return;
-            
-            if (e.KeyCode != HotKey.ToEnum<Keys>()) return;
+                if (IsAlt && !IsAltPressed()) return;
 
-            Debug.WriteLine("Gotcha");
-            //block.Invoke();
+                if (IsShift && !IsShitPressed()) return;
+
+                if (key != HotKey.ToEnum<Keys>()) return;
+
+                block.Invoke();
+            }
         }
 
         #endregion

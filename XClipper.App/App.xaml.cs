@@ -22,45 +22,91 @@ using Components.viewModels;
 using System.Resources;
 using System.Reflection;
 using System.Windows.Controls;
+using System.Windows;
+using System.Threading;
 
 namespace Components
 {
-    public partial class App : System.Windows.Application
+    /** For language edit Solution Explorer/Locales/en.xaml and paste it to locales/en.xaml 
+      * to create a fake linking between static and dynamic resource binding.
+      */
+    public partial class App : Application
     {
+        #region Variable Declaration
 
         public static string BaseDirectory = AppDomain.CurrentDomain.BaseDirectory;
         public static string AppStartupLocation = Assembly.GetExecutingAssembly().Location;
         private ClipboardUtility clipboardUtility = new ClipboardUtility();
-        //   private KeyHookUtility hookUtility = new KeyHookUtility();
+        private KeyHookUtility hookUtility = new KeyHookUtility();
         private ClipWindow clipWindow;
         private WinForm.NotifyIcon notifyIcon;
-        public static ResourceManager rm;
         private SettingWindow settingWindow;
+        public static List<string> LanguageCollection = new List<string>();
+        private Mutex appMutex;
+        public static ResourceDictionary rm = new ResourceDictionary();
 
         // Some settings
         private bool ToRecord = true;
 
+        #endregion
+
+        #region Constructor
+
         public App()
         {
-            LoadCompleted += App_LoadCompleted;
             Exit += App_Exit;
-
-            rm = new ResourceManager("Components.Locales.app", Assembly.Load(Assembly.GetExecutingAssembly().GetName()));
 
             AppSingleton.GetInstance.Init();
 
+            LoadSettings();
+
             clipboardUtility.StartRecording();
 
-            Hook.GlobalEvents().OnCombination(new Dictionary<Combination, Action>
+            hookUtility.Subscribe(LaunchCodeUI);
+
+            SetAppStartupEntry();
+        }
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+
+            foreach (var file in Directory.GetFiles("locales", "*.xaml"))
             {
-                {Combination.FromString("Control+Oem3"), LaunchCodeUI }
-            });
-            //   hookUtility.Subscribe(LaunchCodeUI);
+                LanguageCollection.Add(file);
+            }
+
+            rm.Source = new Uri($"{BaseDirectory}\\{CurrentAppLanguage}", UriKind.RelativeOrAbsolute);
+
+            Resources.MergedDictionaries.RemoveAt(Resources.MergedDictionaries.Count - 1);
+            Resources.MergedDictionaries.Add(rm);
+
+            /** This follow consequent code will make this app
+             *  to run only single instance.
+             */
+
+            bool IsNewInstance = false;
+            appMutex = new Mutex(true, rm.GetString("app_name"), out IsNewInstance);
+            if (!IsNewInstance)
+            {
+                //var appNotify = new WinForm.NotifyIcon()
+                //{
+                //    Icon = AppResource.icon,
+                //    Text = rm.GetString("app_name"),
+                //    Visible = true
+                //};
+                //Dispatcher.BeginInvoke(new Action(() =>
+                //{
+                //    appNotify.BalloonTipText = rm.GetString("app_isrun_service");
+                //    appNotify.ShowBalloonTip(3000);
+                //}));
+                App.Current.Shutdown();
+            }
 
             notifyIcon = new WinForm.NotifyIcon
             {
                 Icon = AppResource.icon,
-                Text = "XClipper",
+                Text = rm.GetString("app_name"),
                 ContextMenu = new WinForm.ContextMenu(DefaultItems()),
                 Visible = true
             };
@@ -68,11 +114,11 @@ namespace Components
             notifyIcon.DoubleClick += (o, e) => LaunchCodeUI();
 
             DisplayNotifyMessage();
-
-            LoadSettings();
-
-            SetAppStartupEntry();
         }
+
+        #endregion
+
+        #region Method Events
 
         private void DisplayNotifyMessage()
         {
@@ -80,7 +126,7 @@ namespace Components
             {
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    notifyIcon.BalloonTipText = $"{notifyIcon.Text}: Service Started";
+                    notifyIcon.BalloonTipText = rm.GetString("app_start_service");
                     notifyIcon.ShowBalloonTip(3000);
                 }));
             }
@@ -112,7 +158,6 @@ namespace Components
         private void RecordMenuClicked(object sender, EventArgs e)
         {
             ToRecord = !ToRecord;
-            Debug.WriteLine("ToRecord: " + ToRecord);
 
             ((WinForm.MenuItem)sender).Checked = ToRecord;
             if (ToRecord)
@@ -120,16 +165,11 @@ namespace Components
             else
                 clipboardUtility.StopRecording();
         }
-        private void App_LoadCompleted(object sender, System.Windows.Navigation.NavigationEventArgs e)
-        {
-            Debug.WriteLine("Executed");
-        }
-
+  
         private void App_Exit(object sender, System.Windows.ExitEventArgs e)
         {
-            //      hookUtility.Unsubscribe();
+            hookUtility.Unsubscribe();
         }
-
 
         private void LaunchCodeUI()
         {
@@ -140,7 +180,8 @@ namespace Components
             {
                 clipWindow.Show();
             }
+        } 
 
-        }
+        #endregion
     }
 }

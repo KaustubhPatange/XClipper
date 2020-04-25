@@ -41,6 +41,7 @@ namespace Components
         public bool KEY_IA { get; set; } = IsAlt;
         public int TCL { get; set; } = TotalClipLength;
         public string KEY_HK { get; set; } = HotKey;
+        public string CAL { get; set; } = CurrentAppLanguage;
 
         #endregion
 
@@ -57,10 +58,11 @@ namespace Components
             IsAlt = KEY_IA = false;
             IsShift = KEY_IS = false;
             HotKey = KEY_HK = "Oem3";
+            CurrentAppLanguage = CAL = "locales\\en.xaml";
             TotalClipLength = TCL = 20;
             SetAppStartupEntry();
             WriteSettings();
-            MsgBox.Show(App.rm.GetString("app_settings_reset"));
+            MsgBox.Show(App.rm.GetString("settings_reset"));
         }
 
         /** This event will be raised when Save Button is Clicked */
@@ -75,9 +77,10 @@ namespace Components
             IsAlt = KEY_IA;
             TotalClipLength = TCL;
             HotKey = KEY_HK;
+            CurrentAppLanguage = CAL;
             SetAppStartupEntry();
             WriteSettings();
-            MsgBox.Show(App.rm.GetString("app_settings_save"));
+            MsgBox.Show(App.rm.GetString("settings_save"));
         }      
 
         /** This event will observe Hot Key value. */

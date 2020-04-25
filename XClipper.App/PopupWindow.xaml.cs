@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using static Components.App;
 using System.Text.RegularExpressions;
 using System.Windows;
 using static Components.KeyPressHelper;
@@ -37,9 +38,6 @@ namespace Components
 
             CalculateXY(ref X, ref Y, this);
 
-            var screen = SystemParameters.WorkArea;
-
-            // this.Left = screen.Right - 285 - this.Width - 20;
             this.Left = X;
             this.Top = Y;
 
@@ -81,7 +79,6 @@ namespace Components
         #region Key Binds
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            Debug.WriteLine("Popup Key Press: " + e.Key.ToString());
             if (e.Key == Key.Escape)
             {
                 CloseWindow();
@@ -163,7 +160,7 @@ namespace Components
             // Only text content is supported, otherwise return.
             if (model.ContentType == ContentType.Image)
             {
-                ShowToast("Editing is not supported for this format", true);
+                ShowToast(rm.GetString("popup_edit_err"), true);
                 return;
             }
             if (_toggleEditButton.IsChecked == false)
@@ -187,7 +184,7 @@ namespace Components
 
                 if (string.IsNullOrWhiteSpace(_tbText.Text))
                 {
-                    ShowToast("Error: Cannot set a blank text", true);
+                    ShowToast(rm.GetString("popup_blank_err"), true);
                     return;
                 }
 
@@ -213,7 +210,7 @@ namespace Components
                         else
                         {
                             _tbText.Text = SAVED_TEXT;
-                            ShowToast("Error: Invalid file path(s)", true);
+                            ShowToast(rm.GetString("popup_file_err"), true);
                         }
                         break;
                 }

@@ -1,9 +1,9 @@
-﻿using System.Windows;
-using System.IO;
+﻿using System.IO;
 using IniParser;
 using System.ComponentModel;
 using IniParser.Model;
 using System;
+using System.Collections.Generic;
 
 namespace Components
 {
@@ -37,6 +37,8 @@ namespace Components
         public static bool StartOnSystemStartup { get; set; } = true;
         // This will tell if application should play sound when started.
         public static bool PlayNotifySound { get; set; } = true;
+        // This will set the current language file to be use.
+        public static string CurrentAppLanguage { get; set; } = "locales\\en.xaml";
 
         #endregion
 
@@ -61,6 +63,7 @@ namespace Components
             data[SETTINGS][nameof(HotKey)] = HotKey;
             data[SETTINGS][nameof(StartOnSystemStartup)] = StartOnSystemStartup.ToString();
             data[SETTINGS][nameof(PlayNotifySound)] = PlayNotifySound.ToString();
+            data[SETTINGS][nameof(CurrentAppLanguage)] = CurrentAppLanguage;
             parser.WriteFile(SettingsPath, data);
         }
 
@@ -76,6 +79,7 @@ namespace Components
             IsAlt = data[SETTINGS][nameof(IsAlt)].ToBool();
             IsShift = data[SETTINGS][nameof(IsShift)].ToBool();
             HotKey = data[SETTINGS][nameof(HotKey)];
+            CurrentAppLanguage = data[SETTINGS][nameof(CurrentAppLanguage)];
             StartOnSystemStartup = data[SETTINGS][nameof(StartOnSystemStartup)].ToBool();
             PlayNotifySound = data[SETTINGS][nameof(PlayNotifySound)].ToBool();
         }

@@ -116,7 +116,10 @@ namespace Components
                     }
                 }
             }
-            if (list.Count >= TotalClipLength) list.RemoveAt(list.Count - 1);
+            if (list.Count >= TotalClipLength)
+            {
+                AppSingleton.GetInstance.dataDB.Delete(list[list.Count - 1]);
+            }
 
             AppSingleton.GetInstance.dataDB.Insert(model);
         }

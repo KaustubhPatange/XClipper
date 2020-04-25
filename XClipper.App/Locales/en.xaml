@@ -1,0 +1,50 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:system="clr-namespace:System;assembly=mscorlib">
+
+    <system:String x:Key="app_name">XClipper</system:String>
+    <system:String x:Key="app_start_service">XClipper: Service Started</system:String>
+    <system:String x:Key="app_isrun_service">XClipper: Service already running</system:String>
+    <system:String x:Key="app_show">Show</system:String>
+    <system:String x:Key="app_settings">Settings</system:String>
+    <system:String x:Key="app_record">Record</system:String>
+    <system:String x:Key="app_exit">Exit</system:String>
+    <system:String x:Key="settings_general">General</system:String>
+    <system:String x:Key="settings_other">Other</system:String>
+    <system:String x:Key="settings_hotkey">Hot Key</system:String>
+    <system:String x:Key="settings_sass">Start application on System Startup</system:String>
+    <system:String x:Key="settings_pns">Play notification sound</system:String>
+    <system:String x:Key="settings_tcl">Maximum no. of clip items to store in database</system:String>
+    <system:String x:Key="settings_wts">Types of clip to store</system:String>
+    <system:String x:Key="settings_adl">Window display location</system:String>
+    <system:String x:Key="settings_cal">Current app language locale</system:String>
+    <system:String x:Key="settings_reset_btn">Reset Defaults</system:String>
+    <system:String x:Key="settings_save_btn">Save</system:String>
+    <system:String x:Key="settings_reset">Settings Reset complete! If it didn't try restarting the application</system:String>
+    <system:String x:Key="settings_save">Settings applied! If it didn't try restarting the application</system:String>
+    <system:String x:Key="filter_header">Filter</system:String>
+    <system:String x:Key="filter_title">Filter Items by:</system:String>
+    <system:String x:Key="filter_index">Filter Index</system:String>
+    <system:String x:Key="filter_pin">Pinned</system:String>
+    <system:String x:Key="filter_unpin">Non Pinned</system:String>
+    <system:String x:Key="filter_new">Newest First</system:String>
+    <system:String x:Key="filter_old">Oldest First</system:String>
+    <system:String x:Key="filter_cs_desc">Content Size (descending)</system:String>
+    <system:String x:Key="filter_cs_asc">Content Size (ascending)</system:String>
+    <system:String x:Key="filter_none">None</system:String>
+    <system:String x:Key="msg_ok">OK</system:String>
+    <system:String x:Key="msg_cancel">CANCEL</system:String>
+    <system:String x:Key="popup_added">Added:</system:String>
+    <system:String x:Key="popup_space_focus">...Press (Space) to Focus...</system:String>
+    <system:String x:Key="popup_edit_err">Editing is not supported for this format</system:String>
+    <system:String x:Key="popup_blank_err">Error: Cannot set a blank text</system:String>
+    <system:String x:Key="popup_file_err">Error: Invalid file path(s)</system:String>
+    <system:String x:Key="clip_search_hint">Search (Ctrl + Q)</system:String>
+    <system:String x:Key="clip_ctx_qi">Quick Info</system:String>
+    <system:String x:Key="clip_ctx_de">Delete Entry</system:String>
+    <system:String x:Key="clip_ctx_tp">Toggle Pin</system:String>
+    <system:String x:Key="clip_msg_confirm">Are you sure? This can't be undone</system:String>
+    <system:String x:Key="clip_folder_copy">Select a folder to copy the files</system:String>
+    <system:String x:Key="clip_cpl">Choose a paste location</system:String>
+</ResourceDictionary>

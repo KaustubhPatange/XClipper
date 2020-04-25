@@ -1,18 +1,21 @@
-﻿<Window x:Class="Components.MaterialMessage"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Components"
-        mc:Ignorable="d"
-        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        WindowStyle="None"
-        Background="Transparent"
-        ResizeMode="NoResize"
-        AllowsTransparency="True"
-        WindowStartupLocation="CenterOwner"
-        ShowInTaskbar="False"
-        Title="MaterialMsgBox" Height="120" Width="275">
+﻿<Window
+    x:Class="Components.MaterialMessage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Components"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="MaterialMsgBox"
+    Width="275"
+    Height="120"
+    AllowsTransparency="True"
+    Background="Transparent"
+    ResizeMode="NoResize"
+    ShowInTaskbar="False"
+    WindowStartupLocation="CenterOwner"
+    WindowStyle="None"
+    mc:Ignorable="d">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -22,26 +25,45 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <Style TargetType="TextBlock">
-                <Setter Property="Foreground" Value="Wheat"/>
+                <Setter Property="Foreground" Value="Wheat" />
             </Style>
         </ResourceDictionary>
     </Window.Resources>
     <Border Background="{StaticResource ForegroundBrush}" CornerRadius="7">
         <Grid Margin="10">
             <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="_tbTitle" FontSize="15" FontWeight="Medium" Text="Are you sure?" />
+            <TextBlock
+                x:Name="_tbTitle"
+                Grid.Row="0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontSize="15"
+                FontWeight="Medium"
+                Text="Are you sure?" />
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Button x:Name="_btn_Cancel_Clicked"  
-                        BorderBrush="{StaticResource BackgroundBrush}" 
-                        Background="{StaticResource BackgroundBrush}" Margin="0 0 5 0" Grid.Column="0" Height="25" FontSize="11" Content="CANCEL" />
-                <Button x:Name="_btn_OK_Clicked" Margin="5 0 0 0" Grid.Column="1" Height="25" FontSize="11" Content="OK" />
+                <Button
+                    x:Name="_btn_Cancel_Clicked"
+                    Grid.Column="0"
+                    Height="25"
+                    Margin="0,0,5,0"
+                    Background="{StaticResource BackgroundBrush}"
+                    BorderBrush="{StaticResource BackgroundBrush}"
+                    Content="{DynamicResource msg_cancel}"
+                    FontSize="11" />
+                <Button
+                    x:Name="_btn_OK_Clicked"
+                    Grid.Column="1"
+                    Height="25"
+                    Margin="5,0,0,0"
+                    Content="{DynamicResource msg_ok}"
+                    FontSize="11" />
             </Grid>
         </Grid>
     </Border>

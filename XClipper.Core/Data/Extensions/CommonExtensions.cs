@@ -33,6 +33,8 @@ namespace Components
             return value.ToString("yyyy-MM-dd HH-mm-ss");
         }
 
+        public static string GetString(this ResourceDictionary t, string key) => (string)t[key];
+
         public static T GetFrameworkElementByName<T>(FrameworkElement referenceElement) where T : FrameworkElement
         {
             FrameworkElement child = null;
