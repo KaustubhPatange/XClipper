@@ -13,5 +13,11 @@ namespace Components
             foreach(var val in vals)
                 action(val);
         }
+
+        public static List<T> Futher<T> (this List<T> t, Action<T> block)
+        {
+            foreach (T s in t) block.Invoke(s);
+            return t;
+        }
     }
 }

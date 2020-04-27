@@ -4,6 +4,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using ClipboardManager.models;
+using static Components.LicenseHandler;
+using System;
+using static Components.Constants;
 
 namespace Components
 {
@@ -97,6 +101,12 @@ namespace Components
             else
                 RegistryHelper.RemoveApplicationFromStartup(App.AppStartupLocation);
         }
+
+        /** This method will check for license and activate some extra features. */
+        public static void CheckForLicense()
+        {
+            IsPurchaseDone = IsActivated(new Uri(LicenseFilePath));
+        }
         public static string FormatText(string text)
         {
             var partText = Regex.Replace(text, @"^\s+$[\r\n]*", " ", RegexOptions.Multiline);
@@ -106,5 +116,6 @@ namespace Components
         {
             return Regex.Replace(e.ToString(), "[^0-9.]", "").ToInt();
         }
+
     }
 }

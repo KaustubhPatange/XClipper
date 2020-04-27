@@ -4,15 +4,17 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:System="clr-namespace:System;assembly=mscorlib"
     xmlns:ap="http://www.galasoft.ch/mvvmlight"
+    xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
     xmlns:control="clr-namespace:Components.Controls"
     xmlns:core="clr-namespace:Components;assembly=XClipper.Core"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
     xmlns:local="clr-namespace:Components"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:media="clr-namespace:System.Windows.Media;assembly=PresentationCore"
     Title="{DynamicResource app_settings}"
     Width="360"
-    Height="350"
+    Height="355"
     Icon="pack://application:,,,/Resources/clipboard.png"
     ResizeMode="NoResize"
     Topmost="True"
@@ -89,6 +91,22 @@
                     ItemsSource="{Binding Source={x:Static local:App.LanguageCollection}, UpdateSourceTrigger=PropertyChanged}"
                     SelectedValue="{Binding CAL}" />
             </Grid>
+            <DockPanel>
+                <CheckBox
+                    Content="{DynamicResource settings_isdb}"
+                    DockPanel.Dock="Left"
+                    Foreground="{c:Binding 'core:DefaultSettings.IsPurchaseDone ? media:Brushes.Black : media:Brushes.Gray'}"
+                    IsChecked="{Binding ISDB}"
+                    IsEnabled="{x:Static core:DefaultSettings.IsPurchaseDone}" />
+                <TextBlock
+                    Margin="0,3,0,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center">
+                    <Hyperlink local:HyperlinkProperties.IsExternal="true" NavigateUri="https://github.com/KaustubhPatange/XClipper">
+                        <TextBlock Text="{DynamicResource msg_learn}" />
+                    </Hyperlink>
+                </TextBlock>
+            </DockPanel>
 
             <!--  Hot Key Category  -->
 
@@ -133,7 +151,7 @@
                 </TextBox>
             </Grid>
 
-            <Grid Margin="0,55,0,0">
+            <Grid Margin="0,40,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto" />
                     <ColumnDefinition Width="*" />

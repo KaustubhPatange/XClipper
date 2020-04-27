@@ -82,10 +82,13 @@
     <Compile Include="Data\Extensions\CommonExtensions.cs" />
     <Compile Include="Data\Extensions\ScrollViewerExtensions.cs" />
     <Compile Include="Data\Extensions\TypeSpecific\LoopExtensions.cs" />
+    <Compile Include="Data\Extensions\TypeSpecific\StringExtensions.cs" />
     <Compile Include="Data\Extensions\TypeSpecific\ValueConversionExtensions.cs" />
     <Compile Include="Data\Extensions\VisibilityExtensions.cs" />
     <Compile Include="Data\unlocalized\IClipBinder.cs" />
     <Compile Include="Data\unlocalized\MessageType.cs" />
+    <Compile Include="Helpers\LogHelper.cs" />
+    <Compile Include="Helpers\PathHelper.cs" />
     <Compile Include="Helpers\RegistryHelper.cs" />
     <Compile Include="Helpers\WhatToStoreHelper.cs" />
     <Compile Include="models\FilterModel.cs" />

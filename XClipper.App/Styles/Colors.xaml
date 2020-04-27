@@ -25,4 +25,7 @@
 
     <Color x:Key="ColorPinned">#FFD868</Color>
     <SolidColorBrush x:Key="PinnedBrush" Color="{StaticResource ColorPinned}" />
+
+    <Color x:Key="ColorGreen">#339933</Color>
+    <SolidColorBrush x:Key="GreenBrush" Color="{StaticResource ColorGreen}" />
 </ResourceDictionary>

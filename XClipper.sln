@@ -12,6 +12,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XClipper.Core", "XClipper.Core\XClipper.Core.csproj", "{F6B7AE1F-816E-46A1-B6A8-F7C84B1482F9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XClipper.Protect", "XClipper.Protect\XClipper.Protect.csproj", "{B9CF89E8-5106-4627-B93B-0068048DC37B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XClipper.Tests", "XClipper.Tests\XClipper.Tests.csproj", "{E1516FA5-EE2B-46B0-BFB1-D4C590F6C8A0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,6 +30,14 @@ Global
 		{F6B7AE1F-816E-46A1-B6A8-F7C84B1482F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F6B7AE1F-816E-46A1-B6A8-F7C84B1482F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F6B7AE1F-816E-46A1-B6A8-F7C84B1482F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9CF89E8-5106-4627-B93B-0068048DC37B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9CF89E8-5106-4627-B93B-0068048DC37B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9CF89E8-5106-4627-B93B-0068048DC37B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9CF89E8-5106-4627-B93B-0068048DC37B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1516FA5-EE2B-46B0-BFB1-D4C590F6C8A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1516FA5-EE2B-46B0-BFB1-D4C590F6C8A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1516FA5-EE2B-46B0-BFB1-D4C590F6C8A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1516FA5-EE2B-46B0-BFB1-D4C590F6C8A0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

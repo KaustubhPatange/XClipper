@@ -1,8 +1,4 @@
 ﻿using GalaSoft.MvvmLight.CommandWpf;
-using PropertyChanged;
-using System;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.Windows.Input;
 using static Components.MainHelper;
 using MsgBox = System.Windows.Forms.MessageBox;
@@ -10,21 +6,19 @@ using static Components.DefaultSettings;
 
 namespace Components
 {
-    [ImplementPropertyChanged]
-    public class SettingViewModel : INotifyPropertyChanged
+    public class SettingViewModel : BaseViewModel
     {
+
+        #region Constructor
+
         public SettingViewModel()
         {
             KeyDownCommand = new RelayCommand<KeyEventArgs>(OnKeyDown, null);
             SaveCommand = new RelayCommand(SaveButtonClicked);
             ResetCommand = new RelayCommand(ResetButtonClicked);
-
         }
 
-        public event PropertyChangedEventHandler PropertyChanged = (sender, events) =>
-        {
-
-        };
+        #endregion
 
         #region Actual Settings
 
@@ -42,6 +36,7 @@ namespace Components
         public int TCL { get; set; } = TotalClipLength;
         public string KEY_HK { get; set; } = HotKey;
         public string CAL { get; set; } = CurrentAppLanguage;
+        public bool ISDB { get; set; } = IsSecureDB;
 
         #endregion
 
@@ -52,6 +47,7 @@ namespace Components
         {
             SASS = StartOnSystemStartup = true;
             PNS = PlayNotifySound = true;
+            ISDB = IsSecureDB = true;
             WhatToStore = WTS = XClipperStore.All;
             AppDisplayLocation = ADL = XClipperLocation.BottomRight;
             IsCtrl = KEY_IC = true;
@@ -70,6 +66,7 @@ namespace Components
         {
             StartOnSystemStartup = SASS;
             PlayNotifySound = PNS;
+            IsSecureDB = ISDB;
             WhatToStore = WTS;
             AppDisplayLocation = ADL;
             IsCtrl = KEY_IC;

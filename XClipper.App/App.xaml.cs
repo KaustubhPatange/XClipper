@@ -24,6 +24,11 @@ using System.Reflection;
 using System.Windows.Controls;
 using System.Windows;
 using System.Threading;
+using System.Security;
+using static Components.Constants;
+using Microsoft.Win32;
+using System.IO.Compression;
+using static Components.PathHelper;
 
 namespace Components
 {
@@ -34,13 +39,13 @@ namespace Components
     {
         #region Variable Declaration
 
-        public static string BaseDirectory = AppDomain.CurrentDomain.BaseDirectory;
         public static string AppStartupLocation = Assembly.GetExecutingAssembly().Location;
         private ClipboardUtility clipboardUtility = new ClipboardUtility();
         private KeyHookUtility hookUtility = new KeyHookUtility();
         private ClipWindow clipWindow;
         private WinForm.NotifyIcon notifyIcon;
         private SettingWindow settingWindow;
+        private BuyWindow buyWindow;
         public static List<string> LanguageCollection = new List<string>();
         private Mutex appMutex;
         public static ResourceDictionary rm = new ResourceDictionary();
@@ -65,7 +70,10 @@ namespace Components
             hookUtility.Subscribe(LaunchCodeUI);
 
             SetAppStartupEntry();
+
+            CheckForLicense();
         }
+
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -102,6 +110,9 @@ namespace Components
                 //}));
                 App.Current.Shutdown();
             }
+
+            clipWindow = new ClipWindow();
+            clipWindow.Hide();
 
             notifyIcon = new WinForm.NotifyIcon
             {
@@ -146,6 +157,14 @@ namespace Components
                 settingWindow = new SettingWindow();
                 settingWindow.ShowDialog();
             });
+            var BuyWindowItem = CreateNewItem(rm.GetString("app_license"), (o, e) =>
+            {
+                if (buyWindow != null)
+                    buyWindow.Close();
+
+                buyWindow = new BuyWindow();
+                buyWindow.ShowDialog();
+            });
             var RecordMenuItem = CreateNewItem(rm.GetString("app_record"), RecordMenuClicked);
             RecordMenuItem.Checked = ToRecord;
             var AppExitMenuItem = CreateNewItem(rm.GetString("app_exit"), (o, e) =>
@@ -153,8 +172,66 @@ namespace Components
                 Shutdown();
             });
 
-            return new WinForm.MenuItem[] { ShowMenuItem, CreateSeparator(), RecordMenuItem, SettingMenuItem, AppExitMenuItem };
+
+            var BackupMenuItem = CreateNewItem(rm.GetString("app_backup"), BackupClicked);
+            var RestoreMenutItem = CreateNewItem(rm.GetString("app_restore"), RestoreClicked);
+
+            var HelpMenuItem = CreateNewItem(rm.GetString("app_help"), (o, e) =>
+            {
+                Process.Start(new ProcessStartInfo("https://github.com/KaustubhPatange/XClipper"));
+            });
+
+            var items = new List<WinForm.MenuItem>() { ShowMenuItem, CreateSeparator(), BackupMenuItem, RestoreMenutItem, CreateSeparator(), HelpMenuItem, CreateSeparator(), RecordMenuItem, SettingMenuItem, CreateSeparator(), AppExitMenuItem };
+            if (!IsPurchaseDone) items.Insert(1, BuyWindowItem);
+            return items.ToArray();
         }
+
+        private void RestoreClicked(object sender, EventArgs e)
+        {
+            if (!File.Exists(AppSingleton.GetInstance.DatabasePath)) return;
+
+            var ofd = new OpenFileDialog
+            {
+                Title = rm.GetString("clip_file_select"),
+                Filter = "zip|*.zip"
+            };
+            if (ofd.ShowDialog() == true)
+            {
+                var tmp = GetTemporaryPath();
+                ZipFile.ExtractToDirectory(ofd.FileName, tmp);
+
+                var db = Path.Combine(tmp, "data.db");
+                var export = Path.Combine(BaseDirectory, "data.db");
+                File.Copy(db, export);
+
+                File.Delete(db); Directory.Delete(tmp);
+
+                MessageBox.Show("Restore Completed", "Information");
+            }
+        }
+
+        private void BackupClicked(object sender, EventArgs e)
+        {
+            if (!File.Exists(AppSingleton.GetInstance.DatabasePath)) return;
+            var sfd = new SaveFileDialog
+            {
+                FileName = "backup.zip",
+                Title = rm.GetString("clip_file_select"),
+                Filter = "zip|*.zip"
+            };
+            if (sfd.ShowDialog() == true)
+            {
+                if (File.Exists(sfd.FileName)) File.Delete(sfd.FileName);
+
+                var dir = GetTemporaryPath();
+                var db = Path.Combine(dir, "data");
+                File.Copy(AppSingleton.GetInstance.DatabasePath, db);
+                ZipFile.CreateFromDirectory(dir, sfd.FileName);
+
+                File.Delete(db); Directory.Delete(dir);
+            }
+        }
+
         private void RecordMenuClicked(object sender, EventArgs e)
         {
             ToRecord = !ToRecord;
@@ -165,22 +242,20 @@ namespace Components
             else
                 clipboardUtility.StopRecording();
         }
-  
-        private void App_Exit(object sender, System.Windows.ExitEventArgs e)
+
+        private void App_Exit(object sender, ExitEventArgs e)
         {
             hookUtility.Unsubscribe();
         }
 
         private void LaunchCodeUI()
         {
-            if (clipWindow == null)
-                clipWindow = new ClipWindow();
 
             if (!clipWindow.IsVisible)
             {
                 clipWindow.Show();
             }
-        } 
+        }
 
         #endregion
     }

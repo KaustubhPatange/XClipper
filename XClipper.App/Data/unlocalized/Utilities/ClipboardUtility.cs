@@ -9,6 +9,8 @@ using static Components.WhatToStoreHelper;
 using static Components.MainHelper;
 using static Components.DefaultSettings;
 using static WK.Libraries.SharpClipboardNS.SharpClipboard;
+using static Components.Constants;
+using static Components.TableHelper;
 
 namespace Components
 {
@@ -68,7 +70,7 @@ namespace Components
             {
                 if (!string.IsNullOrWhiteSpace(_clipboardFactory.ClipboardText.Trim()))
                 {
-                    InsertContent(CreateTable(_clipboardFactory.ClipboardText, ContentTypes.Text));
+                    AppSingleton.GetInstance.InsertContent(CreateTable(_clipboardFactory.ClipboardText, ContentTypes.Text));
                 }
             }
             else if (e.ContentType == ContentTypes.Image && ToStoreImageClips())
@@ -76,84 +78,21 @@ namespace Components
 
                 if (!Directory.Exists("Images")) Directory.CreateDirectory("Images");
 
-                string filePath = Path.Combine(App.BaseDirectory, $"Images\\{DateTime.Now.ToFormattedDateTime()}.png");
+                string filePath = Path.Combine(BaseDirectory, $"Images\\{DateTime.Now.ToFormattedDateTime()}.png");
                 _clipboardFactory.ClipboardImage.Save(filePath);
 
-                InsertContent(CreateTable(filePath, ContentTypes.Image));
+                AppSingleton.GetInstance.InsertContent(CreateTable(filePath, ContentTypes.Image));
             }
             else if (e.ContentType == ContentTypes.Files && ToStoreFilesClips())
             {
 
-                InsertContent(CreateTable(_clipboardFactory.ClipboardFiles));
+                AppSingleton.GetInstance.InsertContent(CreateTable(_clipboardFactory.ClipboardFiles));
 
                 _clipboardFactory.ClipboardFiles.Clear();
             }
         }
 
         #endregion
-
-        #region Insert Content
-
-        private void InsertContent(TableCopy model)
-        {
-            // Implementation of setting TotalClipLength 
-            var list = AppSingleton.GetInstance.dataDB.Query<TableCopy>("select * from TableCopy").OrderByDescending(s => ParseDateTimeText(s.LastUsedDateTime)).ToList();
-            foreach (var c in list)
-            {
-                if (c.ContentType == model.ContentType)
-                {
-                    switch (model.ContentType)
-                    {
-                        case ContentType.Text:
-                            if (model.Text == c.Text) return;
-                            break;
-                        case ContentType.Image:
-                            if (model.ImagePath == c.ImagePath) return;
-                            break;
-                        case ContentType.Files:
-                            if (model.LongText == c.LongText) return;
-                            break;
-                    }
-                }
-            }
-            if (list.Count >= TotalClipLength)
-            {
-                AppSingleton.GetInstance.dataDB.Delete(list[list.Count - 1]);
-            }
-
-            AppSingleton.GetInstance.dataDB.Insert(model);
-        }
-
-        public TableCopy CreateTable(List<string> files)
-        {
-            var table = new TableCopy();
-            table.Text = $"Copied Files - {files.Count}";
-            table.LongText = string.Join(",", files.ToArray());
-            table.ContentType = ContentType.Files;
-            table.DateTime = table.LastUsedDateTime = DateTime.Now.ToFormattedDateTime();
-            return table;
-        }
-        public TableCopy CreateTable(string RawData, ContentTypes type)
-        {
-            var table = new TableCopy();
-            switch (type)
-            {
-                case ContentTypes.Text:
-                    table.Text = table.LongText = MainHelper.FormatText(RawData);
-                    table.RawText = RawData;
-                    table.ContentType = ContentType.Text;
-                    break;
-                case ContentTypes.Image:
-                    table.Text = "";
-                    table.LongText = "";
-                    table.ImagePath = RawData;
-                    table.ContentType = ContentType.Image;
-                    break;
-            }
-            table.DateTime = table.LastUsedDateTime = DateTime.Now.ToFormattedDateTime();
-            return table;
-        }
-
-        #endregion
+     
     }
 }

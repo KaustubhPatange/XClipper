@@ -1,7 +1,16 @@
-﻿namespace Components
+﻿using System;
+using System.IO;
+
+namespace Components
 {
     public static class Constants
     {
+        public static string BaseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+        public static string RoamingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+        public static string LicenseFilePath = Path.Combine(RoamingDirectory, "xclipper.lic");
+
+        #region Some Filter Constants
+
         public const string CONTENT_FILTER_TEXT = "{ContentType=Text}";
         public const string CONTENT_FILTER_IMAGE = "{ContentType=Image}";
         public const string CONTENT_FILTER_FILES = "{ContentType=Files}";
@@ -11,5 +20,7 @@
         public const string CONTENT_FILTER_NEWEST_FIRST = "{Filter=Newest}";
         public const string CONTENT_FILTER_TEXTLENGTH_DESC = "{Filter=TextLength-desc}";
         public const string CONTENT_FILTER_TEXTLENGTH_ASC = "{Filter=TextLength-asc}";
+
+        #endregion
     }
 }

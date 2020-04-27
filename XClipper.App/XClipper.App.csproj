@@ -42,8 +42,14 @@
     <ApplicationIcon>Resources\icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CalcBinding, Version=2.5.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CalcBinding.2.5.2\lib\net45\CalcBinding.dll</HintPath>
+    </Reference>
     <Reference Include="CommonServiceLocator, Version=2.0.2.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
       <HintPath>..\packages\CommonServiceLocator.2.0.2\lib\net45\CommonServiceLocator.dll</HintPath>
+    </Reference>
+    <Reference Include="DynamicExpresso.Core, Version=2.3.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DynamicExpresso.Core.2.3.1\lib\net45\DynamicExpresso.Core.dll</HintPath>
     </Reference>
     <Reference Include="GalaSoft.MvvmLight, Version=5.4.1.0, Culture=neutral, PublicKeyToken=e7570ab207bcb616, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.dll</HintPath>
@@ -103,6 +109,7 @@
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Drawing.Design" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmLightLibs.5.4.1.1\lib\net45\System.Windows.Interactivity.dll</HintPath>
@@ -129,21 +136,29 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="BuyWindow.xaml.cs">
+      <DependentUpon>BuyWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\GroupSeparator.xaml.cs">
       <DependentUpon>GroupSeparator.xaml</DependentUpon>
     </Compile>
     <Compile Include="Data\Converters\BackgroundConverter.cs" />
+    <Compile Include="Data\Converters\ContentTextblockConverter.cs" />
     <Compile Include="Data\Converters\EnumConverter.cs" />
     <Compile Include="Data\Converters\EnumIndexConverter.cs" />
     <Compile Include="Data\Converters\EnumValueConverter.cs" />
     <Compile Include="Data\Converters\ForegroundConverter.cs" />
+    <Compile Include="Data\Converters\ForegroundTextBlockConverter.cs" />
     <Compile Include="Data\Converters\IndexConverter.cs" />
     <Compile Include="Data\helpers\EnumHelper.cs" />
     <Compile Include="Data\helpers\ExplorerHelper.cs" />
     <Compile Include="Controls\Dialog\FolderSelectDialog.cs" />
     <Compile Include="Data\helpers\KeyPressHelper.cs" />
     <Compile Include="Data\helpers\MenuItemHelper.cs" />
+    <Compile Include="Data\helpers\TableHelper.cs" />
     <Compile Include="Data\helpers\ValueDescription.cs" />
+    <Compile Include="Data\unlocalized\HyperlinkProperties.cs" />
+    <Compile Include="Data\unlocalized\Specials.cs" />
     <Compile Include="Data\unlocalized\Utilities\ClipboardUtility.cs" />
     <Compile Include="Data\unlocalized\Constants.cs" />
     <Compile Include="Data\unlocalized\CustomListView.cs" />
@@ -167,6 +182,8 @@
     <Compile Include="SettingWindow.xaml.cs">
       <DependentUpon>SettingWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModel\BaseViewModel.cs" />
+    <Compile Include="ViewModel\BuyViewModel.cs" />
     <Compile Include="ViewModel\SettingViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -201,6 +218,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="BuyWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ClipWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -279,6 +300,10 @@
     <ProjectReference Include="..\XClipper.Core\XClipper.Core.csproj">
       <Project>{f6b7ae1f-816e-46a1-b6a8-f7c84b1482f9}</Project>
       <Name>XClipper.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\XClipper.Protect\XClipper.Protect.csproj">
+      <Project>{b9cf89e8-5106-4627-b93b-0068048dc37b}</Project>
+      <Name>XClipper.Protect</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
