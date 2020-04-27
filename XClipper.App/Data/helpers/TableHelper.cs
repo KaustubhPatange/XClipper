@@ -17,8 +17,6 @@ namespace Components
             table.ContentType = ContentType.Files;
             table.DateTime = table.LastUsedDateTime = DateTime.Now.ToFormattedDateTime();
 
-            // Encrypt data if settings true
-            table.Encrypt(IsSecureDB && IsPurchaseDone);
             return table;
         }
         public static TableCopy CreateTable(string RawData, ContentTypes type)
@@ -40,8 +38,6 @@ namespace Components
             }
             table.DateTime = table.LastUsedDateTime = DateTime.Now.ToFormattedDateTime();
 
-            // Encrypt data if settings true
-            table.Encrypt(IsSecureDB && IsPurchaseDone);
             return table;
         }
     }

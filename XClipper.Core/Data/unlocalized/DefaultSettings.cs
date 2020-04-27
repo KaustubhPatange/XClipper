@@ -58,6 +58,7 @@ namespace Components
         }
         public static void WriteSettings()
         {
+            
             var parser = InitParser();
             var data = new IniData();
             data[SETTINGS][nameof(AppDisplayLocation)] = AppDisplayLocation.ToString();

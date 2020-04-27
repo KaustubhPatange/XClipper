@@ -1,8 +1,13 @@
 ﻿using GalaSoft.MvvmLight.CommandWpf;
 using System.Windows.Input;
 using static Components.MainHelper;
-using MsgBox = System.Windows.Forms.MessageBox;
 using static Components.DefaultSettings;
+using System.Windows;
+using static Components.App;
+using System.IO;
+using static Components.Constants;
+using System;
+using Components.viewModels;
 
 namespace Components
 {
@@ -11,16 +16,21 @@ namespace Components
 
         #region Constructor
 
+        private bool previousSecureDBValue;
         public SettingViewModel()
         {
             KeyDownCommand = new RelayCommand<KeyEventArgs>(OnKeyDown, null);
             SaveCommand = new RelayCommand(SaveButtonClicked);
             ResetCommand = new RelayCommand(ResetButtonClicked);
+
+            previousSecureDBValue = IsSecureDB;
         }
 
         #endregion
 
         #region Actual Settings
+
+        private bool is_secure_db { get; set; } = IsSecureDB;
 
         // For Start application on system startup.
         public ICommand SaveCommand { get; set; }
@@ -36,7 +46,23 @@ namespace Components
         public int TCL { get; set; } = TotalClipLength;
         public string KEY_HK { get; set; } = HotKey;
         public string CAL { get; set; } = CurrentAppLanguage;
-        public bool ISDB { get; set; } = IsSecureDB;
+        public bool ISDB
+        {
+            get { return is_secure_db; }
+            set
+            {
+                if (value == true != previousSecureDBValue)
+                {
+                    var result = MessageBox.Show(rm.GetString("msg_delete_db"), rm.GetString("msg_warning"), MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        is_secure_db = true;
+                        return;
+                    }
+                }
+                is_secure_db = false;
+            }
+        }
 
         #endregion
 
@@ -47,7 +73,7 @@ namespace Components
         {
             SASS = StartOnSystemStartup = true;
             PNS = PlayNotifySound = true;
-            ISDB = IsSecureDB = true;
+           // ISDB = IsSecureDB = true;
             WhatToStore = WTS = XClipperStore.All;
             AppDisplayLocation = ADL = XClipperLocation.BottomRight;
             IsCtrl = KEY_IC = true;
@@ -58,7 +84,7 @@ namespace Components
             TotalClipLength = TCL = 20;
             SetAppStartupEntry();
             WriteSettings();
-            MsgBox.Show(App.rm.GetString("settings_reset"));
+            MessageBox.Show(App.rm.GetString("settings_reset"));
         }
 
         /** This event will be raised when Save Button is Clicked */
@@ -77,8 +103,29 @@ namespace Components
             CurrentAppLanguage = CAL;
             SetAppStartupEntry();
             WriteSettings();
-            MsgBox.Show(App.rm.GetString("settings_save"));
-        }      
+
+            ToggleSecureDatabase();
+
+            MessageBox.Show(App.rm.GetString("settings_save"));
+        }
+        /** This will delete and create new secure database. */
+        private void ToggleSecureDatabase()
+        {
+            if (previousSecureDBValue != is_secure_db) 
+            {
+                // Create backup folder if does not exist...
+                if (!Directory.Exists(BackupFolder)) Directory.CreateDirectory(BackupFolder);
+
+                // Close connection to database...
+                AppSingleton.GetInstance.dataDB.Close();
+
+                // Create a backup file...
+                File.Move(DatabasePath, Path.Combine(BackupFolder, $"data-{DateTime.Now.ToFormattedDateTime(false)}.db"));
+
+                // Instantiate the database...
+                AppSingleton.GetInstance.Init();
+            }
+        }
 
         /** This event will observe Hot Key value. */
         private void OnKeyDown(KeyEventArgs args)
@@ -86,7 +133,7 @@ namespace Components
             //if (args.IsRepeat)
             //    return;
 
-            if (args.Key != Key.LeftCtrl && args.Key != Key.RightCtrl && args.Key != Key.LeftShift 
+            if (args.Key != Key.LeftCtrl && args.Key != Key.RightCtrl && args.Key != Key.LeftShift
                 && args.Key != Key.RightShift && args.Key != Key.LeftAlt && args.Key != Key.RightAlt
                 && args.Key != Key.System)
                 KEY_HK = args.Key.ToString();

@@ -96,7 +96,7 @@
                     Content="{DynamicResource settings_isdb}"
                     DockPanel.Dock="Left"
                     Foreground="{c:Binding 'core:DefaultSettings.IsPurchaseDone ? media:Brushes.Black : media:Brushes.Gray'}"
-                    IsChecked="{Binding ISDB}"
+                    IsChecked="{Binding ISDB, UpdateSourceTrigger=PropertyChanged}"
                     IsEnabled="{x:Static core:DefaultSettings.IsPurchaseDone}" />
                 <TextBlock
                     Margin="0,3,0,0"

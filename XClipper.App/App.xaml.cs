@@ -61,9 +61,9 @@ namespace Components
         {
             Exit += App_Exit;
 
-            AppSingleton.GetInstance.Init();
-
             LoadSettings();
+
+            AppSingleton.GetInstance.Init();
 
             clipboardUtility.StartRecording();
 
@@ -188,7 +188,7 @@ namespace Components
 
         private void RestoreClicked(object sender, EventArgs e)
         {
-            if (!File.Exists(AppSingleton.GetInstance.DatabasePath)) return;
+            if (!File.Exists(DatabasePath)) return;
 
             var ofd = new OpenFileDialog
             {
@@ -206,13 +206,13 @@ namespace Components
 
                 File.Delete(db); Directory.Delete(tmp);
 
-                MessageBox.Show("Restore Completed", "Information");
+                MessageBox.Show(rm.GetString("msg_restore_db"), rm.GetString("msg_information"));
             }
         }
 
         private void BackupClicked(object sender, EventArgs e)
         {
-            if (!File.Exists(AppSingleton.GetInstance.DatabasePath)) return;
+            if (!File.Exists(DatabasePath)) return;
             var sfd = new SaveFileDialog
             {
                 FileName = "backup.zip",
@@ -225,7 +225,7 @@ namespace Components
 
                 var dir = GetTemporaryPath();
                 var db = Path.Combine(dir, "data");
-                File.Copy(AppSingleton.GetInstance.DatabasePath, db);
+                File.Copy(DatabasePath, db);
                 ZipFile.CreateFromDirectory(dir, sfd.FileName);
 
                 File.Delete(db); Directory.Delete(dir);

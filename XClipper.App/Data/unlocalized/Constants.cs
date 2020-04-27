@@ -8,6 +8,8 @@ namespace Components
         public static string BaseDirectory = AppDomain.CurrentDomain.BaseDirectory;
         public static string RoamingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         public static string LicenseFilePath = Path.Combine(RoamingDirectory, "xclipper.lic");
+        public static string BackupFolder = Path.Combine(BaseDirectory, "Backup");
+        public static string DatabasePath = DatabasePath = Path.Combine(BaseDirectory, "data.db");
 
         #region Some Filter Constants
 

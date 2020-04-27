@@ -28,10 +28,19 @@ namespace Components
             Text, Image, Files
         }
 
+        public static string ToFormattedDateTime(this DateTime value, bool useHypens)
+        {
+            if (useHypens)
+                return value.ToString("yyyy-MM-dd HH-mm-ss");
+            else 
+                return value.ToString("yyyyMMddHHmmss");
+        }
+
         public static string ToFormattedDateTime(this DateTime value)
         {
-            return value.ToString("yyyy-MM-dd HH-mm-ss");
+            return value.ToFormattedDateTime(true);
         }
+
 
         public static string GetString(this ResourceDictionary t, string key) => (string)t[key];
 

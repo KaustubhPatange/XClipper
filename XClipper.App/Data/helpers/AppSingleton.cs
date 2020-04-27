@@ -8,6 +8,7 @@ using static Components.MainHelper;
 using static WK.Libraries.SharpClipboardNS.SharpClipboard;
 using static Components.DefaultSettings;
 using System.Diagnostics;
+using static Components.Core;
 using static Components.Constants;
 
 namespace Components.viewModels
@@ -15,10 +16,10 @@ namespace Components.viewModels
     public sealed class AppSingleton
     {
         private IClipBinder Binder;
-        public string DatabasePath;
-
         public SQLiteConnection dataDB;
         private static AppSingleton Instance = null;
+
+        private List<TableCopy> list;
         public static AppSingleton GetInstance
         {
             get
@@ -34,8 +35,13 @@ namespace Components.viewModels
 
         public void Init()
         {
-            DatabasePath = Path.Combine(BaseDirectory, "data.db");
-            dataDB = new SQLiteConnection(DatabasePath);
+            SQLiteConnectionString options;
+            if (IsSecureDB)
+                options = new SQLiteConnectionString(DatabasePath, true, CONNECTION_PASS);
+            else 
+                options = new SQLiteConnectionString(DatabasePath, true);
+            dataDB = new SQLiteConnection(options);
+            dataDB.CreateTable<TableCopy>();
         }
         public void SetBinder(IClipBinder Binder)
         {
@@ -67,7 +73,7 @@ namespace Components.viewModels
         public void UpdateData(TableCopy model)
         {
             // We will encrypt data here coz... why not...
-            dataDB.Execute("update TableCopy set Text = ?, LongText = ?, RawText = ? where Id = ?", model.Text.Encrypt(), model.LongText.Encrypt(), model.RawText.Encrypt(), model.Id);
+            dataDB.Execute("update TableCopy set Text = ?, LongText = ?, RawText = ? where Id = ?", model.Text, model.LongText, model.RawText, model.Id);
             Binder.OnPopupTextEdited(ClipData);
         }
 
@@ -89,12 +95,12 @@ namespace Components.viewModels
             var data = ClipData;
             return data.Where(x => x.ContentType == ContentType.Text).OrderBy(x => x.RawText.Length).ToList();
         }
-        public List<TableCopy> FilterOldest() => dataDB.Table<TableCopy>().ToList().Futher((s) => s.Decrypt());
-        public List<TableCopy> FilterNewest() => dataDB.Table<TableCopy>().ToList().Futher((s) => s.Decrypt());
-        public List<TableCopy> FilterData(string text) => dataDB.Table<TableCopy>().Where(s => s.Text.ToLower().Contains(text.ToLower())).Reverse().ToList().Futher((s) => s.Decrypt());
-        public List<TableCopy> FilterContentType(ContentType type) => dataDB.Table<TableCopy>().Where(s => s.ContentType == type).Reverse().ToList().Futher((s) => s.Decrypt());
-        public List<TableCopy> FilterPinned() => dataDB.Table<TableCopy>().Where(s => s.IsPinned).Reverse().ToList().Futher((s) => s.Decrypt());
-        public List<TableCopy> FilterUnpinned() => dataDB.Table<TableCopy>().Where(s => !s.IsPinned).Reverse().ToList().Futher((s) => s.Decrypt());
+        public List<TableCopy> FilterOldest() => dataDB.Table<TableCopy>().ToList();
+        public List<TableCopy> FilterNewest() => dataDB.Table<TableCopy>().ToList();
+        public List<TableCopy> FilterData(string text) => dataDB.Table<TableCopy>().Where(s => s.Text.ToLower().Contains(text.ToLower())).Reverse().ToList();
+        public List<TableCopy> FilterContentType(ContentType type) => dataDB.Table<TableCopy>().Where(s => s.ContentType == type).Reverse().ToList();
+        public List<TableCopy> FilterPinned() => dataDB.Table<TableCopy>().Where(s => s.IsPinned).Reverse().ToList();
+        public List<TableCopy> FilterUnpinned() => dataDB.Table<TableCopy>().Where(s => !s.IsPinned).Reverse().ToList();
 
         #endregion
 
@@ -104,11 +110,11 @@ namespace Components.viewModels
             {
                 //Stopwatch s = new Stopwatch();
                 //s.Start();
-                var pinnedItems = dataDB.Query<TableCopy>("select * from TableCopy where IsPinned = 1").Futher((s) => s.Decrypt());
+                var pinnedItems = dataDB.Query<TableCopy>("select * from TableCopy where IsPinned = 1");
                 pinnedItems.Reverse();
 
                 var normalItems = dataDB.Query<TableCopy>("select * from TableCopy where IsPinned = 0")
-                    .OrderByDescending(x => ParseDateTimeText(x.LastUsedDateTime)).ToList().Futher((s) => s.Decrypt());
+                    .OrderByDescending(x => ParseDateTimeText(x.LastUsedDateTime)).ToList();
                 //s.Stop();
                 //Console.WriteLine(s.ElapsedMilliseconds);
                 return pinnedItems.Concat(normalItems).ToList();
