@@ -90,10 +90,9 @@
     <Compile Include="Helpers\LogHelper.cs" />
     <Compile Include="Helpers\PathHelper.cs" />
     <Compile Include="Helpers\RegistryHelper.cs" />
-    <Compile Include="Helpers\WhatToStoreHelper.cs" />
+    <Compile Include="Helpers\ApplicationHelper.cs" />
     <Compile Include="models\FilterModel.cs" />
     <Compile Include="models\TableCopy.cs" />
-    <Compile Include="Data\unlocalized\DefaultSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -14,9 +14,9 @@
     xmlns:media="clr-namespace:System.Windows.Media;assembly=PresentationCore"
     Title="{DynamicResource app_settings}"
     Width="360"
-    Height="355"
     Icon="pack://application:,,,/Resources/clipboard.png"
     ResizeMode="NoResize"
+    SizeToContent="Height"
     Topmost="True"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
@@ -56,7 +56,7 @@
                     Grid.Column="1"
                     Width="100"
                     HorizontalAlignment="Right"
-                    ItemsSource="{Binding Source={local:Enumeration {x:Type core:XClipperStore}}}"
+                    ItemsSource="{Binding Source={local:Enumeration {x:Type local:XClipperStore}}}"
                     SelectedIndex="{Binding WTS, Converter={x:Static local:EnumIndexConverter.Instance}, UpdateSourceTrigger=PropertyChanged}" />
             </Grid>
             <Grid Margin="0,5,0,0">
@@ -69,7 +69,7 @@
                     Grid.Column="1"
                     Width="150"
                     HorizontalAlignment="Right"
-                    ItemsSource="{Binding Source={local:Enumeration {x:Type core:XClipperLocation}}}"
+                    ItemsSource="{Binding Source={local:Enumeration {x:Type local:XClipperLocation}}}"
                     SelectedIndex="{Binding ADL, Converter={x:Static local:EnumIndexConverter.Instance}, UpdateSourceTrigger=PropertyChanged}" />
                 <!--  SelectedValue="{Binding ADL, Converter={x:Static local:EnumConverter.Instance}}"  -->
 
@@ -95,9 +95,10 @@
                 <CheckBox
                     Content="{DynamicResource settings_isdb}"
                     DockPanel.Dock="Left"
-                    Foreground="{c:Binding 'core:DefaultSettings.IsPurchaseDone ? media:Brushes.Black : media:Brushes.Gray'}"
+                    Foreground="{c:Binding 'local:DefaultSettings.IsPurchaseDone ? media:Brushes.Black : media:Brushes.Gray'}"
                     IsChecked="{Binding ISDB, UpdateSourceTrigger=PropertyChanged}"
-                    IsEnabled="{x:Static core:DefaultSettings.IsPurchaseDone}" />
+                    IsEnabled="{x:Static local:DefaultSettings.IsPurchaseDone}" />
+
                 <TextBlock
                     Margin="0,3,0,0"
                     HorizontalAlignment="Right"
@@ -106,6 +107,16 @@
                         <TextBlock Text="{DynamicResource msg_learn}" />
                     </Hyperlink>
                 </TextBlock>
+            </DockPanel>
+            <DockPanel Visibility="{Binding ISDB, Converter={x:Static local:VisibilityConverter.Instance}}">
+                <CheckBox
+                    Margin="15,5,0,0"
+                    Content="Use custom password"
+                    IsChecked="{Binding UCP, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBox
+                    Margin="20,5,0,0"
+                    IsEnabled="{Binding UCP}"
+                    Text="{Binding CP, UpdateSourceTrigger=PropertyChanged}" />
             </DockPanel>
 
             <!--  Hot Key Category  -->
@@ -151,7 +162,7 @@
                 </TextBox>
             </Grid>
 
-            <Grid Margin="0,40,0,0">
+            <Grid Margin="0,40,0,5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto" />
                     <ColumnDefinition Width="*" />

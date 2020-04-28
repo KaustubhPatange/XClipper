@@ -156,6 +156,7 @@
     <Compile Include="Data\Converters\ForegroundConverter.cs" />
     <Compile Include="Data\Converters\ForegroundTextBlockConverter.cs" />
     <Compile Include="Data\Converters\IndexConverter.cs" />
+    <Compile Include="Data\Converters\VisibilityConverter.cs" />
     <Compile Include="Data\helpers\EnumHelper.cs" />
     <Compile Include="Data\helpers\ExplorerHelper.cs" />
     <Compile Include="Controls\Dialog\FolderSelectDialog.cs" />
@@ -163,6 +164,8 @@
     <Compile Include="Data\helpers\MenuItemHelper.cs" />
     <Compile Include="Data\helpers\TableHelper.cs" />
     <Compile Include="Data\helpers\ValueDescription.cs" />
+    <Compile Include="Data\helpers\WhatToStoreHelper.cs" />
+    <Compile Include="Data\unlocalized\DefaultSettings.cs" />
     <Compile Include="Data\unlocalized\HyperlinkProperties.cs" />
     <Compile Include="Data\unlocalized\Specials.cs" />
     <Compile Include="Data\unlocalized\Utilities\ClipboardUtility.cs" />

@@ -19,7 +19,6 @@ namespace Components.viewModels
         public SQLiteConnection dataDB;
         private static AppSingleton Instance = null;
 
-        private List<TableCopy> list;
         public static AppSingleton GetInstance
         {
             get
@@ -32,12 +31,12 @@ namespace Components.viewModels
 
         private AppSingleton()
         { }
-
+        
         public void Init()
         {
             SQLiteConnectionString options;
             if (IsSecureDB)
-                options = new SQLiteConnectionString(DatabasePath, true, CONNECTION_PASS);
+                options = new SQLiteConnectionString(DatabasePath, true, CustomPassword);
             else 
                 options = new SQLiteConnectionString(DatabasePath, true);
             dataDB = new SQLiteConnection(options);
@@ -84,23 +83,21 @@ namespace Components.viewModels
 
         public List<TableCopy> FilterTextLengthDesc()
         {
-            // No decryption here as ClipData returns decrypted models
-            var data = ClipData;
-            return data.Where(x => x.ContentType == ContentType.Text).OrderByDescending(x => x.RawText.Length).ToList();
+            var data = dataDB.Query<TableCopy>("select * from TableCopy");
+            return data.Where(x => x.ContentType == ContentType.Text).OrderByDescending(x => x.RawText.Length).Take(TruncateList).ToList();
         }
 
         public List<TableCopy> FilterTextLengthAsc()
         {
-            // No decryption here as ClipData returns decrypted models
-            var data = ClipData;
-            return data.Where(x => x.ContentType == ContentType.Text).OrderBy(x => x.RawText.Length).ToList();
+            var data = dataDB.Query<TableCopy>("select * from TableCopy");
+            return data.Where(x => x.ContentType == ContentType.Text).OrderBy(x => x.RawText.Length).Take(TruncateList).ToList();
         }
-        public List<TableCopy> FilterOldest() => dataDB.Table<TableCopy>().ToList();
-        public List<TableCopy> FilterNewest() => dataDB.Table<TableCopy>().ToList();
-        public List<TableCopy> FilterData(string text) => dataDB.Table<TableCopy>().Where(s => s.Text.ToLower().Contains(text.ToLower())).Reverse().ToList();
-        public List<TableCopy> FilterContentType(ContentType type) => dataDB.Table<TableCopy>().Where(s => s.ContentType == type).Reverse().ToList();
-        public List<TableCopy> FilterPinned() => dataDB.Table<TableCopy>().Where(s => s.IsPinned).Reverse().ToList();
-        public List<TableCopy> FilterUnpinned() => dataDB.Table<TableCopy>().Where(s => !s.IsPinned).Reverse().ToList();
+        public List<TableCopy> FilterOldest() => dataDB.Table<TableCopy>().Take(TruncateList).ToList();
+        public List<TableCopy> FilterNewest() => dataDB.Table<TableCopy>().Reverse().Take(TruncateList).ToList();
+        public List<TableCopy> FilterData(string text) => dataDB.Table<TableCopy>().Where(s => s.Text.ToLower().Contains(text.ToLower())).Reverse().Take(TruncateList).ToList();
+        public List<TableCopy> FilterContentType(ContentType type) => dataDB.Table<TableCopy>().Where(s => s.ContentType == type).Reverse().Take(TruncateList).ToList();
+        public List<TableCopy> FilterPinned() => dataDB.Table<TableCopy>().Where(s => s.IsPinned).Reverse().Take(TruncateList).ToList();
+        public List<TableCopy> FilterUnpinned() => dataDB.Table<TableCopy>().Where(s => !s.IsPinned).Reverse().Take(TruncateList).ToList();
 
         #endregion
 
@@ -108,16 +105,13 @@ namespace Components.viewModels
         {
             get
             {
-                //Stopwatch s = new Stopwatch();
-                //s.Start();
                 var pinnedItems = dataDB.Query<TableCopy>("select * from TableCopy where IsPinned = 1");
                 pinnedItems.Reverse();
 
                 var normalItems = dataDB.Query<TableCopy>("select * from TableCopy where IsPinned = 0")
-                    .OrderByDescending(x => ParseDateTimeText(x.LastUsedDateTime)).ToList();
-                //s.Stop();
-                //Console.WriteLine(s.ElapsedMilliseconds);
-                return pinnedItems.Concat(normalItems).ToList();
+                    .OrderByDescending(x => ParseDateTimeText(x.LastUsedDateTime));
+
+                return pinnedItems.Concat(normalItems).Take(TruncateList).ToList();
             }
         }
 

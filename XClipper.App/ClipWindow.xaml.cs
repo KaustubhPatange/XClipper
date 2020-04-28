@@ -21,6 +21,9 @@ using System.IO;
 using Microsoft.Win32;
 using Microsoft.VisualBasic.FileIO;
 using System.Windows.Media;
+using System.Collections.Specialized;
+using System.Runtime.InteropServices;
+using System.Xml.Linq;
 
 namespace Components
 {
@@ -45,8 +48,6 @@ namespace Components
 
         #region Constructor
 
-      
-
         public ClipWindow()
         {
 
@@ -62,26 +63,82 @@ namespace Components
             this.Left = X;
             this.Top = Y;
 
-            /** Since when scrolling in listview and moving mouse outside the scope
-              * changes the mouse enter event which eventually hides scrollbar.
+            /** Since when scrolling in listview and moving mouse outside the scope| DragDropEffects.Move
+              * changes the mouse enter event which eventually hides scrollbar. | DragDropEffects.Move
               * In order to prevent this we observer isMouseKeyDown variable. */
 
             PreviewMouseDown += (o, e) => { isMouseKeyDown = true; };
             PreviewMouseUp += (o, e) => { isMouseKeyDown = false; };
 
-            // Focus on the search editbox at start
-            _tbSearchBox.Focus();
+            GotFocus += ClipWindow_GotFocus;
+
+            _lvClip.GiveFeedback += _lvClip_GiveFeedback;
         }
 
+        private void _lvClip_GiveFeedback(object sender, GiveFeedbackEventArgs e)
+        {
+            if (e.Effects.HasFlag(DragDropEffects.Copy))
+            {
+                CloseWindow();
+            }
+        }
+
+        private bool focus = false;
+        private void ClipWindow_GotFocus(object sender, RoutedEventArgs e)
+        {
+            focus = true;
+        }
 
         #endregion
 
 
         #region UI Events
 
-
-
         #region Unlocalised
+
+        /** This will invoke when there is drag on the list Item. */
+        private void _lvClip_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed && _lvClip.SelectedItems.Count > 0)
+            {
+                var model = (TableCopy)_lvClip.SelectedItem;
+                DataObject data = new DataObject();
+                switch (model.ContentType)
+                {
+                    case ContentType.Text:
+                        data.SetData(DataFormats.Text, model.RawText);
+                        break;
+                    case ContentType.Image:
+                        StringCollection fileList = new StringCollection();
+                        fileList.Add(model.ImagePath);
+                        data.SetFileDropList(fileList);
+                        break;
+                    case ContentType.Files:
+                        fileList = new StringCollection();
+                        fileList.AddRange(model.LongText.Split(','));
+                        data.SetFileDropList(fileList);
+                        break;
+                }
+                DragDrop.DoDragDrop(_lvClip, data, DragDropEffects.Copy);
+            }
+        }
+
+        /** The method will be called whenever main window is not active. */
+        private void ClipWindow_Deactivated(object sender, EventArgs e)
+        {
+            if (!ApplicationHelper.IsActivated() || !focus)
+            {
+                CloseWindow();
+            }
+        }
+
+        /** Overriding method which triggers whenever our instance is rendered. */
+        protected override void OnContentRendered(EventArgs e)
+        {
+            // Focus on the search editbox.
+            _lvClip.SelectedIndex = 0;
+            _lvClip.Focus();
+        }
 
         /** Whenever mouse is placed on certain position on window, we will manipulate
          *  ScollViewer on listview. */
@@ -104,14 +161,14 @@ namespace Components
             {
                 Thread.Sleep(400);
             });
-           CloseWindow();
+            CloseWindow();
         }
 
         private void SearchTextChanged(object sender, TextChangedEventArgs e)
         {
             if (!string.IsNullOrWhiteSpace(_tbSearchBox.Text))
             {
-                switch(_tbSearchBox.Text)
+                switch (_tbSearchBox.Text)
                 {
                     case CONTENT_FILTER_TEXT:
                         _lvClip.ItemsSource = AppSingleton.GetInstance.FilterContentType(ContentType.Text);
@@ -141,7 +198,14 @@ namespace Components
                         _lvClip.ItemsSource = AppSingleton.GetInstance.FilterNewest();
                         break;
                     default:
+
                         _lvClip.ItemsSource = AppSingleton.GetInstance.FilterData(_tbSearchBox.Text);
+                        //await Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Render, (Action)delegate
+                        // {
+                        //     _lvClip.ItemsSource = AppSingleton.GetInstance.FilterData(_tbSearchBox.Text);
+                        // });
+
+
                         break;
                 }
             }
@@ -151,7 +215,7 @@ namespace Components
         {
             var button = (Button)sender;
             var type = button.Content.ToString().ToEnum<ContentType>();
-            switch(type)
+            switch (type)
             {
                 case ContentType.Text:
                     _tbSearchBox.Text = CONTENT_FILTER_TEXT;
@@ -239,7 +303,7 @@ namespace Components
                     _filterWindow.Hide();
                 }
                 else
-                   CloseWindow();
+                    CloseWindow();
             }
             else
             {
@@ -452,6 +516,7 @@ namespace Components
         {
             Hide();
             _lvClip.ItemsSource = null;
+            _tbSearchBox.Clear();
         }
 
         /** This will show filter window. */
@@ -491,7 +556,7 @@ namespace Components
                     files.ForEach((file) => FileSystem.CopyFile(file, Path.Combine(fd.FileName, Path.GetFileName(file)), UIOption.AllDialogs));
 
                     // Finally Close the window...
-                   CloseWindow();
+                    CloseWindow();
                 }
             }
             else
@@ -503,7 +568,7 @@ namespace Components
                 files.ForEach((file) => FileSystem.CopyFile(file, Path.Combine(pasteLocation, Path.GetFileName(file)), UIOption.AllDialogs));
 
                 // Finally Close the window...
-               CloseWindow();
+                CloseWindow();
             }
         }
 
@@ -529,7 +594,7 @@ namespace Components
                     File.Copy(imgPath, sfd.FileName, true);
 
                     // Finally Close the window...
-                   CloseWindow();
+                    CloseWindow();
                 }
             }
             else
@@ -541,7 +606,7 @@ namespace Components
                 File.Copy(imgPath, Path.Combine(pasteLocation, Path.GetFileName(imgPath)), true);
 
                 // Finally Close the window...
-               CloseWindow();
+                CloseWindow();
             }
         }
 
@@ -561,7 +626,7 @@ namespace Components
             Clipboard.SetText(clipboardText);
 
             // Finally Close the window...
-           CloseWindow();
+            CloseWindow();
         }
 
         /** This function will focus the item of listview. */

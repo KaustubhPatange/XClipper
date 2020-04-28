@@ -14,7 +14,17 @@ namespace XClipper.Tests
     public class GeneralTest
     {
 
+        [TestMethod]
+        public void EncyptionTest()
+        {
+            Debug.WriteLine("RidiculousPassword".Encrypt());
+        }
 
+        [TestMethod]
+        public void DecryptionTest()
+        {
+            Debug.WriteLine("nD1PkIKddzEcs8dDxniZpZ0ADzUHEFyb/H2xzPVpTJwZDC9Tut3eOLL5xkMR9bC7m41LyeApjqE/jbSQfJMZgc1YOubKA/Ejo5/4tI1OsXSGNREDY1n9igo74b5fk0wN".Decrypt());
+        }
         /** Results
          * --------
          *  1. 50 approx (not encrypted): 98-99 ms

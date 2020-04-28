@@ -5,6 +5,7 @@ using IniParser.Model;
 using System;
 using System.Collections.Generic;
 using System.Security;
+using static Components.Core;
 
 namespace Components
 {
@@ -44,7 +45,9 @@ namespace Components
         public static bool IsSecureDB { get; set; } = false;
         // A string to hold if purchase complete.
         public static bool IsPurchaseDone { get; set; }
-
+        public static bool UseCustomPassword { get; set; } = false;
+        public static string CustomPassword { get; set; } = CONNECTION_PASS.Decrypt();
+        public static int TruncateList { get; set; } = 20;
 
         #endregion
 
@@ -72,6 +75,8 @@ namespace Components
             data[SETTINGS][nameof(PlayNotifySound)] = PlayNotifySound.ToString();
             data[SETTINGS][nameof(IsSecureDB)] = IsSecureDB.ToString();
             data[SETTINGS][nameof(CurrentAppLanguage)] = CurrentAppLanguage;
+            data[SETTINGS][nameof(CustomPassword)] = CustomPassword.Encrypt();
+            data[SETTINGS][nameof(UseCustomPassword)] = UseCustomPassword.ToString();
             parser.WriteFile(SettingsPath, data);
         }
 
@@ -87,7 +92,9 @@ namespace Components
             IsAlt = data[SETTINGS][nameof(IsAlt)].ToBool();
             IsShift = data[SETTINGS][nameof(IsShift)].ToBool();
             HotKey = data[SETTINGS][nameof(HotKey)];
+            CustomPassword = data[SETTINGS][nameof(CustomPassword)].Decrypt();
             IsSecureDB = data[SETTINGS][nameof(IsSecureDB)].ToBool();
+            UseCustomPassword = data[SETTINGS][nameof(UseCustomPassword)].ToBool();
             CurrentAppLanguage = data[SETTINGS][nameof(CurrentAppLanguage)];
             StartOnSystemStartup = data[SETTINGS][nameof(StartOnSystemStartup)].ToBool();
             PlayNotifySound = data[SETTINGS][nameof(PlayNotifySound)].ToBool();

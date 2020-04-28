@@ -89,25 +89,13 @@ namespace Components
             Resources.MergedDictionaries.RemoveAt(Resources.MergedDictionaries.Count - 1);
             Resources.MergedDictionaries.Add(rm);
 
-            /** This follow consequent code will make this app
-             *  to run only single instance.
-             */
+    
 
             bool IsNewInstance = false;
             appMutex = new Mutex(true, rm.GetString("app_name"), out IsNewInstance);
             if (!IsNewInstance)
             {
-                //var appNotify = new WinForm.NotifyIcon()
-                //{
-                //    Icon = AppResource.icon,
-                //    Text = rm.GetString("app_name"),
-                //    Visible = true
-                //};
-                //Dispatcher.BeginInvoke(new Action(() =>
-                //{
-                //    appNotify.BalloonTipText = rm.GetString("app_isrun_service");
-                //    appNotify.ShowBalloonTip(3000);
-                //}));
+ 
                 App.Current.Shutdown();
             }
 

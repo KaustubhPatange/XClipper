@@ -8,6 +8,8 @@ using System.IO;
 using static Components.Constants;
 using System;
 using Components.viewModels;
+using static Components.Core;
+using System.Windows.Controls;
 
 namespace Components
 {
@@ -17,6 +19,8 @@ namespace Components
         #region Constructor
 
         private bool previousSecureDBValue;
+        private string previousPassword;
+
         public SettingViewModel()
         {
             KeyDownCommand = new RelayCommand<KeyEventArgs>(OnKeyDown, null);
@@ -24,6 +28,7 @@ namespace Components
             ResetCommand = new RelayCommand(ResetButtonClicked);
 
             previousSecureDBValue = IsSecureDB;
+            previousPassword = CustomPassword;
         }
 
         #endregion
@@ -43,6 +48,8 @@ namespace Components
         public bool KEY_IC { get; set; } = IsCtrl;
         public bool KEY_IS { get; set; } = IsShift;
         public bool KEY_IA { get; set; } = IsAlt;
+        public bool UCP { get; set; } = UseCustomPassword;
+        public string CP { get; set; } = CustomPassword;
         public int TCL { get; set; } = TotalClipLength;
         public string KEY_HK { get; set; } = HotKey;
         public string CAL { get; set; } = CurrentAppLanguage;
@@ -56,7 +63,7 @@ namespace Components
                     var result = MessageBox.Show(rm.GetString("msg_delete_db"), rm.GetString("msg_warning"), MessageBoxButton.YesNo, MessageBoxImage.Warning);
                     if (result == MessageBoxResult.Yes)
                     {
-                        is_secure_db = true;
+                        is_secure_db = value;
                         return;
                     }
                 }
@@ -73,11 +80,13 @@ namespace Components
         {
             SASS = StartOnSystemStartup = true;
             PNS = PlayNotifySound = true;
-           // ISDB = IsSecureDB = true;
+            // ISDB = IsSecureDB = true;
             WhatToStore = WTS = XClipperStore.All;
             AppDisplayLocation = ADL = XClipperLocation.BottomRight;
             IsCtrl = KEY_IC = true;
             IsAlt = KEY_IA = false;
+            UCP = UseCustomPassword = false;
+            CP = CustomPassword = CONNECTION_PASS.Decrypt();
             IsShift = KEY_IS = false;
             HotKey = KEY_HK = "Oem3";
             CurrentAppLanguage = CAL = "locales\\en.xaml";
@@ -96,35 +105,70 @@ namespace Components
             WhatToStore = WTS;
             AppDisplayLocation = ADL;
             IsCtrl = KEY_IC;
+            UseCustomPassword = UCP;
             IsShift = KEY_IS;
             IsAlt = KEY_IA;
             TotalClipLength = TCL;
             HotKey = KEY_HK;
             CurrentAppLanguage = CAL;
             SetAppStartupEntry();
-            WriteSettings();
+
+            ToggleCustomPassword();
 
             ToggleSecureDatabase();
 
+            WriteSettings();
+
             MessageBox.Show(App.rm.GetString("settings_save"));
         }
+
+        /** This method will set which password to use for database encryption */
+        private void ToggleCustomPassword()
+        {
+            if (UseCustomPassword)
+            {
+                CustomPassword = CP;
+            }
+            else
+            {
+                CustomPassword = CONNECTION_PASS.Decrypt();
+            }
+        }
+
         /** This will delete and create new secure database. */
         private void ToggleSecureDatabase()
         {
-            if (previousSecureDBValue != is_secure_db) 
+            if (previousSecureDBValue != is_secure_db)
             {
-                // Create backup folder if does not exist...
-                if (!Directory.Exists(BackupFolder)) Directory.CreateDirectory(BackupFolder);
-
-                // Close connection to database...
-                AppSingleton.GetInstance.dataDB.Close();
-
-                // Create a backup file...
-                File.Move(DatabasePath, Path.Combine(BackupFolder, $"data-{DateTime.Now.ToFormattedDateTime(false)}.db"));
-
-                // Instantiate the database...
-                AppSingleton.GetInstance.Init();
+                RecreateDatabase();
             }
+            else if (previousPassword != CP)
+            {
+                var result = MessageBox.Show(rm.GetString("msg_delete_db"), rm.GetString("msg_warning"), MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (result == MessageBoxResult.Yes)
+                {
+                    RecreateDatabase();
+                }else
+                {
+                    // Restore the value
+                    CP = CustomPassword = CONNECTION_PASS.Decrypt();
+                }
+            }
+        }
+
+        private void RecreateDatabase()
+        {
+            // Create backup folder if does not exist...
+            if (!Directory.Exists(BackupFolder)) Directory.CreateDirectory(BackupFolder);
+
+            // Close connection to database...
+            AppSingleton.GetInstance.dataDB.Close();
+
+            // Create a backup file...
+            File.Move(DatabasePath, Path.Combine(BackupFolder, $"data-{DateTime.Now.ToFormattedDateTime(false)}.db"));
+
+            // Instantiate the database...
+            AppSingleton.GetInstance.Init();
         }
 
         /** This event will observe Hot Key value. */
