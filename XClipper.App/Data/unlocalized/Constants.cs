@@ -1,10 +1,12 @@
 ﻿using System;
 using System.IO;
+using System.Windows.Forms;
 
 namespace Components
 {
     public static class Constants
     {
+       
         public static string BaseDirectory = AppDomain.CurrentDomain.BaseDirectory;
         public static string RoamingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         public static string LicenseFilePath = Path.Combine(RoamingDirectory, "xclipper.lic");

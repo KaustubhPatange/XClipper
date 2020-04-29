@@ -5,11 +5,23 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Interop;
 
 namespace Components
 {
     public static class ApplicationHelper
     {
+        #region Constants
+
+        const UInt32 SWP_NOSIZE = 0x0001;
+        const UInt32 SWP_NOMOVE = 0x0002;
+        const UInt32 SWP_SHOWWINDOW = 0x0040;
+
+        #endregion
+
+        #region Methods
+
         /// <summary>Returns true if the current application has focus, false otherwise</summary>
         public static bool IsActivated()
         {
@@ -25,12 +37,55 @@ namespace Components
 
             return activeProcId == procId;
         }
+  
+        /// <summary>
+        /// Activate a window from anywhere by attaching to the foreground window
+        /// </summary>
+        public static void GlobalActivate(this Window w)
+        {
 
+            //Get the process ID for this window's thread, you can also pass current process Id as well.
+            var interopHelper = new WindowInteropHelper(w);
+            var thisWindowThreadId = GetWindowThreadProcessId(interopHelper.Handle, IntPtr.Zero);
+
+            //Get the process ID for the foreground window's thread
+            var currentForegroundWindow = GetForegroundWindow();
+            var currentForegroundWindowThreadId = GetWindowThreadProcessId(currentForegroundWindow, IntPtr.Zero);
+
+            //Attach this window's thread to the current window's thread
+            AttachThreadInput(currentForegroundWindowThreadId, thisWindowThreadId, true);
+
+            //Set the window position
+            SetWindowPos(interopHelper.Handle, new IntPtr(0), 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_SHOWWINDOW);
+
+            //Detach this window's thread from the current window's thread
+            AttachThreadInput(currentForegroundWindowThreadId, thisWindowThreadId, false);
+
+            //Show and activate the window
+            if (w.WindowState == WindowState.Minimized) w.WindowState = WindowState.Normal;
+            w.Show();
+            w.Activate();
+        }
+
+        #endregion
+
+        #region Imports
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
         private static extern IntPtr GetForegroundWindow();
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         private static extern int GetWindowThreadProcessId(IntPtr handle, out int processId);
+
+        [DllImport("user32.dll")]
+        private static extern uint GetWindowThreadProcessId(IntPtr hWnd, IntPtr ProcessId);
+
+        [DllImport("user32.dll")]
+        private static extern bool AttachThreadInput(uint idAttach, uint idAttachTo, bool fAttach);
+
+        [DllImport("user32.dll")]
+        public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+
+        #endregion
     }
 }

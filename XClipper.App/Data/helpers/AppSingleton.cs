@@ -10,6 +10,7 @@ using static Components.DefaultSettings;
 using System.Diagnostics;
 using static Components.Core;
 using static Components.Constants;
+using System.Windows.Documents;
 
 namespace Components.viewModels
 {
@@ -31,13 +32,13 @@ namespace Components.viewModels
 
         private AppSingleton()
         { }
-        
+
         public void Init()
         {
             SQLiteConnectionString options;
             if (IsSecureDB)
                 options = new SQLiteConnectionString(DatabasePath, true, CustomPassword);
-            else 
+            else
                 options = new SQLiteConnectionString(DatabasePath, true);
             dataDB = new SQLiteConnection(options);
             dataDB.CreateTable<TableCopy>();
@@ -101,6 +102,8 @@ namespace Components.viewModels
 
         #endregion
 
+        public List<TableCopy> GetAllData() => dataDB.Query<TableCopy>("select * from TableCopy");
+
         public List<TableCopy> ClipData
         {
             get
@@ -114,6 +117,8 @@ namespace Components.viewModels
                 return pinnedItems.Concat(normalItems).Take(TruncateList).ToList();
             }
         }
+
+        #region SQLite Methods
 
         #region Insert Content
 
@@ -152,6 +157,16 @@ namespace Components.viewModels
 
         #endregion
 
+        #region DeleteData
+
+        public void DeleteAllData()
+        {
+            dataDB.DeleteAll<TableCopy>();
+        }
+
+        #endregion
+
+        #endregion    
     }
 
 }

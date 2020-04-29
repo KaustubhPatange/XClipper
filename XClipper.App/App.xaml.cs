@@ -1,34 +1,21 @@
-﻿using ClipboardManager.models;
-//using ClipboardManager.Properties;
-using Gma.System.MouseKeyHook;
-using SQLite;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using WinForm = System.Windows.Forms;
 using AppResource = Components.Properties.Resources;
-using WK.Libraries.SharpClipboardNS;
-using Components;
 using static Components.DefaultSettings;
 using static Components.MenuItemHelper;
 using static Components.MainHelper;
-using static Components.CommonExtensions;
-using static Components.WhatToStoreHelper;
-using static Components.KeyPressHelper;
-using static WK.Libraries.SharpClipboardNS.SharpClipboard;
-using System.Linq;
 using Components.viewModels;
-using System.Resources;
 using System.Reflection;
-using System.Windows.Controls;
 using System.Windows;
 using System.Threading;
-using System.Security;
 using static Components.Constants;
 using Microsoft.Win32;
 using System.IO.Compression;
 using static Components.PathHelper;
+using System.Runtime.CompilerServices;
 
 namespace Components
 {
@@ -59,7 +46,6 @@ namespace Components
 
         public App()
         {
-            Exit += App_Exit;
 
             LoadSettings();
 
@@ -74,9 +60,13 @@ namespace Components
             CheckForLicense();
         }
 
+        #endregion
+
+        #region Method overloads
 
         protected override void OnStartup(StartupEventArgs e)
         {
+
             base.OnStartup(e);
 
             foreach (var file in Directory.GetFiles("locales", "*.xaml"))
@@ -89,13 +79,11 @@ namespace Components
             Resources.MergedDictionaries.RemoveAt(Resources.MergedDictionaries.Count - 1);
             Resources.MergedDictionaries.Add(rm);
 
-    
-
             bool IsNewInstance = false;
             appMutex = new Mutex(true, rm.GetString("app_name"), out IsNewInstance);
             if (!IsNewInstance)
             {
- 
+
                 App.Current.Shutdown();
             }
 
@@ -115,52 +103,31 @@ namespace Components
             DisplayNotifyMessage();
         }
 
-        #endregion
-
-        #region Method Events
-
-        private void DisplayNotifyMessage()
+        protected override void OnExit(ExitEventArgs e)
         {
-            if (PlayNotifySound)
-            {
-                Dispatcher.BeginInvoke(new Action(() =>
-                {
-                    notifyIcon.BalloonTipText = rm.GetString("app_start_service");
-                    notifyIcon.ShowBalloonTip(3000);
-                }));
-            }
+            hookUtility.Unsubscribe();
+
+            base.OnExit(e);
         }
 
+        #endregion
+
+        #region ContextMenu
+
+        #region Items
+
+        /// <summary>
+        /// This will return a list of items to be shown in system tray context list.
+        /// </summary>
+        /// <returns></returns>
         private WinForm.MenuItem[] DefaultItems()
         {
-            var ShowMenuItem = CreateNewItem(rm.GetString("app_show"), (o, e) =>
-            {
-                LaunchCodeUI();
-            });
-            var SettingMenuItem = CreateNewItem(rm.GetString("app_settings"), (o, e) =>
-            {
-                if (settingWindow != null)
-                    settingWindow.Close();
-
-                settingWindow = new SettingWindow();
-                settingWindow.ShowDialog();
-            });
-            var BuyWindowItem = CreateNewItem(rm.GetString("app_license"), (o, e) =>
-            {
-                if (buyWindow != null)
-                    buyWindow.Close();
-
-                buyWindow = new BuyWindow();
-                buyWindow.ShowDialog();
-            });
-            var RecordMenuItem = CreateNewItem(rm.GetString("app_record"), RecordMenuClicked);
-            RecordMenuItem.Checked = ToRecord;
-            var AppExitMenuItem = CreateNewItem(rm.GetString("app_exit"), (o, e) =>
-            {
-                Shutdown();
-            });
-
-
+            var ShowMenuItem = CreateNewItem(rm.GetString("app_show"), delegate { LaunchCodeUI(); });
+            var SettingMenuItem = CreateNewItem(rm.GetString("app_settings"), SettingMenuClicked);
+            var BuyWindowItem = CreateNewItem(rm.GetString("app_license"), BuyMenuClicked);
+            var RecordMenuItem = CreateNewItem(rm.GetString("app_record"), RecordMenuClicked).Also(s => { s.Checked = ToRecord; });
+            var AppExitMenuItem = CreateNewItem(rm.GetString("app_exit"), delegate { Shutdown(); });
+            var DeleteMenuItem = CreateNewItem(rm.GetString("app_delete"), DeleteDataClicked);
             var BackupMenuItem = CreateNewItem(rm.GetString("app_backup"), BackupClicked);
             var RestoreMenutItem = CreateNewItem(rm.GetString("app_restore"), RestoreClicked);
 
@@ -169,9 +136,36 @@ namespace Components
                 Process.Start(new ProcessStartInfo("https://github.com/KaustubhPatange/XClipper"));
             });
 
-            var items = new List<WinForm.MenuItem>() { ShowMenuItem, CreateSeparator(), BackupMenuItem, RestoreMenutItem, CreateSeparator(), HelpMenuItem, CreateSeparator(), RecordMenuItem, SettingMenuItem, CreateSeparator(), AppExitMenuItem };
+            var items = new List<WinForm.MenuItem>() { ShowMenuItem, CreateSeparator(), BackupMenuItem, RestoreMenutItem, CreateSeparator(), HelpMenuItem, CreateSeparator(), RecordMenuItem, DeleteMenuItem, SettingMenuItem, CreateSeparator(), AppExitMenuItem };
             if (!IsPurchaseDone) items.Insert(1, BuyWindowItem);
             return items.ToArray();
+        }
+
+        #endregion
+
+        #region Invokes
+        private void SettingMenuClicked(object sender, EventArgs e)
+        {
+            if (settingWindow != null)
+                settingWindow.Close();
+
+            settingWindow = new SettingWindow();
+            settingWindow.ShowDialog();
+        }
+
+        private void BuyMenuClicked(object sender, EventArgs e)
+        {
+            if (buyWindow != null)
+                buyWindow.Close();
+
+            buyWindow = new BuyWindow();
+            buyWindow.ShowDialog();
+        }
+
+        private void DeleteDataClicked(object sender, EventArgs e)
+        {
+            var msg = MessageBox.Show(rm.GetString("msg_delete_all"), rm.GetString("msg_warning"), MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            if (msg == MessageBoxResult.Yes) AppSingleton.GetInstance.DeleteAllData();
         }
 
         private void RestoreClicked(object sender, EventArgs e)
@@ -231,18 +225,36 @@ namespace Components
                 clipboardUtility.StopRecording();
         }
 
-        private void App_Exit(object sender, ExitEventArgs e)
-        {
-            hookUtility.Unsubscribe();
-        }
+        #endregion
 
+        #endregion
+
+        #region Method Events
+
+        private void DisplayNotifyMessage()
+        {
+            if (PlayNotifySound)
+            {
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    notifyIcon.BalloonTipText = rm.GetString("app_start_service");
+                    notifyIcon.ShowBalloonTip(3000);
+                }));
+            }
+        }
+     
         private void LaunchCodeUI()
         {
+            clipWindow.WindowState = WindowState.Normal;
 
             if (!clipWindow.IsVisible)
             {
                 clipWindow.Show();
+                clipWindow._tbSearchBox.Focus();
+                ApplicationHelper.GlobalActivate(clipWindow);
             }
+            else
+                clipWindow.CloseWindow();
         }
 
         #endregion

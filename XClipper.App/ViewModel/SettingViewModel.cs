@@ -67,7 +67,7 @@ namespace Components
                         return;
                     }
                 }
-                is_secure_db = false;
+                is_secure_db = value;
             }
         }
 
@@ -140,14 +140,14 @@ namespace Components
         {
             if (previousSecureDBValue != is_secure_db)
             {
-                RecreateDatabase();
+                MigrateDatabase();
             }
             else if (previousPassword != CP)
             {
                 var result = MessageBox.Show(rm.GetString("msg_delete_db"), rm.GetString("msg_warning"), MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 if (result == MessageBoxResult.Yes)
                 {
-                    RecreateDatabase();
+                    MigrateDatabase();
                 }else
                 {
                     // Restore the value
@@ -156,19 +156,22 @@ namespace Components
             }
         }
 
-        private void RecreateDatabase()
+        private void MigrateDatabase()
         {
-            // Create backup folder if does not exist...
-            if (!Directory.Exists(BackupFolder)) Directory.CreateDirectory(BackupFolder);
+            // Get list of all data...
+            var previousData = AppSingleton.GetInstance.GetAllData();
 
             // Close connection to database...
             AppSingleton.GetInstance.dataDB.Close();
 
-            // Create a backup file...
-            File.Move(DatabasePath, Path.Combine(BackupFolder, $"data-{DateTime.Now.ToFormattedDateTime(false)}.db"));
+            // Delete the existing database...
+            File.Delete(DatabasePath);
 
             // Instantiate the database...
             AppSingleton.GetInstance.Init();
+
+            // Restore the tables in the database...
+            AppSingleton.GetInstance.dataDB.InsertAll(previousData);
         }
 
         /** This event will observe Hot Key value. */

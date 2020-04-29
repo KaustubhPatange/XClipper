@@ -90,6 +90,7 @@
             Grid.Row="1"
             Margin="0,0,0,5"
             Background="{StaticResource BackgroundBrush}"
+            GiveFeedback="_lvClip_GiveFeedback"
             MouseMove="_lvClip_MouseMove"
             ScrollViewer.CanContentScroll="False"
             ScrollViewer.VerticalScrollBarVisibility="Hidden"

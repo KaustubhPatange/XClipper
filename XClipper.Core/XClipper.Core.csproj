@@ -42,7 +42,7 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="SQLite-net, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\sqlite-net-pcl.1.4.118\lib\netstandard1.1\SQLite-net.dll</HintPath>
+      <HintPath>..\packages\sqlite-net-sqlcipher.1.6.292\lib\netstandard1.1\SQLite-net.dll</HintPath>
     </Reference>
     <Reference Include="SQLite.Net, Version=3.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SQLite.Net.Core-PCL.3.1.1\lib\portable-win8+net45+wp8+wpa81+MonoAndroid1+MonoTouch1\SQLite.Net.dll</HintPath>
@@ -59,14 +59,20 @@
     <Reference Include="SQLitePCLRaw.batteries_green, Version=1.0.0.0, Culture=neutral, PublicKeyToken=a84b7dcfb1391f7f, processorArchitecture=MSIL">
       <HintPath>..\packages\SQLitePCLRaw.bundle_green.1.1.5\lib\net45\SQLitePCLRaw.batteries_green.dll</HintPath>
     </Reference>
-    <Reference Include="SQLitePCLRaw.batteries_v2, Version=1.0.0.0, Culture=neutral, PublicKeyToken=8226ea5df37bcae9, processorArchitecture=MSIL">
-      <HintPath>..\packages\SQLitePCLRaw.bundle_green.1.1.5\lib\net45\SQLitePCLRaw.batteries_v2.dll</HintPath>
+    <Reference Include="SQLitePCLRaw.batteries_sqlcipher, Version=1.1.13.388, Culture=neutral, PublicKeyToken=83625171f3d0bf82, processorArchitecture=MSIL">
+      <HintPath>..\packages\SQLitePCLRaw.bundle_sqlcipher.1.1.13\lib\net45\SQLitePCLRaw.batteries_sqlcipher.dll</HintPath>
     </Reference>
-    <Reference Include="SQLitePCLRaw.core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=1488e028ca7ab535, processorArchitecture=MSIL">
-      <HintPath>..\packages\SQLitePCLRaw.core.1.1.5\lib\net45\SQLitePCLRaw.core.dll</HintPath>
+    <Reference Include="SQLitePCLRaw.batteries_v2, Version=1.1.13.388, Culture=neutral, PublicKeyToken=8226ea5df37bcae9, processorArchitecture=MSIL">
+      <HintPath>..\packages\SQLitePCLRaw.bundle_sqlcipher.1.1.13\lib\net45\SQLitePCLRaw.batteries_v2.dll</HintPath>
+    </Reference>
+    <Reference Include="SQLitePCLRaw.core, Version=1.1.13.388, Culture=neutral, PublicKeyToken=1488e028ca7ab535, processorArchitecture=MSIL">
+      <HintPath>..\packages\SQLitePCLRaw.core.1.1.13\lib\net45\SQLitePCLRaw.core.dll</HintPath>
     </Reference>
     <Reference Include="SQLitePCLRaw.provider.e_sqlite3, Version=1.0.0.0, Culture=neutral, PublicKeyToken=9c301db686d0bd12, processorArchitecture=MSIL">
       <HintPath>..\packages\SQLitePCLRaw.provider.e_sqlite3.net45.1.1.5\lib\net45\SQLitePCLRaw.provider.e_sqlite3.dll</HintPath>
+    </Reference>
+    <Reference Include="SQLitePCLRaw.provider.sqlcipher, Version=1.1.13.388, Culture=neutral, PublicKeyToken=7bbc99275c710061, processorArchitecture=MSIL">
+      <HintPath>..\packages\SQLitePCLRaw.provider.sqlcipher.net45.1.1.13\lib\net45\SQLitePCLRaw.provider.sqlcipher.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -80,6 +86,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\Extensions\CommonExtensions.cs" />
+    <Compile Include="Data\Extensions\GenericExtensions.cs" />
     <Compile Include="Data\Extensions\ScrollViewerExtensions.cs" />
     <Compile Include="Data\Extensions\TypeSpecific\LoopExtensions.cs" />
     <Compile Include="Data\Extensions\TypeSpecific\StringExtensions.cs" />
@@ -96,6 +103,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -107,7 +115,13 @@
     <Error Condition="!Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.linux.1.1.5\build\net35\SQLitePCLRaw.lib.e_sqlite3.linux.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SQLitePCLRaw.lib.e_sqlite3.linux.1.1.5\build\net35\SQLitePCLRaw.lib.e_sqlite3.linux.targets'))" />
     <Error Condition="!Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.osx.1.1.5\build\net35\SQLitePCLRaw.lib.e_sqlite3.osx.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SQLitePCLRaw.lib.e_sqlite3.osx.1.1.5\build\net35\SQLitePCLRaw.lib.e_sqlite3.osx.targets'))" />
     <Error Condition="!Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.v110_xp.1.1.5\build\net35\SQLitePCLRaw.lib.e_sqlite3.v110_xp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SQLitePCLRaw.lib.e_sqlite3.v110_xp.1.1.5\build\net35\SQLitePCLRaw.lib.e_sqlite3.v110_xp.targets'))" />
+    <Error Condition="!Exists('..\packages\SQLitePCLRaw.lib.sqlcipher.linux.1.1.13\build\net35\SQLitePCLRaw.lib.sqlcipher.linux.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SQLitePCLRaw.lib.sqlcipher.linux.1.1.13\build\net35\SQLitePCLRaw.lib.sqlcipher.linux.targets'))" />
+    <Error Condition="!Exists('..\packages\SQLitePCLRaw.lib.sqlcipher.osx.1.1.13\build\net35\SQLitePCLRaw.lib.sqlcipher.osx.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SQLitePCLRaw.lib.sqlcipher.osx.1.1.13\build\net35\SQLitePCLRaw.lib.sqlcipher.osx.targets'))" />
+    <Error Condition="!Exists('..\packages\SQLitePCLRaw.lib.sqlcipher.windows.1.1.13\build\net35\SQLitePCLRaw.lib.sqlcipher.windows.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SQLitePCLRaw.lib.sqlcipher.windows.1.1.13\build\net35\SQLitePCLRaw.lib.sqlcipher.windows.targets'))" />
   </Target>
   <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlite3.osx.1.1.5\build\net35\SQLitePCLRaw.lib.e_sqlite3.osx.targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.osx.1.1.5\build\net35\SQLitePCLRaw.lib.e_sqlite3.osx.targets')" />
   <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlite3.v110_xp.1.1.5\build\net35\SQLitePCLRaw.lib.e_sqlite3.v110_xp.targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.v110_xp.1.1.5\build\net35\SQLitePCLRaw.lib.e_sqlite3.v110_xp.targets')" />
+  <Import Project="..\packages\SQLitePCLRaw.lib.sqlcipher.linux.1.1.13\build\net35\SQLitePCLRaw.lib.sqlcipher.linux.targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.sqlcipher.linux.1.1.13\build\net35\SQLitePCLRaw.lib.sqlcipher.linux.targets')" />
+  <Import Project="..\packages\SQLitePCLRaw.lib.sqlcipher.osx.1.1.13\build\net35\SQLitePCLRaw.lib.sqlcipher.osx.targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.sqlcipher.osx.1.1.13\build\net35\SQLitePCLRaw.lib.sqlcipher.osx.targets')" />
+  <Import Project="..\packages\SQLitePCLRaw.lib.sqlcipher.windows.1.1.13\build\net35\SQLitePCLRaw.lib.sqlcipher.windows.targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.sqlcipher.windows.1.1.13\build\net35\SQLitePCLRaw.lib.sqlcipher.windows.targets')" />
 </Project>

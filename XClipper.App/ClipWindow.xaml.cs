@@ -24,6 +24,7 @@ using System.Windows.Media;
 using System.Collections.Specialized;
 using System.Runtime.InteropServices;
 using System.Xml.Linq;
+using System.Windows.Threading;
 
 namespace Components
 {
@@ -60,33 +61,17 @@ namespace Components
 
             CalculateXY(ref X, ref Y, this);
 
-            this.Left = X;
-            this.Top = Y;
+            Left = X;
+            Top = Y;
 
             /** Since when scrolling in listview and moving mouse outside the scope| DragDropEffects.Move
-              * changes the mouse enter event which eventually hides scrollbar. | DragDropEffects.Move
+              * changes the mouse enter event which eventually hides scrollbar.
               * In order to prevent this we observer isMouseKeyDown variable. */
 
             PreviewMouseDown += (o, e) => { isMouseKeyDown = true; };
             PreviewMouseUp += (o, e) => { isMouseKeyDown = false; };
 
-            GotFocus += ClipWindow_GotFocus;
 
-            _lvClip.GiveFeedback += _lvClip_GiveFeedback;
-        }
-
-        private void _lvClip_GiveFeedback(object sender, GiveFeedbackEventArgs e)
-        {
-            if (e.Effects.HasFlag(DragDropEffects.Copy))
-            {
-                CloseWindow();
-            }
-        }
-
-        private bool focus = false;
-        private void ClipWindow_GotFocus(object sender, RoutedEventArgs e)
-        {
-            focus = true;
         }
 
         #endregion
@@ -95,6 +80,16 @@ namespace Components
         #region UI Events
 
         #region Unlocalised
+
+        /** Occurs when the input system reports an underlying drag-and-drop event that involves this element. */
+        private void _lvClip_GiveFeedback(object sender, GiveFeedbackEventArgs e)
+        {
+            if (e.Effects.HasFlag(DragDropEffects.Copy))
+            {
+                CloseWindow();
+            }
+        }
+
 
         /** This will invoke when there is drag on the list Item. */
         private void _lvClip_MouseMove(object sender, MouseEventArgs e)
@@ -126,18 +121,10 @@ namespace Components
         /** The method will be called whenever main window is not active. */
         private void ClipWindow_Deactivated(object sender, EventArgs e)
         {
-            if (!ApplicationHelper.IsActivated() || !focus)
+            if (!ApplicationHelper.IsActivated())
             {
                 CloseWindow();
             }
-        }
-
-        /** Overriding method which triggers whenever our instance is rendered. */
-        protected override void OnContentRendered(EventArgs e)
-        {
-            // Focus on the search editbox.
-            _lvClip.SelectedIndex = 0;
-            _lvClip.Focus();
         }
 
         /** Whenever mouse is placed on certain position on window, we will manipulate
@@ -514,6 +501,7 @@ namespace Components
         }
         public void CloseWindow()
         {
+            //Close();
             Hide();
             _lvClip.ItemsSource = null;
             _tbSearchBox.Clear();

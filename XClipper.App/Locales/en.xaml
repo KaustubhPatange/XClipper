@@ -8,6 +8,7 @@
     <system:String x:Key="app_isrun_service">XClipper: Service already running</system:String>
     <system:String x:Key="app_show">Show</system:String>
     <system:String x:Key="app_settings">Settings</system:String>
+    <system:String x:Key="app_delete">Delete All Data</system:String>
     <system:String x:Key="app_license">Buy License</system:String>
     <system:String x:Key="app_backup">Backup Database</system:String>
     <system:String x:Key="app_restore">Restore Database</system:String>
@@ -44,7 +45,8 @@
     <system:String x:Key="msg_learn">Learn more</system:String>
     <system:String x:Key="msg_cancel">CANCEL</system:String>
     <system:String x:Key="msg_restore_db">Database restoration process is completed</system:String>
-    <system:String x:Key="msg_delete_db">This requires creation of new database so the current one will be removed. We will create a backup of exisiting database in &quot;Backup&quot; folder.</system:String>
+    <system:String x:Key="msg_delete_all">This will remove all clips stored in database. Are you sure?</system:String>
+    <system:String x:Key="msg_delete_db">This will migrate the existing sqlite database to sqlite3 database.</system:String>
     <system:String x:Key="popup_added">Added:</system:String>
     <system:String x:Key="popup_space_focus">...Press (Space) to Focus...</system:String>
     <system:String x:Key="popup_edit_err">Editing is not supported for this format</system:String>
