@@ -2,7 +2,6 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:system="clr-namespace:System;assembly=mscorlib">
-
     <system:String x:Key="app_name">XClipper</system:String>
     <system:String x:Key="app_start_service">XClipper: Service Started</system:String>
     <system:String x:Key="app_isrun_service">XClipper: Service already running</system:String>
@@ -13,6 +12,7 @@
     <system:String x:Key="app_backup">Backup Database</system:String>
     <system:String x:Key="app_restore">Restore Database</system:String>
     <system:String x:Key="app_record">Record</system:String>
+    <system:String x:Key="app_import">Import Database</system:String>
     <system:String x:Key="app_help">Help</system:String>
     <system:String x:Key="app_exit">Exit</system:String>
     <system:String x:Key="settings_general">General</system:String>
@@ -42,9 +42,17 @@
     <system:String x:Key="msg_ok">OK</system:String>
     <system:String x:Key="msg_information">Information</system:String>
     <system:String x:Key="msg_warning">Warning</system:String>
+    <system:String x:Key="msg_err">Error</system:String>
+    <system:String x:Key="msg_password">Password</system:String>
     <system:String x:Key="msg_learn">Learn more</system:String>
+    <system:String x:Key="msg_info">Information</system:String>
     <system:String x:Key="msg_cancel">CANCEL</system:String>
     <system:String x:Key="msg_restore_db">Database restoration process is completed</system:String>
+    <system:String x:Key="msg_enter_pass">Enter database password</system:String>
+    <system:String x:Key="msg_premium_success">Restart the app if premium still not unlock.</system:String>
+    <system:String x:Key="msg_premium_err">The current license is not a valid one.</system:String>
+    <system:String x:Key="msg_clip_import">All clips are imported/merged.</system:String>
+    <system:String x:Key="msg_merge_encrypt">The database file might be an encrypted one, if so kindly enter the password in the next dialog.</system:String>
     <system:String x:Key="msg_delete_all">This will remove all clips stored in database. Are you sure?</system:String>
     <system:String x:Key="msg_delete_db">This will migrate the existing sqlite database to sqlite3 database.</system:String>
     <system:String x:Key="popup_added">Added:</system:String>
@@ -59,6 +67,7 @@
     <system:String x:Key="clip_msg_confirm">Are you sure? This can't be undone</system:String>
     <system:String x:Key="clip_folder_copy">Select a folder to copy the files</system:String>
     <system:String x:Key="clip_file_select">Select a save file path</system:String>
+    <system:String x:Key="clip_file_select2">Select a database file or a backup file</system:String>
     <system:String x:Key="clip_cpl">Choose a paste location</system:String>
     <system:String x:Key="buy_unique">Unique ID</system:String>
     <system:String x:Key="buy_key">Key</system:String>

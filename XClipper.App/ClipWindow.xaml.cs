@@ -71,7 +71,10 @@ namespace Components
             PreviewMouseDown += (o, e) => { isMouseKeyDown = true; };
             PreviewMouseUp += (o, e) => { isMouseKeyDown = false; };
 
-
+            /** Attaching a callback to observe listview items collection. It's same as 
+             *  ListView.Items.CurrentChange event.
+             */
+            ((INotifyCollectionChanged)_lvClip.Items).CollectionChanged += ClipWindow_CollectionChanged;
         }
 
         #endregion
@@ -81,6 +84,14 @@ namespace Components
 
         #region Unlocalised
 
+        /** A callback to handle INotifyCollectionChange Property */
+        private void ClipWindow_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (_lvClip.Items.Count > 0)
+                _emptyContainer.Hide();
+            else _emptyContainer.Visible();
+        }
+
         /** Occurs when the input system reports an underlying drag-and-drop event that involves this element. */
         private void _lvClip_GiveFeedback(object sender, GiveFeedbackEventArgs e)
         {
@@ -89,7 +100,6 @@ namespace Components
                 CloseWindow();
             }
         }
-
 
         /** This will invoke when there is drag on the list Item. */
         private void _lvClip_MouseMove(object sender, MouseEventArgs e)

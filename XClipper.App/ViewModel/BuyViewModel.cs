@@ -6,6 +6,8 @@ using GalaSoft.MvvmLight.Command;
 using static Components.DefaultSettings;
 using System.Windows;
 using System;
+using static Components.App;
+  
 
 namespace Components
 {
@@ -41,9 +43,9 @@ namespace Components
             {
                 IsPurchaseDone = true;
                 File.WriteAllText(LicenseFilePath, KEY);
-                MessageBox.Show("Restart the app if premium still not unlock", "Information");
+                MessageBox.Show(rm.GetString("msg_premium_success"), rm.GetString("msg_info"));
             }
-            else MessageBox.Show("Invalid license", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            else MessageBox.Show(rm.GetString("msg_premium_err"), rm.GetString("msg_err"), MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
         #endregion

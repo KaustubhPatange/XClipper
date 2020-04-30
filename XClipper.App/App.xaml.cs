@@ -16,6 +16,10 @@ using Microsoft.Win32;
 using System.IO.Compression;
 using static Components.PathHelper;
 using System.Runtime.CompilerServices;
+using System.Collections.Specialized;
+using System.Windows.Controls;
+using SQLite;
+using ClipboardManager.models;
 
 namespace Components
 {
@@ -66,8 +70,16 @@ namespace Components
 
         protected override void OnStartup(StartupEventArgs e)
         {
-
             base.OnStartup(e);
+
+            //var list = new List<string>();
+
+
+            //((INotifyCollectionChanged)list.Count).CollectionChanged += (o, e) =>
+            //{
+
+            //};
+
 
             foreach (var file in Directory.GetFiles("locales", "*.xaml"))
             {
@@ -130,20 +142,82 @@ namespace Components
             var DeleteMenuItem = CreateNewItem(rm.GetString("app_delete"), DeleteDataClicked);
             var BackupMenuItem = CreateNewItem(rm.GetString("app_backup"), BackupClicked);
             var RestoreMenutItem = CreateNewItem(rm.GetString("app_restore"), RestoreClicked);
+            var ImportDataItem = CreateNewItem(rm.GetString("app_import"), ImportDataClicked);
 
             var HelpMenuItem = CreateNewItem(rm.GetString("app_help"), (o, e) =>
             {
                 Process.Start(new ProcessStartInfo("https://github.com/KaustubhPatange/XClipper"));
             });
 
-            var items = new List<WinForm.MenuItem>() { ShowMenuItem, CreateSeparator(), BackupMenuItem, RestoreMenutItem, CreateSeparator(), HelpMenuItem, CreateSeparator(), RecordMenuItem, DeleteMenuItem, SettingMenuItem, CreateSeparator(), AppExitMenuItem };
+            var items = new List<WinForm.MenuItem>() { ShowMenuItem, CreateSeparator(), BackupMenuItem, RestoreMenutItem, ImportDataItem, CreateSeparator(), HelpMenuItem, CreateSeparator(), RecordMenuItem, DeleteMenuItem, SettingMenuItem, CreateSeparator(), AppExitMenuItem };
             if (!IsPurchaseDone) items.Insert(1, BuyWindowItem);
             return items.ToArray();
         }
 
+
         #endregion
 
         #region Invokes
+
+        private void ImportDataClicked(object sender, EventArgs e)
+        {
+            // Create an open file dialog...
+            var ofd = new OpenFileDialog
+            {
+                Title = rm.GetString("clip_file_select2"),
+                Filter = "Supported Formats|*.db;*.zip",
+            };
+            // Show the open file dialog and capture fileName...
+            if (ofd.ShowDialog() == true)
+            {
+                // Store selected filename and tempDir into variable...
+                var tmpDir = GetTemporaryPath();
+                string fileName = ofd.FileName;
+
+                // For zip file we will extract the database stored in it...
+                if (Path.GetExtension(ofd.FileName).ToLower() == "zip")
+                {
+                    ZipFile.ExtractToDirectory(ofd.FileName, tmpDir);
+                    fileName = Path.Combine(tmpDir, "data");
+                }
+
+                // Create a command sql connection...
+                SQLiteConnection con = new SQLiteConnection(fileName);
+
+            restartMethod:
+
+                try
+                {
+                    // Retrieve a list of table...
+                    var list = con.Table<TableCopy>().ToList();
+                    con.Close();
+
+                    // Merge tables into existing database...
+                    AppSingleton.GetInstance.dataDB.InsertAll(list);
+                    MessageBox.Show(rm.GetString("msg_clip_import"), rm.GetString("msg_info"));
+
+                }
+                catch (SQLiteException ex)
+                {
+                    // If exception "file is not a database caught". It is likely to be encrypted
+                    if (ex.Message.Contains("file is not a database"))
+                    {
+                        var msg = MessageBox.Show(rm.GetString("msg_merge_encrypt"), rm.GetString("msg_warning"), MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                        if (msg == MessageBoxResult.Yes)
+                        {
+                            // Decrypt the database by asking password to the user...
+                            var pass = Microsoft.VisualBasic.Interaction.InputBox(rm.GetString("msg_enter_pass"), rm.GetString("msg_password"), CustomPassword);
+
+                            // Override exisiting SQL connection with password in it...
+                            con = new SQLiteConnection(new SQLiteConnectionString(fileName, true, pass));
+
+                            // Using goto restart the process...
+                            goto restartMethod;
+                        }
+                    }
+                }
+            }
+        }
         private void SettingMenuClicked(object sender, EventArgs e)
         {
             if (settingWindow != null)
@@ -242,7 +316,7 @@ namespace Components
                 }));
             }
         }
-     
+
         private void LaunchCodeUI()
         {
             clipWindow.WindowState = WindowState.Normal;
