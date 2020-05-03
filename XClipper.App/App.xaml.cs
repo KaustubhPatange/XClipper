@@ -19,6 +19,7 @@ using System.Runtime.CompilerServices;
 using System.Collections.Specialized;
 using System.Windows.Controls;
 using SQLite;
+using static Components.TranslationHelper;
 using ClipboardManager.models;
 
 namespace Components
@@ -31,7 +32,6 @@ namespace Components
         #region Variable Declaration
 
         public static string AppStartupLocation = Assembly.GetExecutingAssembly().Location;
-        private ClipboardUtility clipboardUtility = new ClipboardUtility();
         private KeyHookUtility hookUtility = new KeyHookUtility();
         private ClipWindow clipWindow;
         private WinForm.NotifyIcon notifyIcon;
@@ -55,7 +55,7 @@ namespace Components
 
             AppSingleton.GetInstance.Init();
 
-            clipboardUtility.StartRecording();
+            ClipSingleton.GetInstance.StartRecording();
 
             hookUtility.Subscribe(LaunchCodeUI);
 
@@ -72,32 +72,9 @@ namespace Components
         {
             base.OnStartup(e);
 
-            //var list = new List<string>();
+            LoadLanguageResource();
 
-
-            //((INotifyCollectionChanged)list.Count).CollectionChanged += (o, e) =>
-            //{
-
-            //};
-
-
-            foreach (var file in Directory.GetFiles("locales", "*.xaml"))
-            {
-                LanguageCollection.Add(file);
-            }
-
-            rm.Source = new Uri($"{BaseDirectory}\\{CurrentAppLanguage}", UriKind.RelativeOrAbsolute);
-
-            Resources.MergedDictionaries.RemoveAt(Resources.MergedDictionaries.Count - 1);
-            Resources.MergedDictionaries.Add(rm);
-
-            bool IsNewInstance = false;
-            appMutex = new Mutex(true, rm.GetString("app_name"), out IsNewInstance);
-            if (!IsNewInstance)
-            {
-
-                App.Current.Shutdown();
-            }
+            CheckForOtherInstance();
 
             clipWindow = new ClipWindow();
             clipWindow.Hide();
@@ -105,7 +82,7 @@ namespace Components
             notifyIcon = new WinForm.NotifyIcon
             {
                 Icon = AppResource.icon,
-                Text = rm.GetString("app_name"),
+                Text = Translation.APP_NAME,
                 ContextMenu = new WinForm.ContextMenu(DefaultItems()),
                 Visible = true
             };
@@ -134,17 +111,17 @@ namespace Components
         /// <returns></returns>
         private WinForm.MenuItem[] DefaultItems()
         {
-            var ShowMenuItem = CreateNewItem(rm.GetString("app_show"), delegate { LaunchCodeUI(); });
-            var SettingMenuItem = CreateNewItem(rm.GetString("app_settings"), SettingMenuClicked);
-            var BuyWindowItem = CreateNewItem(rm.GetString("app_license"), BuyMenuClicked);
-            var RecordMenuItem = CreateNewItem(rm.GetString("app_record"), RecordMenuClicked).Also(s => { s.Checked = ToRecord; });
-            var AppExitMenuItem = CreateNewItem(rm.GetString("app_exit"), delegate { Shutdown(); });
-            var DeleteMenuItem = CreateNewItem(rm.GetString("app_delete"), DeleteDataClicked);
-            var BackupMenuItem = CreateNewItem(rm.GetString("app_backup"), BackupClicked);
-            var RestoreMenutItem = CreateNewItem(rm.GetString("app_restore"), RestoreClicked);
-            var ImportDataItem = CreateNewItem(rm.GetString("app_import"), ImportDataClicked);
+            var ShowMenuItem = CreateNewItem(Translation.APP_SHOW, delegate { LaunchCodeUI(); });
+            var SettingMenuItem = CreateNewItem(Translation.APP_SETTINGS, SettingMenuClicked);
+            var BuyWindowItem = CreateNewItem(Translation.APP_LICENSE, BuyMenuClicked);
+            var RecordMenuItem = CreateNewItem(Translation.APP_RECORD, RecordMenuClicked).Also(s => { s.Checked = ToRecord; });
+            var AppExitMenuItem = CreateNewItem(Translation.APP_EXIT, delegate { Shutdown(); });
+            var DeleteMenuItem = CreateNewItem(Translation.APP_DELETE, DeleteDataClicked);
+            var BackupMenuItem = CreateNewItem(Translation.APP_BACKUP, BackupClicked);
+            var RestoreMenutItem = CreateNewItem(Translation.APP_RESTORE, RestoreClicked);
+            var ImportDataItem = CreateNewItem(Translation.APP_IMPORT, ImportDataClicked);
 
-            var HelpMenuItem = CreateNewItem(rm.GetString("app_help"), (o, e) =>
+            var HelpMenuItem = CreateNewItem(Translation.APP_HELP, (o, e) =>
             {
                 Process.Start(new ProcessStartInfo("https://github.com/KaustubhPatange/XClipper"));
             });
@@ -164,7 +141,7 @@ namespace Components
             // Create an open file dialog...
             var ofd = new OpenFileDialog
             {
-                Title = rm.GetString("clip_file_select2"),
+                Title = Translation.CLIP_FILE_SELECT2,
                 Filter = "Supported Formats|*.db;*.zip",
             };
             // Show the open file dialog and capture fileName...
@@ -194,7 +171,7 @@ namespace Components
 
                     // Merge tables into existing database...
                     AppSingleton.GetInstance.dataDB.InsertAll(list);
-                    MessageBox.Show(rm.GetString("msg_clip_import"), rm.GetString("msg_info"));
+                    MessageBox.Show(Translation.MSG_CLIP_IMPORT, Translation.MSG_INFO);
 
                 }
                 catch (SQLiteException ex)
@@ -202,11 +179,11 @@ namespace Components
                     // If exception "file is not a database caught". It is likely to be encrypted
                     if (ex.Message.Contains("file is not a database"))
                     {
-                        var msg = MessageBox.Show(rm.GetString("msg_merge_encrypt"), rm.GetString("msg_warning"), MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                        var msg = MessageBox.Show(Translation.MSG_MERGE_ENCRYPT, Translation.MSG_WARNING, MessageBoxButton.YesNo, MessageBoxImage.Warning);
                         if (msg == MessageBoxResult.Yes)
                         {
                             // Decrypt the database by asking password to the user...
-                            var pass = Microsoft.VisualBasic.Interaction.InputBox(rm.GetString("msg_enter_pass"), rm.GetString("msg_password"), CustomPassword);
+                            var pass = Microsoft.VisualBasic.Interaction.InputBox(Translation.MSG_ENTER_PASS, Translation.MSG_PASSWORD, CustomPassword);
 
                             // Override exisiting SQL connection with password in it...
                             con = new SQLiteConnection(new SQLiteConnectionString(fileName, true, pass));
@@ -238,7 +215,7 @@ namespace Components
 
         private void DeleteDataClicked(object sender, EventArgs e)
         {
-            var msg = MessageBox.Show(rm.GetString("msg_delete_all"), rm.GetString("msg_warning"), MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            var msg = MessageBox.Show(Translation.MSG_DELETE_ALL, Translation.MSG_WARNING, MessageBoxButton.YesNo, MessageBoxImage.Warning);
             if (msg == MessageBoxResult.Yes) AppSingleton.GetInstance.DeleteAllData();
         }
 
@@ -248,7 +225,7 @@ namespace Components
 
             var ofd = new OpenFileDialog
             {
-                Title = rm.GetString("clip_file_select"),
+                Title = Translation.CLIP_FILE_SELECT,
                 Filter = "zip|*.zip"
             };
             if (ofd.ShowDialog() == true)
@@ -262,7 +239,7 @@ namespace Components
 
                 File.Delete(db); Directory.Delete(tmp);
 
-                MessageBox.Show(rm.GetString("msg_restore_db"), rm.GetString("msg_information"));
+                MessageBox.Show(Translation.MSG_RESTORE_DB, Translation.MSG_INFORMATION);
             }
         }
 
@@ -272,7 +249,7 @@ namespace Components
             var sfd = new SaveFileDialog
             {
                 FileName = "backup.zip",
-                Title = rm.GetString("clip_file_select"),
+                Title = Translation.CLIP_FILE_SELECT,
                 Filter = "zip|*.zip"
             };
             if (sfd.ShowDialog() == true)
@@ -294,9 +271,9 @@ namespace Components
 
             ((WinForm.MenuItem)sender).Checked = ToRecord;
             if (ToRecord)
-                clipboardUtility.StartRecording();
+                ClipSingleton.GetInstance.StartRecording();
             else
-                clipboardUtility.StopRecording();
+                ClipSingleton.GetInstance.StopRecording();
         }
 
         #endregion
@@ -305,13 +282,37 @@ namespace Components
 
         #region Method Events
 
+        private void CheckForOtherInstance()
+        {
+            bool IsNewInstance = false;
+            appMutex = new Mutex(true, Translation.APP_NAME, out IsNewInstance);
+            if (!IsNewInstance)
+            {
+
+                App.Current.Shutdown();
+            }
+        }
+
+        private void LoadLanguageResource()
+        {
+            foreach (var file in Directory.GetFiles("locales", "*.xaml"))
+            {
+                LanguageCollection.Add(file);
+            }
+
+            rm.Source = new Uri($"{BaseDirectory}\\{CurrentAppLanguage}", UriKind.RelativeOrAbsolute);
+
+            Resources.MergedDictionaries.RemoveAt(Resources.MergedDictionaries.Count - 1);
+            Resources.MergedDictionaries.Add(rm);
+        }
+
         private void DisplayNotifyMessage()
         {
             if (PlayNotifySound)
             {
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    notifyIcon.BalloonTipText = rm.GetString("app_start_service");
+                    notifyIcon.BalloonTipText = Translation.APP_START_SERVICE;
                     notifyIcon.ShowBalloonTip(3000);
                 }));
             }

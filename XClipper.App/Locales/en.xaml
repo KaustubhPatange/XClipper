@@ -25,6 +25,7 @@
     <system:String x:Key="settings_adl">Window display location</system:String>
     <system:String x:Key="settings_cal">Current app language locale</system:String>
     <system:String x:Key="settings_isdb">Protect database with encryption</system:String>
+    <system:String x:Key="settings_purchase_info">Option available in donated version. Click on learn more.</system:String>
     <system:String x:Key="settings_reset_btn">Reset Defaults</system:String>
     <system:String x:Key="settings_save_btn">Save</system:String>
     <system:String x:Key="settings_reset">Settings Reset complete! If it didn't try restarting the application</system:String>
@@ -61,7 +62,9 @@
     <system:String x:Key="popup_blank_err">Error: Cannot set a blank text</system:String>
     <system:String x:Key="popup_file_err">Error: Invalid file path(s)</system:String>
     <system:String x:Key="clip_search_hint">Search (Ctrl + Q)</system:String>
+    <system:String x:Key="clip_empty">No clips found</system:String>
     <system:String x:Key="clip_ctx_qi">Quick Info</system:String>
+    <system:String x:Key="clip_ctx_sc">Set Current</system:String>
     <system:String x:Key="clip_ctx_de">Delete Entry</system:String>
     <system:String x:Key="clip_ctx_tp">Toggle Pin</system:String>
     <system:String x:Key="clip_msg_confirm">Are you sure? This can't be undone</system:String>

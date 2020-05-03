@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using static Components.MainHelper;
+using static Components.TranslationHelper;
 
 namespace Components
 {
@@ -25,11 +26,13 @@ namespace Components
         private string SAVED_TEXT;
         private DispatcherTimer popUpTimer;
         private TableCopy model;
+        private bool isFocus;
 
         #endregion
 
 
         #region Constructor
+
         public PopupWindow()
         {
             InitializeComponent();
@@ -49,9 +52,11 @@ namespace Components
         #region UI Events
 
         #region Unlocalised
+
         private void Window_Deactivated(object sender, EventArgs e)
         {
-            //   Hide();
+            if (isFocus)
+                AppSingleton.GetInstance.MakeExitRequest();
         }
 
         private void EditButton_Clicked(object sender, RoutedEventArgs e)
@@ -77,6 +82,7 @@ namespace Components
         #endregion
 
         #region Key Binds
+
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
@@ -87,12 +93,21 @@ namespace Components
             /** By using debug console I found out that Pressing Space on main Window transfer keydown event
              *  to this window. Hence we also get same Space key press fired up here as well. 
              */
-            if (e.Key == Key.Space) _tbFocusText.Hide();
+            if (e.Key == Key.Space)
+            {
+                _tbFocusText.Hide();
+                isFocus = true;
+            }
 
             // This key bind will open the image in default image view application
             if ((e.Key == Key.Return || e.Key == Key.Enter) && model.ContentType == ContentType.Image)
             {
                 Process.Start(model.ImagePath);
+
+                /** We are also gonna shutdown the application here coz the main focus
+                 *  moves to the foreground image application window. 
+                 */
+                Application.Current.Shutdown();
             } 
 
             if (e.Key == Key.Down)
@@ -114,7 +129,10 @@ namespace Components
 
         #region UI Handling Functions
 
-        /** This function will setup supplied model with this window. */
+        /// <summary>
+        /// This function will setup supplied model with this window.
+        /// </summary>
+        /// <param name="model"></param>
         public void SetPopUp(TableCopy model)
         {
             this.model = model;
@@ -154,13 +172,15 @@ namespace Components
             _toggleEditButton.Visible();
         }
 
-        /** This will set TextBox editable based on the toggle button. */
+        /// <summary>
+        /// This will set TextBox editable based on the toggle button.
+        /// </summary>
         private void ToggleEditMode()
         {
             // Only text content is supported, otherwise return.
             if (model.ContentType == ContentType.Image)
             {
-                ShowToast(rm.GetString("popup_edit_err"), true);
+                ShowToast(Translation.POPUP_EDIT_ERR, true);
                 return;
             }
             if (_toggleEditButton.IsChecked == false)
@@ -175,7 +195,9 @@ namespace Components
             }
         }
 
-        /** Handles to close edit mode, also performs save operations. */
+        /// <summary>
+        /// Handles to close edit mode, also performs save operations.
+        /// </summary>
         private void SetStopEditMode()
         {
             if (SAVED_TEXT != _tbText.Text)
@@ -184,7 +206,7 @@ namespace Components
 
                 if (string.IsNullOrWhiteSpace(_tbText.Text))
                 {
-                    ShowToast(rm.GetString("popup_blank_err"), true);
+                    ShowToast(Translation.POPUP_BLANK_ERR, true);
                     return;
                 }
 
@@ -210,7 +232,7 @@ namespace Components
                         else
                         {
                             _tbText.Text = SAVED_TEXT;
-                            ShowToast(rm.GetString("popup_file_err"), true);
+                            ShowToast(Translation.POPUP_FILE_ERR, true);
                         }
                         break;
                 }
@@ -222,7 +244,9 @@ namespace Components
             _scrollViewer.Focus();
         }
 
-        /** Set the textbox editable. */
+        /// <summary>
+        /// Set the textbox editable.
+        /// </summary>
         private void SetEditMode()
         {
             SAVED_TEXT = _tbText.Text;
@@ -232,7 +256,11 @@ namespace Components
             _tbText.Focus();
         }
 
-        /** This will show the toast at the bottom of window. */
+        /// <summary>
+        /// This will show the toast at the bottom of window.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="error"></param>
         private void ShowToast(string message, bool error = false)
         {
             if (_popUpMenu.IsOpen)
@@ -260,12 +288,15 @@ namespace Components
             };
         }
 
-        /** Handles the close of the window. */
+        /// <summary>
+        /// Handles the close of the window.
+        /// </summary>
         private void CloseWindow()
         {
             if (_toggleEditButton.IsChecked == true)
                 ToggleEditMode();
             _popUpMenu.IsOpen = false;
+            isFocus = false;
             Hide();
         }
 

@@ -74,9 +74,8 @@
                 Margin="0,35,0,0"
                 FontSize="20"
                 FontWeight="Medium"
-                Foreground="{StaticResource TextSecondaryBrush}">
-                No clips stored yet
-            </TextBlock>
+                Foreground="{StaticResource TextSecondaryBrush}"
+                Text="{DynamicResource clip_empty}" />
         </StackPanel>
         <Grid Panel.ZIndex="1000">
             <Grid.RowDefinitions>
@@ -110,7 +109,6 @@
                 Background="{StaticResource BackgroundBrush}"
                 GiveFeedback="_lvClip_GiveFeedback"
                 MouseMove="_lvClip_MouseMove"
-                ScrollViewer.CanContentScroll="False"
                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
                 SelectionChanged="_lvClip_SelectionChanged">
                 <ListView.ItemContainerStyle>
@@ -127,10 +125,11 @@
                     <DataTemplate>
                         <materialDesign:Card
                             x:Name="Item_MaterialCard"
+                            MaxWidth="268"
                             MaxHeight="80"
                             Margin="4"
                             MouseDoubleClick="ListViewItemDoubleClicked">
-                            <materialDesign:Card.Triggers>
+                            <!--<materialDesign:Card.Triggers>
                                 <EventTrigger RoutedEvent="Loaded">
                                     <EventTrigger.Actions>
                                         <BeginStoryboard>
@@ -146,10 +145,17 @@
                                         </BeginStoryboard>
                                     </EventTrigger.Actions>
                                 </EventTrigger>
-                            </materialDesign:Card.Triggers>
+                            </materialDesign:Card.Triggers>-->
                             <materialDesign:Card.ContextMenu>
 
                                 <ContextMenu Background="{StaticResource BackgroundBrush}" Tag="{Binding Model}">
+
+                                    <MenuItem
+                                        local:MenuItemProperties.Shortcut="Ctrl + C"
+                                        local:MenuItemProperties.Title="{DynamicResource clip_ctx_sc}"
+                                        Click="SetCurrentItem_Click"
+                                        Style="{StaticResource MenuItemStyle1}" />
+                                    <Separator />
 
                                     <MenuItem
                                         local:MenuItemProperties.Shortcut="Ctrl + Tab"
@@ -164,7 +170,7 @@
                                     <Separator />
 
                                     <MenuItem
-                                        local:MenuItemProperties.Shortcut="Ctrl + P"
+                                        local:MenuItemProperties.Shortcut="Ctrl + T"
                                         local:MenuItemProperties.Title="{DynamicResource clip_ctx_tp}"
                                         Click="TogglePinItem_Clicked"
                                         Style="{StaticResource MenuItemStyle1}" />
@@ -202,23 +208,25 @@
                                 <StackPanel Margin="10,10,10,10" Orientation="Vertical">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="auto" />
                                             <ColumnDefinition Width="auto" />
                                         </Grid.ColumnDefinitions>
+                                        <TextBlock
+                                            x:Name="_tbTitle"
+                                            Grid.Column="0"
+                                            Style="{StaticResource BigTextBlock}"
+                                            Text="{Binding Text}"
+                                            TextAlignment="Left" />
                                         <Button
                                             x:Name="_btnContentType"
                                             Grid.Column="1"
                                             Height="17"
+                                            MinWidth="35"
                                             Padding="5,1,5,1"
                                             Click="ContentTypeButton_Clicked"
                                             Content="{Binding ContentType}"
                                             FontSize="11"
                                             FontStyle="Italic" />
-                                        <TextBlock
-                                            x:Name="_tbTitle"
-                                            Grid.Column="0"
-                                            Style="{StaticResource BigTextBlock}"
-                                            Text="{Binding Text}" />
                                     </Grid>
                                     <TextBlock
                                         x:Name="_tbText"

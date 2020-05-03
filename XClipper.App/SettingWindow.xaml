@@ -12,6 +12,7 @@
     xmlns:local="clr-namespace:Components"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:media="clr-namespace:System.Windows.Media;assembly=PresentationCore"
+    xmlns:ui="clr-namespace:System.Windows;assembly=PresentationCore"
     Title="{DynamicResource app_settings}"
     Width="360"
     Icon="pack://application:,,,/Resources/clipboard.png"
@@ -92,6 +93,9 @@
                     SelectedValue="{Binding CAL}" />
             </Grid>
             <DockPanel>
+                <DockPanel.ToolTip>
+                    <ToolTip Content="{DynamicResource settings_purchase_info}" Visibility="{c:Binding 'local:DefaultSettings.IsPurchaseDone ? ui:Visibility.Hidden : ui:Visibility.Visible'}" />
+                </DockPanel.ToolTip>
                 <CheckBox
                     Content="{DynamicResource settings_isdb}"
                     DockPanel.Dock="Left"
@@ -103,6 +107,7 @@
                     Margin="0,3,0,0"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center">
+
                     <Hyperlink local:HyperlinkProperties.IsExternal="true" NavigateUri="https://github.com/KaustubhPatange/XClipper">
                         <TextBlock Text="{DynamicResource msg_learn}" />
                     </Hyperlink>

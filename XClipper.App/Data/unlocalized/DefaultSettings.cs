@@ -1,19 +1,17 @@
 ﻿using System.IO;
-using IniParser;
 using System.ComponentModel;
-using IniParser.Model;
 using System;
-using System.Collections.Generic;
-using System.Security;
 using static Components.Core;
+using System.Xml.Linq;
 
 namespace Components
 {
     public static class DefaultSettings
     {
+
         #region Variable Definitions
 
-        private static string SettingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "XClipper.ini");
+        private static string SettingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "XClipper.xml");
         private const string SETTINGS = "Settings";
 
         #endregion
@@ -54,53 +52,54 @@ namespace Components
 
         #region Methods
 
-        private static FileIniDataParser InitParser()
-        {
-            var parser = new FileIniDataParser();
-            return parser;
-        }
         public static void WriteSettings()
         {
-            
-            var parser = InitParser();
-            var data = new IniData();
-            data[SETTINGS][nameof(AppDisplayLocation)] = AppDisplayLocation.ToString();
-            data[SETTINGS][nameof(WhatToStore)] = WhatToStore.ToString();
-            data[SETTINGS][nameof(TotalClipLength)] = TotalClipLength.ToString();
-            data[SETTINGS][nameof(IsCtrl)] = IsCtrl.ToString();
-            data[SETTINGS][nameof(IsAlt)] = IsAlt.ToString();
-            data[SETTINGS][nameof(IsShift)] = IsShift.ToString();
-            data[SETTINGS][nameof(HotKey)] = HotKey;
-            data[SETTINGS][nameof(StartOnSystemStartup)] = StartOnSystemStartup.ToString();
-            data[SETTINGS][nameof(PlayNotifySound)] = PlayNotifySound.ToString();
-            data[SETTINGS][nameof(IsSecureDB)] = IsSecureDB.ToString();
-            data[SETTINGS][nameof(CurrentAppLanguage)] = CurrentAppLanguage;
-            data[SETTINGS][nameof(CustomPassword)] = CustomPassword.Encrypt();
-            data[SETTINGS][nameof(UseCustomPassword)] = UseCustomPassword.ToString();
-            parser.WriteFile(SettingsPath, data);
+            var document = new XDocument();
+            var settings = new XElement(SETTINGS);
+            settings
+                .Add(
+                    new XElement(nameof(AppDisplayLocation), AppDisplayLocation.ToString()),
+                    new XElement(nameof(WhatToStore), WhatToStore.ToString()),
+                    new XElement(nameof(TotalClipLength), TotalClipLength.ToString()),
+                    new XElement(nameof(IsCtrl), IsCtrl.ToString()),
+                    new XElement(nameof(IsAlt), IsAlt.ToString()),
+                    new XElement(nameof(IsShift), IsShift.ToString()),
+                    new XElement(nameof(HotKey), HotKey.ToString()),
+                    new XElement(nameof(StartOnSystemStartup), StartOnSystemStartup.ToString()),
+                    new XElement(nameof(PlayNotifySound), PlayNotifySound.ToString()),
+                    new XElement(nameof(IsSecureDB), IsSecureDB.ToString()),
+                    new XElement(nameof(CurrentAppLanguage), CurrentAppLanguage.ToString()),
+                    new XElement(nameof(CustomPassword), CustomPassword.Encrypt()),
+                    new XElement(nameof(UseCustomPassword), UseCustomPassword.ToString())
+                    );
+            document.Add(settings);
+            document.Save(SettingsPath);
         }
 
         public static void LoadSettings()
         {
             if (!File.Exists(SettingsPath)) return;  // Return if settings does not exist, so it will use defaults
-            var parser = InitParser();
-            var data = parser.ReadFile(SettingsPath);
-            AppDisplayLocation = data[SETTINGS][nameof(AppDisplayLocation)].ToEnum<XClipperLocation>();
-            WhatToStore = data[SETTINGS][nameof(WhatToStore)].ToEnum<XClipperStore>();
-            TotalClipLength = data[SETTINGS][nameof(TotalClipLength)].ToInt();
-            IsCtrl = data[SETTINGS][nameof(IsCtrl)].ToBool();
-            IsAlt = data[SETTINGS][nameof(IsAlt)].ToBool();
-            IsShift = data[SETTINGS][nameof(IsShift)].ToBool();
-            HotKey = data[SETTINGS][nameof(HotKey)];
-            CustomPassword = data[SETTINGS][nameof(CustomPassword)].Decrypt();
-            IsSecureDB = data[SETTINGS][nameof(IsSecureDB)].ToBool();
-            UseCustomPassword = data[SETTINGS][nameof(UseCustomPassword)].ToBool();
-            CurrentAppLanguage = data[SETTINGS][nameof(CurrentAppLanguage)];
-            StartOnSystemStartup = data[SETTINGS][nameof(StartOnSystemStartup)].ToBool();
-            PlayNotifySound = data[SETTINGS][nameof(PlayNotifySound)].ToBool();
+
+            var settings = XDocument.Load(SettingsPath).Element(SETTINGS);
+
+            AppDisplayLocation = settings.Element(nameof(AppDisplayLocation)).Value.ToEnum<XClipperLocation>();
+            WhatToStore = settings.Element(nameof(WhatToStore)).Value.ToEnum<XClipperStore>();
+            TotalClipLength = settings.Element(nameof(TotalClipLength)).Value.ToInt();
+            IsCtrl = settings.Element(nameof(IsCtrl)).Value.ToBool();
+            IsAlt = settings.Element(nameof(IsAlt)).Value.ToBool();
+            IsShift = settings.Element(nameof(IsShift)).Value.ToBool();
+            HotKey = settings.Element(nameof(HotKey)).Value;
+            CustomPassword = settings.Element(nameof(CustomPassword)).Value.Decrypt();
+            IsSecureDB = settings.Element(nameof(IsSecureDB)).Value.ToBool();
+            UseCustomPassword = settings.Element(nameof(UseCustomPassword)).Value.ToBool();
+            CurrentAppLanguage = settings.Element(nameof(CurrentAppLanguage)).Value;
+            StartOnSystemStartup = settings.Element(nameof(StartOnSystemStartup)).Value.ToBool();
+            PlayNotifySound = settings.Element(nameof(PlayNotifySound)).Value.ToBool();
+            
         }
 
         #endregion
+
     }
 
     #region Setting Enums

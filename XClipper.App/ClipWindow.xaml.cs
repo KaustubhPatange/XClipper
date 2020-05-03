@@ -10,21 +10,17 @@ using System.Windows.Input;
 using System.Windows.Controls;
 using System.Linq;
 using System.Text;
-using static Components.App;
 using static Components.MainHelper;
 using static Components.Constants;
-using static Components.DefaultSettings;
 using static Components.CommonExtensions;
 using static Components.KeyPressHelper;
 using MaterialDesignThemes.Wpf;
 using System.IO;
 using Microsoft.Win32;
 using Microsoft.VisualBasic.FileIO;
-using System.Windows.Media;
 using System.Collections.Specialized;
-using System.Runtime.InteropServices;
-using System.Xml.Linq;
-using System.Windows.Threading;
+using static Components.TranslationHelper;
+using System.Windows.Media.Imaging;
 
 namespace Components
 {
@@ -119,13 +115,12 @@ namespace Components
                         data.SetFileDropList(fileList);
                         break;
                     case ContentType.Files:
-                        fileList = new StringCollection();
-                        fileList.AddRange(model.LongText.Split(','));
-                        data.SetFileDropList(fileList);
+                        data.SetFileDropList(model.LongText.Split(',').ToCollection());
                         break;
                 }
                 DragDrop.DoDragDrop(_lvClip, data, DragDropEffects.Copy);
             }
+
         }
 
         /** The method will be called whenever main window is not active. */
@@ -195,14 +190,7 @@ namespace Components
                         _lvClip.ItemsSource = AppSingleton.GetInstance.FilterNewest();
                         break;
                     default:
-
                         _lvClip.ItemsSource = AppSingleton.GetInstance.FilterData(_tbSearchBox.Text);
-                        //await Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Render, (Action)delegate
-                        // {
-                        //     _lvClip.ItemsSource = AppSingleton.GetInstance.FilterData(_tbSearchBox.Text);
-                        // });
-
-
                         break;
                 }
             }
@@ -263,6 +251,10 @@ namespace Components
             //        card.ContextMenu.
             //    }
             //}
+
+            // This key bind will set current item to clipboard
+            if (e.Key == Key.C && IsCtrlPressed())
+                SetCurrentClip();
 
             // This key bind will focus the SearchTextBox.
             if (e.Key == Key.Q && IsCtrlPressed())
@@ -327,7 +319,7 @@ namespace Components
             }
 
             // This key bind will toggle pin to the selected item.
-            if (e.Key == Key.P && IsCtrlPressed())
+            if (e.Key == Key.T && IsCtrlPressed())
             {
                 TogglePinFunc();
             }
@@ -369,6 +361,11 @@ namespace Components
 
         #region ClipBinder Implementations
 
+        public void OnExitRequest()
+        {
+            CloseWindow();
+        }
+
         /** This callback will change the text of Search TextBox*/
         public void OnFilterTextEdit(string Text)
         {
@@ -398,20 +395,23 @@ namespace Components
 
         #region UI Handling Functions
 
-        /** This will handle Toggle pin operation */
-
+        /// <summary>
+        /// This will handle Toggle pin operation
+        /// </summary>
         private void TogglePinFunc()
         {
             if (_lvClip.SelectedIndex == -1) return;
             AppSingleton.GetInstance.TogglePin(_lvClip.SelectedItem as TableCopy);
         }
 
-        /** This will handle Delete operation */
+        /// <summary>
+        /// This will handle Delete operation
+        /// </summary>
         private void DeleteItemFunc()
         {
             if (_lvClip.SelectedItems.Count <= 0) return;
             MaterialMsgBox
-                  .SetMessage(rm.GetString("clip_msg_confirm"))
+                  .SetMessage(Translation.CLIP_MSG_CONFIRM)
                   .SetType(MessageType.OKCancel)
                   .SetOwner(this)
                   .SetOnCancelClickListener(null)
@@ -422,10 +422,18 @@ namespace Components
                   .ShowDialog();
         }
 
-        /** This will return the Table Copy object from contextMenu */
+        /// <summary>
+        /// This will return the Table Copy object from contextMenu
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <returns></returns>
         private TableCopy GetTableCopyFromSender(object sender) => (TableCopy)((ContextMenu)(((MenuItem)sender).Parent)).Tag;
 
-        /** A Function which will return ListView card item. */
+        /// <summary>
+        /// A Function which will return ListView card item.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
         public Card FindCardItem(int index)
         {
             ListViewItem item = _lvClip.ItemContainerGenerator.ContainerFromIndex(index) as ListViewItem;
@@ -443,15 +451,20 @@ namespace Components
             return null;
         }
 
-        /** This function will update the last used time of the TableCopy set. */
+        /// <summary>
+        /// This function will update the last used time of the TableCopy set.
+        /// </summary>
+        /// <param name="model"></param>
         private void UpdateLastUsedTime(TableCopy model)
         {
             model.LastUsedDateTime = DateTime.Now.ToFormattedDateTime();
             AppSingleton.GetInstance.UpdateLastUsedTime(model);
         }
 
-        /** This function will handle the onClick and Enter press on any item
-         *  in the listView. */
+        /// <summary>
+        /// This function will handle the onClick and Enter press on any item in the listView.
+        /// </summary>
+        /// <param name="index"></param>
         private void ForegroundMainOperations(int index = -1)
         {
             // If more item is selected then we will parse only text type only...
@@ -493,7 +506,9 @@ namespace Components
             }
         }
 
-        /** This will show message box window with onclick and stuff.. */
+        /// <summary>
+        /// This will show message box window with onclick and stuff.
+        /// </summary>
         public MaterialMessage MaterialMsgBox
         {
             get
@@ -509,15 +524,22 @@ namespace Components
         {
             _lvClip.ItemsSource = AppSingleton.GetInstance.ClipData;
         }
+
+        /// <summary>
+        /// A pathway function to make a clean exit of the application
+        /// </summary>
         public void CloseWindow()
         {
             //Close();
+            _filterWindow.Hide();
             Hide();
             _lvClip.ItemsSource = null;
             _tbSearchBox.Clear();
         }
 
-        /** This will show filter window. */
+        /// <summary>
+        /// This will show filter window.
+        /// </summary>
         public void ShowFilterWindow()
         {
             //if (_lvClip.SelectedItems.Count <= 0) return;
@@ -527,7 +549,10 @@ namespace Components
             _filterWindow.SetUpWindow(_lvClip.SelectedIndex);
         }
 
-        /** This will show popup window using the TableCopy model */
+        /// <summary>
+        /// This will show popup window using the TableCopy model.
+        /// </summary>
+        /// <param name="model"></param>
         public void ShowPopupWindow(TableCopy model)
         {
             if (_filterWindow.IsVisible)
@@ -536,7 +561,10 @@ namespace Components
             _popupWindow.Show();
         }
 
-        /** This function will copy files to the foreground window. */
+        /// <summary>
+        /// This function will copy files to the foreground window.
+        /// </summary>
+        /// <param name="files"></param>
         private void UpdateFilesWindow(List<string> files)
         {
             // This function will get active path in the explorer.exe...
@@ -547,7 +575,7 @@ namespace Components
             {
                 var fd = new FolderSelectDialog
                 {
-                    Title = rm.GetString("clip_folder_copy")
+                    Title = Translation.CLIP_FOLDER_COPY
                 };
                 if (fd.Show())
                 {
@@ -570,7 +598,10 @@ namespace Components
             }
         }
 
-        /** This function will copy image to the foreground window. */
+        /// <summary>
+        /// This function will copy image to the foreground window.
+        /// </summary>
+        /// <param name="imgPath"></param>
         private void UpdateImageWindow(string imgPath)
         {
             // This function will get active path in the explorer.exe...
@@ -585,7 +616,7 @@ namespace Components
                 {
                     FileName = Path.GetFileName(imgPath),
                     Filter = $"{ext}|{ext}",
-                    Title = rm.GetString("clip_cpl")
+                    Title = Translation.CLIP_CPL
                 };
                 if (sfd.ShowDialog() == true)
                 {
@@ -608,7 +639,10 @@ namespace Components
             }
         }
 
-        /** This function will write text to the foreground window. */
+        /// <summary>
+        ///  This function will write text to the foreground window.
+        /// </summary>
+        /// <param name="text"></param>
         private void UpdateTextWindow(string text)
         {
             // We will minimize the window to get focus to previous window...
@@ -627,7 +661,10 @@ namespace Components
             CloseWindow();
         }
 
-        /** This function will focus the item of listview. */
+        /// <summary>
+        /// This function will focus the item of listview.
+        /// </summary>
+        /// <param name="index"></param>
         private void SetListViewFocus(int index)
         {
             _lvClip.SelectedIndex = index;
@@ -636,11 +673,41 @@ namespace Components
             _lvClip.ScrollIntoView(_lvClip.SelectedItem);
         }
 
+        /// <summary>
+        /// This function will set the current selected item to active clipboard.
+        /// </summary>
+        private void SetCurrentClip()
+        {
+            var clip = (TableCopy)_lvClip.SelectedItem;
+
+            ClipSingleton.GetInstance.Ignore(() =>
+            {
+                switch (clip.ContentType)
+                {
+                    case ContentType.Text:
+                        Clipboard.SetText(clip.RawText);
+                        break;
+                    case ContentType.Image:
+                        Clipboard.SetImage(new BitmapImage(new Uri(clip.ImagePath)));
+                        break;
+                    case ContentType.Files:
+                        Clipboard.SetFileDropList(clip.LongText.Split(',').ToCollection());
+                        break;
+                }
+            });
+        }
+
 
         #endregion
 
 
         #region Menu Item Clicks
+
+        private void SetCurrentItem_Click(object sender, RoutedEventArgs e)
+        {
+            SetCurrentClip();
+        }
+
         private void QuickInfo_MenuItemClicked(object sender, RoutedEventArgs e)
         {
             var model = GetTableCopyFromSender(sender);
@@ -660,6 +727,7 @@ namespace Components
         {
             ShowFilterWindow();
         }
+
 
         #endregion
 

@@ -10,6 +10,7 @@ using System;
 using Components.viewModels;
 using static Components.Core;
 using System.Windows.Controls;
+using static Components.TranslationHelper;
 
 namespace Components
 {
@@ -60,7 +61,7 @@ namespace Components
             {
                 if (value == true != previousSecureDBValue)
                 {
-                    var result = MessageBox.Show(rm.GetString("msg_delete_db"), rm.GetString("msg_warning"), MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                    var result = MessageBox.Show(Translation.MSG_DELETE_DB, Translation.MSG_WARNING, MessageBoxButton.YesNo, MessageBoxImage.Warning);
                     if (result == MessageBoxResult.Yes)
                     {
                         is_secure_db = value;
@@ -144,7 +145,7 @@ namespace Components
             }
             else if (previousPassword != CP)
             {
-                var result = MessageBox.Show(rm.GetString("msg_delete_db"), rm.GetString("msg_warning"), MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                var result = MessageBox.Show(Translation.MSG_DELETE_DB, Translation.MSG_WARNING, MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 if (result == MessageBoxResult.Yes)
                 {
                     MigrateDatabase();

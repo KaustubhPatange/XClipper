@@ -16,9 +16,16 @@ namespace Components.viewModels
 {
     public sealed class AppSingleton
     {
+        #region Variable Declaration
+
         private IClipBinder Binder;
         public SQLiteConnection dataDB;
         private static AppSingleton Instance = null;
+
+        #endregion
+
+
+        #region Singleton
 
         public static AppSingleton GetInstance
         {
@@ -33,6 +40,11 @@ namespace Components.viewModels
         private AppSingleton()
         { }
 
+        #endregion
+
+        
+        #region Methods
+
         public void Init()
         {
             SQLiteConnectionString options;
@@ -43,6 +55,7 @@ namespace Components.viewModels
             dataDB = new SQLiteConnection(options);
             dataDB.CreateTable<TableCopy>();
         }
+
         public void SetBinder(IClipBinder Binder)
         {
             if (dataDB == null)
@@ -50,10 +63,19 @@ namespace Components.viewModels
             this.Binder = Binder;
         }
 
-        public void SetFilterText(string Text) => Binder.OnFilterTextEdit(Text);
 
-        #region Data Filtering
+        #endregion
 
+
+        #region IClipBinder Invokes
+
+        /// <summary>
+        /// This will make an exit request to main window to close the window.
+        /// </summary>
+        public void MakeExitRequest()
+        {
+            Binder.OnExitRequest();
+        }
         public void DeleteData(TableCopy model)
         {
             dataDB.Delete(model);
@@ -82,6 +104,13 @@ namespace Components.viewModels
             dataDB.Execute("update TableCopy set LastUsedDateTime = ? where Id = ?", model.LastUsedDateTime, model.Id);
         }
 
+        #endregion
+
+
+        #region Data Filtering
+
+        public void SetFilterText(string Text) => Binder.OnFilterTextEdit(Text);
+
         public List<TableCopy> FilterTextLengthDesc()
         {
             var data = dataDB.Query<TableCopy>("select * from TableCopy");
@@ -102,21 +131,26 @@ namespace Components.viewModels
 
         #endregion
 
-        public List<TableCopy> GetAllData() => dataDB.Query<TableCopy>("select * from TableCopy");
+
+        #region Data Obtaining Methods
+
+        public List<TableCopy> GetAllData() => dataDB.Table<TableCopy>().ToList();
 
         public List<TableCopy> ClipData
         {
             get
             {
-                var pinnedItems = dataDB.Query<TableCopy>("select * from TableCopy where IsPinned = 1");
-                pinnedItems.Reverse();
 
-                var normalItems = dataDB.Query<TableCopy>("select * from TableCopy where IsPinned = 0")
+                var pinnedItems = dataDB.Table<TableCopy>().Where(x => x.IsPinned).Reverse();
+                var normalItems = dataDB.Table<TableCopy>().Where(x => !x.IsPinned).ToList()
                     .OrderByDescending(x => ParseDateTimeText(x.LastUsedDateTime));
 
                 return pinnedItems.Concat(normalItems).Take(TruncateList).ToList();
             }
         }
+
+        #endregion
+
 
         #region SQLite Methods
 

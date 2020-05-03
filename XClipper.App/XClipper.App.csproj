@@ -63,9 +63,6 @@
     <Reference Include="Gma.System.MouseKeyHook, Version=5.6.130.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MouseKeyHook.5.6.0\lib\net40\Gma.System.MouseKeyHook.dll</HintPath>
     </Reference>
-    <Reference Include="INIFileParser, Version=2.5.2.0, Culture=neutral, PublicKeyToken=79af7b307b65cf3c, processorArchitecture=MSIL">
-      <HintPath>..\packages\ini-parser.2.5.2\lib\net20\INIFileParser.dll</HintPath>
-    </Reference>
     <Reference Include="KeyMouseHook, Version=1.0.6.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\KeyMouseHook.1.0.6\lib\net40\KeyMouseHook.dll</HintPath>
     </Reference>
@@ -165,10 +162,11 @@
     <Compile Include="Data\helpers\TableHelper.cs" />
     <Compile Include="Data\helpers\ValueDescription.cs" />
     <Compile Include="Data\helpers\WhatToStoreHelper.cs" />
+    <Compile Include="Data\helpers\TranslationHelper.cs" />
     <Compile Include="Data\unlocalized\DefaultSettings.cs" />
     <Compile Include="Data\unlocalized\HyperlinkProperties.cs" />
     <Compile Include="Data\unlocalized\Specials.cs" />
-    <Compile Include="Data\unlocalized\Utilities\ClipboardUtility.cs" />
+    <Compile Include="Data\unlocalized\Utilities\ClipSingleton.cs" />
     <Compile Include="Data\unlocalized\Constants.cs" />
     <Compile Include="Data\unlocalized\CustomListView.cs" />
     <Compile Include="Data\unlocalized\EnumerationExtension.cs" />

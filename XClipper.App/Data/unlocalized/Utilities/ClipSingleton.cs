@@ -14,19 +14,29 @@ using static Components.TableHelper;
 
 namespace Components
 {
-    public class ClipboardUtility
+    /** This singleton will be used to manage clipboard activities. */
+    public sealed class ClipSingleton
     {
         #region Variable Declarations
 
         private SharpClipboard _clipboardFactory = new SharpClipboard();
         private bool isFirstLaunch = true;
         private bool ToRecord = false;
+        private static ClipSingleton Instance;
 
         #endregion
 
         #region Contructor
-
-        public ClipboardUtility()
+        public static ClipSingleton GetInstance
+        {
+            get
+            {
+                if (Instance == null)
+                    Instance = new ClipSingleton();
+                return Instance;
+            }
+        }
+        private ClipSingleton()
         {
             _clipboardFactory.ClipboardChanged += ClipboardChanged;
         }
@@ -35,14 +45,33 @@ namespace Components
 
         #region Methods
 
+        /// <summary>
+        /// Start monitoring clipboard activities.
+        /// </summary>
+        /// 
         public void StartRecording()
         {
             ToRecord = true;
         }
+        /// <summary>
+        /// Stop monitoring clipboard activities.
+        /// </summary>
         public void StopRecording()
         {
             ToRecord = false;
         }
+
+        /// <summary>
+        /// This provides a block to perform actions with clipboard manager
+        /// without monitoring it.
+        /// </summary>
+        /// <param name="block"></param>
+        public void Ignore(Action block)
+        {
+            StopRecording();
+            block.Invoke();
+            StartRecording();
+        } 
 
         #endregion
 
@@ -62,10 +91,10 @@ namespace Components
             if (!ToRecord)
                 return;
 
-
             /* We will capture copy/cut Text, Image (eg: PrintScr) and Files
              * and save it to database.
              */
+
             if (e.ContentType == ContentTypes.Text && ToStoreTextClips())
             {
                 if (!string.IsNullOrWhiteSpace(_clipboardFactory.ClipboardText.Trim()))

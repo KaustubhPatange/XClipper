@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using static Components.App;
+using static Components.TranslationHelper;
 
 namespace Components
 {
@@ -18,9 +19,9 @@ namespace Components
         {
             bool activated = (bool)value;
             if (activated)
-                return rm.GetString("buy_is_activate");
+                return Translation.BUY_IS_ACTIVATE;
             else
-                return rm.GetString("buy_not_activate");
+                return Translation.BUY_NOT_ACTIVATE;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
