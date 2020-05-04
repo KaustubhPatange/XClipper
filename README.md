@@ -5,9 +5,11 @@
 ![GitHub repo size](https://img.shields.io/github/repo-size/KaustubhPatange/XClipper)
 ![GitHub stars](https://img.shields.io/github/stars/PatilShreyas/XClipper?style=social)
 
+# ⚠️ <span style="color:red">Underconstruction</span> ⚠️
+
 **XClipper** is a clipboard manager 🔗 for Windows 💻 which helps to track clipboard activities and makes it easier to interact with them ❤️
 
-**_To download application click the icon from below_** 👇 **_for donated version, [click here]()_**
+**_To download application click the icon from below_** 👇 **_for donated version, [click here](https://github.com/KaustubhPatange/XClipper/wiki/Purchasing-License)_**
 
 <!-- [![XClipper Website](https://img.shields.io/badge/XClipper-Site-blue.svg?style=for-the-badge&logo=windows)](https://kaustubhpatange.github.io/xclipper) -->
 

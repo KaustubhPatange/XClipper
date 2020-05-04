@@ -1,21 +1,19 @@
-# Purchasing License
-
 **_To pay using GPay follow this [guide](#using-google-pay)_**
 
 The following features will be unlocked when you buy the license.
 
-- _**Password** protect database_
+- _**Password** protect the database, [learn more](https://github.com/KaustubhPatange/XClipper/wiki/Password-Protect-Database)_
 - _Support development_ ❤️
 
 ## Why to Buy?
 
-Well it shows your love towards **open source** development. I could've made this as **closed source** application, but since I am huge fan of **OSS** (Open sourced software) I want to keep it open so that other developers can read and learn from this. (_I mean that's what I do_).
+Well, it shows your love towards **open source** development. I could've made this as **closed source** application, but since I am a huge fan of **OSS** (Open-sourced software) I want to keep it open so that other developers can read and learn from this. (_I mean that's what I do_).
 
 Anyway at the end of day its all your decision, but each purchase will boost me more to work on this project.
 
 ## How to Buy?
 
-<span style="color:red">_Make sure to not skip any steps during this process. If you did not receive license inspite completing following steps even after 2 days write an [email to me](mailto:developerkp16@gmail.com) addressing about it._</span>
+<span style="color:red">_Make sure to not skip any steps during this process. If you did not receive the license in spite completing following steps even after 2 days write an [email to me](mailto:developerkp16@gmail.com) addressing about it._</span>
 
 ### Using Paypal
 
@@ -32,8 +30,8 @@ Anyway at the end of day its all your decision, but each purchase will boost me 
 
 <a target="_blank" href="https://play.google.com/store/apps/details?id=com.kpstv.demopay"><img height="45px" src="https://www.bing.com/th?id=OIP.aKVynFHWIEFwPyELkAdswQHaCS&pid=Api&rs=1"/></a>
 
-- Open the app and complete _Sign-in_ process.
+- Open the app and complete the _Sign-in_ process.
 - Tap on **XClipper** item, click Buy.
-- Follow the on-screen instruction displayed in device and complete payment process.
-- Once done, [fill this form](https://forms.gle/CQABNV9qHnBNz4sE7). Enter the required fields including **G-Pay Order Id** in _Transaction Id_ field (from reciept mail).
-- After form being filled, wait for a day or two till I process it manually. Once done, will send you an email with your license and activation guide.
+- Follow the on-screen instruction displayed in the device and complete the payment process.
+- Once done, [fill this form](https://forms.gle/CQABNV9qHnBNz4sE7). Enter the required fields including **G-Pay Order Id** in _Transaction Id_ field (from receipt mail).
+- After form being filled, wait for a day or two till I process it manually. Once done, I will send you an email with your license and activation guide.
