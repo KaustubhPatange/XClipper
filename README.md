@@ -5,19 +5,25 @@
 ![GitHub repo size](https://img.shields.io/github/repo-size/KaustubhPatange/XClipper)
 ![GitHub stars](https://img.shields.io/github/stars/PatilShreyas/XClipper?style=social)
 
-**XClipper** is a clipboard manager 🔗 for Windows 💻 which helps to track clipboard activities and makes it easier to interact with them ❤️.
+**XClipper** is a clipboard manager 🔗 for Windows 💻 which helps to track clipboard activities and makes it easier to interact with them ❤️
 
-**_To download application visit website from below_** 👇
+**_To download application click the icon from below_** 👇 **_for donated version, [click here]()_**
 
-[![XClipper Website](https://img.shields.io/badge/XClipper-Site-blue.svg?style=for-the-badge&logo=windows)](https://kaustubhpatange.github.io/xclipper)
+<!-- [![XClipper Website](https://img.shields.io/badge/XClipper-Site-blue.svg?style=for-the-badge&logo=windows)](https://kaustubhpatange.github.io/xclipper) -->
+
+<a href="https://kaustubhpatange.github.io/XClipper"><img width="120px" src="icon.png"/></a>
 
 ## Features
 
-Originally inspired from [Ditto](https://ditto-cp.sourceforge.io/) which offers great features out of the box. No doubt it is the best application but sometimes it makes it even more confusing when using an application with more features.
+Originally inspired from [Ditto](https://ditto-cp.sourceforge.io/) which offers great features out of the box. No doubt it is the best application but sometimes it makes it even more confusing when using an application with more features. (_Just my thinking, no offense_)
 
 - Clean & **beautiful** UI.
 - **Easier** to use and manage.
 - Lot more... _but just leaving it here_.
+
+## Compilation Guide
+
+Since this project involves **license** system 📃 some of the source files has been ignored. [Read this guide]() in order to compile 🗃 the project.
 
 ## Built with 🛠
 
@@ -32,11 +38,6 @@ Originally inspired from [Ditto](https://ditto-cp.sourceforge.io/) which offers 
 - [Data Binding](https://docs.microsoft.com/en-us/dotnet/desktop-wpf/data/data-binding-overview)
   - [CalcBinding](https://github.com/Alex141/CalcBinding) - Aan advanced Binding markup extension that allows you to write calculated binding expressions in xaml, without custom converters
 - [SQLite-Net-Extension](https://bitbucket.org/twincoders/sqlite-net-extensions) - An extension to sqlite-net library.
-
-### Secure Database Settings
-
-- Increase processing time by 150 ms per 20 clips.
-- If copied large text the processing time increases x10 .
 
 ## License
 

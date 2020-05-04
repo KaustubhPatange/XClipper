@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>XClipper - A clipboard manager</title>
+    <link rel="shortcut icon" href="XClipper.Web/Images/icon.png" type="image/png" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
+    <link rel="stylesheet" href="XClipper.Web/fonts/icomoon/style.css">
+    <link rel="stylesheet" href="XClipper.Web/css/bootstrap.min.css">
+    <link rel="stylesheet" href="XClipper.Web/css/magnific-popup.css">
+    <link rel="stylesheet" href="XClipper.Web/css/jquery-ui.css">
+    <link rel="stylesheet" href="XClipper.Web/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="XClipper.Web/css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="XClipper.Web/css/bootstrap-datepicker.css">
+    <link rel="stylesheet" href="XClipper.Web/fonts/flaticon/font/flaticon.css">
+    <link rel="stylesheet" href="XClipper.Web/css/aos.css">
+
+    <link rel="stylesheet" href="XClipper.Web/css/style.css">
+    <link rel="stylesheet" href="XClipper.Web/css/custom-btn.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+    <div>
+        <section>
+            <div class="container forkContainer" data-aos="fade-up" data-aos-delay="100">
+                <div class="row align-items-center">
+                    <div style="margin-left: 15px;">
+                        <button type="button" onclick="openGithub()" class="btn github-btn">
+                            <i style="margin-right: 3px;" class="fa fa-github"></i>
+                            Fork</button>
+                    </div>
+                    <div style="margin-left: 15px;">
+                        <button onclick="scrollToVideo()" type="button" class="btn github-btn">
+                            <i style="margin-right: 3px;" class="fa fa-play"></i>
+                            Watch Video</button>
+                    </div>
+                </div>
+            </div>
+            <div class="container mainContainer">
+                <div class="row align-items-center">
+                    <div class="col-md-10">
+                        <h1 class="d-block mb-4 title" data-aos="fade-up" data-aos-delay="200">XClipper</h1>
+                        <div data-aos="fade-up" data-aos-delay="300" class="d-block mb-5">
+                            <div>
+                                <span class="subtitle">
+                                    A beautiful yet powerful clipboard manager</span>
+
+                            </div>
+                            <div class="smalltitle">
+                                <span>
+                                    <a style="color:#CCE915" href="google.com">Donated version</a> ☕️ (special
+                                    features)</span>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-10" style="margin-top: 45px;">
+                        <a href="#" class="btn-custom" data-aos="fade-up" data-aos-delay="400">
+                            <span>Download</span></a>
+                        <div id="paypal-button-container"></div>
+                        <!-- <div style="margin-top: 20px;" data-aos="fade-up" data-aos-delay="500">
+                            <span class="watch-span">Watch Video</span>
+                        </div> -->
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <section id="videoSection" style="position: absolute;">
+            <div class="container mainContainer">
+                <div class="row align-items-center">
+                    <div class="col-md-10">
+                        <h2 data-aos="fade-up" data-aos-delay="200">Demo</h2>
+                        <div data-aos="fade-up" data-aos-delay="300" style="margin-top: 50px;"
+                            class="embed-responsive embed-responsive-16by9">
+                            <iframe class="embed-responsive-item" src="youtube-uri-here" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer class="site-footer">
+                <div class="container">
+                    <!-- <div class="row mb-5">
+                        <div class="col-md-4">
+                            <h2 class="footer-heading text-uppercase mb-4">About Event</h2>
+                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit aliquid quibusdam fugit
+                                architecto.</p>
+                        </div>
+                        <div class="col-md-3 ml-auto">
+                            <h2 class="footer-heading text-uppercase mb-4">Quick Links</h2>
+                            <ul class="list-unstyled">
+                                <li><a href="#">About Us</a></li>
+                                <li><a href="#">Speakers</a></li>
+                                <li><a href="#">Gallery</a></li>
+                                <li><a href="#">Contact Us</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <h2 class="footer-heading text-uppercase mb-4">Connect with Us</h2>
+                            <p>
+                                <a href="#" class="p-2 pl-0"><span class="icon-facebook"></span></a>
+                                <a href="#" class="p-2"><span class="icon-twitter"></span></a>
+                                <a href="#" class="p-2"><span class="icon-youtube"></span></a>
+                                <a href="#" class="p-2"><span class="icon-instagram"></span></a>
+                            </p>
+                        </div>
+                    </div> -->
+                    <div class="row">
+
+                        <div class="col-md-12">
+                            <div>
+                                <p>
+                                    <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                                    Copyright &copy;
+                                    <script>document.write(new Date().getFullYear());</script> <a
+                                        href="https://github.com/KastubhPatange" target="_blank">Kaustubh Patange</a>
+                                    <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </div>
+
+</body>
+
+<script src="XClipper.Web/js/jquery-3.3.1.min.js"></script>
+<script src="XClipper.Web/js/jquery-migrate-3.0.1.min.js"></script>
+<script src="XClipper.Web/js/jquery-ui.js"></script>
+<script src="XClipper.Web/js/popper.min.js"></script>
+<script src="XClipper.Web/js/bootstrap.min.js"></script>
+<script src="XClipper.Web/js/owl.carousel.min.js"></script>
+<script src="XClipper.Web/js/jquery.stellar.min.js"></script>
+<script src="XClipper.Web/js/jquery.countdown.min.js"></script>
+<script src="XClipper.Web/js/jquery.magnific-popup.min.js"></script>
+<script src="XClipper.Web/js/bootstrap-datepicker.min.js"></script>
+<script src="XClipper.Web/js/aos.js"></script>
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+<script src="XClipper.Web/js/main.js"></script>
+
+</html>

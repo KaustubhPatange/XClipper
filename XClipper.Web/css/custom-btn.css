@@ -1,0 +1,38 @@
+.btn-custom {
+  text-transform: uppercase;
+  color: #fff !important;
+  background: #393d4f;
+  padding: 16px 30px;
+  display: inline-block;
+  letter-spacing: 0.2em;
+  position: relative;
+}
+.btn-custom > span {
+  position: relative;
+  z-index: 2;
+}
+.btn-custom:before {
+  background: -webkit-gradient(
+    linear,
+    left top,
+    right top,
+    from(#c70039),
+    color-stop(70%, #ff5733)
+  );
+  background: -webkit-linear-gradient(left, #c70039, #ff5733 70%);
+  background: -o-linear-gradient(left, #c70039, #ff5733 70%);
+  background: linear-gradient(to right, #c70039, #ff5733 70%);
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  top: 0;
+  width: 0;
+  -webkit-transition: 0.3s all ease-in-out;
+  -o-transition: 0.3s all ease-in-out;
+  transition: 0.3s all ease-in-out;
+  z-index: 1;
+}
+.btn-custom:hover:before {
+  width: 100%;
+}

@@ -83,7 +83,6 @@
   <ItemGroup>
     <Compile Include="ExtensionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="LicenseTest.cs" />
     <Compile Include="GeneralTest.cs" />
     <Compile Include="SQLTest.cs" />
   </ItemGroup>

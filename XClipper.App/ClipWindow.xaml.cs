@@ -645,8 +645,8 @@ namespace Components
         /// <param name="text"></param>
         private void UpdateTextWindow(string text)
         {
-            // We will minimize the window to get focus to previous window...
-            WindowState = WindowState.Minimized;
+            // We will close the window to obtain focus to success window.
+            CloseWindow();
 
             // Saving clipboard...
             string clipboardText = Clipboard.GetText();
@@ -656,9 +656,6 @@ namespace Components
             Clipboard.SetText(text);
             System.Windows.Forms.SendKeys.SendWait("^v");
             Clipboard.SetText(clipboardText);
-
-            // Finally Close the window...
-            CloseWindow();
         }
 
         /// <summary>
