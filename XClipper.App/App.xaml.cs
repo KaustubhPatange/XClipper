@@ -90,6 +90,11 @@ namespace Components
             notifyIcon.DoubleClick += (o, e) => LaunchCodeUI();
 
             DisplayNotifyMessage();
+
+            ApplicationHelper.AttachForegroundProcess(delegate
+            {
+                clipWindow.CloseWindow();
+            });
         }
 
         protected override void OnExit(ExitEventArgs e)

@@ -158,6 +158,11 @@
                                     <Separator />
 
                                     <MenuItem
+                                        local:MenuItemProperties.Shortcut="Ctrl + R"
+                                        local:MenuItemProperties.Title="{DynamicResource clip_ctx_dq}"
+                                        Click="DisplayQR_Clicked"
+                                        Style="{StaticResource MenuItemStyle1}" />
+                                    <MenuItem
                                         local:MenuItemProperties.Shortcut="Ctrl + Tab"
                                         local:MenuItemProperties.Title="{DynamicResource clip_ctx_qi}"
                                         Click="QuickInfo_MenuItemClicked"

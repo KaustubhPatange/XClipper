@@ -93,7 +93,7 @@
                     Click="CloseButton_Clicked"
                     DockPanel.Dock="Right"
                     Style="{StaticResource ButtonStyle}"
-                    ToolTip="Close (Escape)">
+                    ToolTip="{DynamicResource clip_close_hint}">
                     <materialDesign:PackIcon
                         Padding="8,4,8,4"
                         HorizontalAlignment="Right"

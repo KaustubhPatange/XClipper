@@ -27,6 +27,7 @@ namespace Components
         private DispatcherTimer popUpTimer;
         private TableCopy model;
         private bool isFocus;
+        private bool FirstActivate;
 
         #endregion
 
@@ -44,6 +45,15 @@ namespace Components
             this.Left = X;
             this.Top = Y;
 
+            Activated += PopupWindow_Activated;
+
+        }
+
+        private void PopupWindow_Activated(object sender, EventArgs e)
+        {
+            if (FirstActivate)
+                isFocus = true;
+            FirstActivate = true;
         }
 
         #endregion
@@ -162,6 +172,8 @@ namespace Components
             }
             _tbDateTime.Text = model.DateTime;
             _tbFocusText.Visible();
+            FirstActivate = false;
+            isFocus = false;
         }
 
         private void CommonTextFiles()
@@ -190,6 +202,7 @@ namespace Components
             }
             else
             {
+             
                 SetStopEditMode();
                 _toggleEditButton.IsChecked = false;
             }
@@ -236,6 +249,10 @@ namespace Components
                         }
                         break;
                 }
+
+                isFocus = false;
+                FirstActivate = false;
+
                 AppSingleton.GetInstance.UpdateData(model);
             }
             _tbText.IsReadOnly = true;
@@ -291,7 +308,7 @@ namespace Components
         /// <summary>
         /// Handles the close of the window.
         /// </summary>
-        private void CloseWindow()
+        public void CloseWindow()
         {
             if (_toggleEditButton.IsChecked == true)
                 ToggleEditMode();

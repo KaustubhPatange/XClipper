@@ -25,6 +25,7 @@ That means whenever you copy something to your clipboard (via _Ctrl + C_ or stan
 | Delete     | Remove the selected items from clip database            |
 | Ctrl + T   | Pin/Unpin selected item to top                          |
 | Ctrl + F   | Open up the filter window                               |
+| Ctrl + R   | Display QR Code, [limitations]()                        |
 
 ### Popup window binds
 

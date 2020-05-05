@@ -38,6 +38,7 @@ namespace Components
         private PopupWindow _popupWindow;
         private MaterialMessage _materialMsgBox;
         private FilterWindow _filterWindow;
+        private QRWindow _qrWindow;
         private bool isMouseKeyDown;
 
         #endregion
@@ -52,6 +53,7 @@ namespace Components
             AppSingleton.GetInstance.SetBinder(this);
             _popupWindow = new PopupWindow();
             _filterWindow = new FilterWindow();
+            _qrWindow = new QRWindow();
 
             double X = 0, Y = 0;
 
@@ -128,7 +130,7 @@ namespace Components
         {
             if (!ApplicationHelper.IsActivated())
             {
-                CloseWindow();
+               // CloseWindow();
             }
         }
 
@@ -231,6 +233,7 @@ namespace Components
              */
             _popupWindow.Hide();
             _filterWindow.Hide();
+            _qrWindow.CloseWindow();
         }
 
         #endregion
@@ -238,8 +241,8 @@ namespace Components
         #region Key Capture Events
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            Debug.WriteLine("Pressed Key: " + e.Key.ToString());
-            Debug.WriteLine("Pressed SystemKey: " + e.SystemKey.ToString());
+            //Debug.WriteLine("Pressed Key: " + e.Key.ToString());
+            //Debug.WriteLine("Pressed SystemKey: " + e.SystemKey.ToString());
 
 
             // This key bind will show context menu
@@ -251,6 +254,10 @@ namespace Components
             //        card.ContextMenu.
             //    }
             //}
+
+            // This key bind will show qr window
+            if (e.Key == Key.R && IsCtrlPressed())
+                ShowQRWindow();
 
             // This key bind will set current item to clipboard
             if (e.Key == Key.C && IsCtrlPressed())
@@ -291,6 +298,8 @@ namespace Components
                 {
                     _filterWindow.Hide();
                 }
+                else if (_qrWindow.IsVisible)
+                    _qrWindow.Hide();
                 else
                     CloseWindow();
             }
@@ -344,8 +353,8 @@ namespace Components
          PreviewKeyDown instead. */
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            Debug.WriteLine("WPKD: " + e.Key.ToString());
-            Debug.WriteLine("WPKD: " + e.SystemKey.ToString());
+            //Debug.WriteLine("WPKD: " + e.Key.ToString());
+            //Debug.WriteLine("WPKD: " + e.SystemKey.ToString());
             // If pop up window is open, and space is pressed. It will put popup to focus.
             if (e.Key == Key.Space)
             {
@@ -532,6 +541,8 @@ namespace Components
         {
             //Close();
             _filterWindow.Hide();
+            _popupWindow.CloseWindow();
+            _qrWindow.CloseWindow();
             Hide();
             _lvClip.ItemsSource = null;
             _tbSearchBox.Clear();
@@ -543,8 +554,7 @@ namespace Components
         public void ShowFilterWindow()
         {
             //if (_lvClip.SelectedItems.Count <= 0) return;
-            if (_popupWindow.IsVisible)
-                _popupWindow.Hide();
+            HideAllWindows();
             _filterWindow.Show();
             _filterWindow.SetUpWindow(_lvClip.SelectedIndex);
         }
@@ -555,10 +565,37 @@ namespace Components
         /// <param name="model"></param>
         public void ShowPopupWindow(TableCopy model)
         {
-            if (_filterWindow.IsVisible)
-                _filterWindow.Hide();
+            HideAllWindows();
             _popupWindow.SetPopUp(model);
             _popupWindow.Show();
+        }
+
+        /// <summary>
+        /// This will show qr window using the TableCopy model.
+        /// </summary>
+        /// <param name="model"></param>
+        public void ShowQRWindow()
+        {
+            if (_lvClip.SelectedItems.Count <= 0) return;
+            var model = (TableCopy)_lvClip.SelectedItem;
+
+            HideAllWindows();
+            if (model.ContentType == ContentType.Text && model.Text.Length <= 1000)
+            {
+                _qrWindow.SetUp(model.Text);
+                _qrWindow.Show();
+                Focus();
+            }
+        }
+
+        /// <summary>
+        /// Call this function whenever you want to display a window over other.
+        /// </summary>
+        private void HideAllWindows()
+        {
+            _popupWindow.Hide();
+            _filterWindow.Hide();
+            _qrWindow.Hide();
         }
 
         /// <summary>
@@ -700,6 +737,11 @@ namespace Components
 
         #region Menu Item Clicks
 
+        private void DisplayQR_Clicked(object sender, RoutedEventArgs e)
+        {
+            ShowQRWindow();
+        }
+
         private void SetCurrentItem_Click(object sender, RoutedEventArgs e)
         {
             SetCurrentClip();
@@ -728,5 +770,6 @@ namespace Components
 
         #endregion
 
+  
     }
 }

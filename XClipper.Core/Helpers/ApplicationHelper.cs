@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interop;
+using System.Windows.Threading;
 
 namespace Components
 {
@@ -20,7 +21,23 @@ namespace Components
 
         #endregion
 
+
         #region Methods
+        private static DispatcherTimer dtimer;
+        public static void AttachForegroundProcess(Action block)
+        {
+            dtimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(700) };
+            dtimer.Tick += delegate 
+            {
+                if (!IsActivated())
+                {
+                    Debug.WriteLine("Deactivated()");
+                    block.Invoke();
+                   // dtimer.Stop();
+                }
+            };
+            dtimer.Start();
+        }
 
         /// <summary>Returns true if the current application has focus, false otherwise</summary>
         public static bool IsActivated()

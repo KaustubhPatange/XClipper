@@ -5,7 +5,7 @@
 ![GitHub repo size](https://img.shields.io/github/repo-size/KaustubhPatange/XClipper)
 ![GitHub stars](https://img.shields.io/github/stars/KaustubhPatange/XClipper?style=social)
 
-# ⚠️ <span style="color:red">Underconstruction</span> ⚠️
+ <h1 style="color:red">⚠️ Underconstruction ⚠️</h1>
 
 **XClipper** is a clipboard manager 🔗 for Windows 💻 which helps to track clipboard activities and makes it easier to interact with them ❤️
 
