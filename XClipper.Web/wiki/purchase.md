@@ -3,6 +3,7 @@
 The following features will be unlocked when you buy the license.
 
 - _**Password** protect the database, [learn more](https://github.com/KaustubhPatange/XClipper/wiki/Password-Protect-Database)_
+- _**Sync** data across devices, [learn more](https://github.com/KaustubhPatange/XClipper/wiki/Data-Synchronization)_
 - _Support development_ ❤️
 
 ## Why to Buy?
@@ -19,7 +20,7 @@ Anyway at the end of day its all your decision, but each purchase will boost me 
 
 - Click on the buy button from below 👇 and complete the purchase
 
-<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=8WT8YTCPWQ5MU" target="_blank"><img width=120 src="../images/don.jpg"/></a>
+<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=8WT8YTCPWQ5MU" target="_blank"><img width=120 src="https://github.com/KaustubhPatange/XClipper/raw/master/XClipper.Web/images/don.jpg"/></a>
 
 - Now [fill this form](https://forms.gle/CQABNV9qHnBNz4sE7) by entering required fields and _Paypal Transaction ID_ in **Transaction ID** field.
 - Wait for a day or 2 till I manually process the transaction. Once done I'll email you with your license key and activation guide.

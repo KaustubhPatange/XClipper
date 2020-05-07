@@ -22,10 +22,7 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="30" />
         </Grid.RowDefinitions>
-        <Border
-            Height="222"
-            Padding="0,7,0,7"
-            GotFocus="QRWindow_GotFocus">
+        <Border Height="222" Padding="0,7,0,7">
             <Image x:Name="_imgQR" Grid.Row="0" />
         </Border>
         <StackPanel Grid.Row="1">

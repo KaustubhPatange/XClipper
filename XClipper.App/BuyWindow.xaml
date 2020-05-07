@@ -50,7 +50,7 @@
                     DockPanel.Dock="Right"
                     IsEnabled="{c:Binding !IACT}" />
                 <TextBlock Margin="0,3,10,0" HorizontalAlignment="Right">
-                    <Hyperlink local:HyperlinkProperties.IsExternal="true" NavigateUri="https://github.com/KaustubhPatange/XClipper">
+                    <Hyperlink local:HyperlinkProperties.IsExternal="true" NavigateUri="https://github.com/KaustubhPatange/XClipper/wiki/Purchasing-License">
                         <TextBlock Text="{DynamicResource msg_learn}" />
                     </Hyperlink>
                 </TextBlock>

@@ -9,7 +9,6 @@
     Title="ClipWindow"
     Width="287"
     Height="450"
-    Deactivated="ClipWindow_Deactivated"
     FontFamily="{DynamicResource MaterialDesignFont}"
     Icon="pack://application:,,,/Resources/clipboard.png"
     IsVisibleChanged="Window_IsVisibleChanged"

@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System;
 using static Components.Core;
 using System.Xml.Linq;
+using static Components.Constants;
 
 namespace Components
 {
@@ -11,7 +12,6 @@ namespace Components
 
         #region Variable Definitions
 
-        private static string SettingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "XClipper.xml");
         private const string SETTINGS = "Settings";
 
         #endregion
@@ -19,33 +19,100 @@ namespace Components
 
         #region Actual Settings
 
-        // This will set the start location of the app.
+        /// <summary>
+        /// This will set the start location of the app.
+        /// </summary>
         public static XClipperLocation AppDisplayLocation { get; set; } = XClipperLocation.BottomRight;
-        // This tells what to store meaning only Text, Image, Files or All.
+
+        /// <summary>
+        /// This tells what to store meaning only Text, Image, Files or All.
+        /// </summary>
         public static XClipperStore WhatToStore { get; set; } = XClipperStore.All;
-        // This tells the number of clip to store.
+
+        /// <summary>
+        /// This tells the number of clip to store.
+        /// </summary>
         public static int TotalClipLength { get; set; } = 20;
-        // This tells if Ctrl needs to be pressed in order to activate application.
+
+        /// <summary>
+        /// This tells if Ctrl needs to be pressed in order to activate application.
+        /// </summary>
         public static bool IsCtrl { get; set; } = true;
-        // This tells if Alt needs to be pressed in order to activate application.
+
+        /// <summary>
+        /// This tells if Alt needs to be pressed in order to activate application.
+        /// </summary>
         public static bool IsAlt { get; set; } = false;
-        // This tells if Shift needs to be pressed in order to activate application.
+
+        /// <summary>
+        /// This tells if Shift needs to be pressed in order to activate application.
+        /// </summary>
         public static bool IsShift { get; set; } = false;
-        // This will set Final Hot key of application.
+
+        /// <summary>
+        /// This will set Final Hot key of application.
+        /// </summary>
         public static string HotKey { get; set; } = "Oem3";
-        // This will tell if application should start on System Startup.
+
+        /// <summary>
+        /// This will tell if application should start on System Startup.
+        /// </summary>
         public static bool StartOnSystemStartup { get; set; } = true;
-        // This will tell if application should play sound when started.
+
+        /// <summary>
+        /// This will tell if application should play sound when started.
+        /// </summary>
         public static bool PlayNotifySound { get; set; } = true;
-        // This will set the current language file to be use.
+
+        /// <summary>
+        /// This will set the current language file to be use.
+        /// </summary>
         public static string CurrentAppLanguage { get; set; } = "locales\\en.xaml";
-        // A configuration to password protect database.
+
+        /// <summary>
+        /// A configuration to password protect database.
+        /// </summary>
         public static bool IsSecureDB { get; set; } = false;
-        // A string to hold if purchase complete.
+
+        /// <summary>
+        /// A string to hold if purchase complete.
+        /// </summary>
         public static bool IsPurchaseDone { get; set; }
+
+        /// <summary>
+        /// Determines whether to use custom user input password or not.
+        /// </summary>
         public static bool UseCustomPassword { get; set; } = false;
+
+        /// <summary>
+        /// Stores the password in encrypted form.
+        /// </summary>
         public static string CustomPassword { get; set; } = CONNECTION_PASS.Decrypt();
+
+        /// <summary>
+        /// Max number of list to display in XClipper window.
+        /// </summary>
         public static int TruncateList { get; set; } = 20;
+
+        /// <summary>
+        /// Max number of item to store in database.
+        /// </summary>
+        public static int DatabaseMaxItem { get; set; } = 5;
+
+        /// <summary>
+        /// Max number of item length to store in database.
+        /// </summary>
+        public static int DatabaseMaxItemLength { get; set; } = 1000;
+
+        /// <summary>
+        /// Determines the maximum number of device connections allowed.
+        /// </summary>
+        public static int DatabaseMaxConnection { get; set; } = 1;
+
+        /// <summary>
+        /// Password which will be used to decrypt item in database.
+        /// </summary>
+        public static string DatabaseEncryptPassword { get; set; } = FB_DEFAULT_PASS.Decrypt();
 
         #endregion
 
@@ -70,6 +137,7 @@ namespace Components
                     new XElement(nameof(IsSecureDB), IsSecureDB.ToString()),
                     new XElement(nameof(CurrentAppLanguage), CurrentAppLanguage.ToString()),
                     new XElement(nameof(CustomPassword), CustomPassword.Encrypt()),
+                    new XElement(nameof(DatabaseEncryptPassword), DatabaseEncryptPassword.Encrypt()),
                     new XElement(nameof(UseCustomPassword), UseCustomPassword.ToString())
                     );
             document.Add(settings);
@@ -78,6 +146,7 @@ namespace Components
 
         public static void LoadSettings()
         {
+            if (!Directory.Exists(ApplicationDirectory)) Directory.CreateDirectory(ApplicationDirectory);
             if (!File.Exists(SettingsPath)) return;  // Return if settings does not exist, so it will use defaults
 
             var settings = XDocument.Load(SettingsPath).Element(SETTINGS);
@@ -90,6 +159,7 @@ namespace Components
             IsShift = settings.Element(nameof(IsShift)).Value.ToBool();
             HotKey = settings.Element(nameof(HotKey)).Value;
             CustomPassword = settings.Element(nameof(CustomPassword)).Value.Decrypt();
+            DatabaseEncryptPassword = settings.Element(nameof(DatabaseEncryptPassword)).Value.Decrypt();
             IsSecureDB = settings.Element(nameof(IsSecureDB)).Value.ToBool();
             UseCustomPassword = settings.Element(nameof(UseCustomPassword)).Value.ToBool();
             CurrentAppLanguage = settings.Element(nameof(CurrentAppLanguage)).Value;

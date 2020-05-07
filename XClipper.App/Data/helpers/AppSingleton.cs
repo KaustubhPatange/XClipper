@@ -11,6 +11,7 @@ using System.Diagnostics;
 using static Components.Core;
 using static Components.Constants;
 using System.Windows.Documents;
+using System.Threading.Tasks;
 
 namespace Components.viewModels
 {
@@ -186,6 +187,15 @@ namespace Components.viewModels
             }
 
             dataDB.Insert(model);
+
+            Task.Run(async () => { await FirebaseSingleton.GetInstance.AddClip(model.ContentType == ContentType.Text ? model.RawText : null); });
+
+            //Parallel.Invoke(() =>
+            //{
+            //    s.Wait();
+            //});
+           
+          
         }
 
 

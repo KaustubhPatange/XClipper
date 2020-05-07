@@ -1,0 +1,22 @@
+﻿<UserControl
+    x:Class="Components.Controls.FirebaseListItem"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Components.Controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Width="auto"
+    Height="auto"
+    mc:Ignorable="d">
+    <Border>
+        <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+            <TextBlock FontSize="11" Text="{Binding RelativeSource={RelativeSource AncestorType=local:FirebaseListItem}, Path=Title}" />
+            <TextBlock
+                Margin="5,0,0,0"
+                FontSize="11"
+                Text="{Binding RelativeSource={RelativeSource AncestorType=local:FirebaseListItem}, Path=ItemValue}" />
+            <TextBlock FontSize="11" Text="/" />
+            <TextBlock FontSize="11" Text="{Binding RelativeSource={RelativeSource AncestorType=local:FirebaseListItem}, Path=ItemMaxValue}" />
+        </StackPanel>
+    </Border>
+</UserControl>

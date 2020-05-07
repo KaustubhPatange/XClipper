@@ -1,13 +1,8 @@
-﻿using ClipboardManager.models;
-using Components.viewModels;
+﻿using Components.viewModels;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using WK.Libraries.SharpClipboardNS;
-using System.Linq;
 using static Components.WhatToStoreHelper;
-using static Components.MainHelper;
-using static Components.DefaultSettings;
 using static WK.Libraries.SharpClipboardNS.SharpClipboard;
 using static Components.Constants;
 using static Components.TableHelper;
@@ -105,9 +100,9 @@ namespace Components
             else if (e.ContentType == ContentTypes.Image && ToStoreImageClips())
             {
 
-                if (!Directory.Exists("Images")) Directory.CreateDirectory("Images");
+                if (!Directory.Exists(ImageFolder)) Directory.CreateDirectory(ImageFolder);
 
-                string filePath = Path.Combine(BaseDirectory, $"Images\\{DateTime.Now.ToFormattedDateTime()}.png");
+                string filePath = Path.Combine(ImageFolder, $"Images\\{DateTime.Now.ToFormattedDateTime()}.png");
                 _clipboardFactory.ClipboardImage.Save(filePath);
 
                 AppSingleton.GetInstance.InsertContent(CreateTable(filePath, ContentTypes.Image));

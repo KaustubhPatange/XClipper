@@ -8,6 +8,8 @@ using ClipboardManager.models;
 using static Components.LicenseHandler;
 using System;
 using static Components.Constants;
+using System.IO;
+using System.Diagnostics;
 
 namespace Components
 {
@@ -93,7 +95,9 @@ namespace Components
             }
         }
 
-        /** This will add or remove startup entry for the app. */
+        /// <summary>
+        /// This will add or remove startup entry for the app.
+        /// </summary>
         public static void SetAppStartupEntry()
         {
             if (StartOnSystemStartup)
@@ -102,10 +106,45 @@ namespace Components
                 RegistryHelper.RemoveApplicationFromStartup(App.AppStartupLocation);
         }
 
-        /** This method will check for license and activate some extra features. */
+        /// <summary>
+        /// This method will check for license and activate some extra features.
+        /// </summary>
         public static void CheckForLicense()
         {
             IsPurchaseDone = IsActivated(new Uri(LicenseFilePath));
+        }
+
+        /// <summary>
+        /// This method will restart the application.
+        /// </summary>
+        public static void RestartApplication()
+        {
+            var file = Path.Combine(ApplicationDirectory, "restart.bat");
+            var batch = $@"
+@echo off
+timeout 2
+start XClipper.exe
+DEL ""%~f0""";
+
+            File.WriteAllText(file, batch);
+
+            var p = new Process();
+            p.StartInfo.FileName = file;
+            p.StartInfo.UseShellExecute = false;
+            p.StartInfo.WorkingDirectory = BaseDirectory;
+            p.StartInfo.CreateNoWindow = true;
+            p.Start();
+
+            Application.Current.Shutdown();
+        }
+        public static void ActivatePaidFeatures()
+        {
+            if (IsPurchaseDone)
+            {
+                DatabaseMaxItem = FB_MAX_ITEM;
+                DatabaseMaxItemLength = FB_MAX_LENGTH;
+                DatabaseMaxConnection = FB_MAX_CONNECTION;
+            }
         }
         public static string FormatText(string text)
         {

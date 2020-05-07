@@ -125,15 +125,6 @@ namespace Components
 
         }
 
-        /** The method will be called whenever main window is not active. */
-        private void ClipWindow_Deactivated(object sender, EventArgs e)
-        {
-            if (!ApplicationHelper.IsActivated())
-            {
-               // CloseWindow();
-            }
-        }
-
         /** Whenever mouse is placed on certain position on window, we will manipulate
          *  ScollViewer on listview. */
         private void Window_MouseEnter(object sender, MouseEventArgs e)

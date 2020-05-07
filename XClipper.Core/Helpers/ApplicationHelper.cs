@@ -21,20 +21,28 @@ namespace Components
 
         #endregion
 
-
         #region Methods
+
         private static DispatcherTimer dtimer;
+        private static bool isExecuted;
+        /// <summary>
+        /// This will provide a callback whenever the application process is not foreground.
+        /// </summary>
+        /// <param name="block"></param>
         public static void AttachForegroundProcess(Action block)
         {
-            dtimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(700) };
+            /** I do not support this logic, maybe in future I'll find a better solution. */
+            dtimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
             dtimer.Tick += delegate 
             {
                 if (!IsActivated())
                 {
+                    if (isExecuted) return;
                     Debug.WriteLine("Deactivated()");
                     block.Invoke();
-                   // dtimer.Stop();
+                    isExecuted = true;
                 }
+                else isExecuted = false;
             };
             dtimer.Start();
         }

@@ -26,8 +26,6 @@ namespace Components
         private string SAVED_TEXT;
         private DispatcherTimer popUpTimer;
         private TableCopy model;
-        private bool isFocus;
-        private bool FirstActivate;
 
         #endregion
 
@@ -45,15 +43,6 @@ namespace Components
             this.Left = X;
             this.Top = Y;
 
-            Activated += PopupWindow_Activated;
-
-        }
-
-        private void PopupWindow_Activated(object sender, EventArgs e)
-        {
-            if (FirstActivate)
-                isFocus = true;
-            FirstActivate = true;
         }
 
         #endregion
@@ -62,12 +51,6 @@ namespace Components
         #region UI Events
 
         #region Unlocalised
-
-        private void Window_Deactivated(object sender, EventArgs e)
-        {
-            if (isFocus)
-                AppSingleton.GetInstance.MakeExitRequest();
-        }
 
         private void EditButton_Clicked(object sender, RoutedEventArgs e)
         {
@@ -106,7 +89,6 @@ namespace Components
             if (e.Key == Key.Space)
             {
                 _tbFocusText.Hide();
-                isFocus = true;
             }
 
             // This key bind will open the image in default image view application
@@ -172,8 +154,6 @@ namespace Components
             }
             _tbDateTime.Text = model.DateTime;
             _tbFocusText.Visible();
-            FirstActivate = false;
-            isFocus = false;
         }
 
         private void CommonTextFiles()
@@ -249,10 +229,6 @@ namespace Components
                         }
                         break;
                 }
-
-                isFocus = false;
-                FirstActivate = false;
-
                 AppSingleton.GetInstance.UpdateData(model);
             }
             _tbText.IsReadOnly = true;
@@ -313,7 +289,6 @@ namespace Components
             if (_toggleEditButton.IsChecked == true)
                 ToggleEditMode();
             _popUpMenu.IsOpen = false;
-            isFocus = false;
             Hide();
         }
 

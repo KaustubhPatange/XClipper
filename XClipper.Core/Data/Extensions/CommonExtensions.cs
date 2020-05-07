@@ -70,15 +70,7 @@ namespace Components
             return child as T;
         }
 
-        public static string[] ToLines(this string text) => Regex.Split(text, "\r\n|\r|\n");
-
-        public static StringCollection ToCollection(this IEnumerable<string> t)
-        {
-            var c = new StringCollection();
-            c.AddRange(t.ToArray());
-            return c;
-        }
-
+     
         public static BitmapImage ToImageSource(this Bitmap bitmap)
         {
             using (MemoryStream memory = new MemoryStream())

@@ -29,6 +29,7 @@ namespace Components
         public string APP_ISRUN_SERVICE = rm.GetString("app_isrun_service");
         public string APP_SHOW = rm.GetString("app_show");
         public string APP_SETTINGS = rm.GetString("app_settings");
+        public string APP_RESTART = rm.GetString("app_restart");
         public string APP_DELETE = rm.GetString("app_delete");
         public string APP_LICENSE = rm.GetString("app_license");
         public string APP_BACKUP = rm.GetString("app_backup");
@@ -67,6 +68,7 @@ namespace Components
         public string MSG_ERR = rm.GetString("msg_err");
         public string MSG_PASSWORD = rm.GetString("msg_password");
         public string MSG_LEARN = rm.GetString("msg_learn");
+        public string MSG_RESTART = rm.GetString("msg_restart");
         public string MSG_INFO = rm.GetString("msg_info");
         public string MSG_CANCEL = rm.GetString("msg_cancel");
         public string MSG_RESTORE_DB = rm.GetString("msg_restore_db");

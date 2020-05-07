@@ -1,17 +1,21 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace Components
 {
     public static class Constants
     {
-       
+        public static string ApplicationLocation = Assembly.GetExecutingAssembly().Location;
         public static string BaseDirectory = AppDomain.CurrentDomain.BaseDirectory;
         public static string RoamingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-        public static string LicenseFilePath = Path.Combine(RoamingDirectory, "xclipper.lic");
-        public static string BackupFolder = Path.Combine(BaseDirectory, "Backup");
-        public static string DatabasePath = DatabasePath = Path.Combine(BaseDirectory, "data.db");
+        public static string ApplicationDirectory = Path.Combine(RoamingDirectory, "XClipper");
+        public static string SettingsPath = Path.Combine(ApplicationDirectory, "config.xml");
+        public static string LicenseFilePath = Path.Combine(ApplicationDirectory, "key.lic");
+        public static string BackupFolder = Path.Combine(ApplicationDirectory, "Backup");
+        public static string ImageFolder = Path.Combine(ApplicationDirectory, "Image");
+        public static string DatabasePath = DatabasePath = Path.Combine(ApplicationDirectory, "data.db");
 
         #region Some Filter Constants
 
@@ -24,6 +28,15 @@ namespace Components
         public const string CONTENT_FILTER_NEWEST_FIRST = "{Filter=Newest}";
         public const string CONTENT_FILTER_TEXTLENGTH_DESC = "{Filter=TextLength-desc}";
         public const string CONTENT_FILTER_TEXTLENGTH_ASC = "{Filter=TextLength-asc}";
+
+        #endregion
+
+        #region Database Constants
+
+        public const int FB_MAX_ITEM = 20;
+        public const int FB_MAX_LENGTH = 10000;
+        public const int FB_MAX_CONNECTION = 5;
+        public const string FB_DEFAULT_PASS = "JfbY+e0iD/RMVJDOF5MWphCDGB45G/0kLtF4Vv+sbF7SL3VdbP3GyMgvPVz3e56e1pmrJct0LRMHH2Sz+hLASpqz/1YTvV3GF6e7pHBcuWVpuzkMDHEDJG3IXRj9VIFA";
 
         #endregion
     }

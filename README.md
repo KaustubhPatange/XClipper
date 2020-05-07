@@ -21,7 +21,9 @@ Originally inspired from [Ditto](https://ditto-cp.sourceforge.io/) which offers 
 
 - Clean & **beautiful** UI.
 - **Easier** to use and manage.
-- Lot more... _but just leaving it here_.
+- Password Protection for Database, [learn more](https://github.com/KaustubhPatange/XClipper/wiki/Password-Protect-Database).
+- Database syncing between devices, [learn more](https://github.com/KaustubhPatange/XClipper/wiki/Data-Synchronization).
+- Similar features like ditto & Lot more... _but just leaving it here_.
 
 ## Compilation Guide
 

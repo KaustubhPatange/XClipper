@@ -10,7 +10,6 @@
     Width="600"
     MaxHeight="400"
     Background="{StaticResource BackgroundBrush}"
-    Deactivated="Window_Deactivated"
     KeyDown="Window_KeyDown"
     ResizeMode="NoResize"
     ShowInTaskbar="False"

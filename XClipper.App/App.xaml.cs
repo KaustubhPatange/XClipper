@@ -21,6 +21,7 @@ using System.Windows.Controls;
 using SQLite;
 using static Components.TranslationHelper;
 using ClipboardManager.models;
+using static Components.LicenseHandler;
 
 namespace Components
 {
@@ -55,6 +56,8 @@ namespace Components
 
             AppSingleton.GetInstance.Init();
 
+            FirebaseSingleton.GetInstance.Init(UniqueID);
+
             ClipSingleton.GetInstance.StartRecording();
 
             hookUtility.Subscribe(LaunchCodeUI);
@@ -62,7 +65,11 @@ namespace Components
             SetAppStartupEntry();
 
             CheckForLicense();
+
+            ActivatePaidFeatures();
         }
+
+     
 
         #endregion
 
@@ -88,7 +95,6 @@ namespace Components
             };
 
             notifyIcon.DoubleClick += (o, e) => LaunchCodeUI();
-
             DisplayNotifyMessage();
 
             ApplicationHelper.AttachForegroundProcess(delegate
@@ -118,6 +124,7 @@ namespace Components
         {
             var ShowMenuItem = CreateNewItem(Translation.APP_SHOW, delegate { LaunchCodeUI(); });
             var SettingMenuItem = CreateNewItem(Translation.APP_SETTINGS, SettingMenuClicked);
+            var RestartMenuItem = CreateNewItem(Translation.APP_RESTART, RestartAppClicked);
             var BuyWindowItem = CreateNewItem(Translation.APP_LICENSE, BuyMenuClicked);
             var RecordMenuItem = CreateNewItem(Translation.APP_RECORD, RecordMenuClicked).Also(s => { s.Checked = ToRecord; });
             var AppExitMenuItem = CreateNewItem(Translation.APP_EXIT, delegate { Shutdown(); });
@@ -131,7 +138,7 @@ namespace Components
                 Process.Start(new ProcessStartInfo("https://github.com/KaustubhPatange/XClipper"));
             });
 
-            var items = new List<WinForm.MenuItem>() { ShowMenuItem, CreateSeparator(), BackupMenuItem, RestoreMenutItem, ImportDataItem, CreateSeparator(), HelpMenuItem, CreateSeparator(), RecordMenuItem, DeleteMenuItem, SettingMenuItem, CreateSeparator(), AppExitMenuItem };
+            var items = new List<WinForm.MenuItem>() { ShowMenuItem, RestartMenuItem, CreateSeparator(), BackupMenuItem, RestoreMenutItem, ImportDataItem, CreateSeparator(), HelpMenuItem, CreateSeparator(), RecordMenuItem, DeleteMenuItem, SettingMenuItem, CreateSeparator(), AppExitMenuItem };
             if (!IsPurchaseDone) items.Insert(1, BuyWindowItem);
             return items.ToArray();
         }
@@ -286,10 +293,15 @@ namespace Components
         #endregion
 
         #region Method Events
-
+        private void RestartAppClicked(object sender, EventArgs e)
+        {
+            var msg = MessageBox.Show(Translation.MSG_RESTART, Translation.MSG_INFO, MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            if (msg == MessageBoxResult.Yes)
+                RestartApplication();
+        }
         private void CheckForOtherInstance()
         {
-            bool IsNewInstance = false;
+            bool IsNewInstance;
             appMutex = new Mutex(true, Translation.APP_NAME, out IsNewInstance);
             if (!IsNewInstance)
             {

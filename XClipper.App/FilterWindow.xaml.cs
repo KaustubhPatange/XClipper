@@ -13,15 +13,6 @@ namespace Components
     public partial class FilterWindow : Window
     {
 
-        #region Variable Declaration
-
-        /// <summary>
-        /// This variable determines if focus is give to this window.
-        /// </summary>
-        private bool isFocus;
-
-        #endregion
-
         #region Constructor
 
         public FilterWindow()
@@ -50,19 +41,6 @@ namespace Components
 
             _lvFilter.ItemsSource = list;
 
-            GotFocus += FilterWindow_GotFocus;
-            Deactivated += FilterWindow_Deactivated;
-        }
-
-        private void FilterWindow_Deactivated(object sender, System.EventArgs e)
-        {
-            if (isFocus)
-                AppSingleton.GetInstance.MakeExitRequest();
-        }
-
-        private void FilterWindow_GotFocus(object sender, RoutedEventArgs e)
-        {
-            isFocus = true;
         }
 
         #endregion
@@ -106,7 +84,6 @@ namespace Components
 
         private void CloseWindow()
         {
-            isFocus = false;
             Hide();
         }
 

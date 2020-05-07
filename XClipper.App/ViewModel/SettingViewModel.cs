@@ -27,6 +27,8 @@ namespace Components
             KeyDownCommand = new RelayCommand<KeyEventArgs>(OnKeyDown, null);
             SaveCommand = new RelayCommand(SaveButtonClicked);
             ResetCommand = new RelayCommand(ResetButtonClicked);
+            PurchaseCommand = new RelayCommand(PurchaseButtonClicked);
+            ConnectedCommand = new RelayCommand(ConnectedButtonClicked);
 
             previousSecureDBValue = IsSecureDB;
             previousPassword = CustomPassword;
@@ -41,6 +43,8 @@ namespace Components
         // For Start application on system startup.
         public ICommand SaveCommand { get; set; }
         public ICommand ResetCommand { get; set; }
+        public ICommand PurchaseCommand { get; set; }
+        public ICommand ConnectedCommand { get; set; }
         public RelayCommand<KeyEventArgs> KeyDownCommand { get; set; }
         public bool SASS { get; set; } = StartOnSystemStartup;
         public bool PNS { get; set; } = PlayNotifySound;
@@ -54,6 +58,10 @@ namespace Components
         public int TCL { get; set; } = TotalClipLength;
         public string KEY_HK { get; set; } = HotKey;
         public string CAL { get; set; } = CurrentAppLanguage;
+        public int FMI { get; } = DatabaseMaxItem;
+        public int FMIL { get; } = DatabaseMaxItemLength;
+        public int FMCD { get; } = DatabaseMaxConnection;
+        public string FDP { get; set; } = DatabaseEncryptPassword;
         public bool ISDB
         {
             get { return is_secure_db; }
@@ -76,7 +84,25 @@ namespace Components
 
         #region Method Events
 
-        /** This event will be raised when Reset Button is Clicked */
+        /// <summary>
+        /// This event will be raised when Connected device button is clicked.
+        /// </summary>
+        private void ConnectedButtonClicked()
+        {
+
+        }
+
+        /// <summary>
+        /// This event will be raised when learn-more link is clicked in Connect Tab.
+        /// </summary>
+        private void PurchaseButtonClicked()
+        {
+            
+        }
+
+        /// <summary>
+        /// This event will be raised when Reset Button is Clicked.
+        /// </summary>
         private void ResetButtonClicked()
         {
             SASS = StartOnSystemStartup = true;
@@ -88,6 +114,7 @@ namespace Components
             IsAlt = KEY_IA = false;
             UCP = UseCustomPassword = false;
             CP = CustomPassword = CONNECTION_PASS.Decrypt();
+            FDP = DatabaseEncryptPassword = FB_DEFAULT_PASS.Decrypt();
             IsShift = KEY_IS = false;
             HotKey = KEY_HK = "Oem3";
             CurrentAppLanguage = CAL = "locales\\en.xaml";
@@ -97,7 +124,9 @@ namespace Components
             MessageBox.Show(App.rm.GetString("settings_reset"));
         }
 
-        /** This event will be raised when Save Button is Clicked */
+        /// <summary>
+        /// This event will be raised when Save Button is Clicked.
+        /// </summary>
         private void SaveButtonClicked()
         {
             StartOnSystemStartup = SASS;
@@ -106,6 +135,7 @@ namespace Components
             WhatToStore = WTS;
             AppDisplayLocation = ADL;
             IsCtrl = KEY_IC;
+            DatabaseEncryptPassword = FDP;
             UseCustomPassword = UCP;
             IsShift = KEY_IS;
             IsAlt = KEY_IA;
@@ -123,7 +153,9 @@ namespace Components
             MessageBox.Show(App.rm.GetString("settings_save"));
         }
 
-        /** This method will set which password to use for database encryption */
+        /// <summary>
+        /// This method will set which password to use for database encryption.
+        /// </summary>
         private void ToggleCustomPassword()
         {
             if (UseCustomPassword)
@@ -136,7 +168,9 @@ namespace Components
             }
         }
 
-        /** This will delete and create new secure database. */
+        /// <summary>
+        /// This will delete and create new secure database.
+        /// </summary>
         private void ToggleSecureDatabase()
         {
             if (previousSecureDBValue != is_secure_db)
@@ -157,6 +191,9 @@ namespace Components
             }
         }
 
+        /// <summary>
+        /// Migrate/Recreate database with new applied settings.
+        /// </summary>
         private void MigrateDatabase()
         {
             // Get list of all data...
@@ -175,7 +212,10 @@ namespace Components
             AppSingleton.GetInstance.dataDB.InsertAll(previousData);
         }
 
-        /** This event will observe Hot Key value. */
+        /// <summary>
+        /// This event will observe Hot Key value.
+        /// </summary>
+        /// <param name="args"></param>
         private void OnKeyDown(KeyEventArgs args)
         {
             //if (args.IsRepeat)

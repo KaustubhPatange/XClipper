@@ -14,10 +14,10 @@
     xmlns:media="clr-namespace:System.Windows.Media;assembly=PresentationCore"
     xmlns:ui="clr-namespace:System.Windows;assembly=PresentationCore"
     Title="{DynamicResource app_settings}"
-    Width="360"
+    Width="370"
+    Height="395"
     Icon="pack://application:,,,/Resources/clipboard.png"
     ResizeMode="NoResize"
-    SizeToContent="Height"
     Topmost="True"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
@@ -26,148 +26,245 @@
             <Setter Property="Margin" Value="0,5,0,0" />
         </Style>
     </Window.Resources>
-    <Border Padding="7">
+    <Border Padding="5">
         <StackPanel Orientation="Vertical">
+            <TabControl Height="315">
 
-            <!--  General Category  -->
+                <TabItem Header="{DynamicResource settings_tab_main}">
+                    <StackPanel Margin="7" Orientation="Vertical">
 
-            <control:GroupSeparator Header="{DynamicResource settings_general}" />
-            <CheckBox Content="{DynamicResource settings_sass}" IsChecked="{Binding SASS}" />
-            <CheckBox Content="{DynamicResource settings_pns}" IsChecked="{Binding PNS}" />
-            <Grid Margin="0,5,0,0" HorizontalAlignment="Stretch">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="auto" />
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="{DynamicResource settings_tcl}" />
-                <local:NumericTextBox
-                    Grid.Column="1"
-                    Width="50"
-                    Margin="10,0,0,0"
-                    Text="{Binding TCL, UpdateSourceTrigger=PropertyChanged}"
-                    TextAlignment="Center" />
-            </Grid>
-            <Grid Margin="0,5,0,0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="{DynamicResource settings_wts}" />
-                <ComboBox
-                    Grid.Column="1"
-                    Width="100"
-                    HorizontalAlignment="Right"
-                    ItemsSource="{Binding Source={local:Enumeration {x:Type local:XClipperStore}}}"
-                    SelectedIndex="{Binding WTS, Converter={x:Static local:EnumIndexConverter.Instance}, UpdateSourceTrigger=PropertyChanged}" />
-            </Grid>
-            <Grid Margin="0,5,0,0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="{DynamicResource settings_adl}" />
-                <ComboBox
-                    Grid.Column="1"
-                    Width="150"
-                    HorizontalAlignment="Right"
-                    ItemsSource="{Binding Source={local:Enumeration {x:Type local:XClipperLocation}}}"
-                    SelectedIndex="{Binding ADL, Converter={x:Static local:EnumIndexConverter.Instance}, UpdateSourceTrigger=PropertyChanged}" />
-                <!--  SelectedValue="{Binding ADL, Converter={x:Static local:EnumConverter.Instance}}"  -->
+                        <!--  General Category  -->
 
-            </Grid>
+                        <control:GroupSeparator Header="{DynamicResource settings_general}" />
+                        <CheckBox Content="{DynamicResource settings_sass}" IsChecked="{Binding SASS}" />
+                        <CheckBox Content="{DynamicResource settings_pns}" IsChecked="{Binding PNS}" />
+                        <Grid Margin="0,5,0,0" HorizontalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="{DynamicResource settings_tcl}" />
+                            <local:NumericTextBox
+                                Grid.Column="1"
+                                Width="50"
+                                Margin="10,0,0,0"
+                                Text="{Binding TCL, UpdateSourceTrigger=PropertyChanged}"
+                                TextAlignment="Center" />
+                        </Grid>
+                        <Grid Margin="0,5,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="{DynamicResource settings_wts}" />
+                            <ComboBox
+                                Grid.Column="1"
+                                Width="100"
+                                HorizontalAlignment="Right"
+                                ItemsSource="{Binding Source={local:Enumeration {x:Type local:XClipperStore}}}"
+                                SelectedIndex="{Binding WTS, Converter={x:Static local:EnumIndexConverter.Instance}, UpdateSourceTrigger=PropertyChanged}" />
+                        </Grid>
+                        <Grid Margin="0,5,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="{DynamicResource settings_adl}" />
+                            <ComboBox
+                                Grid.Column="1"
+                                Width="150"
+                                HorizontalAlignment="Right"
+                                ItemsSource="{Binding Source={local:Enumeration {x:Type local:XClipperLocation}}}"
+                                SelectedIndex="{Binding ADL, Converter={x:Static local:EnumIndexConverter.Instance}, UpdateSourceTrigger=PropertyChanged}" />
+                            <!--  SelectedValue="{Binding ADL, Converter={x:Static local:EnumConverter.Instance}}"  -->
 
-            <!--  Language Category  -->
-            <control:GroupSeparator Margin="0,10,0,0" Header="{DynamicResource settings_other}" />
+                        </Grid>
 
-            <Grid Margin="0,5,0,0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="{DynamicResource settings_cal}" />
-                <ComboBox
-                    Grid.Column="1"
-                    Width="120"
-                    HorizontalAlignment="Right"
-                    ItemsSource="{Binding Source={x:Static local:App.LanguageCollection}, UpdateSourceTrigger=PropertyChanged}"
-                    SelectedValue="{Binding CAL}" />
-            </Grid>
-            <DockPanel>
-                <DockPanel.ToolTip>
-                    <ToolTip Content="{DynamicResource settings_purchase_info}" Visibility="{c:Binding 'local:DefaultSettings.IsPurchaseDone ? ui:Visibility.Hidden : ui:Visibility.Visible'}" />
-                </DockPanel.ToolTip>
-                <CheckBox
-                    Content="{DynamicResource settings_isdb}"
-                    DockPanel.Dock="Left"
-                    Foreground="{c:Binding 'local:DefaultSettings.IsPurchaseDone ? media:Brushes.Black : media:Brushes.Gray'}"
-                    IsChecked="{Binding ISDB, UpdateSourceTrigger=PropertyChanged}"
-                    IsEnabled="{x:Static local:DefaultSettings.IsPurchaseDone}" />
+                        <!--  Language Category  -->
+                        <control:GroupSeparator Margin="0,10,0,0" Header="{DynamicResource settings_other}" />
 
-                <TextBlock
-                    Margin="0,3,0,0"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center">
+                        <Grid Margin="0,5,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="{DynamicResource settings_cal}" />
+                            <ComboBox
+                                Grid.Column="1"
+                                Width="120"
+                                HorizontalAlignment="Right"
+                                ItemsSource="{Binding Source={x:Static local:App.LanguageCollection}, UpdateSourceTrigger=PropertyChanged}"
+                                SelectedValue="{Binding CAL}" />
+                        </Grid>
+                        <DockPanel>
+                            <DockPanel.ToolTip>
+                                <ToolTip Content="{DynamicResource settings_purchase_info}" Visibility="{c:Binding 'local:DefaultSettings.IsPurchaseDone ? ui:Visibility.Hidden : ui:Visibility.Visible'}" />
+                            </DockPanel.ToolTip>
+                            <CheckBox
+                                Content="{DynamicResource settings_isdb}"
+                                DockPanel.Dock="Left"
+                                Foreground="{c:Binding 'local:DefaultSettings.IsPurchaseDone ? media:Brushes.Black : media:Brushes.Gray'}"
+                                IsChecked="{Binding ISDB, UpdateSourceTrigger=PropertyChanged}"
+                                IsEnabled="{x:Static local:DefaultSettings.IsPurchaseDone}" />
 
-                    <Hyperlink local:HyperlinkProperties.IsExternal="true" NavigateUri="https://github.com/KaustubhPatange/XClipper">
-                        <TextBlock Text="{DynamicResource msg_learn}" />
-                    </Hyperlink>
-                </TextBlock>
-            </DockPanel>
-            <DockPanel Visibility="{Binding ISDB, Converter={x:Static local:VisibilityConverter.Instance}}">
-                <CheckBox
-                    Margin="15,5,0,0"
-                    Content="Use custom password"
-                    IsChecked="{Binding UCP, UpdateSourceTrigger=PropertyChanged}" />
-                <TextBox
-                    Margin="20,5,0,0"
-                    IsEnabled="{Binding UCP}"
-                    Text="{Binding CP, UpdateSourceTrigger=PropertyChanged}" />
-            </DockPanel>
+                            <TextBlock
+                                Margin="0,3,0,0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center">
 
-            <!--  Hot Key Category  -->
+                                <Hyperlink local:HyperlinkProperties.IsExternal="true" NavigateUri="https://github.com/KaustubhPatange/XClipper/wiki/Password-Protect-Database">
+                                    <TextBlock Text="{DynamicResource msg_learn}" />
+                                </Hyperlink>
+                            </TextBlock>
+                        </DockPanel>
+                        <DockPanel Visibility="{Binding ISDB, Converter={x:Static local:VisibilityConverter.Instance}}">
+                            <CheckBox
+                                Margin="15,5,0,0"
+                                Content="Use custom password"
+                                IsChecked="{Binding UCP, UpdateSourceTrigger=PropertyChanged}" />
+                            <TextBox
+                                Margin="20,5,0,0"
+                                IsEnabled="{Binding UCP}"
+                                Text="{Binding CP, UpdateSourceTrigger=PropertyChanged}" />
+                        </DockPanel>
 
-            <control:GroupSeparator Margin="0,10,0,0" Header="{DynamicResource settings_hotkey}" />
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="auto" />
-                </Grid.ColumnDefinitions>
-                <Grid Grid.Column="0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition Width="auto" />
-                    </Grid.ColumnDefinitions>
-                    <CheckBox
-                        Grid.Column="0"
-                        Content="ALT"
-                        IsChecked="{Binding KEY_IA}" />
-                    <CheckBox
-                        Grid.Column="1"
-                        Margin="10,5,0,0"
-                        Content="CTRL"
-                        IsChecked="{Binding KEY_IC}" />
-                    <CheckBox
-                        Grid.Column="2"
-                        Margin="10,5,0,0"
-                        Content="SHIFT"
-                        IsChecked="{Binding KEY_IS}" />
-                </Grid>
-                <TextBox
-                    Grid.Column="1"
-                    MinWidth="80"
-                    IsReadOnly="True"
-                    Text="{Binding KEY_HK}">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="PreviewKeyDown">
-                            <ap:EventToCommand Command="{Binding KeyDownCommand}" PassEventArgsToCommand="True" />
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                </TextBox>
-            </Grid>
+                        <!--  Hot Key Category  -->
 
-            <Grid Margin="0,40,0,5">
+                        <control:GroupSeparator Margin="0,10,0,0" Header="{DynamicResource settings_hotkey}" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="auto" />
+                            </Grid.ColumnDefinitions>
+                            <Grid Grid.Column="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="auto" />
+                                </Grid.ColumnDefinitions>
+                                <CheckBox
+                                    Grid.Column="0"
+                                    Content="ALT"
+                                    IsChecked="{Binding KEY_IA}" />
+                                <CheckBox
+                                    Grid.Column="1"
+                                    Margin="10,5,0,0"
+                                    Content="CTRL"
+                                    IsChecked="{Binding KEY_IC}" />
+                                <CheckBox
+                                    Grid.Column="2"
+                                    Margin="10,5,0,0"
+                                    Content="SHIFT"
+                                    IsChecked="{Binding KEY_IS}" />
+                            </Grid>
+                            <TextBox
+                                Grid.Column="1"
+                                MinWidth="80"
+                                IsReadOnly="True"
+                                Text="{Binding KEY_HK}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="PreviewKeyDown">
+                                        <ap:EventToCommand Command="{Binding KeyDownCommand}" PassEventArgsToCommand="True" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </TextBox>
+                        </Grid>
+                    </StackPanel>
+                </TabItem>
+
+                <TabItem Header="{DynamicResource settings_tab_connect}">
+                    <Border Padding="7,0,7,7">
+                        <StackPanel Orientation="Vertical">
+                            <Border>
+                                <Image Height="110" Source="D:\VisualStudioProjects\FirebaseTest\bin\Debug\new.png" />
+                            </Border>
+                            <StackPanel
+                                Margin="0,-5,0,0"
+                                HorizontalAlignment="Center"
+                                Orientation="Horizontal">
+                                <TextBlock Text="{DynamicResource settings_sc}" />
+                                <TextBlock Margin="5,0,0,0" HorizontalAlignment="Right">
+                                    <Hyperlink local:HyperlinkProperties.IsExternal="true" NavigateUri="https://github.com/KaustubhPatange/XClipper">
+                                        <TextBlock VerticalAlignment="Top" Text="{DynamicResource settings_ma}" />
+                                    </Hyperlink>
+                                </TextBlock>
+                            </StackPanel>
+
+                            <control:FirebaseListItem
+                                Title="{DynamicResource settings_mi}"
+                                Margin="0,10,0,0"
+                                ItemMaxValue="{Binding Source={x:Static local:Constants.FB_MAX_ITEM}}"
+                                ItemValue="{Binding FMI}"
+                                ToolTip="{DynamicResource settings_mit}" />
+
+                            <control:FirebaseListItem
+                                Title="{DynamicResource settings_mil}"
+                                Margin="0,3,0,0"
+                                ItemMaxValue="{Binding Source={x:Static local:Constants.FB_MAX_LENGTH}}"
+                                ItemValue="{Binding FMIL}"
+                                ToolTip="{DynamicResource settings_milt}" />
+
+                            <control:FirebaseListItem
+                                Title="{DynamicResource settings_mcd}"
+                                Margin="0,3,0,0"
+                                ItemMaxValue="{Binding Source={x:Static local:Constants.FB_MAX_CONNECTION}}"
+                                ItemValue="{Binding FMCD}"
+                                ToolTip="{DynamicResource settings_mcdt}" />
+
+                            <StackPanel
+                                Margin="0,10,0,0"
+                                HorizontalAlignment="Center"
+                                Orientation="Horizontal">
+                                <TextBlock
+                                    FontSize="11"
+                                    FontWeight="Medium"
+                                    Foreground="Red"
+                                    Text="Upgrade license to unlock all features, " />
+                                <TextBlock>
+                                    <Hyperlink>
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="RequestNavigate">
+                                                <ap:EventToCommand Command="{Binding KeyDownCommand}" PassEventArgsToCommand="True" />
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
+                                        <TextBlock
+                                            VerticalAlignment="Top"
+                                            FontSize="11"
+                                            Text="{DynamicResource msg_learn}" />
+                                    </Hyperlink>
+                                </TextBlock>
+                            </StackPanel>
+
+
+                            <control:GroupSeparator Margin="0,10,0,0" Header="{DynamicResource settings_auth}" />
+                            <Grid Margin="0,5,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="{DynamicResource settings_ete}" />
+                                <TextBox
+                                    Grid.Column="1"
+                                    Margin="20,0,0,0"
+                                    Text="{Binding FDP, UpdateSourceTrigger=PropertyChanged}" />
+                            </Grid>
+
+                            <Button
+                                Width="120"
+                                Height="22"
+                                Margin="0,5,0,0"
+                                HorizontalAlignment="Left"
+                                Command=""
+                                Content="Connected Devices" />
+                        </StackPanel>
+                    </Border>
+                </TabItem>
+            </TabControl>
+
+            <!--#region Bottom buttons-->
+
+            <Grid Margin="0,12,0,5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto" />
                     <ColumnDefinition Width="*" />
@@ -186,6 +283,9 @@
                     Command="{Binding SaveCommand}"
                     Content="{DynamicResource settings_save_btn}" />
             </Grid>
+
+            <!--#endregion-->
+
         </StackPanel>
     </Border>
 </Window>

@@ -12,15 +12,6 @@ namespace Components
 {
     public partial class QRWindow : Window
     {
-        #region Variable Declaration
-
-        /// <summary>
-        /// This variable determines if focus is give to this window.
-        /// </summary>
-        private bool isFocus;
-        private bool FirstActivate;
-
-        #endregion
 
         #region Constructor
 
@@ -35,30 +26,14 @@ namespace Components
             this.Left = X;
             this.Top = Y;
 
-            Deactivated += FilterWindow_Deactivated;
-            Activated += QRWindow_Activated;
         }
 
-        private void QRWindow_Activated(object sender, EventArgs e)
-        {
-            if (FirstActivate)
-                isFocus = true;
-            FirstActivate = true;
-        }
+      
 
         #endregion
 
         #region UI Events
 
-        private void FilterWindow_Deactivated(object sender, EventArgs e)
-        {
-            if (isFocus)
-                AppSingleton.GetInstance.MakeExitRequest();
-        }
-        private void QRWindow_GotFocus(object sender, RoutedEventArgs e)
-        {
-            isFocus = true;
-        }
         private void CloseButton_Clicked(object sender, RoutedEventArgs e)
         {
             CloseWindow();
@@ -79,13 +54,10 @@ namespace Components
             var qrCodeData = qrGenerator.CreateQrCode(Text, QRCodeGenerator.ECCLevel.L);
             var qrCode = new QRCode(qrCodeData);
             _imgQR.Source = qrCode.GetGraphic(20).ToImageSource();
-            FirstActivate = false;
-            
         }
 
         public void CloseWindow()
         {
-            isFocus = false;
             Hide();
         }
 

@@ -8,6 +8,7 @@ using System.Windows;
 using System;
 using static Components.App;
 using static Components.TranslationHelper;
+using static Components.MainHelper;
 
 namespace Components
 {
@@ -43,7 +44,11 @@ namespace Components
             {
                 IsPurchaseDone = true;
                 File.WriteAllText(LicenseFilePath, KEY);
-                MessageBox.Show(Translation.MSG_PREMIUM_SUCCESS, Translation.MSG_INFO);
+                var dialog = MessageBox.Show(Translation.MSG_PREMIUM_SUCCESS, Translation.MSG_INFO);
+                if (dialog == MessageBoxResult.OK)
+                {
+                    RestartApplication();
+                }
             }
             else MessageBox.Show(Translation.MSG_PREMIUM_ERR, Translation.MSG_ERR, MessageBoxButton.OK, MessageBoxImage.Error);
         }
