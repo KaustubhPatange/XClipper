@@ -11,6 +11,9 @@ using Components.viewModels;
 using static Components.Core;
 using System.Windows.Controls;
 using static Components.TranslationHelper;
+using System.Security.RightsManagement;
+using System.Windows.Documents;
+using System.Windows.Navigation;
 
 namespace Components
 {
@@ -41,6 +44,7 @@ namespace Components
         private bool is_secure_db { get; set; } = IsSecureDB;
 
         // For Start application on system startup.
+        private ISettingEventBinder _settingbinder { get; set; }
         public ICommand SaveCommand { get; set; }
         public ICommand ResetCommand { get; set; }
         public ICommand PurchaseCommand { get; set; }
@@ -84,6 +88,11 @@ namespace Components
 
         #region Method Events
 
+        public void SetSettingBinder(ISettingEventBinder binder)
+        {
+            _settingbinder = binder;
+        }
+
         /// <summary>
         /// This event will be raised when Connected device button is clicked.
         /// </summary>
@@ -97,7 +106,7 @@ namespace Components
         /// </summary>
         private void PurchaseButtonClicked()
         {
-            
+            _settingbinder?.OnBuyButtonClicked();
         }
 
         /// <summary>

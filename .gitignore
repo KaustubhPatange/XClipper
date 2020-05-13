@@ -3,7 +3,8 @@
 
 # Some Private Folders
 XClipper.Protect/
-XClipper.Android/
+XClipper.SecureApp/
+XClipper.Android/app/license/
 
 # User-specific files
 *.suo

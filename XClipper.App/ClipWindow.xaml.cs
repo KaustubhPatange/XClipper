@@ -758,9 +758,8 @@ namespace Components
             ShowFilterWindow();
         }
 
-
         #endregion
 
-  
+
     }
 }

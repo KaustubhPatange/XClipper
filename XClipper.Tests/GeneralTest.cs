@@ -16,6 +16,13 @@ namespace XClipper.Tests
     public class GeneralTest
     {
         string key = "licensepassword123";
+
+        /*Changed:wjrzmr+0JCb0yyvv3QnvHME1aNgJRNBE2BIddC7OQQA=
+Changed:qElnMBX0LM6estYMtX+lLu/L2PyLXM6KUQ+wyH89GqjH5djWXo6uaycmNxIz4tvccyjBuQnYgTjMBbAmIsJ9APQf9SEqiDD4padIGTNeAnDMn+g+YOSItiZ+7g37W5yzKb1CBhEHFVSw99wf2bBtLr7pS1rwWZLToCftwoU5VjVCmR/uFYx4NmCBI6J8H08XL8DJ9Erpe+ue0UM35brvLdpFSQWZRwC6RsKOuYNZ+pkWHtCrLTV3k4eIh56dfvqZZX5UTBcMqF1IdiecQSchZVLz92MVUOb+95z4jJrAyOnHKhXiiirh/euzDcUg2YD2qKaZxOXRNDzBxPsuAQ+XWw==
+Changed:LXdvykCZoNHiP8+KLaWI4ScpFr0gK9i738UTtoNVDYzyRfHftegxa2GO4Sf06bkTt1u0zIii/N/06GR+u2p+mbqBBkRpm61tL2CALZ1e3ZdI6atoRgYR2SYo8EqDJdbhYIsCNW9UD47OTpfbbiH7ayc0Y3FV8KDCkblGNjkazqhnmGIUGn5LlrVC3ucwjeWj+4x8O+l/FFJbb09q0E97rEXUpIsAteKu4sNEyKG+fXqNbTSS60wpM5k73u/wau6JIsZlGInaSLnI5o6Iq1/xOlxnsuEQc/CI9eP1eYr3gi0ojyyz7HjiY1h5qYwnqiUN
+Changed:rF8bddSXR6eX5Nuzte8YAICByhI35y6ulkSJvdAqyXzVSUILz21UmnMJ+d1D0rHg
+Changed:LBuw8Q2NgDhhbVOl2fUzV/27YRkB7RT4ax1OtkvdtHLJBKSkZeIm/j1cC1xiRPeF*/
+
         [TestMethod]
         public void AESEncryptTest()
         {
@@ -26,7 +33,8 @@ namespace XClipper.Tests
         public void AESDecrypt()
         {
             string encryptedText = "";
-            Debug.WriteLine(Base64Cipher.Decrypt(encryptedText, key));
+            Debug.WriteLine("wjrzmr+0JCb0yyvv3QnvHME1aNgJRNBE2BIddC7OQQA=".DecryptBase64());
+            Debug.WriteLine("LBuw8Q2NgDhhbVOl2fUzV/27YRkB7RT4ax1OtkvdtHLJBKSkZeIm/j1cC1xiRPeF".DecryptBase64());
         }
 
         [TestMethod]
@@ -45,6 +53,8 @@ namespace XClipper.Tests
          *  1. 50 approx (not encrypted): 98-99 ms
          *  2. 20 approx (encrypted): 1233 ms
          */
+
+
 
         [TestMethod]
         public void CountMethod()
@@ -88,6 +98,42 @@ namespace XClipper.Tests
 
 
             Debug.WriteLine("offset: " + (milliseconds1 - milliseconds).ToString());
+        }
+
+
+        public class Person
+        {
+            public string Name, Age, Position, Status;
+        }
+
+        public class PersonBuilder
+        {
+            protected Person person = new Person();
+            public PersonBuilder SetName(string Name)
+            {
+                person.Name = Name;
+                return this;
+            }
+            public PersonBuilder SetAge(string Age)
+            {
+                person.Age = Age;
+                return this;
+            }
+        }
+
+        public class PersonJobBuilder: PersonBuilder
+        {
+            public PersonJobBuilder SetPosition(string pos) 
+            {
+                person.Position = pos;
+                return this;
+            }
+            
+            public PersonJobBuilder SetStatus(string stat)
+            {
+                person.Status = stat;
+                return this;
+            }
         }
     }
 }

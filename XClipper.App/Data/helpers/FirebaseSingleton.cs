@@ -1,6 +1,7 @@
 ﻿using FireSharp;
 using FireSharp.Config;
 using FireSharp.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -14,7 +15,8 @@ namespace Components
         #region Variable Declaration
 
         private static FirebaseSingleton Instance;
-        private IFirebaseClient client;
+        public IFirebaseClient client;
+        private IFirebaseBinder binder;
         private string UID;
         private User user;
 
@@ -79,6 +81,16 @@ namespace Components
         public void Init(string UID) => this.UID = UID;
 
         /// <summary>
+        /// This sets call back to the binder events with an attached interface.
+        /// </summary>
+        /// <param name="binder"></param>
+        public async void SetCallback(IFirebaseBinder binder)
+        {
+            this.binder = binder;
+            await client.OnAsync("", (o, a, c) => { binder.OnDataAdded(a); }, (o,a,c)=> { binder.OnDataChanged(a); }, (o,a,c)=> { binder.OnDataRemoved(a); });
+        }
+
+        /// <summary>
         /// Checks if the user exist in the nodes or not.
         /// </summary>
         /// <returns></returns>
@@ -128,7 +140,7 @@ namespace Components
             // Remove clip if greater than item
             if (user.Clips.Count > DatabaseMaxItem)
                 user.Clips.RemoveAt(0);
-            user.Clips.Add(new Clip { data = Text.EncryptBase64() });
+            user.Clips.Add(new Clip { data = Text.EncryptBase64(), time = DateTime.Now.ToFormattedDateTime(false) });
             await client.UpdateAsync($"users/{UID}", user);
         }
 
@@ -195,7 +207,6 @@ namespace Components
             await client.UpdateAsync($"users/{UID}", user);
         }
 
-
         #endregion
 
     }
@@ -228,13 +239,14 @@ namespace Components
     public class Device
     {
         public string ID { get; set; }
-        public string Name { get; set; }
+        public int SDK { get; set; }
         public string Model { get; set; }
     }
 
     public class Clip
     {
         public string data { get; set; }
+        public string time { get; set; }
     }
 
     #endregion

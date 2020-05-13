@@ -222,12 +222,7 @@
                                     Foreground="Red"
                                     Text="Upgrade license to unlock all features, " />
                                 <TextBlock>
-                                    <Hyperlink>
-                                        <i:Interaction.Triggers>
-                                            <i:EventTrigger EventName="RequestNavigate">
-                                                <ap:EventToCommand Command="{Binding KeyDownCommand}" PassEventArgsToCommand="True" />
-                                            </i:EventTrigger>
-                                        </i:Interaction.Triggers>
+                                    <Hyperlink Command="{Binding PurchaseCommand}">
                                         <TextBlock
                                             VerticalAlignment="Top"
                                             FontSize="11"
@@ -255,7 +250,7 @@
                                 Height="22"
                                 Margin="0,5,0,0"
                                 HorizontalAlignment="Left"
-                                Command=""
+                                Command="{Binding ConnectedCommand}"
                                 Content="Connected Devices" />
                         </StackPanel>
                     </Border>

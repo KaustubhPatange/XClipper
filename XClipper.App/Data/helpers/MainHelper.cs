@@ -101,9 +101,9 @@ namespace Components
         public static void SetAppStartupEntry()
         {
             if (StartOnSystemStartup)
-                RegistryHelper.AddApplicationToStartup(App.AppStartupLocation);
+                RegistryHelper.AddApplicationToStartup(ApplicationLocation);
             else
-                RegistryHelper.RemoveApplicationFromStartup(App.AppStartupLocation);
+                RegistryHelper.RemoveApplicationFromStartup(ApplicationLocation);
         }
 
         /// <summary>

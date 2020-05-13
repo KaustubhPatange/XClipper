@@ -22,17 +22,19 @@ using SQLite;
 using static Components.TranslationHelper;
 using ClipboardManager.models;
 using static Components.LicenseHandler;
+using FireSharp.EventStreaming;
+using System.Threading.Tasks;
 
 namespace Components
 {
     /** For language edit Solution Explorer/Locales/en.xaml and paste it to locales/en.xaml 
       * to create a fake linking between static and dynamic resource binding.
       */
-    public partial class App : Application
+    public partial class App : Application, ISettingEventBinder, IFirebaseBinder
     {
         #region Variable Declaration
 
-        public static string AppStartupLocation = Assembly.GetExecutingAssembly().Location;
+        public ISettingEventBinder binder;
         private KeyHookUtility hookUtility = new KeyHookUtility();
         private ClipWindow clipWindow;
         private WinForm.NotifyIcon notifyIcon;
@@ -69,8 +71,6 @@ namespace Components
             ActivatePaidFeatures();
         }
 
-     
-
         #endregion
 
         #region Method overloads
@@ -101,6 +101,10 @@ namespace Components
             {
                 clipWindow.CloseWindow();
             });
+
+            binder = this;
+
+            FirebaseSingleton.GetInstance.SetCallback(this);
         }
 
         protected override void OnExit(ExitEventArgs e)
@@ -212,17 +216,13 @@ namespace Components
             if (settingWindow != null)
                 settingWindow.Close();
 
-            settingWindow = new SettingWindow();
+            settingWindow = new SettingWindow(binder);
             settingWindow.ShowDialog();
         }
 
         private void BuyMenuClicked(object sender, EventArgs e)
         {
-            if (buyWindow != null)
-                buyWindow.Close();
-
-            buyWindow = new BuyWindow();
-            buyWindow.ShowDialog();
+            CallBuyWindow();
         }
 
         private void DeleteDataClicked(object sender, EventArgs e)
@@ -292,6 +292,39 @@ namespace Components
 
         #endregion
 
+        #region ISettingEventBinder Events
+
+        public void OnBuyButtonClicked()
+        {
+            CallBuyWindow();
+        }
+
+        #endregion
+
+        #region IFirebaseBinder Events 
+
+        public void OnDataAdded(ValueAddedEventArgs e)
+        {
+            // todo: Do something on Add
+            Debug.WriteLine("Added:" + e.Data);
+        }
+
+        public void OnDataChanged(ValueChangedEventArgs e)
+        {
+            // 1st value from realtime-database is your 5th one in XClipper window.
+            // todo: Do something on Changed
+            Debug.WriteLine("Changed:" + e.Data);
+        }
+
+        public void OnDataRemoved(ValueRemovedEventArgs e)
+        {
+            // todo: Do something on Removed
+            Debug.WriteLine("Removed:" + e.Path);
+        }
+
+
+        #endregion
+
         #region Method Events
         private void RestartAppClicked(object sender, EventArgs e)
         {
@@ -305,7 +338,6 @@ namespace Components
             appMutex = new Mutex(true, Translation.APP_NAME, out IsNewInstance);
             if (!IsNewInstance)
             {
-
                 App.Current.Shutdown();
             }
         }
@@ -348,6 +380,16 @@ namespace Components
             else
                 clipWindow.CloseWindow();
         }
+
+        private void CallBuyWindow()
+        {
+            if (buyWindow != null)
+                buyWindow.Close();
+
+            buyWindow = new BuyWindow();
+            buyWindow.ShowDialog();
+        }
+
 
         #endregion
     }

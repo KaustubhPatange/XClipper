@@ -16,7 +16,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XClipper.Protect", "XClippe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XClipper.Tests", "XClipper.Tests\XClipper.Tests.csproj", "{E1516FA5-EE2B-46B0-BFB1-D4C590F6C8A0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XClipper.Android", "XClipper.Android\XClipper.Android.csproj", "{D88DCE68-84ED-4715-B6C8-7C131698B853}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XClipper.SecureApp", "XClipper.SecureApp\XClipper.SecureApp.csproj", "{D88DCE68-84ED-4715-B6C8-7C131698B853}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

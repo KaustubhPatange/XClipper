@@ -10,11 +10,11 @@ namespace Components
     /// </summary>
     public partial class SettingWindow : Window
     {
-        public SettingWindow()
+        public SettingWindow(ISettingEventBinder binder = null)
         {
             InitializeComponent();
 
-            DataContext = new SettingViewModel();
+            DataContext = new SettingViewModel().Also((v) => { v.SetSettingBinder(binder); });
 
             Closing += (o, e) => {
                 e.Cancel = true;
