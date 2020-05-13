@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">XClipper</string>
+    <string name="accessibility_service_description">Description goes here</string>
+</resources>

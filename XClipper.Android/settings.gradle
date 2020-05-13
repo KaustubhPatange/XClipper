@@ -1,0 +1,3 @@
+rootProject.name='XClipper'
+include ':app'
+include ':app:license'

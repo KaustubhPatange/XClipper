@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<accessibility-service
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:accessibilityEventTypes="typeAllMask"
+    android:accessibilityFeedbackType="feedbackAllMask"
+    android:accessibilityFlags="flagDefault"
+    android:canRequestEnhancedWebAccessibility="true"
+    android:notificationTimeout="100"
+    android:canRetrieveWindowContent="true"
+    android:canRequestTouchExplorationMode="true"
+    />
+<!--
+<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:description="@string/accessibility_service_description"
+    android:accessibilityEventTypes="typeViewClicked|typeViewFocused|typeViewLongClicked|typeViewSelected|typeViewTextChanged|typeViewTextSelectionChanged|typeWindowContentChanged|typeWindowStateChanged"
+    android:accessibilityFeedbackType="feedbackGeneric"
+    android:notificationTimeout="120"
+    android:accessibilityFlags="flagDefault|flagRetrieveInteractiveWindows"
+    android:canRetrieveWindowContent="true"
+    />-->
