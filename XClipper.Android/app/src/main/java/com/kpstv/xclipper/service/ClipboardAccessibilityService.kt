@@ -16,13 +16,13 @@ import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.extensions.Utils.Companion.isRunning
 import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
+import org.kodein.di.android.kodein
 import org.kodein.di.generic.instance
 
 
 class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
 
-    override val kodein by closestKodein()
+    override val kodein by kodein()
     private val repository: MainRepository by instance()
     private val firebaseProvider: FirebaseProvider by instance()
 
@@ -45,14 +45,17 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
     }
 
 
-
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
 
-     //   if (event?.eventType == AccessibilityEvent.TYPE_VIEW_TEXT_SELECTION_CHANGED)
-          //  Log.e(TAG, "Event: $event")
+        //   if (event?.eventType == AccessibilityEvent.TYPE_VIEW_TEXT_SELECTION_CHANGED)
+        //  Log.e(TAG, "Event: $event")
+      //  val condition2 = !isRunning(this)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&!isRunning(this) && supportedEventTypes(event)) {
+        //Log.e(TAG, "Condition Running: $condition2, Condition Event: $condition3")
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q  && supportedEventTypes(event)) {
             Log.e(TAG, "Running for first time")
+
             val intent = Intent(this, ChangeClipboardActivity::class.java)
             intent.addFlags(FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_MULTIPLE_TASK)
             startActivity(intent)
@@ -64,27 +67,35 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
         super.onServiceConnected()
         Log.e(TAG, "Service Connected")
         val info = AccessibilityServiceInfo()
-        info.apply {
+        /*info.apply {
             eventTypes = AccessibilityEvent.TYPES_ALL_MASK
             feedbackType = AccessibilityServiceInfo.FEEDBACK_ALL_MASK
             notificationTimeout = 100
+        }*/
+
+        info.apply {
+            eventTypes =
+                AccessibilityEvent.TYPE_VIEW_CLICKED or AccessibilityEvent.TYPE_VIEW_FOCUSED or AccessibilityEvent.TYPE_VIEW_LONG_CLICKED or AccessibilityEvent.TYPE_VIEW_SELECTED or AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED or AccessibilityEvent.TYPE_VIEW_TEXT_SELECTION_CHANGED or AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED or AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
+            feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC
+            notificationTimeout = 120
         }
+
         serviceInfo = info
 
         clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         clipboardManager.addPrimaryClipChangedListener {
-            val data = clipboardManager.primaryClip?.getItemAt(0)?.text?.toString()
+            val data = clipboardManager.primaryClip?.getItemAt(0)?.coerceToText(this)?.toString()
             if (data != null && CLIP_DATA != data) {
                 CLIP_DATA = data
-                // Save data and exit
 
                 repository.updateRepository(CLIP_DATA)
             }
+
             Log.e(TAG, "Data: ${clipboardManager.primaryClip?.getItemAt(0)?.text}")
         }
     }
 
-    override fun onInterrupt() { }
+    override fun onInterrupt() {}
 
     private fun firebaseObserver() {
         if (!observeFirebase) return
@@ -92,6 +103,7 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
             changed = {
                 if (observeFirebase)
                     repository.saveClip(it?.Clips?.last())
+                Log.e(TAG, "User has changed")
             },
             error = {
                 Log.e(TAG, "Error: ${it.message}")

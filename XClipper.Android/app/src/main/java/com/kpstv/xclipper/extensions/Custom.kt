@@ -7,6 +7,7 @@ import com.kpstv.license.Encrypt
 import com.kpstv.xclipper.data.converters.DateConverter
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.ClipEntry
+import kotlinx.coroutines.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -20,7 +21,22 @@ class FValueEventListener(val onDataChange: (DataSnapshot) -> Unit, val onError:
 fun List<Clip>.cloneToEntries() : List<ClipEntry> {
     val list = ArrayList<ClipEntry>()
     this.forEach {
-        list.add(ClipEntry(it.data, DateConverter.fromDateToString(it.time)))
+        list.add(ClipEntry.from(it))
     }
     return list
+}
+
+fun List<Clip>.cloneForAdapter() : List<Clip> {
+    this.forEach {
+        Clip.autoFill(it)
+    }
+    return this
+}
+
+fun<T> lazyDeferred(block: suspend CoroutineScope.() -> T): Lazy<Deferred<T>>{
+    return lazy {
+        GlobalScope.async(start = CoroutineStart.LAZY) {
+            block.invoke(this)
+        }
+    }
 }

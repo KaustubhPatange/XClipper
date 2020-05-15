@@ -2,9 +2,11 @@ package com.kpstv.xclipper.data.repository
 
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.kpstv.license.Decrypt
 import com.kpstv.xclipper.data.localized.ClipDataDao
 import com.kpstv.xclipper.data.model.Clip
+import com.kpstv.xclipper.data.model.User
 import com.kpstv.xclipper.data.provider.ClipProvider
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.extensions.Coroutines
@@ -18,6 +20,7 @@ class MainRepositoryImpl(
 ) : MainRepository {
 
     private val TAG = javaClass.simpleName
+    private val lock = Any()
 
     init {
         /*clipdao.getAllLiveData().observeForever {
@@ -28,12 +31,17 @@ class MainRepositoryImpl(
     override fun saveClip(clip: Clip?) {
         if (clip == null) return;
         Coroutines.io {
+            /**
+             *  Synchronization is needed since, sometimes accessibility services automatically
+             *  try to save data twice.
+             */
+            synchronized(lock) {
+                val allClips = clipdao.getAllData()
 
-            val allClips = clipdao.getAllData()
-
-            if (allClips.last().data != clip.data) {
-                allClips.filter { it.data == clip.data }.forEach {
-                    clipdao.delete(it)
+                if (allClips.isNotEmpty()) {
+                    allClips.filter { it.data?.Decrypt() == clip.data?.Decrypt() }.forEach {
+                        clipdao.delete(it)
+                    }
                 }
                 clipdao.insert(clip)
                 Log.e(TAG, "Data Saved: ${clip.data?.Decrypt()}")
@@ -58,8 +66,6 @@ class MainRepositoryImpl(
             clipdao.getAllLiveData()
         }
     }
-
-    override fun getLastSavedData(): Clip = clipdao.getAllData().last()
 
     override fun updateRepository(data: String?) {
         clipProvider.processClip(data)?.let { clip ->

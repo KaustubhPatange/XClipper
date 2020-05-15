@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">XClipper</string>
     <string name="accessibility_service_description">Description goes here</string>
+
+    <string name="testStringSmall">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</string>
+    <string name="timeString">2 days ago</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="share">Share</string>
 </resources>

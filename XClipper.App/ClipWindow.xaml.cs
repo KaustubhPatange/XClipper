@@ -21,6 +21,7 @@ using Microsoft.VisualBasic.FileIO;
 using System.Collections.Specialized;
 using static Components.TranslationHelper;
 using System.Windows.Media.Imaging;
+using Autofac;
 
 namespace Components
 {
@@ -39,6 +40,7 @@ namespace Components
         private MaterialMessage _materialMsgBox;
         private FilterWindow _filterWindow;
         private QRWindow _qrWindow;
+        private IKeyboardRecorder recoder;
         private bool isMouseKeyDown;
 
         #endregion
@@ -50,6 +52,7 @@ namespace Components
         {
 
             InitializeComponent();
+            recoder = AppModule.Container.Resolve<IKeyboardRecorder>();
             AppSingleton.GetInstance.SetBinder(this);
             _popupWindow = new PopupWindow();
             _filterWindow = new FilterWindow();
@@ -705,7 +708,7 @@ namespace Components
         {
             var clip = (TableCopy)_lvClip.SelectedItem;
 
-            ClipSingleton.GetInstance.Ignore(() =>
+            recoder.Ignore(() =>
             {
                 switch (clip.ContentType)
                 {

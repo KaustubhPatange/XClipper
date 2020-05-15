@@ -113,6 +113,7 @@
     <Compile Include="Data\Extensions\VisibilityExtensions.cs" />
     <Compile Include="Data\unlocalized\IClipBinder.cs" />
     <Compile Include="Data\unlocalized\IFirebaseBinder.cs" />
+    <Compile Include="Data\unlocalized\IKeyboardRecorder.cs" />
     <Compile Include="Data\unlocalized\ISettingEventBinder.cs" />
     <Compile Include="Data\unlocalized\MessageType.cs" />
     <Compile Include="Helpers\LogHelper.cs" />

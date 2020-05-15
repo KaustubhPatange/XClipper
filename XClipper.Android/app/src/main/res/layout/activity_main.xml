@@ -11,15 +11,16 @@
         android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.Toolbar
+            android:background="@color/colorPrimary"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"/>
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <EditText
+    <androidx.recyclerview.widget.RecyclerView
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
         android:layout_width="match_parent"
-        android:gravity="center|start"
+        android:id="@+id/ci_recyclerView"
         android:layout_height="match_parent"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<accessibility-service
+<!--<accessibility-service
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:accessibilityEventTypes="typeAllMask"
     android:accessibilityFeedbackType="feedbackAllMask"
@@ -8,8 +8,7 @@
     android:notificationTimeout="100"
     android:canRetrieveWindowContent="true"
     android:canRequestTouchExplorationMode="true"
-    />
-<!--
+    />-->
 <accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
     android:description="@string/accessibility_service_description"
     android:accessibilityEventTypes="typeViewClicked|typeViewFocused|typeViewLongClicked|typeViewSelected|typeViewTextChanged|typeViewTextSelectionChanged|typeWindowContentChanged|typeWindowStateChanged"
@@ -17,4 +16,4 @@
     android:notificationTimeout="120"
     android:accessibilityFlags="flagDefault|flagRetrieveInteractiveWindows"
     android:canRetrieveWindowContent="true"
-    />-->
+    />

@@ -24,6 +24,7 @@ using ClipboardManager.models;
 using static Components.LicenseHandler;
 using FireSharp.EventStreaming;
 using System.Threading.Tasks;
+using Autofac;
 
 namespace Components
 {
@@ -40,6 +41,7 @@ namespace Components
         private WinForm.NotifyIcon notifyIcon;
         private SettingWindow settingWindow;
         private BuyWindow buyWindow;
+        private IKeyboardRecorder recorder;
         public static List<string> LanguageCollection = new List<string>();
         private Mutex appMutex;
         public static ResourceDictionary rm = new ResourceDictionary();
@@ -53,6 +55,10 @@ namespace Components
 
         public App()
         {
+            var container = AppModule.Configure();
+
+            recorder = container.Resolve<IKeyboardRecorder>();
+           
 
             LoadSettings();
 
@@ -60,7 +66,7 @@ namespace Components
 
             FirebaseSingleton.GetInstance.Init(UniqueID);
 
-            ClipSingleton.GetInstance.StartRecording();
+            recorder.StartRecording();
 
             hookUtility.Subscribe(LaunchCodeUI);
 
@@ -283,9 +289,9 @@ namespace Components
 
             ((WinForm.MenuItem)sender).Checked = ToRecord;
             if (ToRecord)
-                ClipSingleton.GetInstance.StartRecording();
+                recorder.StartRecording();
             else
-                ClipSingleton.GetInstance.StopRecording();
+                recorder.StopRecording();
         }
 
         #endregion
@@ -326,6 +332,7 @@ namespace Components
         #endregion
 
         #region Method Events
+
         private void RestartAppClicked(object sender, EventArgs e)
         {
             var msg = MessageBox.Show(Translation.MSG_RESTART, Translation.MSG_INFO, MessageBoxButton.YesNo, MessageBoxImage.Warning);

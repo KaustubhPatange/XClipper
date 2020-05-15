@@ -10,8 +10,6 @@ interface MainRepository {
 
     fun deleteClip(clip: Clip)
 
-    fun getLastSavedData(): Clip
-
     fun updateRepository(data: String?)
 
     suspend fun getAllLiveClip(): LiveData<List<Clip>>

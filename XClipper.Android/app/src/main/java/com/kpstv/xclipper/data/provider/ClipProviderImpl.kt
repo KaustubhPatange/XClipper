@@ -7,12 +7,12 @@ import java.util.*
 class ClipProviderImpl : ClipProvider {
 
     override fun processClip(data: String?): Clip? {
-        data?.let {
+        if (data.isNullOrBlank()) return null
+        data.let {
             return Clip(
                 data = data.Encrypt(),
                 time = Calendar.getInstance().time
             )
         }
-        return null
     }
 }

@@ -42,6 +42,9 @@
     <ApplicationIcon>Resources\icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac, Version=4.8.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autofac.4.8.0\lib\net45\Autofac.dll</HintPath>
+    </Reference>
     <Reference Include="CalcBinding, Version=2.5.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\CalcBinding.2.5.2\lib\net45\CalcBinding.dll</HintPath>
     </Reference>
@@ -165,6 +168,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="AppModule.cs" />
     <Compile Include="BuyWindow.xaml.cs">
       <DependentUpon>BuyWindow.xaml</DependentUpon>
     </Compile>
@@ -196,11 +200,13 @@
     <Compile Include="Data\unlocalized\DefaultSettings.cs" />
     <Compile Include="Data\unlocalized\HyperlinkProperties.cs" />
     <Compile Include="Data\unlocalized\Specials.cs" />
-    <Compile Include="Data\unlocalized\Utilities\ClipSingleton.cs" />
+    <Compile Include="Data\unlocalized\Utilities\ClipboardUtlity.cs" />
+    <Compile Include="Data\unlocalized\Utilities\ClipboardService.cs" />
     <Compile Include="Data\unlocalized\Constants.cs" />
     <Compile Include="Data\unlocalized\CustomListView.cs" />
     <Compile Include="Data\unlocalized\EnumerationExtension.cs" />
     <Compile Include="Data\unlocalized\EventToCommand.cs" />
+    <Compile Include="Data\unlocalized\Utilities\IClipboardUtlity.cs" />
     <Compile Include="Data\unlocalized\Utilities\KeyHookUtility.cs" />
     <Compile Include="Data\unlocalized\MenuItemProperties.cs" />
     <Compile Include="Data\unlocalized\LockToggleButton.cs" />

@@ -15,7 +15,7 @@ namespace Components
         #region Variable Declaration
 
         private static FirebaseSingleton Instance;
-        public IFirebaseClient client;
+        private readonly IFirebaseClient client;
         private IFirebaseBinder binder;
         private string UID;
         private User user;
@@ -94,7 +94,7 @@ namespace Components
         /// Checks if the user exist in the nodes or not.
         /// </summary>
         /// <returns></returns>
-        public async Task<bool> IsUserExist()
+        private async Task<bool> IsUserExist()
         {
             var response = await client.GetAsync($"users/{UID}");
             return response.Body != "null";
@@ -104,7 +104,7 @@ namespace Components
         /// Add an empty user to the node.
         /// </summary>
         /// <returns></returns>
-        public async Task<User> RegisterUser()
+        private async Task<User> RegisterUser()
         {
             var exist = await IsUserExist();
             if (!exist)
@@ -215,6 +215,7 @@ namespace Components
 
     public class User
     {
+        
         /// <summary>
         /// Property tells whether the user has purchased license for this software or not.
         /// </summary>
