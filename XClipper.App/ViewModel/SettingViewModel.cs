@@ -209,7 +209,7 @@ namespace Components
             var previousData = AppSingleton.GetInstance.GetAllData();
 
             // Close connection to database...
-            AppSingleton.GetInstance.dataDB.Close();
+            AppSingleton.GetInstance.Close();
 
             // Delete the existing database...
             File.Delete(DatabasePath);
@@ -218,7 +218,7 @@ namespace Components
             AppSingleton.GetInstance.Init();
 
             // Restore the tables in the database...
-            AppSingleton.GetInstance.dataDB.InsertAll(previousData);
+            AppSingleton.GetInstance.InsertAll(previousData);
         }
 
         /// <summary>

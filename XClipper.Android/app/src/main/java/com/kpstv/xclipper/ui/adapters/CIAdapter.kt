@@ -6,23 +6,27 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.license.Decrypt
 import com.kpstv.xclipper.R
-import com.kpstv.xclipper.data.converters.DateFormatConverter
 import com.kpstv.xclipper.data.model.Clip
-import com.kpstv.xclipper.data.model.ClipEntry
 import kotlinx.android.synthetic.main.content_item.view.*
 
 class CIAdapter(
     private val context: Context,
-    var list: List<Clip> = ArrayList(),
-    val onClick: (Clip, Int) -> Unit
+    var list: ArrayList<Clip> = ArrayList(),
+    private val onClick: (Clip, Int) -> Unit,
+    private val onLongClick: (Clip, Int) -> Unit,
+    private val selectedClips: LiveData<ArrayList<Clip>>
 ) :
     RecyclerView.Adapter<CIAdapter.MainHolder>() {
 
     private lateinit var copyClick: (Clip, Int) -> Unit
     private lateinit var menuClick: (Clip, Int, MENU_TYPE) -> Unit
+    private val CARD_COLOR = ContextCompat.getColor(context,R.color.colorCard)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainHolder =
         MainHolder(
@@ -40,23 +44,35 @@ class CIAdapter(
         holder.itemView.ci_timeText.text = clip.timeString
 
         if (clip.toDisplay) {
-            holder.itemView.mainCard.setCardBackgroundColor(
-                ContextCompat.getColor(
-                    context,
-                    R.color.colorCard
-                )
-            )
+            holder.itemView.mainCard.setCardBackgroundColor(CARD_COLOR)
             holder.itemView.hiddenLayout.visibility = View.VISIBLE
         } else {
             holder.itemView.mainCard.setCardBackgroundColor(Color.TRANSPARENT)
             holder.itemView.hiddenLayout.visibility = View.GONE
         }
 
+        holder.itemView.mainCard.setOnLongClickListener {
+            onLongClick.invoke(clip, position)
+            true
+        }
         holder.itemView.ci_copyButton.setOnClickListener { copyClick.invoke(clip, position) }
         holder.itemView.ci_btn_edit.setOnClickListener { menuClick.invoke(clip, position, MENU_TYPE.Edit) }
         holder.itemView.ci_btn_delete.setOnClickListener { menuClick.invoke(clip, position, MENU_TYPE.Delete) }
         holder.itemView.ci_btn_share.setOnClickListener { menuClick.invoke(clip, position, MENU_TYPE.Share) }
 
+        selectedClips.observe(context as LifecycleOwner, Observer {
+            when {
+                it.contains(clip) -> {
+                    holder.itemView.mainCard.setCardBackgroundColor(ContextCompat.getColor(context, R.color.colorSelected))
+                }
+                clip.toDisplay -> {
+                    holder.itemView.mainCard.setCardBackgroundColor(CARD_COLOR)
+                }
+                else -> {
+                    holder.itemView.mainCard.setCardBackgroundColor(Color.TRANSPARENT)
+                }
+            }
+        })
     }
 
     fun setCopyClick(block : (Clip, Int) -> Unit) {
@@ -67,7 +83,7 @@ class CIAdapter(
         this.menuClick = block;
     }
 
-    fun submitList(list: List<Clip>) {
+    fun submitList(list: ArrayList<Clip>) {
         this.list = list
         notifyDataSetChanged()
     }

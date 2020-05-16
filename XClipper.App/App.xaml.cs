@@ -55,10 +55,8 @@ namespace Components
 
         public App()
         {
-            var container = AppModule.Configure();
-
-            recorder = container.Resolve<IKeyboardRecorder>();
-           
+            AppModule.Configure();
+            recorder = AppModule.Container.Resolve<IKeyboardRecorder>();
 
             LoadSettings();
 
@@ -192,7 +190,7 @@ namespace Components
                     con.Close();
 
                     // Merge tables into existing database...
-                    AppSingleton.GetInstance.dataDB.InsertAll(list);
+                    AppSingleton.GetInstance.InsertAll(list);
                     MessageBox.Show(Translation.MSG_CLIP_IMPORT, Translation.MSG_INFO);
 
                 }

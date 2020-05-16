@@ -7,4 +7,11 @@
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
     <string name="share">Share</string>
+    <string name="undo">Undo</string>
+
+    <string name="ctc">Copied to clipboard</string>
+    <string name="item_delete">item(s) deleted</string>
+    <string name="delete_all">Delete All</string>
+    <string name="select_all">Select All</string>
+    <string name="select_none">Deselect All</string>
 </resources>

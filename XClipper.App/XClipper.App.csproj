@@ -169,7 +169,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="AppModule.cs" />
-    <Compile Include="BuyWindow.xaml.cs">
+    <Compile Include="Data\helpers\DatabaseHelper.cs" />
+    <Compile Include="UI\BuyWindow.xaml.cs">
       <DependentUpon>BuyWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\FirebaseListItem.xaml.cs">
@@ -211,21 +212,21 @@
     <Compile Include="Data\unlocalized\MenuItemProperties.cs" />
     <Compile Include="Data\unlocalized\LockToggleButton.cs" />
     <Compile Include="Data\unlocalized\NumericTextBox.cs" />
-    <Compile Include="FilterWindow.xaml.cs">
+    <Compile Include="UI\FilterWindow.xaml.cs">
       <DependentUpon>FilterWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="MaterialMessage.xaml.cs">
+    <Compile Include="UI\MaterialMessage.xaml.cs">
       <DependentUpon>MaterialMessage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PopupWindow.xaml.cs">
+    <Compile Include="UI\PopupWindow.xaml.cs">
       <DependentUpon>PopupWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Data\helpers\AppSingleton.cs" />
-    <Compile Include="QRWindow.xaml.cs">
+    <Compile Include="UI\QRWindow.xaml.cs">
       <DependentUpon>QRWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SettingWindow.xaml.cs">
+    <Compile Include="UI\SettingWindow.xaml.cs">
       <DependentUpon>SettingWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModel\BaseViewModel.cs" />
@@ -236,7 +237,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClipWindow.xaml.cs">
+    <Compile Include="UI\ClipWindow.xaml.cs">
       <DependentUpon>ClipWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Data\helpers\MainHelper.cs" />
@@ -264,11 +265,11 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="BuyWindow.xaml">
+    <Page Include="UI\BuyWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ClipWindow.xaml">
+    <Page Include="UI\ClipWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -280,27 +281,28 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="FilterWindow.xaml">
+    <Page Include="UI\FilterWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Locales\en.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Page>
-    <Page Include="MaterialMessage.xaml">
+    <Page Include="UI\MaterialMessage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="PopupWindow.xaml">
+    <Page Include="UI\PopupWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="QRWindow.xaml">
+    <Page Include="UI\QRWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SettingWindow.xaml">
+    <Page Include="UI\SettingWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

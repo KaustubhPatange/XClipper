@@ -35,9 +35,10 @@ class ChangeClipboardActivity : Activity(), KodeinAware {
         if (hasFocus) {
             data = clipboardManager.primaryClip?.getItemAt(0)?.text?.toString()
             saveData(data)
-        } else {
+        //    finishActivity(0)
+        }/* else {
             saveData(data)
-        }
+        }*/
     }
 
     override fun onNewIntent(intent: Intent?) {

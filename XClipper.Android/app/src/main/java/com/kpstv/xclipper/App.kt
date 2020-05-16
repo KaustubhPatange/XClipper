@@ -17,6 +17,7 @@ object App {
     var MIN_ITEM_STORAGE = 5
     var MAX_ITEM_STORAGE = 20
 
+
     // TODO: Do all your jack jacks
     const val STANDARD_DATE_FORMAT = "yyyyMMddHHmmss"
 

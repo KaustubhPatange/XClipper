@@ -1,24 +1,37 @@
 package com.kpstv.xclipper.ui.activities
 
-import android.annotation.TargetApi
-import android.content.*
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.kpstv.license.Decrypt
 import com.kpstv.xclipper.App.CLIP_DATA
 import com.kpstv.xclipper.R
+import com.kpstv.xclipper.data.localized.ToolbarState
+import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.extensions.Coroutines
+import com.kpstv.xclipper.extensions.Utils.Companion.shareText
 import com.kpstv.xclipper.extensions.cloneForAdapter
 import com.kpstv.xclipper.ui.adapters.CIAdapter
+import com.kpstv.xclipper.ui.helpers.MainHelper
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import com.kpstv.xclipper.ui.viewmodels.MainViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.kodein
 import org.kodein.di.generic.instance
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.concurrent.schedule
 
 
 class Main : AppCompatActivity(), KodeinAware {
@@ -33,6 +46,7 @@ class Main : AppCompatActivity(), KodeinAware {
     }
 
     private lateinit var adapter: CIAdapter
+    private lateinit var helper: MainHelper
 
     private val mainViewModel: MainViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
@@ -48,6 +62,8 @@ class Main : AppCompatActivity(), KodeinAware {
 
         checkClipboardData()
 
+        helper = MainHelper(this, adapter)
+
         /*  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
               val intent = Intent(
                   Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
@@ -62,40 +78,136 @@ class Main : AppCompatActivity(), KodeinAware {
 
     private fun bindUI() = Coroutines.main {
         mainViewModel.clipLiveData.await().observeForever {
-            adapter.submitList(it.cloneForAdapter().reversed())
+            adapter.submitList(ArrayList(it.cloneForAdapter().reversed()))
             Log.e(TAG, "LiveData changed()")
         }
+        mainViewModel.stateManager.toolbarState.observe(this, Observer { state ->
+            when (state) {
+                ToolbarState.NormalViewState -> {
+                    setNormalToolbar()
+                    mainViewModel.stateManager.clearSelectedList()
+                }
+
+                ToolbarState.MultiSelectionState -> {
+                    setSelectedToolbar()
+                }
+
+                else -> {
+                    // TODO: When exhaustive
+                }
+            }
+        })
     }
 
     private fun setRecyclerView() {
-        adapter = CIAdapter(context = this, onClick = { model, pos ->
-            for ((i, e) in adapter.list.withIndex()) {
-                if (i != pos && e.toDisplay) {
-                    e.toDisplay = false
-                    adapter.notifyItemChanged(i)
-                }
+        adapter = CIAdapter(
+            context = this,
+            selectedClips = mainViewModel.stateManager.selectedNodes,
+            onClick = { model, pos ->
+                if (mainViewModel.stateManager.isMultiSelectionStateActive())
+                    mainViewModel.stateManager.addOrRemoveClipFromSelectedList(model)
+                else
+                    expandMenuLogic(model, pos)
+            },
+            onLongClick = { clip, _ ->
+                adapter.list.forEach { it.toDisplay = false }
+                adapter.notifyDataSetChanged()
+
+                mainViewModel.stateManager.setToolbarState(ToolbarState.MultiSelectionState)
+                mainViewModel.stateManager.addOrRemoveClipFromSelectedList(clip)
             }
-            model.toDisplay = !model.toDisplay
-            adapter.notifyItemChanged(pos)
-        })
+        )
 
         adapter.setCopyClick { clip, _ ->
             clipboardManager.setPrimaryClip(ClipData.newPlainText(null, clip.data?.Decrypt()))
+            Toast.makeText(this, getString(R.string.ctc), Toast.LENGTH_SHORT).show()
         }
 
         adapter.setMenuItemClick { clip, i, menuType ->
-           /* when (menuType) {
-                CIAdapter.MENU_TYPE.Edit -> TODO()
-                CIAdapter.MENU_TYPE.Delete -> TODO()
-                CIAdapter.MENU_TYPE.Share -> TODO()
-            }*/
+            when (menuType) {
+                CIAdapter.MENU_TYPE.Edit -> {
+                    // TODO: Implement Edit function
+                }
+                CIAdapter.MENU_TYPE.Delete -> {
+                    performUndoDelete(clip, i)
+                }
+                CIAdapter.MENU_TYPE.Share -> {
+                    shareText(this, clip)
+                }
+            }
         }
 
         ci_recyclerView.layoutManager = LinearLayoutManager(this)
         ci_recyclerView.adapter = adapter
         ci_recyclerView.setHasFixedSize(true)
 
+    }
 
+    private fun deleteAllLogic() {
+        // TODO: Implement delete all logic
+    }
+
+    /**
+     * Call this function when ToolbarMultiSelection state is enabled.
+     */
+    private fun setSelectedToolbar() {
+        toolbar.menu.clear()
+        toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.colorSelected))
+        toolbar.inflateMenu(R.menu.selected_menu)
+        toolbar.navigationIcon = getDrawable(R.drawable.ic_close)
+        toolbar.setNavigationOnClickListener {
+            mainViewModel.stateManager.setToolbarState(ToolbarState.NormalViewState)
+        }
+        toolbar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.action_selectAll -> {
+                    mainViewModel.stateManager.addAllToSelectedList(adapter.list)
+                }
+                R.id.action_selectNone -> {
+                    mainViewModel.stateManager.clearSelectedList()
+                }
+                R.id.action_deleteAll -> {
+                    deleteAllLogic()
+                }
+            }
+            true
+        }
+    }
+
+    /**
+     * Call this function when ToolbarNormalState state is enabled.
+     */
+    private fun setNormalToolbar() {
+        toolbar.navigationIcon = null
+        toolbar.setNavigationOnClickListener(null)
+        toolbar.menu.clear()
+        toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary))
+        toolbar.inflateMenu(R.menu.normal_menu)
+    }
+
+
+    /**
+     * This function will perform undo delete whenever item has been deleted from
+     * expanded menu.
+     */
+    private fun performUndoDelete(clip: Clip, i: Int) {
+        val task = Timer("UndoDelete", false).schedule(2000) {
+            mainViewModel.deleteFromRepository(clip)
+        }
+
+        val list = adapter.list.removeAt(i)
+        adapter.notifyItemRemoved(i)
+
+        Snackbar.make(
+            ci_recyclerView,
+            "1 ${getString(R.string.item_delete)}",
+            Snackbar.LENGTH_SHORT
+        )
+            .setAction(getString(R.string.undo)) {
+                task.cancel()
+                adapter.list.add(i, list)
+                adapter.notifyItemInserted(i)
+            }.show()
     }
 
 
@@ -106,13 +218,35 @@ class Main : AppCompatActivity(), KodeinAware {
      */
     private fun checkClipboardData() {
         val data = clipboardManager.primaryClip?.getItemAt(0)?.coerceToText(this)?.toString()
-        if (data!= null && CLIP_DATA != data) {
+        if (data != null && CLIP_DATA != data) {
             CLIP_DATA = data
 
             mainViewModel.postToRepository(data)
-            
+
             Log.e(TAG, "Pushed: $data")
         }
+    }
+
+
+    /**
+     * This function will handle the expanded menu logic
+     */
+    private fun expandMenuLogic(model: Clip, pos: Int) {
+        for ((i, e) in adapter.list.withIndex()) {
+            if (i != pos && e.toDisplay) {
+                e.toDisplay = false
+                adapter.notifyItemChanged(i)
+            }
+        }
+        model.toDisplay = !model.toDisplay
+        adapter.notifyItemChanged(pos)
+    }
+
+    override fun onBackPressed() {
+        if (mainViewModel.stateManager.isMultiSelectionStateActive())
+            mainViewModel.stateManager.setToolbarState(ToolbarState.NormalViewState)
+        else
+            super.onBackPressed()
     }
 
     override fun onNewIntent(intent: Intent?) {

@@ -57,7 +57,7 @@ class MainRepositoryImpl(
 
     override fun deleteClip(clip: Clip) {
         Coroutines.io {
-            clipdao.delete(clip)
+            clipdao.delete(clip.id!!)
         }
     }
 

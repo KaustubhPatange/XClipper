@@ -16,5 +16,11 @@ namespace Components
             return c;
         }
 
+        public static List<T> Reverse<T>(this List<T> t)
+        {
+            t.Reverse();
+            return t;
+        }
+
     }
 }

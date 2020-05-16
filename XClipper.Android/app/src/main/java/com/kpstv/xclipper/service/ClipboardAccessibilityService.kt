@@ -5,7 +5,7 @@ import android.accessibilityservice.AccessibilityServiceInfo
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.content.Intent.FLAG_ACTIVITY_MULTIPLE_TASK
+import android.content.Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.os.Build
 import android.util.Log
@@ -14,7 +14,6 @@ import com.kpstv.xclipper.App.CLIP_DATA
 import com.kpstv.xclipper.App.observeFirebase
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.repository.MainRepository
-import com.kpstv.xclipper.extensions.Utils.Companion.isRunning
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.kodein
 import org.kodein.di.generic.instance
@@ -41,7 +40,7 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
                 && event.currentItemIndex != -1)
 
                 || (event?.eventType == AccessibilityEvent.TYPE_VIEW_CLICKED
-                && event.text != null)
+                && event.text != null && (event.contentDescription == "Copy"|| event.contentDescription == "Cut"))
     }
 
 
@@ -56,22 +55,14 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q  && supportedEventTypes(event)) {
             Log.e(TAG, "Running for first time")
 
-            val intent = Intent(this, ChangeClipboardActivity::class.java)
-            intent.addFlags(FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_MULTIPLE_TASK)
-            startActivity(intent)
+            runActivity(FLAG_ACTIVITY_NEW_TASK)
         }
-
     }
 
     override fun onServiceConnected() {
         super.onServiceConnected()
         Log.e(TAG, "Service Connected")
         val info = AccessibilityServiceInfo()
-        /*info.apply {
-            eventTypes = AccessibilityEvent.TYPES_ALL_MASK
-            feedbackType = AccessibilityServiceInfo.FEEDBACK_ALL_MASK
-            notificationTimeout = 100
-        }*/
 
         info.apply {
             eventTypes =
@@ -93,6 +84,14 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
 
             Log.e(TAG, "Data: ${clipboardManager.primaryClip?.getItemAt(0)?.text}")
         }
+
+
+    }
+
+    private fun runActivity(flag: Int) {
+        val intent = Intent(this, ChangeClipboardActivity::class.java)
+        intent.addFlags(flag)
+        startActivity(intent)
     }
 
     override fun onInterrupt() {}
