@@ -14,7 +14,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.kpstv.license.Decrypt
+import com.kpstv.xclipper.App.BLANK_STRING
 import com.kpstv.xclipper.App.CLIP_DATA
+import com.kpstv.xclipper.App.UNDO_DELETE_SPAN
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.ToolbarState
 import com.kpstv.xclipper.data.model.Clip
@@ -22,7 +24,7 @@ import com.kpstv.xclipper.extensions.Coroutines
 import com.kpstv.xclipper.extensions.Utils.Companion.shareText
 import com.kpstv.xclipper.extensions.cloneForAdapter
 import com.kpstv.xclipper.ui.adapters.CIAdapter
-import com.kpstv.xclipper.ui.helpers.MainHelper
+import com.kpstv.xclipper.ui.helpers.MainEditHelper
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import com.kpstv.xclipper.ui.viewmodels.MainViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
@@ -46,7 +48,6 @@ class Main : AppCompatActivity(), KodeinAware {
     }
 
     private lateinit var adapter: CIAdapter
-    private lateinit var helper: MainHelper
 
     private val mainViewModel: MainViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
@@ -62,7 +63,8 @@ class Main : AppCompatActivity(), KodeinAware {
 
         checkClipboardData()
 
-        helper = MainHelper(this, adapter)
+        setToolbarCommonStuff()
+
 
         /*  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
               val intent = Intent(
@@ -103,6 +105,7 @@ class Main : AppCompatActivity(), KodeinAware {
         adapter = CIAdapter(
             context = this,
             selectedClips = mainViewModel.stateManager.selectedNodes,
+            multiselectionState = mainViewModel.stateManager.multiSelectionState,
             onClick = { model, pos ->
                 if (mainViewModel.stateManager.isMultiSelectionStateActive())
                     mainViewModel.stateManager.addOrRemoveClipFromSelectedList(model)
@@ -126,7 +129,9 @@ class Main : AppCompatActivity(), KodeinAware {
         adapter.setMenuItemClick { clip, i, menuType ->
             when (menuType) {
                 CIAdapter.MENU_TYPE.Edit -> {
-                    // TODO: Implement Edit function
+                    MainEditHelper(
+                        this, mainViewModel
+                    ).show(clip)
                 }
                 CIAdapter.MENU_TYPE.Delete -> {
                     performUndoDelete(clip, i)
@@ -143,8 +148,56 @@ class Main : AppCompatActivity(), KodeinAware {
 
     }
 
-    private fun deleteAllLogic() {
-        // TODO: Implement delete all logic
+    /**
+     * This will set the clicks of item on Toolbar Menu.
+     */
+    private fun setToolbarCommonStuff() {
+        setNormalToolbar()
+        toolbar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.action_selectAll -> {
+                    mainViewModel.stateManager.addAllToSelectedList(adapter.list)
+                }
+                R.id.action_selectNone -> {
+                    mainViewModel.stateManager.clearSelectedList()
+                }
+                R.id.action_deleteAll -> {
+                    deleteAllWithUndo()
+                }
+            }
+            true
+        }
+
+        mainViewModel.stateManager.selectedNodes.observe(this, Observer {
+            if (it.size >= 0)
+                toolbar.subtitle = "${it.size} ${getString(R.string.selected)}"
+            else
+                toolbar.subtitle = BLANK_STRING
+        })
+    }
+
+    private fun deleteAllWithUndo() {
+        val totalItems = ArrayList(adapter.list)
+        val itemsToRemove = mainViewModel.stateManager.selectedNodes.value!!
+        val size = itemsToRemove.size
+
+        val task = Timer("UndoDelete", false).schedule(UNDO_DELETE_SPAN) {
+            mainViewModel.deleteMultipleFromRepository(itemsToRemove)
+            mainViewModel.stateManager.setToolbarState(ToolbarState.NormalViewState)
+        }
+
+        adapter.list.removeAll(itemsToRemove)
+        adapter.notifyDataSetChanged()
+
+        Snackbar.make(
+            ci_recyclerView,
+            "$size ${getString(R.string.item_delete)}",
+            Snackbar.LENGTH_SHORT
+        ).setAction(getString(R.string.undo)) {
+            task.cancel()
+            adapter.list = totalItems
+            adapter.notifyDataSetChanged()
+        }.show()
     }
 
     /**
@@ -157,20 +210,6 @@ class Main : AppCompatActivity(), KodeinAware {
         toolbar.navigationIcon = getDrawable(R.drawable.ic_close)
         toolbar.setNavigationOnClickListener {
             mainViewModel.stateManager.setToolbarState(ToolbarState.NormalViewState)
-        }
-        toolbar.setOnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.action_selectAll -> {
-                    mainViewModel.stateManager.addAllToSelectedList(adapter.list)
-                }
-                R.id.action_selectNone -> {
-                    mainViewModel.stateManager.clearSelectedList()
-                }
-                R.id.action_deleteAll -> {
-                    deleteAllLogic()
-                }
-            }
-            true
         }
     }
 
@@ -191,7 +230,7 @@ class Main : AppCompatActivity(), KodeinAware {
      * expanded menu.
      */
     private fun performUndoDelete(clip: Clip, i: Int) {
-        val task = Timer("UndoDelete", false).schedule(2000) {
+        val task = Timer("UndoDelete", false).schedule(UNDO_DELETE_SPAN) {
             mainViewModel.deleteFromRepository(clip)
         }
 

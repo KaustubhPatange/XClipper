@@ -17,6 +17,8 @@ object App {
     var MIN_ITEM_STORAGE = 5
     var MAX_ITEM_STORAGE = 20
 
+    var UNDO_DELETE_SPAN: Long = 2500
+
 
     // TODO: Do all your jack jacks
     const val STANDARD_DATE_FORMAT = "yyyyMMddHHmmss"
@@ -29,4 +31,7 @@ object App {
     var observeFirebase = true
 
     fun getMaxStorage(isLicensed: Boolean): Int = if (isLicensed) MAX_ITEM_STORAGE else MIN_ITEM_STORAGE
+
+    var EMPTY_STRING = ""
+    var BLANK_STRING = " "
 }

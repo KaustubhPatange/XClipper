@@ -13,16 +13,21 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.license.Decrypt
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.Clip
+import com.kpstv.xclipper.extensions.hide
+import com.kpstv.xclipper.extensions.show
 import kotlinx.android.synthetic.main.content_item.view.*
 
 class CIAdapter(
     private val context: Context,
+    private val multiselectionState: LiveData<Boolean>,
     var list: ArrayList<Clip> = ArrayList(),
     private val onClick: (Clip, Int) -> Unit,
     private val onLongClick: (Clip, Int) -> Unit,
     private val selectedClips: LiveData<ArrayList<Clip>>
 ) :
     RecyclerView.Adapter<CIAdapter.MainHolder>() {
+
+    private val TAG = javaClass.simpleName
 
     private lateinit var copyClick: (Clip, Int) -> Unit
     private lateinit var menuClick: (Clip, Int, MENU_TYPE) -> Unit
@@ -59,6 +64,16 @@ class CIAdapter(
         holder.itemView.ci_btn_edit.setOnClickListener { menuClick.invoke(clip, position, MENU_TYPE.Edit) }
         holder.itemView.ci_btn_delete.setOnClickListener { menuClick.invoke(clip, position, MENU_TYPE.Delete) }
         holder.itemView.ci_btn_share.setOnClickListener { menuClick.invoke(clip, position, MENU_TYPE.Share) }
+
+        multiselectionState.observe(context as LifecycleOwner, Observer {
+            if (it) {
+                holder.itemView.ci_copyButton.hide()
+                holder.itemView.ci_timeText.hide()
+            } else {
+                holder.itemView.ci_copyButton.show()
+                holder.itemView.ci_timeText.show()
+            }
+        })
 
         selectedClips.observe(context as LifecycleOwner, Observer {
             when {

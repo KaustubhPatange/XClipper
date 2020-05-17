@@ -34,7 +34,6 @@ data class ClipEntry (
     val data: String?,
     val time: String?
 ) {
-    var toDisplay = false
     companion object {
         fun from(clip: Clip) : ClipEntry = with(clip) {
             ClipEntry(data, DateConverter.fromDateToString(time))

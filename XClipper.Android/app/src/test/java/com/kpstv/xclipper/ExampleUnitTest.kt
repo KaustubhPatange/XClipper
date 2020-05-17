@@ -1,5 +1,6 @@
 package com.kpstv.xclipper
 
+import com.kpstv.license.Decrypt
 import com.kpstv.xclipper.data.converters.DateConverter
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -21,7 +22,11 @@ class ExampleUnitTest {
     @Test
     fun list_test() {
 
-        val time1 = Calendar.getInstance().time
+
+        val list = List<Int>(1){1}
+
+        println("oZDQctb9RVvZonVWymzVm86H0OhQmo7ZmmS/jWfAd9pJiI+fL7aQWQ2EbsdRqEi5".Decrypt())
+      /*  val time1 = Calendar.getInstance().time
         val time2 = DateConverter.toDateFromString("20200514183402")!!
 
         val secondsInMilli: Long = 1000
@@ -36,7 +41,7 @@ class ExampleUnitTest {
 
         var different = time1.time - time2.time
 
-        println("Hours: ${different/hoursInMilli}")
+        println("Hours: ${different/hoursInMilli}")*/
 //  val date = (time1 - time2).div((minutesInMilli * 60))
 
 

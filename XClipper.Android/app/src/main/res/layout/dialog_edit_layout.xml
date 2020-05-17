@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?colorPrimary" />
+
+    <EditText
+        android:id="@+id/de_editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/colorCard"
+        android:background="@color/colorCard"
+        android:gravity="top"
+        android:maxLines="15"
+        android:minLines="7"
+        android:padding="10dp"
+        android:textColor="#ffffff"
+        android:textSize="14sp" />
+
+   <!-- <LinearLayout
+        android:background="@color/colorCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end">
+
+        <Button
+            android:id="@+id/saveButton"
+            android:textAllCaps="false"
+            android:textColor="?colorPrimary"
+            android:background="@android:color/transparent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="10dp"
+            android:text="@string/save" />
+    </LinearLayout>-->
+
+</LinearLayout>
+

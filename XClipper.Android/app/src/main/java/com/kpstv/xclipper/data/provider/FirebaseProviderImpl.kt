@@ -2,7 +2,7 @@ package com.kpstv.xclipper.data.provider
 
 import android.util.Log
 import com.google.firebase.database.FirebaseDatabase
-import com.kpstv.license.Decrypt
+import com.kpstv.xclipper.App.BindToFirebase
 import com.kpstv.xclipper.App.DeviceID
 import com.kpstv.xclipper.App.UID
 import com.kpstv.xclipper.App.getMaxStorage
@@ -28,22 +28,70 @@ class FirebaseProviderImpl : FirebaseProvider {
 
     override fun isValidDevice(): Boolean = validDevice
 
-    override fun uploadData(clip: Clip) {
-        if (!::user.isInitialized) {
-            database.getReference(USER_REF).child(UID)
-                .addListenerForSingleValueEvent(FValueEventListener(
-                    onDataChange = { snap ->
-                        val json = gson.toJson(snap.value)
-                        gson.fromJson(json, User::class.java).also { user = it }
+    override fun replaceData(oldClip: Clip, newClip: Clip) {
+        workWithData {
+            replace(oldClip, newClip)
+        }
+    }
 
-                        saveData(clip)
-                    },
-                    onError = {
-                        Log.e(TAG, "Error: Saving data")
-                    }
-                ))
-        } else
+    override fun deleteMultipleData(clips: List<Clip>) {
+        workWithData {
+            removeData(clips)
+        }
+    }
+
+    override fun deleteData(clip: Clip) {
+        workWithData {
+            removeData(clip)
+        }
+    }
+
+    override fun uploadData(clip: Clip) {
+        workWithData {
             saveData(clip)
+        }
+    }
+
+    private fun replace(oldClip: Clip, newClip: Clip) {
+        /** Save data when clips are null */
+        if (user.Clips == null) {
+            saveData(newClip)
+        } else {
+            val list = ArrayList(user.Clips!!.filter { it.data != oldClip.data })
+
+            list.add(newClip)
+
+            updateData(list)
+        }
+    }
+
+    private fun removeData(clip: Clip) {
+        removeData(List(1) { clip })
+    }
+
+    private fun removeData(clips: List<Clip>) {
+        if (user.Clips == null) return
+
+        val list = ArrayList(user.Clips!!)
+
+        Log.e(TAG, "Pre List Size: ${list.size}")
+        val dataList = clips.map { it.data }
+
+        list.removeAll {
+            it.data in dataList
+        }
+
+        Log.e(TAG, "After List Size: ${list.size}")
+        /*
+        user.Clips!!.forEach { clip1 ->
+            clips.forEach { clip2 ->
+                if (clip1.data != clip2.data)
+            }
+        }*/
+
+      //  list.removeAll(clips)
+
+        updateData(list)
     }
 
     private fun saveData(clip: Clip) {
@@ -51,21 +99,54 @@ class FirebaseProviderImpl : FirebaseProvider {
             ArrayList()
         else
             ArrayList(user.Clips?.filter { it.data != clip.data }!!)
-
         val size = getMaxStorage(isLicensed())
 
         if (list.size >= size)
             list.removeFirst()
         list.add(clip)
+        updateData(list)
+    }
 
+    /**
+     * A common provider which will submit the data to firebase.
+     */
+    private fun updateData(list: ArrayList<Clip>) {
         database.getReference(USER_REF).child(UID).child(CLIP_REF)
             .setValue(list.cloneToEntries()) { error, _ ->
                 if (error == null) {
                     user.Clips = list
-                    Log.e(TAG, "Firebase Saved: ${clip.data?.Decrypt()}")
+                    Log.e(TAG, "Firebase: Success")
                 } else
                     Log.e(TAG, "Error: ${error.message}")
             }
+    }
+
+    /**
+     * A common provider to execute some functions straightaway on
+     * firebase database.
+     */
+    private fun workWithData(block: () -> Unit) {
+
+        /** This check will make sure that user can only update firebase database
+         *  when following criteria satisfies
+         */
+        if (!BindToFirebase) return
+
+        if (!::user.isInitialized) {
+            database.getReference(USER_REF).child(UID)
+                .addListenerForSingleValueEvent(FValueEventListener(
+                    onDataChange = { snap ->
+                        val json = gson.toJson(snap.value)
+                        gson.fromJson(json, User::class.java).also { user = it }
+
+                        block.invoke()
+                    },
+                    onError = {
+                        Log.e(TAG, "Error: ${it.message}")
+                    }
+                ))
+        } else
+            block.invoke()
     }
 
     override fun observeDataChange(
@@ -94,5 +175,4 @@ class FirebaseProviderImpl : FirebaseProvider {
                 }
             ))
     }
-
 }

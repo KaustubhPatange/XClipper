@@ -58,6 +58,15 @@ class MainRepositoryImpl(
     override fun deleteClip(clip: Clip) {
         Coroutines.io {
             clipdao.delete(clip.id!!)
+            firebaseProvider.deleteData(clip)
+        }
+    }
+
+    override fun deleteMultiple(clips: List<Clip>) {
+        Coroutines.io {
+            for (clip in clips)
+                clipdao.delete(clip)
+            firebaseProvider.deleteMultipleData(clips)
         }
     }
 
