@@ -38,6 +38,7 @@
                 android:name="Clipservice"
                 android:resource="@xml/clip_service" />
         </service>
+
     </application>
 
 </manifest>

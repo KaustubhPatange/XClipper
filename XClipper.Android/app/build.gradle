@@ -72,9 +72,14 @@ dependencies {
     implementation "org.kodein.di:kodein-di-generic-jvm:$kodein_version"
     implementation "org.kodein.di:kodein-di-framework-android-x:$kodein_version"
 
+    // Simple Search View
+    implementation 'com.github.Ferfalk:SimpleSearchView:0.1.5'
+
     // Preference
     implementation "androidx.preference:preference:1.1.1"
 
+
+    debugImplementation 'com.amitshekhar.android:debug-db:1.0.4'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'

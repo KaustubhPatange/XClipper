@@ -70,10 +70,12 @@ class MainRepositoryImpl(
         }
     }
 
-    override suspend fun getAllLiveClip(): LiveData<List<Clip>> {
-        return withContext(Dispatchers.IO) {
-            clipdao.getAllLiveData()
-        }
+    override fun getAllLiveClip(): LiveData<List<Clip>> {
+        return clipdao.getAllLiveData()
+    }
+
+    override fun getAllData(): List<Clip> {
+        return clipdao.getAllData()
     }
 
     override fun updateRepository(data: String?) {

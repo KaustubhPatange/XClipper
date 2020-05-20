@@ -14,5 +14,7 @@ interface MainRepository {
 
     fun updateRepository(data: String?)
 
-    suspend fun getAllLiveClip(): LiveData<List<Clip>>
+    fun getAllData(): List<Clip>
+
+    fun getAllLiveClip(): LiveData<List<Clip>>
 }

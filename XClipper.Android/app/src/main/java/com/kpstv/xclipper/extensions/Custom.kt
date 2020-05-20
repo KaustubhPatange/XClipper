@@ -1,12 +1,10 @@
 package com.kpstv.xclipper.extensions
 
-import android.text.Editable
 import android.view.View
-import android.widget.EditText
+import com.ferfalk.simplesearchview.SimpleSearchView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
-import com.kpstv.license.Encrypt
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.ClipEntry
 import kotlinx.coroutines.*
@@ -19,6 +17,68 @@ class FValueEventListener(
     ValueEventListener {
     override fun onDataChange(data: DataSnapshot) = onDataChange.invoke(data)
     override fun onCancelled(error: DatabaseError) = onError.invoke(error)
+}
+
+/*class OnSearchViewListener(
+    val onSubmit: ((String) -> Unit)?,
+    val onChange: ((String) -> Unit)?
+) : SearchView.OnQueryTextListener {
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        query?.let {
+            onSubmit.invoke(query)
+        }
+        return true
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean {
+        newText?.let {
+            onChange.invoke(newText)
+        }
+        return true
+    }
+}*/
+
+fun SimpleSearchView.setOnQueryTextListener(
+    onSubmit: ((String) -> Unit)? = null,
+    onChange: ((String) -> Unit)? = null,
+    onClear: (() -> Unit)? = null
+) {
+    setOnQueryTextListener(object : SimpleSearchView.OnQueryTextListener {
+        override fun onQueryTextSubmit(query: String?): Boolean {
+            if (query != null) onSubmit?.invoke(query)
+            return true
+        }
+
+        override fun onQueryTextChange(newText: String?): Boolean {
+            if (newText != null) onChange?.invoke(newText)
+            return true
+        }
+
+        override fun onQueryTextCleared(): Boolean {
+            onClear?.invoke()
+            return true
+        }
+    })
+}
+
+fun SimpleSearchView.setOnSearchCloseListener(block: () -> Unit) {
+    setOnSearchViewListener(object : SimpleSearchView.SearchViewListener {
+        override fun onSearchViewShownAnimation() {
+
+        }
+
+        override fun onSearchViewClosed() {
+            block.invoke()
+        }
+
+        override fun onSearchViewClosedAnimation() {
+        }
+
+        override fun onSearchViewShown() {
+
+        }
+
+    })
 }
 
 fun List<Clip>.cloneToEntries(): List<ClipEntry> {

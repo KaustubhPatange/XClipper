@@ -6,12 +6,15 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.SearchView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ferfalk.simplesearchview.SimpleSearchView
+import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
 import com.kpstv.license.Decrypt
 import com.kpstv.xclipper.App.BLANK_STRING
@@ -20,9 +23,8 @@ import com.kpstv.xclipper.App.UNDO_DELETE_SPAN
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.ToolbarState
 import com.kpstv.xclipper.data.model.Clip
-import com.kpstv.xclipper.extensions.Coroutines
+import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.extensions.Utils.Companion.shareText
-import com.kpstv.xclipper.extensions.cloneForAdapter
 import com.kpstv.xclipper.ui.adapters.CIAdapter
 import com.kpstv.xclipper.ui.helpers.MainEditHelper
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
@@ -65,6 +67,7 @@ class Main : AppCompatActivity(), KodeinAware {
 
         setToolbarCommonStuff()
 
+        setSearchViewListener()
 
         /*  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
               val intent = Intent(
@@ -78,11 +81,12 @@ class Main : AppCompatActivity(), KodeinAware {
     }
 
 
-    private fun bindUI() = Coroutines.main {
-        mainViewModel.clipLiveData.await().observeForever {
-            adapter.submitList(ArrayList(it.cloneForAdapter().reversed()))
-            Log.e(TAG, "LiveData changed()")
-        }
+    private fun bindUI()  {
+        mainViewModel.clipLiveData.observe(this, Observer {
+            adapter.submitList(ArrayList(it?.cloneForAdapter()?.reversed()!!))
+            mainViewModel.stateManager.clearSelectedItem()
+          //  Log.e(TAG, "LiveData changed()")
+        })
         mainViewModel.stateManager.toolbarState.observe(this, Observer { state ->
             when (state) {
                 ToolbarState.NormalViewState -> {
@@ -104,17 +108,20 @@ class Main : AppCompatActivity(), KodeinAware {
     private fun setRecyclerView() {
         adapter = CIAdapter(
             context = this,
-            selectedClips = mainViewModel.stateManager.selectedNodes,
-            multiselectionState = mainViewModel.stateManager.multiSelectionState,
-            onClick = { model, pos ->
+            selectedClips = mainViewModel.stateManager.selectedItemClips,
+            selectedItem = mainViewModel.stateManager.selectedItem,
+            multiSelectionState = mainViewModel.stateManager.multiSelectionState,
+            onClick = { clip, _ ->
                 if (mainViewModel.stateManager.isMultiSelectionStateActive())
-                    mainViewModel.stateManager.addOrRemoveClipFromSelectedList(model)
+                    mainViewModel.stateManager.addOrRemoveClipFromSelectedList(clip)
                 else
-                    expandMenuLogic(model, pos)
+                    mainViewModel.stateManager.addOrRemoveSelectedItem(clip)
+                   // expandMenuLogic(clip, pos)
             },
             onLongClick = { clip, _ ->
-                adapter.list.forEach { it.toDisplay = false }
-                adapter.notifyDataSetChanged()
+                mainViewModel.stateManager.clearSelectedItem()
+              /*  adapter.list.forEach { it.toDisplay = false }
+                adapter.notifyDataSetChanged()*/
 
                 mainViewModel.stateManager.setToolbarState(ToolbarState.MultiSelectionState)
                 mainViewModel.stateManager.addOrRemoveClipFromSelectedList(clip)
@@ -164,12 +171,17 @@ class Main : AppCompatActivity(), KodeinAware {
                 R.id.action_deleteAll -> {
                     deleteAllWithUndo()
                 }
+                R.id.action_search -> {
+                    searchView.showSearch(true)
+                }
             }
             true
         }
 
-        mainViewModel.stateManager.selectedNodes.observe(this, Observer {
-            if (it.size >= 0)
+      //  val item = toolbar.menu.findItem(R.id.action_search)
+
+        mainViewModel.stateManager.selectedItemClips.observe(this, Observer {
+            if (it.size > 0)
                 toolbar.subtitle = "${it.size} ${getString(R.string.selected)}"
             else
                 toolbar.subtitle = BLANK_STRING
@@ -178,13 +190,15 @@ class Main : AppCompatActivity(), KodeinAware {
 
     private fun deleteAllWithUndo() {
         val totalItems = ArrayList(adapter.list)
-        val itemsToRemove = mainViewModel.stateManager.selectedNodes.value!!
+        val itemsToRemove = mainViewModel.stateManager.selectedItemClips.value!!
         val size = itemsToRemove.size
 
         val task = Timer("UndoDelete", false).schedule(UNDO_DELETE_SPAN) {
             mainViewModel.deleteMultipleFromRepository(itemsToRemove)
-            mainViewModel.stateManager.setToolbarState(ToolbarState.NormalViewState)
         }
+
+        if (size > 0)
+            mainViewModel.stateManager.setToolbarState(ToolbarState.NormalViewState)
 
         adapter.list.removeAll(itemsToRemove)
         adapter.notifyDataSetChanged()
@@ -198,6 +212,36 @@ class Main : AppCompatActivity(), KodeinAware {
             adapter.list = totalItems
             adapter.notifyDataSetChanged()
         }.show()
+    }
+
+
+    private fun setSearchViewListener() {
+        searchView.setOnQueryTextListener(
+            onSubmit = { query ->
+                ci_chip_group.addView(
+                    Chip(this).apply {
+                        text = query
+                        isCloseIconVisible = true
+                        setOnCloseIconClickListener { chip ->
+                            ci_chip_group.removeView(chip)
+                            mainViewModel.searchManager.addOrRemoveSearchFilter(query)
+                        }
+                    }
+                )
+                searchView.onBackPressed()
+                mainViewModel.searchManager.clearSearch()
+                mainViewModel.searchManager.addOrRemoveSearchFilter(query)
+            },
+            onChange = {
+                mainViewModel.searchManager.setSearchText(it)
+            },
+            onClear = {
+                mainViewModel.searchManager.clearSearch()
+            }
+        )
+        searchView.setOnSearchCloseListener {
+            mainViewModel.searchManager.clearSearch()
+        }
     }
 
     /**
@@ -282,10 +326,11 @@ class Main : AppCompatActivity(), KodeinAware {
     }
 
     override fun onBackPressed() {
-        if (mainViewModel.stateManager.isMultiSelectionStateActive())
-            mainViewModel.stateManager.setToolbarState(ToolbarState.NormalViewState)
-        else
-            super.onBackPressed()
+        when {
+            mainViewModel.stateManager.isMultiSelectionStateActive() -> mainViewModel.stateManager.setToolbarState(ToolbarState.NormalViewState)
+            searchView.onBackPressed() -> return
+            else -> super.onBackPressed()
+        }
     }
 
     override fun onNewIntent(intent: Intent?) {

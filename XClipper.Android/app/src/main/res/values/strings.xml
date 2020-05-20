@@ -20,4 +20,5 @@
     <string name="ok">OK</string>
     <string name="edit_success">Changes saved!</string>
     <string name="error_empty_text">Warning: Empty or same text to update</string>
+    <string name="search">Search</string>
 </resources>

@@ -5,6 +5,9 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import android.view.animation.ScaleAnimation
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
@@ -17,9 +20,11 @@ import com.kpstv.xclipper.extensions.hide
 import com.kpstv.xclipper.extensions.show
 import kotlinx.android.synthetic.main.content_item.view.*
 
+
 class CIAdapter(
     private val context: Context,
-    private val multiselectionState: LiveData<Boolean>,
+    private val multiSelectionState: LiveData<Boolean>,
+    private val selectedItem: LiveData<Clip>,
     var list: ArrayList<Clip> = ArrayList(),
     private val onClick: (Clip, Int) -> Unit,
     private val onLongClick: (Clip, Int) -> Unit,
@@ -48,13 +53,13 @@ class CIAdapter(
 
         holder.itemView.ci_timeText.text = clip.timeString
 
-        if (clip.toDisplay) {
+      /*  if (clip.toDisplay) {
             holder.itemView.mainCard.setCardBackgroundColor(CARD_COLOR)
             holder.itemView.hiddenLayout.visibility = View.VISIBLE
         } else {
             holder.itemView.mainCard.setCardBackgroundColor(Color.TRANSPARENT)
             holder.itemView.hiddenLayout.visibility = View.GONE
-        }
+        }*/
 
         holder.itemView.mainCard.setOnLongClickListener {
             onLongClick.invoke(clip, position)
@@ -65,7 +70,17 @@ class CIAdapter(
         holder.itemView.ci_btn_delete.setOnClickListener { menuClick.invoke(clip, position, MENU_TYPE.Delete) }
         holder.itemView.ci_btn_share.setOnClickListener { menuClick.invoke(clip, position, MENU_TYPE.Share) }
 
-        multiselectionState.observe(context as LifecycleOwner, Observer {
+        selectedItem.observe(context as LifecycleOwner, Observer {
+            if (it == clip) {
+                holder.itemView.hiddenLayout.show()
+                holder.itemView.mainCard.setCardBackgroundColor(CARD_COLOR)
+            } else {
+                holder.itemView.mainCard.setCardBackgroundColor(Color.TRANSPARENT)
+                holder.itemView.hiddenLayout.visibility = View.GONE
+            }
+        })
+
+        multiSelectionState.observe(context as LifecycleOwner, Observer {
             if (it) {
                 holder.itemView.ci_copyButton.hide()
                 holder.itemView.ci_timeText.hide()

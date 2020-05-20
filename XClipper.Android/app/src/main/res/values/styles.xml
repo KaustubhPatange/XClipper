@@ -6,17 +6,34 @@
         <item name="colorAccent">@color/colorPrimary</item>
         <item name="background">@color/colorBackground</item>
         <item name="fontFamily">@font/google_sans_medium</item>
+        <item name="colorTextPrimary">@color/colorTextPrimary</item>
+        <item name="colorTextSecondary">@color/colorTextSecondary</item>
+        <item name="colorForeground">@color/colorCard</item>
+        <item name="colorSeparator">@color/colorSeparator</item>
+        <item name="colorSelected">@color/colorSelected</item>
     </style>
 
 
     <style name="ButtonStyle" parent="TextAppearance.MaterialComponents.Button">
-        <item name="android:textColor">@color/colorTextSecondary</item>
+        <item name="android:textColor">?colorTextSecondary</item>
         <item name="android:textSize">12sp</item>
         <item name="fontFamily">@font/google_sans_regular</item>
         <item name="android:background">@android:color/transparent</item>
         <item name="textAllCaps">false</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="CommonLinearLayoutStyle">
+        <item name="paddingStart">10dp</item>
+    </style>
+
+    <style name="SimpleSearchViewStyle">
+        <item name="android:hint">@string/search</item>
+        <item name="android:textColor">?colorTextPrimary</item>
+        <item name="hintColor">?colorTextSecondary</item>
+        <item name="searchBackground">?colorForeground</item>
+        <item name="iconsTint">?colorTextPrimary</item>
     </style>
 
     <style name="Theme.AppCompat.Translucent" parent="Theme.AppCompat">

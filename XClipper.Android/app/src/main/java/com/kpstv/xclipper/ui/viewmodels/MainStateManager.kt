@@ -1,6 +1,5 @@
 package com.kpstv.xclipper.ui.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.kpstv.xclipper.data.localized.ToolbarState
@@ -13,14 +12,19 @@ class MainStateManager {
     private val _toolbarState: MutableLiveData<ToolbarState> =
         MutableLiveData(ToolbarState.NormalViewState)
 
-    private val _selectedNodes = MutableLiveData<ArrayList<Clip>>()
+    private val _selectedItemClips = MutableLiveData<ArrayList<Clip>>()
     private val _isMultiSelectionEnabled = MutableLiveData<Boolean>()
 
-    val selectedNodes: LiveData<ArrayList<Clip>>
-        get() = _selectedNodes
+    private val _selectedItem = MutableLiveData<Clip>();
+
+    val selectedItemClips: LiveData<ArrayList<Clip>>
+        get() = _selectedItemClips
 
     val toolbarState: LiveData<ToolbarState>
         get() = _toolbarState
+
+    val selectedItem: LiveData<Clip>
+        get() = _selectedItem
 
     fun setToolbarState(state: ToolbarState) =
         _toolbarState.postValue(state)
@@ -32,7 +36,7 @@ class MainStateManager {
         get() = _isMultiSelectionEnabled
 
     fun addOrRemoveClipFromSelectedList(clip: Clip) {
-        var list = _selectedNodes.value
+        var list = _selectedItemClips.value
         if (list == null)
             list = ArrayList()
         else {
@@ -42,26 +46,38 @@ class MainStateManager {
                 list.add(clip)
             }
         }
-        _selectedNodes.postValue(list)
+        _selectedItemClips.postValue(list)
+    }
+
+    fun addOrRemoveSelectedItem(clip: Clip) {
+        _selectedItem.value?.let {
+            if (it == clip) {
+                clearSelectedItem()
+                return
+            }
+        }
+        _selectedItem.postValue(clip)
+    }
+
+    fun clearSelectedItem() {
+        _selectedItem.postValue(null)
     }
 
     fun addAllToSelectedList(clips: ArrayList<Clip>) {
-        _selectedNodes.postValue(clips)
+        _selectedItemClips.postValue(clips)
     }
 
     fun clearSelectedList() {
-        _selectedNodes.postValue(ArrayList())
+        _selectedItemClips.postValue(ArrayList())
     }
 
     init {
         toolbarState.observeForever {
             if (it == ToolbarState.MultiSelectionState) {
-              _isMultiSelectionEnabled.postValue(true)
+                _isMultiSelectionEnabled.postValue(true)
+            } else {
+                _isMultiSelectionEnabled.postValue(false)
             }
-            else {
-               _isMultiSelectionEnabled.postValue(false)
-            }
-
         }
     }
 }
