@@ -6,14 +6,16 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.SearchView
+import android.view.LayoutInflater
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.ferfalk.simplesearchview.SimpleSearchView
 import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
 import com.kpstv.license.Decrypt
@@ -23,8 +25,10 @@ import com.kpstv.xclipper.App.UNDO_DELETE_SPAN
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.ToolbarState
 import com.kpstv.xclipper.data.model.Clip
-import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.extensions.Utils.Companion.shareText
+import com.kpstv.xclipper.extensions.cloneForAdapter
+import com.kpstv.xclipper.extensions.setOnQueryTextListener
+import com.kpstv.xclipper.extensions.setOnSearchCloseListener
 import com.kpstv.xclipper.ui.adapters.CIAdapter
 import com.kpstv.xclipper.ui.helpers.MainEditHelper
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
@@ -59,6 +63,8 @@ class Main : AppCompatActivity(), KodeinAware {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        swipeRefreshLayout.isEnabled = false
+
         setRecyclerView()
 
         bindUI()
@@ -81,11 +87,11 @@ class Main : AppCompatActivity(), KodeinAware {
     }
 
 
-    private fun bindUI()  {
+    private fun bindUI() {
         mainViewModel.clipLiveData.observe(this, Observer {
             adapter.submitList(ArrayList(it?.cloneForAdapter()?.reversed()!!))
             mainViewModel.stateManager.clearSelectedItem()
-          //  Log.e(TAG, "LiveData changed()")
+            //  Log.e(TAG, "LiveData changed()")
         })
         mainViewModel.stateManager.toolbarState.observe(this, Observer { state ->
             when (state) {
@@ -116,12 +122,12 @@ class Main : AppCompatActivity(), KodeinAware {
                     mainViewModel.stateManager.addOrRemoveClipFromSelectedList(clip)
                 else
                     mainViewModel.stateManager.addOrRemoveSelectedItem(clip)
-                   // expandMenuLogic(clip, pos)
+                // expandMenuLogic(clip, pos)
             },
             onLongClick = { clip, _ ->
                 mainViewModel.stateManager.clearSelectedItem()
-              /*  adapter.list.forEach { it.toDisplay = false }
-                adapter.notifyDataSetChanged()*/
+                /*  adapter.list.forEach { it.toDisplay = false }
+                  adapter.notifyDataSetChanged()*/
 
                 mainViewModel.stateManager.setToolbarState(ToolbarState.MultiSelectionState)
                 mainViewModel.stateManager.addOrRemoveClipFromSelectedList(clip)
@@ -178,7 +184,9 @@ class Main : AppCompatActivity(), KodeinAware {
             true
         }
 
-      //  val item = toolbar.menu.findItem(R.id.action_search)
+
+        //   Log.e(TAG, "Action View: ${}")
+        //  val item = toolbar.menu.findItem(R.id.action_search)
 
         mainViewModel.stateManager.selectedItemClips.observe(this, Observer {
             if (it.size > 0)
@@ -266,6 +274,24 @@ class Main : AppCompatActivity(), KodeinAware {
         toolbar.menu.clear()
         toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary))
         toolbar.inflateMenu(R.menu.normal_menu)
+
+        val syncImage =
+            LayoutInflater.from(this).inflate(R.layout.imageview_menu_item, null) as ImageView
+        syncImage.apply {
+            setOnClickListener {
+                this.startAnimation(AnimationUtils.loadAnimation(this@Main, R.anim.rotate_clock)
+                    .apply { repeatCount = Animation.INFINITE })
+                isEnabled = false
+
+                mainViewModel.makeAValidationRequest {
+                    isEnabled = true
+                    this.clearAnimation()
+                    Toast.makeText(this@Main, it, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        toolbar.menu.findItem(R.id.action_sync).actionView = syncImage
     }
 
 
@@ -327,7 +353,9 @@ class Main : AppCompatActivity(), KodeinAware {
 
     override fun onBackPressed() {
         when {
-            mainViewModel.stateManager.isMultiSelectionStateActive() -> mainViewModel.stateManager.setToolbarState(ToolbarState.NormalViewState)
+            mainViewModel.stateManager.isMultiSelectionStateActive() -> mainViewModel.stateManager.setToolbarState(
+                ToolbarState.NormalViewState
+            )
             searchView.onBackPressed() -> return
             else -> super.onBackPressed()
         }

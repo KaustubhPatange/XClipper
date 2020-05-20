@@ -16,5 +16,7 @@ interface MainRepository {
 
     fun getAllData(): List<Clip>
 
+    fun validateData(onComplete: (String) -> Unit)
+
     fun getAllLiveClip(): LiveData<List<Clip>>
 }

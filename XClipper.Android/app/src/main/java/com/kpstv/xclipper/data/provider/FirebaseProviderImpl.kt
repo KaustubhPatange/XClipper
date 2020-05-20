@@ -20,13 +20,16 @@ class FirebaseProviderImpl : FirebaseProvider {
     private val USER_REF = "users"
     private val CLIP_REF = "Clips"
 
-    private lateinit var user: User
+    private var user: User? = null
     private var validDevice: Boolean = false
     private var database: FirebaseDatabase = FirebaseDatabase.getInstance()
-
-    override fun isLicensed(): Boolean = if (::user.isInitialized) user.IsLicensed else false
+    override fun isLicensed(): Boolean =  user?.IsLicensed ?: false
 
     override fun isValidDevice(): Boolean = validDevice
+
+    override fun clearData() {
+        user = null
+    }
 
     override fun replaceData(oldClip: Clip, newClip: Clip) {
         workWithData {
@@ -54,10 +57,10 @@ class FirebaseProviderImpl : FirebaseProvider {
 
     private fun replace(oldClip: Clip, newClip: Clip) {
         /** Save data when clips are null */
-        if (user.Clips == null) {
+        if (user?.Clips == null) {
             saveData(newClip)
         } else {
-            val list = ArrayList(user.Clips!!.filter { it.data != oldClip.data })
+            val list = ArrayList(user?.Clips!!.filter { it.data != oldClip.data })
 
             list.add(newClip)
 
@@ -70,9 +73,9 @@ class FirebaseProviderImpl : FirebaseProvider {
     }
 
     private fun removeData(clips: List<Clip>) {
-        if (user.Clips == null) return
+        if (user?.Clips == null) return
 
-        val list = ArrayList(user.Clips!!)
+        val list = ArrayList(user?.Clips!!)
 
         Log.e(TAG, "Pre List Size: ${list.size}")
         val dataList = clips.map { it.data }
@@ -89,16 +92,16 @@ class FirebaseProviderImpl : FirebaseProvider {
             }
         }*/
 
-      //  list.removeAll(clips)
+        //  list.removeAll(clips)
 
         updateData(list)
     }
 
     private fun saveData(clip: Clip) {
-        val list: ArrayList<Clip> = if (user.Clips == null)
+        val list: ArrayList<Clip> = if (user?.Clips == null)
             ArrayList()
         else
-            ArrayList(user.Clips?.filter { it.data != clip.data }!!)
+            ArrayList(user?.Clips?.filter { it.data != clip.data }!!)
         val size = getMaxStorage(isLicensed())
 
         if (list.size >= size)
@@ -114,25 +117,36 @@ class FirebaseProviderImpl : FirebaseProvider {
         database.getReference(USER_REF).child(UID).child(CLIP_REF)
             .setValue(list.cloneToEntries()) { error, _ ->
                 if (error == null) {
-                    user.Clips = list
+                    user?.Clips = list
                     Log.e(TAG, "Firebase: Success")
                 } else
                     Log.e(TAG, "Error: ${error.message}")
             }
     }
 
+    override fun getAllClipData(block: (List<Clip>?) -> Unit) {
+        workWithData(ValidationContext.ForceInvoke) {
+            block.invoke(user?.Clips)
+        }
+    }
+
     /**
      * A common provider to execute some functions straightaway on
      * firebase database.
+     *
+     * @param validationContext Specify the context for invoking methods
      */
-    private fun workWithData(block: () -> Unit) {
+    private fun workWithData(
+        validationContext: ValidationContext = ValidationContext.Default,
+        block: () -> Unit
+    ) {
 
         /** This check will make sure that user can only update firebase database
          *  when following criteria satisfies
          */
-        if (!BindToFirebase) return
+        if (validationContext == ValidationContext.Default && !BindToFirebase) return
 
-        if (!::user.isInitialized) {
+        if (user == null) {
             database.getReference(USER_REF).child(UID)
                 .addListenerForSingleValueEvent(FValueEventListener(
                     onDataChange = { snap ->
@@ -161,7 +175,7 @@ class FirebaseProviderImpl : FirebaseProvider {
                     gson.fromJson(json, User::class.java).also { user = it }
 
                     // Check for device validation
-                    (user.Devices ?: ArrayList()).forEach { device ->
+                    (user?.Devices ?: ArrayList()).forEach { device ->
                         if (device.ID == DeviceID) validDevice = true
                     }
                     deviceValidated.invoke(validDevice)
@@ -174,5 +188,10 @@ class FirebaseProviderImpl : FirebaseProvider {
                     error.invoke(it.toException())
                 }
             ))
+    }
+
+    private enum class ValidationContext {
+        Default,
+        ForceInvoke
     }
 }

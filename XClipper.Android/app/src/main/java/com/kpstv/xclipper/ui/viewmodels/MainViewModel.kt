@@ -50,6 +50,10 @@ class MainViewModel(
         firebaseProvider.replaceData(oldClip, newClip)
     }
 
+    fun makeAValidationRequest(block: (String) -> Unit) {
+        repository.validateData(block)
+    }
+
     init {
 
         repository.getAllLiveClip().observeForever {
@@ -64,7 +68,7 @@ class MainViewModel(
             makeMySource(_clipLiveData.value, it, searchManager.searchString.value)
         }
 
-        mediatorLiveData.addSource(repository.getAllLiveClip()) {
+        mediatorLiveData.addSource(_clipLiveData) {
             makeMySource(it, searchManager.searchFilters.value, searchManager.searchString.value)
         }
     }

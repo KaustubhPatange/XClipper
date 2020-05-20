@@ -12,5 +12,7 @@ interface FirebaseProvider {
     fun replaceData(oldClip: Clip, newClip: Clip)
     fun deleteData(clip: Clip)
     fun deleteMultipleData(clips: List<Clip>)
+    fun clearData()
+    fun getAllClipData(block: (List<Clip>?) -> Unit)
     fun observeDataChange(changed: (User?) -> Unit, error: (Exception) -> Unit, deviceValidated: (Boolean) -> Unit)
 }

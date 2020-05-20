@@ -2,16 +2,12 @@ package com.kpstv.xclipper.data.repository
 
 import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.kpstv.license.Decrypt
 import com.kpstv.xclipper.data.localized.ClipDataDao
 import com.kpstv.xclipper.data.model.Clip
-import com.kpstv.xclipper.data.model.User
 import com.kpstv.xclipper.data.provider.ClipProvider
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.extensions.Coroutines
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 class MainRepositoryImpl(
     private val clipdao: ClipDataDao,
@@ -48,6 +44,32 @@ class MainRepositoryImpl(
             }
         }
     }
+
+    override fun validateData(onComplete: (String) -> Unit) {
+        firebaseProvider.clearData()
+        firebaseProvider.getAllClipData {
+            if (it == null) {
+                onComplete.invoke("Error: Validation couldn't complete successfully")
+                return@getAllClipData
+            }
+
+            it.forEach { clip ->
+                saveClip(clip)
+            }
+
+            onComplete.invoke("Data validated successfully")
+        }
+    }
+
+
+/*    private fun safePush(clip: Clip) {
+        Coroutines.io {
+            val allClips = clipdao.getAllData()
+
+            if (allClips.count { secondaryClip -> clip.data?.Decrypt() == secondaryClip.data?.Decrypt() } <= 0)
+                clipdao.insert(clip)
+        }
+    }*/
 
     override fun updateClip(clip: Clip) {
         Coroutines.io {
