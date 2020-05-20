@@ -4,6 +4,9 @@
     <color name="colorPrimaryDark">#B11F66</color>
     <color name="colorAccent">#03DAC5</color>
 
+
+    <color name="colorCustomBlue">#05c1fd</color>
+
     <color name="colorCard">#313235</color>
     <color name="colorSelected">#404040</color>
 

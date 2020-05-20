@@ -2,29 +2,29 @@
 
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
     xmlns:grid="http://schemas.android.com/tools"
-    app:cardUseCompatPadding="true"
+    android:id="@+id/mainCard"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="5dp"
+    android:layout_marginEnd="5dp"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?selectableItemBackground"
-    android:id="@+id/mainCard"
-    app:cardElevation="0dp"
-    app:cardCornerRadius="7dp"
-    android:layout_marginStart="5dp"
-    android:layout_marginEnd="5dp"
     app:cardBackgroundColor="@android:color/transparent"
-    android:layout_height="wrap_content">
+    app:cardCornerRadius="7dp"
+    app:cardElevation="0dp"
+    app:cardUseCompatPadding="true">
 
     <LinearLayout
-        android:animateLayoutChanges="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
         android:orientation="vertical"
         android:paddingStart="10dp"
+        android:paddingTop="10dp"
         android:paddingEnd="10dp"
-        android:paddingBottom="5dp"
-        android:paddingTop="10dp">
+        android:paddingBottom="5dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layout1"
@@ -36,12 +36,12 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
-                android:maxLines="5"
-                android:ellipsize="end"
                 android:id="@+id/ci_textView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
+                android:ellipsize="end"
+                android:maxLines="5"
                 android:text="@string/testStringSmall"
                 android:textColor="@color/colorTextPrimary"
                 android:textSize="15sp"
@@ -51,13 +51,13 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?selectableItemBackground"
                 android:id="@+id/ci_copyButton"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:background="@android:color/transparent"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?selectableItemBackground"
                 android:padding="5dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_copy"
@@ -65,67 +65,74 @@
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-      <androidx.constraintlayout.widget.ConstraintLayout
-          android:layout_marginTop="7dp"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content">
-          <TextView
-              android:textColor="@color/colorSeparator"
-              android:id="@+id/ci_timeText"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_marginTop="5dp"
-              android:text="@string/timeString"
-              android:textSize="11sp"
-              app:layout_constraintBottom_toBottomOf="parent"
-              app:layout_constraintEnd_toEndOf="parent" />
-      </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="7dp">
+
+            <TextView
+                android:id="@+id/ci_timeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="@string/timeString"
+                android:textColor="@color/colorSeparator"
+                android:textSize="11sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
-            android:visibility="gone"
             android:id="@+id/hiddenLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:orientation="vertical"
-            app:layout_constraintStart_toStartOf="parent"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ci_timeText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ci_timeText">
+
             <View
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
-                android:background="@color/colorSeparator"/>
+                android:background="@color/colorSeparator" />
 
             <GridLayout
-                android:layout_marginTop="5dp"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:columnCount="3"
-                android:rowCount="1"
-                android:layout_height="wrap_content">
+                android:rowCount="1">
+
                 <Button
                     android:id="@+id/ci_btn_edit"
-                    android:foreground="?selectableItemBackground"
-                    android:layout_columnWeight="1"
-                    grid:layout_columnWeight="1"
                     style="@style/ButtonStyle"
+                    android:layout_columnWeight="1"
                     android:drawableTop="@drawable/ic_edit"
-                    android:text="@string/edit"/>
-                <Button
-                    android:id="@+id/ci_btn_delete"
                     android:foreground="?selectableItemBackground"
-                    android:layout_columnWeight="1"
-                    grid:layout_columnWeight="1"
+                    android:text="@string/edit"
+                    grid:layout_columnWeight="1" />
+
+                <!-- TODO: Find a good icon for Special/More button -->
+
+                <Button
+                    android:id="@+id/ci_btn_special"
                     style="@style/ButtonStyle"
-                    android:drawableTop="@drawable/ic_delete"
-                    android:text="@string/delete"/>
+                    android:layout_columnWeight="1"
+                    android:drawableTop="@drawable/ic_special"
+                    android:foreground="?selectableItemBackground"
+                    android:text="@string/more"
+                    grid:layout_columnWeight="1" />
+
                 <Button
                     android:id="@+id/ci_btn_share"
-                    android:foreground="?selectableItemBackground"
-                    android:layout_columnWeight="1"
-                    grid:layout_columnWeight="1"
                     style="@style/ButtonStyle"
+                    android:layout_columnWeight="1"
                     android:drawableTop="@drawable/ic_share"
-                    android:text="@string/share"/>
+                    android:foreground="?selectableItemBackground"
+                    android:text="@string/share"
+                    grid:layout_columnWeight="1" />
             </GridLayout>
 
         </LinearLayout>

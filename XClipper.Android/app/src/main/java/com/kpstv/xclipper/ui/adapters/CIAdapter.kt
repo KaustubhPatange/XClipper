@@ -5,13 +5,12 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
-import android.view.animation.ScaleAnimation
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.license.Decrypt
 import com.kpstv.xclipper.R
@@ -25,12 +24,16 @@ class CIAdapter(
     private val context: Context,
     private val multiSelectionState: LiveData<Boolean>,
     private val selectedItem: LiveData<Clip>,
-    var list: ArrayList<Clip> = ArrayList(),
+
     private val onClick: (Clip, Int) -> Unit,
     private val onLongClick: (Clip, Int) -> Unit,
     private val selectedClips: LiveData<ArrayList<Clip>>
-) :
-    RecyclerView.Adapter<CIAdapter.MainHolder>() {
+) : ListAdapter<Clip, CIAdapter.MainHolder>(DiffCallback())
+ {
+     class DiffCallback : DiffUtil.ItemCallback<Clip>() {
+         override fun areItemsTheSame(oldItem: Clip, newItem: Clip): Boolean = oldItem.data?.Decrypt() == newItem.data?.Decrypt()
+         override fun areContentsTheSame(oldItem: Clip, newItem: Clip): Boolean = oldItem == newItem
+     }
 
     private val TAG = javaClass.simpleName
 
@@ -45,7 +48,7 @@ class CIAdapter(
 
     override fun onBindViewHolder(holder: MainHolder, position: Int) {
 
-        val clip = list[position]
+        val clip = getItem(position)
 
         holder.itemView.ci_textView.text = clip.data?.Decrypt()
 
@@ -67,7 +70,7 @@ class CIAdapter(
         }
         holder.itemView.ci_copyButton.setOnClickListener { copyClick.invoke(clip, position) }
         holder.itemView.ci_btn_edit.setOnClickListener { menuClick.invoke(clip, position, MENU_TYPE.Edit) }
-        holder.itemView.ci_btn_delete.setOnClickListener { menuClick.invoke(clip, position, MENU_TYPE.Delete) }
+        holder.itemView.ci_btn_special.setOnClickListener { menuClick.invoke(clip, position, MENU_TYPE.Special) }
         holder.itemView.ci_btn_share.setOnClickListener { menuClick.invoke(clip, position, MENU_TYPE.Share) }
 
         selectedItem.observe(context as LifecycleOwner, Observer {
@@ -105,6 +108,11 @@ class CIAdapter(
         })
     }
 
+     override fun submitList(list: MutableList<Clip>?) {
+         super.submitList(list)
+
+     }
+
     fun setCopyClick(block : (Clip, Int) -> Unit) {
         this.copyClick = block;
     }
@@ -113,20 +121,17 @@ class CIAdapter(
         this.menuClick = block;
     }
 
-    fun submitList(list: ArrayList<Clip>) {
+   /* fun submitList(list: ArrayList<Clip>) {
         this.list = list
         notifyDataSetChanged()
-    }
-
-    override fun getItemViewType(position: Int): Int {
-        return position
-    }
-
-    override fun getItemCount(): Int = list.size
+    }*/
 
     enum class MENU_TYPE {
-        Edit, Delete, Share
+        Edit, Special, Share
     }
 
     class MainHolder(view: View) : RecyclerView.ViewHolder(view)
+
+
 }
+

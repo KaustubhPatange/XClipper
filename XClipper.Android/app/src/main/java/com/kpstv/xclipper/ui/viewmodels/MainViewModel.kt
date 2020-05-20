@@ -7,6 +7,7 @@ import com.kpstv.license.Decrypt
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.repository.MainRepository
+import com.kpstv.xclipper.extensions.Status
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.log
@@ -50,7 +51,7 @@ class MainViewModel(
         firebaseProvider.replaceData(oldClip, newClip)
     }
 
-    fun makeAValidationRequest(block: (String) -> Unit) {
+    fun makeAValidationRequest(block: (Status) -> Unit) {
         repository.validateData(block)
     }
 

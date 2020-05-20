@@ -2,6 +2,7 @@ package com.kpstv.xclipper.data.repository
 
 import androidx.lifecycle.LiveData
 import com.kpstv.xclipper.data.model.Clip
+import com.kpstv.xclipper.extensions.Status
 
 interface MainRepository {
     fun saveClip(clip: Clip?)
@@ -16,7 +17,7 @@ interface MainRepository {
 
     fun getAllData(): List<Clip>
 
-    fun validateData(onComplete: (String) -> Unit)
+    fun validateData(onComplete: (Status) -> Unit)
 
     fun getAllLiveClip(): LiveData<List<Clip>>
 }

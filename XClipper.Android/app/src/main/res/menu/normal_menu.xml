@@ -2,15 +2,27 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item android:id="@+id/action_sync"
+
+    <item
+        android:id="@+id/action_sync"
         android:icon="@drawable/ic_sync"
         android:title="@string/sync"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_search"
         android:icon="@drawable/ic_search"
         android:title="@string/search"
-        app:showAsAction="always"/>
+        app:showAsAction="always" />
+<!--
+    <item
+        android:id="@+id/action_help"
+        android:title="@string/help"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_faq"
+        android:title="@string/faqs"
+        app:showAsAction="never" />-->
 
 </menu>

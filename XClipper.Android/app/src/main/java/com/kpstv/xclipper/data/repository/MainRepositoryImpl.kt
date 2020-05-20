@@ -8,6 +8,7 @@ import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.provider.ClipProvider
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.extensions.Coroutines
+import com.kpstv.xclipper.extensions.Status
 
 class MainRepositoryImpl(
     private val clipdao: ClipDataDao,
@@ -45,11 +46,17 @@ class MainRepositoryImpl(
         }
     }
 
-    override fun validateData(onComplete: (String) -> Unit) {
+    /**
+     * TODO: There is a wrong insertion of data
+     *
+     * Since save clip function does work on separate thread, synchronization
+     * between these threads on quick insertion is creating uneven insertions.
+     */
+    override fun validateData(onComplete: (Status) -> Unit) {
         firebaseProvider.clearData()
         firebaseProvider.getAllClipData {
             if (it == null) {
-                onComplete.invoke("Error: Validation couldn't complete successfully")
+                onComplete.invoke(Status.Error)
                 return@getAllClipData
             }
 
@@ -57,7 +64,7 @@ class MainRepositoryImpl(
                 saveClip(clip)
             }
 
-            onComplete.invoke("Data validated successfully")
+            onComplete.invoke(Status.Success)
         }
     }
 

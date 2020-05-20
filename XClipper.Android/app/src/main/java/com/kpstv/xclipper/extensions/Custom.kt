@@ -19,6 +19,11 @@ class FValueEventListener(
     override fun onCancelled(error: DatabaseError) = onError.invoke(error)
 }
 
+enum class Status {
+    Success,
+    Error
+}
+
 /*class OnSearchViewListener(
     val onSubmit: ((String) -> Unit)?,
     val onChange: ((String) -> Unit)?

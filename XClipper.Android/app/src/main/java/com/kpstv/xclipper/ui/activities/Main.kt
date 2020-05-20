@@ -25,6 +25,7 @@ import com.kpstv.xclipper.App.UNDO_DELETE_SPAN
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.ToolbarState
 import com.kpstv.xclipper.data.model.Clip
+import com.kpstv.xclipper.extensions.Status
 import com.kpstv.xclipper.extensions.Utils.Companion.shareText
 import com.kpstv.xclipper.extensions.cloneForAdapter
 import com.kpstv.xclipper.extensions.setOnQueryTextListener
@@ -62,8 +63,6 @@ class Main : AppCompatActivity(), KodeinAware {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        swipeRefreshLayout.isEnabled = false
 
         setRecyclerView()
 
@@ -146,8 +145,9 @@ class Main : AppCompatActivity(), KodeinAware {
                         this, mainViewModel
                     ).show(clip)
                 }
-                CIAdapter.MENU_TYPE.Delete -> {
-                    performUndoDelete(clip, i)
+                CIAdapter.MENU_TYPE.Special -> {
+                    // TODO: Implement this special menu
+                    //performUndoDelete(clip, i)
                 }
                 CIAdapter.MENU_TYPE.Share -> {
                     shareText(this, clip)
@@ -169,7 +169,7 @@ class Main : AppCompatActivity(), KodeinAware {
         toolbar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.action_selectAll -> {
-                    mainViewModel.stateManager.addAllToSelectedList(adapter.list)
+                    mainViewModel.stateManager.addAllToSelectedList(ArrayList(adapter.currentList))
                 }
                 R.id.action_selectNone -> {
                     mainViewModel.stateManager.clearSelectedList()
@@ -197,7 +197,8 @@ class Main : AppCompatActivity(), KodeinAware {
     }
 
     private fun deleteAllWithUndo() {
-        val totalItems = ArrayList(adapter.list)
+        val totalItems = ArrayList(adapter.currentList)
+        val tweakItems = ArrayList(totalItems)
         val itemsToRemove = mainViewModel.stateManager.selectedItemClips.value!!
         val size = itemsToRemove.size
 
@@ -208,8 +209,8 @@ class Main : AppCompatActivity(), KodeinAware {
         if (size > 0)
             mainViewModel.stateManager.setToolbarState(ToolbarState.NormalViewState)
 
-        adapter.list.removeAll(itemsToRemove)
-        adapter.notifyDataSetChanged()
+        tweakItems.removeAll(itemsToRemove)
+        adapter.submitList(tweakItems)
 
         Snackbar.make(
             ci_recyclerView,
@@ -217,7 +218,7 @@ class Main : AppCompatActivity(), KodeinAware {
             Snackbar.LENGTH_SHORT
         ).setAction(getString(R.string.undo)) {
             task.cancel()
-            adapter.list = totalItems
+            adapter.submitList(totalItems)
             adapter.notifyDataSetChanged()
         }.show()
     }
@@ -286,7 +287,10 @@ class Main : AppCompatActivity(), KodeinAware {
                 mainViewModel.makeAValidationRequest {
                     isEnabled = true
                     this.clearAnimation()
-                    Toast.makeText(this@Main, it, Toast.LENGTH_SHORT).show()
+                    if (it == Status.Success)
+                        Toast.makeText(this@Main, getString(R.string.sync_complete), Toast.LENGTH_SHORT).show()
+                    else
+                        Toast.makeText(this@Main, getString(R.string.error_sync), Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -296,6 +300,8 @@ class Main : AppCompatActivity(), KodeinAware {
 
 
     /**
+     * TODO: Remove this function if unused
+     *
      * This function will perform undo delete whenever item has been deleted from
      * expanded menu.
      */
@@ -304,7 +310,7 @@ class Main : AppCompatActivity(), KodeinAware {
             mainViewModel.deleteFromRepository(clip)
         }
 
-        val list = adapter.list.removeAt(i)
+        val list = adapter.currentList.removeAt(i)
         adapter.notifyItemRemoved(i)
 
         Snackbar.make(
@@ -314,7 +320,7 @@ class Main : AppCompatActivity(), KodeinAware {
         )
             .setAction(getString(R.string.undo)) {
                 task.cancel()
-                adapter.list.add(i, list)
+                adapter.currentList.add(i, list)
                 adapter.notifyItemInserted(i)
             }.show()
     }
@@ -338,10 +344,12 @@ class Main : AppCompatActivity(), KodeinAware {
 
 
     /**
+     * TODO: Remove this function if unused
+     *
      * This function will handle the expanded menu logic
      */
     private fun expandMenuLogic(model: Clip, pos: Int) {
-        for ((i, e) in adapter.list.withIndex()) {
+        for ((i, e) in adapter.currentList.withIndex()) {
             if (i != pos && e.toDisplay) {
                 e.toDisplay = false
                 adapter.notifyItemChanged(i)

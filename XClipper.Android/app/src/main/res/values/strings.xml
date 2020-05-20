@@ -22,4 +22,9 @@
     <string name="error_empty_text">Warning: Empty or same text to update</string>
     <string name="search">Search</string>
     <string name="sync">Sync</string>
+    <string name="sync_complete">Data synchronization complete</string>
+    <string name="error_sync">Couldn\'t validate data</string>
+    <string name="help">Help</string>
+    <string name="faqs">FAQs</string>
+    <string name="more">More</string>
 </resources>
