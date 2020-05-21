@@ -9,7 +9,7 @@ interface MainRepository {
 
     fun processClipAndSave(clip: Clip?)
 
-    fun updateClip(clip: Clip)
+    fun updateClip(clip: Clip?)
 
     fun deleteClip(clip: Clip)
 

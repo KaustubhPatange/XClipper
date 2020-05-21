@@ -2,18 +2,19 @@ package com.kpstv.xclipper.ui.adapters
 
 import android.content.Context
 import android.graphics.Color
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.view.children
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.flexbox.FlexboxLayout
 import com.kpstv.license.Decrypt
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.Clip
@@ -21,6 +22,7 @@ import com.kpstv.xclipper.data.model.ClipTag
 import com.kpstv.xclipper.extensions.hide
 import com.kpstv.xclipper.extensions.show
 import kotlinx.android.synthetic.main.content_item.view.*
+import java.util.*
 
 
 class CIAdapter(
@@ -60,25 +62,7 @@ class CIAdapter(
 
         holder.itemView.ci_timeText.text = clip.timeString
 
-        /*  if (clip.toDisplay) {
-              holder.itemView.mainCard.setCardBackgroundColor(CARD_COLOR)
-              holder.itemView.hiddenLayout.visibility = View.VISIBLE
-          } else {
-              holder.itemView.mainCard.setCardBackgroundColor(Color.TRANSPARENT)
-              holder.itemView.hiddenLayout.visibility = View.GONE
-          }*/
-
-
-        clip.tags?.forEach {
-            if (it.key != ClipTag.EMPTY) {
-                val view = LayoutInflater.from(context)
-                    .inflate(R.layout.item_tag, null) as TextView
-                view.text = it.key.name.toLowerCase()
-                holder.itemView.ci_tagLayout.addView(
-                    view
-                )
-            }
-        }
+        setTags(holder.itemView, clip)
 
         holder.itemView.mainCard.setOnLongClickListener {
             onLongClick.invoke(clip, position)
@@ -149,9 +133,28 @@ class CIAdapter(
         })
     }
 
-    override fun submitList(list: MutableList<Clip>?) {
-        super.submitList(list)
+    private fun setTags(view: View, clip: Clip) {
+        view.ci_tagLayout.removeAllViews()
+        clip.tags?.forEach mainLoop@{ entry ->
+            if (entry.key != ClipTag.EMPTY) {
 
+                val textView = LayoutInflater.from(context)
+                    .inflate(R.layout.item_tag, null) as TextView
+                val layoutParams = FlexboxLayout.LayoutParams(
+                    FlexboxLayout.LayoutParams.WRAP_CONTENT,
+                    FlexboxLayout.LayoutParams.WRAP_CONTENT
+                )
+
+                layoutParams.topMargin = 2
+                layoutParams.bottomMargin = 2
+                layoutParams.marginEnd = 5
+                layoutParams.marginStart = 5
+                textView.layoutParams = layoutParams
+                textView.text = entry.key.name.toLowerCase(Locale.getDefault())
+
+                view.ci_tagLayout.addView(textView)
+            }
+        }
     }
 
     fun setCopyClick(block: (Clip, Int) -> Unit) {

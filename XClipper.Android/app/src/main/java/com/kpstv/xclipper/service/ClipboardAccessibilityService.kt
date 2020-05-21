@@ -100,7 +100,7 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
         firebaseProvider.observeDataChange(
             changed = {
                 if (observeFirebase)
-                    repository.processClipAndSave(it?.Clips?.last())
+                    repository.updateClip(it?.Clips?.last())
                 Log.e(TAG, "User has changed")
             },
             error = {

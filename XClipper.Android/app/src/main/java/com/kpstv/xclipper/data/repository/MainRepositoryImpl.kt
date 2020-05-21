@@ -18,6 +18,7 @@ class MainRepositoryImpl(
 
     private val TAG = javaClass.simpleName
     private val lock = Any()
+    private val lock1 = Any()
 
     init {
         /*clipdao.getAllLiveData().observeForever {
@@ -61,26 +62,45 @@ class MainRepositoryImpl(
             }
 
             it.forEach { clip ->
-                processClipAndSave(clip)
+                updateClip(clip)
             }
 
             onComplete.invoke(Status.Success)
         }
     }
 
+    /**
+     * This method will either update the clip or insert the clip.
+     *
+     * When the data is coming from firebase saving it directly i.e overwriting it
+     * might loose our existing custom tags on it. So this approach only updates
+     * data & time with the existing clip in database.
+     *
+     * If it does not exist then we will process and save it.
+     *
+     * @param Clip A clip which is contains encrypted data and no tags (usually coming from firebase).
+     */
+    override fun updateClip(clip: Clip?) {
+        if (clip == null) return
 
-/*    private fun safePush(clip: Clip) {
         Coroutines.io {
-            val allClips = clipdao.getAllData()
+            /**
+             *  Synchronization is needed since, sometimes accessibility services automatically
+             *  try to update data twice.
+             */
+            synchronized(lock1) {
+                val allData = clipdao.getAllData()
 
-            if (allClips.count { secondaryClip -> clip.data?.Decrypt() == secondaryClip.data?.Decrypt() } <= 0)
-                clipdao.insert(clip)
-        }
-    }*/
-
-    override fun updateClip(clip: Clip) {
-        Coroutines.io {
-            clipdao.update(clip)
+                if (allData.isNotEmpty()) {
+                    val innerClip = allData.firstOrNull { it.data?.Decrypt() == clip.data?.Decrypt() }
+                    if (innerClip != null) {
+                        Log.e(TAG, "Update Clip Id: ${innerClip.id}")
+                        clipdao.update(innerClip.id!!, clip.data!!, clip.time!!)
+                        return@io
+                    }
+                }
+                processClipAndSave(clip)
+            }
         }
     }
 
