@@ -6,6 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.kpstv.xclipper.data.converters.DateConverter
+import com.kpstv.xclipper.data.converters.TagConverter
 import com.kpstv.xclipper.data.localized.ClipDataDao
 import com.kpstv.xclipper.data.model.Clip
 
@@ -17,7 +18,8 @@ import com.kpstv.xclipper.data.model.Clip
 )
 
 @TypeConverters(
-    DateConverter::class
+    DateConverter::class,
+    TagConverter::class
 )
 
 abstract class MainDatabase: RoomDatabase() {

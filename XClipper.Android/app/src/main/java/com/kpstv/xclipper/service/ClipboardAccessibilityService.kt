@@ -5,7 +5,6 @@ import android.accessibilityservice.AccessibilityServiceInfo
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.content.Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.os.Build
 import android.util.Log
@@ -101,7 +100,7 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
         firebaseProvider.observeDataChange(
             changed = {
                 if (observeFirebase)
-                    repository.saveClip(it?.Clips?.last())
+                    repository.processClipAndSave(it?.Clips?.last())
                 Log.e(TAG, "User has changed")
             },
             error = {

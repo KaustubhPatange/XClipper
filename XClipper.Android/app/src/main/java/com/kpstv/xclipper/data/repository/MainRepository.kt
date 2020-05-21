@@ -7,6 +7,8 @@ import com.kpstv.xclipper.extensions.Status
 interface MainRepository {
     fun saveClip(clip: Clip?)
 
+    fun processClipAndSave(clip: Clip?)
+
     fun updateClip(clip: Clip)
 
     fun deleteClip(clip: Clip)

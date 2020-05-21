@@ -61,7 +61,7 @@ class MainRepositoryImpl(
             }
 
             it.forEach { clip ->
-                saveClip(clip)
+                processClipAndSave(clip)
             }
 
             onComplete.invoke(Status.Success)
@@ -105,6 +105,12 @@ class MainRepositoryImpl(
 
     override fun getAllData(): List<Clip> {
         return clipdao.getAllData()
+    }
+
+    override fun processClipAndSave(clip: Clip?) {
+        clipProvider.processClip(clip?.data?.Decrypt())?.let { item ->
+            saveClip(item)
+        }
     }
 
     override fun updateRepository(data: String?) {

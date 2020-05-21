@@ -8,13 +8,15 @@ import com.kpstv.xclipper.data.converters.DateConverter
 import com.kpstv.xclipper.data.converters.DateFormatConverter
 import org.json.JSONObject
 import java.util.*
+import kotlin.collections.ArrayList
 
 @Entity(tableName = "table_clip")
 data class Clip (
     @PrimaryKey(autoGenerate = true)
     val id: Int? = null,
     val data: String?,
-    val time: Date?
+    val time: Date?,
+    var tags: Map<ClipTag, String>? = null
 ) {
     var toDisplay = false
     var timeString = "while ago"
@@ -39,4 +41,8 @@ data class ClipEntry (
             ClipEntry(data, DateConverter.fromDateToString(time))
         }
     }
+}
+
+enum class ClipTag {
+    PHONE, DATE, URL, EMAIL, EMPTY
 }
