@@ -17,11 +17,11 @@ object TagConverter {
 
     @TypeConverter
     @JvmStatic
-    fun fromTagToString(pairs: Map<ClipTag, String>?): String? {
+    fun fromTagToString(pairs: Map<String, String>?): String? {
         pairs?.let {
             return it.flatMap { pair ->
                 ArrayList<String>().apply {
-                    add("${pair.key.name}${PAIR_SEPARATOR}${pair.value}")
+                    add("${pair.key}${PAIR_SEPARATOR}${pair.value}")
                 }
             }.joinToString(separator = ITEM_SEPARATOR) { data -> data }
         }
@@ -30,14 +30,14 @@ object TagConverter {
 
     @TypeConverter
     @JvmStatic
-    fun toTagFromString(data: String?): Map<ClipTag, String>? {
+    fun toTagFromString(data: String?): Map<String, String>? {
         data?.let {
             return it.split(ITEM_SEPARATOR).associate { string ->
                val pair = string.split(PAIR_SEPARATOR)
-                if (!pair[0].isNullOrBlank())
-                    Pair(ClipTag.valueOf(pair[0]),pair[1])
+                if (!pair[0].isBlank())
+                    Pair(pair[0],pair[1])
                 else
-                    Pair(ClipTag.EMPTY,"")
+                    Pair("","")
             }
         }
         return null

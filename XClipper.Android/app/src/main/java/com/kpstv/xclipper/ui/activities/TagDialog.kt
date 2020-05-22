@@ -1,11 +1,9 @@
 package com.kpstv.xclipper.ui.activities
 
-import android.content.Context
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
@@ -20,7 +18,7 @@ import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.DialogState
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.extensions.Coroutines
-import com.kpstv.xclipper.extensions.collpase
+import com.kpstv.xclipper.extensions.collapse
 import com.kpstv.xclipper.extensions.show
 import com.kpstv.xclipper.ui.adapters.TagAdapter
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
@@ -99,7 +97,7 @@ class TagDialog : AppCompatActivity(), KodeinAware {
             when (state) {
                 DialogState.Normal -> {
                     dct_editLayout.dct_editText.text.clear()
-                    dct_editLayout.collpase()
+                    dct_editLayout.collapse()
                     switchCompat.isChecked = false
                 }
                 DialogState.Edit -> {

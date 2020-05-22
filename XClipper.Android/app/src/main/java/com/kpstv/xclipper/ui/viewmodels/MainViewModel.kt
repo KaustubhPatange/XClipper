@@ -128,9 +128,12 @@ class MainViewModel(
                         return@inner
                     }
                 }
-                /*tagFilter?.forEach inner@{ filter ->
-
-                }*/
+                tagFilter?.forEach inner@{ tag ->
+                    if (!clip.tags?.keys.isNullOrEmpty() && !clip.tags?.keys?.contains(tag.name)!!) {
+                        list.remove(clip)
+                        return@inner
+                    }
+                }
             }
 
             if (!searchText.isNullOrBlank()) {

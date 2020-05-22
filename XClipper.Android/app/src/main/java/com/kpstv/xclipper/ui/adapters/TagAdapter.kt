@@ -12,8 +12,11 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.DialogState
+import com.kpstv.xclipper.data.model.ClipTag
 import com.kpstv.xclipper.data.model.Tag
 import kotlinx.android.synthetic.main.tag_item.view.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 class TagAdapter(
     private val dialogState: LiveData<DialogState>,
@@ -45,8 +48,10 @@ class TagAdapter(
         chip.text = tag.name
 
         dialogState.observe(context as LifecycleOwner, Observer {
-            if (it == DialogState.Edit)
-                chip.isCloseIconVisible = true
+            if (it == DialogState.Edit) {
+                if (ClipTag.fromValue(tag.name.toUpperCase(Locale.ROOT)) == null)
+                    chip.isCloseIconVisible = true
+            }
             else if (it == DialogState.Normal)
                 chip.isCloseIconVisible = false
         })

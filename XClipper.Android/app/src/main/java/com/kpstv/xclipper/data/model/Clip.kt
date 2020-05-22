@@ -6,6 +6,7 @@ import androidx.room.TypeConverter
 import com.google.gson.JsonElement
 import com.kpstv.xclipper.data.converters.DateConverter
 import com.kpstv.xclipper.data.converters.DateFormatConverter
+import com.kpstv.xclipper.extensions.enumValueOrNull
 import org.json.JSONObject
 import java.util.*
 import kotlin.collections.ArrayList
@@ -16,7 +17,7 @@ data class Clip (
     val id: Int? = null,
     val data: String?,
     val time: Date?,
-    var tags: Map<ClipTag, String>? = null
+    var tags: Map<String, String>? = null
 ) {
     var toDisplay = false
     var timeString = "while ago"
@@ -40,9 +41,14 @@ data class ClipEntry (
         fun from(clip: Clip) : ClipEntry = with(clip) {
             ClipEntry(data, DateConverter.fromDateToString(time))
         }
+
     }
 }
 
 enum class ClipTag {
-    PHONE, DATE, URL, EMAIL, EMPTY
+    PHONE, DATE, URL, EMAIL, EMPTY;
+    companion object {
+        fun fromValue(text: String) =
+            enumValueOrNull<ClipTag>(text)
+    }
 }

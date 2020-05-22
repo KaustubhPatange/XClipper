@@ -35,10 +35,10 @@ class ClipProviderImpl : ClipProvider {
     }
 
    companion object {
-       fun determineTags(data: String?): Map<ClipTag, String> {
-           if (data.isNullOrBlank()) return EnumMap(ClipTag::class.java)
+       fun determineTags(data: String?): Map<String, String> {
+           if (data.isNullOrBlank()) return HashMap()
 
-           val map = HashMap<ClipTag, String>()
+           val map = HashMap<String, String>()
 
            patternAdder(PHONE_PATTERN_REGEX, data, ClipTag.PHONE, map)
            patternAdder(EMAIL_PATTERN_REGEX, data, ClipTag.EMAIL, map)
@@ -51,11 +51,11 @@ class ClipProviderImpl : ClipProvider {
            pattern: String,
            data: String,
            tag: ClipTag,
-           map: HashMap<ClipTag, String>
+           map: HashMap<String, String>
        ) {
            pattern.toRegex().let {
                if (it.containsMatchIn(data))
-                   map[tag] = it.find(data)?.value!!
+                   map[tag.name.toLowerCase(Locale.ROOT)] = it.find(data)?.value!!
            }
        }
    }

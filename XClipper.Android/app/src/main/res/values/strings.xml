@@ -27,6 +27,6 @@
     <string name="help">Help</string>
     <string name="faqs">FAQs</string>
     <string name="more">More</string>
-    <string name="tag">Tag</string>
-    <string name="custom_tags">Custom Tags</string>
+    <string name="tag">Filter Tag</string>
+    <string name="custom_tags">Filter Tags</string>
 </resources>

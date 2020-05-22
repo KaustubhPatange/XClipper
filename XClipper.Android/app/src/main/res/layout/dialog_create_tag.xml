@@ -42,8 +42,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/dct_editLayout"
-        android:visibility="gone"
         android:minHeight="40dp"
+        android:visibility="gone"
         android:background="?colorSelected"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -52,6 +52,8 @@
             android:imeOptions="actionSend"
             android:layout_marginStart="10dp"
             android:textSize="14sp"
+            android:textCursorDrawable="@null"
+            android:backgroundTint="@color/colorCustomBlue"
             android:fontFamily="@font/google_sans_regular"
             android:id="@+id/dct_editText"
             android:layout_width="0dp"

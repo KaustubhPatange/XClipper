@@ -136,7 +136,7 @@ class CIAdapter(
     private fun setTags(view: View, clip: Clip) {
         view.ci_tagLayout.removeAllViews()
         clip.tags?.forEach mainLoop@{ entry ->
-            if (entry.key != ClipTag.EMPTY) {
+            if (entry.key.isNotBlank()) {
 
                 val textView = LayoutInflater.from(context)
                     .inflate(R.layout.item_tag, null) as TextView
@@ -150,7 +150,7 @@ class CIAdapter(
                 layoutParams.marginEnd = 5
                 layoutParams.marginStart = 5
                 textView.layoutParams = layoutParams
-                textView.text = entry.key.name.toLowerCase(Locale.getDefault())
+                textView.text = entry.key
 
                 view.ci_tagLayout.addView(textView)
             }

@@ -124,6 +124,16 @@ fun <T> lazyDeferred(block: suspend CoroutineScope.() -> T): Lazy<Deferred<T>> {
     }
 }
 
+/**
+ * Basically checks if string is an enum of a particular class.
+ * If yes then returns the enum else null.
+ *
+ * Source: https://stackoverflow.com/a/41855007/10133501
+ */
+inline fun <reified T : Enum<T>> enumValueOrNull(name: String): T? {
+    return enumValues<T>().find { it.name == name }
+}
+
 fun Clip.clone(data: String): Clip {
     val clip = Clip(id, data, time)
     clip.timeString = timeString
@@ -139,6 +149,6 @@ fun View.show() {
     this.visibility = View.VISIBLE
 }
 
-fun View.collpase() {
+fun View.collapse() {
     this.visibility = View.GONE
 }

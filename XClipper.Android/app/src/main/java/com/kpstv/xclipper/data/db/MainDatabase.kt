@@ -5,12 +5,16 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.kpstv.xclipper.data.converters.DateConverter
 import com.kpstv.xclipper.data.converters.TagConverter
 import com.kpstv.xclipper.data.localized.ClipDataDao
 import com.kpstv.xclipper.data.localized.TagDao
 import com.kpstv.xclipper.data.model.Clip
+import com.kpstv.xclipper.data.model.ClipTag
 import com.kpstv.xclipper.data.model.Tag
+import java.util.*
+import java.util.concurrent.Executors
 
 @Database(
     entities = [
@@ -25,7 +29,7 @@ import com.kpstv.xclipper.data.model.Tag
     TagConverter::class
 )
 
-abstract class MainDatabase: RoomDatabase() {
+abstract class MainDatabase : RoomDatabase() {
     abstract fun clipMainDao(): ClipDataDao
     abstract fun clipTagDao(): TagDao
 
@@ -47,9 +51,29 @@ abstract class MainDatabase: RoomDatabase() {
                 MainDatabase::class.java,
                 "main.db"
             )
-              //  .allowMainThreadQueries()
+                .addCallback(roomCallback)
                 .fallbackToDestructiveMigration()
                 .fallbackToDestructiveMigrationOnDowngrade()
                 .build()
+
+        private val roomCallback = object : RoomDatabase.Callback() {
+            override fun onCreate(db: SupportSQLiteDatabase) {
+                super.onCreate(db)
+                Executors.newSingleThreadExecutor().execute {
+                    instance?.let { database ->
+                        with(database.clipTagDao()) {
+                            ClipTag.values().forEach {
+                                if (it != ClipTag.EMPTY)
+                                    insert(Tag.from(it.name.toLowerCase(Locale.ROOT)))
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+        /* End of companion object */
     }
+
 }

@@ -11,7 +11,10 @@ class TagRepositoryImpl(
 
     override fun insertTag(tag: Tag) {
         Coroutines.io {
-            tagDao.insert(tag)
+            val allData = tagDao.getAllData()
+
+            if (allData.count { it.name == tag.name } <= 0)
+                tagDao.insert(tag)
         }
     }
 
