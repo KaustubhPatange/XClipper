@@ -1,7 +1,12 @@
 package com.kpstv.xclipper.ui.activities
 
+import android.content.Context
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import androidx.lifecycle.Observer
@@ -26,8 +31,6 @@ import kotlinx.coroutines.delay
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.kodein
 import org.kodein.di.generic.instance
-import java.util.*
-import kotlin.concurrent.schedule
 
 
 class TagDialog : AppCompatActivity(), KodeinAware {
@@ -41,6 +44,7 @@ class TagDialog : AppCompatActivity(), KodeinAware {
 
     private lateinit var adapter: TagAdapter
     private val TAG = javaClass.simpleName
+    private lateinit var switchCompat: SwitchCompat
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,13 +55,21 @@ class TagDialog : AppCompatActivity(), KodeinAware {
 
         setRecyclerView()
 
-        btn_send.setOnClickListener {
-            if (dct_editText.text.isNotBlank()) {
-                mainViewModel.postToTagRepository(Tag.from(dct_editText.text.toString()))
-                dct_editText.text.clear()
+        dct_editText.setOnEditorActionListener(object: TextView.OnEditorActionListener {
+            override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
+                if (actionId == EditorInfo.IME_ACTION_SEND) {
+                    sendButton()
+                    return true;
+                }
+                return false
             }
+
+        })
+        btn_send.setOnClickListener {
+            sendButton()
         }
     }
+
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
@@ -70,9 +82,16 @@ class TagDialog : AppCompatActivity(), KodeinAware {
         }
     }
 
+    private fun sendButton() {
+        if (dct_editText.text.isNotBlank()) {
+            mainViewModel.postToTagRepository(Tag.from(dct_editText.text.trim().toString()))
+            dct_editText.text.clear()
+        }
+    }
 
     private fun bindUI() {
         mainViewModel.tagLiveData.observe(this, Observer {
+            if (it.isEmpty()) mainViewModel.stateManager.setDialogState(DialogState.Edit)
             adapter.submitList(it)
         })
 
@@ -81,10 +100,13 @@ class TagDialog : AppCompatActivity(), KodeinAware {
                 DialogState.Normal -> {
                     dct_editLayout.dct_editText.text.clear()
                     dct_editLayout.collpase()
+                    switchCompat.isChecked = false
                 }
                 DialogState.Edit -> {
                     dct_editLayout.isEnabled = true
                     dct_editLayout.show()
+                    switchCompat.isChecked = true
+                    dct_editText.requestFocus()
                 }
                 else -> {
                     // TODO: When exhaustive
@@ -101,7 +123,7 @@ class TagDialog : AppCompatActivity(), KodeinAware {
 
         toolbar.inflateMenu(R.menu.dct_menu)
 
-        val switchCompat =
+        switchCompat =
             LayoutInflater.from(this).inflate(R.layout.switch_layout, null) as SwitchCompat
         switchCompat.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked)
@@ -118,7 +140,6 @@ class TagDialog : AppCompatActivity(), KodeinAware {
         layoutManager.flexDirection = FlexDirection.ROW
         layoutManager.justifyContent = JustifyContent.FLEX_START
         dct_recycler_view.layoutManager = layoutManager
-
 
         adapter = TagAdapter(
             dialogState = mainViewModel.stateManager.dialogState,

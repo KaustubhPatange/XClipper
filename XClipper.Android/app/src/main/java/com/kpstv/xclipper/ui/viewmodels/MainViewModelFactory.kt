@@ -7,6 +7,9 @@ import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.data.repository.TagRepository
 
+/**
+ * This factory will return only one instance of viewModel
+ */
 class MainViewModelFactory(
     private val application: Application,
     private val mainRepository: MainRepository,
@@ -16,7 +19,7 @@ class MainViewModelFactory(
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
-            val key = "UserProfileViewModel"
+            val key = "MainViewModel"
             return if(hashMapViewModel.containsKey(key)){
                 getViewModel(key) as T
             } else {
@@ -25,7 +28,6 @@ class MainViewModelFactory(
             }
         }
         throw IllegalArgumentException("Unknown ViewModel class")
-      //  return MainViewModel(application, mainRepository, tagRepository, firebaseProvider) as T
     }
 
 

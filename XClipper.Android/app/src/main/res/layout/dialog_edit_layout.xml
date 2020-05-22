@@ -10,17 +10,37 @@
         android:layout_height="wrap_content"
         android:background="?colorPrimary" />
 
-    <EditText
-        android:id="@+id/de_editText"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?colorForeground"
-        android:gravity="top"
-        android:maxLines="15"
-        android:minLines="7"
-        android:padding="10dp"
-        android:textColor="#ffffff"
-        android:textSize="14sp" />
+        android:orientation="vertical">
+        <com.kpstv.xclipper.extensions.CustomRecyclerView
+            android:paddingTop="10dp"
+            android:id="@+id/del_recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?colorSeparator"/>
+
+        <EditText
+            android:layout_marginTop="10dp"
+            android:id="@+id/de_editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:gravity="top"
+            android:maxLines="15"
+            android:minLines="7"
+            android:padding="10dp"
+            android:textColor="#ffffff"
+            android:textSize="14sp" />
+
+
+    </LinearLayout>
 
    <!-- <LinearLayout
         android:background="@color/colorCard"

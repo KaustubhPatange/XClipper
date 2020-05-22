@@ -115,7 +115,10 @@
                 android:layout_height="1dp"
                 android:background="@color/colorSeparator" />
 
-            <GridLayout
+            <!-- I could've used gridlayout. But for some reason it's not working on
+                 api level below 22.
+             -->
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
@@ -123,6 +126,10 @@
                 android:rowCount="1">
 
                 <Button
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/ci_btn_special"
                     android:id="@+id/ci_btn_edit"
                     style="@style/ButtonStyle"
                     android:layout_columnWeight="1"
@@ -134,6 +141,10 @@
                 <!-- TODO: Find a good icon for Special/More button -->
 
                 <Button
+                    app:layout_constraintStart_toEndOf="@id/ci_btn_edit"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/ci_btn_share"
                     android:id="@+id/ci_btn_special"
                     style="@style/ButtonStyle"
                     android:layout_columnWeight="1"
@@ -143,6 +154,10 @@
                     grid:layout_columnWeight="1" />
 
                 <Button
+                    app:layout_constraintStart_toEndOf="@id/ci_btn_special"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     android:id="@+id/ci_btn_share"
                     style="@style/ButtonStyle"
                     android:layout_columnWeight="1"
@@ -150,7 +165,7 @@
                     android:foreground="?selectableItemBackground"
                     android:text="@string/share"
                     grid:layout_columnWeight="1" />
-            </GridLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
     </LinearLayout>
