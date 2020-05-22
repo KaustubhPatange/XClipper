@@ -1,6 +1,7 @@
 package com.kpstv.xclipper.ui.viewmodels
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
@@ -83,21 +84,27 @@ class MainViewModel(
         }
 
         mediatorLiveData.addSource(searchManager.searchString) {
-            makeMySource(_clipLiveData.value, searchManager.searchFilters.value, it)
+            makeMySource(_clipLiveData.value, searchManager.searchFilters.value, searchManager.tagFilters.value, it)
+        }
+
+        mediatorLiveData.addSource(searchManager.tagFilters) {
+            Log.e(TAG, "Tag Updated: $it")
+            makeMySource(_clipLiveData.value, searchManager.searchFilters.value, it,searchManager.searchString.value)
         }
 
         mediatorLiveData.addSource(searchManager.searchFilters) {
-            makeMySource(_clipLiveData.value, it, searchManager.searchString.value)
+            makeMySource(_clipLiveData.value, it, searchManager.tagFilters.value, searchManager.searchString.value)
         }
 
         mediatorLiveData.addSource(_clipLiveData) {
-            makeMySource(it, searchManager.searchFilters.value, searchManager.searchString.value)
+            makeMySource(it, searchManager.searchFilters.value, searchManager.tagFilters.value, searchManager.searchString.value)
         }
     }
 
     private fun makeMySource(
         mainList: List<Clip>?,
         searchFilter: ArrayList<String>?,
+        tagFilter: ArrayList<Tag>?,
         searchText: String?
     ) {
         if (mainList != null) {
@@ -112,6 +119,9 @@ class MainViewModel(
                         return@inner
                     }
                 }
+                /*tagFilter?.forEach inner@{ filter ->
+
+                }*/
             }
 
             if (!searchText.isNullOrBlank()) {

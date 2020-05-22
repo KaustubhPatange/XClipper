@@ -1,5 +1,6 @@
 package com.kpstv.xclipper.ui.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,8 +17,12 @@ import kotlinx.android.synthetic.main.tag_item.view.*
 
 class TagAdapter(
     private val dialogState: LiveData<DialogState>,
+    private val tagFilter: LiveData<ArrayList<Tag>>,
+    private val onCloseClick: (Tag, Int) -> Unit,
     private val onClick: (Tag, Int) -> Unit
 ) : ListAdapter<Tag, TagAdapter.TagHolder>(DiffCallback()) {
+
+    private val TAG = javaClass.simpleName
 
     class DiffCallback : DiffUtil.ItemCallback<Tag>() {
         override fun areItemsTheSame(oldItem: Tag, newItem: Tag): Boolean =
@@ -45,9 +50,18 @@ class TagAdapter(
             else if (it == DialogState.Normal)
                 chip.isCloseIconVisible = false
         })
+
+        tagFilter.observe(context as LifecycleOwner, Observer {
+            if (it.contains(tag)) {
+                Log.e(TAG, "Ola Found tag: $tag")
+            }
+            chip.isChipIconVisible = it.contains(tag)
+        })
+
         chip.setOnCloseIconClickListener {
-            onClick.invoke(tag, layoutPosition)
+            onCloseClick.invoke(tag, layoutPosition)
         }
+        chip.setOnClickListener { onClick.invoke(tag, layoutPosition) }
     }
 
     class TagHolder(view: View) : RecyclerView.ViewHolder(view)

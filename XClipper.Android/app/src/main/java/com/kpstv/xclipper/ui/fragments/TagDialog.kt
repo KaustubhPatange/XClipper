@@ -2,7 +2,6 @@ package com.kpstv.xclipper.ui.fragments
 
 import android.app.Dialog
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.app.AlertDialog
@@ -10,7 +9,6 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
@@ -25,7 +23,8 @@ import kotlinx.android.synthetic.main.dialog_create_tag.view.*
 
 
 class TagDialog(
-    private val viewModel: MainViewModel
+    private val viewModel: MainViewModel,
+    private val onItemClick: (Tag) -> Unit
 ) : DialogFragment() {
 
     private lateinit var adapter: TagAdapter
@@ -58,12 +57,12 @@ class TagDialog(
 
     private fun bindUI(view: View) = with(view) {
         viewModel.tagLiveData.observe(context as LifecycleOwner, Observer {
-            Log.e(TAG, "List Size: ${it.size}")
+           // Log.e(TAG, "List Size: ${it.size}")
             adapter.submitList(it)
         })
 
         viewModel.stateManager.dialogState.observe(context as LifecycleOwner, Observer { state ->
-            when(state) {
+            when (state) {
                 DialogState.Normal -> {
                     dct_editLayout.dct_editText.text.clear()
                     dct_editLayout.collpase()
@@ -106,9 +105,18 @@ class TagDialog(
         dct_recycler_view.layoutManager = layoutManager
 
 
-        adapter = TagAdapter(viewModel.stateManager.dialogState) { tag, _ ->
-            viewModel.deleteFromTagRepository(tag)
-        }
+        adapter = TagAdapter(
+            dialogState = viewModel.stateManager.dialogState,
+            tagFilter = viewModel.searchManager.tagFilters,
+            onCloseClick = { tag, _ ->
+                viewModel.deleteFromTagRepository(tag)
+            },
+            onClick = { tag, _ ->
+                onItemClick.invoke(tag)
+                viewModel.searchManager.addTagFilter(tag)
+                dismiss()
+            }
+        )
         dct_recycler_view.adapter = adapter
     }
 

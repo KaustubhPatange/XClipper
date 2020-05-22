@@ -13,6 +13,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.children
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,6 +22,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.kpstv.license.Decrypt
 import com.kpstv.xclipper.App.BLANK_STRING
 import com.kpstv.xclipper.App.CLIP_DATA
+import com.kpstv.xclipper.App.TAG_FILTER_CHIP
 import com.kpstv.xclipper.App.UNDO_DELETE_SPAN
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.ToolbarState
@@ -182,9 +184,29 @@ class Main : AppCompatActivity(), KodeinAware {
                     searchView.showSearch(true)
                 }
                 R.id.action_tag -> {
-                    TagDialog(
-                        mainViewModel
-                    ).show(supportFragmentManager,"blank")
+                    TagDialog(mainViewModel) { tag ->
+                        if (ci_chip_group.children.count { view ->
+                                if (view is Chip)
+                                    view.tag == TAG_FILTER_CHIP && view.text == tag.name
+                                else
+                                    false
+                            } <= 0) {
+                            ci_chip_group.addView(
+                                Chip(this).apply {
+                                    text = tag.name
+                                    setTag(TAG_FILTER_CHIP)
+                                    chipIcon =
+                                        ContextCompat.getDrawable(this@Main, R.drawable.ic_tag)
+                                    isCloseIconVisible = true
+                                    setOnCloseIconClickListener { chip ->
+                                        ci_chip_group.removeView(chip)
+                                        mainViewModel.searchManager.removeTagFilter(tag)
+                                    }
+                                }
+                            )
+                        }
+
+                    }.show(supportFragmentManager, "blank")
                 }
             }
             true
@@ -294,9 +316,17 @@ class Main : AppCompatActivity(), KodeinAware {
                     isEnabled = true
                     this.clearAnimation()
                     if (it == Status.Success)
-                        Toast.makeText(this@Main, getString(R.string.sync_complete), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this@Main,
+                            getString(R.string.sync_complete),
+                            Toast.LENGTH_SHORT
+                        ).show()
                     else
-                        Toast.makeText(this@Main, getString(R.string.error_sync), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this@Main,
+                            getString(R.string.error_sync),
+                            Toast.LENGTH_SHORT
+                        ).show()
                 }
             }
         }
