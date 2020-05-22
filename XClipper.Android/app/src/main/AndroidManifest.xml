@@ -3,6 +3,7 @@
     package="com.kpstv.xclipper">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- TODO: Remove foreground and SAW permission if unused. -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
 

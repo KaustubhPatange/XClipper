@@ -11,6 +11,8 @@ import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.provider.FirebaseProviderImpl
 import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.data.repository.MainRepositoryImpl
+import com.kpstv.xclipper.data.repository.TagRepository
+import com.kpstv.xclipper.data.repository.TagRepositoryImpl
 import com.kpstv.xclipper.ui.viewmodels.MainViewModelFactory
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -28,10 +30,12 @@ class XClipperApplication : Application(), KodeinAware {
 
         bind() from singleton { MainDatabase(instance()) }
         bind() from singleton { instance<MainDatabase>().clipMainDao() }
+        bind() from singleton { instance<MainDatabase>().clipTagDao() }
         bind<FirebaseProvider>() with singleton { FirebaseProviderImpl() }
         bind<ClipProvider>() with singleton { ClipProviderImpl() }
+        bind<TagRepository>() with singleton { TagRepositoryImpl(instance()) }
         bind<MainRepository>() with singleton { MainRepositoryImpl(instance(), instance(), instance()) }
-        bind() from provider { MainViewModelFactory(instance(), instance(), instance()) }
+        bind() from provider { MainViewModelFactory(instance(), instance(), instance(), instance()) }
     }
 
     override fun onCreate() {

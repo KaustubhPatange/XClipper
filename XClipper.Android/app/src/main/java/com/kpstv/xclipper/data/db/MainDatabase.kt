@@ -8,11 +8,14 @@ import androidx.room.TypeConverters
 import com.kpstv.xclipper.data.converters.DateConverter
 import com.kpstv.xclipper.data.converters.TagConverter
 import com.kpstv.xclipper.data.localized.ClipDataDao
+import com.kpstv.xclipper.data.localized.TagDao
 import com.kpstv.xclipper.data.model.Clip
+import com.kpstv.xclipper.data.model.Tag
 
 @Database(
     entities = [
-        Clip::class
+        Clip::class,
+        Tag::class
     ],
     version = 1
 )
@@ -24,6 +27,7 @@ import com.kpstv.xclipper.data.model.Clip
 
 abstract class MainDatabase: RoomDatabase() {
     abstract fun clipMainDao(): ClipDataDao
+    abstract fun clipTagDao(): TagDao
 
     companion object {
         @Volatile

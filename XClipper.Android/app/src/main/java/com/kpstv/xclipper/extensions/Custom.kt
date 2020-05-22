@@ -24,6 +24,21 @@ enum class Status {
     Error
 }
 
+
+
+enum class UpdateType {
+    /**
+     * Make a direct with the dao.
+     */
+    Id,
+
+    /**
+     * When used then it will compare the data using filter and only
+     * update data, time by querying id as filter.
+     */
+    Text
+}
+
 /*class OnSearchViewListener(
     val onSubmit: ((String) -> Unit)?,
     val onChange: ((String) -> Unit)?

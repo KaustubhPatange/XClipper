@@ -31,6 +31,7 @@ import com.kpstv.xclipper.extensions.cloneForAdapter
 import com.kpstv.xclipper.extensions.setOnQueryTextListener
 import com.kpstv.xclipper.extensions.setOnSearchCloseListener
 import com.kpstv.xclipper.ui.adapters.CIAdapter
+import com.kpstv.xclipper.ui.fragments.TagDialog
 import com.kpstv.xclipper.ui.helpers.MainEditHelper
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import com.kpstv.xclipper.ui.viewmodels.MainViewModelFactory
@@ -179,6 +180,11 @@ class Main : AppCompatActivity(), KodeinAware {
                 }
                 R.id.action_search -> {
                     searchView.showSearch(true)
+                }
+                R.id.action_tag -> {
+                    TagDialog(
+                        mainViewModel
+                    ).show(supportFragmentManager,"blank")
                 }
             }
             true

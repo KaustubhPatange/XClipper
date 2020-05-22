@@ -9,9 +9,10 @@ import com.kpstv.xclipper.data.provider.ClipProvider
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.extensions.Coroutines
 import com.kpstv.xclipper.extensions.Status
+import com.kpstv.xclipper.extensions.UpdateType
 
 class MainRepositoryImpl(
-    private val clipdao: ClipDataDao,
+    private val clipDao: ClipDataDao,
     private val firebaseProvider: FirebaseProvider,
     private val clipProvider: ClipProvider
 ) : MainRepository {
@@ -19,12 +20,6 @@ class MainRepositoryImpl(
     private val TAG = javaClass.simpleName
     private val lock = Any()
     private val lock1 = Any()
-
-    init {
-        /*clipdao.getAllLiveData().observeForever {
-
-        }*/
-    }
 
     override fun saveClip(clip: Clip?) {
         if (clip == null) return;
@@ -34,25 +29,20 @@ class MainRepositoryImpl(
              *  try to save data twice.
              */
             synchronized(lock) {
-                val allClips = clipdao.getAllData()
+                val allClips = clipDao.getAllData()
 
                 if (allClips.isNotEmpty()) {
                     allClips.filter { it.data?.Decrypt() == clip.data?.Decrypt() }.forEach {
-                        clipdao.delete(it)
+                        clipDao.delete(it)
                     }
                 }
-                clipdao.insert(clip)
+                clipDao.insert(clip)
                 Log.e(TAG, "Data Saved: ${clip.data?.Decrypt()}")
             }
         }
     }
 
-    /**
-     * TODO: There is a wrong insertion of data
-     *
-     * Since save clip function does work on separate thread, synchronization
-     * between these threads on quick insertion is creating uneven insertions.
-     */
+
     override fun validateData(onComplete: (Status) -> Unit) {
         firebaseProvider.clearData()
         firebaseProvider.getAllClipData {
@@ -69,18 +59,7 @@ class MainRepositoryImpl(
         }
     }
 
-    /**
-     * This method will either update the clip or insert the clip.
-     *
-     * When the data is coming from firebase saving it directly i.e overwriting it
-     * might loose our existing custom tags on it. So this approach only updates
-     * data & time with the existing clip in database.
-     *
-     * If it does not exist then we will process and save it.
-     *
-     * @param Clip A clip which is contains encrypted data and no tags (usually coming from firebase).
-     */
-    override fun updateClip(clip: Clip?) {
+    override fun updateClip(clip: Clip?, updateType: UpdateType) {
         if (clip == null) return
 
         Coroutines.io {
@@ -89,13 +68,19 @@ class MainRepositoryImpl(
              *  try to update data twice.
              */
             synchronized(lock1) {
-                val allData = clipdao.getAllData()
+                val allData = clipDao.getAllData()
 
                 if (allData.isNotEmpty()) {
-                    val innerClip = allData.firstOrNull { it.data?.Decrypt() == clip.data?.Decrypt() }
+                    val innerClip: Clip? = if (updateType == UpdateType.Text)
+                        allData.firstOrNull { it.data?.Decrypt() == clip.data?.Decrypt() }
+                    else
+                        allData.firstOrNull { it.id == clip.id }
                     if (innerClip != null) {
                         Log.e(TAG, "Update Clip Id: ${innerClip.id}")
-                        clipdao.update(innerClip.id!!, clip.data!!, clip.time!!)
+
+                        clipProvider.processClip(Clip(innerClip.id!!, clip.data!!, clip.time!!))?.let {
+                            clipDao.update(it)
+                        }
                         return@io
                     }
                 }
@@ -106,7 +91,7 @@ class MainRepositoryImpl(
 
     override fun deleteClip(clip: Clip) {
         Coroutines.io {
-            clipdao.delete(clip.id!!)
+            clipDao.delete(clip.id!!)
             firebaseProvider.deleteData(clip)
         }
     }
@@ -114,21 +99,21 @@ class MainRepositoryImpl(
     override fun deleteMultiple(clips: List<Clip>) {
         Coroutines.io {
             for (clip in clips)
-                clipdao.delete(clip)
+                clipDao.delete(clip)
             firebaseProvider.deleteMultipleData(clips)
         }
     }
 
     override fun getAllLiveClip(): LiveData<List<Clip>> {
-        return clipdao.getAllLiveData()
+        return clipDao.getAllLiveData()
     }
 
     override fun getAllData(): List<Clip> {
-        return clipdao.getAllData()
+        return clipDao.getAllData()
     }
 
     override fun processClipAndSave(clip: Clip?) {
-        clipProvider.processClip(clip?.data?.Decrypt())?.let { item ->
+        clipProvider.processClip(clip)?.let { item ->
             saveClip(item)
         }
     }

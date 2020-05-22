@@ -13,6 +13,7 @@ import com.kpstv.xclipper.App.CLIP_DATA
 import com.kpstv.xclipper.App.observeFirebase
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.repository.MainRepository
+import com.kpstv.xclipper.extensions.UpdateType
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.kodein
 import org.kodein.di.generic.instance

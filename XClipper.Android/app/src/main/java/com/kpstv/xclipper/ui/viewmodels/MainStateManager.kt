@@ -1,7 +1,9 @@
 package com.kpstv.xclipper.ui.viewmodels
 
+import android.app.Dialog
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.kpstv.xclipper.data.localized.DialogState
 import com.kpstv.xclipper.data.localized.ToolbarState
 import com.kpstv.xclipper.data.model.Clip
 
@@ -11,6 +13,9 @@ class MainStateManager {
 
     private val _toolbarState: MutableLiveData<ToolbarState> =
         MutableLiveData(ToolbarState.NormalViewState)
+
+    private val _dialogState: MutableLiveData<DialogState> =
+        MutableLiveData(DialogState.Normal)
 
     private val _selectedItemClips = MutableLiveData<ArrayList<Clip>>()
     private val _isMultiSelectionEnabled = MutableLiveData<Boolean>()
@@ -23,11 +28,17 @@ class MainStateManager {
     val toolbarState: LiveData<ToolbarState>
         get() = _toolbarState
 
+    val dialogState: LiveData<DialogState>
+        get() = _dialogState
+
     val selectedItem: LiveData<Clip>
         get() = _selectedItem
 
     fun setToolbarState(state: ToolbarState) =
         _toolbarState.postValue(state)
+
+    fun setDialogState(state: DialogState) =
+        _dialogState.postValue(state)
 
     fun isMultiSelectionStateActive(): Boolean =
         _toolbarState.value == ToolbarState.MultiSelectionState

@@ -2,6 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <!-- TODO: Find a tag icon. -->
+
+    <item android:id="@+id/action_tag"
+        android:icon="@drawable/ic_tag"
+        android:title="@string/tag"
+        app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/action_sync"

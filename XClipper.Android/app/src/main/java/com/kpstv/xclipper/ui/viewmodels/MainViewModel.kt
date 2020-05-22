@@ -1,20 +1,25 @@
 package com.kpstv.xclipper.ui.viewmodels
 
 import android.app.Application
-import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import com.kpstv.license.Decrypt
 import com.kpstv.xclipper.data.model.Clip
+import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.repository.MainRepository
+import com.kpstv.xclipper.data.repository.TagRepository
 import com.kpstv.xclipper.extensions.Status
+import com.kpstv.xclipper.extensions.UpdateType
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.math.log
 
 class MainViewModel(
     application: Application,
-    private val repository: MainRepository,
+    private val mainRepository: MainRepository,
+    private val tagRepository: TagRepository,
     private val firebaseProvider: FirebaseProvider
 ) : AndroidViewModel(application) {
 
@@ -22,6 +27,7 @@ class MainViewModel(
     private val _stateManager = MainStateManager()
     private val _searchManager = MainSearchManager()
     private val _clipLiveData = MutableLiveData<List<Clip>>()
+    private val _tagLiveData = MutableLiveData<List<Tag>>()
 
     val stateManager: MainStateManager
         get() = _stateManager
@@ -34,31 +40,46 @@ class MainViewModel(
     val clipLiveData: LiveData<List<Clip>>
         get() = mediatorLiveData
 
+    val tagLiveData: LiveData<List<Tag>>
+        get() = _tagLiveData
+
     fun postToRepository(data: String) {
-        repository.updateRepository(data)
+        mainRepository.updateRepository(data)
     }
 
     fun deleteFromRepository(clip: Clip) {
-        repository.deleteClip(clip)
+        mainRepository.deleteClip(clip)
     }
 
     fun deleteMultipleFromRepository(clips: List<Clip>) {
-        repository.deleteMultiple(clips)
+        mainRepository.deleteMultiple(clips)
     }
 
     fun postUpdateToRepository(oldClip: Clip, newClip: Clip) {
-        repository.updateClip(newClip)
+        mainRepository.updateClip(newClip, UpdateType.Id)
         firebaseProvider.replaceData(oldClip, newClip)
     }
 
     fun makeAValidationRequest(block: (Status) -> Unit) {
-        repository.validateData(block)
+        mainRepository.validateData(block)
+    }
+
+    fun postToTagRepository(tag: Tag) {
+        tagRepository.insertTag(tag)
+    }
+
+    fun deleteFromTagRepository(tag: Tag) {
+        tagRepository.deleteTag(tag)
     }
 
     init {
 
-        repository.getAllLiveClip().observeForever {
+        mainRepository.getAllLiveClip().observeForever {
             _clipLiveData.postValue(it)
+        }
+
+        tagRepository.getAllLiveData().observeForever {
+            _tagLiveData.postValue(it)
         }
 
         mediatorLiveData.addSource(searchManager.searchString) {
@@ -74,13 +95,19 @@ class MainViewModel(
         }
     }
 
-    private fun makeMySource(mainList: List<Clip>?, searchFilter: ArrayList<String>?, searchText: String?) {
+    private fun makeMySource(
+        mainList: List<Clip>?,
+        searchFilter: ArrayList<String>?,
+        searchText: String?
+    ) {
         if (mainList != null) {
             val list = ArrayList<Clip>(mainList)
 
             mainList.forEach { clip ->
                 searchFilter?.forEach inner@{ filter ->
-                    if (!clip.data?.Decrypt()?.toLowerCase(Locale.getDefault())?.contains(filter)!!) {
+                    if (!clip.data?.Decrypt()?.toLowerCase(Locale.getDefault())
+                            ?.contains(filter)!!
+                    ) {
                         list.remove(clip)
                         return@inner
                     }
@@ -90,11 +117,12 @@ class MainViewModel(
             if (!searchText.isNullOrBlank()) {
                 mediatorLiveData.postValue(
                     list.filter { clip ->
-                        clip.data?.Decrypt()?.toLowerCase(Locale.getDefault())?.contains(searchText) ?: false
+                        clip.data?.Decrypt()?.toLowerCase(Locale.getDefault())?.contains(searchText)
+                            ?: false
                     }
                 )
 
-            }else
+            } else
                 mediatorLiveData.postValue(list.toList())
         }
     }

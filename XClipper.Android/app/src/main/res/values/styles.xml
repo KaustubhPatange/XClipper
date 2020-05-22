@@ -28,6 +28,12 @@
         <item name="paddingStart">10dp</item>
     </style>
 
+    <style name="CustomSwitchTheme" parent="Theme.AppCompat.Light">
+        <item name="colorControlActivated">@color/colorCustomBlue</item>
+        <item name="colorSwitchThumbNormal">@color/colorTextPrimary</item>
+        <item name="android:colorForeground">@android:color/white</item>
+    </style>
+
     <style name="SimpleSearchViewStyle">
         <item name="android:hint">@string/search</item>
         <item name="android:textColor">?colorTextPrimary</item>
