@@ -52,9 +52,6 @@ class TagAdapter(
         })
 
         tagFilter.observe(context as LifecycleOwner, Observer {
-            if (it.contains(tag)) {
-                Log.e(TAG, "Ola Found tag: $tag")
-            }
             chip.isChipIconVisible = it.contains(tag)
         })
 

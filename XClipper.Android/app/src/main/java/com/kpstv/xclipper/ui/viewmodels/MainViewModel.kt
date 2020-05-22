@@ -25,10 +25,19 @@ class MainViewModel(
 ) : AndroidViewModel(application) {
 
     private val TAG = javaClass.simpleName
+    private var _tag: Tag? = null
     private val _stateManager = MainStateManager()
     private val _searchManager = MainSearchManager()
     private val _clipLiveData = MutableLiveData<List<Clip>>()
     private val _tagLiveData = MutableLiveData<List<Tag>>()
+
+    fun setTag(tag: Tag) {
+        _tag = tag
+    }
+
+    fun getTag() : Tag? {
+        return _tag
+    }
 
     val stateManager: MainStateManager
         get() = _stateManager
@@ -88,7 +97,6 @@ class MainViewModel(
         }
 
         mediatorLiveData.addSource(searchManager.tagFilters) {
-            Log.e(TAG, "Tag Updated: $it")
             makeMySource(_clipLiveData.value, searchManager.searchFilters.value, it,searchManager.searchString.value)
         }
 

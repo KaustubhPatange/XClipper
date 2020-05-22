@@ -15,6 +15,27 @@ class MainViewModelFactory(
 ) : ViewModelProvider.NewInstanceFactory() {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return MainViewModel(application, mainRepository, tagRepository, firebaseProvider) as T
+        if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
+            val key = "UserProfileViewModel"
+            return if(hashMapViewModel.containsKey(key)){
+                getViewModel(key) as T
+            } else {
+                addViewModel(key, MainViewModel(application, mainRepository, tagRepository, firebaseProvider))
+                getViewModel(key) as T
+            }
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+      //  return MainViewModel(application, mainRepository, tagRepository, firebaseProvider) as T
+    }
+
+
+    companion object {
+        val hashMapViewModel = HashMap<String, ViewModel>()
+        fun addViewModel(key: String, viewModel: ViewModel){
+            hashMapViewModel.put(key, viewModel)
+        }
+        fun getViewModel(key: String): ViewModel? {
+            return hashMapViewModel[key]
+        }
     }
 }

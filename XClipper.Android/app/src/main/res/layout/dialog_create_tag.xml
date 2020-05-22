@@ -2,6 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    android:layout_marginStart="20dp"
+    android:layout_marginEnd="20dp"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
@@ -22,13 +24,15 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Custom Tags"
+            android:text="@string/custom_tags"
             android:textColor="?colorTextPrimary"
             android:textSize="19sp" />
 
         <com.kpstv.xclipper.extensions.CustomRecyclerView
             android:id="@+id/dct_recycler_view"
             android:orientation="horizontal"
+            app:maxHeight="380dp"
+            android:scrollbars="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp" />
@@ -38,6 +42,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/dct_editLayout"
+        android:minHeight="40dp"
+        android:background="?colorSelected"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <EditText
@@ -69,6 +75,5 @@
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 </LinearLayout>

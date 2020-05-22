@@ -18,6 +18,7 @@ object App {
     var MAX_ITEM_STORAGE = 20
 
     var UNDO_DELETE_SPAN: Long = 2500
+    const val DELAY_SPAN: Long = 20
 
 
     // TODO: Do all your jack jacks
@@ -37,6 +38,9 @@ object App {
 
     const val PAIR_SEPARATOR = ";"
     const val ITEM_SEPARATOR = "|"
+
+    const val TAG_DIALOG_REQUEST_CODE = 100
+    const val TAG_DIALOG_RESULT_CODE = 1
 
     const val TAG_FILTER_CHIP = "com.kpstv.xclipper.tag"
 

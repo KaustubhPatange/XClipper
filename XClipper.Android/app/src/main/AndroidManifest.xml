@@ -23,6 +23,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ui.activities.TagDialog"
+            android:excludeFromRecents="true"
+            android:theme="@style/CustomDialogStyle.Dark">
+        </activity>
         <activity android:name=".service.ChangeClipboardActivity"
             android:theme="@style/Theme.AppCompat.Translucent"
             android:excludeFromRecents="true"

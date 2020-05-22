@@ -42,6 +42,18 @@
         <item name="iconsTint">?colorTextPrimary</item>
     </style>
 
+    <style name="CustomDialogStyle.Dark" parent="Theme.MaterialComponents.Dialog.Alert">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorTextPrimary">@color/colorTextPrimary</item>
+        <item name="colorTextSecondary">@color/colorTextSecondary</item>
+        <item name="colorForeground">@color/colorCard</item>
+        <item name="fontFamily">@font/google_sans_medium</item>
+        <item name="windowNoTitle">true</item>
+        <item name="background">@color/colorBackground</item>
+        <item name="colorSelected">@color/colorSelected</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
     <style name="Theme.AppCompat.Translucent" parent="Theme.AppCompat">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowNoTitle">true</item>

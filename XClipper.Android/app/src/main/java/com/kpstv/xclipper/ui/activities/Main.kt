@@ -22,18 +22,20 @@ import com.google.android.material.snackbar.Snackbar
 import com.kpstv.license.Decrypt
 import com.kpstv.xclipper.App.BLANK_STRING
 import com.kpstv.xclipper.App.CLIP_DATA
+import com.kpstv.xclipper.App.TAG_DIALOG_REQUEST_CODE
+import com.kpstv.xclipper.App.TAG_DIALOG_RESULT_CODE
 import com.kpstv.xclipper.App.TAG_FILTER_CHIP
 import com.kpstv.xclipper.App.UNDO_DELETE_SPAN
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.ToolbarState
 import com.kpstv.xclipper.data.model.Clip
+import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.extensions.Status
 import com.kpstv.xclipper.extensions.Utils.Companion.shareText
 import com.kpstv.xclipper.extensions.cloneForAdapter
 import com.kpstv.xclipper.extensions.setOnQueryTextListener
 import com.kpstv.xclipper.extensions.setOnSearchCloseListener
 import com.kpstv.xclipper.ui.adapters.CIAdapter
-import com.kpstv.xclipper.ui.fragments.TagDialog
 import com.kpstv.xclipper.ui.helpers.MainEditHelper
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import com.kpstv.xclipper.ui.viewmodels.MainViewModelFactory
@@ -53,6 +55,8 @@ class Main : AppCompatActivity(), KodeinAware {
     override val kodein by kodein()
     private val viewModelFactory: MainViewModelFactory by instance()
 
+  //  private lateinit var tagDialog: TagDialog
+
     private val clipboardManager: ClipboardManager by lazy {
         getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     }
@@ -69,13 +73,12 @@ class Main : AppCompatActivity(), KodeinAware {
 
         setRecyclerView()
 
-        bindUI()
-
         checkClipboardData()
 
         setToolbarCommonStuff()
 
         setSearchViewListener()
+
 
         /*  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
               val intent = Intent(
@@ -88,12 +91,24 @@ class Main : AppCompatActivity(), KodeinAware {
         */
     }
 
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
+
+        bindUI()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == TAG_DIALOG_REQUEST_CODE && resultCode == TAG_DIALOG_RESULT_CODE) {
+            tagDialogItemClickListener(mainViewModel.getTag()!!)
+        }
+    }
+
 
     private fun bindUI() {
         mainViewModel.clipLiveData.observe(this, Observer {
             adapter.submitList(ArrayList(it?.cloneForAdapter()?.reversed()!!))
             mainViewModel.stateManager.clearSelectedItem()
-            //  Log.e(TAG, "LiveData changed()")
         })
         mainViewModel.stateManager.toolbarState.observe(this, Observer { state ->
             when (state) {
@@ -124,13 +139,9 @@ class Main : AppCompatActivity(), KodeinAware {
                     mainViewModel.stateManager.addOrRemoveClipFromSelectedList(clip)
                 else
                     mainViewModel.stateManager.addOrRemoveSelectedItem(clip)
-                // expandMenuLogic(clip, pos)
             },
             onLongClick = { clip, _ ->
                 mainViewModel.stateManager.clearSelectedItem()
-                /*  adapter.list.forEach { it.toDisplay = false }
-                  adapter.notifyDataSetChanged()*/
-
                 mainViewModel.stateManager.setToolbarState(ToolbarState.MultiSelectionState)
                 mainViewModel.stateManager.addOrRemoveClipFromSelectedList(clip)
             }
@@ -184,29 +195,8 @@ class Main : AppCompatActivity(), KodeinAware {
                     searchView.showSearch(true)
                 }
                 R.id.action_tag -> {
-                    TagDialog(mainViewModel) { tag ->
-                        if (ci_chip_group.children.count { view ->
-                                if (view is Chip)
-                                    view.tag == TAG_FILTER_CHIP && view.text == tag.name
-                                else
-                                    false
-                            } <= 0) {
-                            ci_chip_group.addView(
-                                Chip(this).apply {
-                                    text = tag.name
-                                    setTag(TAG_FILTER_CHIP)
-                                    chipIcon =
-                                        ContextCompat.getDrawable(this@Main, R.drawable.ic_tag)
-                                    isCloseIconVisible = true
-                                    setOnCloseIconClickListener { chip ->
-                                        ci_chip_group.removeView(chip)
-                                        mainViewModel.searchManager.removeTagFilter(tag)
-                                    }
-                                }
-                            )
-                        }
-
-                    }.show(supportFragmentManager, "blank")
+                    val intent = Intent(this, TagDialog::class.java)
+                    startActivityForResult(intent, TAG_DIALOG_REQUEST_CODE)
                 }
             }
             true
@@ -278,6 +268,29 @@ class Main : AppCompatActivity(), KodeinAware {
         )
         searchView.setOnSearchCloseListener {
             mainViewModel.searchManager.clearSearch()
+        }
+    }
+
+    private fun tagDialogItemClickListener(tag: Tag) {
+        if (ci_chip_group.children.count { view ->
+                if (view is Chip)
+                    view.tag == TAG_FILTER_CHIP && view.text == tag.name
+                else
+                    false
+            } <= 0) {
+            ci_chip_group.addView(
+                Chip(this).apply {
+                    text = tag.name
+                    setTag(TAG_FILTER_CHIP)
+                    chipIcon =
+                        ContextCompat.getDrawable(this@Main, R.drawable.ic_tag)
+                    isCloseIconVisible = true
+                    setOnCloseIconClickListener { chip ->
+                        ci_chip_group.removeView(chip)
+                        mainViewModel.searchManager.removeTagFilter(tag)
+                    }
+                }
+            )
         }
     }
 
@@ -376,23 +389,6 @@ class Main : AppCompatActivity(), KodeinAware {
 
             Log.e(TAG, "Pushed: $data")
         }
-    }
-
-
-    /**
-     * TODO: Remove this function if unused
-     *
-     * This function will handle the expanded menu logic
-     */
-    private fun expandMenuLogic(model: Clip, pos: Int) {
-        for ((i, e) in adapter.currentList.withIndex()) {
-            if (i != pos && e.toDisplay) {
-                e.toDisplay = false
-                adapter.notifyItemChanged(i)
-            }
-        }
-        model.toDisplay = !model.toDisplay
-        adapter.notifyItemChanged(pos)
     }
 
     override fun onBackPressed() {

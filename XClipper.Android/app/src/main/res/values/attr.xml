@@ -5,4 +5,9 @@
     <attr name="colorForeground" format="reference|color"/>
     <attr name="colorSeparator" format="reference|color"/>
     <attr name="colorSelected" format="reference|color"/>
+
+    <declare-styleable name="CustomRecyclerView">
+        <attr name="maxHeight" format="dimension" />
+    </declare-styleable>
+
 </resources>

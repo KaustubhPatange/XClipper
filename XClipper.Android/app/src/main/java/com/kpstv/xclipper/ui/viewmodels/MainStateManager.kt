@@ -40,6 +40,9 @@ class MainStateManager {
     fun setDialogState(state: DialogState) =
         _dialogState.postValue(state)
 
+    fun isEditDialogStateActive() =
+        _dialogState.value == DialogState.Edit
+
     fun isMultiSelectionStateActive(): Boolean =
         _toolbarState.value == ToolbarState.MultiSelectionState
 
