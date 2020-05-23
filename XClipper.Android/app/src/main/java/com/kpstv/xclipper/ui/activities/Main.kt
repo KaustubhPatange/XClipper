@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
@@ -30,17 +29,17 @@ import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.ToolbarState
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.Tag
-import com.kpstv.xclipper.extensions.Status
 import com.kpstv.xclipper.extensions.Utils.Companion.shareText
 import com.kpstv.xclipper.extensions.cloneForAdapter
+import com.kpstv.xclipper.extensions.listeners.StatusListener
 import com.kpstv.xclipper.extensions.setOnQueryTextListener
 import com.kpstv.xclipper.extensions.setOnSearchCloseListener
 import com.kpstv.xclipper.ui.adapters.CIAdapter
 import com.kpstv.xclipper.ui.dialogs.EditDialog
 import com.kpstv.xclipper.ui.dialogs.TagDialog
-import com.kpstv.xclipper.ui.helpers.MainEditHelper
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import com.kpstv.xclipper.ui.viewmodels.MainViewModelFactory
+import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_main.*
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.kodein
@@ -155,10 +154,10 @@ class Main : AppCompatActivity(), KodeinAware {
 
         adapter.setCopyClick { clip, _ ->
             clipboardManager.setPrimaryClip(ClipData.newPlainText(null, clip.data?.Decrypt()))
-            Toast.makeText(this, getString(R.string.ctc), Toast.LENGTH_SHORT).show()
+            Toasty.info(this, getString(R.string.ctc)).show()
         }
 
-        adapter.setMenuItemClick { clip, i, menuType ->
+        adapter.setMenuItemClick { clip, _, menuType ->
             when (menuType) {
                 CIAdapter.MENU_TYPE.Edit -> {
                     /** This will ensure that we are editing the clip */
@@ -341,22 +340,26 @@ class Main : AppCompatActivity(), KodeinAware {
                     .apply { repeatCount = Animation.INFINITE })
                 isEnabled = false
 
-                mainViewModel.makeAValidationRequest {
+                mainViewModel.makeAValidationRequest(StatusListener(
+                    onBefore = {
+                        isEnabled = true
+                        this.clearAnimation()
+                    },
+                    onComplete = {
+                        Toasty.info(this@Main,  getString(R.string.sync_complete)).show()
+                    },
+                    onError = {
+                        Toasty.error(this@Main,   getString(R.string.error_sync)).show()
+                    }
+                ))
+                /*mainViewModel.makeAValidationRequest {
                     isEnabled = true
                     this.clearAnimation()
                     if (it == Status.Success)
-                        Toast.makeText(
-                            this@Main,
-                            getString(R.string.sync_complete),
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toasty.info(this@Main,  getString(R.string.sync_complete)).show()
                     else
-                        Toast.makeText(
-                            this@Main,
-                            getString(R.string.error_sync),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                }
+                        Toasty.error(this@Main,   getString(R.string.error_sync)).show()
+                }*/
             }
         }
 

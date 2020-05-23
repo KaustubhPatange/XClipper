@@ -11,9 +11,9 @@ import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.data.repository.TagRepository
-import com.kpstv.xclipper.extensions.Status
-import com.kpstv.xclipper.extensions.FilterType
-import com.kpstv.xclipper.extensions.RepositoryListener
+import com.kpstv.xclipper.extensions.enumerations.FilterType
+import com.kpstv.xclipper.extensions.listeners.RepositoryListener
+import com.kpstv.xclipper.extensions.listeners.StatusListener
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -87,16 +87,25 @@ class MainViewModel(
             firebaseProvider.replaceData(oldClip, newClip)
     }
 
-    fun makeAValidationRequest(block: (Status) -> Unit) {
-        mainRepository.validateData(block)
+    fun makeAValidationRequest(statusListener: StatusListener) {
+        mainRepository.validateData(statusListener)
     }
 
     fun postToTagRepository(tag: Tag) {
         tagRepository.insertTag(tag)
     }
 
-    fun deleteFromTagRepository(tag: Tag) {
-        tagRepository.deleteTag(tag)
+    fun deleteFromTagRepository(tag: Tag, statusListener: StatusListener) {
+        mainRepository.checkForDependent(tag.name,
+            RepositoryListener(
+                dataExist = {
+                    statusListener.onError()
+                },
+                notFound = {
+                    statusListener.onComplete()
+                    tagRepository.deleteTag(tag)
+                }
+            ))
     }
 
     init {

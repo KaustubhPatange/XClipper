@@ -9,7 +9,7 @@ import com.kpstv.xclipper.App.getMaxStorage
 import com.kpstv.xclipper.App.gson
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.User
-import com.kpstv.xclipper.extensions.FValueEventListener
+import com.kpstv.xclipper.extensions.listeners.FValueEventListener
 import com.kpstv.xclipper.extensions.cloneToEntries
 
 @ExperimentalStdlibApi

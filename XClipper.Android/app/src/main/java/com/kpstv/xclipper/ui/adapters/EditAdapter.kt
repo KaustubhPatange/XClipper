@@ -29,7 +29,7 @@ class EditAdapter(
 
     class DiffCallback : DiffUtil.ItemCallback<Tag>() {
         override fun areItemsTheSame(oldItem: Tag, newItem: Tag) =
-            oldItem.name == newItem.name
+            oldItem.id == newItem.id
 
         override fun areContentsTheSame(oldItem: Tag, newItem: Tag) =
             oldItem == newItem

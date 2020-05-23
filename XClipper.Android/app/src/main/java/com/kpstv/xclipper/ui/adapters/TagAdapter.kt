@@ -29,7 +29,7 @@ class TagAdapter(
 
     class DiffCallback : DiffUtil.ItemCallback<Tag>() {
         override fun areItemsTheSame(oldItem: Tag, newItem: Tag): Boolean =
-            oldItem.name == newItem.name
+            oldItem.id == newItem.id
 
         override fun areContentsTheSame(oldItem: Tag, newItem: Tag): Boolean =
             oldItem == newItem
@@ -44,13 +44,16 @@ class TagAdapter(
         holder.bind(getItem(position))
     }
 
+    override fun getItemViewType(position: Int): Int {
+        return position
+    }
+
     private fun TagHolder.bind(tag: Tag) = with(itemView) {
         chip.text = tag.name
 
         dialogState.observe(context as LifecycleOwner, Observer {
             if (it == DialogState.Edit) {
-                if (ClipTag.fromValue(tag.name) == null)
-                    chip.isCloseIconVisible = true
+                chip.isCloseIconVisible = ClipTag.fromValue(tag.name) == null
             }
             else if (it == DialogState.Normal)
                 chip.isCloseIconVisible = false

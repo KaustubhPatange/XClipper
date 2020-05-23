@@ -1,11 +1,17 @@
-package com.kpstv.xclipper.extensions
+package com.kpstv.xclipper.extensions.elements
 
 import android.content.Context
 import android.util.AttributeSet
 import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.xclipper.R
 
-
+/**
+ * A class created generally to avoid the "unsupported scrolling to absolute position"
+ * error when "animateLayoutChanges" is set to true in parent layout.
+ *
+ * Now also provides an extension to standard recyclerView which allows you to set
+ * "maxHeight" parameter. Once reached it will start showing scrollbars vertically.
+ */
 class CustomRecyclerView : RecyclerView {
     private var maxHeight = 0
     constructor(context: Context?) : super(context!!)

@@ -1,11 +1,11 @@
-package com.kpstv.xclipper.extensions
+package com.kpstv.xclipper.extensions.elements
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
 
-
+// TODO: Delete this class when not in need.
 /**
  *
  * @author RAW
@@ -76,7 +76,10 @@ class FlowLayout : ViewGroup {
     }
 
     override fun generateDefaultLayoutParams(): ViewGroup.LayoutParams {
-        return LayoutParams(1, 1) // default of 1px spacing
+        return LayoutParams(
+            1,
+            1
+        ) // default of 1px spacing
     }
 
     override fun checkLayoutParams(p: ViewGroup.LayoutParams): Boolean {

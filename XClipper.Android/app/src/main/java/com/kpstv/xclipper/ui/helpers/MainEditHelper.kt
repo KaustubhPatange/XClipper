@@ -21,6 +21,7 @@ import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.extensions.clone
 import com.kpstv.xclipper.ui.adapters.EditAdapter
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
+import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.dialog_edit_layout.view.*
 import kotlinx.android.synthetic.main.tag_item.view.*
 
@@ -60,10 +61,10 @@ class MainEditHelper(
 
                     if (text.isNotBlank()) {
                         viewModel.postUpdateToRepository(clip, clip.clone(text.Encrypt(), viewModel.editManager.getSelectedTags()))
-                        Toast.makeText(this@with, getString(R.string.edit_success), Toast.LENGTH_SHORT).show()
+                        Toasty.info(this@MainEditHelper.context, getString(R.string.edit_success)).show()
                         dialog.dismiss()
                     }else
-                        Toast.makeText(this@with, getString(R.string.error_empty_text), Toast.LENGTH_SHORT).show()
+                        Toasty.error(this@MainEditHelper.context, getString(R.string.error_empty_text)).show()
                 }
             }.create()
 

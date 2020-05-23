@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:background="?colorForeground"
         android:orientation="vertical">
-        <com.kpstv.xclipper.extensions.CustomRecyclerView
+        <com.kpstv.xclipper.extensions.elements.CustomRecyclerView
             android:padding="10dp"
             android:clipToPadding="false"
             android:orientation="horizontal"

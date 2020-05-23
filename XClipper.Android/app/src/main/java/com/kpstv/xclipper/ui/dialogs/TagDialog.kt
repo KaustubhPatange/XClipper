@@ -5,6 +5,7 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import androidx.lifecycle.Observer
@@ -19,10 +20,12 @@ import com.kpstv.xclipper.data.localized.DialogState
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.extensions.Coroutines
 import com.kpstv.xclipper.extensions.collapse
+import com.kpstv.xclipper.extensions.listeners.StatusListener
 import com.kpstv.xclipper.extensions.show
 import com.kpstv.xclipper.ui.adapters.TagAdapter
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import com.kpstv.xclipper.ui.viewmodels.MainViewModelFactory
+import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.dialog_create_tag.*
 import kotlinx.android.synthetic.main.dialog_create_tag.view.*
 import kotlinx.coroutines.delay
@@ -143,10 +146,12 @@ class TagDialog : AppCompatActivity(), KodeinAware {
             dialogState = mainViewModel.stateManager.dialogState,
             tagFilter = mainViewModel.searchManager.tagFilters,
             onCloseClick = { tag, _ ->
-                mainViewModel.deleteFromTagRepository(tag)
+                mainViewModel.deleteFromTagRepository(tag, StatusListener(
+                    onComplete = { },
+                    onError = Toasty.error(this, getString(R.string.error_tag_dependent))::show
+                ))
             },
             onClick = { tag, _ ->
-
                 if (mainViewModel.stateManager.isEditDialogStateActive()) return@TagAdapter
 
                 mainViewModel.setTag(tag)

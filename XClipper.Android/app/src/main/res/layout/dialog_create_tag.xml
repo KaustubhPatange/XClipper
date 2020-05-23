@@ -28,7 +28,7 @@
             android:textColor="?colorTextPrimary"
             android:textSize="19sp" />
 
-        <com.kpstv.xclipper.extensions.CustomRecyclerView
+        <com.kpstv.xclipper.extensions.elements.CustomRecyclerView
             android:id="@+id/dct_recycler_view"
             android:orientation="horizontal"
             app:maxHeight="380dp"

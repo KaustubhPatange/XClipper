@@ -69,7 +69,7 @@ data class ClipEntry(
 }
 
 enum class ClipTag {
-    PHONE, DATE, URL, EMAIL, EMPTY;
+    PHONE, DATE, URL, EMAIL;
 
     companion object {
         fun fromValue(text: String) =

@@ -15,7 +15,7 @@ class MainEditManager(
 ) {
     private val _clip = MutableLiveData<Clip>()
     private val _tagFixedLiveData = MutableLiveData<List<Tag>>()
-    private val _selectedTags = MutableLiveData<Map<String, String>>()
+    private val _selectedTags = MutableLiveData<Map<String, String>>(HashMap())
 
     val tagFixedLiveData: LiveData<List<Tag>>
         get() = _tagFixedLiveData

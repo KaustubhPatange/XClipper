@@ -8,6 +8,9 @@ import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.provider.ClipProvider
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.extensions.*
+import com.kpstv.xclipper.extensions.enumerations.FilterType
+import com.kpstv.xclipper.extensions.listeners.RepositoryListener
+import com.kpstv.xclipper.extensions.listeners.StatusListener
 
 class MainRepositoryImpl(
     private val clipDao: ClipDataDao,
@@ -40,12 +43,11 @@ class MainRepositoryImpl(
         }
     }
 
-
-    override fun validateData(onComplete: (Status) -> Unit) {
+    override fun validateData(statusListener: StatusListener) {
         firebaseProvider.clearData()
         firebaseProvider.getAllClipData {
             if (it == null) {
-                onComplete.invoke(Status.Error)
+                statusListener.onError()
                 return@getAllClipData
             }
 
@@ -53,7 +55,7 @@ class MainRepositoryImpl(
                 firebaseUpdate(clip)
             }
 
-            onComplete.invoke(Status.Success)
+           statusListener.onComplete()
         }
     }
 
@@ -134,6 +136,19 @@ class MainRepositoryImpl(
                     repositoryListener.onDataExist()
                 }
             else
+                Coroutines.main {
+                    repositoryListener.onDataError()
+                }
+        }
+    }
+
+    override fun checkForDependent(tagName: String, repositoryListener: RepositoryListener) {
+        Coroutines.io {
+            if (clipDao.getAllData().firstOrNull { it.tags?.keys?.contains(tagName) == true } != null) {
+                Coroutines.main {
+                    repositoryListener.onDataExist()
+                }
+            }else
                 Coroutines.main {
                     repositoryListener.onDataError()
                 }

@@ -19,7 +19,7 @@
     <string name="save">Save</string>
     <string name="ok">OK</string>
     <string name="edit_success">Changes saved!</string>
-    <string name="error_empty_text">Warning: Empty text to update</string>
+    <string name="error_empty_text">Empty text to update</string>
     <string name="search">Search</string>
     <string name="sync">Sync</string>
     <string name="sync_complete">Data synchronization complete</string>
@@ -29,6 +29,7 @@
     <string name="more">More</string>
     <string name="tag">Filter Tag</string>
     <string name="custom_tags">Filter Tags</string>
-    <string name="write_here">Write here...</string>
-    <string name="error_duplicate_data">Warning: Duplicate data insertion</string>
+    <string name="write_here">Write here…</string>
+    <string name="error_duplicate_data">Duplicate data insertion</string>
+    <string name="error_tag_dependent">Some items are dependent on this tag</string>
 </resources>

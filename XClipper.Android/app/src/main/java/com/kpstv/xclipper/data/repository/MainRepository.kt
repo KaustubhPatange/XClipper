@@ -2,9 +2,9 @@ package com.kpstv.xclipper.data.repository
 
 import androidx.lifecycle.LiveData
 import com.kpstv.xclipper.data.model.Clip
-import com.kpstv.xclipper.extensions.Status
-import com.kpstv.xclipper.extensions.FilterType
-import com.kpstv.xclipper.extensions.RepositoryListener
+import com.kpstv.xclipper.extensions.enumerations.FilterType
+import com.kpstv.xclipper.extensions.listeners.RepositoryListener
+import com.kpstv.xclipper.extensions.listeners.StatusListener
 
 interface MainRepository {
 
@@ -62,12 +62,17 @@ interface MainRepository {
     fun checkForDuplicate(unencryptedData: String?, repositoryListener: RepositoryListener)
 
     /**
+     * This function will check if there is any data depending on this tag.
+     */
+    fun checkForDependent(tagName: String, repositoryListener: RepositoryListener)
+
+    /**
      * Since save clip function does work on separate thread, synchronization
      * between these threads on quick insertion is creating uneven insertions.
      *
      * TODO: There is a wrong sequence insertion of data
      */
-    fun validateData(onComplete: (Status) -> Unit)
+    fun validateData(statusListener: StatusListener)
 
     fun getAllLiveClip(): LiveData<List<Clip>>
 }

@@ -82,6 +82,9 @@ dependencies {
     // Flexbox Layout
     implementation 'com.google.android:flexbox:2.0.1'
 
+    // Toasty
+    implementation 'com.github.GrenderG:Toasty:1.4.2'
+
 
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.4'
     testImplementation 'junit:junit:4.12'

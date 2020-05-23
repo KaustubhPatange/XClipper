@@ -63,8 +63,7 @@ abstract class MainDatabase : RoomDatabase() {
                     instance?.let { database ->
                         with(database.clipTagDao()) {
                             ClipTag.values().forEach {
-                                if (it != ClipTag.EMPTY)
-                                    insert(Tag.from(it.name.toLowerCase(Locale.ROOT)))
+                                insert(Tag.from(it.name.toLowerCase(Locale.ROOT)))
                             }
                         }
                     }

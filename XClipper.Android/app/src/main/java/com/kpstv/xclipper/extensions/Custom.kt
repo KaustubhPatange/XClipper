@@ -1,63 +1,8 @@
 package com.kpstv.xclipper.extensions
 
-import android.view.View
 import com.ferfalk.simplesearchview.SimpleSearchView
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
-import com.kpstv.xclipper.data.model.Clip
-import com.kpstv.xclipper.data.model.ClipEntry
 import kotlinx.coroutines.*
 
-
-class FValueEventListener(
-    val onDataChange: (DataSnapshot) -> Unit,
-    val onError: (DatabaseError) -> Unit
-) :
-    ValueEventListener {
-    override fun onDataChange(data: DataSnapshot) = onDataChange.invoke(data)
-    override fun onCancelled(error: DatabaseError) = onError.invoke(error)
-}
-
-enum class Status {
-    Success,
-    Error
-}
-
-
-
-enum class FilterType {
-    /**
-     * Make a direct with the dao.
-     */
-    Id,
-
-    /**
-     * When used then it will compare the data using filter and only
-     * update data, time by querying id as filter.
-     */
-    Text,
-
-}
-
-/*class OnSearchViewListener(
-    val onSubmit: ((String) -> Unit)?,
-    val onChange: ((String) -> Unit)?
-) : SearchView.OnQueryTextListener {
-    override fun onQueryTextSubmit(query: String?): Boolean {
-        query?.let {
-            onSubmit.invoke(query)
-        }
-        return true
-    }
-
-    override fun onQueryTextChange(newText: String?): Boolean {
-        newText?.let {
-            onChange.invoke(newText)
-        }
-        return true
-    }
-}*/
 
 fun SimpleSearchView.setOnQueryTextListener(
     onSubmit: ((String) -> Unit)? = null,
@@ -102,24 +47,7 @@ fun SimpleSearchView.setOnSearchCloseListener(block: () -> Unit) {
     })
 }
 
-fun List<Clip>.cloneToEntries(): List<ClipEntry> {
-    val list = ArrayList<ClipEntry>()
-    this.forEach {
-        list.add(ClipEntry.from(it))
-    }
-    return list
-}
 
-/**
- * An extension function which will auto-generate "timeString" property
- * in all of the clip items.
- */
-fun List<Clip>.cloneForAdapter(): List<Clip> {
-    this.forEach {
-        Clip.autoFill(it)
-    }
-    return this
-}
 
 fun <T> lazyDeferred(block: suspend CoroutineScope.() -> T): Lazy<Deferred<T>> {
     return lazy {
@@ -129,24 +57,6 @@ fun <T> lazyDeferred(block: suspend CoroutineScope.() -> T): Lazy<Deferred<T>> {
     }
 }
 
-class RepositoryListener (
-    private val dataExist: () -> Unit,
-    private val notFound: () -> Unit
-): OnRepositoryCheckListener {
-    override fun onDataExist() {
-        dataExist.invoke()
-    }
-
-    override fun onDataError() {
-        notFound.invoke()
-    }
-
-}
-
-interface OnRepositoryCheckListener {
-    fun onDataExist()
-    fun onDataError()
-}
 
 /**
  * Basically checks if string is an enum of a particular class.
@@ -158,32 +68,4 @@ inline fun <reified T : Enum<T>> enumValueOrNull(name: String): T? {
     return enumValues<T>().find { it.name == name }
 }
 
-fun Clip.clone(data: String?): Clip {
-   /*
-    val clip = Clip(id, data, time)
-    clip.timeString = timeString
-    clip.toDisplay = toDisplay
-    clip.tags = tags*/
-    return copy(data = data)
-}
 
-fun Clip.clone(data: String, tags: Map<String, String>?): Clip {
- /*   val clip = Clip(id, data, time)
-    clip.timeString = timeString
-    clip.toDisplay = toDisplay
-    clip.tags = tags*/
-    return copy(data = data, tags = tags)
-}
-
-
-fun View.hide() {
-    this.visibility = View.INVISIBLE
-}
-
-fun View.show() {
-    this.visibility = View.VISIBLE
-}
-
-fun View.collapse() {
-    this.visibility = View.GONE
-}

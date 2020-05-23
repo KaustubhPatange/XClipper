@@ -30,10 +30,9 @@ class ChangeClipboardActivity : Activity(), KodeinAware {
         Log.e(TAG, "Focus Changed: $hasFocus")
 
         val clipboardManager =   getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        var data = clipboardManager.primaryClip?.getItemAt(0)?.text?.toString()
 
         if (hasFocus) {
-            data = clipboardManager.primaryClip?.getItemAt(0)?.text?.toString()
+            val data = clipboardManager.primaryClip?.getItemAt(0)?.text?.toString()
             saveData(data)
         //    finishActivity(0)
         }/* else {
