@@ -2,10 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.kpstv.xclipper">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
     <!-- TODO: Remove foreground and SAW permission if unused. -->
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application
         android:name=".XClipperApplication"
@@ -15,7 +15,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.activities.Splash"/>
+        <activity android:name=".ui.activities.Splash" />
         <activity android:name=".ui.activities.Main">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,14 +23,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activities.TagDialog"
+        <activity
+            android:name=".ui.dialogs.TagDialog"
             android:excludeFromRecents="true"
-            android:theme="@style/CustomDialogStyle.Dark">
-        </activity>
-        <activity android:name=".service.ChangeClipboardActivity"
-            android:theme="@style/Theme.AppCompat.Translucent"
+            android:theme="@style/CustomDialogStyle.Dark" />
+        <activity
+            android:name=".ui.dialogs.EditDialog"
             android:excludeFromRecents="true"
-            android:launchMode="singleInstance"/>
+            android:theme="@style/CustomDialogStyle.Dark" />
+        <activity
+            android:name=".service.ChangeClipboardActivity"
+            android:excludeFromRecents="true"
+            android:launchMode="singleInstance"
+            android:theme="@style/Theme.AppCompat.Translucent" />
+
         <service
             android:name=".service.ClipboardAccessibilityService"
             android:enabled="true"

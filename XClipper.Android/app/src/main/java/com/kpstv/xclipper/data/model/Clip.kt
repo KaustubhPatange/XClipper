@@ -49,6 +49,6 @@ enum class ClipTag {
     PHONE, DATE, URL, EMAIL, EMPTY;
     companion object {
         fun fromValue(text: String) =
-            enumValueOrNull<ClipTag>(text)
+            enumValueOrNull<ClipTag>(text.toUpperCase(Locale.ROOT))
     }
 }

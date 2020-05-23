@@ -2,6 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginStart="20dp"
+    android:layout_marginEnd="20dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
@@ -16,7 +19,9 @@
         android:background="?colorForeground"
         android:orientation="vertical">
         <com.kpstv.xclipper.extensions.CustomRecyclerView
-            android:paddingTop="10dp"
+            android:padding="10dp"
+            android:clipToPadding="false"
+            android:orientation="horizontal"
             android:id="@+id/del_recyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
@@ -34,6 +39,7 @@
             android:background="@android:color/transparent"
             android:gravity="top"
             android:maxLines="15"
+            android:scrollbars="vertical"
             android:minLines="7"
             android:padding="10dp"
             android:textColor="#ffffff"
@@ -42,14 +48,15 @@
 
     </LinearLayout>
 
-   <!-- <LinearLayout
-        android:background="@color/colorCard"
+    <LinearLayout
+        android:background="?background"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="end">
 
         <Button
             android:id="@+id/saveButton"
+            android:onClick="saveClick"
             android:textAllCaps="false"
             android:textColor="?colorPrimary"
             android:background="@android:color/transparent"
@@ -57,8 +64,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_marginEnd="10dp"
-            android:text="@string/save" />
-    </LinearLayout>-->
+            android:text="@string/ok" />
+    </LinearLayout>
 
 </LinearLayout>
 

@@ -78,8 +78,17 @@ class MainRepositoryImpl(
                     if (innerClip != null) {
                         Log.e(TAG, "Update Clip Id: ${innerClip.id}")
 
-                        clipProvider.processClip(Clip(innerClip.id!!, clip.data!!, clip.time!!))?.let {
-                            clipDao.update(it)
+                        clipProvider.processClip(
+                            Clip(
+                                id = innerClip.id!!,
+                                data = clip.data!!,
+                                time = clip.time!!
+                            )
+                        )?.let { finalClip ->
+                            /** Merge the existing tags into the clip tags */
+                            if (finalClip.tags != null && clip.tags != null)
+                                finalClip.tags = (finalClip.tags!! + clip.tags!!)
+                            clipDao.update(finalClip)
                         }
                         return@io
                     }

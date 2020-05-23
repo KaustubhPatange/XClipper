@@ -36,6 +36,8 @@ import com.kpstv.xclipper.extensions.cloneForAdapter
 import com.kpstv.xclipper.extensions.setOnQueryTextListener
 import com.kpstv.xclipper.extensions.setOnSearchCloseListener
 import com.kpstv.xclipper.ui.adapters.CIAdapter
+import com.kpstv.xclipper.ui.dialogs.EditDialog
+import com.kpstv.xclipper.ui.dialogs.TagDialog
 import com.kpstv.xclipper.ui.helpers.MainEditHelper
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import com.kpstv.xclipper.ui.viewmodels.MainViewModelFactory
@@ -155,9 +157,14 @@ class Main : AppCompatActivity(), KodeinAware {
         adapter.setMenuItemClick { clip, i, menuType ->
             when (menuType) {
                 CIAdapter.MENU_TYPE.Edit -> {
-                    MainEditHelper(
+                    /** This will ensure that we are editing the clip */
+                    mainViewModel.editManager.postClip(clip)
+
+                    val intent = Intent(this, EditDialog::class.java)
+                    startActivity(intent)
+                    /*MainEditHelper(
                         this, mainViewModel
-                    ).show(clip)
+                    ).show(clip)*/
                 }
                 CIAdapter.MENU_TYPE.Special -> {
                     // TODO: Implement this special menu
@@ -271,6 +278,11 @@ class Main : AppCompatActivity(), KodeinAware {
         }
     }
 
+    /**
+     * This must be invoke when item on filter dialog is clicked.
+     *
+     * Right now it is captured through onActivityResult of TipDialog.
+     */
     private fun tagDialogItemClickListener(tag: Tag) {
         if (ci_chip_group.children.count { view ->
                 if (view is Chip)

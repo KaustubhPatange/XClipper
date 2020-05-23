@@ -36,7 +36,8 @@ enum class UpdateType {
      * When used then it will compare the data using filter and only
      * update data, time by querying id as filter.
      */
-    Text
+    Text,
+
 }
 
 /*class OnSearchViewListener(
@@ -134,12 +135,14 @@ inline fun <reified T : Enum<T>> enumValueOrNull(name: String): T? {
     return enumValues<T>().find { it.name == name }
 }
 
-fun Clip.clone(data: String): Clip {
+fun Clip.clone(data: String, tags: Map<String, String>? = null): Clip {
     val clip = Clip(id, data, time)
     clip.timeString = timeString
     clip.toDisplay = toDisplay
+    clip.tags = tags
     return clip
 }
+
 
 fun View.hide() {
     this.visibility = View.INVISIBLE

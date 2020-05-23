@@ -1,10 +1,9 @@
 package com.kpstv.xclipper.data.converters
 
-import android.util.Log
 import androidx.room.TypeConverter
+import com.kpstv.xclipper.App.EMPTY_STRING
 import com.kpstv.xclipper.App.ITEM_SEPARATOR
 import com.kpstv.xclipper.App.PAIR_SEPARATOR
-import com.kpstv.xclipper.data.model.ClipTag
 
 /**
  * Pair separator = :
@@ -33,11 +32,11 @@ object TagConverter {
     fun toTagFromString(data: String?): Map<String, String>? {
         data?.let {
             return it.split(ITEM_SEPARATOR).associate { string ->
-               val pair = string.split(PAIR_SEPARATOR)
+                val pair = string.split(PAIR_SEPARATOR)
                 if (!pair[0].isBlank())
-                    Pair(pair[0],pair[1])
+                    Pair(pair[0], pair[1])
                 else
-                    Pair("","")
+                    Pair(EMPTY_STRING, EMPTY_STRING)
             }
         }
         return null

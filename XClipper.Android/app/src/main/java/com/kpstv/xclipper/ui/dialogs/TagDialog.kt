@@ -1,4 +1,4 @@
-package com.kpstv.xclipper.ui.activities
+package com.kpstv.xclipper.ui.dialogs
 
 import android.os.Bundle
 import android.view.KeyEvent
@@ -72,7 +72,7 @@ class TagDialog : AppCompatActivity(), KodeinAware {
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
 
-        /** A Timeout creates a cool recyclerView loading effect */
+        /** A Timeout on binding creates a cool effect */
 
         Coroutines.main {
             delay(DELAY_SPAN)

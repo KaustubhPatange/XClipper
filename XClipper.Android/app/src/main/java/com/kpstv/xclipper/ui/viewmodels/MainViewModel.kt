@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData
 import com.kpstv.license.Decrypt
 import com.kpstv.xclipper.data.localized.DialogState
 import com.kpstv.xclipper.data.model.Clip
+import com.kpstv.xclipper.data.model.ClipTag
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.repository.MainRepository
@@ -29,7 +30,9 @@ class MainViewModel(
     private var _tag: Tag? = null
     private val _stateManager = MainStateManager()
     private val _searchManager = MainSearchManager()
+    private val _editManager = MainEditManager(tagRepository)
     private val _clipLiveData = MutableLiveData<List<Clip>>()
+
     private val _tagLiveData = MutableLiveData<List<Tag>>()
 
     fun setTag(tag: Tag) {
@@ -40,11 +43,15 @@ class MainViewModel(
         return _tag
     }
 
+
     val stateManager: MainStateManager
         get() = _stateManager
 
     val searchManager: MainSearchManager
         get() = _searchManager
+
+    val editManager: MainEditManager
+        get() = _editManager
 
     private val mediatorLiveData = MediatorLiveData<List<Clip>>()
 
@@ -53,6 +60,8 @@ class MainViewModel(
 
     val tagLiveData: LiveData<List<Tag>>
         get() = _tagLiveData
+
+
 
     fun postToRepository(data: String) {
         mainRepository.updateRepository(data)
@@ -68,7 +77,8 @@ class MainViewModel(
 
     fun postUpdateToRepository(oldClip: Clip, newClip: Clip) {
         mainRepository.updateClip(newClip, UpdateType.Id)
-        firebaseProvider.replaceData(oldClip, newClip)
+        if (oldClip.data?.Decrypt() != newClip.data?.Decrypt())
+            firebaseProvider.replaceData(oldClip, newClip)
     }
 
     fun makeAValidationRequest(block: (Status) -> Unit) {

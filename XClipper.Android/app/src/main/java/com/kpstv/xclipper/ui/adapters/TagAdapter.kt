@@ -49,7 +49,7 @@ class TagAdapter(
 
         dialogState.observe(context as LifecycleOwner, Observer {
             if (it == DialogState.Edit) {
-                if (ClipTag.fromValue(tag.name.toUpperCase(Locale.ROOT)) == null)
+                if (ClipTag.fromValue(tag.name) == null)
                     chip.isCloseIconVisible = true
             }
             else if (it == DialogState.Normal)

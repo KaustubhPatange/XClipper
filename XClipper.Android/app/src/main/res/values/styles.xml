@@ -47,10 +47,11 @@
         <item name="colorTextPrimary">@color/colorTextPrimary</item>
         <item name="colorTextSecondary">@color/colorTextSecondary</item>
         <item name="colorForeground">@color/colorCard</item>
-        <item name="fontFamily">@font/google_sans_medium</item>
-        <item name="windowNoTitle">true</item>
+        <item name="colorSeparator">@color/colorSeparator</item>
         <item name="background">@color/colorBackground</item>
         <item name="colorSelected">@color/colorSelected</item>
+        <item name="fontFamily">@font/google_sans_medium</item>
+        <item name="windowNoTitle">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
