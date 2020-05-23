@@ -126,7 +126,6 @@ class FirebaseProviderImpl : FirebaseProvider {
 
     override fun getAllClipData(block: (List<Clip>?) -> Unit) {
         workWithData(ValidationContext.ForceInvoke) {
-            Log.e(TAG, "All data got")
             block.invoke(user?.Clips)
         }
     }
@@ -151,6 +150,7 @@ class FirebaseProviderImpl : FirebaseProvider {
             database.getReference(USER_REF).child(UID)
                 .addListenerForSingleValueEvent(FValueEventListener(
                     onDataChange = { snap ->
+                        Log.e(TAG, "Check 4")
                         val json = gson.toJson(snap.value)
                         gson.fromJson(json, User::class.java).also { user = it }
                         block.invoke()

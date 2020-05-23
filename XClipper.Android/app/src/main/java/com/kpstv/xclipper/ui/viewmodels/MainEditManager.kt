@@ -59,7 +59,6 @@ class MainEditManager(
      * Call this function to update tags from the clip tags
      */
     private fun updateTags(clip: Clip) {
-        Log.e(TAG, "Updating tags")
         _selectedTags.postValue(clip.tags?.filter {
             ClipTag.fromValue(it.key) == null
         })
@@ -70,9 +69,6 @@ class MainEditManager(
             _tagFixedLiveData.postValue(it.filter { tag ->
                 ClipTag.fromValue(tag.name) == null
             })
-        }
-        _selectedTags.observeForever {
-            Log.e(TAG, "Selected Tags updated")
         }
     }
 }

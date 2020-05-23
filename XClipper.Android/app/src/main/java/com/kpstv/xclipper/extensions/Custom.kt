@@ -26,7 +26,7 @@ enum class Status {
 
 
 
-enum class UpdateType {
+enum class FilterType {
     /**
      * Make a direct with the dao.
      */
@@ -135,12 +135,21 @@ inline fun <reified T : Enum<T>> enumValueOrNull(name: String): T? {
     return enumValues<T>().find { it.name == name }
 }
 
-fun Clip.clone(data: String, tags: Map<String, String>? = null): Clip {
+fun Clip.clone(data: String?): Clip {
+   /*
     val clip = Clip(id, data, time)
     clip.timeString = timeString
     clip.toDisplay = toDisplay
-    clip.tags = tags
-    return clip
+    clip.tags = tags*/
+    return copy(data = data)
+}
+
+fun Clip.clone(data: String, tags: Map<String, String>?): Clip {
+ /*   val clip = Clip(id, data, time)
+    clip.timeString = timeString
+    clip.toDisplay = toDisplay
+    clip.tags = tags*/
+    return copy(data = data, tags = tags)
 }
 
 

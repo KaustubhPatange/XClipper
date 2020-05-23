@@ -9,7 +9,8 @@ import com.kpstv.xclipper.data.provider.ClipProvider
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.extensions.Coroutines
 import com.kpstv.xclipper.extensions.Status
-import com.kpstv.xclipper.extensions.UpdateType
+import com.kpstv.xclipper.extensions.FilterType
+import com.kpstv.xclipper.extensions.clone
 
 class MainRepositoryImpl(
     private val clipDao: ClipDataDao,
@@ -32,9 +33,8 @@ class MainRepositoryImpl(
                 val allClips = clipDao.getAllData()
 
                 if (allClips.isNotEmpty()) {
-                    allClips.filter { it.data?.Decrypt() == clip.data?.Decrypt() }.forEach {
-                        clipDao.delete(it)
-                    }
+                    val innerClip = allClips.firstOrNull { it.data?.Decrypt() == clip.data?.Decrypt() }
+                    if (innerClip != null) return@io
                 }
                 clipDao.insert(clip)
                 Log.e(TAG, "Data Saved: ${clip.data?.Decrypt()}")
@@ -52,14 +52,32 @@ class MainRepositoryImpl(
             }
 
             it.forEach { clip ->
-                updateClip(clip)
+                firebaseUpdate(clip)
             }
 
             onComplete.invoke(Status.Success)
         }
     }
 
-    override fun updateClip(clip: Clip?, updateType: UpdateType) {
+    /**
+     * A private function for updating or adding new data while validation
+     */
+    private fun firebaseUpdate(clip: Clip) {
+        Coroutines.io {
+            synchronized(lock1) {
+                val allData = clipDao.getAllData()
+
+                val innerClip = allData.firstOrNull { it.data?.Decrypt() == clip.data?.Decrypt() }
+                if (innerClip != null) {
+                    innerClip.clone(clip.data)
+                    clipDao.update(clip)
+                }
+                else processClipAndSave(clip)
+            }
+        }
+    }
+
+    override fun updateClip(clip: Clip?, filterType: FilterType) {
         if (clip == null) return
 
         Coroutines.io {
@@ -71,13 +89,12 @@ class MainRepositoryImpl(
                 val allData = clipDao.getAllData()
 
                 if (allData.isNotEmpty()) {
-                    val innerClip: Clip? = if (updateType == UpdateType.Text)
+                    val innerClip: Clip? = if (filterType == FilterType.Text)
                         allData.firstOrNull { it.data?.Decrypt() == clip.data?.Decrypt() }
                     else
                         allData.firstOrNull { it.id == clip.id }
                     if (innerClip != null) {
                         Log.e(TAG, "Update Clip Id: ${innerClip.id}")
-
                         clipProvider.processClip(
                             Clip(
                                 id = innerClip.id!!,

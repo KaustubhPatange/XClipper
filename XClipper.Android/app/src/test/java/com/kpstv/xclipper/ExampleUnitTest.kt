@@ -6,6 +6,7 @@ import com.kpstv.xclipper.data.model.ClipTag
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 /**
@@ -25,24 +26,33 @@ class ExampleUnitTest {
         PHONE, DATE, URL, EMAIL, EMPTY
     }
 
+    data class User (
+        val id: Int,
+        val text: String
+    ) {
+        var list: List<Int>? = null
+
+        override fun equals(other: Any?): Boolean {
+            return super.equals(other)
+        }
+
+        override fun hashCode(): Int {
+            var result = id
+            result = 31 * result + text.hashCode()
+            result = 31 * result + (list?.hashCode() ?: 0)
+            return result
+        }
+    }
+
     @Test
     fun list_test() {
 
-        val map1 = mutableMapOf(
-            "Email" to "developerkp16@gmail.com",
-            "date" to "value",
-            "key1" to "value1",
-            "key2" to "value2"
-        )
-        val map2 = mutableMapOf(
-            "key2" to "value2",
-            "key3" to "value3",
-            "key4" to "value4"
-        )
+        val user1 = User(1, "text")
+        user1.list = listOf(1,2,3)
+        val user2 = User(1, "text")
 
-        val map3: Map<String, String>?
 
-        //println((map1 + map2 + map3))
+        println(user1 == user2)
 
     }
 

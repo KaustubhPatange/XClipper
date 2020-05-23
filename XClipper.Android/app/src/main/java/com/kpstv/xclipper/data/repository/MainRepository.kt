@@ -3,15 +3,26 @@ package com.kpstv.xclipper.data.repository
 import androidx.lifecycle.LiveData
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.extensions.Status
-import com.kpstv.xclipper.extensions.UpdateType
+import com.kpstv.xclipper.extensions.FilterType
 
 interface MainRepository {
+
+    /**
+     * This operation implements a direct save to the database.
+     *
+     * The save method it uses is a safe push. It only inserts the data
+     * when the database doesn't contains it.
+     *
+     * Determination of existing data is done by "Clip.data" property.
+     *
+     * @param clip Incoming clip data to save
+     */
     fun saveClip(clip: Clip?)
 
     /**
      * This operation will save data to only local database.
      *
-     * During processing it will create the data from clip.data parameter.
+     * During processing it will create the data from "clip.data" parameter.
      */
     fun processClipAndSave(clip: Clip?)
 
@@ -24,9 +35,9 @@ interface MainRepository {
      *
      * If it does not exist then we will process and save it.
      *
-     * @param Clip A clip which is contains encrypted data and no tags (usually coming from firebase).
+     * @param clip A clip which is contains encrypted data and no tags (usually coming from firebase).
      */
-    fun updateClip(clip: Clip?, updateType: UpdateType = UpdateType.Text)
+    fun updateClip(clip: Clip?, filterType: FilterType = FilterType.Text)
 
     fun deleteClip(clip: Clip)
 
@@ -44,10 +55,10 @@ interface MainRepository {
     fun getAllData(): List<Clip>
 
     /**
-     * TODO: There is a wrong insertion of data
-     *
      * Since save clip function does work on separate thread, synchronization
      * between these threads on quick insertion is creating uneven insertions.
+     *
+     * TODO: There is a wrong sequence insertion of data
      */
     fun validateData(onComplete: (Status) -> Unit)
 

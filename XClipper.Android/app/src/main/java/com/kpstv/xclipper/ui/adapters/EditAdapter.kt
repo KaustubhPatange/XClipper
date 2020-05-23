@@ -53,7 +53,6 @@ class EditAdapter(
         chip.setOnClickListener{ onClick.invoke(tag, layoutPosition) }
 
         selectedTags.observe(viewLifecycleOwner, Observer {
-            Log.e(TAG, "MapData: $it")
             chip.isChipIconVisible = it?.containsKey(tag.name) == true
         })
     }

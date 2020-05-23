@@ -1,21 +1,18 @@
 package com.kpstv.xclipper.ui.viewmodels
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.kpstv.license.Decrypt
-import com.kpstv.xclipper.data.localized.DialogState
 import com.kpstv.xclipper.data.model.Clip
-import com.kpstv.xclipper.data.model.ClipTag
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.data.repository.TagRepository
 import com.kpstv.xclipper.extensions.Status
-import com.kpstv.xclipper.extensions.UpdateType
+import com.kpstv.xclipper.extensions.FilterType
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -76,7 +73,7 @@ class MainViewModel(
     }
 
     fun postUpdateToRepository(oldClip: Clip, newClip: Clip) {
-        mainRepository.updateClip(newClip, UpdateType.Id)
+        mainRepository.updateClip(newClip, FilterType.Id)
         if (oldClip.data?.Decrypt() != newClip.data?.Decrypt())
             firebaseProvider.replaceData(oldClip, newClip)
     }
