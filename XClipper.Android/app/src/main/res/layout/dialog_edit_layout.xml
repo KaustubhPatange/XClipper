@@ -32,6 +32,7 @@
             android:background="?colorSeparator"/>
 
         <EditText
+            android:hint="@string/write_here"
             android:layout_marginTop="10dp"
             android:id="@+id/de_editText"
             android:layout_width="match_parent"

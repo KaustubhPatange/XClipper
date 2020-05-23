@@ -13,6 +13,7 @@ import com.kpstv.xclipper.App
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.extensions.Coroutines
+import com.kpstv.xclipper.extensions.RepositoryListener
 import com.kpstv.xclipper.extensions.clone
 import com.kpstv.xclipper.ui.adapters.EditAdapter
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
@@ -72,13 +73,27 @@ class EditDialog : AppCompatActivity(), KodeinAware {
         val text = de_editText.text.toString()
 
         if (text.isNotBlank()) {
-            mainViewModel.postUpdateToRepository(
-                clip,
-                /** In the second parameter we are also supplying the tags as well. */
-                clip.clone(text.Encrypt(), mainViewModel.editManager.getSelectedTags())
-            )
-            Toast.makeText(this, getString(R.string.edit_success), Toast.LENGTH_SHORT).show()
-            finish()
+
+            mainViewModel.checkForDuplicateClip(text, RepositoryListener(
+                dataExist = {
+                    Toast.makeText(this, getString(R.string.error_duplicate_data), Toast.LENGTH_SHORT).show()
+                },
+                notFound = {
+                    if (edType == EDType.Edit) {
+                        mainViewModel.postUpdateToRepository(
+                            clip,
+                            /** In the second parameter we are also supplying the tags as well. */
+                            clip.clone(text.Encrypt(), mainViewModel.editManager.getSelectedTags())
+                        )
+                    } else {
+                        mainViewModel.postToRepository(
+                            Clip.from(text, mainViewModel.editManager.getSelectedTags())
+                        )
+                    }
+                    Toast.makeText(this, getString(R.string.edit_success), Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+            ))
         } else
             Toast.makeText(this, getString(R.string.error_empty_text), Toast.LENGTH_SHORT).show()
     }

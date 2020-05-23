@@ -13,6 +13,7 @@ import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.data.repository.TagRepository
 import com.kpstv.xclipper.extensions.Status
 import com.kpstv.xclipper.extensions.FilterType
+import com.kpstv.xclipper.extensions.RepositoryListener
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -62,6 +63,14 @@ class MainViewModel(
 
     fun postToRepository(data: String) {
         mainRepository.updateRepository(data)
+    }
+
+    fun postToRepository(clip: Clip) {
+        mainRepository.processClipAndSave(clip)
+    }
+
+    fun checkForDuplicateClip(unencryptedData: String, repositoryListener: RepositoryListener) {
+        mainRepository.checkForDuplicate(unencryptedData, repositoryListener)
     }
 
     fun deleteFromRepository(clip: Clip) {

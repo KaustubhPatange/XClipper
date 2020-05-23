@@ -11,7 +11,8 @@ interface ClipProvider {
 
     /**
      * This function will create a new clip with same Id, Data.
-     * It will recreate time and tag values.
+     *
+     * It will recreate time and combine tag values with auto-generated one.
      */
     fun processClip(clip: Clip?): Clip?
 }

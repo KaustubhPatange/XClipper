@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.extensions.Status
 import com.kpstv.xclipper.extensions.FilterType
+import com.kpstv.xclipper.extensions.RepositoryListener
 
 interface MainRepository {
 
@@ -51,8 +52,14 @@ interface MainRepository {
      * and then create new data from the given string and perform insert operation.
      */
     fun updateRepository(data: String?)
+    fun updateRepository(clip: Clip)
 
     fun getAllData(): List<Clip>
+
+    /**
+     * Checks if the clip exist in the database.
+     */
+    fun checkForDuplicate(unencryptedData: String?, repositoryListener: RepositoryListener)
 
     /**
      * Since save clip function does work on separate thread, synchronization

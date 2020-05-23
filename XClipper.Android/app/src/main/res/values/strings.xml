@@ -29,4 +29,6 @@
     <string name="more">More</string>
     <string name="tag">Filter Tag</string>
     <string name="custom_tags">Filter Tags</string>
+    <string name="write_here">Write here...</string>
+    <string name="error_duplicate_data">Warning: Duplicate data insertion</string>
 </resources>

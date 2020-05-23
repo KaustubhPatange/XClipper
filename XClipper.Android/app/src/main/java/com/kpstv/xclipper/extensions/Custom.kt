@@ -110,6 +110,10 @@ fun List<Clip>.cloneToEntries(): List<ClipEntry> {
     return list
 }
 
+/**
+ * An extension function which will auto-generate "timeString" property
+ * in all of the clip items.
+ */
 fun List<Clip>.cloneForAdapter(): List<Clip> {
     this.forEach {
         Clip.autoFill(it)
@@ -123,6 +127,25 @@ fun <T> lazyDeferred(block: suspend CoroutineScope.() -> T): Lazy<Deferred<T>> {
             block.invoke(this)
         }
     }
+}
+
+class RepositoryListener (
+    private val dataExist: () -> Unit,
+    private val notFound: () -> Unit
+): OnRepositoryCheckListener {
+    override fun onDataExist() {
+        dataExist.invoke()
+    }
+
+    override fun onDataError() {
+        notFound.invoke()
+    }
+
+}
+
+interface OnRepositoryCheckListener {
+    fun onDataExist()
+    fun onDataError()
 }
 
 /**

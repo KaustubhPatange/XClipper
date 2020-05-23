@@ -7,10 +7,7 @@ import com.kpstv.xclipper.data.localized.ClipDataDao
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.provider.ClipProvider
 import com.kpstv.xclipper.data.provider.FirebaseProvider
-import com.kpstv.xclipper.extensions.Coroutines
-import com.kpstv.xclipper.extensions.Status
-import com.kpstv.xclipper.extensions.FilterType
-import com.kpstv.xclipper.extensions.clone
+import com.kpstv.xclipper.extensions.*
 
 class MainRepositoryImpl(
     private val clipDao: ClipDataDao,
@@ -33,7 +30,8 @@ class MainRepositoryImpl(
                 val allClips = clipDao.getAllData()
 
                 if (allClips.isNotEmpty()) {
-                    val innerClip = allClips.firstOrNull { it.data?.Decrypt() == clip.data?.Decrypt() }
+                    val innerClip =
+                        allClips.firstOrNull { it.data?.Decrypt() == clip.data?.Decrypt() }
                     if (innerClip != null) return@io
                 }
                 clipDao.insert(clip)
@@ -71,8 +69,7 @@ class MainRepositoryImpl(
                 if (innerClip != null) {
                     innerClip.clone(clip.data)
                     clipDao.update(clip)
-                }
-                else processClipAndSave(clip)
+                } else processClipAndSave(clip)
             }
         }
     }
@@ -130,6 +127,19 @@ class MainRepositoryImpl(
         }
     }
 
+    override fun checkForDuplicate(unencryptedData: String?, repositoryListener: RepositoryListener) {
+        Coroutines.io {
+            if (clipDao.getAllData().count { it.data?.Decrypt() == unencryptedData } > 0)
+                Coroutines.main {
+                    repositoryListener.onDataExist()
+                }
+            else
+                Coroutines.main {
+                    repositoryListener.onDataError()
+                }
+        }
+    }
+
     override fun getAllLiveClip(): LiveData<List<Clip>> {
         return clipDao.getAllLiveData()
     }
@@ -148,6 +158,13 @@ class MainRepositoryImpl(
         clipProvider.processClip(data)?.let { clip ->
             saveClip(clip)
             firebaseProvider.uploadData(clip)
+        }
+    }
+
+    override fun updateRepository(clip: Clip) {
+        clipProvider.processClip(clip)?.let { innerClip ->
+            saveClip(innerClip)
+            firebaseProvider.uploadData(innerClip)
         }
     }
 

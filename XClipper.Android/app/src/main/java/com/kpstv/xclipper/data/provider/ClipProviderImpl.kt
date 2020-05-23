@@ -25,12 +25,12 @@ class ClipProviderImpl : ClipProvider {
 
     override fun processClip(clip: Clip?): Clip? {
         if (clip == null) return null
-
+        val tagMap: Map<String, String> = clip.tags ?: HashMap()
         return Clip(
             id = clip.id,
             data = clip.data,
             time = Calendar.getInstance().time,
-            tags = determineTags(clip.data?.Decrypt())
+            tags = tagMap + determineTags(clip.data?.Decrypt())
         )
     }
 

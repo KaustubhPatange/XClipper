@@ -81,6 +81,10 @@ class Main : AppCompatActivity(), KodeinAware {
 
         setSearchViewListener()
 
+        fab_addItem.setOnClickListener {
+            val intent = Intent(this, EditDialog::class.java)
+            startActivity(intent)
+        }
 
         /*  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
               val intent = Intent(
