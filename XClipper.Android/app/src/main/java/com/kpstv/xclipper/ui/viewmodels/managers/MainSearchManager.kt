@@ -1,4 +1,4 @@
-package com.kpstv.xclipper.ui.viewmodels
+package com.kpstv.xclipper.ui.viewmodels.managers
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

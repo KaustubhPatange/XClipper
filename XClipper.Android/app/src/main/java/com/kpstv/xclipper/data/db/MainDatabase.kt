@@ -65,6 +65,7 @@ abstract class MainDatabase : RoomDatabase() {
                             ClipTag.values().forEach {
                                 insert(Tag.from(it.name.toLowerCase(Locale.ROOT)))
                             }
+                            insert(Tag.from("test tag"))
                         }
                     }
                 }

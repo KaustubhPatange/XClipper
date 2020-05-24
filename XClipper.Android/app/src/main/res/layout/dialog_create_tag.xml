@@ -14,11 +14,12 @@
         android:background="?colorPrimary" />
 
     <LinearLayout
+        android:id="@+id/linearLayout1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?colorForeground"
         android:orientation="vertical"
-        android:minHeight="170dp"
+        android:minHeight="100dp"
         android:padding="10dp">
 
         <TextView

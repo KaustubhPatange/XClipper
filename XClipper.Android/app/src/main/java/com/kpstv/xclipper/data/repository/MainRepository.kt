@@ -60,6 +60,7 @@ interface MainRepository {
      * Checks if the clip exist in the database.
      */
     fun checkForDuplicate(unencryptedData: String?, repositoryListener: RepositoryListener)
+    fun checkForDuplicate(unencryptedData: String?, id: Int, repositoryListener: RepositoryListener)
 
     /**
      * This function will check if there is any data depending on this tag.

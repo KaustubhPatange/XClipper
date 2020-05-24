@@ -17,7 +17,7 @@ import org.kodein.di.generic.instance
 class ChangeClipboardActivity : Activity(), KodeinAware {
 
     override val kodein by kodein()
-    private val repository: MainRepository by instance()
+    private val repository by instance<MainRepository>()
 
     private val TAG = javaClass.simpleName
 

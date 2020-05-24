@@ -2,6 +2,7 @@ package com.kpstv.xclipper.extensions
 
 import com.ferfalk.simplesearchview.SimpleSearchView
 import kotlinx.coroutines.*
+import java.io.IOException
 
 
 fun SimpleSearchView.setOnQueryTextListener(
@@ -46,8 +47,6 @@ fun SimpleSearchView.setOnSearchCloseListener(block: () -> Unit) {
 
     })
 }
-
-
 
 fun <T> lazyDeferred(block: suspend CoroutineScope.() -> T): Lazy<Deferred<T>> {
     return lazy {

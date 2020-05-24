@@ -4,13 +4,16 @@ import android.provider.Settings
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.kpstv.xclipper.data.converters.CipDeserializer
+import com.kpstv.xclipper.data.converters.DefinitionDeserializer
 import com.kpstv.xclipper.data.model.Clip
+import com.kpstv.xclipper.data.model.Definition
 
 object App {
 
     val gson: Gson = GsonBuilder()
         .serializeNulls()
         .registerTypeAdapter(Clip::class.java, CipDeserializer())
+        .registerTypeAdapter(Definition::class.java, DefinitionDeserializer())
         .create()
 
     var CLIP_DATA: String? = null
@@ -44,6 +47,8 @@ object App {
 
     const val TAG_FILTER_CHIP = "com.kpstv.xclipper.tag"
 
+    const val DICTIONARY_WORD_PATTERN_REGEX = "\"word\":[\\s]?\".*?\""
+    const val DICTIONARY_DEFINITION_PATTERN_REGEX = "\"definition\":[\\s]?\".*?\""
     const val PHONE_PATTERN_REGEX = "(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}"
     const val EMAIL_PATTERN_REGEX = "([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)"
     const val URL_PATTERN_REGEX = "https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)"

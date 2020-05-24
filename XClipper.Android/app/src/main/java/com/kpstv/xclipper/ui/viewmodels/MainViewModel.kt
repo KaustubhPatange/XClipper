@@ -6,6 +6,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.kpstv.license.Decrypt
+import com.kpstv.xclipper.data.api.GoogleDictionaryApi
+import com.kpstv.xclipper.data.api.TinyUrlApi
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.data.provider.FirebaseProvider
@@ -14,6 +16,11 @@ import com.kpstv.xclipper.data.repository.TagRepository
 import com.kpstv.xclipper.extensions.enumerations.FilterType
 import com.kpstv.xclipper.extensions.listeners.RepositoryListener
 import com.kpstv.xclipper.extensions.listeners.StatusListener
+import com.kpstv.xclipper.ui.helpers.DictionaryApiHelper
+import com.kpstv.xclipper.ui.helpers.TinyUrlApiHelper
+import com.kpstv.xclipper.ui.viewmodels.managers.MainEditManager
+import com.kpstv.xclipper.ui.viewmodels.managers.MainSearchManager
+import com.kpstv.xclipper.ui.viewmodels.managers.MainStateManager
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -21,14 +28,19 @@ class MainViewModel(
     application: Application,
     private val mainRepository: MainRepository,
     private val tagRepository: TagRepository,
-    private val firebaseProvider: FirebaseProvider
+    private val firebaseProvider: FirebaseProvider,
+    val dictionaryApiHelper: DictionaryApiHelper,
+    val tinyUrlApiHelper: TinyUrlApiHelper
 ) : AndroidViewModel(application) {
 
     private val TAG = javaClass.simpleName
     private var _tag: Tag? = null
-    private val _stateManager = MainStateManager()
-    private val _searchManager = MainSearchManager()
-    private val _editManager = MainEditManager(tagRepository)
+    private val _stateManager =
+        MainStateManager()
+    private val _searchManager =
+        MainSearchManager()
+    private val _editManager =
+        MainEditManager(tagRepository)
     private val _clipLiveData = MutableLiveData<List<Clip>>()
 
     private val _tagLiveData = MutableLiveData<List<Tag>>()
@@ -37,10 +49,9 @@ class MainViewModel(
         _tag = tag
     }
 
-    fun getTag() : Tag? {
+    fun getTag(): Tag? {
         return _tag
     }
-
 
     val stateManager: MainStateManager
         get() = _stateManager
@@ -59,8 +70,6 @@ class MainViewModel(
     val tagLiveData: LiveData<List<Tag>>
         get() = _tagLiveData
 
-
-
     fun postToRepository(data: String) {
         mainRepository.updateRepository(data)
     }
@@ -71,6 +80,14 @@ class MainViewModel(
 
     fun checkForDuplicateClip(unencryptedData: String, repositoryListener: RepositoryListener) {
         mainRepository.checkForDuplicate(unencryptedData, repositoryListener)
+    }
+
+    fun checkForDuplicateClip(
+        unencryptedData: String,
+        id: Int,
+        repositoryListener: RepositoryListener
+    ) {
+        mainRepository.checkForDuplicate(unencryptedData, id, repositoryListener)
     }
 
     fun deleteFromRepository(clip: Clip) {
@@ -119,19 +136,39 @@ class MainViewModel(
         }
 
         mediatorLiveData.addSource(searchManager.searchString) {
-            makeMySource(_clipLiveData.value, searchManager.searchFilters.value, searchManager.tagFilters.value, it)
+            makeMySource(
+                _clipLiveData.value,
+                searchManager.searchFilters.value,
+                searchManager.tagFilters.value,
+                it
+            )
         }
 
         mediatorLiveData.addSource(searchManager.tagFilters) {
-            makeMySource(_clipLiveData.value, searchManager.searchFilters.value, it,searchManager.searchString.value)
+            makeMySource(
+                _clipLiveData.value,
+                searchManager.searchFilters.value,
+                it,
+                searchManager.searchString.value
+            )
         }
 
         mediatorLiveData.addSource(searchManager.searchFilters) {
-            makeMySource(_clipLiveData.value, it, searchManager.tagFilters.value, searchManager.searchString.value)
+            makeMySource(
+                _clipLiveData.value,
+                it,
+                searchManager.tagFilters.value,
+                searchManager.searchString.value
+            )
         }
 
         mediatorLiveData.addSource(_clipLiveData) {
-            makeMySource(it, searchManager.searchFilters.value, searchManager.tagFilters.value, searchManager.searchString.value)
+            makeMySource(
+                it,
+                searchManager.searchFilters.value,
+                searchManager.tagFilters.value,
+                searchManager.searchString.value
+            )
         }
     }
 

@@ -12,8 +12,8 @@ import com.kpstv.xclipper.App
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.extensions.Coroutines
-import com.kpstv.xclipper.extensions.listeners.RepositoryListener
 import com.kpstv.xclipper.extensions.clone
+import com.kpstv.xclipper.extensions.listeners.RepositoryListener
 import com.kpstv.xclipper.ui.adapters.EditAdapter
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import com.kpstv.xclipper.ui.viewmodels.MainViewModelFactory
@@ -26,7 +26,7 @@ import org.kodein.di.generic.instance
 
 class EditDialog : AppCompatActivity(), KodeinAware {
     override val kodein by kodein()
-    private val viewModelFactory: MainViewModelFactory by instance()
+    private val viewModelFactory by instance<MainViewModelFactory>()
 
     private lateinit var clip: Clip
     private lateinit var adapter: EditAdapter
@@ -73,30 +73,45 @@ class EditDialog : AppCompatActivity(), KodeinAware {
 
         if (text.isNotBlank()) {
             if (edType == EDType.Edit) {
+                performEditTask(text)
+            } else {
+                performCreateTask(text)
+            }
+        } else
+            Toasty.error(this, getString(R.string.error_empty_text)).show()
+    }
+
+    private fun performEditTask(text: String) {
+        mainViewModel.checkForDuplicateClip(text, clip.id!!, RepositoryListener(
+            dataExist = Toasty.error(
+                this,
+                getString(R.string.error_duplicate_data)
+            )::show,
+            notFound = {
                 mainViewModel.postUpdateToRepository(
                     clip,
                     /** In the second parameter we are also supplying the tags as well. */
                     clip.clone(text.Encrypt(), mainViewModel.editManager.getSelectedTags())
                 )
                 postSuccess()
-            } else {
-                mainViewModel.checkForDuplicateClip(text,
-                    RepositoryListener(
-                        dataExist = Toasty.error(
-                            this,
-                            getString(R.string.error_duplicate_data)
-                        )::show,
-                        notFound = {
-                            mainViewModel.postToRepository(
-                                Clip.from(text, mainViewModel.editManager.getSelectedTags())
-                            )
-                            postSuccess()
-                        }
-                    ))
-
             }
-        } else
-            Toasty.error(this, getString(R.string.error_empty_text)).show()
+        ))
+    }
+
+    private fun performCreateTask(text: String) {
+        mainViewModel.checkForDuplicateClip(text,
+            RepositoryListener(
+                dataExist = Toasty.error(
+                    this,
+                    getString(R.string.error_duplicate_data)
+                )::show,
+                notFound = {
+                    mainViewModel.postToRepository(
+                        Clip.from(text, mainViewModel.editManager.getSelectedTags())
+                    )
+                    postSuccess()
+                }
+            ))
     }
 
     private fun postSuccess() {

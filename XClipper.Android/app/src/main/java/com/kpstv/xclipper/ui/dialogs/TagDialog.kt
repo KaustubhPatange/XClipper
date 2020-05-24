@@ -37,7 +37,7 @@ import org.kodein.di.generic.instance
 class TagDialog : AppCompatActivity(), KodeinAware {
 
     override val kodein by kodein()
-    private val viewModelFactory: MainViewModelFactory by instance()
+    private val viewModelFactory by instance<MainViewModelFactory>()
 
     private val mainViewModel: MainViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
@@ -80,6 +80,7 @@ class TagDialog : AppCompatActivity(), KodeinAware {
         Coroutines.main {
             delay(DELAY_SPAN)
             bindUI()
+            linearLayout1.minimumHeight =  resources.getDimension(R.dimen.dimen170).toInt()
         }
     }
 

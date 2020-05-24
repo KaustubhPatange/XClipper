@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?background"
+    android:paddingBottom="10dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="?colorTextPrimary"
+        android:textSize="19sp"
+        android:text="@string/specials"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="20dp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="10dp"
+        android:background="?colorForeground"/>
+
+    <com.google.android.material.button.MaterialButton
+        style="@style/CustomButtonStyle"
+        android:background="?selectableItemBackground"
+        android:drawableLeft="@drawable/ic_search"
+        android:text="text" />
+    <com.google.android.material.button.MaterialButton
+        style="@style/CustomButtonStyle"
+        android:background="?selectableItemBackground"
+        android:drawableLeft="@drawable/ic_search"
+        android:text="text" />
+    <com.google.android.material.button.MaterialButton
+        style="@style/CustomButtonStyle"
+        android:background="?selectableItemBackground"
+        android:drawableLeft="@drawable/ic_search"
+        android:text="text" />
+    <com.google.android.material.button.MaterialButton
+        style="@style/CustomButtonStyle"
+        android:background="?selectableItemBackground"
+        android:drawableLeft="@drawable/ic_search"
+        android:text="text" />
+
+</LinearLayout>

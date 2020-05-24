@@ -1,4 +1,4 @@
-package com.kpstv.xclipper.extensions
+package com.kpstv.xclipper.extensions.utils
 
 import android.app.Activity
 import android.app.ActivityManager

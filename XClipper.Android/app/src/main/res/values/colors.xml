@@ -9,10 +9,15 @@
     <color name="colorCard">#313235</color>
     <color name="colorSelected">#404040</color>
 
+
     <color name="colorBackground">#202124</color>
 
     <color name="colorSeparator">#676666</color>
 
     <color name="colorTextSecondary">#9F9F9F</color>
+    <color name="colorTextSecondaryLight">#C3C2C2</color>
     <color name="colorTextPrimary">#F1EEEE</color>
+
+    <color name="roundedBottomSheetPrimaryBackground">?background</color>
+    <color name="roundedBottomSheetPrimaryNavigationBarColor">#202124</color>
 </resources>

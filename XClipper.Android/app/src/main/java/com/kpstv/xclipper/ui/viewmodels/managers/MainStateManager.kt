@@ -1,6 +1,5 @@
-package com.kpstv.xclipper.ui.viewmodels
+package com.kpstv.xclipper.ui.viewmodels.managers
 
-import android.app.Dialog
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.kpstv.xclipper.data.localized.DialogState

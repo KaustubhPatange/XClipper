@@ -29,14 +29,15 @@ import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.ToolbarState
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.Tag
-import com.kpstv.xclipper.extensions.Utils.Companion.shareText
 import com.kpstv.xclipper.extensions.cloneForAdapter
 import com.kpstv.xclipper.extensions.listeners.StatusListener
 import com.kpstv.xclipper.extensions.setOnQueryTextListener
 import com.kpstv.xclipper.extensions.setOnSearchCloseListener
+import com.kpstv.xclipper.extensions.utils.Utils.Companion.shareText
 import com.kpstv.xclipper.ui.adapters.CIAdapter
 import com.kpstv.xclipper.ui.dialogs.EditDialog
 import com.kpstv.xclipper.ui.dialogs.TagDialog
+import com.kpstv.xclipper.ui.fragments.MoreBottomSheet
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import com.kpstv.xclipper.ui.viewmodels.MainViewModelFactory
 import es.dmoral.toasty.Toasty
@@ -54,9 +55,9 @@ class Main : AppCompatActivity(), KodeinAware {
     private val TAG = javaClass.simpleName
 
     override val kodein by kodein()
-    private val viewModelFactory: MainViewModelFactory by instance()
+    private val viewModelFactory by instance<MainViewModelFactory>()
 
-  //  private lateinit var tagDialog: TagDialog
+    //  private lateinit var tagDialog: TagDialog
 
     private val clipboardManager: ClipboardManager by lazy {
         getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -165,13 +166,9 @@ class Main : AppCompatActivity(), KodeinAware {
 
                     val intent = Intent(this, EditDialog::class.java)
                     startActivity(intent)
-                    /*MainEditHelper(
-                        this, mainViewModel
-                    ).show(clip)*/
                 }
                 CIAdapter.MENU_TYPE.Special -> {
-                    // TODO: Implement this special menu
-                    //performUndoDelete(clip, i)
+                    MoreBottomSheet(mainViewModel).show(supportFragmentManager, "blank")
                 }
                 CIAdapter.MENU_TYPE.Share -> {
                     shareText(this, clip)
@@ -349,7 +346,7 @@ class Main : AppCompatActivity(), KodeinAware {
                         Toasty.info(this@Main,  getString(R.string.sync_complete)).show()
                     },
                     onError = {
-                        Toasty.error(this@Main,   getString(R.string.error_sync)).show()
+                        Toasty.error(this@Main, getString(R.string.error_sync)).show()
                     }
                 ))
                 /*mainViewModel.makeAValidationRequest {

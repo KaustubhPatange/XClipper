@@ -7,7 +7,8 @@ import com.kpstv.xclipper.data.localized.ClipDataDao
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.provider.ClipProvider
 import com.kpstv.xclipper.data.provider.FirebaseProvider
-import com.kpstv.xclipper.extensions.*
+import com.kpstv.xclipper.extensions.Coroutines
+import com.kpstv.xclipper.extensions.clone
 import com.kpstv.xclipper.extensions.enumerations.FilterType
 import com.kpstv.xclipper.extensions.listeners.RepositoryListener
 import com.kpstv.xclipper.extensions.listeners.StatusListener
@@ -54,8 +55,7 @@ class MainRepositoryImpl(
             it.forEach { clip ->
                 firebaseUpdate(clip)
             }
-
-           statusListener.onComplete()
+            statusListener.onComplete()
         }
     }
 
@@ -129,7 +129,10 @@ class MainRepositoryImpl(
         }
     }
 
-    override fun checkForDuplicate(unencryptedData: String?, repositoryListener: RepositoryListener) {
+    override fun checkForDuplicate(
+        unencryptedData: String?,
+        repositoryListener: RepositoryListener
+    ) {
         Coroutines.io {
             if (clipDao.getAllData().count { it.data?.Decrypt() == unencryptedData } > 0)
                 Coroutines.main {
@@ -142,13 +145,32 @@ class MainRepositoryImpl(
         }
     }
 
+    override fun checkForDuplicate(
+        unencryptedData: String?,
+        id: Int,
+        repositoryListener: RepositoryListener
+    ) {
+        Coroutines.io {
+            if (clipDao.getAllData()
+                    .count { it.data?.Decrypt() == unencryptedData && it.id != id } > 0
+            )  Coroutines.main {
+                repositoryListener.onDataExist()
+            }
+            else  Coroutines.main {
+                repositoryListener.onDataError()
+            }
+        }
+    }
+
     override fun checkForDependent(tagName: String, repositoryListener: RepositoryListener) {
         Coroutines.io {
-            if (clipDao.getAllData().firstOrNull { it.tags?.keys?.contains(tagName) == true } != null) {
+            if (clipDao.getAllData()
+                    .firstOrNull { it.tags?.keys?.contains(tagName) == true } != null
+            ) {
                 Coroutines.main {
                     repositoryListener.onDataExist()
                 }
-            }else
+            } else
                 Coroutines.main {
                     repositoryListener.onDataError()
                 }
