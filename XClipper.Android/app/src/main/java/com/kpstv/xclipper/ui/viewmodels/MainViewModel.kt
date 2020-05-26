@@ -6,8 +6,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.kpstv.license.Decrypt
-import com.kpstv.xclipper.data.api.GoogleDictionaryApi
-import com.kpstv.xclipper.data.api.TinyUrlApi
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.data.provider.FirebaseProvider
@@ -70,8 +68,8 @@ class MainViewModel(
     val tagLiveData: LiveData<List<Tag>>
         get() = _tagLiveData
 
-    fun postToRepository(data: String) {
-        mainRepository.updateRepository(data)
+    fun postToRepository(unencryptedData: String) {
+        mainRepository.updateRepository(unencryptedData)
     }
 
     fun postToRepository(clip: Clip) {

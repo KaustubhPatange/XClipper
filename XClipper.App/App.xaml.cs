@@ -178,7 +178,7 @@ namespace Components
                     fileName = Path.Combine(tmpDir, "data");
                 }
 
-                // Create a command sql connection...
+                // Create a command SQL connection...
                 SQLiteConnection con = new SQLiteConnection(fileName);
 
             restartMethod:
@@ -205,7 +205,7 @@ namespace Components
                             // Decrypt the database by asking password to the user...
                             var pass = Microsoft.VisualBasic.Interaction.InputBox(Translation.MSG_ENTER_PASS, Translation.MSG_PASSWORD, CustomPassword);
 
-                            // Override exisiting SQL connection with password in it...
+                            // Override existing SQL connection with password in it...
                             con = new SQLiteConnection(new SQLiteConnectionString(fileName, true, pass));
 
                             // Using goto restart the process...
@@ -315,7 +315,7 @@ namespace Components
 
         public void OnDataChanged(ValueChangedEventArgs e)
         {
-            // 1st value from realtime-database is your 5th one in XClipper window.
+            // 1st value from real-time database is your 5th one in XClipper window.
             // todo: Do something on Changed
             Debug.WriteLine("Changed:" + e.Data);
         }

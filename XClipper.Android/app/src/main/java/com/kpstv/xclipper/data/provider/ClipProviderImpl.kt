@@ -7,16 +7,17 @@ import com.kpstv.xclipper.App.PHONE_PATTERN_REGEX
 import com.kpstv.xclipper.App.URL_PATTERN_REGEX
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.ClipTag
+import com.kpstv.xclipper.extensions.small
 import java.util.*
 import kotlin.collections.HashMap
 
 class ClipProviderImpl : ClipProvider {
 
-    override fun processClip(data: String?): Clip? {
-        if (data.isNullOrBlank()) return null
-        data.let {
+    override fun processClip(unencryptedData: String?): Clip? {
+        if (unencryptedData.isNullOrBlank()) return null
+        unencryptedData.let {
             return Clip(
-                data = data.Encrypt(),
+                data = unencryptedData.Encrypt(),
                 time = Calendar.getInstance().time,
                 tags = determineTags(it)
             )
@@ -55,7 +56,7 @@ class ClipProviderImpl : ClipProvider {
        ) {
            pattern.toRegex().let {
                if (it.containsMatchIn(data))
-                   map[tag.name.toLowerCase(Locale.ROOT)] = it.find(data)?.value!!
+                   map[tag.small()] = it.find(data)?.value!!
            }
        }
    }

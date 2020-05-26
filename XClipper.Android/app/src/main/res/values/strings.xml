@@ -33,4 +33,12 @@
     <string name="error_duplicate_data">Duplicate data insertion</string>
     <string name="error_tag_dependent">Some items are dependent on this tag</string>
     <string name="specials">Specials</string>
+    <string name="define"><b>Define:</b></string>
+    <string name="open_link">Open with…</string>
+    <string name="shorten_link">Shorten link</string>
+    <string name="err_action">Couldn\'t find the action</string>
+    <string name="copy_name">Copy</string>
+    <string name="phone_call">Make a phone call</string>
+    <string name="canc">Create a new contact</string>
+    <string name="message_num">Text this number</string>
 </resources>

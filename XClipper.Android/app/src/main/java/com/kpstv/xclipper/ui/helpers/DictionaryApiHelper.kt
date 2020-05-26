@@ -1,19 +1,41 @@
 package com.kpstv.xclipper.ui.helpers
 
+import android.util.Log
 import com.kpstv.xclipper.data.api.GoogleDictionaryApi
 import com.kpstv.xclipper.data.model.Definition
+import com.kpstv.xclipper.data.repository.DefineRepository
 import com.kpstv.xclipper.extensions.Coroutines
-import org.kodein.di.android.kodein
+import com.kpstv.xclipper.extensions.ioThread
+import com.kpstv.xclipper.extensions.listeners.ResponseListener
+import com.kpstv.xclipper.extensions.mainThread
 
 class DictionaryApiHelper(
-    private val googleDictionaryApi: GoogleDictionaryApi
+    private val googleDictionaryApi: GoogleDictionaryApi,
+    private val defineRepository: DefineRepository
 ) {
-   fun define(word: String, block: (Definition) -> Unit) {
-       Coroutines.main {
-           val definition = googleDictionaryApi.defineAsync(word)?.await()
-           if (definition?.define != null)
-               block.invoke(definition)
-       }
-   }
+    private val TAG = javaClass.simpleName
+    fun define(word: String, responseListener: ResponseListener<Definition>) {
+        ioThread {
+           try {
+               val data = defineRepository.getData(word)
+               if (data == null) {
+                   val definition = googleDictionaryApi.defineAsync(word)?.await()
+                   if (definition?.define != null) {
+                       /** Save data to database */
+                       Log.e(TAG, "Saved to database: $definition")
+                       defineRepository.insert(definition)
+                       mainThread { responseListener.onComplete(definition) }
+                   }
+                   else
+                       mainThread { responseListener.onError(Exception("Response is null for $word")) }
+               } else {
+                   Log.e(TAG, "Got from database: $data")
+                   mainThread { responseListener.onComplete(data) }
+               }
+           }catch (e: Exception) {
+               mainThread { responseListener.onError(e) }
+           }
+        }
+    }
 }
 

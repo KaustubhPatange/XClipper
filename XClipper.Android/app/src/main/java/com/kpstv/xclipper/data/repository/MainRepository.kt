@@ -51,7 +51,8 @@ interface MainRepository {
      * While saving to database it will delete an existing data (if present)
      * and then create new data from the given string and perform insert operation.
      */
-    fun updateRepository(data: String?)
+    fun updateRepository(unencryptedData: String?)
+    fun updateRepository(id: Int, unencryptedData: String)
     fun updateRepository(clip: Clip)
 
     fun getAllData(): List<Clip>

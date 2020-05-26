@@ -9,17 +9,23 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.kpstv.xclipper.data.converters.DateConverter
 import com.kpstv.xclipper.data.converters.TagConverter
 import com.kpstv.xclipper.data.localized.ClipDataDao
+import com.kpstv.xclipper.data.localized.DefineDao
 import com.kpstv.xclipper.data.localized.TagDao
+import com.kpstv.xclipper.data.localized.UrlDao
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.ClipTag
+import com.kpstv.xclipper.data.model.Definition
 import com.kpstv.xclipper.data.model.Tag
-import java.util.*
+import com.kpstv.xclipper.extensions.small
+import com.kpstv.xclipper.data.model.UrlInfo
 import java.util.concurrent.Executors
 
 @Database(
     entities = [
         Clip::class,
-        Tag::class
+        Tag::class,
+        Definition::class,
+        UrlInfo::class
     ],
     version = 1
 )
@@ -32,6 +38,8 @@ import java.util.concurrent.Executors
 abstract class MainDatabase : RoomDatabase() {
     abstract fun clipMainDao(): ClipDataDao
     abstract fun clipTagDao(): TagDao
+    abstract fun clipDefineDao(): DefineDao
+    abstract fun clipUrlDao(): UrlDao
 
     companion object {
         @Volatile
@@ -63,7 +71,7 @@ abstract class MainDatabase : RoomDatabase() {
                     instance?.let { database ->
                         with(database.clipTagDao()) {
                             ClipTag.values().forEach {
-                                insert(Tag.from(it.name.toLowerCase(Locale.ROOT)))
+                                insert(Tag.from(it.small()))
                             }
                             insert(Tag.from("test tag"))
                         }

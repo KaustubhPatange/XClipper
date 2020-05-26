@@ -11,10 +11,7 @@ import com.kpstv.xclipper.data.provider.ClipProvider
 import com.kpstv.xclipper.data.provider.ClipProviderImpl
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.provider.FirebaseProviderImpl
-import com.kpstv.xclipper.data.repository.MainRepository
-import com.kpstv.xclipper.data.repository.MainRepositoryImpl
-import com.kpstv.xclipper.data.repository.TagRepository
-import com.kpstv.xclipper.data.repository.TagRepositoryImpl
+import com.kpstv.xclipper.data.repository.*
 import com.kpstv.xclipper.extensions.utils.RetrofitUtils
 import com.kpstv.xclipper.extensions.utils.interceptors.NetworkConnectionInterceptor
 import com.kpstv.xclipper.ui.helpers.DictionaryApiHelper
@@ -39,13 +36,17 @@ class XClipperApplication : Application(), KodeinAware {
         bind() from singleton { RetrofitUtils(instance()) }
         bind() from singleton { GoogleDictionaryApi(instance()) }
         bind() from singleton { TinyUrlApi(instance()) }
-        bind() from singleton { DictionaryApiHelper(instance()) }
-        bind() from singleton { TinyUrlApiHelper(instance()) }
+        bind() from singleton { DictionaryApiHelper(instance(), instance()) }
+        bind() from singleton { TinyUrlApiHelper(instance(), instance()) }
         bind() from singleton { instance<MainDatabase>().clipMainDao() }
         bind() from singleton { instance<MainDatabase>().clipTagDao() }
+        bind() from singleton { instance<MainDatabase>().clipDefineDao() }
+        bind() from singleton { instance<MainDatabase>().clipUrlDao() }
         bind<FirebaseProvider>() with singleton { FirebaseProviderImpl() }
         bind<ClipProvider>() with singleton { ClipProviderImpl() }
         bind<TagRepository>() with singleton { TagRepositoryImpl(instance()) }
+        bind<DefineRepository>() with singleton { DefineRepositoryImpl(instance()) }
+        bind<UrlRepository>() with singleton { UrlRepositoryImpl(instance()) }
         bind<MainRepository>() with singleton {
             MainRepositoryImpl(
                 instance(),

@@ -7,7 +7,7 @@ interface ClipProvider {
     /**
      * This function will create a new clip with the given data.
      */
-    fun processClip(data: String?) : Clip?
+    fun processClip(unencryptedData: String?) : Clip?
 
     /**
      * This function will create a new clip with same Id, Data.

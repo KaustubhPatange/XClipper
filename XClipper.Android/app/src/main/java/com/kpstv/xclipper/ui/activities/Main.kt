@@ -30,6 +30,7 @@ import com.kpstv.xclipper.data.localized.ToolbarState
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.extensions.cloneForAdapter
+import com.kpstv.xclipper.extensions.decrypt
 import com.kpstv.xclipper.extensions.listeners.StatusListener
 import com.kpstv.xclipper.extensions.setOnQueryTextListener
 import com.kpstv.xclipper.extensions.setOnSearchCloseListener
@@ -168,7 +169,14 @@ class Main : AppCompatActivity(), KodeinAware {
                     startActivity(intent)
                 }
                 CIAdapter.MENU_TYPE.Special -> {
-                    MoreBottomSheet(mainViewModel).show(supportFragmentManager, "blank")
+                    MoreBottomSheet(
+                        mainViewModel = mainViewModel,
+                        supportFragmentManager = supportFragmentManager,
+                        clip = clip
+                    ).show(
+                        supportFragmentManager,
+                        "blank"
+                    )
                 }
                 CIAdapter.MENU_TYPE.Share -> {
                     shareText(this, clip)
@@ -343,7 +351,7 @@ class Main : AppCompatActivity(), KodeinAware {
                         this.clearAnimation()
                     },
                     onComplete = {
-                        Toasty.info(this@Main,  getString(R.string.sync_complete)).show()
+                        Toasty.info(this@Main, getString(R.string.sync_complete)).show()
                     },
                     onError = {
                         Toasty.error(this@Main, getString(R.string.error_sync)).show()

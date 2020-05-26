@@ -1,7 +1,11 @@
 package com.kpstv.xclipper.extensions
 
+import com.kpstv.license.Decrypt
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.ClipEntry
+import com.kpstv.xclipper.data.model.ClipTag
+import java.util.*
+import kotlin.collections.ArrayList
 
 fun Clip.clone(data: String?): Clip {
     return copy(data = data)
@@ -31,4 +35,18 @@ fun List<Clip>.cloneForAdapter(): List<Clip> {
         Clip.autoFill(it)
     }
     return this
+}
+
+/**
+ * An extension function which will decrypt the clip data.
+ *
+ * It provides a new copy of existing clip model.
+ */
+fun Clip.decrypt(): Clip {
+    return copy(data = data?.Decrypt())
+}
+
+/** Converts name to lowercase name */
+fun ClipTag.small(): String {
+    return name.toLowerCase(Locale.ROOT)
 }

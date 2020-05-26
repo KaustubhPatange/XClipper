@@ -3,6 +3,8 @@ package com.kpstv.xclipper.data.repository
 import android.util.Log
 import androidx.lifecycle.LiveData
 import com.kpstv.license.Decrypt
+import com.kpstv.license.Encrypt
+import com.kpstv.xclipper.App.LOCAL_MAX_ITEM_STORAGE
 import com.kpstv.xclipper.data.localized.ClipDataDao
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.provider.ClipProvider
@@ -10,6 +12,7 @@ import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.extensions.Coroutines
 import com.kpstv.xclipper.extensions.clone
 import com.kpstv.xclipper.extensions.enumerations.FilterType
+import com.kpstv.xclipper.extensions.ioThread
 import com.kpstv.xclipper.extensions.listeners.RepositoryListener
 import com.kpstv.xclipper.extensions.listeners.StatusListener
 
@@ -34,9 +37,15 @@ class MainRepositoryImpl(
                 val allClips = clipDao.getAllData()
 
                 if (allClips.isNotEmpty()) {
+
                     val innerClip =
                         allClips.firstOrNull { it.data?.Decrypt() == clip.data?.Decrypt() }
                     if (innerClip != null) return@io
+
+                    /** Let's filter the clip for required items only **/
+                    if (allClips.size > LOCAL_MAX_ITEM_STORAGE) {
+                        clipDao.delete(allClips.first())
+                    }
                 }
                 clipDao.insert(clip)
                 Log.e(TAG, "Data Saved: ${clip.data?.Decrypt()}")
@@ -191,10 +200,17 @@ class MainRepositoryImpl(
         }
     }
 
-    override fun updateRepository(data: String?) {
-        clipProvider.processClip(data)?.let { clip ->
+    override fun updateRepository(unencryptedData: String?) {
+        clipProvider.processClip(unencryptedData)?.let { clip ->
             saveClip(clip)
             firebaseProvider.uploadData(clip)
+        }
+    }
+
+    override fun updateRepository(id: Int, unencryptedData: String) {
+        ioThread {
+            val data = clipDao.getData(id)
+            val clone = data.clone(unencryptedData.Encrypt())
         }
     }
 

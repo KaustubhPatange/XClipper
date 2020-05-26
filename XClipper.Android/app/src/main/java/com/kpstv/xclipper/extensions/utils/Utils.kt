@@ -4,12 +4,16 @@ import android.app.Activity
 import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.telephony.TelephonyManager
 import android.util.TypedValue
 import androidx.annotation.AttrRes
 import androidx.core.app.ShareCompat
 import com.kpstv.license.Decrypt
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.Clip
+import java.util.*
+
 
 class Utils {
     companion object {
@@ -47,6 +51,41 @@ class Utils {
         ): Int {
             context.theme.resolveAttribute(attrColor, typedValue, resolveRefs)
             return typedValue.data
+        }
+
+        /** I am too lazy to write my own code.
+         *
+         *  Source: https://stackoverflow.com/a/31583695/10133501
+         */
+        fun getCountryDialCode(context: Context): String? {
+            var countryId: String? = null
+            var contryDialCode: String? = null
+            val telephonyMngr =
+                context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+            countryId = telephonyMngr.simCountryIso.toUpperCase(Locale.ROOT)
+            val arrContryCode: Array<String> =
+                context.resources.getStringArray(R.array.DialingCountryCode)
+            for (i in arrContryCode.indices) {
+                val arrDial =
+                    arrContryCode[i].split(",").toTypedArray()
+                if (arrDial[1].trim { it <= ' ' } == countryId.trim()) {
+                    contryDialCode = arrDial[0]
+                    break
+                }
+            }
+            return contryDialCode
+        }
+
+        fun isPackageInstalled(
+            context: Context,
+            packageName: String
+        ): Boolean {
+            return try {
+                context.packageManager.getPackageInfo(packageName, 0)
+                true
+            } catch (e: PackageManager.NameNotFoundException) {
+                false
+            }
         }
 
        /* @JvmStatic

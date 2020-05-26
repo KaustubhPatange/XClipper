@@ -21,7 +21,7 @@ class DefinitionDeserializer : JsonDeserializer<Definition> {
         if (dictionaryRegex.containsMatchIn(string)) {
             val word = wordPattern.find(string)?.value?.split("\"")?.get(3)
             val define = dictionaryRegex.find(string)?.value?.split("\"")?.get(3)
-            return Definition(word, define)
+            return Definition.from(word, define)
         }
         return Definition.returnNull()
     }

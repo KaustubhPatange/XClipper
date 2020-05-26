@@ -1,6 +1,5 @@
 package com.kpstv.xclipper
 
-import android.provider.Settings
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.kpstv.xclipper.data.converters.CipDeserializer
@@ -17,8 +16,9 @@ object App {
         .create()
 
     var CLIP_DATA: String? = null
-    var MIN_ITEM_STORAGE = 5
-    var MAX_ITEM_STORAGE = 20
+    var LOCAL_MAX_ITEM_STORAGE = 80
+    var FB_MIN_ITEM_STORAGE = 5
+    var FB_MAX_ITEM_STORAGE = 20
 
     var UNDO_DELETE_SPAN: Long = 2500
     const val DELAY_SPAN: Long = 20
@@ -34,7 +34,7 @@ object App {
     var BindToFirebase = true
     var observeFirebase = true
 
-    fun getMaxStorage(isLicensed: Boolean): Int = if (isLicensed) MAX_ITEM_STORAGE else MIN_ITEM_STORAGE
+    fun getMaxStorage(isLicensed: Boolean): Int = if (isLicensed) FB_MAX_ITEM_STORAGE else FB_MIN_ITEM_STORAGE
 
     var EMPTY_STRING = ""
     var BLANK_STRING = " "
@@ -47,9 +47,11 @@ object App {
 
     const val TAG_FILTER_CHIP = "com.kpstv.xclipper.tag"
 
+    const val SINGLE_WORD_PATTERN_REGEX = "^[^https?][^\\s\\W]+\$"
     const val DICTIONARY_WORD_PATTERN_REGEX = "\"word\":[\\s]?\".*?\""
     const val DICTIONARY_DEFINITION_PATTERN_REGEX = "\"definition\":[\\s]?\".*?\""
     const val PHONE_PATTERN_REGEX = "(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}"
     const val EMAIL_PATTERN_REGEX = "([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)"
     const val URL_PATTERN_REGEX = "https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)"
+
 }

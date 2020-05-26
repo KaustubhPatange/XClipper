@@ -2,7 +2,6 @@ package com.kpstv.xclipper.extensions
 
 import com.ferfalk.simplesearchview.SimpleSearchView
 import kotlinx.coroutines.*
-import java.io.IOException
 
 
 fun SimpleSearchView.setOnQueryTextListener(
@@ -26,6 +25,14 @@ fun SimpleSearchView.setOnQueryTextListener(
             return true
         }
     })
+}
+
+fun ioThread(block: suspend (() -> Unit)) {
+    Coroutines.io { block.invoke() }
+}
+
+fun mainThread(block: suspend (() -> Unit)) {
+    Coroutines.main { block.invoke() }
 }
 
 fun SimpleSearchView.setOnSearchCloseListener(block: () -> Unit) {

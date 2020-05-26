@@ -11,10 +11,6 @@ object DateFormatConverter {
 
         val todayDate = Calendar.getInstance().time
 
-        val hourDiff = (1000 * 60 * 60)
-        val dayDiff = hourDiff * 24
-        val weekDiff = dayDiff * 7
-
         val hours = (todayDate.time - date.time) / (1000 * 60 * 60)
         if (hours == 0L) return "while ago"
         if (hours == 1L) return "1 hour ago"
