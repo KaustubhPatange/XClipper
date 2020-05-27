@@ -41,4 +41,10 @@
     <string name="phone_call">Make a phone call</string>
     <string name="canc">Create a new contact</string>
     <string name="message_num">Text this number</string>
+    <string name="search_web">Search as a query</string>
+    <string name="send_mail">Send a mail</string>
+    <string name="search_map">Search on map</string>
+    <string name="channel_name">xclipper</string>
+    <string name="more_actions">Special actions</string>
+    <string name="clip_content">Clipboard content</string>
 </resources>

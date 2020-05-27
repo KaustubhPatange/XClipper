@@ -3,6 +3,7 @@ package com.kpstv.xclipper.data.provider
 import com.kpstv.license.Decrypt
 import com.kpstv.license.Encrypt
 import com.kpstv.xclipper.App.EMAIL_PATTERN_REGEX
+import com.kpstv.xclipper.App.MAP_PATTERN_REGEX
 import com.kpstv.xclipper.App.PHONE_PATTERN_REGEX
 import com.kpstv.xclipper.App.URL_PATTERN_REGEX
 import com.kpstv.xclipper.data.model.Clip
@@ -44,6 +45,7 @@ class ClipProviderImpl : ClipProvider {
            patternAdder(PHONE_PATTERN_REGEX, data, ClipTag.PHONE, map)
            patternAdder(EMAIL_PATTERN_REGEX, data, ClipTag.EMAIL, map)
            patternAdder(URL_PATTERN_REGEX, data, ClipTag.URL, map)
+           patternAdder(MAP_PATTERN_REGEX, data, ClipTag.MAP, map)
 
            return map
        }

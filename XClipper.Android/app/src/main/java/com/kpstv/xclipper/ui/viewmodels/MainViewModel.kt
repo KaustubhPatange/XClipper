@@ -73,7 +73,7 @@ class MainViewModel(
     }
 
     fun postToRepository(clip: Clip) {
-        mainRepository.processClipAndSave(clip)
+        mainRepository.updateRepository(clip)
     }
 
     fun checkForDuplicateClip(unencryptedData: String, repositoryListener: RepositoryListener) {

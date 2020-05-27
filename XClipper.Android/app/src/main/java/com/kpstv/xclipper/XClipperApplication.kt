@@ -2,7 +2,13 @@ package com.kpstv.xclipper
 
 import android.annotation.SuppressLint
 import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import android.os.Build
 import android.provider.Settings
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import com.kpstv.xclipper.App.DeviceID
 import com.kpstv.xclipper.data.api.GoogleDictionaryApi
 import com.kpstv.xclipper.data.api.TinyUrlApi
@@ -15,8 +21,11 @@ import com.kpstv.xclipper.data.repository.*
 import com.kpstv.xclipper.extensions.utils.RetrofitUtils
 import com.kpstv.xclipper.extensions.utils.interceptors.NetworkConnectionInterceptor
 import com.kpstv.xclipper.ui.helpers.DictionaryApiHelper
+import com.kpstv.xclipper.ui.helpers.NotificationHelper
+import com.kpstv.xclipper.ui.helpers.NotificationHelper.Companion.CHANNEL_ID
 import com.kpstv.xclipper.ui.helpers.TinyUrlApiHelper
 import com.kpstv.xclipper.ui.viewmodels.MainViewModelFactory
+import org.jetbrains.annotations.TestOnly
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.androidXModule
@@ -36,6 +45,7 @@ class XClipperApplication : Application(), KodeinAware {
         bind() from singleton { RetrofitUtils(instance()) }
         bind() from singleton { GoogleDictionaryApi(instance()) }
         bind() from singleton { TinyUrlApi(instance()) }
+        bind() from singleton { NotificationHelper(instance()) }
         bind() from singleton { DictionaryApiHelper(instance(), instance()) }
         bind() from singleton { TinyUrlApiHelper(instance(), instance()) }
         bind() from singleton { instance<MainDatabase>().clipMainDao() }
@@ -49,6 +59,7 @@ class XClipperApplication : Application(), KodeinAware {
         bind<UrlRepository>() with singleton { UrlRepositoryImpl(instance()) }
         bind<MainRepository>() with singleton {
             MainRepositoryImpl(
+                instance(),
                 instance(),
                 instance(),
                 instance()
@@ -65,12 +76,20 @@ class XClipperApplication : Application(), KodeinAware {
             )
         }
     }
+    private val notificationHelper by instance<NotificationHelper>()
 
     override fun onCreate() {
         super.onCreate()
 
         init()
+
+        notificationHelper.createChannel()
+
+        // TODO: Remove this test case
+        notificationHelper.pushNotification("7208565164 developerkp16@gmail.com")
     }
+
+
 
     private fun init() {
 
@@ -80,4 +99,5 @@ class XClipperApplication : Application(), KodeinAware {
             Settings.Secure.ANDROID_ID
         )
     }
+
 }

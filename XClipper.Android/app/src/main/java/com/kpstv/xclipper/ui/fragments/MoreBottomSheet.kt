@@ -1,11 +1,8 @@
 package com.kpstv.xclipper.ui.fragments
 
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
-import android.content.Intent
+import android.app.SearchManager
+import android.content.*
 import android.content.Intent.*
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
@@ -30,15 +27,18 @@ import com.kpstv.xclipper.extensions.utils.Utils.Companion.getCountryDialCode
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.isPackageInstalled
 import com.kpstv.xclipper.ui.adapters.MenuAdapter
 import com.kpstv.xclipper.ui.dialogs.AllPurposeDialog
+import com.kpstv.xclipper.ui.helpers.DictionaryApiHelper
+import com.kpstv.xclipper.ui.helpers.TinyUrlApiHelper
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.bottom_sheet_more.view.*
 
-
 class MoreBottomSheet(
-    private val mainViewModel: MainViewModel,
+    private val tinyUrlApiHelper: TinyUrlApiHelper,
+    private val dictionaryApiHelper: DictionaryApiHelper,
     private val supportFragmentManager: FragmentManager,
-    private val clip: Clip
+    private val clip: Clip,
+    private val onClose: (() -> Unit)? = null
 ) : RoundedBottomSheetDialogFragment() {
     private val TAG = javaClass.simpleName
     private lateinit var adapter: MenuAdapter
@@ -55,6 +55,12 @@ class MoreBottomSheet(
 
             setDefineTag(this)
 
+            setSearchButton(this)
+
+            setForEmail(this)
+
+            setForMap(this)
+
             setShortenUrl(this)
 
             setPhoneNumber(this)
@@ -62,6 +68,72 @@ class MoreBottomSheet(
             setRecyclerView(this)
 
             return this
+        }
+    }
+
+
+    /** A common set of options that would appear in these section */
+    private fun setSearchButton(view: View) = with(view) {
+        specialList.add(
+            SpecialMenu(
+                image = R.drawable.ic_search,
+                title = context.getString(R.string.search_web)
+            ) {
+                val intent = Intent(ACTION_WEB_SEARCH)
+                intent.putExtra(SearchManager.QUERY, data)
+
+                runAction(intent)
+            }
+        )
+    }
+
+    /** A set of options when map tag is available */
+    private fun setForMap(view: View) = with(view){
+        val checkForTag = clip.tags?.containsKey(ClipTag.MAP.small())
+
+        if (checkForTag == true) {
+            val data = clip.tags?.getValue(ClipTag.MAP.small())
+
+            /** Search for coordinates */
+            specialList.add(
+                SpecialMenu(
+                    image = R.drawable.ic_map,
+                    title = context.getString(R.string.search_map)
+                ) {
+                    val intent = Intent(ACTION_VIEW).apply {
+                        setData(Uri.parse("geo:$data"))
+                        flags = FLAG_ACTIVITY_NEW_TASK
+                    }
+
+                    runAction(intent)
+                }
+            )
+        }
+    }
+
+
+    /** This will set options if Email tag exist */
+    private fun setForEmail(view: View) = with(view) {
+
+        val checkForTag = clip.tags?.containsKey(ClipTag.EMAIL.small())
+
+        if (checkForTag == true) {
+            val data = clip.tags?.getValue(ClipTag.EMAIL.small())
+
+            /** Send an email */
+            specialList.add(
+                SpecialMenu(
+                    image = R.drawable.ic_mail,
+                    title = context.getString(R.string.send_mail)
+                ) {
+                    val intent = Intent(ACTION_VIEW).apply {
+                        setData(Uri.parse("mailto:$data"))
+                        flags = FLAG_ACTIVITY_NEW_TASK
+                    }
+
+                    runAction(intent)
+                }
+            )
         }
     }
 
@@ -83,14 +155,8 @@ class MoreBottomSheet(
                         setData(Uri.parse("tel:$data"))
                         flags = FLAG_ACTIVITY_NEW_TASK
                     }
-                    try {
-                        startActivity(intent)
-                    }catch (e: Exception) {
-                        Toasty.info(context, context.getString(R.string.err_action)).show()
-                    }
 
-                    /** Closing this bottom sheet */
-                    dismiss()
+                    runAction(intent)
                 }
             )
 
@@ -106,14 +172,7 @@ class MoreBottomSheet(
                         putExtra(ContactsContract.Intents.Insert.PHONE, data)
                     }
 
-                    try {
-                        startActivity(intent)
-                    }catch (e: Exception) {
-                        Toasty.info(context, context.getString(R.string.err_action)).show()
-                    }
-
-                    /** Closing this bottom sheet */
-                    dismiss()
+                    runAction(intent)
                 }
             )
 
@@ -127,14 +186,8 @@ class MoreBottomSheet(
                         setData(Uri.parse("smsto:$data"))
                         flags = FLAG_ACTIVITY_NEW_TASK
                     }
-                    try {
-                        startActivity(intent)
-                    }catch (e: Exception) {
-                        Toasty.info(context, context.getString(R.string.err_action)).show()
-                    }
 
-                    /** Closing this bottom sheet */
-                    dismiss()
+                    runAction(intent)
                 }
             )
 
@@ -155,14 +208,8 @@ class MoreBottomSheet(
                             setData(Uri.parse("https://wa.me/$numberToWhatsApp"))
                             flags = FLAG_ACTIVITY_NEW_TASK
                         }
-                        try {
-                            startActivity(intent)
-                        }catch (e: Exception) {
-                            Toasty.info(context, context.getString(R.string.err_action)).show()
-                        }
 
-                        /** Closing this bottom sheet */
-                        dismiss()
+                        runAction(intent)
                     }
                 )
             }
@@ -187,14 +234,8 @@ class MoreBottomSheet(
                     val intent = Intent(ACTION_VIEW).apply {
                         setData(Uri.parse(data))
                     }
-                    try {
-                        startActivity(intent)
-                    } catch (e: Exception) {
-                        Toasty.error(context, context.getString(R.string.err_action))
-                    }
 
-                    /** Closing this bottom sheet */
-                    dismiss()
+                    runAction(intent)
                 }
 
             )
@@ -210,7 +251,7 @@ class MoreBottomSheet(
                     dialog.show(supportFragmentManager, "blank")
 
                     /** Initiate creation of shorten url. */
-                    mainViewModel.tinyUrlApiHelper.createShortenUrl(data!!, ResponseListener(
+                    tinyUrlApiHelper.createShortenUrl(data!!, ResponseListener(
                         complete = {
 
                             /** We've the shorten url. */
@@ -255,6 +296,18 @@ class MoreBottomSheet(
 
     }
 
+    /** This will perform startActivity on intent  */
+    private fun runAction(intent: Intent) {
+        try {
+            startActivity(intent)
+        } catch (e: Exception) {
+            Toasty.error(requireContext(), requireContext().getString(R.string.err_action)).show()
+        }
+
+        /** Closing this bottom sheet */
+        dismiss()
+    }
+
     /**
      * This will set the define text below "Specials" text. It will perform some checks
      * before setting the define.
@@ -262,14 +315,14 @@ class MoreBottomSheet(
     private fun setDefineTag(view: View) = with(view) {
         SINGLE_WORD_PATTERN_REGEX.toRegex().let {
             if (it.containsMatchIn(data!!))
-                mainViewModel.dictionaryApiHelper.define(
+                dictionaryApiHelper.define(
                     it.find(data)?.value!!, ResponseListener(
                         complete = { definition ->
                             edit_define.text = HtmlCompat.fromHtml(
                                 """
-                                <i>${definition.define} <a href="https://google.com">more</a></i>
+                                <i>${definition.define} </i>
                             """.trimIndent().trim(), HtmlCompat.FROM_HTML_MODE_LEGACY
-                            )
+                            ) //<a href="https://google.com">more</a>
                             defineLayout.show()
                         },
                         error = { e -> Log.e(TAG, "Error: ${e.message}") }
@@ -284,5 +337,10 @@ class MoreBottomSheet(
         adapter = MenuAdapter(specialList)
         bsm_recyclerView.adapter = adapter
         bsm_recyclerView.setHasFixedSize(true)
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        onClose?.invoke()
     }
 }

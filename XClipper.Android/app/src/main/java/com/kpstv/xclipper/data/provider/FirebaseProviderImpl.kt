@@ -77,14 +77,12 @@ class FirebaseProviderImpl : FirebaseProvider {
 
         val list = ArrayList(user?.Clips!!)
 
-        Log.e(TAG, "Pre List Size: ${list.size}")
         val dataList = clips.map { it.data }
 
         list.removeAll {
             it.data in dataList
         }
 
-        Log.e(TAG, "After List Size: ${list.size}")
         /*
         user.Clips!!.forEach { clip1 ->
             clips.forEach { clip2 ->

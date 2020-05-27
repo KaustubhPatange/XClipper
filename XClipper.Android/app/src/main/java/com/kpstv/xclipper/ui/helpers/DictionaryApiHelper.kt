@@ -22,14 +22,12 @@ class DictionaryApiHelper(
                    val definition = googleDictionaryApi.defineAsync(word)?.await()
                    if (definition?.define != null) {
                        /** Save data to database */
-                       Log.e(TAG, "Saved to database: $definition")
                        defineRepository.insert(definition)
                        mainThread { responseListener.onComplete(definition) }
                    }
                    else
                        mainThread { responseListener.onError(Exception("Response is null for $word")) }
                } else {
-                   Log.e(TAG, "Got from database: $data")
                    mainThread { responseListener.onComplete(data) }
                }
            }catch (e: Exception) {

@@ -21,8 +21,8 @@ import org.kodein.di.generic.instance
 class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
 
     override val kodein by kodein()
-    private val repository: MainRepository by instance()
-    private val firebaseProvider: FirebaseProvider by instance()
+    private val repository  by instance<MainRepository>()
+    private val firebaseProvider by instance<FirebaseProvider>()
 
     private val TAG = javaClass.simpleName
     private lateinit var clipboardManager: ClipboardManager

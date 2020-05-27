@@ -15,11 +15,16 @@ import com.kpstv.xclipper.extensions.enumerations.FilterType
 import com.kpstv.xclipper.extensions.ioThread
 import com.kpstv.xclipper.extensions.listeners.RepositoryListener
 import com.kpstv.xclipper.extensions.listeners.StatusListener
+import com.kpstv.xclipper.extensions.mainThread
+import com.kpstv.xclipper.ui.helpers.NotificationHelper
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class MainRepositoryImpl(
     private val clipDao: ClipDataDao,
     private val firebaseProvider: FirebaseProvider,
-    private val clipProvider: ClipProvider
+    private val clipProvider: ClipProvider,
+    private val notificationHelper: NotificationHelper
 ) : MainRepository {
 
     private val TAG = javaClass.simpleName
@@ -130,6 +135,14 @@ class MainRepositoryImpl(
         }
     }
 
+    override fun deleteClip(unencryptedData: String?) {
+        Coroutines.io {
+            val clipToFind = clipDao.getAllData().firstOrNull { it.data?.Decrypt() == unencryptedData }
+            if (clipToFind != null)
+                deleteClip(clipToFind)
+        }
+    }
+
     override fun deleteMultiple(clips: List<Clip>) {
         Coroutines.io {
             for (clip in clips)
@@ -194,6 +207,11 @@ class MainRepositoryImpl(
         return clipDao.getAllData()
     }
 
+    override suspend fun getData(unencryptedText: String) =
+        withContext(Dispatchers.IO) {
+            clipDao.getAllData().firstOrNull { it.data?.Decrypt() == unencryptedText }
+        }
+
     override fun processClipAndSave(clip: Clip?) {
         clipProvider.processClip(clip)?.let { item ->
             saveClip(item)
@@ -207,17 +225,13 @@ class MainRepositoryImpl(
         }
     }
 
-    override fun updateRepository(id: Int, unencryptedData: String) {
-        ioThread {
-            val data = clipDao.getData(id)
-            val clone = data.clone(unencryptedData.Encrypt())
-        }
-    }
-
     override fun updateRepository(clip: Clip) {
         clipProvider.processClip(clip)?.let { innerClip ->
             saveClip(innerClip)
             firebaseProvider.uploadData(innerClip)
+
+            /** Send a notification */
+           mainThread { notificationHelper.pushNotification(clip.data?.Decrypt()!!) }
         }
     }
 

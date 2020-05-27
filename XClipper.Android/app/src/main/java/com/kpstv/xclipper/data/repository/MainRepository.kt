@@ -41,6 +41,7 @@ interface MainRepository {
     fun updateClip(clip: Clip?, filterType: FilterType = FilterType.Text)
 
     fun deleteClip(clip: Clip)
+    fun deleteClip(unencryptedData: String?)
 
     fun deleteMultiple(clips: List<Clip>)
 
@@ -52,10 +53,10 @@ interface MainRepository {
      * and then create new data from the given string and perform insert operation.
      */
     fun updateRepository(unencryptedData: String?)
-    fun updateRepository(id: Int, unencryptedData: String)
     fun updateRepository(clip: Clip)
 
     fun getAllData(): List<Clip>
+    suspend fun getData(unencryptedText: String): Clip?
 
     /**
      * Checks if the clip exist in the database.

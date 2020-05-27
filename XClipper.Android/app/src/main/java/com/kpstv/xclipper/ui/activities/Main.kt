@@ -39,6 +39,7 @@ import com.kpstv.xclipper.ui.adapters.CIAdapter
 import com.kpstv.xclipper.ui.dialogs.EditDialog
 import com.kpstv.xclipper.ui.dialogs.TagDialog
 import com.kpstv.xclipper.ui.fragments.MoreBottomSheet
+import com.kpstv.xclipper.ui.helpers.TinyUrlApiHelper
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import com.kpstv.xclipper.ui.viewmodels.MainViewModelFactory
 import es.dmoral.toasty.Toasty
@@ -170,7 +171,8 @@ class Main : AppCompatActivity(), KodeinAware {
                 }
                 CIAdapter.MENU_TYPE.Special -> {
                     MoreBottomSheet(
-                        mainViewModel = mainViewModel,
+                        tinyUrlApiHelper = mainViewModel.tinyUrlApiHelper,
+                        dictionaryApiHelper = mainViewModel.dictionaryApiHelper,
                         supportFragmentManager = supportFragmentManager,
                         clip = clip
                     ).show(
