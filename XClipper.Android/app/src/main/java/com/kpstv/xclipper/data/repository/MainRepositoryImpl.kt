@@ -222,6 +222,9 @@ class MainRepositoryImpl(
         clipProvider.processClip(unencryptedData)?.let { clip ->
             saveClip(clip)
             firebaseProvider.uploadData(clip)
+
+            /** Send a notification */
+            mainThread { notificationHelper.pushNotification(clip.data?.Decrypt()!!) }
         }
     }
 

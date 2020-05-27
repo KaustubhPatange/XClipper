@@ -84,9 +84,6 @@ class XClipperApplication : Application(), KodeinAware {
         init()
 
         notificationHelper.createChannel()
-
-        // TODO: Remove this test case
-        notificationHelper.pushNotification("7208565164 developerkp16@gmail.com")
     }
 
 

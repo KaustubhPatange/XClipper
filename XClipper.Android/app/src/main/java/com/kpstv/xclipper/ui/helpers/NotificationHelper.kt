@@ -32,7 +32,7 @@ class NotificationHelper(
             manager.createNotificationChannel(NotificationChannel(
                 CHANNEL_ID,
                 getString(R.string.channel_name),
-                NotificationManager.IMPORTANCE_DEFAULT
+                NotificationManager.IMPORTANCE_LOW
             ))
         }
     }
@@ -62,7 +62,8 @@ class NotificationHelper(
             .setSmallIcon(R.drawable.ic_copy_white)
             .setContentTitle(getString(R.string.clip_content))
             .setContentText(text)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setSound(null)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
             .setAutoCancel(true)
             .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
             .setContentIntent(openIntent)

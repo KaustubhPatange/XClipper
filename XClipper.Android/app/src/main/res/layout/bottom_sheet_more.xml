@@ -31,8 +31,10 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
             <TextView
-                android:textColor="?colorTextSecondary"
+                android:textStyle="bold"
+                android:id="@+id/edit_define_word"
                 android:textSize="11sp"
+                android:textColor="?colorTextSecondaryLight"
                 android:text="@string/define"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
@@ -43,7 +45,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:linksClickable="true"
-                android:textColor="?colorTextSecondaryLight"
+                android:textColor="?colorTextSecondary"
                 android:textSize="11sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>

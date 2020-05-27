@@ -28,6 +28,11 @@
             android:excludeFromRecents="true"
             android:theme="@style/CustomDialogStyle.Dark" />
         <activity
+            android:name=".ui.dialogs.SpecialDialog"
+            android:launchMode="singleTask"
+            android:excludeFromRecents="true"
+            android:theme="@style/CustomDialogStyle.Dark" />
+        <activity
             android:name=".ui.dialogs.EditDialog"
             android:excludeFromRecents="true"
             android:theme="@style/CustomDialogStyle.Dark" />

@@ -10,7 +10,7 @@ import com.kpstv.xclipper.App.ACTION_SMART_OPTIONS
 import com.kpstv.xclipper.App.APP_CLIP_DATA
 import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.ui.activities.Main
-import com.kpstv.xclipper.ui.activities.Silent
+import com.kpstv.xclipper.ui.dialogs.SpecialDialog
 import com.kpstv.xclipper.ui.helpers.NotificationHelper.Companion.NOTIFICATION_ID
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -37,28 +37,35 @@ class AppBroadcastReceiver : BroadcastReceiver(), KodeinAware {
                             flags = FLAG_ACTIVITY_BROUGHT_TO_FRONT or FLAG_ACTIVITY_NEW_TASK
                         }
                     )
-                    NotificationManagerCompat.from(context).cancel(NOTIFICATION_ID)
+                    dismissNotification(context)
                 }
                 ACTION_DELETE -> {
                     repository.deleteClip(data)
-                    NotificationManagerCompat.from(context).cancel(NOTIFICATION_ID)
+
+                    dismissNotification(context)
+                    collapseStatusBar(context)
                 }
                 ACTION_SMART_OPTIONS -> {
 
-                    // TODO: If possible try to change this stupid workaround
-
-                    val newIntent = Intent(context, Silent::class.java).apply {
-                        action = ACTION_SMART_OPTIONS
+                    val newIntent = Intent(context, SpecialDialog::class.java).apply {
+                        flags = FLAG_ACTIVITY_NEW_TASK
                         setData(data1)
                         putExtra(APP_CLIP_DATA, data)
-                        flags = FLAG_ACTIVITY_NEW_TASK
                     }
                     context.startActivity(newIntent)
 
-                    context.sendBroadcast(Intent(ACTION_CLOSE_SYSTEM_DIALOGS))
+                    collapseStatusBar(context)
                 }
             }
         }
+    }
+
+    private fun dismissNotification(context: Context) {
+        NotificationManagerCompat.from(context).cancel(NOTIFICATION_ID)
+    }
+
+    private fun collapseStatusBar(context: Context) {
+        context.sendBroadcast(Intent(ACTION_CLOSE_SYSTEM_DIALOGS))
     }
 
 

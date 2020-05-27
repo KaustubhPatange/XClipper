@@ -402,13 +402,13 @@ class Main : AppCompatActivity(), KodeinAware {
 
 
     /**
-     * So I found out that sometimes in Android 10, clipboard still not get captured using my
+     * So I found out that sometimes in Android 10, clipboard still not get captured using the
      * accessibility service hack. To fix this whenever app is launched or come back from
      * background it will check & update the database with the clipboard.
      */
     private fun checkClipboardData() {
         val data = clipboardManager.primaryClip?.getItemAt(0)?.coerceToText(this)?.toString()
-        if (data != null && CLIP_DATA != data) {
+        if (!data.isNullOrBlank() && CLIP_DATA != data) {
             CLIP_DATA = data
 
             mainViewModel.postToRepository(data)

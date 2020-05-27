@@ -48,9 +48,7 @@ class Silent : FragmentActivity(), KodeinAware {
                                 dictionaryApiHelper = dictionaryApiHelper,
                                 clip = it,
                                 supportFragmentManager = supportFragmentManager
-                            ) {
-                                finishAndRemoveTask()
-                            }.show(supportFragmentManager, "blank")
+                            ).show(supportFragmentManager, "blank")
                         }
                     }
                 }
