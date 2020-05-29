@@ -2,14 +2,12 @@ package com.kpstv.xclipper
 
 import android.annotation.SuppressLint
 import android.app.Application
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.content.Context
-import android.os.Build
 import android.provider.Settings
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
+import android.util.Log
+import androidx.preference.PreferenceManager
+import com.kpstv.xclipper.App.DICTIONARY_LANGUAGE
 import com.kpstv.xclipper.App.DeviceID
+import com.kpstv.xclipper.App.LANG_PREF
 import com.kpstv.xclipper.data.api.GoogleDictionaryApi
 import com.kpstv.xclipper.data.api.TinyUrlApi
 import com.kpstv.xclipper.data.db.MainDatabase
@@ -18,14 +16,14 @@ import com.kpstv.xclipper.data.provider.ClipProviderImpl
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.provider.FirebaseProviderImpl
 import com.kpstv.xclipper.data.repository.*
+import com.kpstv.xclipper.extensions.ioThread
 import com.kpstv.xclipper.extensions.utils.RetrofitUtils
+import com.kpstv.xclipper.extensions.utils.Utils.Companion.retrievePackageList
 import com.kpstv.xclipper.extensions.utils.interceptors.NetworkConnectionInterceptor
 import com.kpstv.xclipper.ui.helpers.DictionaryApiHelper
 import com.kpstv.xclipper.ui.helpers.NotificationHelper
-import com.kpstv.xclipper.ui.helpers.NotificationHelper.Companion.CHANNEL_ID
 import com.kpstv.xclipper.ui.helpers.TinyUrlApiHelper
 import com.kpstv.xclipper.ui.viewmodels.MainViewModelFactory
-import org.jetbrains.annotations.TestOnly
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.androidXModule
@@ -33,6 +31,7 @@ import org.kodein.di.generic.bind
 import org.kodein.di.generic.instance
 import org.kodein.di.generic.provider
 import org.kodein.di.generic.singleton
+import kotlin.system.measureTimeMillis
 
 @SuppressLint("HardwareIds")
 @ExperimentalStdlibApi
@@ -80,13 +79,19 @@ class XClipperApplication : Application(), KodeinAware {
 
     override fun onCreate() {
         super.onCreate()
-
         init()
-
         notificationHelper.createChannel()
+
+        /** Load app list in IO thread */
+        val measureTimeMillis = measureTimeMillis {
+            ioThread {
+                retrievePackageList(this)
+            }
+        }
+        Log.e(TAG, "Time: $measureTimeMillis")
     }
 
-
+    private val TAG = javaClass.simpleName
 
     private fun init() {
 
@@ -95,6 +100,11 @@ class XClipperApplication : Application(), KodeinAware {
             contentResolver,
             Settings.Secure.ANDROID_ID
         )
+
+        // Load settings here
+        val pref = PreferenceManager.getDefaultSharedPreferences(this)
+        DICTIONARY_LANGUAGE = pref.getString(LANG_PREF, "en")!!
+      // TODO: Already doing this in retrievePackages App.blackListedApps = pref.getStringSet("blacklist_pref", mutableSetOf())
     }
 
 }

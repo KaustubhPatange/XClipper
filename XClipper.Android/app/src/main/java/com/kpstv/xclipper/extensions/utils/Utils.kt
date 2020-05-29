@@ -1,16 +1,28 @@
 package com.kpstv.xclipper.extensions.utils
 
+import android.accessibilityservice.AccessibilityService
+import android.accessibilityservice.AccessibilityServiceInfo
 import android.app.Activity
 import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import android.content.pm.ServiceInfo
+import android.provider.Settings
 import android.telephony.TelephonyManager
 import android.util.TypedValue
+import android.view.accessibility.AccessibilityManager
 import androidx.annotation.AttrRes
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ShareCompat
+import androidx.preference.PreferenceManager
 import com.kpstv.license.Decrypt
+import com.kpstv.xclipper.App
+import com.kpstv.xclipper.App.BLACKLIST_PREF
 import com.kpstv.xclipper.R
+import com.kpstv.xclipper.data.model.AppPkg
 import com.kpstv.xclipper.data.model.Clip
 import java.util.*
 
@@ -23,7 +35,10 @@ class Utils {
             val tasks =
                 activityManager.getRunningTasks(Int.MAX_VALUE)
             for (task in tasks) {
-                if ("com.kpstv.xclipper.service.ChangeClipboardActivity".equals(task.baseActivity!!.className, ignoreCase = true)
+                if ("com.kpstv.xclipper.service.ChangeClipboardActivity".equals(
+                        task.baseActivity!!.className,
+                        ignoreCase = true
+                    )
                 ) return true
             }
             return false
@@ -88,19 +103,96 @@ class Utils {
             }
         }
 
-       /* @JvmStatic
-        fun cafeBarToast(context: Context, message: String, buttonText: String, block: (CafeBar) -> Unit): CafeBar {
-            return CafeBar.builder(context)
-                .content(message)
-                .floating(true)
-                .duration(CafeBar.Duration.INDEFINITE)
-                .neutralText(buttonText)
-                .onNeutral {
-                   block.invoke(it)
+
+        /**
+         * This will check if accessibility service is enabled or not.
+         *
+         * @param service Provide the accessibility service class of which you want to
+         * detect.
+         */
+        fun isAccessibilityServiceEnabled(
+            context: Context,
+            service: Class<out AccessibilityService?>
+        ): Boolean {
+            val am =
+                context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
+            val enabledServices =
+                am.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK)
+            for (enabledService in enabledServices) {
+                val enabledServiceInfo: ServiceInfo = enabledService.resolveInfo.serviceInfo
+                if (enabledServiceInfo.packageName == context.packageName && enabledServiceInfo.name == service.name
+                ) return true
+            }
+            return false
+        }
+
+        /**
+         * This will create and show dialog to user to enable accessibility service
+         * to make clipboard capturing work even for the Android 10.
+         */
+        fun showAccessibilityDialog(context: Context, block: () -> Unit): Unit = with(context) {
+            AlertDialog.Builder(this)
+                .setMessage("In order to capture clipboard clips you need to enable service from accessibility service.\n\n1. Click on to open accessibility settings.\n2. Search for XClipper.\n3. Click and enable the service.")
+                .setPositiveButton(getString(R.string.ok)) { _, _ ->
+                    openAccessibility(this)
+
+                    block.invoke()
                 }
-                .autoDismiss(false)
-                .showShadow(true)
-                .build()
-        }*/
+                .setCancelable(false)
+                .setNegativeButton(getString(R.string.cancel)) { _, _ -> block.invoke() }
+                .show()
+        }
+
+        fun openAccessibility(context: Context) = with(context) {
+            val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS).apply {
+                flags = FLAG_ACTIVITY_NEW_TASK
+            }
+            startActivity(intent)
+        }
+
+        /**
+         * Call this function whenever you want to work with installed apps.
+         */
+        fun retrievePackageList(context: Context): Unit = with(context) {
+
+            if (App.appList.isNotEmpty()) return@with
+
+            packageManager.getInstalledApplications(PackageManager.GET_META_DATA).filter {
+                it.flags != ApplicationInfo.FLAG_SYSTEM
+            }
+                .mapNotNull {
+                    AppPkg(
+                        it.loadLabel(packageManager),
+                        it.packageName
+                    )
+                }
+                .filter { it.label != null && !it.label.contains(".") && it.packageName != null }
+                .sortedBy { it.label.toString() }
+                .distinctBy { it.label.toString() }
+                .also {
+                    App.appList.clear()
+                    App.appList.addAll(it)
+                }
+
+
+            App.blackListedApps =
+                PreferenceManager.getDefaultSharedPreferences(this).getStringSet(BLACKLIST_PREF, mutableSetOf())
+        }
+
+
+        /* @JvmStatic
+         fun cafeBarToast(context: Context, message: String, buttonText: String, block: (CafeBar) -> Unit): CafeBar {
+             return CafeBar.builder(context)
+                 .content(message)
+                 .floating(true)
+                 .duration(CafeBar.Duration.INDEFINITE)
+                 .neutralText(buttonText)
+                 .onNeutral {
+                    block.invoke(it)
+                 }
+                 .autoDismiss(false)
+                 .showShadow(true)
+                 .build()
+         }*/
     }
 }

@@ -47,35 +47,9 @@ class ExampleUnitTest {
     @Test
     fun list_test() {
 
-        val string = """
-            [
-        {
-            "word": "bonjour",
-            "phonetic": "/bänˈZHo͝or/",
-            "origin": "French, literally ‘good day’.",
-            "meaning": {
-                "exclamation": [
-                    {
-D/OkHttp:                     "definition": "A French greeting used when meeting during the daytime.",
-                        "example": "there you are, bonjour!"
-                    }
-                ],
-                "noun": [
-                    {
-                        "definition": "An utterance of “bonjour”",
-                        "example": "be sure to greet him with a hearty “bonjour”"
-                    }
-                ]
-            }
-        }
-    ]
-        """.trimIndent()
-        "\"definition\":\\s\".*?\"".toRegex().let {
-            if (it.containsMatchIn(string)) {
-                val value = it.find(string)?.value ?: ""
-                println(value.split("\"")[3])
-            }
-        }
+       val list = mutableListOf(1,23,412,41244,525475,745,32,532,3)
+
+        list.sortBy { it }
 
       /*  val user1 = User(1, "text")
         user1.list = listOf(1,2,3)

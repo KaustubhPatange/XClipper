@@ -1,12 +1,15 @@
 package com.kpstv.xclipper
 
-import androidx.test.platform.app.InstrumentationRegistry
+import android.content.Intent
+import android.content.pm.ResolveInfo
+import android.util.Log
 import androidx.test.ext.junit.runners.AndroidJUnit4
-
+import androidx.test.platform.app.InstrumentationRegistry
+import com.kpstv.xclipper.data.model.AppPkg
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 
-import org.junit.Assert.*
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -15,10 +18,22 @@ import org.junit.Assert.*
  */
 @RunWith(AndroidJUnit4::class)
 class ExampleInstrumentedTest {
+    private val TAG = javaClass.simpleName
     @Test
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.kpstv.xclipper", appContext.packageName)
+
+        val also = appContext.packageManager.getInstalledApplications(0)
+            .mapNotNull {
+                AppPkg(
+                    it.className,
+                    it.packageName
+                )
+            }
+
+        Log.e(TAG, "Data "+ also)
+
+      //  assertEquals(pkgAppsList.size, 10)
     }
 }

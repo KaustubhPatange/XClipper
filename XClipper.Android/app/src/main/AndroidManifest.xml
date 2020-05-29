@@ -2,8 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.kpstv.xclipper">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <!-- TODO: Remove foreground and SAW permission if unused. -->
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- TODO: Remove foreground and SAW permission if unused. -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
@@ -15,6 +14,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".ui.activities.Settings"
+            android:label="@string/title_activity_settings"></activity>
         <activity android:name=".ui.activities.Splash" />
         <activity android:name=".ui.activities.Main">
             <intent-filter>
@@ -29,8 +31,8 @@
             android:theme="@style/CustomDialogStyle.Dark" />
         <activity
             android:name=".ui.dialogs.SpecialDialog"
-            android:launchMode="singleTask"
             android:excludeFromRecents="true"
+            android:launchMode="singleTask"
             android:theme="@style/CustomDialogStyle.Dark" />
         <activity
             android:name=".ui.dialogs.EditDialog"
@@ -55,13 +57,13 @@
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>
+
             <meta-data
                 android:name="Clipservice"
                 android:resource="@xml/clip_service" />
         </service>
 
-        <receiver android:name=".service.AppBroadcastReceiver"/>
-
+        <receiver android:name=".service.AppBroadcastReceiver" />
     </application>
 
 </manifest>

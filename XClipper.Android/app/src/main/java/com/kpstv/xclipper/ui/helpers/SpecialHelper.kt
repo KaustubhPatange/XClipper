@@ -325,7 +325,7 @@ class SpecialHelper(
 
     private fun setRecyclerView(view: View) = with(view) {
         bsm_recyclerView.layoutManager = LinearLayoutManager(context)
-        adapter = MenuAdapter(specialList)
+        adapter = MenuAdapter(specialList, R.layout.item_special)
         bsm_recyclerView.adapter = adapter
         bsm_recyclerView.setHasFixedSize(true)
     }

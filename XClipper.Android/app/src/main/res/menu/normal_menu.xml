@@ -7,13 +7,19 @@
     <item android:id="@+id/action_tag"
         android:icon="@drawable/ic_tag"
         android:title="@string/tag"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="always"/>
 
     <item
         android:id="@+id/action_sync"
         android:icon="@drawable/ic_sync"
         android:title="@string/sync"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_setting"
+        android:icon="@drawable/ic_slider"
+        android:title="@string/settings"
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/action_search"

@@ -5,9 +5,8 @@
     android:layout_height="wrap_content"
     android:background="?selectableItemBackgroundBorderless"
     android:clickable="true"
-    android:tint="@color/colorCustomBlue"
     android:focusable="true"
-    android:padding="10dp"
-    android:src="@drawable/ic_sync"
-    android:tooltipText="@string/sync"
-    app:tooltipText="@string/sync" />
+    android:padding="17dp"
+    android:src="@drawable/ic_slider"
+    app:tooltipText="@string/settings"
+    android:tooltipText="@string/settings" />

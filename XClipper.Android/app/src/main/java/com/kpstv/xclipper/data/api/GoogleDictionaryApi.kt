@@ -10,8 +10,8 @@ import retrofit2.http.Path
 
 interface GoogleDictionaryApi {
 
-    @GET("api/v1/entries/en/{word}")
-    fun defineAsync(@Path("word") word: String): Deferred<Definition?>?
+    @GET("api/v1/entries/{lang}/{word}")
+    fun defineAsync(@Path("en") lang: String, @Path("word") word: String): Deferred<Definition?>?
 
     companion object {
         private var googleDictionaryApi: GoogleDictionaryApi? = null

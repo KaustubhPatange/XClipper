@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.kpstv.xclipper.data.converters.CipDeserializer
 import com.kpstv.xclipper.data.converters.DefinitionDeserializer
+import com.kpstv.xclipper.data.model.AppPkg
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.Definition
 
@@ -20,7 +21,13 @@ object App {
     var FB_MIN_ITEM_STORAGE = 5
     var FB_MAX_ITEM_STORAGE = 20
 
+    var appList = ArrayList<AppPkg>()
+    var blackListedApps: Set<String>? = null
+
     var UNDO_DELETE_SPAN: Long = 2500
+
+    var DICTIONARY_LANGUAGE = "en"
+
     const val DELAY_SPAN: Long = 20
 
 
@@ -59,4 +66,8 @@ object App {
 
     const val ACTION_OPEN_APP = "com.kpstv.xclipper.open_app"
     const val ACTION_SMART_OPTIONS = "com.kpstv.xclipper.smart_options"
+
+    /** Preference Keys */
+    const val LANG_PREF = "lang_pref"
+    const val BLACKLIST_PREF = "blacklist_pref"
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="DialingCountryCode" >
+    <string-array name="DialingCountryCode">
         <item>32,BE</item>
         <item>501,BZ</item>
         <item>229,BJ</item>
@@ -208,4 +208,37 @@
         <item>260,ZM</item>
         <item>263,ZW</item>
     </string-array>
+
+    <string-array name="lang_entries">
+        <item>Arabic</item>
+        <item>Brazilian Portuguese</item>
+        <item>Chinese (Simplified)</item>
+        <item>English</item>
+        <item>French</item>
+        <item>German</item>
+        <item>Hindi</item>
+        <item>Italian</item>
+        <item>Japanese</item>
+        <item>Korean</item>
+        <item>Russian</item>
+        <item>Spanish</item>
+        <item>Turkish</item>
+    </string-array>
+
+    <string-array name="lang_values">
+        <item>ar</item>
+        <item>pt-BR</item>
+        <item>zh-CN</item>
+        <item>en</item>
+        <item>fr</item>
+        <item>de</item>
+        <item>hi</item>
+        <item>it</item>
+        <item>ja</item>
+        <item>ko</item>
+        <item>ru</item>
+        <item>es</item>
+        <item>tr</item>
+    </string-array>
+
 </resources>

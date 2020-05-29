@@ -9,10 +9,12 @@ import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.os.Build
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
+import com.kpstv.xclipper.App
 import com.kpstv.xclipper.App.CLIP_DATA
 import com.kpstv.xclipper.App.observeFirebase
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.repository.MainRepository
+import com.kpstv.xclipper.extensions.utils.Utils.Companion.retrievePackageList
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.kodein
 import org.kodein.di.generic.instance
@@ -20,8 +22,11 @@ import org.kodein.di.generic.instance
 
 class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
 
+    /** We will save the package name to this variable from the event. */
+    private var currentPackage: CharSequence? = null
+
     override val kodein by kodein()
-    private val repository  by instance<MainRepository>()
+    private val repository by instance<MainRepository>()
     private val firebaseProvider by instance<FirebaseProvider>()
 
     private val TAG = javaClass.simpleName
@@ -39,19 +44,18 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
                 && event.currentItemIndex != -1)
 
                 || (event?.eventType == AccessibilityEvent.TYPE_VIEW_CLICKED
-                && event.text != null && (event.contentDescription == "Copy"|| event.contentDescription == "Cut"))
+                && event.text != null && (event.contentDescription == "Copy" || event.contentDescription == "Cut"))
     }
 
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
 
-        //   if (event?.eventType == AccessibilityEvent.TYPE_VIEW_TEXT_SELECTION_CHANGED)
-        //  Log.e(TAG, "Event: $event")
-      //  val condition2 = !isRunning(this)
+        currentPackage = event?.packageName
 
-        //Log.e(TAG, "Condition Running: $condition2, Condition Event: $condition3")
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q  && supportedEventTypes(event)) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && supportedEventTypes(event) && !isPackageBlacklisted(
+                event?.packageName
+            )
+        ) {
             Log.e(TAG, "Running for first time")
 
             runActivity(FLAG_ACTIVITY_NEW_TASK)
@@ -74,6 +78,9 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
 
         clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         clipboardManager.addPrimaryClipChangedListener {
+
+            if (isPackageBlacklisted(currentPackage)) return@addPrimaryClipChangedListener
+
             val data = clipboardManager.primaryClip?.getItemAt(0)?.coerceToText(this)?.toString()
             if (data != null && CLIP_DATA != data) {
                 CLIP_DATA = data
@@ -84,7 +91,7 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
             Log.e(TAG, "Data: ${clipboardManager.primaryClip?.getItemAt(0)?.text}")
         }
 
-
+        retrievePackageList(applicationContext)
     }
 
     private fun runActivity(flag: Int) {
@@ -94,6 +101,11 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
     }
 
     override fun onInterrupt() {}
+
+    /**
+     * Returns true if the current package name is not part of blacklist app list.
+     */
+    private fun isPackageBlacklisted(pkg: CharSequence?) = App.blackListedApps?.contains(pkg) == true
 
     private fun firebaseObserver() {
         if (!observeFirebase) return

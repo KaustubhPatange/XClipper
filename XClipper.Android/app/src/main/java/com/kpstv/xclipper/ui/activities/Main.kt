@@ -359,47 +359,18 @@ class Main : AppCompatActivity(), KodeinAware {
                         Toasty.error(this@Main, getString(R.string.error_sync)).show()
                     }
                 ))
-                /*mainViewModel.makeAValidationRequest {
-                    isEnabled = true
-                    this.clearAnimation()
-                    if (it == Status.Success)
-                        Toasty.info(this@Main,  getString(R.string.sync_complete)).show()
-                    else
-                        Toasty.error(this@Main,   getString(R.string.error_sync)).show()
-                }*/
             }
         }
 
-        toolbar.menu.findItem(R.id.action_sync).actionView = syncImage
-    }
-
-
-    /**
-     * TODO: Remove this function if unused
-     *
-     * This function will perform undo delete whenever item has been deleted from
-     * expanded menu.
-     */
-    private fun performUndoDelete(clip: Clip, i: Int) {
-        val task = Timer("UndoDelete", false).schedule(UNDO_DELETE_SPAN) {
-            mainViewModel.deleteFromRepository(clip)
+        val settingImage =
+            LayoutInflater.from(this).inflate(R.layout.imageview_menu_setting, null) as ImageView
+        settingImage.setOnClickListener {
+            startActivity(Intent(this, Settings::class.java))
         }
 
-        val list = adapter.currentList.removeAt(i)
-        adapter.notifyItemRemoved(i)
-
-        Snackbar.make(
-            ci_recyclerView,
-            "1 ${getString(R.string.item_delete)}",
-            Snackbar.LENGTH_SHORT
-        )
-            .setAction(getString(R.string.undo)) {
-                task.cancel()
-                adapter.currentList.add(i, list)
-                adapter.notifyItemInserted(i)
-            }.show()
+        toolbar.menu.findItem(R.id.action_sync).actionView = syncImage
+        toolbar.menu.findItem(R.id.action_setting).actionView = settingImage
     }
-
 
     /**
      * So I found out that sometimes in Android 10, clipboard still not get captured using the
