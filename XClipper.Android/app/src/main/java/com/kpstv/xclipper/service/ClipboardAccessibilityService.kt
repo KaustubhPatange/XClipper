@@ -12,9 +12,13 @@ import android.view.accessibility.AccessibilityEvent
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.App.CLIP_DATA
 import com.kpstv.xclipper.App.observeFirebase
+import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.provider.FirebaseProvider
+import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.data.repository.MainRepository
+import com.kpstv.xclipper.extensions.utils.Utils.Companion.logoutFromDatabase
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.retrievePackageList
+import es.dmoral.toasty.Toasty
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.kodein
 import org.kodein.di.generic.instance
@@ -28,6 +32,7 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
     override val kodein by kodein()
     private val repository by instance<MainRepository>()
     private val firebaseProvider by instance<FirebaseProvider>()
+    private val preferenceProvider by instance<PreferenceProvider>()
 
     private val TAG = javaClass.simpleName
     private lateinit var clipboardManager: ClipboardManager
@@ -49,7 +54,6 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
 
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
-
         currentPackage = event?.packageName
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && supportedEventTypes(event) && !isPackageBlacklisted(
@@ -105,7 +109,8 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
     /**
      * Returns true if the current package name is not part of blacklist app list.
      */
-    private fun isPackageBlacklisted(pkg: CharSequence?) = App.blackListedApps?.contains(pkg) == true
+    private fun isPackageBlacklisted(pkg: CharSequence?) =
+        App.blackListedApps?.contains(pkg) == true
 
     private fun firebaseObserver() {
         if (!observeFirebase) return
@@ -118,8 +123,18 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
             error = {
                 Log.e(TAG, "Error: ${it.message}")
             },
-            deviceValidated = {
+            deviceValidated = { isValidated ->
 
+                if (!isValidated) {
+                    logoutFromDatabase(preferenceProvider)
+                    Toasty.error(
+                        applicationContext,
+                        getString(R.string.err_device_validate),
+                        Toasty.LENGTH_LONG
+                    ).show()
+                } else {
+
+                }
             }
         )
     }

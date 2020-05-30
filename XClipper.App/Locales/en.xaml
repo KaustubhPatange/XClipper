@@ -75,6 +75,7 @@
     <system:String x:Key="popup_edit_err">Editing is not supported for this format</system:String>
     <system:String x:Key="popup_blank_err">Error: Cannot set a blank text</system:String>
     <system:String x:Key="popup_file_err">Error: Invalid file path(s)</system:String>
+    <system:String x:Key="popup_data_err">Error: Invalid file path(s)</system:String>
     <system:String x:Key="clip_search_hint">Search (Ctrl + Q)</system:String>
     <system:String x:Key="clip_close_hint">Close (Escape)</system:String>
     <system:String x:Key="clip_empty">No clips found</system:String>

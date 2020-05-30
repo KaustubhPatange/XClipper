@@ -177,7 +177,7 @@
                     <Border Padding="7,0,7,7">
                         <StackPanel Orientation="Vertical">
                             <Border>
-                                <Image Height="110" Source="D:\VisualStudioProjects\FirebaseTest\bin\Debug\new.png" />
+                                <Image Height="110" Source="{Binding UID, Converter={x:Static local:ImageQRConverter.Instance}}" />
                             </Border>
                             <StackPanel
                                 Margin="0,-5,0,0"

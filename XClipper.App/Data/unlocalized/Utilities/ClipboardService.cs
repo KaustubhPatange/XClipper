@@ -75,8 +75,20 @@ namespace Components
 
                 if (!Directory.Exists(ImageFolder)) Directory.CreateDirectory(ImageFolder);
 
-                string filePath = Path.Combine(ImageFolder, $"Images\\{DateTime.Now.ToFormattedDateTime()}.png");
-                binder.GetClipImage.Save(filePath);
+                string filePath = Path.Combine(ImageFolder, $"{DateTime.Now.ToFormattedDateTime()}.png");
+
+                // We will write it to memory stream before saving
+           /*     using (MemoryStream memory = new MemoryStream())
+                {
+                    using (FileStream fs = new FileStream(filePath, FileMode.Create, FileAccess.ReadWrite))
+                    {
+                        binder.GetClipImage.Save(memory, System.Drawing.Imaging.ImageFormat.Png);
+                        byte[] bytes = memory.ToArray();
+                        fs.Write(bytes, 0, bytes.Length);
+                    }
+                }*/
+
+               binder.GetClipImage.Save(filePath);
 
                 AppSingleton.GetInstance.InsertContent(CreateTable(filePath, ContentTypes.Image));
             }

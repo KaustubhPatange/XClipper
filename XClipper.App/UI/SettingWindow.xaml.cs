@@ -1,7 +1,10 @@
-﻿using System.ComponentModel;
+﻿using QRCoder;
+using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 
 namespace Components
 {
@@ -16,11 +19,11 @@ namespace Components
 
             DataContext = new SettingViewModel().Also((v) => { v.SetSettingBinder(binder); });
 
-            Closing += (o, e) => {
+            Closing += (o, e) =>
+            {
                 e.Cancel = true;
                 Hide();
             };
-
         }
     }
 }

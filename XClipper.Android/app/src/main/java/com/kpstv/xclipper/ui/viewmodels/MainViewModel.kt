@@ -1,19 +1,26 @@
 package com.kpstv.xclipper.ui.viewmodels
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.kpstv.license.Decrypt
+import com.kpstv.xclipper.App
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.data.provider.FirebaseProvider
+import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.data.repository.TagRepository
 import com.kpstv.xclipper.extensions.enumerations.FilterType
 import com.kpstv.xclipper.extensions.listeners.RepositoryListener
+import com.kpstv.xclipper.extensions.listeners.ResponseListener
 import com.kpstv.xclipper.extensions.listeners.StatusListener
+import com.kpstv.xclipper.extensions.utils.Utils
+import com.kpstv.xclipper.extensions.utils.Utils.Companion.loginToDatabase
+import com.kpstv.xclipper.extensions.utils.Utils.Companion.logoutFromDatabase
 import com.kpstv.xclipper.ui.helpers.DictionaryApiHelper
 import com.kpstv.xclipper.ui.helpers.TinyUrlApiHelper
 import com.kpstv.xclipper.ui.viewmodels.managers.MainEditManager
@@ -26,6 +33,7 @@ class MainViewModel(
     application: Application,
     private val mainRepository: MainRepository,
     private val tagRepository: TagRepository,
+    private val preferenceProvider: PreferenceProvider,
     private val firebaseProvider: FirebaseProvider,
     val dictionaryApiHelper: DictionaryApiHelper,
     val tinyUrlApiHelper: TinyUrlApiHelper
@@ -121,6 +129,33 @@ class MainViewModel(
                     tagRepository.deleteTag(tag)
                 }
             ))
+    }
+
+    fun updateDeviceConnection(UID: String, responseListener: ResponseListener<Unit>) {
+        App.UID = UID
+        firebaseProvider.run {
+            addDevice(App.DeviceID, ResponseListener(
+                complete = {
+                    loginToDatabase(preferenceProvider, UID)
+                    responseListener.onComplete(Unit)
+                },
+                error = {
+                    responseListener.onError(it)
+                }
+            ))
+        }
+    }
+
+    fun removeDeviceConnection(responseListener: ResponseListener<Unit>) {
+        firebaseProvider.removeDevice(App.DeviceID, ResponseListener(
+            complete = {
+                logoutFromDatabase(preferenceProvider)
+                responseListener.onComplete(Unit)
+            },
+            error = {
+                responseListener.onError(it)
+            }
+        ))
     }
 
     init {

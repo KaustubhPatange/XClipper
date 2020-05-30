@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.kpstv.xclipper">
 
-    <uses-permission android:name="android.permission.INTERNET" /> <!-- TODO: Remove foreground and SAW permission if unused. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <!-- TODO: Remove foreground and SAW permission if unused. -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
+    <uses-sdk tools:overrideLibrary="com.google.zxing.client.android" />
+
     <application
+        android:hardwareAccelerated="true"
         android:name=".XClipperApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -16,7 +22,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".ui.activities.Settings"
-            android:label="@string/title_activity_settings"></activity>
+            android:label="@string/title_activity_settings"/>
         <activity android:name=".ui.activities.Splash" />
         <activity android:name=".ui.activities.Main">
             <intent-filter>
@@ -48,6 +54,12 @@
             android:excludeFromRecents="true"
             android:launchMode="singleInstance"
             android:theme="@style/Theme.AppCompat.Translucent" />
+
+        <!-- TODO: Check this orientation stuff-->
+        <activity
+            android:name="com.journeyapps.barcodescanner.CaptureActivity"
+            android:screenOrientation="fullSensor"
+            tools:replace="screenOrientation" />
 
         <service
             android:name=".service.ClipboardAccessibilityService"

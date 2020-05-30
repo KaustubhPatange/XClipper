@@ -4,6 +4,7 @@ using static Components.MainHelper;
 using static Components.DefaultSettings;
 using System.Windows;
 using static Components.App;
+using static Components.LicenseHandler;
 using System.IO;
 using static Components.Constants;
 using System;
@@ -66,6 +67,7 @@ namespace Components
         public int FMIL { get; } = DatabaseMaxItemLength;
         public int FMCD { get; } = DatabaseMaxConnection;
         public string FDP { get; set; } = DatabaseEncryptPassword;
+        public string UID { get; private set; } = UniqueID;
         public bool ISDB
         {
             get { return is_secure_db; }
@@ -98,7 +100,7 @@ namespace Components
         /// </summary>
         private void ConnectedButtonClicked()
         {
-
+            
         }
 
         /// <summary>

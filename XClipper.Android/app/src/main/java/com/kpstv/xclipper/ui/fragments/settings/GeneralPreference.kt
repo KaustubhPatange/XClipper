@@ -6,14 +6,17 @@ import androidx.preference.MultiSelectListPreference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
 import com.kpstv.xclipper.App
+import com.kpstv.xclipper.App.BIND_PREF
 import com.kpstv.xclipper.App.BLACKLIST_PREF
 import com.kpstv.xclipper.App.DICTIONARY_LANGUAGE
 import com.kpstv.xclipper.App.LANG_PREF
+import com.kpstv.xclipper.App.SERVICE_PREF
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.isAccessibilityServiceEnabled
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.openAccessibility
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.retrievePackageList
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showAccessibilityDialog
+import com.kpstv.xclipper.extensions.utils.Utils.Companion.showConnectDialog
 import com.kpstv.xclipper.service.ClipboardAccessibilityService
 
 
@@ -26,6 +29,7 @@ class GeneralPreference : PreferenceFragmentCompat() {
         /** Load app list */
         retrievePackageList(requireContext())
 
+        /** Black list app preference */
         val blacklistPreference = findPreference<MultiSelectListPreference>(BLACKLIST_PREF)
 
         blacklistPreference?.entries = App.appList.mapNotNull { it.label }.toTypedArray()
@@ -38,7 +42,9 @@ class GeneralPreference : PreferenceFragmentCompat() {
             true
         }
 
-        checkPreference = findPreference("service_pref")
+
+        /** Clipboard Service preference */
+        checkPreference = findPreference(SERVICE_PREF)
         checkPreference?.setOnPreferenceChangeListener { _, newValue ->
             if (newValue as Boolean)
                 showAccessibilityDialog(requireContext()) {
@@ -48,6 +54,7 @@ class GeneralPreference : PreferenceFragmentCompat() {
             true
         }
 
+        /** Language code preference */
         findPreference<ListPreference>(LANG_PREF)?.setOnPreferenceChangeListener { _, newValue ->
             DICTIONARY_LANGUAGE = newValue as String
             true

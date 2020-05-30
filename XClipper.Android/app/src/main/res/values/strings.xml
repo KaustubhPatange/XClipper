@@ -60,4 +60,21 @@
     <string name="lang_title">Language Code</string>
     <string name="lang_summary">Define language for finding definition of word (usually seen in special actions)</string>
     <string name="cancel">Cancel</string>
+    <string name="stc">Scan to connect</string>
+    <string name="connection_exist">Already connected to database!</string>
+    <string name="err_device_validate">Session expired!</string>
+    <string name="account">Account</string>
+    <string name="bind_title">Database binding</string>
+    <string name="bind_summary">Enable uploading of device data to the database</string>
+    <string name="logout_summary">Remove all connection with the database</string>
+    <string name="logout_title">Logout</string>
+    <string name="connect_summary">Initialize a connection to an online database for cross platform syncing</string>
+    <string name="connect_title">Connect to database</string>
+    <string name="alert">Alert</string>
+    <string name="logout_msg">Are you sure you want to log out?</string>
+    <string name="yes">Yes</string>
+    <string name="logout_success">Logged out successfully!</string>
+    <string name="err_uid">Not a valid UID</string>
+    <string name="connect_success">Connected successfully!</string>
+    <string name="scan_code">Scan the app code</string>
 </resources>

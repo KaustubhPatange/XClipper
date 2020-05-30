@@ -1,5 +1,6 @@
 package com.kpstv.xclipper.data.provider
 
+import android.os.Build
 import android.util.Log
 import com.google.firebase.database.FirebaseDatabase
 import com.kpstv.xclipper.App.BindToFirebase
@@ -8,9 +9,11 @@ import com.kpstv.xclipper.App.UID
 import com.kpstv.xclipper.App.getMaxStorage
 import com.kpstv.xclipper.App.gson
 import com.kpstv.xclipper.data.model.Clip
+import com.kpstv.xclipper.data.model.Device
 import com.kpstv.xclipper.data.model.User
-import com.kpstv.xclipper.extensions.listeners.FValueEventListener
 import com.kpstv.xclipper.extensions.cloneToEntries
+import com.kpstv.xclipper.extensions.listeners.FValueEventListener
+import com.kpstv.xclipper.extensions.listeners.ResponseListener
 
 @ExperimentalStdlibApi
 class FirebaseProviderImpl : FirebaseProvider {
@@ -19,16 +22,57 @@ class FirebaseProviderImpl : FirebaseProvider {
 
     private val USER_REF = "users"
     private val CLIP_REF = "Clips"
+    private val DEVICE_REF = "Devices"
 
     private var user: User? = null
     private var validDevice: Boolean = false
     private var database: FirebaseDatabase = FirebaseDatabase.getInstance()
-    override fun isLicensed(): Boolean =  user?.IsLicensed ?: false
+    override fun isLicensed(): Boolean = user?.IsLicensed ?: false
 
     override fun isValidDevice(): Boolean = validDevice
 
     override fun clearData() {
         user = null
+    }
+
+    override fun addDevice(DeviceId: String, responseListener: ResponseListener<Unit>) {
+        workWithData(ValidationContext.ForceInvoke) {
+            val list =
+                if (user?.Devices != null) ArrayList(user?.Devices!!)
+                else ArrayList<Device>()
+
+            if (list.count { it.ID == DeviceId } > 0) return@workWithData
+
+            list.add(Device(DeviceId, Build.VERSION.SDK_INT, Build.MODEL))
+
+            updateDeviceList(list, responseListener)
+        }
+    }
+
+
+    override fun removeDevice(DeviceId: String, responseListener: ResponseListener<Unit>) {
+        workWithData(ValidationContext.ForceInvoke) {
+            val list =
+                if (user?.Devices != null) ArrayList(user?.Devices!!)
+                else ArrayList<Device>()
+
+            if (list.count { it.ID == DeviceId } > 0) return@workWithData
+
+            val filterList = list.filter { it.ID == DeviceId }
+
+            updateDeviceList(filterList, responseListener)
+        }
+    }
+
+    private fun updateDeviceList(list: List<Device>, responseListener: ResponseListener<Unit>) {
+        database.getReference(USER_REF).child(UID).child(DEVICE_REF)
+            .setValue(list) { error, _ ->
+                if (error == null) {
+                    responseListener.onComplete(Unit)
+                }
+                else
+                    responseListener.onError(java.lang.Exception(error.message))
+            }
     }
 
     override fun replaceData(oldClip: Clip, newClip: Clip) {
@@ -176,8 +220,12 @@ class FirebaseProviderImpl : FirebaseProvider {
 
                     // Check for device validation
                     (user?.Devices ?: ArrayList()).forEach { device ->
-                        if (device.ID == DeviceID) validDevice = true
+                        if (device.ID == DeviceID) {
+                            validDevice = true
+                            return@forEach
+                        }
                     }
+
                     deviceValidated.invoke(validDevice)
 
                     if (json != null)

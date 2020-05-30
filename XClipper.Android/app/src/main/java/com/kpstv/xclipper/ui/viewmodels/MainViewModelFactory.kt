@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.kpstv.xclipper.data.api.GoogleDictionaryApi
 import com.kpstv.xclipper.data.api.TinyUrlApi
 import com.kpstv.xclipper.data.provider.FirebaseProvider
+import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.data.repository.TagRepository
 import com.kpstv.xclipper.ui.helpers.DictionaryApiHelper
@@ -18,6 +19,7 @@ class MainViewModelFactory(
     private val application: Application,
     private val mainRepository: MainRepository,
     private val tagRepository: TagRepository,
+    private val preferenceProvider: PreferenceProvider,
     private val firebaseProvider: FirebaseProvider,
     private val dictionaryApiHelper: DictionaryApiHelper,
     private val tinyUrlApiHelper: TinyUrlApiHelper
@@ -35,6 +37,7 @@ class MainViewModelFactory(
                         application,
                         mainRepository,
                         tagRepository,
+                        preferenceProvider,
                         firebaseProvider,
                         dictionaryApiHelper,
                         tinyUrlApiHelper

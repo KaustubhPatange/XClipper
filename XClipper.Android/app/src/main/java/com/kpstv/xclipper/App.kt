@@ -54,6 +54,7 @@ object App {
 
     const val TAG_FILTER_CHIP = "com.kpstv.xclipper.tag"
 
+    const val UID_PATTERN_REGEX = "([\\w\\d]+)-([\\w\\d]+)-([\\w\\d]+)-([\\w\\d]+)"
     const val SINGLE_WORD_PATTERN_REGEX = "^[^https?][^\\s\\W]+\$"
     const val DICTIONARY_WORD_PATTERN_REGEX = "\"word\":[\\s]?\".*?\""
     const val DICTIONARY_DEFINITION_PATTERN_REGEX = "\"definition\":[\\s]?\".*?\""
@@ -68,6 +69,11 @@ object App {
     const val ACTION_SMART_OPTIONS = "com.kpstv.xclipper.smart_options"
 
     /** Preference Keys */
+    const val SERVICE_PREF = "service_pref"
     const val LANG_PREF = "lang_pref"
     const val BLACKLIST_PREF = "blacklist_pref"
+    const val CONNECT_PREF = "connect_pref"
+    const val LOGOUT_PREF = "logout_pref"
+    const val BIND_PREF = "bind_pref"
+    const val UID_PREF = "uid_key"
 }

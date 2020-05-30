@@ -6,5 +6,5 @@ data class User (
     val IsLicensed: Boolean,
     val TotalConnection: Int,
     var Clips: List<Clip>?,
-    val Devices: List<Device>?
+    var Devices: List<Device>?
 )

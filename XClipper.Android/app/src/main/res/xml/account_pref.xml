@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <Preference
+        app:key="connect_pref"
+        app:summary="@string/connect_summary"
+        app:title="@string/connect_title" />
+
+    <Preference
+        app:key="logout_pref"
+        app:summary="@string/logout_summary"
+        app:title="@string/logout_title" />
+
+    <PreferenceCategory app:title="Sync">
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:summary="@string/bind_summary"
+            app:key="bind_pref"
+            app:title="@string/bind_title" />
+    </PreferenceCategory>
+</PreferenceScreen>

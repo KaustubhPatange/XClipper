@@ -2,6 +2,7 @@ package com.kpstv.xclipper
 
 import android.content.Intent
 import android.content.pm.ResolveInfo
+import android.os.Build
 import android.util.Log
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -24,7 +25,9 @@ class ExampleInstrumentedTest {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
 
-        val also = appContext.packageManager.getInstalledApplications(0)
+        val d = Build.MODEL
+        val e = Build.VERSION.SDK_INT
+       /* val also = appContext.packageManager.getInstalledApplications(0)
             .mapNotNull {
                 AppPkg(
                     it.className,
@@ -32,7 +35,7 @@ class ExampleInstrumentedTest {
                 )
             }
 
-        Log.e(TAG, "Data "+ also)
+        Log.e(TAG, "Data "+ also)*/
 
       //  assertEquals(pkgAppsList.size, 10)
     }

@@ -1,44 +1,45 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory app:title="Main">
 
         <SwitchPreferenceCompat
-            app:key="service_pref"
             android:summary="@string/service_summary"
+            app:key="service_pref"
             app:title="@string/service_title" />
 
         <MultiSelectListPreference
-            app:key="blacklist_pref"
+            android:summary="Apps in which clipboard capturing is disabled"
+            android:title="Ignored Apps"
+            app:dependency="service_pref"
             app:entries="@array/lang_entries"
             app:entryValues="@array/lang_values"
-            android:summary="Apps in which clipboard capturing is disabled"
-            android:title="Ignored Apps"/>
+            app:key="blacklist_pref" />
 
-     <!--   <EditTextPreference
-            app:key="signature"
-            app:title="@string/signature_title"
-            app:useSimpleSummaryProvider="true" />
+        <!--   <EditTextPreference
+               app:key="signature"
+               app:title="@string/signature_title"
+               app:useSimpleSummaryProvider="true" />
 
-        <ListPreference
-            app:defaultValue="reply"
-            app:entries="@array/reply_entries"
-            app:entryValues="@array/reply_values"
-            app:key="reply"
-            app:title="@string/reply_title"
-            app:useSimpleSummaryProvider="true" />-->
+           <ListPreference
+               app:defaultValue="reply"
+               app:entries="@array/reply_entries"
+               app:entryValues="@array/reply_values"
+               app:key="reply"
+               app:title="@string/reply_title"
+               app:useSimpleSummaryProvider="true" />-->
 
     </PreferenceCategory>
 
     <PreferenceCategory app:title="Other">
 
         <ListPreference
+            android:summary="@string/lang_summary"
             app:defaultValue="en"
             app:entries="@array/lang_entries"
             app:entryValues="@array/lang_values"
             app:key="lang_pref"
-            app:title="@string/lang_title"
-            android:summary="@string/lang_summary"/>
+            app:title="@string/lang_title" />
 
         <!--<SwitchPreferenceCompat
             app:key="sync"

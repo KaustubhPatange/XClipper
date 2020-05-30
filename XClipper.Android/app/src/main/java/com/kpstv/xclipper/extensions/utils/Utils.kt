@@ -13,17 +13,25 @@ import android.content.pm.ServiceInfo
 import android.provider.Settings
 import android.telephony.TelephonyManager
 import android.util.TypedValue
+import android.view.LayoutInflater
 import android.view.accessibility.AccessibilityManager
 import androidx.annotation.AttrRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ShareCompat
+import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
+import com.google.zxing.integration.android.IntentIntegrator
 import com.kpstv.license.Decrypt
 import com.kpstv.xclipper.App
+import com.kpstv.xclipper.App.BIND_PREF
 import com.kpstv.xclipper.App.BLACKLIST_PREF
+import com.kpstv.xclipper.App.EMPTY_STRING
+import com.kpstv.xclipper.App.UID_PREF
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.AppPkg
 import com.kpstv.xclipper.data.model.Clip
+import com.kpstv.xclipper.data.provider.PreferenceProvider
+import kotlinx.android.synthetic.main.dialog_connect.view.*
 import java.util.*
 
 
@@ -179,6 +187,43 @@ class Utils {
                 PreferenceManager.getDefaultSharedPreferences(this).getStringSet(BLACKLIST_PREF, mutableSetOf())
         }
 
+        /**
+         * This will show connection dialog and from there we can initiate QR scanning.
+         */
+        fun showConnectDialog(activity: Activity): Unit = with(activity) {
+            val view = LayoutInflater.from(this).inflate(R.layout.dialog_connect, null)
+
+            val alert =   AlertDialog.Builder(this)
+                .setView(view)
+                .show()
+
+            view.btn_scan_connect.setOnClickListener {
+                IntentIntegrator(this)
+                    .setDesiredBarcodeFormats(IntentIntegrator.QR_CODE)
+                    .setOrientationLocked(false)
+                    .setBeepEnabled(false)
+                    .setPrompt(getString(R.string.scan_code))
+                    .setBarcodeImageEnabled(false)
+                    .initiateScan()
+                alert.dismiss()
+            }
+        }
+
+        fun logoutFromDatabase(preferenceProvider: PreferenceProvider) {
+            preferenceProvider.putBooleanKey(BIND_PREF, false)
+            preferenceProvider.putStringKey(UID_PREF, EMPTY_STRING)
+
+            App.UID = EMPTY_STRING
+            App.BindToFirebase = false
+        }
+
+        fun loginToDatabase(preferenceProvider: PreferenceProvider, UID: String) {
+            preferenceProvider.putStringKey(UID_PREF, UID)
+            preferenceProvider.putBooleanKey(BIND_PREF, true)
+
+            App.UID = UID
+            App.BindToFirebase = true
+        }
 
         /* @JvmStatic
          fun cafeBarToast(context: Context, message: String, buttonText: String, block: (CafeBar) -> Unit): CafeBar {

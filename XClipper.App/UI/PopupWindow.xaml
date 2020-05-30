@@ -37,7 +37,7 @@
                     Padding="7"
                     FontSize="11"
                     Foreground="WhiteSmoke"
-                    Text="The data has been updated"
+                    Text="{DynamicResource popup_data_err}"
                     TextAlignment="Center" />
             </WrapPanel>
         </Popup>

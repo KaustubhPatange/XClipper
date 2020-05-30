@@ -4,17 +4,18 @@ import android.annotation.SuppressLint
 import android.app.Application
 import android.provider.Settings
 import android.util.Log
-import androidx.preference.PreferenceManager
+import com.kpstv.xclipper.App.BIND_PREF
+import com.kpstv.xclipper.App.BindToFirebase
 import com.kpstv.xclipper.App.DICTIONARY_LANGUAGE
 import com.kpstv.xclipper.App.DeviceID
+import com.kpstv.xclipper.App.EMPTY_STRING
 import com.kpstv.xclipper.App.LANG_PREF
+import com.kpstv.xclipper.App.UID
+import com.kpstv.xclipper.App.UID_PREF
 import com.kpstv.xclipper.data.api.GoogleDictionaryApi
 import com.kpstv.xclipper.data.api.TinyUrlApi
 import com.kpstv.xclipper.data.db.MainDatabase
-import com.kpstv.xclipper.data.provider.ClipProvider
-import com.kpstv.xclipper.data.provider.ClipProviderImpl
-import com.kpstv.xclipper.data.provider.FirebaseProvider
-import com.kpstv.xclipper.data.provider.FirebaseProviderImpl
+import com.kpstv.xclipper.data.provider.*
 import com.kpstv.xclipper.data.repository.*
 import com.kpstv.xclipper.extensions.ioThread
 import com.kpstv.xclipper.extensions.utils.RetrofitUtils
@@ -51,6 +52,7 @@ class XClipperApplication : Application(), KodeinAware {
         bind() from singleton { instance<MainDatabase>().clipTagDao() }
         bind() from singleton { instance<MainDatabase>().clipDefineDao() }
         bind() from singleton { instance<MainDatabase>().clipUrlDao() }
+        bind<PreferenceProvider>() with singleton { PreferenceProviderImpl(instance()) }
         bind<FirebaseProvider>() with singleton { FirebaseProviderImpl() }
         bind<ClipProvider>() with singleton { ClipProviderImpl() }
         bind<TagRepository>() with singleton { TagRepositoryImpl(instance()) }
@@ -71,11 +73,13 @@ class XClipperApplication : Application(), KodeinAware {
                 instance(),
                 instance(),
                 instance(),
+                instance(),
                 instance()
             )
         }
     }
     private val notificationHelper by instance<NotificationHelper>()
+    private val preferenceProvider by instance<PreferenceProvider>()
 
     override fun onCreate() {
         super.onCreate()
@@ -102,9 +106,13 @@ class XClipperApplication : Application(), KodeinAware {
         )
 
         // Load settings here
-        val pref = PreferenceManager.getDefaultSharedPreferences(this)
-        DICTIONARY_LANGUAGE = pref.getString(LANG_PREF, "en")!!
-      // TODO: Already doing this in retrievePackages App.blackListedApps = pref.getStringSet("blacklist_pref", mutableSetOf())
+        DICTIONARY_LANGUAGE = preferenceProvider.getStringKey(LANG_PREF, "en")!!
+        UID = preferenceProvider.getStringKey(UID_PREF, EMPTY_STRING)!!
+        BindToFirebase = if (UID.isBlank()) false
+        else
+            preferenceProvider.getBooleanKey(BIND_PREF, false)
+
+        // TODO: Already doing this in retrievePackages App.blackListedApps = pref.getStringSet("blacklist_pref", mutableSetOf())
     }
 
 }

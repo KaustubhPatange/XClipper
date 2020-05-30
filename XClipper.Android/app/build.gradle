@@ -97,6 +97,12 @@ dependencies {
     // Flexbox Layout
     implementation 'com.google.android:flexbox:2.0.1'
 
+    // Lottie
+    implementation "com.airbnb.android:lottie:$lottieVersion"
+
+    // Zxing QR code
+    implementation 'com.journeyapps:zxing-android-embedded:4.1.0'
+
     // Toasty
     implementation 'com.github.GrenderG:Toasty:1.4.2'
 

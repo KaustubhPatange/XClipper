@@ -169,6 +169,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="AppModule.cs" />
+    <Compile Include="Data\Converters\ImageQRConverter.cs" />
     <Compile Include="Data\helpers\DatabaseHelper.cs" />
     <Compile Include="UI\BuyWindow.xaml.cs">
       <DependentUpon>BuyWindow.xaml</DependentUpon>
@@ -199,7 +200,7 @@
     <Compile Include="Data\helpers\WhatToStoreHelper.cs" />
     <Compile Include="Data\helpers\TranslationHelper.cs" />
     <Compile Include="Data\unlocalized\DefaultSettings.cs" />
-    <Compile Include="Data\unlocalized\HyperlinkProperties.cs" />
+    <Compile Include="Data\unlocalized\Properties\HyperlinkProperties.cs" />
     <Compile Include="Data\unlocalized\Specials.cs" />
     <Compile Include="Data\unlocalized\Utilities\ClipboardUtlity.cs" />
     <Compile Include="Data\unlocalized\Utilities\ClipboardService.cs" />
@@ -209,7 +210,7 @@
     <Compile Include="Data\unlocalized\EventToCommand.cs" />
     <Compile Include="Data\unlocalized\Utilities\IClipboardUtlity.cs" />
     <Compile Include="Data\unlocalized\Utilities\KeyHookUtility.cs" />
-    <Compile Include="Data\unlocalized\MenuItemProperties.cs" />
+    <Compile Include="Data\unlocalized\Properties\MenuItemProperties.cs" />
     <Compile Include="Data\unlocalized\LockToggleButton.cs" />
     <Compile Include="Data\unlocalized\NumericTextBox.cs" />
     <Compile Include="UI\FilterWindow.xaml.cs">
