@@ -65,8 +65,12 @@ class FirebaseProviderImpl : FirebaseProvider {
     }
 
     private fun updateDeviceList(list: List<Device>, responseListener: ResponseListener<Unit>) {
+
+        Log.e(TAG, "ListSize: ${list.size}, List: $list")
+
+        /** Must pass toList to firebase otherwise it add list as linear data. */
         database.getReference(USER_REF).child(UID).child(DEVICE_REF)
-            .setValue(list) { error, _ ->
+            .setValue(list.toList()) { error, _ ->
                 if (error == null) {
                     responseListener.onComplete(Unit)
                 }

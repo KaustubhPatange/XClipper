@@ -8,23 +8,20 @@ using static Components.DefaultSettings;
 using static Components.MenuItemHelper;
 using static Components.MainHelper;
 using Components.viewModels;
-using System.Reflection;
 using System.Windows;
 using System.Threading;
 using static Components.Constants;
 using Microsoft.Win32;
 using System.IO.Compression;
 using static Components.PathHelper;
-using System.Runtime.CompilerServices;
-using System.Collections.Specialized;
-using System.Windows.Controls;
 using SQLite;
 using static Components.TranslationHelper;
 using ClipboardManager.models;
 using static Components.LicenseHandler;
 using FireSharp.EventStreaming;
-using System.Threading.Tasks;
 using Autofac;
+using FireSharp.Extensions;
+using Components.UI;
 
 namespace Components
 {
@@ -41,6 +38,7 @@ namespace Components
         private WinForm.NotifyIcon notifyIcon;
         private SettingWindow settingWindow;
         private BuyWindow buyWindow;
+        private DeviceWindow deviceWindow;
         private IKeyboardRecorder recorder;
         public static List<string> LanguageCollection = new List<string>();
         private Mutex appMutex;
@@ -303,13 +301,18 @@ namespace Components
             CallBuyWindow();
         }
 
+        public void OnConnectedDeviceClicked()
+        {
+            CallDeviceWindow();
+        }
+
         #endregion
 
         #region IFirebaseBinder Events 
 
         public void OnDataAdded(ValueAddedEventArgs e)
         {
-            // todo: Do something on Add
+         //   AppSingleton.GetInstance.CheckDataAndUpdate(e.Data);
             Debug.WriteLine("Added:" + e.Data);
         }
 
@@ -317,7 +320,10 @@ namespace Components
         {
             // 1st value from real-time database is your 5th one in XClipper window.
             // todo: Do something on Changed
-            Debug.WriteLine("Changed:" + e.Data);
+            /** This bind database will ensure a two-way data binding. */
+            if (e.Path.Contains(PATH_CLIP_DATA) && BindDatabase)
+                AppSingleton.GetInstance.CheckDataAndUpdate(e.Data);
+             //   Debug.WriteLine("Path: "+ e.Path  + ", Changed:" + e.Data+", Old Data: " + e.OldData);
         }
 
         public void OnDataRemoved(ValueRemovedEventArgs e)
@@ -384,6 +390,15 @@ namespace Components
             }
             else
                 clipWindow.CloseWindow();
+        }
+
+        private void CallDeviceWindow()
+        {
+            if (deviceWindow != null)
+                deviceWindow.Close();
+
+            deviceWindow = new DeviceWindow();
+            deviceWindow.Show();
         }
 
         private void CallBuyWindow()

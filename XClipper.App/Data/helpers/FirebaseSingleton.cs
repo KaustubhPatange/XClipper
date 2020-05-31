@@ -49,9 +49,9 @@ namespace Components
 
         #region Private Methods
 
-        private async Task SetGlobalUser()
+        private async Task SetGlobalUser(bool forceInvoke = false)
         {
-            if (user == null)
+            if (user == null && !forceInvoke)
             {
                 user = await _GetUser();
 
@@ -125,6 +125,12 @@ namespace Components
             return user;
         }
 
+        public async Task<List<Device>> GetDeviceListAsync()
+        {
+            await SetGlobalUser(true);
+            return user.Devices;
+        }
+
         /// <summary>
         /// Add a clip data to the server instance.
         /// </summary>
@@ -133,6 +139,9 @@ namespace Components
         public async Task AddClip(string Text)
         {
             await SetGlobalUser();
+
+            if (!BindDatabase) return;
+
             if (Text == null) return;
             if (Text.Length > DatabaseMaxItemLength) return;
             if (user.Clips == null)
@@ -182,11 +191,15 @@ namespace Components
         public async Task RemoveClip(string Text)
         {
             await SetGlobalUser();
+
+            if (!BindDatabase) return;
+
+            if (Text == null) return;
             if (user.Clips == null)
                 return;
             foreach (var item in user.Clips)
             {
-                if (item.data == Text)
+                if (item.data.DecryptBase64() == Text)
                 {
                     user.Clips.Remove(item);
                     await client.UpdateAsync($"users/{UID}", user);

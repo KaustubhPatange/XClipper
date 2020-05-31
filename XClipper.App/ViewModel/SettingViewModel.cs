@@ -16,6 +16,8 @@ using System.Security.RightsManagement;
 using System.Windows.Documents;
 using System.Windows.Navigation;
 
+#nullable enable
+
 namespace Components
 {
     public class SettingViewModel : BaseViewModel
@@ -45,7 +47,7 @@ namespace Components
         private bool is_secure_db { get; set; } = IsSecureDB;
 
         // For Start application on system startup.
-        private ISettingEventBinder _settingbinder { get; set; }
+        private ISettingEventBinder? _settingbinder { get; set; }
         public ICommand SaveCommand { get; set; }
         public ICommand ResetCommand { get; set; }
         public ICommand PurchaseCommand { get; set; }
@@ -68,6 +70,7 @@ namespace Components
         public int FMCD { get; } = DatabaseMaxConnection;
         public string FDP { get; set; } = DatabaseEncryptPassword;
         public string UID { get; private set; } = UniqueID;
+        public bool BTD { get; set; } = BindDatabase;
         public bool ISDB
         {
             get { return is_secure_db; }
@@ -77,7 +80,7 @@ namespace Components
                 {
                     var result = MessageBox.Show(Translation.MSG_DELETE_DB, Translation.MSG_WARNING, MessageBoxButton.YesNo, MessageBoxImage.Warning);
                     if (result == MessageBoxResult.Yes)
-                    {
+                    { 
                         is_secure_db = value;
                         return;
                     }
@@ -100,7 +103,7 @@ namespace Components
         /// </summary>
         private void ConnectedButtonClicked()
         {
-            
+            _settingbinder?.OnConnectedDeviceClicked();
         }
 
         /// <summary>
@@ -130,9 +133,10 @@ namespace Components
             HotKey = KEY_HK = "Oem3";
             CurrentAppLanguage = CAL = "locales\\en.xaml";
             TotalClipLength = TCL = 20;
+            BindDatabase = BTD = true;
             SetAppStartupEntry();
             WriteSettings();
-            MessageBox.Show(App.rm.GetString("settings_reset"));
+            MessageBox.Show(Translation.SETTINGS_RESET);
         }
 
         /// <summary>
@@ -153,6 +157,7 @@ namespace Components
             TotalClipLength = TCL;
             HotKey = KEY_HK;
             CurrentAppLanguage = CAL;
+            BindDatabase = BTD;
             SetAppStartupEntry();
 
             ToggleCustomPassword();
@@ -161,7 +166,7 @@ namespace Components
 
             WriteSettings();
 
-            MessageBox.Show(App.rm.GetString("settings_save"));
+            MessageBox.Show(Translation.SETTINGS_SAVE);
         }
 
         /// <summary>

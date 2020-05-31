@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import com.kpstv.license.Decrypt
 import com.kpstv.license.Encrypt
 import com.kpstv.xclipper.App.LOCAL_MAX_ITEM_STORAGE
+import com.kpstv.xclipper.App.MAX_CHARACTER_TO_STORE
 import com.kpstv.xclipper.data.localized.ClipDataDao
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.provider.ClipProvider
@@ -219,6 +220,8 @@ class MainRepositoryImpl(
     }
 
     override fun updateRepository(unencryptedData: String?) {
+        if (unencryptedData != null && unencryptedData.length > MAX_CHARACTER_TO_STORE) return
+
         clipProvider.processClip(unencryptedData)?.let { clip ->
             saveClip(clip)
             firebaseProvider.uploadData(clip)

@@ -38,6 +38,8 @@
     <system:String x:Key="settings_ete">End-to-End encryption password</system:String>
     <system:String x:Key="settings_ma">Mobile App</system:String>
     <system:String x:Key="settings_isdb">Protect database with encryption</system:String>
+    <system:String x:Key="settings_btd">Enable database binding</system:String>
+    <system:String x:Key="settings_btd_tooltip">When checked, app will respond and sync data with online database.</system:String>
     <system:String x:Key="settings_purchase_info">Option available in donated version. Click on learn more.</system:String>
     <system:String x:Key="settings_reset_btn">Reset Defaults</system:String>
     <system:String x:Key="settings_save_btn">Save</system:String>
@@ -94,4 +96,6 @@
     <system:String x:Key="buy_activate">Activate</system:String>
     <system:String x:Key="buy_is_activate">License Activated</system:String>
     <system:String x:Key="buy_not_activate">Not Activated</system:String>
+    <system:String x:Key="device_title">Connected Device</system:String>
+    <system:String x:Key="device_disconnect">Disconnect</system:String>
 </ResourceDictionary>

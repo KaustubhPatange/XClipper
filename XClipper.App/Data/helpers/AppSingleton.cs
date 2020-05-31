@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using static Components.MainHelper;
 using static Components.DefaultSettings;
+using static Components.TableHelper;
 using System.Threading.Tasks;
 using Autofac;
+using static WK.Libraries.SharpClipboardNS.SharpClipboard;
+using System;
+using System.Diagnostics;
 
 namespace Components.viewModels
 {
@@ -65,12 +69,12 @@ namespace Components.viewModels
         }
         public void DeleteData(TableCopy model)
         {
-            dataDB.Delete(model);
+            DeleteClipData(model);
             Binder.OnModelDeleted(ClipData);
         }
         public void DeleteData(List<TableCopy> models)
         {
-            models.ForEach((model) => { dataDB.Delete(model); });
+            models.ForEach((model) => { DeleteClipData(model); });
             Binder.OnModelDeleted(ClipData);
         }
         public void TogglePin(TableCopy model)
@@ -145,7 +149,7 @@ namespace Components.viewModels
 
         public void InsertAll(List<TableCopy> models) => dataDB.InsertAll(models);
 
-        public void InsertContent(TableCopy model)
+        public void InsertContent(TableCopy model, bool pushToDatabase = true)
         {
             // This will check if same clip text is saved again
             var list = dataDB.GetAllData().OrderByDescending(s => ParseDateTimeText(s.LastUsedDateTime)).ToList();
@@ -176,24 +180,57 @@ namespace Components.viewModels
 
             dataDB.Insert(model);
 
-            Task.Run(async () => { await FirebaseSingleton.GetInstance.AddClip(model.ContentType == ContentType.Text ? model.RawText : null); });
-
-            //Parallel.Invoke(() =>
-            //{
-            //    s.Wait();
-            //});
-           
+            if (pushToDatabase)
+                Task.Run(async () => { await FirebaseSingleton.GetInstance.AddClip(model.ContentType == ContentType.Text ? model.RawText : null); });          
           
         }
 
+        public void InsertTextClipNoUpdate(string UnEncryptedText)
+        {
+            InsertContent(CreateTable(UnEncryptedText, ContentTypes.Text), false);
+        }
+
+        #endregion
+
+        #region UpdateData
+
+        /// <summary>
+        /// This will compare the given text data with the local database table items.
+        /// If not exist such item, it will insert the data.
+        /// </summary>
+        /// <param name="EncryptedDatabaseText">Encrypted Text Data coming straight away from online database.</param>
+        public void CheckDataAndUpdate(string EncryptedDatabaseText)
+        {
+            if (EncryptedDatabaseText == null) return;
+
+            var decryptedText = EncryptedDatabaseText.DecryptBase64();
+
+            var data = dataDB.GetAllData().FirstOrDefault(c => c.ContentType == ContentType.Text && c.RawText.DecryptBase64() == decryptedText);
+            // todo: This data is always null, check it later.
+            if (data == null)
+            {
+                // Insert this data without updating online database.
+                Debug.WriteLine("Inserted Data");
+                InsertTextClipNoUpdate(decryptedText);
+            }
+        }
 
         #endregion
 
         #region DeleteData
 
+        public void DeleteClipData(TableCopy model)
+        {
+            dataDB.Delete(model);
+
+            Task.Run(async () => { await FirebaseSingleton.GetInstance.RemoveClip(model.ContentType == ContentType.Text ? model.RawText : null); });
+        }
+
         public void DeleteAllData()
         {
             dataDB.ClearAll<TableCopy>();
+
+            Task.Run(async () => { await FirebaseSingleton.GetInstance.RemoveAllClip(); });
         }
 
         #endregion

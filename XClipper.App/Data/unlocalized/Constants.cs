@@ -19,6 +19,7 @@ namespace Components
 
         #region Some Filter Constants
 
+        public const string CONTENT_FILTER_NONE = "";
         public const string CONTENT_FILTER_TEXT = "{ContentType=Text}";
         public const string CONTENT_FILTER_IMAGE = "{ContentType=Image}";
         public const string CONTENT_FILTER_FILES = "{ContentType=Files}";
@@ -37,6 +38,12 @@ namespace Components
         public const int FB_MAX_LENGTH = 10000;
         public const int FB_MAX_CONNECTION = 5;
         public const string FB_DEFAULT_PASS = "JfbY+e0iD/RMVJDOF5MWphCDGB45G/0kLtF4Vv+sbF7SL3VdbP3GyMgvPVz3e56e1pmrJct0LRMHH2Sz+hLASpqz/1YTvV3GF6e7pHBcuWVpuzkMDHEDJG3IXRj9VIFA";
+
+        #endregion
+
+        #region Database Path Constants
+
+        public const string PATH_CLIP_DATA = "/Clips/data";
 
         #endregion
     }

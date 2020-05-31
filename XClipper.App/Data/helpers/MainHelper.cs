@@ -10,6 +10,7 @@ using System;
 using static Components.Constants;
 using System.IO;
 using System.Diagnostics;
+using System.Windows.Threading;
 
 namespace Components
 {
@@ -145,6 +146,11 @@ DEL ""%~f0""";
                 DatabaseMaxItemLength = FB_MAX_LENGTH;
                 DatabaseMaxConnection = FB_MAX_CONNECTION;
             }
+        }
+
+        public static void RunOnMainThread(Action block)
+        {
+            Dispatcher.CurrentDispatcher.Invoke(block);
         }
         public static string FormatText(string text)
         {

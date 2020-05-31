@@ -114,6 +114,14 @@ namespace Components
         /// </summary>
         public static string DatabaseEncryptPassword { get; set; } = FB_DEFAULT_PASS.Decrypt();
 
+        /// <summary>
+        /// When set to true it will allow syncing of local database with online database.<br/> A valid binding can be,<br/><br/> 
+        /// 1. Data added locally then pushed to online database.<br/> 
+        /// 2. Data removed locally and changes submitted to online database.<br/>
+        /// 3. Data added to online database externally, respond to such changes locally.
+        /// </summary>
+        public static bool BindDatabase { get; set; } = true;
+
         #endregion
 
 
@@ -138,7 +146,8 @@ namespace Components
                     new XElement(nameof(CurrentAppLanguage), CurrentAppLanguage.ToString()),
                     new XElement(nameof(CustomPassword), CustomPassword.Encrypt()),
                     new XElement(nameof(DatabaseEncryptPassword), DatabaseEncryptPassword.Encrypt()),
-                    new XElement(nameof(UseCustomPassword), UseCustomPassword.ToString())
+                    new XElement(nameof(UseCustomPassword), UseCustomPassword.ToString()),
+                    new XElement(nameof(BindDatabase), BindDatabase.ToString())
                     );
             document.Add(settings);
             document.Save(SettingsPath);
@@ -165,7 +174,7 @@ namespace Components
             CurrentAppLanguage = settings.Element(nameof(CurrentAppLanguage)).Value;
             StartOnSystemStartup = settings.Element(nameof(StartOnSystemStartup)).Value.ToBool();
             PlayNotifySound = settings.Element(nameof(PlayNotifySound)).Value.ToBool();
-            
+            BindDatabase = settings.Element(nameof(BindDatabase)).Value.ToBool();
         }
 
         #endregion

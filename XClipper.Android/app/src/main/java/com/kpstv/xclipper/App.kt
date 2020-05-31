@@ -29,7 +29,7 @@ object App {
     var DICTIONARY_LANGUAGE = "en"
 
     const val DELAY_SPAN: Long = 20
-
+    const val MAX_CHARACTER_TO_STORE = 1000
 
     // TODO: Do all your jack jacks
     const val STANDARD_DATE_FORMAT = "yyyyMMddHHmmss"

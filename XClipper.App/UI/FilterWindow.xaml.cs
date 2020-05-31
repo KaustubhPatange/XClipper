@@ -36,7 +36,7 @@ namespace Components
                 new FilterModel(Translation.FILTER_OLD, CONTENT_FILTER_OLDEST_FIRST),
                 new FilterModel(Translation.FILTER_CS_DESC, CONTENT_FILTER_TEXTLENGTH_DESC),
                 new FilterModel(Translation.FILTER_CS_ASC, CONTENT_FILTER_TEXTLENGTH_ASC),
-                new FilterModel(rm.GetString("filter_none"), "")
+                new FilterModel(Translation.FILTER_NONE, CONTENT_FILTER_NONE)
             };
 
             _lvFilter.ItemsSource = list;

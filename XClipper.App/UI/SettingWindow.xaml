@@ -245,13 +245,22 @@
                                     Text="{Binding FDP, UpdateSourceTrigger=PropertyChanged}" />
                             </Grid>
 
-                            <Button
-                                Width="120"
-                                Height="22"
-                                Margin="0,5,0,0"
-                                HorizontalAlignment="Left"
-                                Command="{Binding ConnectedCommand}"
-                                Content="Connected Devices" />
+                            <DockPanel>
+                                <Button
+                                    Width="120"
+                                    Height="22"
+                                    Margin="0,5,0,0"
+                                    HorizontalAlignment="Left"
+                                    Command="{Binding ConnectedCommand}"
+                                    Content="{DynamicResource device_title}" />
+                                <CheckBox
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Content="{DynamicResource settings_btd}"
+                                    IsChecked="{Binding BTD, UpdateSourceTrigger=PropertyChanged}"
+                                    ToolTip="{DynamicResource settings_btd_tooltip}" />
+                            </DockPanel>
+
                         </StackPanel>
                     </Border>
                 </TabItem>

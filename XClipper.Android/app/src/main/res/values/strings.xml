@@ -77,4 +77,5 @@
     <string name="err_uid">Not a valid UID</string>
     <string name="connect_success">Connected successfully!</string>
     <string name="scan_code">Scan the app code</string>
+    <string name="connect_request">Attempting to make a connection with database...</string>
 </resources>

@@ -15,6 +15,12 @@ namespace XClipper.Tests
     [TestClass]
     public class GeneralTest
     {
+        [TestMethod]
+        public void EncryptionText()
+        {
+            Debug.WriteLine("SAMQEo8/iRxRrZTyO8eyJ2gVIFMSztxwzm9q8fvpvQY=".DecryptBase64());
+            Debug.WriteLine("cHEPaVE9DYQYD5/o5gLnqA==".DecryptBase64());
+        }
        
         [TestMethod]
         public void CountMethod()

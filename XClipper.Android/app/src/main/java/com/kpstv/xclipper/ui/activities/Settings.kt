@@ -17,6 +17,7 @@ import com.kpstv.xclipper.App.UID_PATTERN_REGEX
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.SpecialMenu
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
+import com.kpstv.xclipper.extensions.utils.Utils.Companion.showConnectionDialog
 import com.kpstv.xclipper.ui.adapters.MenuAdapter
 import com.kpstv.xclipper.ui.fragments.settings.AccountPreference
 import com.kpstv.xclipper.ui.fragments.settings.GeneralPreference
@@ -143,9 +144,7 @@ class Settings : AppCompatActivity(), KodeinAware {
                 if (it.containsMatchIn(result.contents)) {
                     /** This will connect this device with repository. */
 
-                   val dialog = AlertDialog.Builder(this)
-                        .setView(LayoutInflater.from(this).inflate(R.layout.animation_view, null))
-                        .show()
+                   val dialog = showConnectionDialog(this)
 
                     mainViewModel.updateDeviceConnection(result.contents, ResponseListener(
                         complete = {

@@ -18,7 +18,6 @@ import android.view.accessibility.AccessibilityManager
 import androidx.annotation.AttrRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ShareCompat
-import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.google.zxing.integration.android.IntentIntegrator
 import com.kpstv.license.Decrypt
@@ -32,6 +31,7 @@ import com.kpstv.xclipper.data.model.AppPkg
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import kotlinx.android.synthetic.main.dialog_connect.view.*
+import kotlinx.android.synthetic.main.dialog_progress_view.view.*
 import java.util.*
 
 
@@ -209,6 +209,21 @@ class Utils {
             }
         }
 
+        fun showConnectionDialog(context: Context): AlertDialog = with(context) {
+            val view = LayoutInflater.from(this).inflate(R.layout.dialog_progress_view, null)
+
+            val dialog = AlertDialog.Builder(this)
+                .setCancelable(false)
+                .setView(view)
+                .show()
+
+            view.btn_cancel.setOnClickListener {
+                dialog.dismiss()
+            }
+
+            return dialog
+        }
+
         fun logoutFromDatabase(preferenceProvider: PreferenceProvider) {
             preferenceProvider.putBooleanKey(BIND_PREF, false)
             preferenceProvider.putStringKey(UID_PREF, EMPTY_STRING)
@@ -224,6 +239,7 @@ class Utils {
             App.UID = UID
             App.BindToFirebase = true
         }
+
 
         /* @JvmStatic
          fun cafeBarToast(context: Context, message: String, buttonText: String, block: (CafeBar) -> Unit): CafeBar {

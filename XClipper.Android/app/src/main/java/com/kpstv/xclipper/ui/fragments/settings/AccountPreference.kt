@@ -2,6 +2,7 @@ package com.kpstv.xclipper.ui.fragments.settings
 
 import android.app.AlertDialog
 import android.os.Bundle
+import androidx.lifecycle.ViewModelProvider
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
@@ -11,18 +12,23 @@ import com.kpstv.xclipper.App.CONNECT_PREF
 import com.kpstv.xclipper.App.LOGOUT_PREF
 import com.kpstv.xclipper.App.UID
 import com.kpstv.xclipper.R
-import com.kpstv.xclipper.data.provider.PreferenceProvider
-import com.kpstv.xclipper.extensions.utils.Utils.Companion.logoutFromDatabase
+import com.kpstv.xclipper.extensions.listeners.ResponseListener
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showConnectDialog
+import com.kpstv.xclipper.extensions.utils.Utils.Companion.showConnectionDialog
+import com.kpstv.xclipper.ui.viewmodels.MainViewModel
+import com.kpstv.xclipper.ui.viewmodels.MainViewModelFactory
 import es.dmoral.toasty.Toasty
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.kodein
 import org.kodein.di.generic.instance
 
-class AccountPreference : PreferenceFragmentCompat(), KodeinAware {
+class AccountPreference() : PreferenceFragmentCompat(), KodeinAware {
 
     override val kodein by kodein()
-    private val preferenceProvider by instance<PreferenceProvider>()
+    private val viewModelFactory by instance<MainViewModelFactory>()
+    private val mainViewModel: MainViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
+    }
 
     private var bindPreference: SwitchPreferenceCompat? = null
     private var logPreference: Preference? = null
@@ -37,14 +43,20 @@ class AccountPreference : PreferenceFragmentCompat(), KodeinAware {
                 .setMessage(getString(R.string.logout_msg))
                 .setPositiveButton(getString(R.string.yes)) { _, _ ->
 
-                   // TODO: Logout from viewmodel, also comment this below.
+                    val dialog = showConnectionDialog(requireContext())
 
-                    logoutFromDatabase(preferenceProvider)
+                    mainViewModel.removeDeviceConnection(ResponseListener(
+                        complete = {
+                            dialog.dismiss()
 
-                    checkForPreferenceChanged()
-                    bindPreference?.isChecked = false
-
-                    Toasty.info(requireContext(), getString(R.string.logout_success)).show()
+                            checkForPreferenceChanged()
+                            bindPreference?.isChecked = false
+                            Toasty.info(requireContext(), getString(R.string.logout_success)).show()
+                        },
+                        error = {
+                            Toasty.error(requireContext(), it.message!!).show()
+                        }
+                    ))
                 }
                 .setNegativeButton(getString(R.string.cancel), null)
                 .show()
