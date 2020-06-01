@@ -32,6 +32,7 @@ namespace XClipper.Tests
             Debug.WriteLine("Done");
         }
 
+
         public void method()
         {
             //var t = Task.Run(async () =>

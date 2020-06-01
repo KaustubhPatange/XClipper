@@ -1,19 +1,23 @@
 package com.kpstv.xclipper.data.provider
 
 import android.content.Context
+import android.content.SharedPreferences
+import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
-import com.kpstv.xclipper.App.EMPTY_STRING
 
 class PreferenceProviderImpl(
     context: Context
 ) : PreferenceProvider {
-
     private val preference = PreferenceManager.getDefaultSharedPreferences(context)
 
-    override fun putStringKey(key: String, value: String?) =
+    private val _keyLiveData = MutableLiveData<String>()
+
+    override fun putStringKey(key: String, value: String?) {
         preference.edit().apply {
             putString(key, value)
         }.apply()
+        _keyLiveData.postValue(key)
+    }
 
     override fun getStringKey(key: String, default: String?) =
         preference.getString(key, default)
@@ -21,8 +25,16 @@ class PreferenceProviderImpl(
     override fun getBooleanKey(key: String, default: Boolean) =
         preference.getBoolean(key, default)
 
-    override fun putBooleanKey(key: String, value: Boolean) =
+    override fun putBooleanKey(key: String, value: Boolean) {
         preference.edit().apply {
             putBoolean(key, value)
         }.apply()
+        _keyLiveData.postValue(key)
+    }
+
+    override fun observePreference(block: (SharedPreferences, String) -> Unit) {
+        _keyLiveData.observeForever {
+            block.invoke(preference, it)
+        }
+    }
 }

@@ -262,6 +262,7 @@
                                     Width="100"
                                     Height="22"
                                     Margin="10,0,0,0"
+                                    Command="{Binding ResetDataCommand}"
                                     Content="Reset Data" />
                                 <CheckBox
                                     Grid.Column="2"

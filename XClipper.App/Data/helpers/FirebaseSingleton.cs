@@ -111,16 +111,27 @@ namespace Components
         /// Add an empty user to the node.
         /// </summary>
         /// <returns></returns>
-        private async Task<User> RegisterUser()
+        public async Task<User> RegisterUser()
         {
             var exist = await IsUserExist();
             if (!exist)
             {
                 var user = new User();
+                user.IsLicensed = IsPurchaseDone;
                 this.user = user;
                 await client.SetAsync($"users/{UID}", user);
             }
             return user;
+        }
+
+        /// <summary>
+        /// Removes all data associated with the UID.
+        /// </summary>
+        /// <returns></returns>
+        public async Task RemoveUser()
+        {
+            await client.DeleteAsync($"users/{UID}");
+            await RegisterUser();
         }
 
         /// <summary>

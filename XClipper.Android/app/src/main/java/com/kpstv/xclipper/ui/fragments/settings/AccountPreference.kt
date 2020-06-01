@@ -1,7 +1,9 @@
 package com.kpstv.xclipper.ui.fragments.settings
 
 import android.app.AlertDialog
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -11,7 +13,9 @@ import com.kpstv.xclipper.App.BIND_PREF
 import com.kpstv.xclipper.App.CONNECT_PREF
 import com.kpstv.xclipper.App.LOGOUT_PREF
 import com.kpstv.xclipper.App.UID
+import com.kpstv.xclipper.App.UID_PREF
 import com.kpstv.xclipper.R
+import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showConnectDialog
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showConnectionDialog
@@ -25,6 +29,7 @@ import org.kodein.di.generic.instance
 class AccountPreference() : PreferenceFragmentCompat(), KodeinAware {
 
     override val kodein by kodein()
+    private val preferenceProvider by instance<PreferenceProvider>()
     private val viewModelFactory by instance<MainViewModelFactory>()
     private val mainViewModel: MainViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
@@ -35,6 +40,8 @@ class AccountPreference() : PreferenceFragmentCompat(), KodeinAware {
     private var connectPreference: Preference? = null
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.account_pref, rootKey)
+
+        bindUI()
 
         logPreference = findPreference(LOGOUT_PREF)
         logPreference?.setOnPreferenceClickListener {
@@ -48,8 +55,6 @@ class AccountPreference() : PreferenceFragmentCompat(), KodeinAware {
                     mainViewModel.removeDeviceConnection(ResponseListener(
                         complete = {
                             dialog.dismiss()
-
-                            checkForPreferenceChanged()
                             bindPreference?.isChecked = false
                             Toasty.info(requireContext(), getString(R.string.logout_success)).show()
                         },
@@ -90,7 +95,11 @@ class AccountPreference() : PreferenceFragmentCompat(), KodeinAware {
     }
 
     private fun bindUI() {
-
+        preferenceProvider.observePreference()
+        { _, s ->
+            if (s == UID_PREF)
+                checkForPreferenceChanged()
+        }
     }
 
     private fun checkForPreferenceChanged() {
@@ -104,4 +113,6 @@ class AccountPreference() : PreferenceFragmentCompat(), KodeinAware {
             bindPreference?.isEnabled = true
         }
     }
+
+
 }

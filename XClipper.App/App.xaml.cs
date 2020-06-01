@@ -22,6 +22,7 @@ using FireSharp.EventStreaming;
 using Autofac;
 using FireSharp.Extensions;
 using Components.UI;
+using System.Threading.Tasks;
 
 namespace Components
 {
@@ -304,6 +305,23 @@ namespace Components
         public void OnConnectedDeviceClicked()
         {
             CallDeviceWindow();
+        }
+
+        public void onDataResetButtonClicked()
+        {
+            // Close the setting window.
+            settingWindow.Close();
+
+            // A task to remove user.
+            Task.Run(async () => 
+            {
+                await FirebaseSingleton.GetInstance.RemoveUser();
+                
+                RunOnMainThread(() =>
+                {
+                    MessageBox.Show(Translation.MSG_RESET_DATA_SUCCESS, Translation.MSG_INFO, MessageBoxButton.OK, MessageBoxImage.Information);
+                });
+            });
         }
 
         #endregion

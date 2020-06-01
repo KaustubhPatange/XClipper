@@ -48,7 +48,10 @@ class FirebaseProviderImpl : FirebaseProvider {
                 return@workWithData
             }
 
-            if (list.count { it.id == DeviceId } > 0) return@workWithData
+            if (list.count { it.id == DeviceId } > 0) {
+                responseListener.onError(java.lang.Exception("Device already exist"))
+                return@workWithData
+            }
 
             list.add(Device(DeviceId, Build.VERSION.SDK_INT, Build.MODEL))
 
@@ -63,9 +66,12 @@ class FirebaseProviderImpl : FirebaseProvider {
                 if (user?.Devices != null) ArrayList(user?.Devices!!)
                 else ArrayList<Device>()
 
-            if (list.count { it.id == DeviceId } > 0) return@workWithData
+            if (list.count { it.id == DeviceId } <= 0) {
+                responseListener.onError(java.lang.Exception("No device found with this ID"))
+                return@workWithData
+            }
 
-            val filterList = list.filter { it.id == DeviceId }
+            val filterList = list.filter { it.id != DeviceId }
 
             updateDeviceList(filterList, responseListener)
         }
@@ -79,7 +85,6 @@ class FirebaseProviderImpl : FirebaseProvider {
         database.getReference(USER_REF).child(UID).child(DEVICE_REF)
             .setValue(list.toList()) { error, _ ->
                 if (error == null) {
-                    validDevice = true
                     responseListener.onComplete(Unit)
                 } else
                     responseListener.onError(java.lang.Exception(error.message))
@@ -203,8 +208,7 @@ class FirebaseProviderImpl : FirebaseProvider {
          */
         if (validationContext == ValidationContext.Default && !BindToFirebase && !UID.isBlank()) return
 
-        if (user == null || validationContext == ValidationContext.ForceInvoke)
-        {
+        if (user == null || validationContext == ValidationContext.ForceInvoke) {
             database.getReference(USER_REF).child(UID)
                 .addListenerForSingleValueEvent(FValueEventListener(
                     onDataChange = { snap ->

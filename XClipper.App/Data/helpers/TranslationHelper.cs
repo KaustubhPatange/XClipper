@@ -79,6 +79,8 @@ namespace Components
         public string MSG_MERGE_ENCRYPT = rm.GetString("msg_merge_encrypt");
         public string MSG_DELETE_ALL = rm.GetString("msg_delete_all");
         public string MSG_DELETE_DB = rm.GetString("msg_delete_db");
+        public string MSG_RESET_DATA = rm.GetString("msg_reset_data");
+        public string MSG_RESET_DATA_SUCCESS = rm.GetString("msg_reset_data_success");
         public string POPUP_ADDED = rm.GetString("popup_added");
         public string POPUP_SPACE_FOCUS = rm.GetString("popup_space_focus");
         public string POPUP_EDIT_ERR = rm.GetString("popup_edit_err");

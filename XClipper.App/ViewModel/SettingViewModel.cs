@@ -121,7 +121,12 @@ namespace Components
         /// </summary>
         private void ResetDataButtonClicked()
         {
-           
+            var result = MessageBox.Show(Translation.MSG_RESET_DATA, Translation.MSG_INFO, 
+                MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+            if (result == MessageBoxResult.OK)
+            {
+                _settingbinder?.onDataResetButtonClicked();
+            }
         }
 
         /// <summary>

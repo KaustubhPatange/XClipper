@@ -70,6 +70,8 @@
     <system:String x:Key="msg_premium_err">The current license is not a valid one.</system:String>
     <system:String x:Key="msg_clip_import">All clips are imported/merged.</system:String>
     <system:String x:Key="msg_restart">This will restart the application.</system:String>
+    <system:String x:Key="msg_reset_data">This will remove all the data associated with your account? It can't be undone!</system:String>
+    <system:String x:Key="msg_reset_data_success">Data reset completed!</system:String>
     <system:String x:Key="msg_merge_encrypt">The database file might be an encrypted one, if so kindly enter the password in the next dialog.</system:String>
     <system:String x:Key="msg_delete_all">This will remove all clips stored in database. Are you sure?</system:String>
     <system:String x:Key="msg_delete_db">This will migrate the existing sqlite database to sqlite3 database.</system:String>
