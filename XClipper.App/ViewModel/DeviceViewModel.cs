@@ -5,6 +5,8 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using static Components.MainHelper;
 
+#nullable enable
+
 namespace Components
 {
     public class DeviceViewModel : BaseViewModel
@@ -24,9 +26,11 @@ namespace Components
 
         #region Bindings
 
+        public bool ButtonEnabled { get; private set; } = false;
         public bool ShowProgress { get; private set; } = false;
         public ICommand RemoveCommand { get; set; }
         public List<Device> Devices { get; set; }
+        public int SelectedIndex { get; set; } = -1;
 
         #endregion
         
@@ -48,6 +52,11 @@ namespace Components
                 {
                     Devices = devices;
                     ShowProgress = false;
+                    if (devices?.Count > 0)
+                    {
+                        SelectedIndex = 0;
+                        ButtonEnabled = true;
+                    }
                 });
             });
         }
@@ -57,7 +66,17 @@ namespace Components
         /// </summary>
         private void DisconnectDevice()
         {
-           
+            if (SelectedIndex == -1) return;
+
+            ShowProgress = true;
+            ButtonEnabled = false;
+
+            Task.Run(async () => 
+            { 
+                Devices = await FirebaseSingleton.GetInstance.RemoveDevice(Devices[SelectedIndex].ID);
+                ShowProgress = false;
+                ButtonEnabled = true;
+            });
         } 
 
         #endregion

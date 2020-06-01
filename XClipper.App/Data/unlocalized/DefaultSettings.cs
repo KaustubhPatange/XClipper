@@ -118,10 +118,9 @@ namespace Components
         /// When set to true it will allow syncing of local database with online database.<br/> A valid binding can be,<br/><br/> 
         /// 1. Data added locally then pushed to online database.<br/> 
         /// 2. Data removed locally and changes submitted to online database.<br/>
-        /// 3. Data added to online database externally, respond to such changes locally.
         /// </summary>
         public static bool BindDatabase { get; set; } = true;
-
+        //    todo: 3. Data added to online database externally, respond to such changes locally.
         #endregion
 
 

@@ -1,7 +1,7 @@
 package com.kpstv.xclipper.data.model
 
 data class Device (
-    val ID: String,
-    val SDK: Int,
-    val Model: String
+    val id: String,
+    val sdk: Int,
+    val model: String
 )

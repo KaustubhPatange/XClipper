@@ -3,10 +3,13 @@ using FireSharp.Config;
 using FireSharp.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static Components.Core;
 using static Components.DefaultSettings;
+
+#nullable enable
 
 namespace Components
 {
@@ -18,6 +21,7 @@ namespace Components
         private readonly IFirebaseClient client;
         private IFirebaseBinder binder;
         private string UID;
+        private bool alwaysForceInvoke = false;
         private User user;
 
         #endregion
@@ -50,14 +54,17 @@ namespace Components
         #region Private Methods
 
         private async Task SetGlobalUser(bool forceInvoke = false)
-        {
-            if (user == null && !forceInvoke)
+       {
+            if (alwaysForceInvoke || user == null || forceInvoke)
             {
                 user = await _GetUser();
 
                 // todo: Set some other details for user...
                 user.IsLicensed = IsPurchaseDone;
                 user.TotalConnection = DatabaseMaxConnection;
+
+                if (user.Devices != null && user.Devices.Count > 0)
+                    alwaysForceInvoke = true;
             }
         }
         private async Task<User> _GetUser()
@@ -125,9 +132,18 @@ namespace Components
             return user;
         }
 
-        public async Task<List<Device>> GetDeviceListAsync()
+        public async Task<List<Device>?> GetDeviceListAsync()
         {
             await SetGlobalUser(true);
+            return user.Devices;
+        }
+
+        public async Task<List<Device>> RemoveDevice(string DeviceId)
+        {
+            await SetGlobalUser(true);
+
+            user.Devices = user.Devices.Where(d => d.ID != DeviceId).ToList();
+            await client.UpdateAsync($"users/{UID}", user);
             return user.Devices;
         }
 
@@ -242,12 +258,12 @@ namespace Components
         /// <summary>
         /// Property tells the last connected Android device given its ID. Null means no one is connected.
         /// </summary>
-        public List<Device> Devices { get; set; }
+        public List<Device>? Devices { get; set; }
 
         /// <summary>
         /// Property stores all the clip data.
         /// </summary>
-        public List<Clip> Clips { get; set; }
+        public List<Clip>? Clips { get; set; }
     }
 
     public class Device

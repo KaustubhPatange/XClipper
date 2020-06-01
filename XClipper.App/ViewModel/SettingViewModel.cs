@@ -35,6 +35,7 @@ namespace Components
             ResetCommand = new RelayCommand(ResetButtonClicked);
             PurchaseCommand = new RelayCommand(PurchaseButtonClicked);
             ConnectedCommand = new RelayCommand(ConnectedButtonClicked);
+            ResetDataCommand = new RelayCommand(ResetDataButtonClicked);
 
             previousSecureDBValue = IsSecureDB;
             previousPassword = CustomPassword;
@@ -52,6 +53,7 @@ namespace Components
         public ICommand ResetCommand { get; set; }
         public ICommand PurchaseCommand { get; set; }
         public ICommand ConnectedCommand { get; set; }
+        public ICommand ResetDataCommand { get; set; }
         public RelayCommand<KeyEventArgs> KeyDownCommand { get; set; }
         public bool SASS { get; set; } = StartOnSystemStartup;
         public bool PNS { get; set; } = PlayNotifySound;
@@ -112,6 +114,14 @@ namespace Components
         private void PurchaseButtonClicked()
         {
             _settingbinder?.OnBuyButtonClicked();
+        }
+
+        /// <summary>
+        /// This event will be raised when Reset Data button is clicked.
+        /// </summary>
+        private void ResetDataButtonClicked()
+        {
+           
         }
 
         /// <summary>

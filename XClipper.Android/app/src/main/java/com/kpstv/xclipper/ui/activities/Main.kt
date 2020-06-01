@@ -67,12 +67,13 @@ class Main : AppCompatActivity(), KodeinAware {
 
     private lateinit var adapter: CIAdapter
 
-    private val mainViewModel: MainViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
-    }
+    private lateinit var mainViewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        mainViewModel = ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
+
         setContentView(R.layout.activity_main)
 
         setRecyclerView()

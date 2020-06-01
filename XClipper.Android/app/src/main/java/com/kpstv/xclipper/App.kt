@@ -16,10 +16,13 @@ object App {
         .registerTypeAdapter(Definition::class.java, DefinitionDeserializer())
         .create()
 
+    private const val FB_MIN_ITEM_STORAGE = 5
+    private const val FB_MAX_ITEM_STORAGE = 20
+    private const val FB_MIN_DEVICE_CONNECTION = 1
+    private const val FB_MAX_DEVICE_CONNECTION = 5
+
     var CLIP_DATA: String? = null
     var LOCAL_MAX_ITEM_STORAGE = 80
-    var FB_MIN_ITEM_STORAGE = 5
-    var FB_MAX_ITEM_STORAGE = 20
 
     var appList = ArrayList<AppPkg>()
     var blackListedApps: Set<String>? = null
@@ -31,6 +34,8 @@ object App {
     const val DELAY_SPAN: Long = 20
     const val MAX_CHARACTER_TO_STORE = 1000
 
+
+
     // TODO: Do all your jack jacks
     const val STANDARD_DATE_FORMAT = "yyyyMMddHHmmss"
 
@@ -41,6 +46,7 @@ object App {
     var BindToFirebase = true
     var observeFirebase = true
 
+    fun getMaxConnection(isLicensed: Boolean): Int = if (isLicensed) FB_MAX_DEVICE_CONNECTION else FB_MIN_DEVICE_CONNECTION
     fun getMaxStorage(isLicensed: Boolean): Int = if (isLicensed) FB_MAX_ITEM_STORAGE else FB_MIN_ITEM_STORAGE
 
     var EMPTY_STRING = ""

@@ -127,10 +127,17 @@ class CIAdapter(
                     holder.itemView.mainCard.setCardBackgroundColor(CARD_COLOR)
                 }
                 else -> {
-                    holder.itemView.mainCard.setCardBackgroundColor(Color.TRANSPARENT)
+                    /**
+                     * We are also checking if selected item is this clip. Since for large item set
+                     * it kinda forgets about it due to recreation of whole list.
+                     */
+                    if (selectedItem.value != clip)
+                        holder.itemView.mainCard.setCardBackgroundColor(Color.TRANSPARENT)
                 }
             }
         })
+
+
     }
 
     private fun setTags(view: View, clip: Clip) {
@@ -175,7 +182,5 @@ class CIAdapter(
     }
 
     class MainHolder(view: View) : RecyclerView.ViewHolder(view)
-
-
 }
 

@@ -6,6 +6,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.kpstv.xclipper.App.BindToFirebase
 import com.kpstv.xclipper.App.DeviceID
 import com.kpstv.xclipper.App.UID
+import com.kpstv.xclipper.App.getMaxConnection
 import com.kpstv.xclipper.App.getMaxStorage
 import com.kpstv.xclipper.App.gson
 import com.kpstv.xclipper.data.model.Clip
@@ -27,6 +28,7 @@ class FirebaseProviderImpl : FirebaseProvider {
     private var user: User? = null
     private var validDevice: Boolean = false
     private var database: FirebaseDatabase = FirebaseDatabase.getInstance()
+
     override fun isLicensed(): Boolean = user?.IsLicensed ?: false
 
     override fun isValidDevice(): Boolean = validDevice
@@ -41,7 +43,12 @@ class FirebaseProviderImpl : FirebaseProvider {
                 if (user?.Devices != null) ArrayList(user?.Devices!!)
                 else ArrayList<Device>()
 
-            if (list.count { it.ID == DeviceId } > 0) return@workWithData
+            if (list.size >= getMaxConnection(isLicensed())) {
+                responseListener.onError(java.lang.Exception("Maximum device connection reached"))
+                return@workWithData
+            }
+
+            if (list.count { it.id == DeviceId } > 0) return@workWithData
 
             list.add(Device(DeviceId, Build.VERSION.SDK_INT, Build.MODEL))
 
@@ -56,9 +63,9 @@ class FirebaseProviderImpl : FirebaseProvider {
                 if (user?.Devices != null) ArrayList(user?.Devices!!)
                 else ArrayList<Device>()
 
-            if (list.count { it.ID == DeviceId } > 0) return@workWithData
+            if (list.count { it.id == DeviceId } > 0) return@workWithData
 
-            val filterList = list.filter { it.ID == DeviceId }
+            val filterList = list.filter { it.id == DeviceId }
 
             updateDeviceList(filterList, responseListener)
         }
@@ -72,9 +79,9 @@ class FirebaseProviderImpl : FirebaseProvider {
         database.getReference(USER_REF).child(UID).child(DEVICE_REF)
             .setValue(list.toList()) { error, _ ->
                 if (error == null) {
+                    validDevice = true
                     responseListener.onComplete(Unit)
-                }
-                else
+                } else
                     responseListener.onError(java.lang.Exception(error.message))
             }
     }
@@ -187,12 +194,17 @@ class FirebaseProviderImpl : FirebaseProvider {
         block: () -> Unit
     ) {
 
-        /** This check will make sure that user can only update firebase database
+        /**
+         * Make sure the device is a valid device so that we can make connection
+         * and work with the database.
+         *
+         * This check will make sure that user can only update firebase database
          *  when following criteria satisfies
          */
-        if (validationContext == ValidationContext.Default && !BindToFirebase) return
+        if (validationContext == ValidationContext.Default && !BindToFirebase && !UID.isBlank()) return
 
-        if (user == null) {
+        if (user == null || validationContext == ValidationContext.ForceInvoke)
+        {
             database.getReference(USER_REF).child(UID)
                 .addListenerForSingleValueEvent(FValueEventListener(
                     onDataChange = { snap ->
@@ -216,19 +228,27 @@ class FirebaseProviderImpl : FirebaseProvider {
         error: (Exception) -> Unit,
         deviceValidated: (Boolean) -> Unit
     ) {
+        if (UID.isBlank()) {
+            error.invoke(java.lang.Exception("Invalid account preference"))
+            return
+        }
+
         database.getReference(USER_REF).child(UID)
             .addValueEventListener(FValueEventListener(
                 onDataChange = { snap ->
                     val json = gson.toJson(snap.value)
-                    gson.fromJson(json, User::class.java).also { user = it }
+                    user = gson.fromJson(json, User::class.java)
 
                     // Check for device validation
-                    (user?.Devices ?: ArrayList()).forEach { device ->
+                    validDevice = (user?.Devices ?: mutableListOf()).count {
+                        it.id == DeviceID
+                    } > 0
+                    /*(user?.Devices ?: ArrayList()).forEach { device ->
                         if (device.ID == DeviceID) {
                             validDevice = true
                             return@forEach
                         }
-                    }
+                    }*/
 
                     deviceValidated.invoke(validDevice)
 

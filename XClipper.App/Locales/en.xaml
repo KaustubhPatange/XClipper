@@ -38,7 +38,8 @@
     <system:String x:Key="settings_ete">End-to-End encryption password</system:String>
     <system:String x:Key="settings_ma">Mobile App</system:String>
     <system:String x:Key="settings_isdb">Protect database with encryption</system:String>
-    <system:String x:Key="settings_btd">Enable database binding</system:String>
+    <system:String x:Key="settings_scd">Devices</system:String>
+    <system:String x:Key="settings_btd">Database binding</system:String>
     <system:String x:Key="settings_btd_tooltip">When checked, app will respond and sync data with online database.</system:String>
     <system:String x:Key="settings_purchase_info">Option available in donated version. Click on learn more.</system:String>
     <system:String x:Key="settings_reset_btn">Reset Defaults</system:String>

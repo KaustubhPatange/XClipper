@@ -320,10 +320,13 @@ namespace Components
         {
             // 1st value from real-time database is your 5th one in XClipper window.
             // todo: Do something on Changed
-            /** This bind database will ensure a two-way data binding. */
-            if (e.Path.Contains(PATH_CLIP_DATA) && BindDatabase)
+
+            if (e.Path.Contains(PATH_CLIP_DATA))
+            {
                 AppSingleton.GetInstance.CheckDataAndUpdate(e.Data);
-             //   Debug.WriteLine("Path: "+ e.Path  + ", Changed:" + e.Data+", Old Data: " + e.OldData);
+                Debug.WriteLine("Path: " + e.Path + ", Changed:" + e.Data + ", Old Data: " + e.OldData);
+            }
+              
         }
 
         public void OnDataRemoved(ValueRemovedEventArgs e)
@@ -398,7 +401,7 @@ namespace Components
                 deviceWindow.Close();
 
             deviceWindow = new DeviceWindow();
-            deviceWindow.Show();
+            deviceWindow.ShowDialog();
         }
 
         private void CallBuyWindow()

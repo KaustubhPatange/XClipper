@@ -245,21 +245,32 @@
                                     Text="{Binding FDP, UpdateSourceTrigger=PropertyChanged}" />
                             </Grid>
 
-                            <DockPanel>
+                            <Grid Margin="0,5,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="auto" />
+                                </Grid.ColumnDefinitions>
                                 <Button
-                                    Width="120"
+                                    Grid.Column="0"
+                                    Width="80"
                                     Height="22"
-                                    Margin="0,5,0,0"
-                                    HorizontalAlignment="Left"
                                     Command="{Binding ConnectedCommand}"
-                                    Content="{DynamicResource device_title}" />
+                                    Content="{DynamicResource settings_scd}" />
+                                <Button
+                                    Grid.Column="1"
+                                    Width="100"
+                                    Height="22"
+                                    Margin="10,0,0,0"
+                                    Content="Reset Data" />
                                 <CheckBox
-                                    HorizontalAlignment="Right"
+                                    Grid.Column="2"
+                                    Margin="10,0,0,0"
                                     VerticalAlignment="Center"
                                     Content="{DynamicResource settings_btd}"
                                     IsChecked="{Binding BTD, UpdateSourceTrigger=PropertyChanged}"
                                     ToolTip="{DynamicResource settings_btd_tooltip}" />
-                            </DockPanel>
+                            </Grid>
 
                         </StackPanel>
                     </Border>

@@ -1,13 +1,14 @@
 package com.kpstv.xclipper.ui.viewmodels
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.kpstv.license.Decrypt
 import com.kpstv.xclipper.App
+import com.kpstv.xclipper.App.EMPTY_STRING
+import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.data.provider.FirebaseProvider
@@ -18,14 +19,16 @@ import com.kpstv.xclipper.extensions.enumerations.FilterType
 import com.kpstv.xclipper.extensions.listeners.RepositoryListener
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
 import com.kpstv.xclipper.extensions.listeners.StatusListener
-import com.kpstv.xclipper.extensions.utils.Utils
+import com.kpstv.xclipper.extensions.utils.Utils.Companion.isAccessibilityServiceEnabled
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.loginToDatabase
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.logoutFromDatabase
+import com.kpstv.xclipper.service.ClipboardAccessibilityService
 import com.kpstv.xclipper.ui.helpers.DictionaryApiHelper
 import com.kpstv.xclipper.ui.helpers.TinyUrlApiHelper
 import com.kpstv.xclipper.ui.viewmodels.managers.MainEditManager
 import com.kpstv.xclipper.ui.viewmodels.managers.MainSearchManager
 import com.kpstv.xclipper.ui.viewmodels.managers.MainStateManager
+import es.dmoral.toasty.Toasty
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -133,17 +136,16 @@ class MainViewModel(
 
     fun updateDeviceConnection(UID: String, responseListener: ResponseListener<Unit>) {
         App.UID = UID
-        firebaseProvider.run {
-            addDevice(App.DeviceID, ResponseListener(
-                complete = {
-                    loginToDatabase(preferenceProvider, UID)
-                    responseListener.onComplete(Unit)
-                },
-                error = {
-                    responseListener.onError(it)
-                }
-            ))
-        }
+        firebaseProvider.addDevice(App.DeviceID, ResponseListener(
+            complete = {
+                loginToDatabase(preferenceProvider, UID)
+                responseListener.onComplete(Unit)
+            },
+            error = {
+                App.UID = EMPTY_STRING
+                responseListener.onError(it)
+            }
+        ))
     }
 
     fun removeDeviceConnection(responseListener: ResponseListener<Unit>) {
@@ -203,6 +205,27 @@ class MainViewModel(
                 searchManager.searchString.value
             )
         }
+
+        /** This is to observe the device validation when accessibility service is off. */
+        if (!isAccessibilityServiceEnabled(
+                application.applicationContext,
+                ClipboardAccessibilityService::class.java
+            )
+        )
+            firebaseProvider.observeDataChange(
+                deviceValidated = {
+                    if (!it)
+                    {
+                        logoutFromDatabase(preferenceProvider)
+                        Toasty.error(
+                            application.applicationContext,
+                            application.applicationContext.getString(R.string.err_device_validate),
+                            Toasty.LENGTH_LONG
+                        ).show()
+                    }
+                },
+                error = {},
+                changed = { })
     }
 
     private fun makeMySource(

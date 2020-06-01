@@ -30,6 +30,7 @@ import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.AppPkg
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.provider.PreferenceProvider
+import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.dialog_connect.view.*
 import kotlinx.android.synthetic.main.dialog_progress_view.view.*
 import java.util.*
@@ -184,7 +185,8 @@ class Utils {
 
 
             App.blackListedApps =
-                PreferenceManager.getDefaultSharedPreferences(this).getStringSet(BLACKLIST_PREF, mutableSetOf())
+                PreferenceManager.getDefaultSharedPreferences(this)
+                    .getStringSet(BLACKLIST_PREF, mutableSetOf())
         }
 
         /**
@@ -193,7 +195,7 @@ class Utils {
         fun showConnectDialog(activity: Activity): Unit = with(activity) {
             val view = LayoutInflater.from(this).inflate(R.layout.dialog_connect, null)
 
-            val alert =   AlertDialog.Builder(this)
+            val alert = AlertDialog.Builder(this)
                 .setView(view)
                 .show()
 
@@ -239,6 +241,7 @@ class Utils {
             App.UID = UID
             App.BindToFirebase = true
         }
+
 
 
         /* @JvmStatic

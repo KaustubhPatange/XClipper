@@ -54,6 +54,8 @@ class AccountPreference() : PreferenceFragmentCompat(), KodeinAware {
                             Toasty.info(requireContext(), getString(R.string.logout_success)).show()
                         },
                         error = {
+                            dialog.dismiss()
+
                             Toasty.error(requireContext(), it.message!!).show()
                         }
                     ))
@@ -85,6 +87,10 @@ class AccountPreference() : PreferenceFragmentCompat(), KodeinAware {
     override fun onResume() {
         super.onResume()
         checkForPreferenceChanged()
+    }
+
+    private fun bindUI() {
+
     }
 
     private fun checkForPreferenceChanged() {

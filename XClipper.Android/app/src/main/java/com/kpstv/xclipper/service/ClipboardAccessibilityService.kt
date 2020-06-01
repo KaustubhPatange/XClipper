@@ -124,7 +124,6 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
                 Log.e(TAG, "Error: ${it.message}")
             },
             deviceValidated = { isValidated ->
-
                 if (!isValidated) {
                     logoutFromDatabase(preferenceProvider)
                     Toasty.error(
@@ -132,8 +131,6 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
                         getString(R.string.err_device_validate),
                         Toasty.LENGTH_LONG
                     ).show()
-                } else {
-
                 }
             }
         )

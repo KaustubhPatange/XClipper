@@ -152,6 +152,7 @@ class Settings : AppCompatActivity(), KodeinAware {
                             dialog.dismiss()
                         },
                         error = { e ->
+                            dialog.dismiss()
                             Toasty.error(this, e.message!!).show()
                         }
                     ))
