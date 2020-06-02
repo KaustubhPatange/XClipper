@@ -6,6 +6,8 @@ import android.provider.Settings
 import android.util.Log
 import com.kpstv.xclipper.App.BIND_PREF
 import com.kpstv.xclipper.App.BindToFirebase
+import com.kpstv.xclipper.App.DARK_PREF
+import com.kpstv.xclipper.App.DARK_THEME
 import com.kpstv.xclipper.App.DICTIONARY_LANGUAGE
 import com.kpstv.xclipper.App.DeviceID
 import com.kpstv.xclipper.App.EMPTY_STRING
@@ -18,6 +20,7 @@ import com.kpstv.xclipper.data.db.MainDatabase
 import com.kpstv.xclipper.data.provider.*
 import com.kpstv.xclipper.data.repository.*
 import com.kpstv.xclipper.extensions.ioThread
+import com.kpstv.xclipper.extensions.utils.FirebaseUtils
 import com.kpstv.xclipper.extensions.utils.RetrofitUtils
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.retrievePackageList
 import com.kpstv.xclipper.extensions.utils.interceptors.NetworkConnectionInterceptor
@@ -66,8 +69,17 @@ class XClipperApplication : Application(), KodeinAware {
                 instance()
             )
         }
+        bind() from singleton {
+            FirebaseUtils(
+                instance(),
+                instance(),
+                instance(),
+                instance()
+            )
+        }
         bind() from provider {
             MainViewModelFactory(
+                instance(),
                 instance(),
                 instance(),
                 instance(),
@@ -108,6 +120,7 @@ class XClipperApplication : Application(), KodeinAware {
         // Load settings here
         DICTIONARY_LANGUAGE = preferenceProvider.getStringKey(LANG_PREF, "en")!!
         UID = preferenceProvider.getStringKey(UID_PREF, EMPTY_STRING)!!
+        DARK_THEME = preferenceProvider.getBooleanKey(DARK_PREF, true)
         BindToFirebase = if (UID.isBlank()) false
         else
             preferenceProvider.getBooleanKey(BIND_PREF, false)

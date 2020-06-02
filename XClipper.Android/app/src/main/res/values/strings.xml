@@ -78,4 +78,6 @@
     <string name="connect_success">Connected successfully!</string>
     <string name="scan_code">Scan the app code</string>
     <string name="connect_request">Attempting to make a connection with database...</string>
+    <string name="dark_title">Dark Theme</string>
+    <string name="dark_summary">Sometimes you might\'ve to restart the app for theme to get applied properly.</string>
 </resources>

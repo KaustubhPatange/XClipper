@@ -43,7 +43,7 @@
                 android:ellipsize="end"
                 android:maxLines="5"
                 android:text="@string/testStringSmall"
-                android:textColor="@color/colorTextPrimary"
+                android:textColor="?colorTextPrimary"
                 android:textSize="15sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/ci_copyButton"

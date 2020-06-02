@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <SwitchPreferenceCompat
+        app:defaultValue="true"
+        app:key="dark_pref"
+        app:summary="@string/dark_summary"
+        app:title="@string/dark_title" />
+
+</PreferenceScreen>

@@ -8,7 +8,6 @@ import androidx.lifecycle.MutableLiveData
 import com.kpstv.license.Decrypt
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.App.EMPTY_STRING
-import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.data.provider.FirebaseProvider
@@ -19,6 +18,7 @@ import com.kpstv.xclipper.extensions.enumerations.FilterType
 import com.kpstv.xclipper.extensions.listeners.RepositoryListener
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
 import com.kpstv.xclipper.extensions.listeners.StatusListener
+import com.kpstv.xclipper.extensions.utils.FirebaseUtils
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.isAccessibilityServiceEnabled
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.loginToDatabase
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.logoutFromDatabase
@@ -28,7 +28,6 @@ import com.kpstv.xclipper.ui.helpers.TinyUrlApiHelper
 import com.kpstv.xclipper.ui.viewmodels.managers.MainEditManager
 import com.kpstv.xclipper.ui.viewmodels.managers.MainSearchManager
 import com.kpstv.xclipper.ui.viewmodels.managers.MainStateManager
-import es.dmoral.toasty.Toasty
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -38,6 +37,7 @@ class MainViewModel(
     private val tagRepository: TagRepository,
     private val preferenceProvider: PreferenceProvider,
     private val firebaseProvider: FirebaseProvider,
+    private val firebaseUtils: FirebaseUtils,
     val dictionaryApiHelper: DictionaryApiHelper,
     val tinyUrlApiHelper: TinyUrlApiHelper
 ) : AndroidViewModel(application) {
@@ -212,20 +212,7 @@ class MainViewModel(
                 ClipboardAccessibilityService::class.java
             )
         )
-            firebaseProvider.observeDataChange(
-                deviceValidated = {
-                    if (!it)
-                    {
-                        logoutFromDatabase(preferenceProvider)
-                        Toasty.error(
-                            application.applicationContext,
-                            application.applicationContext.getString(R.string.err_device_validate),
-                            Toasty.LENGTH_LONG
-                        ).show()
-                    }
-                },
-                error = {},
-                changed = { })
+            firebaseUtils.observeDatabaseChangeEvents()
     }
 
     private fun makeMySource(

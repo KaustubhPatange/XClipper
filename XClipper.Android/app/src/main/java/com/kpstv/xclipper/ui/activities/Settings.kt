@@ -2,25 +2,27 @@ package com.kpstv.xclipper.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.zxing.integration.android.IntentIntegrator
+import com.kpstv.xclipper.App.ACTION_REPLACE_FRAG
 import com.kpstv.xclipper.App.UID_PATTERN_REGEX
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.SpecialMenu
+import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
+import com.kpstv.xclipper.extensions.utils.ThemeUtils
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showConnectionDialog
 import com.kpstv.xclipper.ui.adapters.MenuAdapter
 import com.kpstv.xclipper.ui.fragments.settings.AccountPreference
 import com.kpstv.xclipper.ui.fragments.settings.GeneralPreference
+import com.kpstv.xclipper.ui.fragments.settings.LookFeelPreference
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import com.kpstv.xclipper.ui.viewmodels.MainViewModelFactory
 import es.dmoral.toasty.Toasty
@@ -41,6 +43,7 @@ class Settings : AppCompatActivity(), KodeinAware {
     }
 
     override val kodein by kodein()
+    private val preferenceProvider by instance<PreferenceProvider>()
     private val viewModelFactory by instance<MainViewModelFactory>()
     private val mainViewModel: MainViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
@@ -49,8 +52,12 @@ class Settings : AppCompatActivity(), KodeinAware {
     private val settingsFragment = SettingsFragment()
     private val generalFragment = GeneralPreference()
     private val accountFragment = AccountPreference()
+    private val lookFeelFragment = LookFeelPreference(::onThemeChanged)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        ThemeUtils.setTheme(this)
+
         setContentView(R.layout.activity_settings)
 
         toolbar.title = getString(R.string.settings)
@@ -61,10 +68,13 @@ class Settings : AppCompatActivity(), KodeinAware {
             when (it) {
                 GENERAL_PREF -> replaceFragment(generalFragment)
                 ACCOUNT_PREF -> replaceFragment(accountFragment)
+                LOOK_FEEL_PREF -> replaceFragment(lookFeelFragment)
             }
         }
-
         replaceFragment(settingsFragment, false)
+
+        if (intent.getBooleanExtra(ACTION_REPLACE_FRAG, false))
+            replaceFragment(lookFeelFragment)
     }
 
     class SettingsFragment : Fragment() {
@@ -126,6 +136,24 @@ class Settings : AppCompatActivity(), KodeinAware {
         transition.commit()
     }
 
+    private fun onThemeChanged(value: Boolean) {
+        val previousIntent = intent
+        previousIntent.putExtra(ACTION_REPLACE_FRAG, true)
+        finishAndRemoveTask()
+        startActivity(previousIntent)
+    }
+/*
+    private fun bindUI() {
+        preferenceProvider.observePreference { _, s ->
+            if (s == DARK_PREF) {
+                val previousIntent = intent
+                previousIntent.putExtra(ACTION_REPLACE_FRAG, true)
+                finishAndRemoveTask()
+                startActivity(previousIntent)
+            }
+        }
+    }*/
+
     override fun onBackPressed() {
         if (supportFragmentManager.backStackEntryCount > 0) {
             supportFragmentManager.popBackStack()
@@ -144,7 +172,7 @@ class Settings : AppCompatActivity(), KodeinAware {
                 if (it.containsMatchIn(result.contents)) {
                     /** This will connect this device with repository. */
 
-                   val dialog = showConnectionDialog(this)
+                    val dialog = showConnectionDialog(this)
 
                     mainViewModel.updateDeviceConnection(result.contents, ResponseListener(
                         complete = {

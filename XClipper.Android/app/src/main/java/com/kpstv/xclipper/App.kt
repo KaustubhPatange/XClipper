@@ -31,10 +31,13 @@ object App {
 
     var DICTIONARY_LANGUAGE = "en"
 
+    var DARK_THEME = true
+
+    const val STAGGERED_SPAN_COUNT = 2
+    const val STAGGERED_SPAN_COUNT_MIN = 1
+
     const val DELAY_SPAN: Long = 20
     const val MAX_CHARACTER_TO_STORE = 1000
-
-
 
     // TODO: Do all your jack jacks
     const val STANDARD_DATE_FORMAT = "yyyyMMddHHmmss"
@@ -73,6 +76,7 @@ object App {
 
     const val ACTION_OPEN_APP = "com.kpstv.xclipper.open_app"
     const val ACTION_SMART_OPTIONS = "com.kpstv.xclipper.smart_options"
+    const val ACTION_REPLACE_FRAG = "com.kpstv.yts.action_replace_frag"
 
     /** Preference Keys */
     const val SERVICE_PREF = "service_pref"
@@ -82,4 +86,5 @@ object App {
     const val LOGOUT_PREF = "logout_pref"
     const val BIND_PREF = "bind_pref"
     const val UID_PREF = "uid_key"
+    const val DARK_PREF = "dark_pref"
 }

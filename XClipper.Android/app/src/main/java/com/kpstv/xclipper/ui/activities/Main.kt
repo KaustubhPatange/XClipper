@@ -21,25 +21,25 @@ import com.google.android.material.snackbar.Snackbar
 import com.kpstv.license.Decrypt
 import com.kpstv.xclipper.App.BLANK_STRING
 import com.kpstv.xclipper.App.CLIP_DATA
+import com.kpstv.xclipper.App.DARK_THEME
 import com.kpstv.xclipper.App.TAG_DIALOG_REQUEST_CODE
 import com.kpstv.xclipper.App.TAG_DIALOG_RESULT_CODE
 import com.kpstv.xclipper.App.TAG_FILTER_CHIP
 import com.kpstv.xclipper.App.UNDO_DELETE_SPAN
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.ToolbarState
-import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.extensions.cloneForAdapter
-import com.kpstv.xclipper.extensions.decrypt
 import com.kpstv.xclipper.extensions.listeners.StatusListener
 import com.kpstv.xclipper.extensions.setOnQueryTextListener
 import com.kpstv.xclipper.extensions.setOnSearchCloseListener
+import com.kpstv.xclipper.extensions.utils.ThemeUtils
+import com.kpstv.xclipper.extensions.utils.ThemeUtils.Companion.CARD_SELECTED_COLOR
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.shareText
 import com.kpstv.xclipper.ui.adapters.CIAdapter
 import com.kpstv.xclipper.ui.dialogs.EditDialog
 import com.kpstv.xclipper.ui.dialogs.TagDialog
 import com.kpstv.xclipper.ui.fragments.MoreBottomSheet
-import com.kpstv.xclipper.ui.helpers.TinyUrlApiHelper
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import com.kpstv.xclipper.ui.viewmodels.MainViewModelFactory
 import es.dmoral.toasty.Toasty
@@ -65,12 +65,18 @@ class Main : AppCompatActivity(), KodeinAware {
         getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     }
 
+    var isDarkTheme = true
+
     private lateinit var adapter: CIAdapter
 
     private lateinit var mainViewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        isDarkTheme = DARK_THEME
+
+        ThemeUtils.setTheme(this)
 
         mainViewModel = ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
 
@@ -104,6 +110,18 @@ class Main : AppCompatActivity(), KodeinAware {
         super.onPostCreate(savedInstanceState)
 
         bindUI()
+    }
+
+    /**
+     * Check if current theme has changed...
+     */
+    override fun onResume() {
+        super.onResume()
+        if (DARK_THEME != isDarkTheme) {
+            val previousIntent = intent
+            finish()
+            startActivity(previousIntent);
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -322,7 +340,7 @@ class Main : AppCompatActivity(), KodeinAware {
      */
     private fun setSelectedToolbar() {
         toolbar.menu.clear()
-        toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.colorSelected))
+        toolbar.setBackgroundColor(CARD_SELECTED_COLOR)
         toolbar.inflateMenu(R.menu.selected_menu)
         toolbar.navigationIcon = getDrawable(R.drawable.ic_close)
         toolbar.setNavigationOnClickListener {

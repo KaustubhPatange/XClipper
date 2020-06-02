@@ -9,11 +9,15 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.kpstv.license.Decrypt
 import com.kpstv.license.Encrypt
 import com.kpstv.xclipper.App
+import com.kpstv.xclipper.App.DARK_THEME
+import com.kpstv.xclipper.App.STAGGERED_SPAN_COUNT
+import com.kpstv.xclipper.App.STAGGERED_SPAN_COUNT_MIN
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.extensions.Coroutines
 import com.kpstv.xclipper.extensions.clone
 import com.kpstv.xclipper.extensions.listeners.RepositoryListener
+import com.kpstv.xclipper.extensions.utils.ThemeUtils
 import com.kpstv.xclipper.ui.adapters.EditAdapter
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import com.kpstv.xclipper.ui.viewmodels.MainViewModelFactory
@@ -28,6 +32,8 @@ class EditDialog : AppCompatActivity(), KodeinAware {
     override val kodein by kodein()
     private val viewModelFactory by instance<MainViewModelFactory>()
 
+    private var spanCount = 2
+
     private lateinit var clip: Clip
     private lateinit var adapter: EditAdapter
     private lateinit var edType: EDType
@@ -37,6 +43,9 @@ class EditDialog : AppCompatActivity(), KodeinAware {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        ThemeUtils.setDialogTheme(this)
+
         setContentView(R.layout.dialog_edit_layout)
 
         toolbar.navigationIcon = getDrawable(R.drawable.ic_close)
@@ -128,16 +137,31 @@ class EditDialog : AppCompatActivity(), KodeinAware {
             }
         )
 
-        del_recyclerView.layoutManager =
-            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.HORIZONTAL)
+        refreshRecyclerView(spanCount)
+
         del_recyclerView.adapter = adapter
     }
 
     private fun bindUI() {
+
+        mainViewModel.editManager.spanCount.observe(this, Observer {
+            refreshRecyclerView(it)
+        })
+
         mainViewModel.editManager.tagFixedLiveData.observe(this, Observer {
+            if (it.size > 3)
+                mainViewModel.editManager.postSpanCount(STAGGERED_SPAN_COUNT)
+            else
+                mainViewModel.editManager.postSpanCount(STAGGERED_SPAN_COUNT_MIN)
             adapter.submitList(it)
         })
     }
+
+    private fun refreshRecyclerView(span: Int) {
+        del_recyclerView.layoutManager =
+            StaggeredGridLayoutManager(span, StaggeredGridLayoutManager.HORIZONTAL)
+    }
+
 
 
     override fun onDestroy() {

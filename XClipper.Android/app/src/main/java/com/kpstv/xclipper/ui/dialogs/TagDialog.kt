@@ -5,7 +5,6 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import androidx.lifecycle.Observer
@@ -13,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
+import com.kpstv.xclipper.App.DARK_THEME
 import com.kpstv.xclipper.App.DELAY_SPAN
 import com.kpstv.xclipper.App.TAG_DIALOG_RESULT_CODE
 import com.kpstv.xclipper.R
@@ -22,6 +22,7 @@ import com.kpstv.xclipper.extensions.Coroutines
 import com.kpstv.xclipper.extensions.collapse
 import com.kpstv.xclipper.extensions.listeners.StatusListener
 import com.kpstv.xclipper.extensions.show
+import com.kpstv.xclipper.extensions.utils.ThemeUtils
 import com.kpstv.xclipper.ui.adapters.TagAdapter
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import com.kpstv.xclipper.ui.viewmodels.MainViewModelFactory
@@ -49,6 +50,8 @@ class TagDialog : AppCompatActivity(), KodeinAware {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        ThemeUtils.setDialogTheme(this)
 
         setContentView(R.layout.dialog_create_tag)
 

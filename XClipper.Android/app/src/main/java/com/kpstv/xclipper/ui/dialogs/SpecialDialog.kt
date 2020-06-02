@@ -4,10 +4,12 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.kpstv.xclipper.App.APP_CLIP_DATA
+import com.kpstv.xclipper.App.DARK_THEME
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.extensions.ioThread
 import com.kpstv.xclipper.extensions.mainThread
+import com.kpstv.xclipper.extensions.utils.ThemeUtils
 import com.kpstv.xclipper.ui.helpers.DictionaryApiHelper
 import com.kpstv.xclipper.ui.helpers.SpecialHelper
 import com.kpstv.xclipper.ui.helpers.TinyUrlApiHelper
@@ -32,6 +34,8 @@ class SpecialDialog : AppCompatActivity(), KodeinAware {
             finish()
             return
         }
+
+        ThemeUtils.setDialogTheme(this)
 
         setContentView(R.layout.special_layout)
 

@@ -75,6 +75,37 @@
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
+
+
+    <style name="AppTheme.Light" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorPrimary</item>
+        <item name="background">@color/colorBackground_Light</item>
+        <item name="fontFamily">@font/google_sans_medium</item>
+        <item name="colorTextPrimary">@color/colorTextPrimary_Light</item>
+        <item name="colorTextSecondary">@color/colorTextSecondary_Light</item>
+        <item name="colorTextSecondaryLight">@color/colorTextSecondaryLight_Light</item>
+        <item name="colorForeground">@color/colorCard_Light</item>
+        <item name="colorSeparator">@color/colorSeparator_Light</item>
+        <item name="colorSelected">@color/colorSelected_Light</item>
+    </style>
+
+    <style name="CustomDialogStyle.Light" parent="Theme.MaterialComponents.Light.Dialog.Alert">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorTextPrimary">@color/colorTextPrimary_Light</item>
+        <item name="colorTextSecondary">@color/colorTextSecondary_Light</item>
+        <item name="colorTextSecondaryLight">@color/colorTextSecondaryLight_Light</item>
+        <item name="colorForeground">@color/colorCard_Light</item>
+        <item name="colorSeparator">@color/colorSeparator_Light</item>
+        <item name="background">@color/colorBackground_Light</item>
+        <item name="colorSelected">@color/colorSelected_Light</item>
+        <item name="fontFamily">@font/google_sans_medium</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+
     <style name="Theme.AppCompat.Translucent" parent="AppTheme">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowNoTitle">true</item>

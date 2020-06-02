@@ -21,6 +21,8 @@ import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.ClipTag
 import com.kpstv.xclipper.extensions.hide
 import com.kpstv.xclipper.extensions.show
+import com.kpstv.xclipper.extensions.utils.ThemeUtils.Companion.CARD_COLOR
+import com.kpstv.xclipper.extensions.utils.ThemeUtils.Companion.CARD_SELECTED_COLOR
 import kotlinx.android.synthetic.main.content_item.view.*
 import java.util.*
 
@@ -45,7 +47,7 @@ class CIAdapter(
 
     private lateinit var copyClick: (Clip, Int) -> Unit
     private lateinit var menuClick: (Clip, Int, MENU_TYPE) -> Unit
-    private val CARD_COLOR = ContextCompat.getColor(context, R.color.colorCard)
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainHolder =
         MainHolder(
@@ -116,12 +118,7 @@ class CIAdapter(
         selectedClips.observe(context as LifecycleOwner, Observer {
             when {
                 it.contains(clip) -> {
-                    holder.itemView.mainCard.setCardBackgroundColor(
-                        ContextCompat.getColor(
-                            context,
-                            R.color.colorSelected
-                        )
-                    )
+                    holder.itemView.mainCard.setCardBackgroundColor(CARD_SELECTED_COLOR)
                 }
                 clip.toDisplay -> {
                     holder.itemView.mainCard.setCardBackgroundColor(CARD_COLOR)

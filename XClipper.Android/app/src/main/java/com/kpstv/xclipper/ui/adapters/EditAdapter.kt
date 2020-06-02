@@ -1,22 +1,18 @@
 package com.kpstv.xclipper.ui.adapters
 
-import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.kpstv.xclipper.R
-import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.Tag
 import kotlinx.android.synthetic.main.tag_item.view.*
-import org.kodein.di.android.x.AndroidLifecycleScope
 
 
 class EditAdapter(
@@ -41,6 +37,7 @@ class EditAdapter(
         )
 
     override fun onBindViewHolder(holder: EditHolder, position: Int) {
+    //    (holder.itemView.layoutParams as (StaggeredGridLayoutManager.LayoutParams)).isFullSpan = true
         holder.bind(getItem(position))
     }
 

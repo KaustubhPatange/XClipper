@@ -3,6 +3,7 @@ package com.kpstv.xclipper.ui.viewmodels.managers
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.kpstv.xclipper.App.EMPTY_STRING
+import com.kpstv.xclipper.App.STAGGERED_SPAN_COUNT
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.ClipTag
 import com.kpstv.xclipper.data.model.Tag
@@ -12,6 +13,7 @@ import kotlin.collections.HashMap
 class MainEditManager(
     tagRepository: TagRepository
 ) {
+    private val _spanCount = MutableLiveData(STAGGERED_SPAN_COUNT)
     private val _clip = MutableLiveData<Clip>()
     private val _tagFixedLiveData = MutableLiveData<List<Tag>>()
     private val _selectedTags = MutableLiveData<Map<String, String>>(HashMap())
@@ -21,6 +23,9 @@ class MainEditManager(
 
     val selectedTags: LiveData<Map<String, String>>
         get() = _selectedTags
+
+    val spanCount: LiveData<Int>
+        get() = _spanCount
 
     /**
      * Important whenever want to edit the clip call this function at start
@@ -52,6 +57,10 @@ class MainEditManager(
                 it[tag.name] = EMPTY_STRING
             _selectedTags.postValue(it)
         }
+    }
+
+    fun postSpanCount(value: Int) {
+        _spanCount.postValue(value)
     }
 
     /**
