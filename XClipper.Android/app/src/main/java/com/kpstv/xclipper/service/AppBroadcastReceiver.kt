@@ -1,10 +1,12 @@
 package com.kpstv.xclipper.service
 
+import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.*
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat.getSystemService
 import com.kpstv.xclipper.App.ACTION_OPEN_APP
 import com.kpstv.xclipper.App.ACTION_SMART_OPTIONS
 import com.kpstv.xclipper.App.APP_CLIP_DATA
@@ -61,7 +63,8 @@ class AppBroadcastReceiver : BroadcastReceiver(), KodeinAware {
     }
 
     private fun dismissNotification(context: Context) {
-        NotificationManagerCompat.from(context).cancel(NOTIFICATION_ID)
+        val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        manager.cancelAll()
     }
 
     private fun collapseStatusBar(context: Context) {

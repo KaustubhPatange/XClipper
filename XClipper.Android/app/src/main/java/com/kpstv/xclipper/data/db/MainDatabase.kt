@@ -6,6 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.kpstv.xclipper.App.DATABASE_NAME
 import com.kpstv.xclipper.data.converters.DateConverter
 import com.kpstv.xclipper.data.converters.TagConverter
 import com.kpstv.xclipper.data.localized.ClipDataDao
@@ -57,9 +58,10 @@ abstract class MainDatabase : RoomDatabase() {
             Room.databaseBuilder(
                 context,
                 MainDatabase::class.java,
-                "main.db"
+                DATABASE_NAME
             )
                 .addCallback(roomCallback)
+                .setJournalMode(JournalMode.TRUNCATE)
                 .fallbackToDestructiveMigration()
                 .fallbackToDestructiveMigrationOnDowngrade()
                 .build()

@@ -30,12 +30,17 @@ import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.ToolbarState
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.extensions.cloneForAdapter
+import com.kpstv.xclipper.extensions.ioThread
 import com.kpstv.xclipper.extensions.listeners.StatusListener
 import com.kpstv.xclipper.extensions.setOnQueryTextListener
 import com.kpstv.xclipper.extensions.setOnSearchCloseListener
 import com.kpstv.xclipper.extensions.utils.ThemeUtils
 import com.kpstv.xclipper.extensions.utils.ThemeUtils.Companion.CARD_SELECTED_COLOR
+import com.kpstv.xclipper.extensions.utils.Utils
+import com.kpstv.xclipper.extensions.utils.Utils.Companion.isAccessibilityServiceEnabled
+import com.kpstv.xclipper.extensions.utils.Utils.Companion.openAccessibility
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.shareText
+import com.kpstv.xclipper.service.ClipboardAccessibilityService
 import com.kpstv.xclipper.ui.adapters.CIAdapter
 import com.kpstv.xclipper.ui.dialogs.EditDialog
 import com.kpstv.xclipper.ui.dialogs.TagDialog
@@ -44,12 +49,15 @@ import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import com.kpstv.xclipper.ui.viewmodels.MainViewModelFactory
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.kodein
 import org.kodein.di.generic.instance
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.concurrent.schedule
+import kotlin.system.measureTimeMillis
 
 
 class Main : AppCompatActivity(), KodeinAware {
@@ -58,8 +66,6 @@ class Main : AppCompatActivity(), KodeinAware {
 
     override val kodein by kodein()
     private val viewModelFactory by instance<MainViewModelFactory>()
-
-    //  private lateinit var tagDialog: TagDialog
 
     private val clipboardManager: ClipboardManager by lazy {
         getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -94,22 +100,19 @@ class Main : AppCompatActivity(), KodeinAware {
             val intent = Intent(this, EditDialog::class.java)
             startActivity(intent)
         }
-
-        /*  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
-              val intent = Intent(
-                  Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                  Uri.parse("package:$packageName")
-              )
-              startActivityForResult(intent, 0)
-          }
-
-        */
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
 
         bindUI()
+
+        checkForAccessibilityService()
+
+        /** Load app list in GlobalScope */
+        GlobalScope.launch {
+            Utils.retrievePackageList(this@Main)
+        }
     }
 
     /**
@@ -130,7 +133,6 @@ class Main : AppCompatActivity(), KodeinAware {
             tagDialogItemClickListener(mainViewModel.getTag()!!)
         }
     }
-
 
     private fun bindUI() {
         mainViewModel.clipLiveData.observe(this, Observer {
@@ -390,6 +392,23 @@ class Main : AppCompatActivity(), KodeinAware {
         toolbar.menu.findItem(R.id.action_sync).actionView = syncImage
         toolbar.menu.findItem(R.id.action_setting).actionView = settingImage
     }
+
+    /**
+     * This will show a small snackbar if our clipboard accessibility service is disabled.
+     */
+    private fun checkForAccessibilityService() {
+        if (!isAccessibilityServiceEnabled(this, ClipboardAccessibilityService::class.java)) {
+            Snackbar.make(
+                ci_recyclerView,
+                "Accessibility service not running",
+                Snackbar.LENGTH_INDEFINITE
+            )
+                .setAction("Enable") {
+                    openAccessibility(this)
+                }.show()
+        }
+    }
+
 
     /**
      * So I found out that sometimes in Android 10, clipboard still not get captured using the

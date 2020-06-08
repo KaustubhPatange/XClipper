@@ -44,7 +44,7 @@
     <string name="search_web">Search as a query</string>
     <string name="send_mail">Send a mail</string>
     <string name="search_map">Search on map</string>
-    <string name="channel_name">xclipper</string>
+    <string name="channel_name">Notification channel</string>
     <string name="more_actions">Special actions</string>
     <string name="clip_content">Clipboard content</string>
     <string name="title_activity_settings">Settings</string>
@@ -80,4 +80,13 @@
     <string name="connect_request">Attempting to make a connection with database...</string>
     <string name="dark_title">Dark Theme</string>
     <string name="dark_summary">Sometimes you might\'ve to restart the app for theme to get applied properly.</string>
+    <string name="import_file">Import from file</string>
+    <string name="import_summary">Retrieve all the data from an exported local database</string>
+    <string name="database_export">Database has been exported!</string>
+    <string name="database_import">Database has been imported!</string>
+    <string name="err_database_export">Error in exporting the database</string>
+    <string name="err_import_database">Couldn\'t resolve the input stream</string>
+    <string name="restart_app">Restart App</string>
+    <string name="restart_summary">You need to restart the app in order to apply changes!</string>
+    <string name="xcopy">XCopy</string>
 </resources>

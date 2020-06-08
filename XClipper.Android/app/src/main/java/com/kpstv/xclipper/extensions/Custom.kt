@@ -1,7 +1,10 @@
 package com.kpstv.xclipper.extensions
 
 import com.ferfalk.simplesearchview.SimpleSearchView
+import com.kpstv.xclipper.App.STANDARD_DATE_FORMAT
 import kotlinx.coroutines.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 fun SimpleSearchView.setOnQueryTextListener(
@@ -62,6 +65,9 @@ fun <T> lazyDeferred(block: suspend CoroutineScope.() -> T): Lazy<Deferred<T>> {
         }
     }
 }
+
+fun Date.getFormattedDate(): String =
+    SimpleDateFormat(STANDARD_DATE_FORMAT, Locale.US).format(this)
 
 
 /**

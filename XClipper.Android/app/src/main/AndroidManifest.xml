@@ -5,6 +5,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
     <!-- TODO: Remove foreground and SAW permission if unused. -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
@@ -12,9 +14,9 @@
     <uses-sdk tools:overrideLibrary="com.google.zxing.client.android" />
 
     <application
-        android:hardwareAccelerated="true"
         android:name=".XClipperApplication"
         android:allowBackup="true"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -22,7 +24,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".ui.activities.Settings"
-            android:label="@string/title_activity_settings"/>
+            android:label="@string/title_activity_settings" />
         <activity android:name=".ui.activities.Splash" />
         <activity android:name=".ui.activities.Main">
             <intent-filter>
@@ -60,6 +62,19 @@
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="fullSensor"
             tools:replace="screenOrientation" />
+
+        <activity
+            android:name=".service.TextSelectionActivity"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:label="@string/xcopy"
+            android:noHistory="true">
+            <intent-filter>
+                <action android:name="android.intent.action.PROCESS_TEXT" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
 
         <service
             android:name=".service.ClipboardAccessibilityService"

@@ -22,6 +22,9 @@ interface ClipDataDao {
     @Query("delete from table_clip where id = :id")
     fun delete(id: Int)
 
+    @Query("delete from table_clip where id = (select MIN(id) from table_clip);")
+    fun deleteLast()
+
     @Query("select * from table_clip where id = :id")
     fun getData(id: Int): Clip
 

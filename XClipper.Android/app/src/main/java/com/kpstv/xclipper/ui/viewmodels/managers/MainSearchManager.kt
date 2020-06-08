@@ -1,5 +1,6 @@
 package com.kpstv.xclipper.ui.viewmodels.managers
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.kpstv.xclipper.data.model.Tag
@@ -44,4 +45,5 @@ class MainSearchManager {
     }
 
     fun clearSearch() = _searchString.postValue("")
+    private val TAG = javaClass.simpleName
 }

@@ -21,6 +21,7 @@ import com.kpstv.xclipper.extensions.utils.ThemeUtils
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showConnectionDialog
 import com.kpstv.xclipper.ui.adapters.MenuAdapter
 import com.kpstv.xclipper.ui.fragments.settings.AccountPreference
+import com.kpstv.xclipper.ui.fragments.settings.BackupPreference
 import com.kpstv.xclipper.ui.fragments.settings.GeneralPreference
 import com.kpstv.xclipper.ui.fragments.settings.LookFeelPreference
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
@@ -43,7 +44,6 @@ class Settings : AppCompatActivity(), KodeinAware {
     }
 
     override val kodein by kodein()
-    private val preferenceProvider by instance<PreferenceProvider>()
     private val viewModelFactory by instance<MainViewModelFactory>()
     private val mainViewModel: MainViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
@@ -52,6 +52,7 @@ class Settings : AppCompatActivity(), KodeinAware {
     private val settingsFragment = SettingsFragment()
     private val generalFragment = GeneralPreference()
     private val accountFragment = AccountPreference()
+    private val backupFragment = BackupPreference()
     private val lookFeelFragment = LookFeelPreference(::onThemeChanged)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,6 +70,7 @@ class Settings : AppCompatActivity(), KodeinAware {
                 GENERAL_PREF -> replaceFragment(generalFragment)
                 ACCOUNT_PREF -> replaceFragment(accountFragment)
                 LOOK_FEEL_PREF -> replaceFragment(lookFeelFragment)
+                BACKUP_PREF -> replaceFragment(backupFragment)
             }
         }
         replaceFragment(settingsFragment, false)

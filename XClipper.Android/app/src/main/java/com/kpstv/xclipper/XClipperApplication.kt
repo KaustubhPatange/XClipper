@@ -2,8 +2,14 @@ package com.kpstv.xclipper
 
 import android.annotation.SuppressLint
 import android.app.Application
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import android.os.Build
 import android.provider.Settings
 import android.util.Log
+import androidx.core.app.NotificationCompat
 import com.kpstv.xclipper.App.BIND_PREF
 import com.kpstv.xclipper.App.BindToFirebase
 import com.kpstv.xclipper.App.DARK_PREF
@@ -36,6 +42,7 @@ import org.kodein.di.generic.instance
 import org.kodein.di.generic.provider
 import org.kodein.di.generic.singleton
 import kotlin.system.measureTimeMillis
+
 
 @SuppressLint("HardwareIds")
 @ExperimentalStdlibApi
@@ -96,15 +103,9 @@ class XClipperApplication : Application(), KodeinAware {
     override fun onCreate() {
         super.onCreate()
         init()
+
         notificationHelper.createChannel()
 
-        /** Load app list in IO thread */
-        val measureTimeMillis = measureTimeMillis {
-            ioThread {
-                retrievePackageList(this)
-            }
-        }
-        Log.e(TAG, "Time: $measureTimeMillis")
     }
 
     private val TAG = javaClass.simpleName

@@ -144,6 +144,12 @@ class MainRepositoryImpl(
         }
     }
 
+    override fun deleteLast() {
+        Coroutines.io {
+            clipDao.deleteLast()
+        }
+    }
+
     override fun deleteMultiple(clips: List<Clip>) {
         Coroutines.io {
             for (clip in clips)

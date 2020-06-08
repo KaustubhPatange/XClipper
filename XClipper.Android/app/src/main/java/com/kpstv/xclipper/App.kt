@@ -36,6 +36,8 @@ object App {
     const val STAGGERED_SPAN_COUNT = 2
     const val STAGGERED_SPAN_COUNT_MIN = 1
 
+    const val PERMISSION_REQUEST_CODE = 189
+
     const val DELAY_SPAN: Long = 20
     const val MAX_CHARACTER_TO_STORE = 1000
 
@@ -57,6 +59,9 @@ object App {
 
     const val PAIR_SEPARATOR = ";"
     const val ITEM_SEPARATOR = "|"
+
+    const val DATABASE_NAME = "main.db"
+    const val DATABASE_MIME_TYPE = "application/vnd.sqlite3"
 
     const val TAG_DIALOG_REQUEST_CODE = 100
     const val TAG_DIALOG_RESULT_CODE = 1
@@ -87,4 +92,6 @@ object App {
     const val BIND_PREF = "bind_pref"
     const val UID_PREF = "uid_key"
     const val DARK_PREF = "dark_pref"
+    const val IMPORT_PREF = "import_pref"
+    const val EXPORT_PREF = "export_pref"
 }

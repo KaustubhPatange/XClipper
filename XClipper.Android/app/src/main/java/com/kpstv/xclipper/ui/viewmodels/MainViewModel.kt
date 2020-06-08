@@ -14,6 +14,7 @@ import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.data.repository.TagRepository
+import com.kpstv.xclipper.extensions.Coroutines
 import com.kpstv.xclipper.extensions.enumerations.FilterType
 import com.kpstv.xclipper.extensions.listeners.RepositoryListener
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
@@ -78,6 +79,12 @@ class MainViewModel(
 
     val tagLiveData: LiveData<List<Tag>>
         get() = _tagLiveData
+
+    fun refreshRepository() {
+        Coroutines.io {
+            _clipLiveData.postValue(mainRepository.getAllData())
+        }
+    }
 
     fun postToRepository(unencryptedData: String) {
         mainRepository.updateRepository(unencryptedData)

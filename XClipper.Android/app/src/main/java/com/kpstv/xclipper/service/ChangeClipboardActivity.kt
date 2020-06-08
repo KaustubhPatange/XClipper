@@ -42,6 +42,7 @@ class ChangeClipboardActivity : FragmentActivity(), KodeinAware {
         if (hasFocus) {
             val data = clipboardManager.primaryClip?.getItemAt(0)?.text?.toString()
             saveData(data)
+            finish()
             //    finishActivity(0)
         }/* else {
             saveData(data)

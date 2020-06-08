@@ -21,18 +21,19 @@ class NotificationHelper(
     private val context: Context
 ) {
     companion object {
-        const val CHANNEL_ID = "xclipper_01"
+        const val CHANNEL_ID = "my_channel_01"
         const val NOTIFICATION_ID = 23
     }
 
-    fun createChannel() = with(context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    private lateinit var manager: NotificationManager
 
+    fun createChannel() = with(context) {
+        manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             manager.createNotificationChannel(NotificationChannel(
                 CHANNEL_ID,
                 getString(R.string.channel_name),
-                NotificationManager.IMPORTANCE_LOW
+                NotificationManager.IMPORTANCE_HIGH
             ))
         }
     }
@@ -62,9 +63,8 @@ class NotificationHelper(
             .setSmallIcon(R.drawable.ic_copy_white)
             .setContentTitle(getString(R.string.clip_content))
             .setContentText(text)
-            .setSound(null)
-            .setPriority(NotificationCompat.PRIORITY_LOW)
             .setAutoCancel(true)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
             .setContentIntent(openIntent)
             .addAction(
@@ -78,6 +78,6 @@ class NotificationHelper(
                 PendingIntent.getBroadcast(context, 0, specialIntent, 0)
             ).build()
 
-        NotificationManagerCompat.from(this).notify(NOTIFICATION_ID, notification)
+        manager.notify(NOTIFICATION_ID, notification)
     }
 }

@@ -42,6 +42,7 @@ interface MainRepository {
 
     fun deleteClip(clip: Clip)
     fun deleteClip(unencryptedData: String?)
+    fun deleteLast()
 
     fun deleteMultiple(clips: List<Clip>)
 

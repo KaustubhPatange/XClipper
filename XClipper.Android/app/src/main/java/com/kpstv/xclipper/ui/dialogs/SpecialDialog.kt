@@ -48,20 +48,22 @@ class SpecialDialog : AppCompatActivity(), KodeinAware {
                     return@ioThread
                 }
 
-                toolbar.navigationIcon =
-                    ContextCompat.getDrawable(this@SpecialDialog, R.drawable.ic_close)
-                toolbar.setNavigationOnClickListener { finish() }
+                mainThread {
+                    toolbar.navigationIcon =
+                        ContextCompat.getDrawable(this@SpecialDialog, R.drawable.ic_close)
+                    toolbar.setNavigationOnClickListener { finish() }
 
-                btn_ok.setOnClickListener { finish() }
+                    btn_ok.setOnClickListener { finish() }
 
-                SpecialHelper(
-                    context = context,
-                    dictionaryApiHelper = dictionaryApiHelper,
-                    tinyUrlApiHelper = tinyUrlApiHelper,
-                    supportFragmentManager = supportFragmentManager,
-                    clip = clip
-                ).setActions(this) {
-                    finish()
+                    SpecialHelper(
+                        context = context,
+                        dictionaryApiHelper = dictionaryApiHelper,
+                        tinyUrlApiHelper = tinyUrlApiHelper,
+                        supportFragmentManager = supportFragmentManager,
+                        clip = clip
+                    ).setActions(this) {
+                        finish()
+                    }
                 }
             }
         }
