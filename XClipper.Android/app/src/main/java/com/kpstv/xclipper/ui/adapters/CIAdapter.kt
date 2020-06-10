@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.core.view.children
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -18,11 +17,11 @@ import com.google.android.flexbox.FlexboxLayout
 import com.kpstv.license.Decrypt
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.Clip
-import com.kpstv.xclipper.data.model.ClipTag
 import com.kpstv.xclipper.extensions.hide
 import com.kpstv.xclipper.extensions.show
 import com.kpstv.xclipper.extensions.utils.ThemeUtils.Companion.CARD_COLOR
 import com.kpstv.xclipper.extensions.utils.ThemeUtils.Companion.CARD_SELECTED_COLOR
+import com.kpstv.xclipper.extensions.utils.Utils
 import kotlinx.android.synthetic.main.content_item.view.*
 import java.util.*
 
@@ -31,7 +30,7 @@ class CIAdapter(
     private val context: Context,
     private val multiSelectionState: LiveData<Boolean>,
     private val selectedItem: LiveData<Clip>,
-
+    private val currentClip: LiveData<String>,
     private val onClick: (Clip, Int) -> Unit,
     private val onLongClick: (Clip, Int) -> Unit,
     private val selectedClips: LiveData<ArrayList<Clip>>
@@ -93,6 +92,16 @@ class CIAdapter(
             )
         }
 
+        currentClip.observe(context as LifecycleOwner, Observer {
+            if (holder.itemView.ci_textView.text == it)
+                holder.itemView.ci_textView.setTextColor(
+                    ContextCompat.getColor(context, R.color.colorSelectedClip)
+                )
+            else holder.itemView.ci_textView.setTextColor(
+                Utils.getColorFromAttr(context, R.attr.colorTextPrimary)
+            )
+        })
+
         selectedItem.observe(context as LifecycleOwner, Observer {
             if (it == clip) {
                 holder.itemView.hiddenLayout.show()
@@ -133,8 +142,6 @@ class CIAdapter(
                 }
             }
         })
-
-
     }
 
     private fun setTags(view: View, clip: Clip) {

@@ -70,6 +70,12 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:19.3.0'
     kapt "androidx.room:room-compiler:$room_version"
 
+    // Paging
+    implementation "androidx.paging:paging-runtime-ktx:$paging_version"
+
+    // LifeCycle Service
+    implementation "androidx.lifecycle:lifecycle-service:$lifecycle_version"
+
     // ViewModel
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
@@ -109,6 +115,8 @@ dependencies {
     // Rounded Bottom Sheet
     implementation 'com.github.Deishelon:RoundedBottomSheet:1.0.1'
 
+    // Floating bubble
+    implementation 'com.github.bijoysingh:floating-bubble:3.0.0'
 
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.4'
     testImplementation 'junit:junit:4.12'

@@ -4,8 +4,8 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -20,7 +20,6 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
 import com.kpstv.license.Decrypt
 import com.kpstv.xclipper.App.BLANK_STRING
-import com.kpstv.xclipper.App.CLIP_DATA
 import com.kpstv.xclipper.App.DARK_THEME
 import com.kpstv.xclipper.App.TAG_DIALOG_REQUEST_CODE
 import com.kpstv.xclipper.App.TAG_DIALOG_RESULT_CODE
@@ -30,17 +29,16 @@ import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.ToolbarState
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.extensions.cloneForAdapter
-import com.kpstv.xclipper.extensions.ioThread
 import com.kpstv.xclipper.extensions.listeners.StatusListener
 import com.kpstv.xclipper.extensions.setOnQueryTextListener
 import com.kpstv.xclipper.extensions.setOnSearchCloseListener
 import com.kpstv.xclipper.extensions.utils.ThemeUtils
 import com.kpstv.xclipper.extensions.utils.ThemeUtils.Companion.CARD_SELECTED_COLOR
 import com.kpstv.xclipper.extensions.utils.Utils
-import com.kpstv.xclipper.extensions.utils.Utils.Companion.isAccessibilityServiceEnabled
+import com.kpstv.xclipper.extensions.utils.Utils.Companion.isClipboardAccessibilityServiceRunning
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.openAccessibility
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.shareText
-import com.kpstv.xclipper.service.ClipboardAccessibilityService
+import com.kpstv.xclipper.service.ChangeClipboardActivity
 import com.kpstv.xclipper.ui.adapters.CIAdapter
 import com.kpstv.xclipper.ui.dialogs.EditDialog
 import com.kpstv.xclipper.ui.dialogs.TagDialog
@@ -57,7 +55,6 @@ import org.kodein.di.generic.instance
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.concurrent.schedule
-import kotlin.system.measureTimeMillis
 
 
 class Main : AppCompatActivity(), KodeinAware {
@@ -90,8 +87,6 @@ class Main : AppCompatActivity(), KodeinAware {
 
         setRecyclerView()
 
-        checkClipboardData()
-
         setToolbarCommonStuff()
 
         setSearchViewListener()
@@ -109,10 +104,30 @@ class Main : AppCompatActivity(), KodeinAware {
 
         checkForAccessibilityService()
 
+        checkClipboardData()
+
         /** Load app list in GlobalScope */
         GlobalScope.launch {
             Utils.retrievePackageList(this@Main)
         }
+
+
+        // TODO: Move this SAW to a valid place.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !android.provider.Settings.canDrawOverlays(
+                this
+            )
+        ) {
+            // Show alert dialog to the user saying a separate permission is needed
+            // Launch the settings activity if the user prefers
+            val myIntent =
+                Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
+            startActivity(myIntent)
+        }
+
+        /* clipboardManager.addPrimaryClipChangedListener {
+             val textString = clipboardManager.primaryClip?.getItemAt(0)?.coerceToText(this)
+             mainViewModel.postCurrentClip(textString?.toString())
+         }*/
     }
 
     /**
@@ -162,6 +177,7 @@ class Main : AppCompatActivity(), KodeinAware {
             context = this,
             selectedClips = mainViewModel.stateManager.selectedItemClips,
             selectedItem = mainViewModel.stateManager.selectedItem,
+            currentClip = mainViewModel.currentClip,
             multiSelectionState = mainViewModel.stateManager.multiSelectionState,
             onClick = { clip, _ ->
                 if (mainViewModel.stateManager.isMultiSelectionStateActive())
@@ -397,7 +413,7 @@ class Main : AppCompatActivity(), KodeinAware {
      * This will show a small snackbar if our clipboard accessibility service is disabled.
      */
     private fun checkForAccessibilityService() {
-        if (!isAccessibilityServiceEnabled(this, ClipboardAccessibilityService::class.java)) {
+        if (!isClipboardAccessibilityServiceRunning(this)) {
             Snackbar.make(
                 ci_recyclerView,
                 "Accessibility service not running",
@@ -416,14 +432,20 @@ class Main : AppCompatActivity(), KodeinAware {
      * background it will check & update the database with the clipboard.
      */
     private fun checkClipboardData() {
-        val data = clipboardManager.primaryClip?.getItemAt(0)?.coerceToText(this)?.toString()
-        if (!data.isNullOrBlank() && CLIP_DATA != data) {
-            CLIP_DATA = data
+        /* val data = clipboardManager.primaryClip?.getItemAt(0)?.coerceToText(this)?.toString()
+         if (!data.isNullOrBlank() && CLIP_DATA != data) {
+             CLIP_DATA = data
 
-            mainViewModel.postToRepository(data)
+             mainViewModel.postToRepository(data)
 
-            Log.e(TAG, "Pushed: $data")
+             Log.e(TAG, "Pushed: $data")
+         }*/
+
+
+        val intent = Intent(this, ChangeClipboardActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK
         }
+        startActivity(intent)
     }
 
     override fun onBackPressed() {
@@ -438,6 +460,6 @@ class Main : AppCompatActivity(), KodeinAware {
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        checkClipboardData()
+        // checkClipboardData()
     }
 }

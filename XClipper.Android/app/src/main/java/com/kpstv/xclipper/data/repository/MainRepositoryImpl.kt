@@ -2,8 +2,10 @@ package com.kpstv.xclipper.data.repository
 
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PagedList
 import com.kpstv.license.Decrypt
-import com.kpstv.license.Encrypt
 import com.kpstv.xclipper.App.LOCAL_MAX_ITEM_STORAGE
 import com.kpstv.xclipper.App.MAX_CHARACTER_TO_STORE
 import com.kpstv.xclipper.data.localized.ClipDataDao
@@ -13,7 +15,6 @@ import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.extensions.Coroutines
 import com.kpstv.xclipper.extensions.clone
 import com.kpstv.xclipper.extensions.enumerations.FilterType
-import com.kpstv.xclipper.extensions.ioThread
 import com.kpstv.xclipper.extensions.listeners.RepositoryListener
 import com.kpstv.xclipper.extensions.listeners.StatusListener
 import com.kpstv.xclipper.extensions.mainThread
@@ -31,6 +32,24 @@ class MainRepositoryImpl(
     private val TAG = javaClass.simpleName
     private val lock = Any()
     private val lock1 = Any()
+
+    private val _currentClip = MutableLiveData<String>()
+    var data: LiveData<PagedList<Clip>>? = null
+
+    init {
+        clipDao.getAllLiveData().observeForever {
+            data
+        }
+    }
+
+    override fun getDataSource() =
+        LivePagedListBuilder(clipDao.getDataSource(), 10)
+            .build()
+
+    override fun getCurrentClip() = _currentClip
+    override fun setCurrentClip(text: String) {
+        _currentClip.postValue(text)
+    }
 
     override fun saveClip(clip: Clip?) {
         if (clip == null) return;
@@ -54,6 +73,10 @@ class MainRepositoryImpl(
                     }
                 }
                 clipDao.insert(clip)
+
+                /** Send a notification */
+                mainThread { notificationHelper.pushNotification(clip.data?.Decrypt()!!) }
+
                 Log.e(TAG, "Data Saved: ${clip.data?.Decrypt()}")
             }
         }
@@ -138,7 +161,8 @@ class MainRepositoryImpl(
 
     override fun deleteClip(unencryptedData: String?) {
         Coroutines.io {
-            val clipToFind = clipDao.getAllData().firstOrNull { it.data?.Decrypt() == unencryptedData }
+            val clipToFind =
+                clipDao.getAllData().firstOrNull { it.data?.Decrypt() == unencryptedData }
             if (clipToFind != null)
                 deleteClip(clipToFind)
         }
@@ -182,10 +206,10 @@ class MainRepositoryImpl(
         Coroutines.io {
             if (clipDao.getAllData()
                     .count { it.data?.Decrypt() == unencryptedData && it.id != id } > 0
-            )  Coroutines.main {
+            ) Coroutines.main {
                 repositoryListener.onDataExist()
             }
-            else  Coroutines.main {
+            else Coroutines.main {
                 repositoryListener.onDataError()
             }
         }
@@ -232,8 +256,9 @@ class MainRepositoryImpl(
             saveClip(clip)
             firebaseProvider.uploadData(clip)
 
-            /** Send a notification */
-            mainThread { notificationHelper.pushNotification(clip.data?.Decrypt()!!) }
+            /*     */
+            /** Send a notification *//*
+            mainThread { notificationHelper.pushNotification(clip.data?.Decrypt()!!) }*/
         }
     }
 
@@ -241,9 +266,10 @@ class MainRepositoryImpl(
         clipProvider.processClip(clip)?.let { innerClip ->
             saveClip(innerClip)
             firebaseProvider.uploadData(innerClip)
-
-            /** Send a notification */
-           mainThread { notificationHelper.pushNotification(clip.data?.Decrypt()!!) }
+/*
+            */
+            /** Send a notification *//*
+           mainThread { notificationHelper.pushNotification(clip.data?.Decrypt()!!) }*/
         }
     }
 

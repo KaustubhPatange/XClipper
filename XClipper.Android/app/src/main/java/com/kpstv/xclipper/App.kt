@@ -43,9 +43,8 @@ object App {
 
     // TODO: Do all your jack jacks
     const val STANDARD_DATE_FORMAT = "yyyyMMddHHmmss"
-
-    // TODO: Make a way to set and get this UID
-    var UID: String = "1PAF8EB-4KR35L-1ICT12V-H7M3FM"
+//1PAF8EB-4KR35L-1ICT12V-H7M3FM
+    var UID: String = ""
     lateinit var DeviceID: String
 
     var BindToFirebase = true
@@ -82,6 +81,9 @@ object App {
     const val ACTION_OPEN_APP = "com.kpstv.xclipper.open_app"
     const val ACTION_SMART_OPTIONS = "com.kpstv.xclipper.smart_options"
     const val ACTION_REPLACE_FRAG = "com.kpstv.yts.action_replace_frag"
+    const val ACTION_INSERT_TEXT = "com.kpstv.xclipper.insert_text"
+
+    const val EXTRA_SERVICE_TEXT = "com.kpstv.xclipper.service_text"
 
     /** Preference Keys */
     const val SERVICE_PREF = "service_pref"

@@ -13,6 +13,7 @@ import com.kpstv.xclipper.App.LANG_PREF
 import com.kpstv.xclipper.App.SERVICE_PREF
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.isAccessibilityServiceEnabled
+import com.kpstv.xclipper.extensions.utils.Utils.Companion.isClipboardAccessibilityServiceRunning
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.openAccessibility
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.retrievePackageList
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showAccessibilityDialog
@@ -68,9 +69,6 @@ class GeneralPreference : PreferenceFragmentCompat() {
     }
 
     private fun checkForService() {
-        checkPreference?.isChecked = isAccessibilityServiceEnabled(
-            requireContext(),
-            ClipboardAccessibilityService::class.java
-        )
+        checkPreference?.isChecked = isClipboardAccessibilityServiceRunning(requireContext())
     }
 }

@@ -9,6 +9,8 @@
     <color name="colorCard">#313235</color>
     <color name="colorCard_Light">#cecdca</color>
 
+    <color name="colorSelectedClip">#FBFF87</color>
+
     <color name="colorSelected">#404040</color>
     <color name="colorSelected_Light">#bfbfbf</color>
 

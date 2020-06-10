@@ -8,7 +8,7 @@ import android.content.Intent.ACTION_PROCESS_TEXT
 import android.content.Intent.EXTRA_PROCESS_TEXT
 import android.os.Build
 import com.kpstv.xclipper.data.repository.MainRepository
-import com.kpstv.xclipper.extensions.utils.Utils.Companion.isAccessibilityServiceEnabled
+import com.kpstv.xclipper.extensions.utils.Utils.Companion.isClipboardAccessibilityServiceRunning
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.kodein
 import org.kodein.di.generic.instance
@@ -25,11 +25,7 @@ class TextSelectionActivity : Activity(), KodeinAware {
                 val manager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                 manager.setPrimaryClip(ClipData.newPlainText(textData, textData))
 
-                if (!isAccessibilityServiceEnabled(
-                        this@TextSelectionActivity,
-                        ClipboardAccessibilityService::class.java
-                    )
-                ) {
+                if (!isClipboardAccessibilityServiceRunning(applicationContext)) {
                     repository.updateRepository(textData)
                 }
             }

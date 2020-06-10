@@ -30,6 +30,7 @@ import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.AppPkg
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.provider.PreferenceProvider
+import com.kpstv.xclipper.service.ClipboardAccessibilityService
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.dialog_connect.view.*
 import kotlinx.android.synthetic.main.dialog_progress_view.view.*
@@ -112,6 +113,18 @@ class Utils {
             }
         }
 
+
+        /**
+         * Returns true if the current package name is not part of blacklist app list.
+         */
+        fun isPackageBlacklisted(pkg: CharSequence?) =
+            App.blackListedApps?.contains(pkg) == true
+
+        /**
+         * Checks if clipboard accessibility service running or not.
+         */
+        fun isClipboardAccessibilityServiceRunning(context: Context) =
+            isAccessibilityServiceEnabled(context, ClipboardAccessibilityService::class.java)
 
         /**
          * This will check if accessibility service is enabled or not.

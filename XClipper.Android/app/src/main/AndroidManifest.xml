@@ -76,6 +76,17 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".service.TestActivity"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:label="Paste from clipboard"
+            android:noHistory="true">
+            <intent-filter>
+                <action android:name="android.intent.action.PASTE"/>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
         <service
             android:name=".service.ClipboardAccessibilityService"
             android:enabled="true"
@@ -86,9 +97,22 @@
             </intent-filter>
 
             <meta-data
-                android:name="Clipservice"
+                android:name="android.accessibilityservice"
                 android:resource="@xml/clip_service" />
         </service>
+
+        <service
+            android:name=".service.TileService"
+            android:icon="@drawable/ic_clip"
+            android:label="Save Clip"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action
+                    android:name="android.service.quicksettings.action.QS_TILE"/>
+            </intent-filter>
+        </service>
+
+        <service android:name=".service.BubbleService" />
 
         <receiver android:name=".service.AppBroadcastReceiver" />
     </application>

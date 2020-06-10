@@ -64,6 +64,7 @@ class XClipperApplication : Application(), KodeinAware {
         bind() from singleton { instance<MainDatabase>().clipUrlDao() }
         bind<PreferenceProvider>() with singleton { PreferenceProviderImpl(instance()) }
         bind<FirebaseProvider>() with singleton { FirebaseProviderImpl() }
+        bind<ClipboardProvider>() with singleton { ClipboardProviderImpl(instance(),instance()) }
         bind<ClipProvider>() with singleton { ClipProviderImpl() }
         bind<TagRepository>() with singleton { TagRepositoryImpl(instance()) }
         bind<DefineRepository>() with singleton { DefineRepositoryImpl(instance()) }
@@ -93,6 +94,7 @@ class XClipperApplication : Application(), KodeinAware {
                 instance(),
                 instance(),
                 instance(),
+                instance(),
                 instance()
             )
         }
@@ -105,7 +107,6 @@ class XClipperApplication : Application(), KodeinAware {
         init()
 
         notificationHelper.createChannel()
-
     }
 
     private val TAG = javaClass.simpleName
@@ -120,7 +121,7 @@ class XClipperApplication : Application(), KodeinAware {
 
         // Load settings here
         DICTIONARY_LANGUAGE = preferenceProvider.getStringKey(LANG_PREF, "en")!!
-        UID = preferenceProvider.getStringKey(UID_PREF, EMPTY_STRING)!!
+        UID = preferenceProvider.getStringKey(UID_PREF, EMPTY_STRING) ?: EMPTY_STRING
         DARK_THEME = preferenceProvider.getBooleanKey(DARK_PREF, true)
         BindToFirebase = if (UID.isBlank()) false
         else

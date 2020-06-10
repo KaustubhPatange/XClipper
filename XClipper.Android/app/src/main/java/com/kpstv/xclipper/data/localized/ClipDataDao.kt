@@ -1,6 +1,7 @@
 package com.kpstv.xclipper.data.localized
 
 import androidx.lifecycle.LiveData
+import androidx.paging.DataSource
 import androidx.room.*
 import com.kpstv.xclipper.data.model.Clip
 import java.util.*
@@ -33,4 +34,7 @@ interface ClipDataDao {
 
     @Query("select * from table_clip")
     fun getAllLiveData(): LiveData<List<Clip>>
+
+    @Query("SELECT * FROM table_clip ORDER BY time DESC")
+    fun getDataSource(): DataSource.Factory<Int, Clip>
 }

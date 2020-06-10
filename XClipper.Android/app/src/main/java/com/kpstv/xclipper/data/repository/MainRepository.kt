@@ -1,6 +1,7 @@
 package com.kpstv.xclipper.data.repository
 
 import androidx.lifecycle.LiveData
+import androidx.paging.PagedList
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.extensions.enumerations.FilterType
 import com.kpstv.xclipper.extensions.listeners.RepositoryListener
@@ -69,6 +70,11 @@ interface MainRepository {
      * This function will check if there is any data depending on this tag.
      */
     fun checkForDependent(tagName: String, repositoryListener: RepositoryListener)
+
+    fun setCurrentClip(text: String)
+    fun getCurrentClip() : LiveData<String>
+
+    fun getDataSource(): LiveData<PagedList<Clip?>?>
 
     /**
      * Since save clip function does work on separate thread, synchronization

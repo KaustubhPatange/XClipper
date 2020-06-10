@@ -10,6 +10,7 @@ import com.kpstv.xclipper.App
 import com.kpstv.xclipper.App.EMPTY_STRING
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.Tag
+import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.data.repository.MainRepository
@@ -20,10 +21,9 @@ import com.kpstv.xclipper.extensions.listeners.RepositoryListener
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
 import com.kpstv.xclipper.extensions.listeners.StatusListener
 import com.kpstv.xclipper.extensions.utils.FirebaseUtils
-import com.kpstv.xclipper.extensions.utils.Utils.Companion.isAccessibilityServiceEnabled
+import com.kpstv.xclipper.extensions.utils.Utils.Companion.isClipboardAccessibilityServiceRunning
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.loginToDatabase
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.logoutFromDatabase
-import com.kpstv.xclipper.service.ClipboardAccessibilityService
 import com.kpstv.xclipper.ui.helpers.DictionaryApiHelper
 import com.kpstv.xclipper.ui.helpers.TinyUrlApiHelper
 import com.kpstv.xclipper.ui.viewmodels.managers.MainEditManager
@@ -39,6 +39,7 @@ class MainViewModel(
     private val preferenceProvider: PreferenceProvider,
     private val firebaseProvider: FirebaseProvider,
     private val firebaseUtils: FirebaseUtils,
+    private val clipboardProvider: ClipboardProvider,
     val dictionaryApiHelper: DictionaryApiHelper,
     val tinyUrlApiHelper: TinyUrlApiHelper
 ) : AndroidViewModel(application) {
@@ -54,6 +55,14 @@ class MainViewModel(
     private val _clipLiveData = MutableLiveData<List<Clip>>()
 
     private val _tagLiveData = MutableLiveData<List<Tag>>()
+
+    val currentClip: LiveData<String>
+        get() = mainRepository.getCurrentClip()
+
+    fun postCurrentClip(text: String?) {
+        if (text == null) return
+        mainRepository.setCurrentClip(text)
+    }
 
     fun setTag(tag: Tag) {
         _tag = tag
@@ -214,13 +223,12 @@ class MainViewModel(
         }
 
         /** This is to observe the device validation when accessibility service is off. */
-        if (!isAccessibilityServiceEnabled(
-                application.applicationContext,
-                ClipboardAccessibilityService::class.java
-            )
-        )
+        if (!isClipboardAccessibilityServiceRunning(application.applicationContext)) {
             firebaseUtils.observeDatabaseChangeEvents()
+            clipboardProvider.observeClipboardChange()
+        }
     }
+
 
     private fun makeMySource(
         mainList: List<Clip>?,

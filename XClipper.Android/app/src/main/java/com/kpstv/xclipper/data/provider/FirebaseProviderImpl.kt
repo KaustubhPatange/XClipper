@@ -206,7 +206,7 @@ class FirebaseProviderImpl : FirebaseProvider {
          * This check will make sure that user can only update firebase database
          *  when following criteria satisfies
          */
-        if (validationContext == ValidationContext.Default && !BindToFirebase && !UID.isBlank()) return
+        if (validationContext == ValidationContext.Default && !BindToFirebase && UID.isBlank()) return
 
         if (user == null || validationContext == ValidationContext.ForceInvoke) {
             database.getReference(USER_REF).child(UID)

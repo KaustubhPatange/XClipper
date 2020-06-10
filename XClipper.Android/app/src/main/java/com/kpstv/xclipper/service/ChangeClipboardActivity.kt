@@ -6,16 +6,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.FragmentActivity
-import com.kpstv.xclipper.App
-import com.kpstv.xclipper.App.ACTION_SMART_OPTIONS
-import com.kpstv.xclipper.App.APP_CLIP_DATA
 import com.kpstv.xclipper.App.CLIP_DATA
 import com.kpstv.xclipper.data.repository.MainRepository
-import com.kpstv.xclipper.extensions.ioThread
-import com.kpstv.xclipper.extensions.mainThread
-import com.kpstv.xclipper.ui.fragments.MoreBottomSheet
-import com.kpstv.xclipper.ui.helpers.DictionaryApiHelper
-import com.kpstv.xclipper.ui.helpers.TinyUrlApiHelper
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.kodein
 import org.kodein.di.generic.instance
@@ -24,8 +16,6 @@ class ChangeClipboardActivity : FragmentActivity(), KodeinAware {
 
     override val kodein by kodein()
     private val repository by instance<MainRepository>()
-    private val tinyUrlApiHelper by instance<TinyUrlApiHelper>()
-    private val dictionaryApiHelper by instance<DictionaryApiHelper>()
 
     private val TAG = javaClass.simpleName
 
@@ -58,6 +48,10 @@ class ChangeClipboardActivity : FragmentActivity(), KodeinAware {
     private fun saveData(data: String?) {
         if (data != null && CLIP_DATA != data) {
             CLIP_DATA = data
+
+            /** Set current clip */
+            repository.setCurrentClip(data)
+
             // Save data and exit
             repository.updateRepository(CLIP_DATA)
         }
