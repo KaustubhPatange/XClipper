@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
+import androidx.paging.toLiveData
 import com.kpstv.license.Decrypt
 import com.kpstv.xclipper.App.LOCAL_MAX_ITEM_STORAGE
 import com.kpstv.xclipper.App.MAX_CHARACTER_TO_STORE
@@ -33,23 +34,17 @@ class MainRepositoryImpl(
     private val lock = Any()
     private val lock1 = Any()
 
-    private val _currentClip = MutableLiveData<String>()
     var data: LiveData<PagedList<Clip>>? = null
 
     init {
         clipDao.getAllLiveData().observeForever {
             data
         }
+        val map = clipDao.getDataSource().map { clip -> clip }
     }
 
     override fun getDataSource() =
-        LivePagedListBuilder(clipDao.getDataSource(), 10)
-            .build()
-
-    override fun getCurrentClip() = _currentClip
-    override fun setCurrentClip(text: String) {
-        _currentClip.postValue(text)
-    }
+        clipDao.getDataSource().toLiveData(10)
 
     override fun saveClip(clip: Clip?) {
         if (clip == null) return;

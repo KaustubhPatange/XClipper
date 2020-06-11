@@ -71,10 +71,7 @@ interface MainRepository {
      */
     fun checkForDependent(tagName: String, repositoryListener: RepositoryListener)
 
-    fun setCurrentClip(text: String)
-    fun getCurrentClip() : LiveData<String>
-
-    fun getDataSource(): LiveData<PagedList<Clip?>?>
+    fun getDataSource(): LiveData<PagedList<Clip>>
 
     /**
      * Since save clip function does work on separate thread, synchronization

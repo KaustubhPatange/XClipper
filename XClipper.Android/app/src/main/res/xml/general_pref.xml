@@ -9,12 +9,18 @@
             app:title="@string/service_title" />
 
         <MultiSelectListPreference
-            android:summary="Apps in which clipboard capturing is disabled"
-            android:title="Ignored Apps"
+            android:summary="@string/blacklist_summary"
+            android:title="@string/blacklist_title"
             app:dependency="service_pref"
             app:entries="@array/lang_entries"
             app:entryValues="@array/lang_values"
             app:key="blacklist_pref" />
+
+        <SwitchPreferenceCompat
+            app:dependency="service_pref"
+            app:key="suggestion_pref"
+            app:title="@string/suggest_title"
+            app:summary="@string/suggest_summary"/>
 
         <!--   <EditTextPreference
                app:key="signature"

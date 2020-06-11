@@ -50,6 +50,8 @@ object App {
     var BindToFirebase = true
     var observeFirebase = true
 
+    var showSuggestion = false
+
     fun getMaxConnection(isLicensed: Boolean): Int = if (isLicensed) FB_MAX_DEVICE_CONNECTION else FB_MIN_DEVICE_CONNECTION
     fun getMaxStorage(isLicensed: Boolean): Int = if (isLicensed) FB_MAX_ITEM_STORAGE else FB_MIN_ITEM_STORAGE
 
@@ -88,6 +90,7 @@ object App {
 
     /** Preference Keys */
     const val SERVICE_PREF = "service_pref"
+    const val SUGGESTION_PREF = "suggestion_pref"
     const val LANG_PREF = "lang_pref"
     const val BLACKLIST_PREF = "blacklist_pref"
     const val CONNECT_PREF = "connect_pref"

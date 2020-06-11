@@ -2,13 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/mainLayout"
-    android:background="@color/colorSelected"
+    android:background="@color/colorBackground"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <com.kpstv.xclipper.extensions.elements.CustomRecyclerView
-        android:background="@color/colorBackground"
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:scrollbarThumbVertical="@drawable/scrollbar_thumb"
@@ -16,10 +15,15 @@
         android:scrollbars="vertical"
         app:maxHeight="250dp" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/colorSelected"/>
+
     <ImageView
+        android:layout_gravity="end"
         android:tint="@color/colorTextSecondary"
         android:padding="10dp"
-        android:layout_gravity="end"
         android:layout_width="42dp"
         android:layout_height="42dp"
         android:src="@drawable/ic_close"/>

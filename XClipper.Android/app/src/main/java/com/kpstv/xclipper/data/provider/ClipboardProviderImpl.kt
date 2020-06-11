@@ -6,6 +6,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Context.CLIPBOARD_SERVICE
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.isPackageBlacklisted
@@ -16,10 +17,16 @@ class ClipboardProviderImpl(
     private val repository: MainRepository
 ) : ClipboardProvider {
 
+    private val _currentClip = MutableLiveData<String>()
     private var isRecording = true
 
     private val TAG = javaClass.simpleName
     private val clipboardManager = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+
+    override fun getCurrentClip() = _currentClip
+    override fun setCurrentClip(text: String) {
+        _currentClip.postValue(text)
+    }
 
     override fun startObserving() {
         isRecording = true
@@ -52,7 +59,7 @@ class ClipboardProviderImpl(
                 val data = clipboardManager.primaryClip?.getItemAt(0)?.coerceToText(this)?.toString()
                 if (data != null && App.CLIP_DATA != data) {
                     App.CLIP_DATA = data
-                    repository.setCurrentClip(data)
+                    setCurrentClip(data)
 
                     repository.updateRepository(App.CLIP_DATA)
                 }

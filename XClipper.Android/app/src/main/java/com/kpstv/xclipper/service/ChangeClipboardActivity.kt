@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import com.kpstv.xclipper.App.CLIP_DATA
+import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.data.repository.MainRepository
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.kodein
@@ -15,6 +16,7 @@ import org.kodein.di.generic.instance
 class ChangeClipboardActivity : FragmentActivity(), KodeinAware {
 
     override val kodein by kodein()
+    private val clipProvider by instance<ClipboardProvider>()
     private val repository by instance<MainRepository>()
 
     private val TAG = javaClass.simpleName
@@ -50,7 +52,7 @@ class ChangeClipboardActivity : FragmentActivity(), KodeinAware {
             CLIP_DATA = data
 
             /** Set current clip */
-            repository.setCurrentClip(data)
+            clipProvider.setCurrentClip(data)
 
             // Save data and exit
             repository.updateRepository(CLIP_DATA)

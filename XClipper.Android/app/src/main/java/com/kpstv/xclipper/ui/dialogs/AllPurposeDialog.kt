@@ -15,7 +15,7 @@ import com.kpstv.xclipper.App.BLANK_STRING
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.extensions.collapse
 import com.kpstv.xclipper.extensions.show
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.android.synthetic.main.dialog_allpurpose.view.*
 import kotlinx.android.synthetic.main.dialog_allpurpose.view.toolbar
 

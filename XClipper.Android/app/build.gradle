@@ -70,6 +70,10 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:19.3.0'
     kapt "androidx.room:room-compiler:$room_version"
 
+    // Navigation Component
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+
     // Paging
     implementation "androidx.paging:paging-runtime-ktx:$paging_version"
 

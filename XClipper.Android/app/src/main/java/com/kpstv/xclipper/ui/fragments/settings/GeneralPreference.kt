@@ -1,24 +1,23 @@
 package com.kpstv.xclipper.ui.fragments.settings
 
+import android.os.Build
 import android.os.Bundle
 import androidx.preference.ListPreference
 import androidx.preference.MultiSelectListPreference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
 import com.kpstv.xclipper.App
-import com.kpstv.xclipper.App.BIND_PREF
 import com.kpstv.xclipper.App.BLACKLIST_PREF
 import com.kpstv.xclipper.App.DICTIONARY_LANGUAGE
 import com.kpstv.xclipper.App.LANG_PREF
 import com.kpstv.xclipper.App.SERVICE_PREF
+import com.kpstv.xclipper.App.SUGGESTION_PREF
+import com.kpstv.xclipper.App.showSuggestion
 import com.kpstv.xclipper.R
-import com.kpstv.xclipper.extensions.utils.Utils.Companion.isAccessibilityServiceEnabled
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.isClipboardAccessibilityServiceRunning
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.openAccessibility
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.retrievePackageList
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showAccessibilityDialog
-import com.kpstv.xclipper.extensions.utils.Utils.Companion.showConnectDialog
-import com.kpstv.xclipper.service.ClipboardAccessibilityService
 
 
 class GeneralPreference : PreferenceFragmentCompat() {
@@ -44,8 +43,16 @@ class GeneralPreference : PreferenceFragmentCompat() {
         }
 
 
+        /** Show suggestion preference */
+        findPreference<SwitchPreferenceCompat>(SUGGESTION_PREF)?.setOnPreferenceChangeListener { _, newValue ->
+            showSuggestion = newValue as Boolean
+            true
+        }
+
         /** Clipboard Service preference */
         checkPreference = findPreference(SERVICE_PREF)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) // Add that BETA tag to summary for Android 10+ users
+            checkPreference?.summary = "[BETA] ${checkPreference?.summary}"
         checkPreference?.setOnPreferenceChangeListener { _, newValue ->
             if (newValue as Boolean)
                 showAccessibilityDialog(requireContext()) {

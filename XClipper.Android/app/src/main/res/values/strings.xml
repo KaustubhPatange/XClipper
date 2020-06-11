@@ -89,4 +89,8 @@
     <string name="restart_app">Restart App</string>
     <string name="restart_summary">You need to restart the app in order to apply changes!</string>
     <string name="xcopy">XCopy</string>
+    <string name="blacklist_summary">Apps in which clipboard capturing is disabled</string>
+    <string name="blacklist_title">Ignored Apps</string>
+    <string name="suggest_title">Suggestions</string>
+    <string name="suggest_summary">[BETA] Show a small bubble whenever keyboard pops out containing your latest clips.</string>
 </resources>

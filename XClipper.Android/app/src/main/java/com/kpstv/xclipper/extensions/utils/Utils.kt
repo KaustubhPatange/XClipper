@@ -10,12 +10,14 @@ import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.content.pm.ServiceInfo
+import android.os.Build
 import android.provider.Settings
 import android.telephony.TelephonyManager
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.accessibility.AccessibilityManager
 import androidx.annotation.AttrRes
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ShareCompat
 import androidx.preference.PreferenceManager
@@ -31,7 +33,6 @@ import com.kpstv.xclipper.data.model.AppPkg
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.service.ClipboardAccessibilityService
-import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.dialog_connect.view.*
 import kotlinx.android.synthetic.main.dialog_progress_view.view.*
 import java.util.*
@@ -172,6 +173,19 @@ class Utils {
             startActivity(intent)
         }
 
+        fun isSystemOverlayEnabled(context: Context): Boolean = with(context) {
+            return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(
+                this
+            )
+        }
+
+        @RequiresApi(Build.VERSION_CODES.M)
+        fun openSystemOverlay(context: Context) = with(context) {
+            val myIntent =
+                Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
+            startActivity(myIntent)
+        }
+
         /**
          * Call this function whenever you want to work with installed apps.
          */
@@ -254,7 +268,6 @@ class Utils {
             App.UID = UID
             App.BindToFirebase = true
         }
-
 
 
         /* @JvmStatic

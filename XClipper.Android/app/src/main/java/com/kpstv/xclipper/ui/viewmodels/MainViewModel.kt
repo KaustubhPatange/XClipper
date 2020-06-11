@@ -57,11 +57,11 @@ class MainViewModel(
     private val _tagLiveData = MutableLiveData<List<Tag>>()
 
     val currentClip: LiveData<String>
-        get() = mainRepository.getCurrentClip()
+        get() = clipboardProvider.getCurrentClip()
 
     fun postCurrentClip(text: String?) {
         if (text == null) return
-        mainRepository.setCurrentClip(text)
+        clipboardProvider.setCurrentClip(text)
     }
 
     fun setTag(tag: Tag) {

@@ -1,5 +1,6 @@
 package com.kpstv.xclipper.data.provider
 
+import androidx.lifecycle.MutableLiveData
 import com.kpstv.license.Decrypt
 import com.kpstv.license.Encrypt
 import com.kpstv.xclipper.App.EMAIL_PATTERN_REGEX

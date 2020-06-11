@@ -84,7 +84,7 @@ class BubbleService : FloatingBubbleService(), KodeinAware {
 
 
     private val pageObserver =
-        Observer<PagedList<Clip?>?> { adapter.submitList(it) }
+        Observer<PagedList<Clip>?> { adapter.submitList(it) }
 
     override fun onGetIntent(intent: Intent): Boolean {
         return true
