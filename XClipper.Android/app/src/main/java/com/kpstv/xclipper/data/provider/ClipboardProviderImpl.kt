@@ -1,5 +1,7 @@
 package com.kpstv.xclipper.data.provider
 
+import android.content.ClipData
+import android.content.ClipDescription
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Context.CLIPBOARD_SERVICE
@@ -13,11 +15,38 @@ class ClipboardProviderImpl(
     private val context: Context,
     private val repository: MainRepository
 ) : ClipboardProvider {
+
+    private var isRecording = true
+
     private val TAG = javaClass.simpleName
+    private val clipboardManager = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+
+    override fun startObserving() {
+        isRecording = true
+    }
+
+    override fun stopObserving() {
+        isRecording = false
+    }
+
+    override fun ignoreChange(block: () -> Unit) {
+        stopObserving()
+        block.invoke()
+        startObserving()
+    }
+
+    override fun getClipboard() =
+        clipboardManager.primaryClip
+
+    override fun setClipboard(item: ClipData?) {
+        if (item == null) return
+        clipboardManager.setPrimaryClip(item)
+    }
+
     override fun observeClipboardChange() {
         with(context) {
-            val clipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
             clipboardManager.addPrimaryClipChangedListener {
+                if (!isRecording) return@addPrimaryClipChangedListener
                 if (isPackageBlacklisted(currentPackage)) return@addPrimaryClipChangedListener
 
                 val data = clipboardManager.primaryClip?.getItemAt(0)?.coerceToText(this)?.toString()

@@ -1,21 +1,26 @@
 package com.kpstv.xclipper.service
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
-import android.util.Log
+import android.content.IntentFilter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.LifecycleService
+import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.paging.PagedList
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bsk.floatingbubblelib.FloatingBubbleConfig
 import com.bsk.floatingbubblelib.FloatingBubbleService
+import com.bsk.floatingbubblelib.FloatingBubbleTouch
 import com.kpstv.license.Decrypt
 import com.kpstv.xclipper.App.ACTION_INSERT_TEXT
+import com.kpstv.xclipper.App.ACTION_VIEW_CLOSE
 import com.kpstv.xclipper.App.EXTRA_SERVICE_TEXT
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.Clip
@@ -31,29 +36,45 @@ class BubbleService : FloatingBubbleService(), KodeinAware {
     override val kodein by kodein()
     private val repository by instance<MainRepository>()
     private val TAG = javaClass.simpleName
+    private lateinit var adapter: PageClipAdapter
+
     override fun getConfig(): FloatingBubbleConfig {
 
         val view = LayoutInflater.from(applicationContext).inflate(
             R.layout.bubble_view, null
         )
 
-        val adapter = PageClipAdapter {
+        /** Setting adapter and onClick to send PASTE event. */
+        adapter = PageClipAdapter {
             val sendIntent = Intent(ACTION_INSERT_TEXT).apply {
                 putExtra(EXTRA_SERVICE_TEXT, it)
             }
             LocalBroadcastManager.getInstance(applicationContext)
                 .sendBroadcast(sendIntent)
-
             setState(false)
         }
 
-        repository.getDataSource().observeForever {
-            Log.e(TAG, "Observing Forever")
-            adapter.submitList(it)
-        }
+        /** Pagination */
+        repository.getDataSource().observeForever(pageObserver)
 
         view.recycler_view.layoutManager = LinearLayoutManager(this)
         view.recycler_view.adapter = adapter
+
+        view.mainLayout.setOnClickListener {
+            setState(false)
+        }
+
+        /** When a view is clicked outside the overlay this receiver should
+         *  should minimize the expandable view.*/
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+            object : BroadcastReceiver() {
+                override fun onReceive(context: Context?, intent: Intent?) {
+                    if (intent?.action == ACTION_VIEW_CLOSE)
+                        setState(false)
+                }
+            },
+            IntentFilter(ACTION_VIEW_CLOSE)
+        )
 
         return FloatingBubbleConfig.Builder() // Set the drawable for the bubblec
             .bubbleIcon(ContextCompat.getDrawable(applicationContext, R.drawable.bubble_icon))
@@ -61,6 +82,18 @@ class BubbleService : FloatingBubbleService(), KodeinAware {
             .build()
     }
 
+
+    private val pageObserver =
+        Observer<PagedList<Clip?>?> { adapter.submitList(it) }
+
+    override fun onGetIntent(intent: Intent): Boolean {
+        return true
+    }
+
+    override fun onDestroy() {
+        repository.getDataSource().removeObserver(pageObserver)
+        super.onDestroy()
+    }
 
     class PageClipAdapter(
         val onClick: (String) -> Unit

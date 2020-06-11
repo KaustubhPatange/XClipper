@@ -82,6 +82,7 @@ object App {
     const val ACTION_SMART_OPTIONS = "com.kpstv.xclipper.smart_options"
     const val ACTION_REPLACE_FRAG = "com.kpstv.yts.action_replace_frag"
     const val ACTION_INSERT_TEXT = "com.kpstv.xclipper.insert_text"
+    const val ACTION_VIEW_CLOSE = "com.kpstv.xclipper.action_view_close"
 
     const val EXTRA_SERVICE_TEXT = "com.kpstv.xclipper.service_text"
 

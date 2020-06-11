@@ -2,34 +2,20 @@ package com.kpstv.xclipper.service
 
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityServiceInfo
-import android.app.Service
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
-import android.content.res.ColorStateList
-import android.graphics.PixelFormat
-import android.os.Build
-import android.os.Bundle
+import android.content.*
 import android.util.Log
-import android.view.Gravity
-import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.App.ACTION_INSERT_TEXT
+import com.kpstv.xclipper.App.ACTION_VIEW_CLOSE
 import com.kpstv.xclipper.App.EXTRA_SERVICE_TEXT
-import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.data.repository.MainRepository
-import com.kpstv.xclipper.extensions.collapse
-import com.kpstv.xclipper.extensions.show
 import com.kpstv.xclipper.extensions.utils.FirebaseUtils
 import com.kpstv.xclipper.extensions.utils.KeyboardUtils.Companion.getKeyboardHeight
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.retrievePackageList
@@ -51,15 +37,11 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
         if (keyboardHeight.value != value) keyboardHeight.postValue(value)
     }
 
-    private lateinit var suggestionButton: Button
-
-    //   private lateinit var windowParams: WindowManager.LayoutParams
     override val kodein by kodein()
-    private val repository by instance<MainRepository>()
     private val firebaseUtils by instance<FirebaseUtils>()
     private val clipboardProvider by instance<ClipboardProvider>()
 
-    private var ACCESS_NODE_INFO: AccessibilityNodeInfo? = null
+    private var nodeInfo: AccessibilityNodeInfo? = null
 
     private val TAG = javaClass.simpleName
 
@@ -83,24 +65,19 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
 
         postKeyboardValue(getKeyboardHeight(applicationContext))
 
+        Log.e(TAG, "Event: ${event?.packageName}, Type: ${event?.eventType}")
+
         // TODO: A paste hack let's see if it works
         event?.source?.apply {
 
             if (className == EditText::class.java.name) {
-                ACCESS_NODE_INFO = this
-                /*refresh()
-                val bundle = Bundle()
-                val texttoPrint = if (event.eventType == AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED)
-                    text else ""
-
-                bundle.putString(
-                    AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE,
-                    "$texttoPrint $ACCESSIBILITY_ARGUMENT_PASTE_TEXT"
-                )
-                performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, bundle)
-                ACCESSIBILITY_ARGUMENT_PASTE_TEXT = null*/
+                nodeInfo = this
             }
         }
+
+        if (event?.packageName != packageName)
+            LocalBroadcastManager.getInstance(applicationContext)
+                .sendBroadcast(Intent(ACTION_VIEW_CLOSE))
 
         /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && supportedEventTypes(event) && !isPackageBlacklisted(
                  event?.packageName
@@ -117,6 +94,7 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
         super.onServiceConnected()
         Log.e(TAG, "Service Connected")
         val info = AccessibilityServiceInfo()
+
 
         info.apply {
             eventTypes =
@@ -141,90 +119,44 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
             else
                 stopService(Intent(applicationContext, BubbleService::class.java))
 
-            /*    if (value > 100)
-                    showTestWindow()
-                else
-                    removeTestWindow()*/
         }
 
 
         LocalBroadcastManager.getInstance(applicationContext)
-            .registerReceiver(object: BroadcastReceiver(){
+            .registerReceiver(object : BroadcastReceiver() {
                 override fun onReceive(context: Context?, intent: Intent?) {
                     if (intent?.hasExtra(EXTRA_SERVICE_TEXT) == true) {
                         val pasteData = intent.getStringExtra(EXTRA_SERVICE_TEXT)
 
-                        if (ACCESS_NODE_INFO != null) {
-                            with(ACCESS_NODE_INFO!!) {
+                        if (nodeInfo != null) {
+                            with(nodeInfo!!) {
                                 refresh()
-                                val bundle = Bundle()
-                              /*  val textToPrint = if (ACCESS_NODE_INFO?.itemCount != -1)
-                                    text else ""*/
-                                val textToPrint = text
+                                clipboardProvider.ignoreChange {
 
-                                bundle.putString(
-                                    AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE,
-                                    "$textToPrint $pasteData"
-                                )
-                                performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, bundle)
-                                //  ACCESSIBILITY_ARGUMENT_PASTE_TEXT = null
+                                    /** Saving current clipboard */
+                                    val currentClipboard = clipboardProvider.getClipboard()
+
+                                    /** Setting data to be paste */
+                                    clipboardProvider.setClipboard(
+                                        ClipData.newPlainText(
+                                            "copied",
+                                            pasteData
+                                        )
+                                    )
+
+                                    /** Make an actual paste request */
+                                    performAction(AccessibilityNodeInfo.ACTION_PASTE)
+
+                                    /** Restore previous clipboard */
+                                    clipboardProvider.setClipboard(currentClipboard)
+                                }
                             }
                         }
                     }
                 }
-
             }, IntentFilter(ACTION_INSERT_TEXT))
     }
 
-    private fun showTestWindow() {
-        suggestionButton.show()
-    }
-
-    private fun removeTestWindow() {
-        suggestionButton.collapse()
-    }
-
-
-    private fun createATestWindow() {
-        val wm =
-            getSystemService(Context.WINDOW_SERVICE) as WindowManager
-
-        suggestionButton = Button(this)
-        suggestionButton.text = "Suggestion"
-        suggestionButton.setOnClickListener {
-            Toast.makeText(applicationContext, "This is a toast", Toast.LENGTH_SHORT).show()
-        }
-        suggestionButton.backgroundTintList =
-            ColorStateList.valueOf(
-                ContextCompat.getColor(applicationContext, R.color.colorPrimary)
-            )
-        suggestionButton.isAllCaps = false
-        suggestionButton.layoutParams
-
-        removeTestWindow()
-
-        val windowParams: WindowManager.LayoutParams = if (Build.VERSION.SDK_INT >= 26)
-            WindowManager.LayoutParams(
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY, //Application_overlay
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-                PixelFormat.TRANSLUCENT
-            )
-        else WindowManager.LayoutParams(
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.TYPE_SYSTEM_ALERT, //Application_overlay
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-            PixelFormat.TRANSLUCENT
-        )
-
-        windowParams.verticalMargin = 0.1f // 0.1f
-        windowParams.gravity = Gravity.END
-        windowParams.title = "Suggestion Layout"
-
-        wm.addView(suggestionButton, windowParams)
-    }
 
     private fun runActivity(flag: Int) {
         val intent = Intent(this, ChangeClipboardActivity::class.java)
