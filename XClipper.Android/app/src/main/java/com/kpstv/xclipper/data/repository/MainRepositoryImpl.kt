@@ -2,8 +2,6 @@ package com.kpstv.xclipper.data.repository
 
 import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import androidx.paging.toLiveData
 import com.kpstv.license.Decrypt
@@ -144,6 +142,15 @@ class MainRepositoryImpl(
                 }
                 processClipAndSave(clip)
             }
+        }
+    }
+
+    override fun updatePin(clip: Clip?, isPinned: Boolean) {
+        if (clip == null) return
+        Coroutines.io {
+            clipDao.update(clip.apply {
+                this.isPinned = isPinned
+            })
         }
     }
 

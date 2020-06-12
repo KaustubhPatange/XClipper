@@ -1,5 +1,6 @@
 package com.kpstv.xclipper.ui.fragments.welcome
 
+import android.os.Build
 import android.os.Bundle
 import android.text.SpannableString
 import android.view.View
@@ -19,13 +20,13 @@ class TurnOnService : Fragment(R.layout.fragment_welcome) {
             activity = requireActivity(),
             paletteId = R.color.palette2,
             nextPaletteId = R.color.palette3,
-            text = SpannableString(getString(R.string.palette2_text)),
-            nextTextId = R.string.next_2_5,
+            textId = R.string.palette2_text,
+            nextTextId = R.string.next_3_5,
             action = {
                 if (!isClipboardAccessibilityServiceRunning(requireContext())) {
                     showAccessibilityDialog(requireContext())
                 } else
-                    findNavController().navigate(TurnOnServiceDirections.actionTurnOnServiceToWatchVideo())
+                    findNavController().navigate(TurnOnServiceDirections.actionTurnOnServiceToEnableSuggestion())
             }
         )
     }
@@ -33,6 +34,6 @@ class TurnOnService : Fragment(R.layout.fragment_welcome) {
     override fun onResume() {
         super.onResume()
         if (isClipboardAccessibilityServiceRunning(requireContext()))
-            findNavController().navigate(TurnOnServiceDirections.actionTurnOnServiceToWatchVideo())
+            findNavController().navigate(TurnOnServiceDirections.actionTurnOnServiceToEnableSuggestion())
     }
 }

@@ -73,18 +73,30 @@
             <com.google.android.flexbox.FlexboxLayout
                 android:id="@+id/ci_tagLayout"
                 android:layout_width="0dp"
-                android:padding="1dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="5dp"
+                android:padding="1dp"
                 app:alignContent="stretch"
                 app:alignItems="stretch"
                 app:flexDirection="row_reverse"
                 app:flexWrap="wrap"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/ci_timeText"
+                app:layout_constraintEnd_toStartOf="@id/ci_pinImage"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-            </com.google.android.flexbox.FlexboxLayout>
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <ImageView
+                android:id="@+id/ci_pinImage"
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="5dp"
+                app:layout_constraintStart_toEndOf="@id/ci_tagLayout"
+                app:layout_constraintEnd_toStartOf="@id/ci_timeText"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:src="@drawable/ic_pin"/>
+
             <TextView
                 android:id="@+id/ci_timeText"
                 android:layout_width="wrap_content"
@@ -95,9 +107,11 @@
                 android:textSize="11sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/ci_tagLayout"
+                app:layout_constraintStart_toEndOf="@id/ci_pinImage"
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!--TODO: Remove visibility tag from below, it's of no use. -->
 
         <LinearLayout
             android:id="@+id/hiddenLayout"
@@ -105,7 +119,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:orientation="vertical"
-            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ci_timeText">
@@ -126,44 +139,57 @@
                 android:rowCount="1">
 
                 <Button
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/ci_btn_special"
                     android:id="@+id/ci_btn_edit"
                     style="@style/ButtonStyle"
                     android:layout_columnWeight="1"
                     android:drawableTop="@drawable/ic_edit"
                     android:foreground="?selectableItemBackground"
                     android:text="@string/edit"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/ci_btn_pin"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    grid:layout_columnWeight="1" />
+
+                <Button
+                    android:id="@+id/ci_btn_pin"
+                    style="@style/ButtonStyle"
+                    android:layout_columnWeight="1"
+                    android:drawableTop="@drawable/ic_pin"
+                    android:foreground="?selectableItemBackground"
+                    android:text="@string/pin"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/ci_btn_special"
+                    app:layout_constraintStart_toEndOf="@id/ci_btn_edit"
+                    app:layout_constraintTop_toTopOf="parent"
                     grid:layout_columnWeight="1" />
 
                 <!-- TODO: Find a good icon for Special/More button -->
 
                 <Button
-                    app:layout_constraintStart_toEndOf="@id/ci_btn_edit"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/ci_btn_share"
                     android:id="@+id/ci_btn_special"
                     style="@style/ButtonStyle"
                     android:layout_columnWeight="1"
                     android:drawableTop="@drawable/ic_special"
                     android:foreground="?selectableItemBackground"
                     android:text="@string/more"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/ci_btn_share"
+                    app:layout_constraintStart_toEndOf="@id/ci_btn_pin"
+                    app:layout_constraintTop_toTopOf="parent"
                     grid:layout_columnWeight="1" />
 
                 <Button
-                    app:layout_constraintStart_toEndOf="@id/ci_btn_special"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     android:id="@+id/ci_btn_share"
                     style="@style/ButtonStyle"
                     android:layout_columnWeight="1"
                     android:drawableTop="@drawable/ic_share"
                     android:foreground="?selectableItemBackground"
                     android:text="@string/share"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/ci_btn_special"
+                    app:layout_constraintTop_toTopOf="parent"
                     grid:layout_columnWeight="1" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 

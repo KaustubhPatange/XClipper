@@ -9,14 +9,25 @@
         android:id="@+id/fw_textView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="70dp"
+        android:autoLink="web"
+        android:linksClickable="true"
         android:padding="45dp"
         android:textSize="16sp"
         app:fontFamily="@font/roboto_mono_regular"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/fw_insertLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/fw_insertLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/fw_textView"/>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/fw_btn_next"

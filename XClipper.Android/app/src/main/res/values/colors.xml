@@ -32,9 +32,10 @@
     <color name="roundedBottomSheetPrimaryBackground">?background</color>
     <color name="roundedBottomSheetPrimaryNavigationBarColor">#202124</color>
 
-    <color name="palette1">#F28C9F</color>
+    <color name="palette1">#A6418B</color>
     <color name="palette2">#2D61A6</color>
     <color name="palette3">#54A1BF</color>
     <color name="palette4">#F2CA7E</color>
     <color name="palette5">#F26F63</color>
+    <color name="palette_android">#43A88C</color>
 </resources>

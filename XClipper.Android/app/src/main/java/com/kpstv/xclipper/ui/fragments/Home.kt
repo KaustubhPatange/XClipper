@@ -159,6 +159,11 @@ class Home : Fragment(R.layout.fragment_main), KodeinAware {
                     val intent = Intent(requireContext(), EditDialog::class.java)
                     startActivity(intent)
                 }
+                CIAdapter.MENU_TYPE.Pin -> {
+                    mainViewModel.changeClipPin(clip, !clip.isPinned)
+
+                    /*Toasty.info(requireContext(), "Clip updated").show()*/
+                }
                 CIAdapter.MENU_TYPE.Special -> {
                     MoreBottomSheet(
                         tinyUrlApiHelper = mainViewModel.tinyUrlApiHelper,

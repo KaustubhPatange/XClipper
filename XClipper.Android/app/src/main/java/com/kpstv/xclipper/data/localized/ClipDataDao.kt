@@ -20,6 +20,9 @@ interface ClipDataDao {
     @Query("update table_clip set data = :encryptedData, time = :time where id = :id")
     fun update(id: Int, encryptedData: String, time: Date)
 
+    @Query("update table_clip set isPinned = :isPinned")
+    fun update(isPinned: Boolean)
+
     @Query("delete from table_clip where id = :id")
     fun delete(id: Int)
 
@@ -32,7 +35,7 @@ interface ClipDataDao {
     @Query("select * from table_clip")
     fun getAllData(): List<Clip>
 
-    @Query("select * from table_clip")
+    @Query("select * from table_clip order by isPinned")
     fun getAllLiveData(): LiveData<List<Clip>>
 
     @Query("SELECT * FROM table_clip ORDER BY time DESC")

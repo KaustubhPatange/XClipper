@@ -76,9 +76,9 @@
     <string name="logout_success">Logged out successfully!</string>
     <string name="err_uid">Not a valid UID</string>
     <string name="connect_success">Connected successfully!</string>
-    <string name="accessibility_capture">In order to capture clipboard clips you need to enable service from accessibility service.\n\n1. Click on to open accessibility settings.\n2. Search for XClipper.\n3. Click and enable the service.</string>
+    <string name="accessibility_capture">In order to capture clipboard clips you need to enable service from accessibility settings.\n\n1. Click on to open accessibility settings.\n2. Search for XClipper.\n3. Click and enable the service.</string>
     <string name="scan_code">Scan the app code</string>
-    <string name="connect_request">Attempting to make a connection with database...</string>
+    <string name="connect_request">Attempting to make a connection with database…</string>
     <string name="dark_title">Dark Theme</string>
     <string name="dark_summary">Sometimes you might\'ve to restart the app for theme to get applied properly.</string>
     <string name="import_file">Import from file</string>
@@ -94,11 +94,13 @@
     <string name="blacklist_title">Ignored Apps</string>
     <string name="suggest_title">Suggestions</string>
     <string name="suggest_summary">[BETA] Show a small bubble whenever keyboard pops out containing your latest clips.</string>
-    <string name="palette1_text">
-        XClipper monitor your clipboard and makes an extensive use of it.\n\n\nIt also provide certain actions related to your clip.\n\n\nMoreover it will provide you suggestions during any paste.</string>
-    <string name="palette2_text">
-        Accessibility,\n\n\nYou need to turn on \"accessibility\" service for this app.\n\n\nThis is due to background service restrictions imposed by Google.\n\n\nThe service will keep running in background capturing your clipboard data.
-    </string>
+    <string name="palette1_text">XClipper monitor your clipboard and makes an extensive use of it.\n\n\nIt also provide certain actions related to your clip.\n\n\nMoreover it will provide you suggestions during any paste.</string>
+    <string name="palette2_text">Accessibility,\n\n\nYou need to turn on \"accessibility\" service for this app.\n\n\nThis is due to background service restrictions imposed by Google.\n\n\nThe service will keep running in background capturing your clipboard data.</string>
+    <string name="palette3_text">Suggestions [BETA],\n\n\nGet a small bubble whenever keyboard pops out containing all your clips.</string>
+    <string name="palette_android_text">Android 10+ user,\n\n\nDue to new privacy change clipboard monitoring has stopped working.\n\n\nFind more info about this issue on issue tracker https://issuetracker.google.com/issues/123461156\n\n\nBut there is a hack (not perfect one) which will enable it through the accessibility service.\n\n\nThe feature is still in BETA!</string>
     <string name="next_1_5">Next 1/5</string>
     <string name="next_2_5">Next 2/5</string>
+    <string name="next_3_5">Next 3/5</string>
+    <string name="pin">Pin</string>
+    <string name="unpin">Unpin</string>
 </resources>

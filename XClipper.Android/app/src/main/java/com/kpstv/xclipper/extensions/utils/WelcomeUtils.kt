@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.NavDirections
 import androidx.navigation.findNavController
+import com.kpstv.xclipper.R
 import kotlinx.android.synthetic.main.fragment_welcome.view.*
 
 class WelcomeUtils {
@@ -21,7 +22,7 @@ class WelcomeUtils {
             activity: FragmentActivity,
             @ColorRes paletteId: Int,
             @ColorRes nextPaletteId: Int,
-            text: Spannable,
+            @StringRes textId: Int,
             @StringRes nextTextId: Int,
             action: NavDirections
         ) {
@@ -30,7 +31,7 @@ class WelcomeUtils {
                 activity = activity,
                 paletteId = paletteId,
                 nextTextId = nextTextId,
-                text = text,
+                textId = textId,
                 nextPaletteId = nextPaletteId,
                 action = {
                     view.findNavController().navigate(action)
@@ -43,7 +44,7 @@ class WelcomeUtils {
             activity: FragmentActivity,
             @ColorRes paletteId: Int,
             @ColorRes nextPaletteId: Int,
-            text: Spannable,
+            @StringRes textId: Int,
             @StringRes nextTextId: Int,
             action: () -> Unit
         ) {
@@ -51,10 +52,11 @@ class WelcomeUtils {
             val nextPalette = ContextCompat.getColor(activity, nextPaletteId)
             val white = ContextCompat.getColor(activity, android.R.color.white)
 
+            val text = activity.getString(textId)
+
             activity.window.statusBarColor = palette
             with(view) {
                 mainLayout.setBackgroundColor(palette)
-
                 fw_textView.text =
                     SpannableString(text).apply {
                         setSpan(

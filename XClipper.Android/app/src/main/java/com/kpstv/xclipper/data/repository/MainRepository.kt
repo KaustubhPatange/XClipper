@@ -41,6 +41,11 @@ interface MainRepository {
      */
     fun updateClip(clip: Clip?, filterType: FilterType = FilterType.Text)
 
+    /**
+     * The function will change clip pin to the incoming value.
+     */
+    fun updatePin(clip: Clip?, isPinned: Boolean)
+
     fun deleteClip(clip: Clip)
     fun deleteClip(unencryptedData: String?)
     fun deleteLast()

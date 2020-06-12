@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
@@ -17,6 +18,7 @@ import com.google.android.flexbox.FlexboxLayout
 import com.kpstv.license.Decrypt
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.Clip
+import com.kpstv.xclipper.extensions.collapse
 import com.kpstv.xclipper.extensions.hide
 import com.kpstv.xclipper.extensions.show
 import com.kpstv.xclipper.extensions.utils.ThemeUtils.Companion.CARD_COLOR
@@ -63,6 +65,8 @@ class CIAdapter(
 
         holder.itemView.ci_timeText.text = clip.timeString
 
+        setPinMovements(clip, holder)
+
         setTags(holder.itemView, clip)
 
         holder.itemView.mainCard.setOnLongClickListener {
@@ -75,6 +79,13 @@ class CIAdapter(
                 clip,
                 position,
                 MENU_TYPE.Edit
+            )
+        }
+        holder.itemView.ci_btn_pin.setOnClickListener {
+            menuClick.invoke(
+                clip,
+                position,
+                MENU_TYPE.Pin
             )
         }
         holder.itemView.ci_btn_special.setOnClickListener {
@@ -103,6 +114,11 @@ class CIAdapter(
         })
 
         selectedItem.observe(context as LifecycleOwner, Observer {
+
+
+            /** Will figure out where to place this */
+            setPinMovements(clip, holder)
+
             if (it == clip) {
                 holder.itemView.hiddenLayout.show()
                 holder.itemView.mainCard.setCardBackgroundColor(CARD_COLOR)
@@ -144,6 +160,35 @@ class CIAdapter(
         })
     }
 
+    private fun setPinMovements(
+        clip: Clip,
+        holder: MainHolder
+    ) {
+        if (clip.isPinned) {
+            setButtonDrawable(
+                holder.itemView,
+                R.drawable.ic_unpin
+            )
+            holder.itemView.ci_btn_pin.text = context.getString(R.string.unpin)
+            holder.itemView.ci_pinImage.show()
+        } else {
+            setButtonDrawable(
+                holder.itemView,
+                R.drawable.ic_pin
+            )
+            holder.itemView.ci_btn_pin.text = context.getString(R.string.pin)
+            holder.itemView.ci_pinImage.collapse()
+        }
+    }
+
+    private fun setButtonDrawable(view: View, @DrawableRes imageId: Int) {
+        view.ci_btn_pin.setCompoundDrawablesWithIntrinsicBounds(
+            null,
+            ContextCompat.getDrawable(context, imageId),
+            null, null
+        )
+    }
+
     private fun setTags(view: View, clip: Clip) {
         view.ci_tagLayout.removeAllViews()
         clip.tags?.forEach mainLoop@{ entry ->
@@ -182,7 +227,7 @@ class CIAdapter(
      }*/
 
     enum class MENU_TYPE {
-        Edit, Special, Share
+        Edit, Pin, Special, Share
     }
 
     class MainHolder(view: View) : RecyclerView.ViewHolder(view)

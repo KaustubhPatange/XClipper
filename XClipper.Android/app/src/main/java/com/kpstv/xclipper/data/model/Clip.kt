@@ -16,6 +16,7 @@ data class Clip(
     val id: Int? = null,
     val data: String?,
     val time: Date?,
+    var isPinned: Boolean = false,
     var tags: Map<String, String>? = null
 ) {
     var toDisplay = false

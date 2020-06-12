@@ -103,6 +103,10 @@ class MainViewModel(
         mainRepository.updateRepository(clip)
     }
 
+    fun changeClipPin(clip: Clip?, boolean: Boolean) {
+        mainRepository.updatePin(clip, boolean)
+    }
+
     fun checkForDuplicateClip(unencryptedData: String, repositoryListener: RepositoryListener) {
         mainRepository.checkForDuplicate(unencryptedData, repositoryListener)
     }
