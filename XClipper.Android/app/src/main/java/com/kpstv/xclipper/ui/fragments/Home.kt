@@ -95,7 +95,6 @@ class Home : Fragment(R.layout.fragment_main), KodeinAware {
         super.onViewCreated(view, savedInstanceState)
     }
 
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == App.TAG_DIALOG_REQUEST_CODE && resultCode == App.TAG_DIALOG_RESULT_CODE) {

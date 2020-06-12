@@ -39,7 +39,6 @@ class Main : AppCompatActivity(), KodeinAware {
         setContentView(R.layout.activity_main)
 
         val navController = findNavController(R.id.nav_host_fragment)
-
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -79,7 +78,7 @@ class Main : AppCompatActivity(), KodeinAware {
             mainViewModel.stateManager.isMultiSelectionStateActive() -> mainViewModel.stateManager.setToolbarState(
                 ToolbarState.NormalViewState
             )
-            searchView.onBackPressed() -> return
+            searchView?.onBackPressed() == true -> return
             else -> super.onBackPressed()
         }
     }

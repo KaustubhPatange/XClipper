@@ -155,15 +155,18 @@ class Utils {
          */
         fun showAccessibilityDialog(context: Context, block: () -> Unit): Unit = with(context) {
             AlertDialog.Builder(this)
-                .setMessage("In order to capture clipboard clips you need to enable service from accessibility service.\n\n1. Click on to open accessibility settings.\n2. Search for XClipper.\n3. Click and enable the service.")
+                .setMessage(context.getString(R.string.accessibility_capture))
                 .setPositiveButton(getString(R.string.ok)) { _, _ ->
                     openAccessibility(this)
-
                     block.invoke()
                 }
                 .setCancelable(false)
                 .setNegativeButton(getString(R.string.cancel)) { _, _ -> block.invoke() }
                 .show()
+        }
+
+        fun showAccessibilityDialog(context: Context) {
+            showAccessibilityDialog(context) { }
         }
 
         fun openAccessibility(context: Context) = with(context) {

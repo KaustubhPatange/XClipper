@@ -3,11 +3,34 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/fragment_home">
+    app:startDestination="@id/fragment_greet">
 
     <fragment
         android:id="@+id/fragment_home"
         android:name="com.kpstv.xclipper.ui.fragments.Home"
         tools:layout="@layout/fragment_main"
         android:label="Home" />
+    <fragment
+        android:id="@+id/fragment_greet"
+        android:name="com.kpstv.xclipper.ui.fragments.welcome.Greeting"
+        tools:layout="@layout/fragment_welcome"
+        android:label="Greeting" >
+        <action
+            android:id="@+id/action_fragment_greet_to_turnOnService"
+            app:destination="@id/turnOnService" />
+    </fragment>
+    <fragment
+        android:id="@+id/turnOnService"
+        tools:layout="@layout/fragment_welcome"
+        android:name="com.kpstv.xclipper.ui.fragments.welcome.TurnOnService"
+        android:label="TurnOnService" >
+        <action
+            android:id="@+id/action_turnOnService_to_watchVideo"
+            app:destination="@id/watchVideo" />
+    </fragment>
+    <fragment
+        tools:layout="@layout/fragment_welcome"
+        android:id="@+id/watchVideo"
+        android:name="com.kpstv.xclipper.ui.fragments.welcome.WatchVideo"
+        android:label="WatchVideo" />
 </navigation>

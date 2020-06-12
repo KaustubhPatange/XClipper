@@ -76,6 +76,7 @@
     <string name="logout_success">Logged out successfully!</string>
     <string name="err_uid">Not a valid UID</string>
     <string name="connect_success">Connected successfully!</string>
+    <string name="accessibility_capture">In order to capture clipboard clips you need to enable service from accessibility service.\n\n1. Click on to open accessibility settings.\n2. Search for XClipper.\n3. Click and enable the service.</string>
     <string name="scan_code">Scan the app code</string>
     <string name="connect_request">Attempting to make a connection with database...</string>
     <string name="dark_title">Dark Theme</string>
@@ -93,4 +94,11 @@
     <string name="blacklist_title">Ignored Apps</string>
     <string name="suggest_title">Suggestions</string>
     <string name="suggest_summary">[BETA] Show a small bubble whenever keyboard pops out containing your latest clips.</string>
+    <string name="palette1_text">
+        XClipper monitor your clipboard and makes an extensive use of it.\n\n\nIt also provide certain actions related to your clip.\n\n\nMoreover it will provide you suggestions during any paste.</string>
+    <string name="palette2_text">
+        Accessibility,\n\n\nYou need to turn on \"accessibility\" service for this app.\n\n\nThis is due to background service restrictions imposed by Google.\n\n\nThe service will keep running in background capturing your clipboard data.
+    </string>
+    <string name="next_1_5">Next 1/5</string>
+    <string name="next_2_5">Next 2/5</string>
 </resources>
