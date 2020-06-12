@@ -11,6 +11,7 @@ android {
 
     defaultConfig {
         applicationId "com.kpstv.xclipper"
+        generatedDensities = []
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
@@ -40,8 +41,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-
 }
+
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])

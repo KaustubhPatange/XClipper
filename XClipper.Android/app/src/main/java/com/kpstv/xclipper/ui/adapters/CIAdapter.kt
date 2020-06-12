@@ -2,6 +2,7 @@ package com.kpstv.xclipper.ui.adapters
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.ColorFilter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.google.android.flexbox.FlexboxLayout
 import com.kpstv.license.Decrypt
 import com.kpstv.xclipper.R
@@ -164,6 +166,10 @@ class CIAdapter(
         clip: Clip,
         holder: MainHolder
     ) {
+        /** TODO: Fix this, if possible */
+        /*holder.itemView.ci_pinImage.setImageDrawable(
+            VectorDrawableCompat.create(context.resources, R.drawable.ic_pin, context.theme)
+        )*/
         if (clip.isPinned) {
             setButtonDrawable(
                 holder.itemView,
@@ -193,7 +199,6 @@ class CIAdapter(
         view.ci_tagLayout.removeAllViews()
         clip.tags?.forEach mainLoop@{ entry ->
             if (entry.key.isNotBlank()) {
-
                 val textView = LayoutInflater.from(context)
                     .inflate(R.layout.item_tag, null) as TextView
                 val layoutParams = FlexboxLayout.LayoutParams(
