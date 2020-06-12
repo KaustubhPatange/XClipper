@@ -38,6 +38,6 @@ interface ClipDataDao {
     @Query("select * from table_clip order by isPinned")
     fun getAllLiveData(): LiveData<List<Clip>>
 
-    @Query("SELECT * FROM table_clip ORDER BY time DESC")
+    @Query("select * from table_clip order by isPinned")
     fun getDataSource(): DataSource.Factory<Int, Clip>
 }

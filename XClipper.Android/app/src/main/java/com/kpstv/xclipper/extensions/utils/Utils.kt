@@ -176,16 +176,30 @@ class Utils {
             startActivity(intent)
         }
 
+        @RequiresApi(Build.VERSION_CODES.M)
+        fun showOverlayDialog(context: Context) = with(context) {
+            AlertDialog.Builder(this)
+                .setMessage(getString(R.string.suggestion_capture))
+                .setPositiveButton(getString(R.string.ok)) { _, _ ->
+                    openSystemOverlay(this)
+                }
+                .setCancelable(false)
+                .setNegativeButton(getString(R.string.cancel), null)
+                .show()
+        }
+
         fun isSystemOverlayEnabled(context: Context): Boolean = with(context) {
-            return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(
-                this
-            )
+            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                Settings.canDrawOverlays(this)
+            } else true
         }
 
         @RequiresApi(Build.VERSION_CODES.M)
         fun openSystemOverlay(context: Context) = with(context) {
             val myIntent =
-                Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
+                Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION).apply {
+                    flags = FLAG_ACTIVITY_NEW_TASK
+                }
             startActivity(myIntent)
         }
 

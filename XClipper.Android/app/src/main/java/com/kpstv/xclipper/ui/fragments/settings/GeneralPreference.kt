@@ -15,14 +15,25 @@ import com.kpstv.xclipper.App.SUGGESTION_PREF
 import com.kpstv.xclipper.App.showSuggestion
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.isClipboardAccessibilityServiceRunning
+import com.kpstv.xclipper.extensions.utils.Utils.Companion.isSystemOverlayEnabled
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.openAccessibility
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.retrievePackageList
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showAccessibilityDialog
+import com.kpstv.xclipper.extensions.utils.Utils.Companion.showOverlayDialog
 
 
 class GeneralPreference : PreferenceFragmentCompat() {
     private val TAG = javaClass.simpleName
     private var checkPreference: SwitchPreferenceCompat? = null
+    private var overlayPreference: SwitchPreferenceCompat? = null
+
+    /**
+     * Since overlay permission makes you to leave the activity, the only way
+     * to check the preference is to set a boolean and then in onResume() we
+     * will set the preference.
+     */
+    private var rememberToCheckOverlaySwitch = false
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.general_pref, rootKey)
 
@@ -44,7 +55,16 @@ class GeneralPreference : PreferenceFragmentCompat() {
 
 
         /** Show suggestion preference */
-        findPreference<SwitchPreferenceCompat>(SUGGESTION_PREF)?.setOnPreferenceChangeListener { _, newValue ->
+        overlayPreference = findPreference(SUGGESTION_PREF)
+        overlayPreference?.setOnPreferenceChangeListener { _, newValue ->
+
+            if (!isSystemOverlayEnabled(requireContext()) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                showOverlayDialog(requireContext())
+
+                if (newValue == true) rememberToCheckOverlaySwitch = true
+
+                return@setOnPreferenceChangeListener false
+            }
             showSuggestion = newValue as Boolean
             true
         }
@@ -77,5 +97,9 @@ class GeneralPreference : PreferenceFragmentCompat() {
 
     private fun checkForService() {
         checkPreference?.isChecked = isClipboardAccessibilityServiceRunning(requireContext())
+        if (rememberToCheckOverlaySwitch) {
+            overlayPreference?.isChecked = isSystemOverlayEnabled(requireContext())
+            rememberToCheckOverlaySwitch = false
+        }
     }
 }

@@ -379,7 +379,7 @@ class Home : Fragment(R.layout.fragment_main), KodeinAware {
             Snackbar.make(
                 ci_recyclerView,
                 "Accessibility service not running",
-                Snackbar.LENGTH_INDEFINITE
+                Snackbar.LENGTH_LONG
             )
                 .setAction("Enable") {
                     openAccessibility(requireContext())
