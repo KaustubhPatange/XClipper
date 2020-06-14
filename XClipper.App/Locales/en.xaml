@@ -14,6 +14,7 @@
     <system:String x:Key="app_restore">Restore Database</system:String>
     <system:String x:Key="app_record">Record</system:String>
     <system:String x:Key="app_import">Import Database</system:String>
+    <system:String x:Key="app_config_setting">Firebase Configuration</system:String>
     <system:String x:Key="app_help">Help</system:String>
     <system:String x:Key="app_exit">Exit</system:String>
     <system:String x:Key="settings_tab_main">Main</system:String>
@@ -74,7 +75,11 @@
     <system:String x:Key="msg_reset_data_success">Data reset completed!</system:String>
     <system:String x:Key="msg_merge_encrypt">The database file might be an encrypted one, if so kindly enter the password in the next dialog.</system:String>
     <system:String x:Key="msg_delete_all">This will remove all clips stored in database. Are you sure?</system:String>
-    <system:String x:Key="msg_delete_db">This will migrate the existing sqlite database to sqlite3 database.</system:String>
+    <system:String x:Key="msg_delete_db">This will migrate the existing SQlite database to sqlite3 database.</system:String>
+    <system:String x:Key="msg_field_empty">One or more field is empty.</system:String>
+    <system:String x:Key="msg_config_save">Configuration saved successfully.</system:String>
+    <system:String x:Key="msg_config_reset">This will reset the database configuration to its default.</system:String>
+    <system:String x:Key="msg_config_reset_success">Original configuration restored.</system:String>
     <system:String x:Key="popup_added">Added:</system:String>
     <system:String x:Key="popup_space_focus">...Press (Space) to Focus...</system:String>
     <system:String x:Key="popup_edit_err">Editing is not supported for this format</system:String>
@@ -101,4 +106,7 @@
     <system:String x:Key="buy_not_activate">Not Activated</system:String>
     <system:String x:Key="device_title">Connected Device</system:String>
     <system:String x:Key="device_disconnect">Disconnect</system:String>
+    <system:String x:Key="sync_config_title">Firebase Configuration</system:String>
+    <system:String x:Key="sync_config_reset">Reset Configuration</system:String>
+
 </ResourceDictionary>

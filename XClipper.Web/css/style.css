@@ -11,14 +11,27 @@ body {
   height: 100vh;
   font-weight: 300;
 }
+.card {
+  margin: 5px;
+  background-color: #1b1d24;
+  color: whitesmoke;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  transition: 0.3s;
+  width: 40%;
+}
+
+.card:hover {
+  background-color: #2e3141;
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+}
+
+.container {
+  padding: 2px 16px;
+}
 .site-footer {
   margin-top: 80px;
   padding: 4em 0;
   background: #1b1d24;
-}
-section {
-  width: 100%;
-  height: 100vh;
 }
 
 .title {
@@ -91,6 +104,8 @@ section {
 .smalltitle1 {
   font-size: 15px;
 }
+#purchaseSection {
+}
 /* Mobile screens */
 @media only screen and (max-width: 600px) {
   .title {
@@ -149,6 +164,9 @@ section {
   .mainContainer {
     margin-top: 80px;
   }
+  section {
+    height: 100vh;
+  }
 }
 
 /* Laptop/Desktop screens */
@@ -168,5 +186,8 @@ section {
   }
   .watch-span {
     font-size: 18px;
+  }
+  section {
+    height: 100vh;
   }
 }

@@ -1,9 +1,8 @@
 ﻿using System.IO;
 using System.ComponentModel;
-using System;
 using static Components.Core;
-using System.Xml.Linq;
 using static Components.Constants;
+using System.Xml.Linq;
 
 namespace Components
 {
@@ -115,6 +114,26 @@ namespace Components
         public static string DatabaseEncryptPassword { get; set; } = FB_DEFAULT_PASS.Decrypt();
 
         /// <summary>
+        /// The endpoint Firebase URL https://example-pathio.com
+        /// </summary>
+        public static string FirebaseEndpoint { get; set; } = FIREBASE_PATH;
+
+        /// <summary>
+        /// The secret Auth key which will be used to make connection to database.
+        /// </summary>
+        public static string FirebaseSecret { get; set; } = FIREBASE_SECRET;
+
+        /// <summary>
+        /// The app Id of mobile package name that is needed to make connection for the mobile App.
+        /// </summary>
+        public static string FirebaseAppId { get; set; } = FIREBASE_APP_ID;
+
+        /// <summary>
+        /// A web API key for Firebase database.
+        /// </summary>
+        public static string FirebaseApiKey { get; set; } = FIREBASE_API_KEY;
+
+        /// <summary>
         /// When set to true it will allow syncing of local database with online database.<br/> A valid binding can be,<br/><br/> 
         /// 1. Data added locally then pushed to online database.<br/> 
         /// 2. Data removed locally and changes submitted to online database.<br/>
@@ -174,6 +193,36 @@ namespace Components
             StartOnSystemStartup = settings.Element(nameof(StartOnSystemStartup)).Value.ToBool();
             PlayNotifySound = settings.Element(nameof(PlayNotifySound)).Value.ToBool();
             BindDatabase = settings.Element(nameof(BindDatabase)).Value.ToBool();
+
+            // Loading custom firebase setting...
+            if (File.Exists(CustomFirebasePath))
+            {
+                var firebaseDoc = XDocument.Load(CustomFirebasePath).Element(SETTINGS);
+
+                FirebaseEndpoint = firebaseDoc.Element(nameof(FirebaseEndpoint)).Value;
+                FirebaseSecret = firebaseDoc.Element(nameof(FirebaseSecret)).Value;
+                FirebaseAppId = firebaseDoc.Element(nameof(FirebaseAppId)).Value;
+                FirebaseApiKey = firebaseDoc.Element(nameof(FirebaseApiKey)).Value;
+            }
+        }
+
+        /// <summary>
+        /// This will write firebase setting to a file.
+        /// </summary>
+        public static void WriteFirebaseSetting()
+        {
+            if (FirebaseEndpoint == FIREBASE_PATH || FirebaseSecret == FIREBASE_SECRET) return;
+            var firebaseDoc = new XDocument();
+            var config = new XElement(SETTINGS);
+            config
+                 .Add(
+                     new XElement(nameof(FirebaseEndpoint), FirebaseEndpoint.ToString()),
+                     new XElement(nameof(FirebaseSecret), FirebaseSecret.ToString()),
+                     new XElement(nameof(FirebaseAppId), FirebaseAppId.ToString()),
+                     new XElement(nameof(FirebaseApiKey), FirebaseApiKey.ToString())
+                 );
+            firebaseDoc.Add(config);
+            firebaseDoc.Save(CustomFirebasePath);
         }
 
         #endregion

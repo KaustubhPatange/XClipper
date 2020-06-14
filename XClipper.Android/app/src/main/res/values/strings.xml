@@ -119,4 +119,5 @@
     <string name="pin">Pin</string>
     <string name="unpin">Unpin</string>
     <string name="ask_suggestion">Show overlay suggestion</string>
+    <string name="err_database">Invalid database</string>
 </resources>

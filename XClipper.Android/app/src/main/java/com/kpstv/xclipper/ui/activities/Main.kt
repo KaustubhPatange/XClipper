@@ -1,14 +1,10 @@
 package com.kpstv.xclipper.ui.activities
 
 import android.os.Bundle
-import androidx.annotation.IdRes
-import androidx.annotation.NavigationRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
 import com.kpstv.xclipper.App.DARK_THEME
 import com.kpstv.xclipper.App.TUTORIAL_PREF
 import com.kpstv.xclipper.R
@@ -56,25 +52,6 @@ class Main : AppCompatActivity(), KodeinAware {
         }
     }
 
-    override fun onPostCreate(savedInstanceState: Bundle?) {
-        super.onPostCreate(savedInstanceState)
-
-        /*
-
-         // TODO: Move this SAW to a valid place.
-         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !android.provider.Settings.canDrawOverlays(
-                 this
-             )
-         ) {
-             // Show alert dialog to the user saying a separate permission is needed
-             // Launch the settings activity if the user prefers
-             val myIntent =
-                 Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
-             startActivity(myIntent)
-         }
-
-         */
-    }
 
     /**
      * Check if current theme has changed...

@@ -170,6 +170,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="AppModule.cs" />
+    <Compile Include="Data\Converters\FileVisibilityConverter.cs" />
     <Compile Include="Data\Converters\ImageQRConverter.cs" />
     <Compile Include="Data\helpers\DatabaseHelper.cs" />
     <Compile Include="UI\BuyWindow.xaml.cs">
@@ -214,6 +215,9 @@
     <Compile Include="Data\unlocalized\Properties\MenuItemProperties.cs" />
     <Compile Include="Data\unlocalized\LockToggleButton.cs" />
     <Compile Include="Data\unlocalized\NumericTextBox.cs" />
+    <Compile Include="UI\CustomSyncWindow.xaml.cs">
+      <DependentUpon>CustomSyncWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\FilterWindow.xaml.cs">
       <DependentUpon>FilterWindow.xaml</DependentUpon>
     </Compile>
@@ -231,13 +235,14 @@
     <Compile Include="UI\SettingWindow.xaml.cs">
       <DependentUpon>SettingWindow.xaml</DependentUpon>
     </Compile>
-	 <Compile Include="UI\DeviceWindow.xaml.cs">
+    <Compile Include="UI\DeviceWindow.xaml.cs">
       <DependentUpon>DeviceWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModel\BaseViewModel.cs" />
     <Compile Include="ViewModel\BuyViewModel.cs" />
+    <Compile Include="ViewModel\CustomSyncViewModel.cs" />
     <Compile Include="ViewModel\SettingViewModel.cs" />
-	<Compile Include="ViewModel\DeviceViewModel.cs" />
+    <Compile Include="ViewModel\DeviceViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -287,6 +292,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UI\CustomSyncWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\FilterWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -312,7 +321,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-	<Page Include="UI\DeviceWindow.xaml">
+    <Page Include="UI\DeviceWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

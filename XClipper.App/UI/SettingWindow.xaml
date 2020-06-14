@@ -29,7 +29,6 @@
     <Border Padding="5">
         <StackPanel Orientation="Vertical">
             <TabControl Height="315">
-
                 <TabItem Header="{DynamicResource settings_tab_main}">
                     <StackPanel Margin="7" Orientation="Vertical">
 

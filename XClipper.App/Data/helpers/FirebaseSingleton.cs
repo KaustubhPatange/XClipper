@@ -43,8 +43,8 @@ namespace Components
 
             IFirebaseConfig config = new FirebaseConfig
             {
-                AuthSecret = FIREBASE_SECRET,
-                BasePath = FIREBASE_PATH
+                AuthSecret = FirebaseSecret,
+                BasePath = FirebaseEndpoint
             };
             client = new FirebaseClient(config);
         }

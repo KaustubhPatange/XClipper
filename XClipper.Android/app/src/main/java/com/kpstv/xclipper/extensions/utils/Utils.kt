@@ -13,6 +13,7 @@ import android.content.pm.ServiceInfo
 import android.os.Build
 import android.provider.Settings
 import android.telephony.TelephonyManager
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.accessibility.AccessibilityManager
@@ -35,6 +36,7 @@ import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.service.ClipboardAccessibilityService
 import kotlinx.android.synthetic.main.dialog_connect.view.*
 import kotlinx.android.synthetic.main.dialog_progress_view.view.*
+import java.io.InputStream
 import java.util.*
 
 
@@ -289,6 +291,12 @@ class Utils {
             App.BindToFirebase = true
         }
 
+        fun isValidSQLite(stream: InputStream?): Boolean {
+            val buffer = CharArray(16)
+            stream?.bufferedReader()?.read(buffer, 0, 16)
+            val str = String(buffer)
+            return str == "SQLite format 3\u0000"
+        }
 
         /* @JvmStatic
          fun cafeBarToast(context: Context, message: String, buttonText: String, block: (CafeBar) -> Unit): CafeBar {

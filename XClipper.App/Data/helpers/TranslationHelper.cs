@@ -36,6 +36,7 @@ namespace Components
         public string APP_RESTORE = rm.GetString("app_restore");
         public string APP_RECORD = rm.GetString("app_record");
         public string APP_IMPORT = rm.GetString("app_import");
+        public string APP_CONFIG_SETTING = rm.GetString("app_config_setting");
         public string APP_HELP = rm.GetString("app_help");
         public string APP_EXIT = rm.GetString("app_exit");
         public string SETTINGS_GENERAL = rm.GetString("settings_general");
@@ -81,6 +82,10 @@ namespace Components
         public string MSG_DELETE_DB = rm.GetString("msg_delete_db");
         public string MSG_RESET_DATA = rm.GetString("msg_reset_data");
         public string MSG_RESET_DATA_SUCCESS = rm.GetString("msg_reset_data_success");
+        public string MSG_FIELD_EMPTY = rm.GetString("msg_field_empty");
+        public string MSG_CONFIG_SAVE = rm.GetString("msg_config_save");
+        public string MSG_CONFIG_RESET = rm.GetString("msg_config_reset");
+        public string MSG_CONFIG_RESET_SUCCESS = rm.GetString("msg_config_reset_success");
         public string POPUP_ADDED = rm.GetString("popup_added");
         public string POPUP_SPACE_FOCUS = rm.GetString("popup_space_focus");
         public string POPUP_EDIT_ERR = rm.GetString("popup_edit_err");

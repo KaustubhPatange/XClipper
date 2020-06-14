@@ -15,7 +15,9 @@ namespace Components
         public static ImageQRConverter Instance = new ImageQRConverter();
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var qrData = new QRCodeGenerator().CreateQrCode(value as string, QRCodeGenerator.ECCLevel.L);
+            var valueToConvert = value as string;
+
+            var qrData = new QRCodeGenerator().CreateQrCode(valueToConvert, QRCodeGenerator.ECCLevel.L);
             var image = new QRCode(qrData).GetGraphic(20, System.Drawing.Color.Black, System.Drawing.Color.White, true);
 
             return Imaging.CreateBitmapSourceFromHBitmap(image.GetHbitmap(),

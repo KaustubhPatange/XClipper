@@ -39,6 +39,7 @@ namespace Components
         private WinForm.NotifyIcon notifyIcon;
         private SettingWindow settingWindow;
         private BuyWindow buyWindow;
+        private CustomSyncWindow configWindow;
         private DeviceWindow deviceWindow;
         private IKeyboardRecorder recorder;
         public static List<string> LanguageCollection = new List<string>();
@@ -139,13 +140,14 @@ namespace Components
             var BackupMenuItem = CreateNewItem(Translation.APP_BACKUP, BackupClicked);
             var RestoreMenutItem = CreateNewItem(Translation.APP_RESTORE, RestoreClicked);
             var ImportDataItem = CreateNewItem(Translation.APP_IMPORT, ImportDataClicked);
+            var ConfigSettingItem = CreateNewItem(Translation.APP_CONFIG_SETTING, ConfigSettingClicked);
 
             var HelpMenuItem = CreateNewItem(Translation.APP_HELP, (o, e) =>
             {
                 Process.Start(new ProcessStartInfo("https://github.com/KaustubhPatange/XClipper"));
             });
 
-            var items = new List<WinForm.MenuItem>() { ShowMenuItem, RestartMenuItem, CreateSeparator(), BackupMenuItem, RestoreMenutItem, ImportDataItem, CreateSeparator(), HelpMenuItem, CreateSeparator(), RecordMenuItem, DeleteMenuItem, SettingMenuItem, CreateSeparator(), AppExitMenuItem };
+            var items = new List<WinForm.MenuItem>() { ShowMenuItem, RestartMenuItem, CreateSeparator(), BackupMenuItem, RestoreMenutItem, ImportDataItem, CreateSeparator(), ConfigSettingItem , CreateSeparator(), HelpMenuItem, CreateSeparator(), RecordMenuItem, DeleteMenuItem, SettingMenuItem, CreateSeparator(), AppExitMenuItem };
             if (!IsPurchaseDone) items.Insert(1, BuyWindowItem);
             return items.ToArray();
         }
@@ -214,6 +216,15 @@ namespace Components
                 }
             }
         }
+        private void ConfigSettingClicked(object sender, EventArgs e)
+        {
+            if (configWindow != null)
+                configWindow.Close();
+
+            configWindow = new CustomSyncWindow();
+            configWindow.ShowDialog();
+        }
+
         private void SettingMenuClicked(object sender, EventArgs e)
         {
             if (settingWindow != null)

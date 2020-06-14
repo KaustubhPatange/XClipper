@@ -7,6 +7,12 @@ namespace Components
 {
     public static class Constants
     {
+
+        public static bool isFileExist()
+        {
+            return true;
+        }
+
         public static string ApplicationLocation = Assembly.GetExecutingAssembly().Location;
         public static string BaseDirectory = AppDomain.CurrentDomain.BaseDirectory;
         public static string RoamingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -15,7 +21,8 @@ namespace Components
         public static string LicenseFilePath = Path.Combine(ApplicationDirectory, "key.lic");
         public static string BackupFolder = Path.Combine(ApplicationDirectory, "Backup");
         public static string ImageFolder = Path.Combine(ApplicationDirectory, "Image");
-        public static string DatabasePath = DatabasePath = Path.Combine(ApplicationDirectory, "data.db");
+        public static string DatabasePath = Path.Combine(ApplicationDirectory, "data.db");
+        public static string CustomFirebasePath = Path.Combine(ApplicationDirectory, "custom-firebase.xml");
 
         #region Some Filter Constants
 

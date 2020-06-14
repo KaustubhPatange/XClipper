@@ -1,7 +1,6 @@
 package com.kpstv.xclipper.ui.fragments.settings
 
 import android.Manifest
-import android.app.Application
 import android.content.ContentResolver
 import android.content.Intent
 import android.content.Intent.*
@@ -10,7 +9,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.OpenableColumns
-import androidx.appcompat.app.AlertDialog
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.Preference
@@ -22,6 +20,7 @@ import com.kpstv.xclipper.App.IMPORT_PREF
 import com.kpstv.xclipper.App.PERMISSION_REQUEST_CODE
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.extensions.getFormattedDate
+import com.kpstv.xclipper.extensions.utils.Utils.Companion.isValidSQLite
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import com.kpstv.xclipper.ui.viewmodels.MainViewModelFactory
 import es.dmoral.toasty.Toasty
@@ -29,7 +28,6 @@ import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.kodein
 import org.kodein.di.generic.instance
 import java.util.*
-import kotlin.system.exitProcess
 
 class BackupPreference : PreferenceFragmentCompat(), KodeinAware {
 
@@ -52,7 +50,10 @@ class BackupPreference : PreferenceFragmentCompat(), KodeinAware {
                 val intent = Intent(ACTION_CREATE_DOCUMENT).apply {
                     type = DATABASE_MIME_TYPE
                     flags = FLAG_GRANT_WRITE_URI_PERMISSION
-                    putExtra(EXTRA_TITLE, "backup-${Calendar.getInstance().time.getFormattedDate()}.db")
+                    putExtra(
+                        EXTRA_TITLE,
+                        "backup-${Calendar.getInstance().time.getFormattedDate()}.db"
+                    )
                 }
                 startActivityForResult(intent, EXPORT_RESULT_CODE)
             }
@@ -72,6 +73,7 @@ class BackupPreference : PreferenceFragmentCompat(), KodeinAware {
         }
     }
 
+    private val TAG = javaClass.simpleName
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             EXPORT_RESULT_CODE -> {
@@ -82,8 +84,10 @@ class BackupPreference : PreferenceFragmentCompat(), KodeinAware {
                             Toasty.error(this, getString(R.string.err_database_export)).show()
                             return
                         }
+
                         /** Using scope storage to write to a file */
                         contentResolver.openOutputStream(uri)?.apply {
+
                             write(databasePath.readBytes())
                             close()
                         }
@@ -92,12 +96,20 @@ class BackupPreference : PreferenceFragmentCompat(), KodeinAware {
                 }
             }
             IMPORT_RESULT_CODE -> {
-                data?.data?.let { uri ->
+                data?.data?.let save@{ uri ->
                     with(requireActivity()) {
                         val databasePath = getDatabasePath(DATABASE_NAME)
 
                         /** Using scope storage to write to a file */
                         val openInputStream = contentResolver.openInputStream(uri)
+
+                        contentResolver.openInputStream(uri)?.let {
+                            if (!isValidSQLite(it)) {
+                                Toasty.error(this, getString(R.string.err_database)).show()
+                                return@save
+                            }
+                            it.close()
+                        }
 
                         if (openInputStream == null) {
                             Toasty.error(this, getString(R.string.err_import_database)).show()
@@ -110,14 +122,8 @@ class BackupPreference : PreferenceFragmentCompat(), KodeinAware {
                         Toasty.info(this, getString(R.string.database_import)).show()
 
                         mainViewModel.refreshRepository()
-                         /* AlertDialog.Builder(this)
-                              .setTitle(getString(R.string.restart_app))
-                              .setMessage(getString(R.string.restart_summary))
-                              .setCancelable(false)
-                              .setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-                                  finishAndRemoveTask()
-                              }*/
 
+                        openInputStream.close()
                     }
                 }
             }
