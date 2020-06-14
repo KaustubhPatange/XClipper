@@ -15,6 +15,10 @@ fun Clip.clone(data: String, tags: Map<String, String>?): Clip {
     return copy(data = data, tags = tags)
 }
 
+fun Clip.clone(id: Int) : Clip {
+    return copy(id = id)
+}
+
 /**
  * A process of converting Clip Model to ClipEntry Model
  */

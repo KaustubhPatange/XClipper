@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.kpstv.license.Decrypt
 import com.kpstv.license.Encrypt
 import com.kpstv.xclipper.App
-import com.kpstv.xclipper.App.DARK_THEME
 import com.kpstv.xclipper.App.STAGGERED_SPAN_COUNT
 import com.kpstv.xclipper.App.STAGGERED_SPAN_COUNT_MIN
 import com.kpstv.xclipper.R

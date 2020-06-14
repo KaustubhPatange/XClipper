@@ -11,7 +11,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.NavDirections
 import androidx.navigation.findNavController
-import com.kpstv.xclipper.R
 import kotlinx.android.synthetic.main.fragment_welcome.view.*
 
 class WelcomeUtils {
@@ -46,6 +45,7 @@ class WelcomeUtils {
             @ColorRes nextPaletteId: Int,
             @StringRes textId: Int,
             @StringRes nextTextId: Int,
+            insertView: View? = null,
             action: () -> Unit
         ) {
             val palette = ContextCompat.getColor(activity, paletteId)
@@ -66,6 +66,8 @@ class WelcomeUtils {
                             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                         )
                     }
+                if (insertView != null)
+                    fw_insertLayout.addView(insertView)
                 fw_btn_next.text = activity.getString(nextTextId)
                 fw_btn_next.setTextColor(palette)
                 fw_btn_next.backgroundTintList = ColorStateList.valueOf(nextPalette)

@@ -16,7 +16,7 @@ class Android10 : Fragment(R.layout.fragment_welcome) {
             paletteId = R.color.palette_android,
             nextPaletteId = R.color.palette2,
             textId = R.string.palette_android_text,
-            nextTextId = R.string.next_2_5,
+            nextTextId = R.string.next_2,
             action = Android10Directions.actionAndroid10ToTurnOnService()
         )
 

@@ -2,14 +2,7 @@ package com.kpstv.xclipper
 
 import android.annotation.SuppressLint
 import android.app.Application
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.content.Context
-import android.os.Build
 import android.provider.Settings
-import android.util.Log
-import androidx.core.app.NotificationCompat
 import com.kpstv.xclipper.App.BIND_PREF
 import com.kpstv.xclipper.App.BindToFirebase
 import com.kpstv.xclipper.App.DARK_PREF
@@ -27,10 +20,8 @@ import com.kpstv.xclipper.data.api.TinyUrlApi
 import com.kpstv.xclipper.data.db.MainDatabase
 import com.kpstv.xclipper.data.provider.*
 import com.kpstv.xclipper.data.repository.*
-import com.kpstv.xclipper.extensions.ioThread
 import com.kpstv.xclipper.extensions.utils.FirebaseUtils
 import com.kpstv.xclipper.extensions.utils.RetrofitUtils
-import com.kpstv.xclipper.extensions.utils.Utils.Companion.retrievePackageList
 import com.kpstv.xclipper.extensions.utils.interceptors.NetworkConnectionInterceptor
 import com.kpstv.xclipper.ui.helpers.DictionaryApiHelper
 import com.kpstv.xclipper.ui.helpers.NotificationHelper
@@ -43,7 +34,6 @@ import org.kodein.di.generic.bind
 import org.kodein.di.generic.instance
 import org.kodein.di.generic.provider
 import org.kodein.di.generic.singleton
-import kotlin.system.measureTimeMillis
 
 
 @SuppressLint("HardwareIds")
@@ -67,13 +57,11 @@ class XClipperApplication : Application(), KodeinAware {
         bind<PreferenceProvider>() with singleton { PreferenceProviderImpl(instance()) }
         bind<FirebaseProvider>() with singleton { FirebaseProviderImpl() }
         bind<ClipboardProvider>() with singleton { ClipboardProviderImpl(instance(),instance()) }
-        bind<ClipProvider>() with singleton { ClipProviderImpl() }
         bind<TagRepository>() with singleton { TagRepositoryImpl(instance()) }
         bind<DefineRepository>() with singleton { DefineRepositoryImpl(instance()) }
         bind<UrlRepository>() with singleton { UrlRepositoryImpl(instance()) }
         bind<MainRepository>() with singleton {
             MainRepositoryImpl(
-                instance(),
                 instance(),
                 instance(),
                 instance()

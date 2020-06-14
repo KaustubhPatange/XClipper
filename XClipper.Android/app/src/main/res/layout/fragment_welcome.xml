@@ -20,21 +20,28 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
+        android:gravity="center"
         android:id="@+id/fw_insertLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/fw_btn_next"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/fw_textView"/>
+        app:layout_constraintTop_toBottomOf="@id/fw_textView">
+      <!--  <pl.droidsonroids.gif.GifImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="40dp"
+            android:src="@drawable/feature_suggestion" />-->
+    </LinearLayout>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/fw_btn_next"
         android:layout_width="110dp"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        android:text="@string/next_1_5"
+        android:text="@string/next_1"
         android:textAllCaps="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

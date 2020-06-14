@@ -43,7 +43,8 @@ object App {
 
     // TODO: Do all your jack jacks
     const val STANDARD_DATE_FORMAT = "yyyyMMddHHmmss"
-//1PAF8EB-4KR35L-1ICT12V-H7M3FM
+
+    //1PAF8EB-4KR35L-1ICT12V-H7M3FM
     var UID: String = ""
     lateinit var DeviceID: String
 
@@ -52,8 +53,11 @@ object App {
 
     var showSuggestion = false
 
-    fun getMaxConnection(isLicensed: Boolean): Int = if (isLicensed) FB_MAX_DEVICE_CONNECTION else FB_MIN_DEVICE_CONNECTION
-    fun getMaxStorage(isLicensed: Boolean): Int = if (isLicensed) FB_MAX_ITEM_STORAGE else FB_MIN_ITEM_STORAGE
+    fun getMaxConnection(isLicensed: Boolean): Int =
+        if (isLicensed) FB_MAX_DEVICE_CONNECTION else FB_MIN_DEVICE_CONNECTION
+
+    fun getMaxStorage(isLicensed: Boolean): Int =
+        if (isLicensed) FB_MAX_ITEM_STORAGE else FB_MIN_ITEM_STORAGE
 
     var EMPTY_STRING = ""
     var BLANK_STRING = " "
@@ -74,9 +78,12 @@ object App {
     const val DICTIONARY_WORD_PATTERN_REGEX = "\"word\":[\\s]?\".*?\""
     const val DICTIONARY_DEFINITION_PATTERN_REGEX = "\"definition\":[\\s]?\".*?\""
     const val PHONE_PATTERN_REGEX = "(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}"
-    const val EMAIL_PATTERN_REGEX = "([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)"
-    const val URL_PATTERN_REGEX = "https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)"
-    const val MAP_PATTERN_REGEX = "[-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?),\\s*[-+]?(180(\\.0+)?|((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?)"
+    const val EMAIL_PATTERN_REGEX =
+        "([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)"
+    const val URL_PATTERN_REGEX =
+        "https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)"
+    const val MAP_PATTERN_REGEX =
+        "[-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?),\\s*[-+]?(180(\\.0+)?|((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?)"
 
     const val APP_CLIP_DATA = "com.kpstv.xclipper.clip_data"
 
@@ -89,6 +96,7 @@ object App {
     const val EXTRA_SERVICE_TEXT = "com.kpstv.xclipper.service_text"
 
     /** Preference Keys */
+    const val TUTORIAL_PREF = "tutorial_pref"
     const val SERVICE_PREF = "service_pref"
     const val SUGGESTION_PREF = "suggestion_pref"
     const val LANG_PREF = "lang_pref"

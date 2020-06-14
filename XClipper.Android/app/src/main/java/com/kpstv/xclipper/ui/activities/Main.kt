@@ -1,12 +1,19 @@
 package com.kpstv.xclipper.ui.activities
 
 import android.os.Bundle
+import androidx.annotation.IdRes
+import androidx.annotation.NavigationRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import com.kpstv.xclipper.App.DARK_THEME
+import com.kpstv.xclipper.App.TUTORIAL_PREF
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.ToolbarState
+import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.extensions.utils.ThemeUtils
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import com.kpstv.xclipper.ui.viewmodels.MainViewModelFactory
@@ -22,6 +29,7 @@ class Main : AppCompatActivity(), KodeinAware {
 
     override val kodein by kodein()
     private val viewModelFactory by instance<MainViewModelFactory>()
+    private val preferenceProvider by instance<PreferenceProvider>()
 
     var isDarkTheme = true
 
@@ -39,26 +47,33 @@ class Main : AppCompatActivity(), KodeinAware {
         setContentView(R.layout.activity_main)
 
         val navController = findNavController(R.id.nav_host_fragment)
+
+        val navOptions =
+            NavOptions.Builder().setPopUpTo(R.id.fragment_greet, true).build()
+
+        if (preferenceProvider.getBooleanKey(TUTORIAL_PREF, false)) {
+            navController.navigate(R.id.fragment_home, null, navOptions)
+        }
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
 
-       /*
+        /*
 
-        // TODO: Move this SAW to a valid place.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !android.provider.Settings.canDrawOverlays(
-                this
-            )
-        ) {
-            // Show alert dialog to the user saying a separate permission is needed
-            // Launch the settings activity if the user prefers
-            val myIntent =
-                Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
-            startActivity(myIntent)
-        }
+         // TODO: Move this SAW to a valid place.
+         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !android.provider.Settings.canDrawOverlays(
+                 this
+             )
+         ) {
+             // Show alert dialog to the user saying a separate permission is needed
+             // Launch the settings activity if the user prefers
+             val myIntent =
+                 Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
+             startActivity(myIntent)
+         }
 
-        */
+         */
     }
 
     /**

@@ -1,13 +1,10 @@
 package com.kpstv.xclipper.ui.fragments
 
 import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
@@ -16,6 +13,7 @@ import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
@@ -24,6 +22,7 @@ import com.kpstv.xclipper.App
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.ToolbarState
 import com.kpstv.xclipper.data.model.Tag
+import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.extensions.cloneForAdapter
 import com.kpstv.xclipper.extensions.listeners.StatusListener
 import com.kpstv.xclipper.extensions.setOnQueryTextListener
@@ -54,10 +53,11 @@ class Home : Fragment(R.layout.fragment_main), KodeinAware {
 
     override val kodein by kodein()
     private val viewModelFactory by instance<MainViewModelFactory>()
+    private val clipboardProvider by instance<ClipboardProvider>()
 
-    private val clipboardManager: ClipboardManager by lazy {
-        requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-    }
+    /*   private val clipboardManager: ClipboardManager by lazy {
+           requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+       }*/
 
     private lateinit var adapter: CIAdapter
 
@@ -68,7 +68,11 @@ class Home : Fragment(R.layout.fragment_main), KodeinAware {
         super.onCreate(savedInstanceState)
     }
 
+    private val TAG = javaClass.simpleName
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+        requireActivity().window.statusBarColor =
+            ContextCompat.getColor(requireContext(), R.color.colorPrimaryDark)
 
         setRecyclerView()
 
@@ -146,7 +150,7 @@ class Home : Fragment(R.layout.fragment_main), KodeinAware {
         )
 
         adapter.setCopyClick { clip, _ ->
-            clipboardManager.setPrimaryClip(ClipData.newPlainText(null, clip.data?.Decrypt()))
+            clipboardProvider.setClipboard(ClipData.newPlainText(null, clip.data?.Decrypt()))
             Toasty.info(requireContext(), getString(R.string.ctc)).show()
         }
 

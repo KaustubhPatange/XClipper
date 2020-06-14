@@ -194,6 +194,9 @@ class Utils {
             } else true
         }
 
+        fun isAndroid10orUp() =
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+
         @RequiresApi(Build.VERSION_CODES.M)
         fun openSystemOverlay(context: Context) = with(context) {
             val myIntent =

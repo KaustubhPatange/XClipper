@@ -2,11 +2,11 @@ package com.kpstv.xclipper.ui.fragments.welcome
 
 import android.os.Build
 import android.os.Bundle
-import android.text.SpannableString
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.kpstv.xclipper.R
+import com.kpstv.xclipper.extensions.utils.Utils.Companion.isAndroid10orUp
 import com.kpstv.xclipper.extensions.utils.WelcomeUtils.Companion.setUpFragment
 
 class Greeting : Fragment(R.layout.fragment_welcome) {
@@ -21,7 +21,7 @@ class Greeting : Fragment(R.layout.fragment_welcome) {
             paletteId = R.color.palette1,
             nextPaletteId = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) R.color.palette_android else R.color.palette2,
             textId = R.string.palette1_text,
-            nextTextId = R.string.next_1_5,
+            nextTextId = if (isAndroid10orUp()) R.string.next_1 else R.string.nextd_1,
             action = {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
                     findNavController().navigate(GreetingDirections.actionFragmentGreetToAndroid10())

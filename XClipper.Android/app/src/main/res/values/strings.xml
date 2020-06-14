@@ -95,11 +95,28 @@
     <string name="suggest_summary">[BETA] Show a small bubble whenever keyboard pops out containing your latest clips.</string>
     <string name="palette1_text">XClipper monitor your clipboard and makes an extensive use of it.\n\n\nIt also provide certain actions related to your clip.\n\n\nMoreover it will provide you suggestions during any paste.</string>
     <string name="palette2_text">Accessibility,\n\n\nYou need to turn on \"accessibility\" service for this app.\n\n\nThis is due to background service restrictions imposed by Google.\n\n\nThe service will keep running in background capturing your clipboard data.</string>
-    <string name="palette3_text">Suggestions [BETA],\n\n\nGet a small bubble whenever keyboard pops out containing all your clips.</string>
+    <string name="palette3_text">Suggestions [BETA],\n\n\nGet a small bubble whenever keyboard pops out containing all your clips.\n\n\nEnable it from App Settings > General > Suggestions.</string>
+    <string name="palette4_text">Android 10+ user,\n\n\nSometimes standard copy doesn\'t work, in such case use \"XCopy\".</string>
+    <string name="palette5_text">Android 10+ user,\n\n\nSometimes copy action is not detected, in such case use quick setting option.</string>
+    <string name="palette6_text">Synchronization,\n\n\nThe application works best with it\'s Windows desktop app.\n\n\nIt allows you to synchronize clipboard data across devices.\n\n\nVisit https://kaustubhpatange.github.io/XClipper for more info.</string>
+    <string name="palette7_text">Wrapping up,\n\n\nWatch video to understand full feature usage of application.\n\n\nhttps://youtube.com</string>
     <string name="palette_android_text">Android 10+ user,\n\n\nDue to new privacy change clipboard monitoring has stopped working.\n\n\nFind more info about this issue on issue tracker https://issuetracker.google.com/issues/123461156\n\n\nBut there is a hack (not perfect one) which will enable it through the accessibility service.\n\n\nThe feature is still in BETA!</string>
-    <string name="next_1_5">Next 1/5</string>
-    <string name="next_2_5">Next 2/5</string>
-    <string name="next_3_5">Next 3/5</string>
+
+    <string name="next_1">Next 1/8</string>
+    <string name="next_2">Next 2/8</string>
+    <string name="next_3">Next 3/8</string>
+    <string name="next_4">Next 4/8</string>
+    <string name="next_5">Next 5/8</string>
+    <string name="next_6">Next 6/8</string>
+    <string name="next_7">Next 7/8</string>
+
+    <string name="nextd_1">Next 1/5</string>
+    <string name="nextd_2">Next 2/5</string>
+    <string name="nextd_3">Next 3/5</string>
+    <string name="nextd_4">Next 4/5</string>
+
+    <string name="next_8">Finish</string>
     <string name="pin">Pin</string>
     <string name="unpin">Unpin</string>
+    <string name="ask_suggestion">Show overlay suggestion</string>
 </resources>

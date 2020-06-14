@@ -25,6 +25,8 @@ import com.kpstv.xclipper.App.EXTRA_SERVICE_TEXT
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.repository.MainRepository
+import com.kpstv.xclipper.extensions.hide
+import com.kpstv.xclipper.extensions.show
 import kotlinx.android.synthetic.main.bubble_view.view.*
 import kotlinx.android.synthetic.main.item_bubble_service.view.*
 import org.kodein.di.KodeinAware
@@ -84,7 +86,9 @@ class BubbleService : FloatingBubbleService(), KodeinAware {
 
 
     private val pageObserver =
-        Observer<PagedList<Clip>?> { adapter.submitList(it) }
+        Observer<PagedList<Clip>?> {
+            adapter.submitList(it)
+        }
 
     override fun onGetIntent(intent: Intent): Boolean {
         return true
@@ -123,6 +127,13 @@ class BubbleService : FloatingBubbleService(), KodeinAware {
         override fun onBindViewHolder(holder: PageClipHolder, position: Int) {
             val clip = getItem(position)
             with(holder.itemView) {
+
+                /** This will show a small line which indicates this is a pinned clip. */
+                if (clip?.isPinned == true)
+                    ibc_pinView.show()
+                else
+                    ibc_pinView.hide()
+
                 ibc_textView.text = clip?.data?.Decrypt()
                 ibc_textView.setOnClickListener {
                     onClick.invoke(clip?.data?.Decrypt()!!)

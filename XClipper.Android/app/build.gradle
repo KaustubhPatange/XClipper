@@ -124,6 +124,12 @@ dependencies {
     // Floating bubble
     implementation 'com.github.bijoysingh:floating-bubble:3.0.0'
 
+    // Android Gif Drawable
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.19'
+
+    // Youtube Player
+    implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:10.0.5'
+
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.4'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'

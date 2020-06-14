@@ -9,7 +9,6 @@ import com.kpstv.xclipper.App.LOCAL_MAX_ITEM_STORAGE
 import com.kpstv.xclipper.App.MAX_CHARACTER_TO_STORE
 import com.kpstv.xclipper.data.localized.ClipDataDao
 import com.kpstv.xclipper.data.model.Clip
-import com.kpstv.xclipper.data.provider.ClipProvider
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.extensions.Coroutines
 import com.kpstv.xclipper.extensions.clone
@@ -24,7 +23,6 @@ import kotlinx.coroutines.withContext
 class MainRepositoryImpl(
     private val clipDao: ClipDataDao,
     private val firebaseProvider: FirebaseProvider,
-    private val clipProvider: ClipProvider,
     private val notificationHelper: NotificationHelper
 ) : MainRepository {
 
@@ -125,18 +123,24 @@ class MainRepositoryImpl(
                         allData.firstOrNull { it.id == clip.id }
                     if (innerClip != null) {
                         Log.e(TAG, "Update Clip Id: ${innerClip.id}")
-                        clipProvider.processClip(
-                            Clip(
-                                id = innerClip.id!!,
-                                data = clip.data!!,
-                                time = clip.time!!
-                            )
+
+                        val finalClip = Clip.from(clip.clone(innerClip.id!!))
+
+                        /** Merge the existing tags into the clip tags */
+                        if (finalClip.tags != null && clip.tags != null)
+                            finalClip.tags = (finalClip.tags!! + clip.tags!!)
+
+                        clipDao.update(finalClip)
+
+                        /*clipProvider.processClip(
+                            clip.clone(innerClip.id!!)
                         )?.let { finalClip ->
-                            /** Merge the existing tags into the clip tags */
+                            */
+                        /** Merge the existing tags into the clip tags *//*
                             if (finalClip.tags != null && clip.tags != null)
                                 finalClip.tags = (finalClip.tags!! + clip.tags!!)
                             clipDao.update(finalClip)
-                        }
+                        }*/
                         return@io
                     }
                 }
@@ -246,33 +250,48 @@ class MainRepositoryImpl(
         }
 
     override fun processClipAndSave(clip: Clip?) {
-        clipProvider.processClip(clip)?.let { item ->
-            saveClip(item)
-        }
+        if (clip == null) return
+
+        val item = Clip.from(clip)
+        saveClip(item)
+        /*clipProvider.processClip(clip)?.let { item ->
+        }*/
     }
 
     override fun updateRepository(unencryptedData: String?) {
         if (unencryptedData != null && unencryptedData.length > MAX_CHARACTER_TO_STORE) return
 
-        clipProvider.processClip(unencryptedData)?.let { clip ->
-            saveClip(clip)
-            firebaseProvider.uploadData(clip)
+        val clip = Clip.from(unencryptedData!!)
 
-            /*     */
-            /** Send a notification *//*
-            mainThread { notificationHelper.pushNotification(clip.data?.Decrypt()!!) }*/
-        }
+        saveClip(clip)
+        firebaseProvider.uploadData(clip)
+        /*
+        clipProvider.processClip(unencryptedData)?.let { clip ->
+
+
+            *//*     *//*
+            */
+        /** Send a notification *//**//*
+            mainThread { notificationHelper.pushNotification(clip.data?.Decrypt()!!) }*//*
+        }*/
     }
 
     override fun updateRepository(clip: Clip) {
-        clipProvider.processClip(clip)?.let { innerClip ->
-            saveClip(innerClip)
-            firebaseProvider.uploadData(innerClip)
-/*
+        val finalClip = Clip.from(clip)
+
+        saveClip(finalClip)
+        firebaseProvider.uploadData(finalClip)
+
+
+        /*  clipProvider.processClip(clip)?.let { innerClip ->
+              saveClip(innerClip)
+              firebaseProvider.uploadData(innerClip)
+  *//*
+            *//*
             */
-            /** Send a notification *//*
-           mainThread { notificationHelper.pushNotification(clip.data?.Decrypt()!!) }*/
-        }
+        /** Send a notification *//**//*
+           mainThread { notificationHelper.pushNotification(clip.data?.Decrypt()!!) }*//*
+        }*/
     }
 
 }

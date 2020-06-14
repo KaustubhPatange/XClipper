@@ -12,6 +12,7 @@
         <item name="colorForeground">@color/colorCard</item>
         <item name="colorSeparator">@color/colorSeparator</item>
         <item name="colorSelected">@color/colorSelected</item>
+        <item name="colorCurrentClip">@color/colorSelectedClip</item>
     </style>
 
     <style name="ButtonStyle" parent="TextAppearance.MaterialComponents.Button">
@@ -89,6 +90,7 @@
         <item name="colorForeground">@color/colorCard_Light</item>
         <item name="colorSeparator">@color/colorSeparator_Light</item>
         <item name="colorSelected">@color/colorSelected_Light</item>
+        <item name="colorCurrentClip">@color/colorSelectedClip_Light</item>
     </style>
 
     <style name="CustomDialogStyle.Light" parent="Theme.MaterialComponents.Light.Dialog.Alert">

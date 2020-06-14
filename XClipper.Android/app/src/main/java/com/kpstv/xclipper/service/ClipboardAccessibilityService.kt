@@ -68,7 +68,7 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
 
         postKeyboardValue(getKeyboardHeight(applicationContext))
 
-        Log.e(TAG, "Event: ${event?.packageName}, Type: ${event?.eventType}")
+       // Log.e(TAG, "Event: ${event?.packageName}, Type: ${event?.eventType}")
 
         // TODO: A paste hack let's see if it works
         event?.source?.apply {
