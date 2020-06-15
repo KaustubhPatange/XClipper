@@ -167,6 +167,12 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
         startActivity(intent)
     }
 
+    override fun onDestroy() {
+        /** Ensures that we remove database initialization observation. */
+        firebaseUtils.removeDatabaseInitializationObservation()
+        super.onDestroy()
+    }
+
     override fun onInterrupt() {}
 
     /**

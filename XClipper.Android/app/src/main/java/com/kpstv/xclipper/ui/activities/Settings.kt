@@ -12,10 +12,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.zxing.integration.android.IntentIntegrator
 import com.kpstv.xclipper.App.ACTION_REPLACE_FRAG
-import com.kpstv.xclipper.App.UID_PATTERN_REGEX
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.SpecialMenu
-import com.kpstv.xclipper.data.provider.PreferenceProvider
+import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
 import com.kpstv.xclipper.extensions.utils.ThemeUtils
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showConnectionDialog
@@ -45,6 +44,7 @@ class Settings : AppCompatActivity(), KodeinAware {
 
     override val kodein by kodein()
     private val viewModelFactory by instance<MainViewModelFactory>()
+    private val dbConnectionProvider by instance<DBConnectionProvider>()
     private val mainViewModel: MainViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
     }
@@ -170,9 +170,41 @@ class Settings : AppCompatActivity(), KodeinAware {
         val result =
             IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
         if (result?.contents != null) {
-            UID_PATTERN_REGEX.toRegex().let {
-                if (it.containsMatchIn(result.contents)) {
-                    /** This will connect this device with repository. */
+
+            dbConnectionProvider.processResult(result.contents, ResponseListener(
+                complete = {
+
+                    /** Here we will make a connection request to the database. */
+
+                    val dialog = showConnectionDialog(this)
+
+                    mainViewModel.updateDeviceConnection(it, ResponseListener(
+                        complete = {
+                            Toasty.info(this, getString(R.string.connect_success)).show()
+                            dialog.dismiss()
+                        },
+                        error = { e ->
+                            dialog.dismiss()
+                            Toasty.error(this, e.message!!).show()
+                        }
+                    ))
+                },
+                error = {
+                    Toasty.error(this, it.message!!).show()
+                }
+            ))
+
+            /*  UID_PATTERN_REGEX.toRegex().let {
+                  if (it.containsMatchIn(result.contents)) {
+                      */
+            /** This will connect this device with repository. *//*
+
+                    val values = result.contents.split(";")
+                    val uid = values[0]
+                    val firebaseConfigs = values[1].Decrypt().split(";")
+                    val firebaseAppId = firebaseConfigs[0]
+                    val firebaseApiKey = firebaseConfigs[1]
+                    val firebaseEndpoint = firebaseConfigs[2]
 
                     val dialog = showConnectionDialog(this)
 
@@ -188,7 +220,7 @@ class Settings : AppCompatActivity(), KodeinAware {
                     ))
                 } else
                     Toasty.error(this, getString(R.string.err_uid)).show()
-            }
+            }*/
         }
         super.onActivityResult(requestCode, resultCode, data)
     }

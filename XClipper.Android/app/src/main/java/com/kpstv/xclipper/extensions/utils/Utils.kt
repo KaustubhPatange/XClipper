@@ -13,7 +13,6 @@ import android.content.pm.ServiceInfo
 import android.os.Build
 import android.provider.Settings
 import android.telephony.TelephonyManager
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.accessibility.AccessibilityManager
@@ -27,11 +26,12 @@ import com.kpstv.license.Decrypt
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.App.BIND_PREF
 import com.kpstv.xclipper.App.BLACKLIST_PREF
-import com.kpstv.xclipper.App.EMPTY_STRING
 import com.kpstv.xclipper.App.UID_PREF
 import com.kpstv.xclipper.R
+import com.kpstv.xclipper.data.localized.FBOptions
 import com.kpstv.xclipper.data.model.AppPkg
 import com.kpstv.xclipper.data.model.Clip
+import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.service.ClipboardAccessibilityService
 import kotlinx.android.synthetic.main.dialog_connect.view.*
@@ -275,19 +275,22 @@ class Utils {
             return dialog
         }
 
-        fun logoutFromDatabase(preferenceProvider: PreferenceProvider) {
+        fun logoutFromDatabase(
+            preferenceProvider: PreferenceProvider,
+            dbConnectionProvider: DBConnectionProvider
+        ) {
+            dbConnectionProvider.detachDataFromAll()
             preferenceProvider.putBooleanKey(BIND_PREF, false)
-            preferenceProvider.putStringKey(UID_PREF, EMPTY_STRING)
-
-            App.UID = EMPTY_STRING
             App.BindToFirebase = false
         }
 
-        fun loginToDatabase(preferenceProvider: PreferenceProvider, UID: String) {
-            preferenceProvider.putStringKey(UID_PREF, UID)
+        fun loginToDatabase(
+            preferenceProvider: PreferenceProvider,
+            dbConnectionProvider: DBConnectionProvider,
+            options: FBOptions
+        ) {
+            dbConnectionProvider.saveOptionsToAll(options)
             preferenceProvider.putBooleanKey(BIND_PREF, true)
-
-            App.UID = UID
             App.BindToFirebase = true
         }
 

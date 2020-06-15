@@ -23,6 +23,7 @@ namespace Components
         public static string ImageFolder = Path.Combine(ApplicationDirectory, "Image");
         public static string DatabasePath = Path.Combine(ApplicationDirectory, "data.db");
         public static string CustomFirebasePath = Path.Combine(ApplicationDirectory, "custom-firebase.xml");
+        public static string QRImageFilePath = Path.Combine(ApplicationDirectory, "qr.png");
 
         #region Some Filter Constants
 
@@ -50,6 +51,7 @@ namespace Components
 
         #region Database Path Constants
 
+        public const string DEVICE_REGEX_PATH_PATTERN = @"\/users\/(.+)\/Devices\/id";
         public const string PATH_CLIP_DATA = "/Clips/data";
 
         #endregion

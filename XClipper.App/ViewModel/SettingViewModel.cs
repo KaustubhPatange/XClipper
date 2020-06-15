@@ -15,6 +15,9 @@ using static Components.TranslationHelper;
 using System.Security.RightsManagement;
 using System.Windows.Documents;
 using System.Windows.Navigation;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Diagnostics;
 
 #nullable enable
 
@@ -36,6 +39,7 @@ namespace Components
             PurchaseCommand = new RelayCommand(PurchaseButtonClicked);
             ConnectedCommand = new RelayCommand(ConnectedButtonClicked);
             ResetDataCommand = new RelayCommand(ResetDataButtonClicked);
+            QRImageCommand = new RelayCommand<ImageSource>(QRImageDoubleClicked);
 
             previousSecureDBValue = IsSecureDB;
             previousPassword = CustomPassword;
@@ -46,9 +50,8 @@ namespace Components
         #region Actual Settings
 
         private bool is_secure_db { get; set; } = IsSecureDB;
-
-        // For Start application on system startup.
         private ISettingEventBinder? _settingbinder { get; set; }
+        public ICommand QRImageCommand { get; set; }
         public ICommand SaveCommand { get; set; }
         public ICommand ResetCommand { get; set; }
         public ICommand PurchaseCommand { get; set; }
@@ -117,6 +120,22 @@ namespace Components
         }
 
         /// <summary>
+        /// This method will save the Image Stream from QR Image Source
+        /// and will show the image in default image viewer.
+        /// </summary>
+        /// <param name="obj"></param>
+        private void QRImageDoubleClicked(ImageSource obj)
+        {
+            var encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create((BitmapSource)obj));
+            using (FileStream stream = new FileStream(QRImageFilePath, FileMode.Create))
+            {
+                encoder.Save(stream);
+                Process.Start(QRImageFilePath);
+            }
+        }
+
+        /// <summary>
         /// This event will be raised when Reset Data button is clicked.
         /// </summary>
         private void ResetDataButtonClicked()
@@ -125,7 +144,7 @@ namespace Components
                 MessageBoxButton.OKCancel, MessageBoxImage.Warning);
             if (result == MessageBoxResult.OK)
             {
-                _settingbinder?.onDataResetButtonClicked();
+                _settingbinder?.OnDataResetButtonClicked();
             }
         }
 

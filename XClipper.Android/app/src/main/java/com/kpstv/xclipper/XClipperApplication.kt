@@ -54,9 +54,14 @@ class XClipperApplication : Application(), KodeinAware {
         bind() from singleton { instance<MainDatabase>().clipTagDao() }
         bind() from singleton { instance<MainDatabase>().clipDefineDao() }
         bind() from singleton { instance<MainDatabase>().clipUrlDao() }
+        bind<DBConnectionProvider>() with singleton {
+            DBConnectionProviderImpl(
+                instance()
+            )
+        }
         bind<PreferenceProvider>() with singleton { PreferenceProviderImpl(instance()) }
-        bind<FirebaseProvider>() with singleton { FirebaseProviderImpl() }
-        bind<ClipboardProvider>() with singleton { ClipboardProviderImpl(instance(),instance()) }
+        bind<FirebaseProvider>() with singleton { FirebaseProviderImpl(instance(), instance()) }
+        bind<ClipboardProvider>() with singleton { ClipboardProviderImpl(instance(), instance()) }
         bind<TagRepository>() with singleton { TagRepositoryImpl(instance()) }
         bind<DefineRepository>() with singleton { DefineRepositoryImpl(instance()) }
         bind<UrlRepository>() with singleton { UrlRepositoryImpl(instance()) }
@@ -69,6 +74,7 @@ class XClipperApplication : Application(), KodeinAware {
         }
         bind() from singleton {
             FirebaseUtils(
+                instance(),
                 instance(),
                 instance(),
                 instance(),
@@ -85,12 +91,15 @@ class XClipperApplication : Application(), KodeinAware {
                 instance(),
                 instance(),
                 instance(),
+                instance(),
                 instance()
             )
         }
     }
     private val notificationHelper by instance<NotificationHelper>()
     private val preferenceProvider by instance<PreferenceProvider>()
+    private val firebaseProvider by instance<FirebaseProvider>()
+    private val dbConnectionProvider by instance<DBConnectionProvider>()
 
     override fun onCreate() {
         super.onCreate()
@@ -103,6 +112,14 @@ class XClipperApplication : Application(), KodeinAware {
 
     private fun init() {
 
+        /*     val options = FirebaseOptions.Builder()
+                     .setApiKey("AIzaSyC_RZ8DKmdBmMhIaZY1xCDgDqYKKUPblgc")
+                     .setApplicationId("1:323700069140:android:45214e9044fa01f0046801")
+                     .setDatabaseUrl("https://kps-tv.firebaseio.com/")
+                     .build()
+
+             FirebaseApp.initializeApp(this, options)*/
+
         // Set device ID at startup
         DeviceID = Settings.Secure.getString(
             contentResolver,
@@ -111,12 +128,18 @@ class XClipperApplication : Application(), KodeinAware {
 
         // Load settings here
         DICTIONARY_LANGUAGE = preferenceProvider.getStringKey(LANG_PREF, "en")!!
-        UID = preferenceProvider.getStringKey(UID_PREF, EMPTY_STRING) ?: EMPTY_STRING
+
+        /** This will load firebase config setting */
+        dbConnectionProvider.loadDataFromPreference()
+
         DARK_THEME = preferenceProvider.getBooleanKey(DARK_PREF, true)
         showSuggestion = preferenceProvider.getBooleanKey(SUGGESTION_PREF, false)
         BindToFirebase = if (UID.isBlank()) false
         else
             preferenceProvider.getBooleanKey(BIND_PREF, false)
+
+        /** Initialize firebase data */
+        firebaseProvider.initialize(dbConnectionProvider.optionsProvider())
 
         // TODO: Already doing this in retrievePackages App.blackListedApps = pref.getStringSet("blacklist_pref", mutableSetOf())
     }

@@ -44,8 +44,10 @@ object App {
     // TODO: Do all your jack jacks
     const val STANDARD_DATE_FORMAT = "yyyyMMddHHmmss"
 
-    //1PAF8EB-4KR35L-1ICT12V-H7M3FM
-    var UID: String = ""
+    var FB_ENDPOINT: String = ""
+    var FB_APIKEY: String = ""
+    var FB_APPID: String = ""
+    var UID: String = "" // TODO: remove this eg: 1PAF8EB-4KR35L-1ICT12V-H7M3FM
     lateinit var DeviceID: String
 
     var BindToFirebase = true
@@ -105,6 +107,9 @@ object App {
     const val LOGOUT_PREF = "logout_pref"
     const val BIND_PREF = "bind_pref"
     const val UID_PREF = "uid_key"
+    const val FB_APIKEY_PREF = "apiKey_pref"
+    const val FB_APPID_PREF = "appId_pref"
+    const val FB_ENDPOINT_PREF = "endpoint_pref"
     const val DARK_PREF = "dark_pref"
     const val IMPORT_PREF = "import_pref"
     const val EXPORT_PREF = "export_pref"

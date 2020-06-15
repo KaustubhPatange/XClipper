@@ -73,7 +73,7 @@ namespace Components
 
             Task.Run(async () => 
             { 
-                Devices = await FirebaseSingleton.GetInstance.RemoveDevice(Devices[SelectedIndex].ID);
+                Devices = await FirebaseSingleton.GetInstance.RemoveDevice(Devices[SelectedIndex].id);
                 ShowProgress = false;
                 ButtonEnabled = true;
             });

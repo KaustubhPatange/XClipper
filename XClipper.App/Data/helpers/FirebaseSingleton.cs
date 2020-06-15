@@ -18,7 +18,7 @@ namespace Components
         #region Variable Declaration
 
         private static FirebaseSingleton Instance;
-        private readonly IFirebaseClient client;
+        private IFirebaseClient client;
         private IFirebaseBinder binder;
         private string UID;
         private bool alwaysForceInvoke = false;
@@ -40,7 +40,15 @@ namespace Components
         private FirebaseSingleton()
         {
             // Automatically Instantiate Firebase client
+            InitConfig();
+        }
 
+        #endregion
+
+        #region Private Methods
+
+        public void InitConfig()
+        {
             IFirebaseConfig config = new FirebaseConfig
             {
                 AuthSecret = FirebaseSecret,
@@ -49,11 +57,7 @@ namespace Components
             client = new FirebaseClient(config);
         }
 
-        #endregion
-
-        #region Private Methods
-
-        private async Task SetGlobalUser(bool forceInvoke = false)
+        public async Task SetGlobalUser(bool forceInvoke = false)
        {
             if (alwaysForceInvoke || user == null || forceInvoke)
             {
@@ -153,7 +157,7 @@ namespace Components
         {
             await SetGlobalUser(true);
 
-            user.Devices = user.Devices.Where(d => d.ID != DeviceId).ToList();
+            user.Devices = user.Devices.Where(d => d.id != DeviceId).ToList();
             await client.UpdateAsync($"users/{UID}", user);
             return user.Devices;
         }
@@ -279,9 +283,9 @@ namespace Components
 
     public class Device
     {
-        public string ID { get; set; }
-        public int SDK { get; set; }
-        public string Model { get; set; }
+        public string id { get; set; }
+        public int sdk { get; set; }
+        public string model { get; set; }
     }
 
     public class Clip

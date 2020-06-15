@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.kpstv.xclipper.data.provider.ClipboardProvider
+import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.data.repository.MainRepository
@@ -22,6 +23,7 @@ class MainViewModelFactory(
     private val preferenceProvider: PreferenceProvider,
     private val firebaseProvider: FirebaseProvider,
     private val clipboardProvider: ClipboardProvider,
+    private val dbConnectionProvider: DBConnectionProvider,
     private val firebaseUtils: FirebaseUtils,
     private val dictionaryApiHelper: DictionaryApiHelper,
     private val tinyUrlApiHelper: TinyUrlApiHelper
@@ -41,8 +43,9 @@ class MainViewModelFactory(
                         tagRepository,
                         preferenceProvider,
                         firebaseProvider,
-                        firebaseUtils,
                         clipboardProvider,
+                        dbConnectionProvider,
+                        firebaseUtils,
                         dictionaryApiHelper,
                         tinyUrlApiHelper
                     )

@@ -42,6 +42,7 @@
     <system:String x:Key="settings_scd">Devices</system:String>
     <system:String x:Key="settings_btd">Database binding</system:String>
     <system:String x:Key="settings_btd_tooltip">When checked, app will respond and sync data with online database.</system:String>
+    <system:String x:Key="settings_qr_tooltip">Double click the QR Image to view in default image viewer.</system:String>
     <system:String x:Key="settings_purchase_info">Option available in donated version. Click on learn more.</system:String>
     <system:String x:Key="settings_reset_btn">Reset Defaults</system:String>
     <system:String x:Key="settings_save_btn">Save</system:String>

@@ -35,15 +35,15 @@
                 <GridView>
                     <GridViewColumn
                         Width="auto"
-                        DisplayMemberBinding="{Binding ID}"
+                        DisplayMemberBinding="{Binding id}"
                         Header="ID" />
                     <GridViewColumn
                         Width="auto"
-                        DisplayMemberBinding="{Binding Model}"
+                        DisplayMemberBinding="{Binding model}"
                         Header="Model" />
                     <GridViewColumn
                         Width="auto"
-                        DisplayMemberBinding="{Binding SDK}"
+                        DisplayMemberBinding="{Binding sdk}"
                         Header="SDK" />
                 </GridView>
             </ListView.View>

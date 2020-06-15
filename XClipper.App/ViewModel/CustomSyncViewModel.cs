@@ -21,6 +21,8 @@ namespace Components
 
             SaveCommand = new RelayCommand(SaveButtonClicked);
             ResetCommand = new RelayCommand(ResetButtonClicked);
+
+            checkForReset();
         }
 
         #region Actual Bindings
@@ -31,6 +33,7 @@ namespace Components
         public string FBS { get; set; }
         public string FBAK { get; set; }
         public string FBAI { get; set; }
+        public bool ResetEnabled { get; set; } = false;
 
         #endregion
 
@@ -38,19 +41,24 @@ namespace Components
 
         private void SaveButtonClicked()
         {
-            if (string.IsNullOrWhiteSpace(FBE) && string.IsNullOrWhiteSpace(FBS) && string.IsNullOrWhiteSpace(FBAK) &&
+            if (string.IsNullOrWhiteSpace(FBE) || string.IsNullOrWhiteSpace(FBS) || string.IsNullOrWhiteSpace(FBAK) ||
                 string.IsNullOrWhiteSpace(FBAI))
             {
                 MessageBox.Show(Translation.MSG_FIELD_EMPTY, Translation.MSG_ERR, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            FBE = FirebaseEndpoint;
-            FBS = FirebaseSecret;
-            FBAI = FirebaseAppId;
-            FBAK = FirebaseApiKey;
+            FirebaseEndpoint = FBE;
+            FirebaseSecret = FBS;
+            FirebaseAppId = FBAI;
+            FirebaseApiKey = FBAK;
 
             WriteFirebaseSetting();
+
+            checkForReset();
+
+            // Initialize new firebase Config
+            FirebaseSingleton.GetInstance.InitConfig();
 
             MessageBox.Show(Translation.MSG_CONFIG_SAVE, Translation.MSG_INFO, MessageBoxButton.OK, MessageBoxImage.Information);
         }
@@ -71,9 +79,19 @@ namespace Components
                     FBE = FBS = FBAI = FBAK = string.Empty;
 
                     File.Delete(CustomFirebasePath);
+
+                    FirebaseSingleton.GetInstance.InitConfig();
+
+                    checkForReset();
+
                     MessageBox.Show(Translation.MSG_CONFIG_RESET_SUCCESS, Translation.MSG_INFO, MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
+        }
+
+        private void checkForReset()
+        {
+            ResetEnabled = File.Exists(CustomFirebasePath);
         }
 
         #endregion

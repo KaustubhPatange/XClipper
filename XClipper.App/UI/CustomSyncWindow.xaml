@@ -38,7 +38,11 @@
             <TextBox Margin="0,5,0,0" Text="{Binding FBAK, UpdateSourceTrigger=PropertyChanged}" />
         </StackPanel>
 
-        <!--  todo: Fix enabled issue here  -->
+        <!--
+            todo: Fix enabled issue here
+            
+            IsEnabled="{Binding Source={x:Static local:Constants.CustomFirebasePath}, Converter={x:Static local:FileVisibilityConverter.Instance}}"
+        -->
         <DockPanel Margin="0,15,0,0">
             <Button
                 Width="130"
@@ -46,7 +50,7 @@
                 HorizontalAlignment="Left"
                 Command="{Binding ResetCommand}"
                 Content="{DynamicResource sync_config_reset}"
-                IsEnabled="{Binding Source={x:Static local:Constants.CustomFirebasePath}, Converter={x:Static local:FileVisibilityConverter.Instance}}" />
+                IsEnabled="{Binding ResetEnabled}" />
             <Button
                 Width="70"
                 Height="22"

@@ -97,8 +97,7 @@ class AccountPreference() : PreferenceFragmentCompat(), KodeinAware {
     private fun bindUI() {
         preferenceProvider.observePreference()
         { _, s ->
-            if (s == UID_PREF)
-                checkForPreferenceChanged()
+            checkForPreferenceChanged()
         }
     }
 

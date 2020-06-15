@@ -23,6 +23,7 @@ using Autofac;
 using FireSharp.Extensions;
 using Components.UI;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace Components
 {
@@ -318,7 +319,7 @@ namespace Components
             CallDeviceWindow();
         }
 
-        public void onDataResetButtonClicked()
+        public void OnDataResetButtonClicked()
         {
             // Close the setting window.
             settingWindow.Close();
@@ -342,7 +343,18 @@ namespace Components
         public void OnDataAdded(ValueAddedEventArgs e)
         {
          //   AppSingleton.GetInstance.CheckDataAndUpdate(e.Data);
-            Debug.WriteLine("Added:" + e.Data);
+
+//Added:1764456878cf916a, Path: /users/1PAF8EB-4KR35L-1ICT12V-H7M3FM/Devices/id
+//Added:POCO F1, Path: /users/1PAF8EB-4KR35L-1ICT12V-H7M3FM/Devices/model
+//Added:29, Path: /users/1PAF8EB-4KR35L-1ICT12V-H7M3FM/Devices/sdk
+
+            // Add user when node is inserted
+            if (Regex.IsMatch(e.Path, DEVICE_REGEX_PATH_PATTERN))
+            {
+                Debug.WriteLine("Adding Device...");
+                Task.Run(async () => { await FirebaseSingleton.GetInstance.SetGlobalUser(); });
+            }
+
         }
 
         public void OnDataChanged(ValueChangedEventArgs e)
@@ -360,8 +372,12 @@ namespace Components
 
         public void OnDataRemoved(ValueRemovedEventArgs e)
         {
-            // todo: Do something on Removed
-            Debug.WriteLine("Removed:" + e.Path);
+            // Remove user node get's deleted
+            if (Regex.IsMatch(e.Path, DEVICE_REGEX_PATH_PATTERN))
+            {
+                Debug.WriteLine("Removing Device...");
+                Task.Run(async () => { await FirebaseSingleton.GetInstance.SetGlobalUser(); });
+            }
         }
 
 

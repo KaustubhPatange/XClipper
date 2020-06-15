@@ -10,6 +10,6 @@ namespace Components
     {
         void OnBuyButtonClicked();
         void OnConnectedDeviceClicked();
-        void onDataResetButtonClicked();
+        void OnDataResetButtonClicked();
     }
 }
