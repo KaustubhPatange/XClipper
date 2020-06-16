@@ -112,14 +112,6 @@ class XClipperApplication : Application(), KodeinAware {
 
     private fun init() {
 
-        /*     val options = FirebaseOptions.Builder()
-                     .setApiKey("AIzaSyC_RZ8DKmdBmMhIaZY1xCDgDqYKKUPblgc")
-                     .setApplicationId("1:323700069140:android:45214e9044fa01f0046801")
-                     .setDatabaseUrl("https://kps-tv.firebaseio.com/")
-                     .build()
-
-             FirebaseApp.initializeApp(this, options)*/
-
         // Set device ID at startup
         DeviceID = Settings.Secure.getString(
             contentResolver,

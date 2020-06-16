@@ -1,7 +1,7 @@
 package com.kpstv.xclipper.ui.fragments.settings
 
 import android.app.AlertDialog
-import android.content.SharedPreferences
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.ViewModelProvider
@@ -13,7 +13,6 @@ import com.kpstv.xclipper.App.BIND_PREF
 import com.kpstv.xclipper.App.CONNECT_PREF
 import com.kpstv.xclipper.App.LOGOUT_PREF
 import com.kpstv.xclipper.App.UID
-import com.kpstv.xclipper.App.UID_PREF
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
@@ -112,6 +111,4 @@ class AccountPreference() : PreferenceFragmentCompat(), KodeinAware {
             bindPreference?.isEnabled = true
         }
     }
-
-
 }

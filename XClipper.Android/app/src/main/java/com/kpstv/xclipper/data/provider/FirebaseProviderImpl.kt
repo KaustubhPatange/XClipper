@@ -59,7 +59,7 @@ class FirebaseProviderImpl(
 
         if (FirebaseApp.getApps(context).isEmpty())
             FirebaseApp.initializeApp(context, firebaseOptions)
-        
+
         database = Firebase.database(options.endpoint)
         isInitialized.postValue(true)
 
@@ -250,6 +250,9 @@ class FirebaseProviderImpl(
             initialize(dbConnectionProvider.optionsProvider())
 
         if (user == null || validationContext == ValidationContext.ForceInvoke) {
+
+            if (UID.isEmpty()) return
+
             database.getReference(USER_REF).child(UID)
                 .addListenerForSingleValueEvent(FValueEventListener(
                     onDataChange = { snap ->

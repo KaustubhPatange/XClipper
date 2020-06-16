@@ -26,7 +26,6 @@ import com.kpstv.license.Decrypt
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.App.BIND_PREF
 import com.kpstv.xclipper.App.BLACKLIST_PREF
-import com.kpstv.xclipper.App.UID_PREF
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.FBOptions
 import com.kpstv.xclipper.data.model.AppPkg
@@ -256,6 +255,7 @@ class Utils {
                     .setPrompt(getString(R.string.scan_code))
                     .setBarcodeImageEnabled(false)
                     .initiateScan()
+                //  activity.startActivityForResult(scanIntent, QR_SCAN_REQUEST_CODE)
                 alert.dismiss()
             }
         }
