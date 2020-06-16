@@ -1,15 +1,6 @@
-﻿using System;
-using System.Globalization;
-using System.IO;
-using System.Windows;
-using System.Windows.Data;
-
-namespace Components.UI
+﻿namespace Components.UI
 {
-    /// <summary>
-    /// Interaction logic for CustomSyncWindow.xaml
-    /// </summary>
-    public partial class CustomSyncWindow : Window
+    public partial class CustomSyncWindow : CustomHelpWindow
     {
         public CustomSyncWindow()
         {
@@ -18,5 +9,9 @@ namespace Components.UI
             DataContext = new CustomSyncViewModel();
         }
 
+        public override void OnHelpButtonClicked()
+        {
+            // todo: Add link for Firebase help button.
+        }
     }
 }

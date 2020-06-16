@@ -79,6 +79,11 @@ namespace Components
         public static bool IsPurchaseDone { get; set; }
 
         /// <summary>
+        /// This will hold which license strategy has to be applied.
+        /// </summary>
+        public static LicenseType LicenseStrategy { get; set; }
+
+        /// <summary>
         /// Determines whether to use custom user input password or not.
         /// </summary>
         public static bool UseCustomPassword { get; set; } = false;

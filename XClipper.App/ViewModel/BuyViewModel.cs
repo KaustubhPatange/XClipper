@@ -5,8 +5,6 @@ using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
 using static Components.DefaultSettings;
 using System.Windows;
-using System;
-using static Components.App;
 using static Components.TranslationHelper;
 using static Components.MainHelper;
 
@@ -21,13 +19,15 @@ namespace Components
             ActivateCommand = new RelayCommand(VerficationMethod);
 
             KEY = File.Exists(LicenseFilePath) ? File.ReadAllText(LicenseFilePath) : null;
-            IACT = IsActivated(KEY);
+            LT = IsActivated(KEY);
+            IACT = LT != LicenseType.Invalid;
         }
 
         #endregion
 
         #region Actual Bindings
 
+        public LicenseType LT { get; set; }
         public ICommand ActivateCommand { get; set; }
         public string UID { get; private set; } = UniqueID;
         public string KEY { get; set; }
@@ -39,7 +39,12 @@ namespace Components
 
         private void VerficationMethod()
         {
-            IACT = IsActivated(KEY);
+            LT = IsActivated(KEY);
+            IACT = LT != LicenseType.Invalid;
+
+            if (LT == LicenseStrategy)
+                return;
+
             if (IACT == true)
             {
                 IsPurchaseDone = true;

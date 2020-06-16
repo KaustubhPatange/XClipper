@@ -170,9 +170,12 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="AppModule.cs" />
+    <Compile Include="Data\Converters\ActivateButtonConverter.cs" />
     <Compile Include="Data\Converters\FileVisibilityConverter.cs" />
     <Compile Include="Data\Converters\ImageQRConverter.cs" />
+    <Compile Include="Data\Converters\LicenseTextConverter.cs" />
     <Compile Include="Data\helpers\DatabaseHelper.cs" />
+    <Compile Include="Data\unlocalized\CustomHelpWindow.cs" />
     <Compile Include="UI\BuyWindow.xaml.cs">
       <DependentUpon>BuyWindow.xaml</DependentUpon>
     </Compile>

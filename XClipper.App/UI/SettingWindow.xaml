@@ -227,7 +227,8 @@
                             <StackPanel
                                 Margin="0,10,0,0"
                                 HorizontalAlignment="Center"
-                                Orientation="Horizontal">
+                                Orientation="Horizontal"
+                                Visibility="{Binding Source={x:Static local:DefaultSettings.LicenseStrategy}, Converter={x:Static local:LicenseTextConverter.Instance}}">
                                 <TextBlock
                                     FontSize="11"
                                     FontWeight="Medium"

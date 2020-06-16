@@ -41,14 +41,14 @@
                     FontSize="10"
                     FontWeight="Medium"
                     Foreground="{Binding IACT, Converter={x:Static local:ForegroundTextBlockConverter.Instance}}"
-                    Text="{Binding IACT, Converter={x:Static local:ContentTextblockConverter.Instance}}" />
+                    Text="{Binding LT, Converter={x:Static local:ContentTextblockConverter.Instance}}" />
                 <Button
                     Width="75"
                     Height="22"
                     Command="{Binding ActivateCommand}"
                     Content="{DynamicResource buy_activate}"
                     DockPanel.Dock="Right"
-                    IsEnabled="{c:Binding !IACT}" />
+                    IsEnabled="{Binding LT, Converter={x:Static local:ActivateButtonConverter.Instance}}" />
                 <TextBlock Margin="0,3,10,0" HorizontalAlignment="Right">
                     <Hyperlink local:HyperlinkProperties.IsExternal="true" NavigateUri="https://github.com/KaustubhPatange/XClipper/wiki/Purchasing-License">
                         <TextBlock Text="{DynamicResource msg_learn}" />

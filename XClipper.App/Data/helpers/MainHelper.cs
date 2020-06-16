@@ -112,7 +112,8 @@ namespace Components
         /// </summary>
         public static void CheckForLicense()
         {
-            IsPurchaseDone = IsActivated(new Uri(LicenseFilePath));
+            LicenseStrategy = IsActivated(new Uri(LicenseFilePath));
+            IsPurchaseDone = LicenseStrategy != LicenseType.Invalid;
         }
 
         /// <summary>

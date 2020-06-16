@@ -24,6 +24,11 @@ namespace Components
         {
             return (T)Enum.Parse(typeof(T), value, true);
         }
+
+        public static string GetName(this Enum value)
+        {
+            return Enum.GetName(value.GetType(), value);
+        }
         public static SolidColorBrush GetColor(this string hexColor)
         {
             return (SolidColorBrush)(new BrushConverter().ConvertFrom(hexColor));

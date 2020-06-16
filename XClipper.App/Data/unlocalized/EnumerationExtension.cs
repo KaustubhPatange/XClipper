@@ -8,7 +8,6 @@ namespace Components
     public class EnumerationExtension : MarkupExtension
     {
         private Type _enumType;
-
         public EnumerationExtension(Type enumType)
         {
             if (enumType == null)

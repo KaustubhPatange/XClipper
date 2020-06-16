@@ -29,11 +29,10 @@ namespace XClipper.Tests
             Assert.AreEqual(user.Count, 3);
         }
 
-
         [TestMethod]
         public void DatabaseTest()
         {
-            AppSingleton.GetInstance.Init();
+           // AppSingleton.GetInstance.Init();
 
 
             long milliseconds = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;

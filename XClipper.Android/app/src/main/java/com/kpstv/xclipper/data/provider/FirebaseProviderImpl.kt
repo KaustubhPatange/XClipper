@@ -42,8 +42,6 @@ class FirebaseProviderImpl(
 
     override fun isInitialized() = isInitialized
 
-    // private var database: FirebaseDatabase = FirebaseDatabase.getInstance()
-
     override fun initialize(options: FBOptions?) {
         if (options == null) {
             isInitialized.postValue(false)
@@ -161,7 +159,7 @@ class FirebaseProviderImpl(
 
             list.add(newClip)
 
-            updateData(list)
+            pushDataToFirebase(list)
         }
     }
 
@@ -180,16 +178,7 @@ class FirebaseProviderImpl(
             it.data in dataList
         }
 
-        /*
-        user.Clips!!.forEach { clip1 ->
-            clips.forEach { clip2 ->
-                if (clip1.data != clip2.data)
-            }
-        }*/
-
-        //  list.removeAll(clips)
-
-        updateData(list)
+        pushDataToFirebase(list)
     }
 
     private fun saveData(clip: Clip) {
@@ -202,13 +191,13 @@ class FirebaseProviderImpl(
         if (list.size >= size)
             list.removeFirst()
         list.add(clip)
-        updateData(list)
+        pushDataToFirebase(list)
     }
 
     /**
-     * A common provider which will submit the data to firebase.
+     * A common method which will submit the data to firebase.
      */
-    private fun updateData(list: ArrayList<Clip>) {
+    private fun pushDataToFirebase(list: ArrayList<Clip>) {
         database.getReference(USER_REF).child(UID).child(CLIP_REF)
             .setValue(list.cloneToEntries()) { error, _ ->
                 if (error == null) {

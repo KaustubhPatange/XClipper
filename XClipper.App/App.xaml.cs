@@ -148,8 +148,15 @@ namespace Components
                 Process.Start(new ProcessStartInfo("https://github.com/KaustubhPatange/XClipper"));
             });
 
-            var items = new List<WinForm.MenuItem>() { ShowMenuItem, RestartMenuItem, CreateSeparator(), BackupMenuItem, RestoreMenutItem, ImportDataItem, CreateSeparator(), ConfigSettingItem , CreateSeparator(), HelpMenuItem, CreateSeparator(), RecordMenuItem, DeleteMenuItem, SettingMenuItem, CreateSeparator(), AppExitMenuItem };
-            if (!IsPurchaseDone) items.Insert(1, BuyWindowItem);
+            var items = new List<WinForm.MenuItem>() { ShowMenuItem, BuyWindowItem, RestartMenuItem, CreateSeparator(), BackupMenuItem, RestoreMenutItem, ImportDataItem, CreateSeparator(),  HelpMenuItem, CreateSeparator(), RecordMenuItem, DeleteMenuItem, SettingMenuItem, CreateSeparator(), AppExitMenuItem };
+         
+            if (LicenseStrategy == LicenseType.Premium)
+            {
+                items.Insert(7, ConfigSettingItem);
+                items.Insert(7, CreateSeparator());
+            }
+            
+            //  if (!IsPurchaseDone) items.Insert(1, BuyWindowItem);
             return items.ToArray();
         }
 
