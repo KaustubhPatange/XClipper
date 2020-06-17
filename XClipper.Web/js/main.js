@@ -7,7 +7,25 @@ AOS.init({
 history.scrollRestoration = "manual";
 
 function scrollToVideo() {
-  document.getElementById("videoSection").scrollIntoView();
+  scrollToSection("videoSection", "videoHr");
+}
+
+function scrollToPricing() {
+  scrollToSection("purchaseSection", "purchaseHr");
+}
+
+function scrollToSection(elementId, secondElementId) {
+  var screenWidth = document.documentElement.clientWidth;
+  if (screenWidth >= 992) {
+    var element = document.getElementById(elementId);
+
+    const elementRect = element.getBoundingClientRect();
+    const absoluteElementTop = elementRect.top + window.pageYOffset;
+    const middle = absoluteElementTop - window.innerHeight / 5;
+    window.scrollTo(0, middle);
+  } else {
+    document.getElementById(secondElementId).scrollIntoView();
+  }
 }
 
 function openGithub() {

@@ -104,6 +104,13 @@ body {
 .smalltitle1 {
   font-size: 15px;
 }
+hr {
+  border: none;
+  height: 1px;
+  /* Set the hr color */
+  color: #2d303b; /* old IE */
+  background-color:#2d303b; * Modern Browsers */
+}
 #purchaseSection {
 }
 /* Mobile screens */
@@ -164,9 +171,6 @@ body {
   .mainContainer {
     margin-top: 80px;
   }
-  section {
-    height: 100vh;
-  }
 }
 
 /* Laptop/Desktop screens */
@@ -189,5 +193,8 @@ body {
   }
   section {
     height: 100vh;
+  }
+  hr {
+    height: 0px;
   }
 }
