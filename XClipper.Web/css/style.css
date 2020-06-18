@@ -104,14 +104,25 @@ body {
 .smalltitle1 {
   font-size: 15px;
 }
-hr {
+.customHr {
   border: none;
   height: 1px;
-  /* Set the hr color */
   color: #2d303b; /* old IE */
-  background-color:#2d303b; * Modern Browsers */
+  background-color: #2d303b;
 }
+
+.customCardHr {
+  border: none;
+  height: 1px;
+  color: #2d303b; /* old IE */
+  background-color: #2d303b;
+}
+
 #purchaseSection {
+}
+
+.card-text {
+  font-size: 13px;
 }
 /* Mobile screens */
 @media only screen and (max-width: 600px) {
@@ -137,6 +148,9 @@ hr {
     margin-top: 70px;
     margin-left: 5px;
   }
+  /* .card-text {
+    font-size: 12px;
+  } */
 }
 
 /* Large mobile screens */
@@ -194,7 +208,7 @@ hr {
   section {
     height: 100vh;
   }
-  hr {
+  .customHr {
     height: 0px;
   }
 }

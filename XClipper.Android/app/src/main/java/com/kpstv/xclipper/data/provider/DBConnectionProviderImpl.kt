@@ -1,8 +1,8 @@
 package com.kpstv.xclipper.data.provider
 
+import com.kpstv.license.DatabaseEncryption
 import com.kpstv.license.Decrypt
 import com.kpstv.xclipper.App
-import com.kpstv.xclipper.App.BindToFirebase
 import com.kpstv.xclipper.App.EMPTY_STRING
 import com.kpstv.xclipper.data.localized.FBOptions
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
@@ -29,6 +29,7 @@ class DBConnectionProviderImpl(
                 val firebaseAppId = firebaseConfigs[0]
                 val firebaseApiKey = firebaseConfigs[1]
                 val firebaseEndpoint = firebaseConfigs[2]
+                val firebasePassword = firebaseConfigs[3]
 
                 responseListener.onComplete(
                     FBOptions.Builder().apply {
@@ -36,6 +37,7 @@ class DBConnectionProviderImpl(
                         setApiKey(firebaseApiKey)
                         setAppId(firebaseAppId)
                         setEndPoint(firebaseEndpoint)
+                        setPassword(firebasePassword)
                     }
                         .build()
                 )
@@ -63,6 +65,13 @@ class DBConnectionProviderImpl(
             EMPTY_STRING
         ) ?: EMPTY_STRING
         App.UID = preferenceProvider.getStringKey(App.UID_PREF, EMPTY_STRING) ?: EMPTY_STRING
+
+        /** This will initialize a password */
+        val fbPassword = preferenceProvider.getEncryptString(
+            App.FB_PASSWORD_PREF,
+            EMPTY_STRING
+        ) ?: EMPTY_STRING
+        DatabaseEncryption.setPassword(fbPassword)
     }
 
     override fun saveOptionsToAll(options: FBOptions) {
@@ -75,9 +84,13 @@ class DBConnectionProviderImpl(
         preferenceProvider.putEncryptString(
             App.FB_APPID_PREF, options.appId
         )
+        preferenceProvider.putEncryptString(
+            App.FB_PASSWORD_PREF, options.password
+        )
         preferenceProvider.putStringKey(
             App.UID_PREF, options.uid
         )
+
         /** This will load the data to App.kt properties */
         loadDataFromPreference()
     }
@@ -89,6 +102,7 @@ class DBConnectionProviderImpl(
                 setApiKey(App.FB_APIKEY)
                 setAppId(App.FB_APPID)
                 setEndPoint(App.FB_ENDPOINT)
+                setPassword(DatabaseEncryption.getPassword())
             }.build()
         } else
             null
@@ -98,6 +112,7 @@ class DBConnectionProviderImpl(
         preferenceProvider.putStringKey(App.FB_ENDPOINT_PREF, null)
         preferenceProvider.putStringKey(App.FB_APPID_PREF, null)
         preferenceProvider.putStringKey(App.FB_APIKEY_PREF, null)
+        preferenceProvider.putStringKey(App.FB_PASSWORD_PREF, null)
         preferenceProvider.putStringKey(App.UID_PREF, null)
 
         loadDataFromPreference()

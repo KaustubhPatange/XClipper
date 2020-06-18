@@ -7,6 +7,7 @@ class FBOptions {
     lateinit var appId: String
     lateinit var apiKey: String
     lateinit var endpoint: String
+    lateinit var password: String
 
     class Builder {
         private val options = FBOptions()
@@ -27,6 +28,11 @@ class FBOptions {
 
         fun setEndPoint(value: String): Builder {
             options.endpoint = value
+            return this
+        }
+
+        fun setPassword(value: String): Builder {
+            options.password = value
             return this
         }
 

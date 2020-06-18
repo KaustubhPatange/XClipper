@@ -59,6 +59,8 @@ namespace Components
 
         public async Task SetGlobalUser(bool forceInvoke = false)
        {
+            if (!BindDatabase) return;
+
             if (alwaysForceInvoke || user == null || forceInvoke)
             {
                 user = await _GetUser();
@@ -98,7 +100,21 @@ namespace Components
         public async void SetCallback(IFirebaseBinder binder)
         {
             this.binder = binder;
-            await client.OnAsync("", (o, a, c) => { binder.OnDataAdded(a); }, (o,a,c)=> { binder.OnDataChanged(a); }, (o,a,c)=> { binder.OnDataRemoved(a); });
+            await client.OnAsync($"users/{UID}", (o, a, c) => 
+            {
+                if (BindDatabase)
+                    binder.OnDataAdded(a); 
+            }, 
+            (o,a,c)=> 
+            {
+                if (BindDatabase)
+                    binder.OnDataChanged(a); 
+            }, 
+            (o,a,c)=> 
+            {
+                if (BindDatabase)
+                    binder.OnDataRemoved(a); 
+            });
         }
 
         /// <summary>
@@ -117,6 +133,7 @@ namespace Components
         /// <returns></returns>
         public async Task<User> RegisterUser()
         {
+            if (!BindDatabase) return new User();
             var exist = await IsUserExist();
             if (!exist)
             {
@@ -149,12 +166,16 @@ namespace Components
 
         public async Task<List<Device>?> GetDeviceListAsync()
         {
+            if (!BindDatabase) return new List<Device>();
+
             await SetGlobalUser(true);
             return user.Devices;
         }
 
         public async Task<List<Device>> RemoveDevice(string DeviceId)
         {
+            if (!BindDatabase) return new List<Device>();
+
             await SetGlobalUser(true);
 
             user.Devices = user.Devices.Where(d => d.id != DeviceId).ToList();
@@ -207,6 +228,8 @@ namespace Components
         /// <returns></returns>
         public async Task RemoveClip(int position)
         {
+            if (!BindDatabase) return;
+
             await SetGlobalUser();
             if (user.Clips == null)
                 return;
@@ -244,6 +267,8 @@ namespace Components
         /// <returns></returns>
         public async Task RemoveAllClip()
         {
+            if (!BindDatabase) return;
+
             await SetGlobalUser();
             if (user.Clips == null)
                 return;

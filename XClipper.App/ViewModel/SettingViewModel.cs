@@ -18,6 +18,7 @@ using System.Windows.Navigation;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 #nullable enable
 
@@ -184,7 +185,6 @@ namespace Components
             WhatToStore = WTS;
             AppDisplayLocation = ADL;
             IsCtrl = KEY_IC;
-            DatabaseEncryptPassword = FDP;
             UseCustomPassword = UCP;
             IsShift = KEY_IS;
             IsAlt = KEY_IA;
@@ -198,9 +198,29 @@ namespace Components
 
             ToggleSecureDatabase();
 
+            ToggleFirebasePassword();
+
             WriteSettings();
 
             MessageBox.Show(Translation.SETTINGS_SAVE);
+        }
+
+        /// <summary>
+        /// This method will delete all existing Firebase storage database.
+        /// </summary>
+        private void ToggleFirebasePassword()
+        {
+            if (DatabaseEncryptPassword != FDP)
+            {
+                var result = MessageBox.Show(Translation.SETTINGS_FB_PASSWORD, Translation.MSG_INFO, MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
+                if (result == MessageBoxResult.Yes)
+                {
+                    // Remove the user from firebase
+                    Task.Run(async () => { await FirebaseSingleton.GetInstance.RemoveUser(); });
+
+                    DatabaseEncryptPassword = FDP;
+                }
+            }
         }
 
         /// <summary>

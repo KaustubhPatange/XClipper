@@ -48,6 +48,7 @@
     <system:String x:Key="settings_save_btn">Save</system:String>
     <system:String x:Key="settings_reset">Settings Reset complete! If it didn't try restarting the application</system:String>
     <system:String x:Key="settings_save">Settings applied! If it didn't try restarting the application</system:String>
+    <system:String x:Key="settings_fb_password">This will delete all existing data on firebase (if exist) since migration operations are costly</system:String>
     <system:String x:Key="filter_header">Filter</system:String>
     <system:String x:Key="filter_title">Filter Items by:</system:String>
     <system:String x:Key="filter_index">Filter Index</system:String>

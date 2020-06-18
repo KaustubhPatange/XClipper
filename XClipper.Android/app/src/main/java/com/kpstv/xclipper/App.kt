@@ -111,6 +111,7 @@ object App {
     const val UID_PREF = "uid_key"
     const val FB_APIKEY_PREF = "apiKey_pref"
     const val FB_APPID_PREF = "appId_pref"
+    const val FB_PASSWORD_PREF = "password_pref"
     const val FB_ENDPOINT_PREF = "endpoint_pref"
     const val DARK_PREF = "dark_pref"
     const val IMPORT_PREF = "import_pref"

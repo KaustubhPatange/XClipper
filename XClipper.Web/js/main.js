@@ -6,6 +6,23 @@ AOS.init({
 
 history.scrollRestoration = "manual";
 
+makeToActOnCard("freeCard", "freeCardHr");
+makeToActOnCard("standardCard", "standardCardHr");
+makeToActOnCard("premiumCard", "premiumCardHr");
+
+function makeToActOnCard(cardElement, cardElementHr) {
+  var card = document.getElementById(cardElement);
+  var cardHr = document.getElementById(cardElementHr);
+  card.addEventListener("mouseover", function () {
+    cardHr.style.color = "#515b80";
+    cardHr.style.backgroundColor = "#515b80";
+  });
+  card.addEventListener("mouseleave", function () {
+    cardHr.style.color = "#2d303b";
+    cardHr.style.backgroundColor = "#2d303b";
+  });
+}
+
 function scrollToVideo() {
   scrollToSection("videoSection", "videoHr");
 }

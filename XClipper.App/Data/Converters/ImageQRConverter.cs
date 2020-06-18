@@ -16,7 +16,7 @@ namespace Components
         public static ImageQRConverter Instance = new ImageQRConverter();
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var valueToConvert = value as string + ";" + $"{FirebaseAppId};{FirebaseApiKey};{FirebaseEndpoint}".EncryptBase64();
+            var valueToConvert = value as string + ";" + $"{FirebaseAppId};{FirebaseApiKey};{FirebaseEndpoint};{DatabaseEncryptPassword}".EncryptBase64();
 
             var qrData = new QRCodeGenerator().CreateQrCode(valueToConvert, QRCodeGenerator.ECCLevel.L);
             var image = new QRCode(qrData).GetGraphic(20, System.Drawing.Color.Black, System.Drawing.Color.White, true);
