@@ -150,7 +150,7 @@ class Home : Fragment(R.layout.fragment_main), KodeinAware {
         )
 
         adapter.setCopyClick { clip, _ ->
-            clipboardProvider.setClipboard(ClipData.newPlainText(null, clip.data?.Decrypt()))
+            clipboardProvider.setClipboard(ClipData.newPlainText(null, clip.data))
             Toasty.info(requireContext(), getString(R.string.ctc)).show()
         }
 

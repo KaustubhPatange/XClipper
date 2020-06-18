@@ -38,7 +38,7 @@ class CIAdapter(
 ) : ListAdapter<Clip, CIAdapter.MainHolder>(DiffCallback()) {
     class DiffCallback : DiffUtil.ItemCallback<Clip>() {
         override fun areItemsTheSame(oldItem: Clip, newItem: Clip): Boolean =
-            oldItem.data?.Decrypt() == newItem.data?.Decrypt()
+            oldItem.data == newItem.data
 
         override fun areContentsTheSame(oldItem: Clip, newItem: Clip): Boolean = oldItem == newItem
     }
@@ -58,7 +58,7 @@ class CIAdapter(
 
         val clip = getItem(position)
 
-        holder.itemView.ci_textView.text = clip.data?.Decrypt()
+        holder.itemView.ci_textView.text = clip.data
 
         holder.itemView.mainCard.setOnClickListener { onClick.invoke(clip, position) }
 

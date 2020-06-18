@@ -60,7 +60,7 @@ class Utils {
             val intent = ShareCompat.IntentBuilder.from(context)
                 .setChooserTitle(context.getString(R.string.share))
                 .setType("text/plain")
-                .setText(clip.data?.Decrypt())
+                .setText(clip.data)
                 .intent
             val shareIntent = Intent.createChooser(intent, null)
             context.startActivity(shareIntent)

@@ -60,7 +60,7 @@ class EditDialog : AppCompatActivity(), KodeinAware {
             /** Set the current clip for managing */
             clip = mainViewModel.editManager.getClip()!!
 
-            de_editText.setText(clip.data?.Decrypt())
+            de_editText.setText(clip.data)
             EDType.Edit
         }
     }

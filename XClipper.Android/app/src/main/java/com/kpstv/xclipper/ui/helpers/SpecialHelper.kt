@@ -42,7 +42,7 @@ class SpecialHelper(
 
     private lateinit var onItemClick: () -> Unit
 
-    private val data = clip.data?.Decrypt()
+    private val data = clip.data
     fun setActions(view: View, onItemClick: () -> Unit) = with(view){
         this@SpecialHelper.onItemClick = onItemClick
 

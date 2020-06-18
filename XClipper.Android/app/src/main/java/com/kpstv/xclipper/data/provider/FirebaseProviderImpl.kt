@@ -9,6 +9,7 @@ import com.google.firebase.FirebaseOptions
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.kpstv.license.Decrypt
 import com.kpstv.xclipper.App.BindToFirebase
 import com.kpstv.xclipper.App.DeviceID
 import com.kpstv.xclipper.App.UID
@@ -20,6 +21,7 @@ import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.Device
 import com.kpstv.xclipper.data.model.User
 import com.kpstv.xclipper.extensions.cloneToEntries
+import com.kpstv.xclipper.extensions.encrypt
 import com.kpstv.xclipper.extensions.listeners.FValueEventListener
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
 
@@ -126,71 +128,71 @@ class FirebaseProviderImpl(
             }
     }
 
-    override fun replaceData(oldClip: Clip, newClip: Clip) {
+    override fun replaceData(unencryptedOldClip: Clip, unencryptedNewClip: Clip) {
         workWithData {
-            replace(oldClip, newClip)
+            replace(unencryptedOldClip, unencryptedNewClip)
         }
     }
 
-    override fun deleteMultipleData(clips: List<Clip>) {
+    override fun deleteMultipleData(unencryptedClips: List<Clip>) {
         workWithData {
-            removeData(clips)
+            removeData(unencryptedClips)
         }
     }
 
-    override fun deleteData(clip: Clip) {
+    override fun deleteData(unencryptedClip: Clip) {
         workWithData {
-            removeData(clip)
+            removeData(unencryptedClip)
         }
     }
 
-    override fun uploadData(clip: Clip) {
+    override fun uploadData(unencryptedClip: Clip) {
         workWithData {
-            saveData(clip)
+            saveData(unencryptedClip)
         }
     }
 
-    private fun replace(oldClip: Clip, newClip: Clip) {
+    private fun replace(unencryptedOldClip: Clip, unencryptedNewClip: Clip) {
         /** Save data when clips are null */
         if (user?.Clips == null) {
-            saveData(newClip)
+            saveData(unencryptedNewClip)
         } else {
-            val list = ArrayList(user?.Clips!!.filter { it.data != oldClip.data })
+            val list = ArrayList(user?.Clips!!.filter { it.data?.Decrypt() != unencryptedOldClip.data })
 
-            list.add(newClip)
+            list.add(unencryptedNewClip.encrypt())
 
             pushDataToFirebase(list)
         }
     }
 
-    private fun removeData(clip: Clip) {
-        removeData(List(1) { clip })
+    private fun removeData(unencryptedClip: Clip) {
+        removeData(List(1) { unencryptedClip })
     }
 
-    private fun removeData(clips: List<Clip>) {
+    private fun removeData(unencryptedClips: List<Clip>) {
         if (user?.Clips == null) return
 
         val list = ArrayList(user?.Clips!!)
 
-        val dataList = clips.map { it.data }
+        val dataList = unencryptedClips.map { it.data }
 
         list.removeAll {
-            it.data in dataList
+            it.data?.Decrypt() in dataList
         }
 
         pushDataToFirebase(list)
     }
 
-    private fun saveData(clip: Clip) {
+    private fun saveData(unencryptedClip: Clip) {
         val list: ArrayList<Clip> = if (user?.Clips == null)
             ArrayList()
         else
-            ArrayList(user?.Clips?.filter { it.data != clip.data }!!)
+            ArrayList(user?.Clips?.filter { it.data?.Decrypt() != unencryptedClip.data }!!)
         val size = getMaxStorage(isLicensed())
 
         if (list.size >= size)
             list.removeFirst()
-        list.add(clip)
+        list.add(unencryptedClip.encrypt())
         pushDataToFirebase(list)
     }
 

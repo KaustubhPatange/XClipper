@@ -43,7 +43,7 @@ data class Clip(
                 data = clip.data,
                 isPinned = clip.isPinned,
                 time = Calendar.getInstance().time,
-                tags = tagMap + ClipUtils.determineTags(clip.data?.Decrypt())
+                tags = tagMap + ClipUtils.determineTags(clip.data)
             )
         }
 
@@ -57,7 +57,7 @@ data class Clip(
         fun from(unencryptedData: String, tags: Map<String, String>?): Clip  {
             val tagMap = tags ?: HashMap()
             return Clip(
-                data = unencryptedData.Encrypt(),
+                data = unencryptedData,
                 time = Calendar.getInstance().time,
                 isPinned = false,
                 tags = tagMap + ClipUtils.determineTags(unencryptedData)

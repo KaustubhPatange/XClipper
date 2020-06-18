@@ -1,7 +1,7 @@
 package com.kpstv.xclipper.data.provider
 
 import com.kpstv.license.DatabaseEncryption
-import com.kpstv.license.Decrypt
+import com.kpstv.license.DecryptPref
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.App.EMPTY_STRING
 import com.kpstv.xclipper.data.localized.FBOptions
@@ -24,7 +24,7 @@ class DBConnectionProviderImpl(
                 /** Here we will parse the data */
 
                 val values = data.split(";")
-                val firebaseConfigs = values[1].Decrypt().split(";")
+                val firebaseConfigs = values[1].DecryptPref().split(";")
                 val uid = values[0]
                 val firebaseAppId = firebaseConfigs[0]
                 val firebaseApiKey = firebaseConfigs[1]

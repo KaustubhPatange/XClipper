@@ -17,12 +17,12 @@ interface FirebaseProvider {
     fun initialize(options: FBOptions?)
     fun isLicensed(): Boolean
     fun isValidDevice(): Boolean
-    fun uploadData(clip: Clip)
+    fun uploadData(unencrypted: Clip)
     fun addDevice(DeviceId: String, responseListener: ResponseListener<Unit>)
     fun removeDevice(DeviceId: String, responseListener: ResponseListener<Unit>)
-    fun replaceData(oldClip: Clip, newClip: Clip)
-    fun deleteData(clip: Clip)
-    fun deleteMultipleData(clips: List<Clip>)
+    fun replaceData(unencryptedOldClip: Clip, unencryptedNewClip: Clip)
+    fun deleteData(unencryptedClip: Clip)
+    fun deleteMultipleData(unencryptedClips: List<Clip>)
     fun clearData()
     fun getAllClipData(block: (List<Clip>?) -> Unit)
 

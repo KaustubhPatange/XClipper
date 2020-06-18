@@ -131,7 +131,7 @@ class MainViewModel(
 
     fun postUpdateToRepository(oldClip: Clip, newClip: Clip) {
         mainRepository.updateClip(newClip, FilterType.Id)
-        if (oldClip.data?.Decrypt() != newClip.data?.Decrypt())
+        if (oldClip.data != newClip.data)
             firebaseProvider.replaceData(oldClip, newClip)
     }
 
@@ -254,7 +254,7 @@ class MainViewModel(
 
             mainList.forEach { clip ->
                 searchFilter?.forEach inner@{ filter ->
-                    if (!clip.data?.Decrypt()?.toLowerCase(Locale.getDefault())
+                    if (!clip.data?.toLowerCase(Locale.getDefault())
                             ?.contains(filter)!!
                     ) {
                         list.remove(clip)
@@ -272,7 +272,7 @@ class MainViewModel(
             if (!searchText.isNullOrBlank()) {
                 mediatorLiveData.postValue(
                     list.filter { clip ->
-                        clip.data?.Decrypt()?.toLowerCase(Locale.getDefault())?.contains(searchText)
+                        clip.data?.toLowerCase(Locale.getDefault())?.contains(searchText)
                             ?: false
                     }
                 )

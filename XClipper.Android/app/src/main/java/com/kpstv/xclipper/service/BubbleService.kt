@@ -134,9 +134,9 @@ class BubbleService : FloatingBubbleService(), KodeinAware {
                 else
                     ibc_pinView.hide()
 
-                ibc_textView.text = clip?.data?.Decrypt()
+                ibc_textView.text = clip?.data
                 ibc_textView.setOnClickListener {
-                    onClick.invoke(clip?.data?.Decrypt()!!)
+                    onClick.invoke(clip?.data!!)
                 }
             }
         }

@@ -55,7 +55,7 @@ class MainRepositoryImpl(
                 if (allClips.isNotEmpty()) {
 
                     val innerClip =
-                        allClips.firstOrNull { it.data?.Decrypt() == clip.data?.Decrypt() }
+                        allClips.firstOrNull { it.data == clip.data }
                     if (innerClip != null) return@io
 
                     /** Let's filter the clip for required items only **/
@@ -66,9 +66,9 @@ class MainRepositoryImpl(
                 clipDao.insert(clip)
 
                 /** Send a notification */
-                mainThread { notificationHelper.pushNotification(clip.data?.Decrypt()!!) }
+                mainThread { notificationHelper.pushNotification(clip.data!!) }
 
-                Log.e(TAG, "Data Saved: ${clip.data?.Decrypt()}")
+                Log.e(TAG, "Data Saved: ${clip.data}")
             }
         }
     }
@@ -96,7 +96,7 @@ class MainRepositoryImpl(
             synchronized(lock1) {
                 val allData = clipDao.getAllData()
 
-                val innerClip = allData.firstOrNull { it.data?.Decrypt() == clip.data?.Decrypt() }
+                val innerClip = allData.firstOrNull { it.data == clip.data }
                 if (innerClip != null) {
                     innerClip.clone(clip.data)
                     clipDao.update(clip)
@@ -118,7 +118,7 @@ class MainRepositoryImpl(
 
                 if (allData.isNotEmpty()) {
                     val innerClip: Clip? = if (filterType == FilterType.Text)
-                        allData.firstOrNull { it.data?.Decrypt() == clip.data?.Decrypt() }
+                        allData.firstOrNull { it.data == clip.data }
                     else
                         allData.firstOrNull { it.id == clip.id }
                     if (innerClip != null) {
@@ -168,7 +168,7 @@ class MainRepositoryImpl(
     override fun deleteClip(unencryptedData: String?) {
         Coroutines.io {
             val clipToFind =
-                clipDao.getAllData().firstOrNull { it.data?.Decrypt() == unencryptedData }
+                clipDao.getAllData().firstOrNull { it.data == unencryptedData }
             if (clipToFind != null)
                 deleteClip(clipToFind)
         }
@@ -193,7 +193,7 @@ class MainRepositoryImpl(
         repositoryListener: RepositoryListener
     ) {
         Coroutines.io {
-            if (clipDao.getAllData().count { it.data?.Decrypt() == unencryptedData } > 0)
+            if (clipDao.getAllData().count { it.data == unencryptedData } > 0)
                 Coroutines.main {
                     repositoryListener.onDataExist()
                 }
@@ -211,7 +211,7 @@ class MainRepositoryImpl(
     ) {
         Coroutines.io {
             if (clipDao.getAllData()
-                    .count { it.data?.Decrypt() == unencryptedData && it.id != id } > 0
+                    .count { it.data == unencryptedData && it.id != id } > 0
             ) Coroutines.main {
                 repositoryListener.onDataExist()
             }
@@ -246,7 +246,7 @@ class MainRepositoryImpl(
 
     override suspend fun getData(unencryptedText: String) =
         withContext(Dispatchers.IO) {
-            clipDao.getAllData().firstOrNull { it.data?.Decrypt() == unencryptedText }
+            clipDao.getAllData().firstOrNull { it.data == unencryptedText }
         }
 
     override fun processClipAndSave(clip: Clip?) {
@@ -265,15 +265,6 @@ class MainRepositoryImpl(
 
         saveClip(clip)
         firebaseProvider.uploadData(clip)
-        /*
-        clipProvider.processClip(unencryptedData)?.let { clip ->
-
-
-            *//*     *//*
-            */
-        /** Send a notification *//**//*
-            mainThread { notificationHelper.pushNotification(clip.data?.Decrypt()!!) }*//*
-        }*/
     }
 
     override fun updateRepository(clip: Clip) {
@@ -281,17 +272,6 @@ class MainRepositoryImpl(
 
         saveClip(finalClip)
         firebaseProvider.uploadData(finalClip)
-
-
-        /*  clipProvider.processClip(clip)?.let { innerClip ->
-              saveClip(innerClip)
-              firebaseProvider.uploadData(innerClip)
-  *//*
-            *//*
-            */
-        /** Send a notification *//**//*
-           mainThread { notificationHelper.pushNotification(clip.data?.Decrypt()!!) }*//*
-        }*/
     }
 
 }

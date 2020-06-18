@@ -5,7 +5,9 @@ import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
 import com.kpstv.license.Decrypt
+import com.kpstv.license.DecryptPref
 import com.kpstv.license.Encrypt
+import com.kpstv.license.EncryptPref
 
 class PreferenceProviderImpl(
     context: Context
@@ -25,7 +27,7 @@ class PreferenceProviderImpl(
         preference.getString(key, default)
 
     override fun putEncryptString(key: String, value: String?) {
-        val data = if (value.isNullOrEmpty()) null else value.Encrypt()
+        val data = if (value.isNullOrEmpty()) null else value.EncryptPref()
         preference.edit().apply {
             putString(key, data)
         }.apply()
@@ -34,7 +36,7 @@ class PreferenceProviderImpl(
 
     override fun getEncryptString(key: String, default: String?): String? {
         val value = preference.getString(key, default)
-        return if (value.isNullOrEmpty()) default else value.Decrypt()
+        return if (value.isNullOrEmpty()) default else value.DecryptPref()
     }
 
     override fun getBooleanKey(key: String, default: Boolean) =

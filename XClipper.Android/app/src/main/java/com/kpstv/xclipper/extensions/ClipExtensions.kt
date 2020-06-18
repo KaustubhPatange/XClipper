@@ -1,6 +1,7 @@
 package com.kpstv.xclipper.extensions
 
 import com.kpstv.license.Decrypt
+import com.kpstv.license.Encrypt
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.ClipEntry
 import com.kpstv.xclipper.data.model.ClipTag
@@ -43,11 +44,22 @@ fun List<Clip>.cloneForAdapter(): List<Clip> {
 
 /**
  * An extension function which will decrypt the clip data.
- *
  * It provides a new copy of existing clip model.
+ *
+ * Caution: Must be used for firebase data only.
  */
 fun Clip.decrypt(): Clip {
     return copy(data = data?.Decrypt())
+}
+
+/**
+ * An extension function which will encrypt the clip data.
+ * It provides a new copy of existing clip model.
+ *
+ * Caution: Must be used for firebase data only.
+ */
+fun Clip.encrypt(): Clip {
+    return copy(data = data?.Encrypt())
 }
 
 /** Converts name to lowercase name */

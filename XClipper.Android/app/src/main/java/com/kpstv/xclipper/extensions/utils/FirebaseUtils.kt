@@ -9,6 +9,7 @@ import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.data.repository.MainRepository
+import com.kpstv.xclipper.extensions.decrypt
 import es.dmoral.toasty.Toasty
 
 class FirebaseUtils(
@@ -28,7 +29,7 @@ class FirebaseUtils(
             firebaseProvider.observeDataChange(
                 changed = {
                     if (App.observeFirebase)
-                        repository.updateClip(it?.Clips?.last())
+                        repository.updateClip(it?.Clips?.last()?.decrypt())
                     Log.e(TAG, "User has changed")
                 },
                 error = {
