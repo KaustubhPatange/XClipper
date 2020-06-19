@@ -106,5 +106,14 @@ namespace Components
         public string BUY_ACTIVATE = rm.GetString("buy_activate");
         public string BUY_IS_ACTIVATE = rm.GetString("buy_is_activate");
         public string BUY_NOT_ACTIVATE = rm.GetString("buy_not_activate");
+        public string SYNC_IMPORT = rm.GetString("sync_import");
+        public string SYNC_IMPORT_SUCCESS = rm.GetString("sync_import_success");
+        public string SYNC_IMPORT_ERR = rm.GetString("sync_import_err");
+        public string SYNC_IMPORT_ERR2 = rm.GetString("sync_import_err2");
+        public string SYNC_IMPORT_MSG = rm.GetString("sync_import_msg");
+        public string SYNC_EXPORT = rm.GetString("sync_export");
+        public string SYNC_EXPORT_SUCCESS = rm.GetString("sync_export_success");
+        public string SYNC_ID_DEFAULT = rm.GetString("sync_id_default");
+        public string SYNC_ID_CUSTOM = rm.GetString("sync_id_custom");
     }
 }

@@ -3,18 +3,12 @@ using System.ComponentModel;
 using static Components.Core;
 using static Components.Constants;
 using System.Xml.Linq;
+using static Components.LicenseHandler;
 
 namespace Components
 {
     public static class DefaultSettings
     {
-
-        #region Variable Definitions
-
-        private const string SETTINGS = "Settings";
-
-        #endregion
-
 
         #region Actual Settings
 
@@ -31,7 +25,7 @@ namespace Components
         /// <summary>
         /// This tells the number of clip to store.
         /// </summary>
-        public static int TotalClipLength { get; set; } = 20;
+        public static int TotalClipLength { get; set; } = 80;
 
         /// <summary>
         /// This tells if Ctrl needs to be pressed in order to activate application.
@@ -72,6 +66,11 @@ namespace Components
         /// A configuration to password protect database.
         /// </summary>
         public static bool IsSecureDB { get; set; } = false;
+
+        /// <summary>
+        /// This string will hold the unique ID of this device.
+        /// </summary>
+        public static string UniqueID { get; set; } = UNIQUE_ID;
 
         /// <summary>
         /// A string to hold if purchase complete.
@@ -180,8 +179,17 @@ namespace Components
         public static void LoadSettings()
         {
             if (!Directory.Exists(ApplicationDirectory)) Directory.CreateDirectory(ApplicationDirectory);
-            if (!File.Exists(SettingsPath)) return;  // Return if settings does not exist, so it will use defaults
 
+            LoadApplicationSetting();
+            LoadFirebaseSetting();
+        }
+
+        /// <summary>
+        /// This will load default application setting
+        /// </summary>
+        public static void LoadApplicationSetting()
+        {
+            if (!File.Exists(SettingsPath)) return;  // Return if settings does not exist, so it will use defaults
             var settings = XDocument.Load(SettingsPath).Element(SETTINGS);
 
             AppDisplayLocation = settings.Element(nameof(AppDisplayLocation)).Value.ToEnum<XClipperLocation>();
@@ -199,7 +207,13 @@ namespace Components
             StartOnSystemStartup = settings.Element(nameof(StartOnSystemStartup)).Value.ToBool();
             PlayNotifySound = settings.Element(nameof(PlayNotifySound)).Value.ToBool();
             BindDatabase = settings.Element(nameof(BindDatabase)).Value.ToBool();
+        }
 
+        /// <summary>
+        /// This will load firebase configuration setting from the file if exist.
+        /// </summary>
+        public static void LoadFirebaseSetting()
+        {
             // Loading custom firebase setting...
             if (File.Exists(CustomFirebasePath))
             {
@@ -209,6 +223,11 @@ namespace Components
                 FirebaseSecret = firebaseDoc.Element(nameof(FirebaseSecret)).Value;
                 FirebaseAppId = firebaseDoc.Element(nameof(FirebaseAppId)).Value;
                 FirebaseApiKey = firebaseDoc.Element(nameof(FirebaseApiKey)).Value;
+                UniqueID = firebaseDoc.Element(nameof(UniqueID)).Value.Decrypt();
+                DatabaseEncryptPassword = firebaseDoc.Element(nameof(DatabaseEncryptPassword)).Value.Decrypt();
+                DatabaseMaxConnection = firebaseDoc.Element(nameof(DatabaseMaxConnection)).Value.ToInt();
+                DatabaseMaxItemLength = firebaseDoc.Element(nameof(DatabaseMaxItemLength)).Value.ToInt();
+                DatabaseMaxItem = firebaseDoc.Element(nameof(DatabaseMaxItem)).Value.ToInt();
             }
         }
 
@@ -225,7 +244,12 @@ namespace Components
                      new XElement(nameof(FirebaseEndpoint), FirebaseEndpoint.ToString()),
                      new XElement(nameof(FirebaseSecret), FirebaseSecret.ToString()),
                      new XElement(nameof(FirebaseAppId), FirebaseAppId.ToString()),
-                     new XElement(nameof(FirebaseApiKey), FirebaseApiKey.ToString())
+                     new XElement(nameof(FirebaseApiKey), FirebaseApiKey.ToString()),
+                     new XElement(nameof(UniqueID), UniqueID.Encrypt()),
+                     new XElement(nameof(DatabaseEncryptPassword), DatabaseEncryptPassword.Encrypt()),
+                     new XElement(nameof(DatabaseMaxItem), DatabaseMaxItem.ToString()),
+                     new XElement(nameof(DatabaseMaxItemLength), DatabaseMaxItemLength.ToString()),
+                     new XElement(nameof(DatabaseMaxConnection), DatabaseMaxConnection.ToString())
                  );
             firebaseDoc.Add(config);
             firebaseDoc.Save(CustomFirebasePath);

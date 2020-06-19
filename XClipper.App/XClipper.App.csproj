@@ -170,12 +170,17 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="AppModule.cs" />
+    <Compile Include="Controls\Dialog\InputDialog.xaml.cs">
+      <DependentUpon>InputDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Data\Converters\ActivateButtonConverter.cs" />
     <Compile Include="Data\Converters\FileVisibilityConverter.cs" />
     <Compile Include="Data\Converters\ImageQRConverter.cs" />
     <Compile Include="Data\Converters\LicenseTextConverter.cs" />
+    <Compile Include="Data\Converters\SyncForegroundConverter.cs" />
     <Compile Include="Data\helpers\DatabaseHelper.cs" />
     <Compile Include="Data\unlocalized\CustomHelpWindow.cs" />
+    <Compile Include="Data\unlocalized\Properties\NumericTextBoxProperties.cs" />
     <Compile Include="UI\BuyWindow.xaml.cs">
       <DependentUpon>BuyWindow.xaml</DependentUpon>
     </Compile>
@@ -279,6 +284,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\Dialog\InputDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\BuyWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -383,6 +392,12 @@
       <Project>{b9cf89e8-5106-4627-b93b-0068048dc37b}</Project>
       <Name>XClipper.Protect</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\export.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\import.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlite3.linux.1.1.13\build\net35\SQLitePCLRaw.lib.e_sqlite3.linux.targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.linux.1.1.13\build\net35\SQLitePCLRaw.lib.e_sqlite3.linux.targets')" />

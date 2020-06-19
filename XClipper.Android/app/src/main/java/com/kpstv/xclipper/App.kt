@@ -21,6 +21,9 @@ object App {
     private const val FB_MIN_DEVICE_CONNECTION = 1
     private const val FB_MAX_DEVICE_CONNECTION = 5
 
+    var APP_MAX_DEVICE = FB_MIN_DEVICE_CONNECTION
+    var APP_MAX_ITEM = FB_MIN_ITEM_STORAGE
+
     var CLIP_DATA: String? = null
     var LOCAL_MAX_ITEM_STORAGE = 80
 

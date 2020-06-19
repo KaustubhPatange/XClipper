@@ -230,10 +230,11 @@
                                 Orientation="Horizontal"
                                 Visibility="{Binding Source={x:Static local:DefaultSettings.LicenseStrategy}, Converter={x:Static local:LicenseTextConverter.Instance}}">
                                 <TextBlock
+                                    Margin="0,0,5,0"
                                     FontSize="11"
                                     FontWeight="Medium"
                                     Foreground="Red"
-                                    Text="Upgrade license to unlock all features, " />
+                                    Text="{DynamicResource settings_upgrade_license}" />
                                 <TextBlock>
                                     <Hyperlink Command="{Binding PurchaseCommand}">
                                         <TextBlock

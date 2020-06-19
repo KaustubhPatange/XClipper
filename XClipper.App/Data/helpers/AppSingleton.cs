@@ -203,9 +203,9 @@ namespace Components.viewModels
         {
             if (EncryptedDatabaseText == null) return;
 
-            var decryptedText = EncryptedDatabaseText.DecryptBase64();
+            var decryptedText = EncryptedDatabaseText.DecryptBase64(DatabaseEncryptPassword);
 
-            var data = dataDB.GetAllData().FirstOrDefault(c => c.ContentType == ContentType.Text && c.RawText.DecryptBase64() == decryptedText);
+            var data = dataDB.GetAllData().FirstOrDefault(c => c.ContentType == ContentType.Text && c.RawText.DecryptBase64(DatabaseEncryptPassword) == decryptedText);
             // todo: This data is always null, check it later.
             if (data == null)
             {

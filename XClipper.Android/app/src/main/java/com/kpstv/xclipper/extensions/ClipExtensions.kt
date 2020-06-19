@@ -43,6 +43,20 @@ fun List<Clip>.cloneForAdapter(): List<Clip> {
 }
 
 /**
+ * An extension function which will decrypt list of clip data.
+ * It provides a new copy of existing clip list model.
+ *
+ * Caution: Must be used for firebase data only.
+ */
+fun List<Clip>.decrypt(): List<Clip> {
+    val list = ArrayList<Clip>()
+    this.forEach {
+        list.add(it.copy(data = it.data?.Decrypt()))
+    }
+    return list
+}
+
+/**
  * An extension function which will decrypt the clip data.
  * It provides a new copy of existing clip model.
  *

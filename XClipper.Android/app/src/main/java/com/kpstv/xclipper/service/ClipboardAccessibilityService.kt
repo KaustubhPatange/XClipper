@@ -92,7 +92,7 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
 
         postKeyboardValue(getKeyboardHeight(applicationContext))
 
-        Log.e(TAG, "Event: $event")
+     //   Log.e(TAG, "Event: $event")
 
         event?.source?.apply {
 

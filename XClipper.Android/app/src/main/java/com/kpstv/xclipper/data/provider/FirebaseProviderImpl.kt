@@ -10,6 +10,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.kpstv.license.Decrypt
+import com.kpstv.xclipper.App.APP_MAX_DEVICE
+import com.kpstv.xclipper.App.APP_MAX_ITEM
 import com.kpstv.xclipper.App.BindToFirebase
 import com.kpstv.xclipper.App.DeviceID
 import com.kpstv.xclipper.App.UID
@@ -21,6 +23,7 @@ import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.Device
 import com.kpstv.xclipper.data.model.User
 import com.kpstv.xclipper.extensions.cloneToEntries
+import com.kpstv.xclipper.extensions.decrypt
 import com.kpstv.xclipper.extensions.encrypt
 import com.kpstv.xclipper.extensions.listeners.FValueEventListener
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
@@ -80,7 +83,9 @@ class FirebaseProviderImpl(
                 if (user?.Devices != null) ArrayList(user?.Devices!!)
                 else ArrayList<Device>()
 
-            if (list.size >= getMaxConnection(isLicensed())) {
+            checkForUserDetailsAndUpdateLocal()
+
+            if (list.size >= APP_MAX_DEVICE) {
                 responseListener.onError(java.lang.Exception("Maximum device connection reached"))
                 return@workWithData
             }
@@ -157,7 +162,8 @@ class FirebaseProviderImpl(
         if (user?.Clips == null) {
             saveData(unencryptedNewClip)
         } else {
-            val list = ArrayList(user?.Clips!!.filter { it.data?.Decrypt() != unencryptedOldClip.data })
+            val list =
+                ArrayList(user?.Clips!!.filter { it.data?.Decrypt() != unencryptedOldClip.data })
 
             list.add(unencryptedNewClip.encrypt())
 
@@ -184,11 +190,14 @@ class FirebaseProviderImpl(
     }
 
     private fun saveData(unencryptedClip: Clip) {
+
+        checkForUserDetailsAndUpdateLocal()
+
         val list: ArrayList<Clip> = if (user?.Clips == null)
             ArrayList()
         else
             ArrayList(user?.Clips?.filter { it.data?.Decrypt() != unencryptedClip.data }!!)
-        val size = getMaxStorage(isLicensed())
+        val size = APP_MAX_ITEM
 
         if (list.size >= size)
             list.removeFirst()
@@ -212,7 +221,7 @@ class FirebaseProviderImpl(
 
     override fun getAllClipData(block: (List<Clip>?) -> Unit) {
         workWithData(ValidationContext.ForceInvoke) {
-            block.invoke(user?.Clips)
+            block.invoke(user?.Clips?.decrypt())
         }
     }
 
@@ -289,6 +298,9 @@ class FirebaseProviderImpl(
                     it.id == DeviceID
                 } > 0
 
+                // Update the properties
+                checkForUserDetailsAndUpdateLocal()
+
                 // Device validation is causing problem.
                 deviceValidated.invoke(validDevice)
 
@@ -307,6 +319,15 @@ class FirebaseProviderImpl(
 
         database.getReference(USER_REF).child(UID)
             .addValueEventListener(valueListener)
+    }
+
+    /**
+     * The method will update the local values needed for
+     * later purposes.
+     */
+    private fun checkForUserDetailsAndUpdateLocal() {
+        APP_MAX_DEVICE = user?.TotalConnection ?: getMaxConnection(isLicensed())
+        APP_MAX_ITEM = user?.MaxItemStorage ?: getMaxStorage(isLicensed())
     }
 
     override fun removeDataObservation() {

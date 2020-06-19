@@ -15,7 +15,7 @@ namespace XClipper.Tests
     [TestClass]
     public class GeneralTest
     {
-       
+
         [TestMethod]
         public void CountMethod()
         {
@@ -27,6 +27,13 @@ namespace XClipper.Tests
             user.RemoveRange(0, user.Count > DatabaseMaxItem ? user.Count - DatabaseMaxItem : 0);
             Debug.WriteLine(user.Count);
             Assert.AreEqual(user.Count, 3);
+        }
+
+        [TestMethod]
+        public void EncryptionTest()
+        {
+            string customUID = "1234567-4KR35L-1ICT12V-H7M3FM".Encrypt();
+            Debug.WriteLine(customUID);
         }
 
         [TestMethod]

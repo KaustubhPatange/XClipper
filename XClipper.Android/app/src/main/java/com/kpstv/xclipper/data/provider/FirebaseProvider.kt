@@ -24,6 +24,10 @@ interface FirebaseProvider {
     fun deleteData(unencryptedClip: Clip)
     fun deleteMultipleData(unencryptedClips: List<Clip>)
     fun clearData()
+
+    /**
+     * @return An unencrypted list of clip model.
+     */
     fun getAllClipData(block: (List<Clip>?) -> Unit)
 
     /**

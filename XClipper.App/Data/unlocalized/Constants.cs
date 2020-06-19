@@ -25,6 +25,12 @@ namespace Components
         public static string CustomFirebasePath = Path.Combine(ApplicationDirectory, "custom-firebase.xml");
         public static string QRImageFilePath = Path.Combine(ApplicationDirectory, "qr.png");
 
+        #region Some random constants
+
+        public const string SETTINGS = "Settings";
+
+        #endregion
+
         #region Some Filter Constants
 
         public const string CONTENT_FILTER_NONE = "";

@@ -40,6 +40,7 @@
     <system:String x:Key="settings_ma">Mobile App</system:String>
     <system:String x:Key="settings_isdb">Protect database with encryption</system:String>
     <system:String x:Key="settings_scd">Devices</system:String>
+    <system:String x:Key="settings_upgrade_license">Upgrade license to unlock all features,</system:String>
     <system:String x:Key="settings_btd">Database binding</system:String>
     <system:String x:Key="settings_btd_tooltip">When checked, app will respond and sync data with online database.</system:String>
     <system:String x:Key="settings_qr_tooltip">Double click the QR Image to view in default image viewer.</system:String>
@@ -67,6 +68,7 @@
     <system:String x:Key="msg_learn">Learn more</system:String>
     <system:String x:Key="msg_info">Information</system:String>
     <system:String x:Key="msg_cancel">CANCEL</system:String>
+    <system:String x:Key="msg_cancel_small">Cancel</system:String>
     <system:String x:Key="msg_restore_db">Database restoration process is completed</system:String>
     <system:String x:Key="msg_enter_pass">Enter database password</system:String>
     <system:String x:Key="msg_premium_success">Premium has been unlocked, kindly restart the application apply it.</system:String>
@@ -110,5 +112,17 @@
     <system:String x:Key="device_disconnect">Disconnect</system:String>
     <system:String x:Key="sync_config_title">Firebase Configuration</system:String>
     <system:String x:Key="sync_config_reset">Reset Configuration</system:String>
+    <system:String x:Key="sync_max_item">Maximum number of items</system:String>
+    <system:String x:Key="sync_max_item_length">Maximum length of clipboard content</system:String>
+    <system:String x:Key="sync_max_device">Maximum number of concurrent device</system:String>
+    <system:String x:Key="sync_import">Import configuration</system:String>
+    <system:String x:Key="sync_import_success">Configuration imported successfully</system:String>
+    <system:String x:Key="sync_import_err">Not a valid configuration file</system:String>
+    <system:String x:Key="sync_import_err2">The password you enter is not a valid one.</system:String>
+    <system:String x:Key="sync_import_msg">Enter your end-to-end encryption password.</system:String>
+    <system:String x:Key="sync_export">Export configuration</system:String>
+    <system:String x:Key="sync_export_success">Configurations are exported to the file.</system:String>
+    <system:String x:Key="sync_id_default">XClipper is using default App Id for storing data</system:String>
+    <system:String x:Key="sync_id_custom">XClipper is using custom App Id from configuration file</system:String>
 
 </ResourceDictionary>
