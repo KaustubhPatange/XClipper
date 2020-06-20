@@ -60,6 +60,7 @@ namespace Components
         public ICommand ResetDataCommand { get; set; }
         public RelayCommand<KeyEventArgs> KeyDownCommand { get; set; }
         public bool SASS { get; set; } = StartOnSystemStartup;
+        public bool CAU { get; set; } = CheckApplicationUpdates;
         public bool PNS { get; set; } = PlayNotifySound;
         public XClipperStore WTS { get; set; } = WhatToStore;
         public XClipperLocation ADL { get; set; } = AppDisplayLocation;
@@ -86,7 +87,7 @@ namespace Components
                 {
                     var result = MessageBox.Show(Translation.MSG_DELETE_DB, Translation.MSG_WARNING, MessageBoxButton.YesNo, MessageBoxImage.Warning);
                     if (result == MessageBoxResult.Yes)
-                    { 
+                    {
                         is_secure_db = value;
                         return;
                     }
@@ -141,7 +142,7 @@ namespace Components
         /// </summary>
         private void ResetDataButtonClicked()
         {
-            var result = MessageBox.Show(Translation.MSG_RESET_DATA, Translation.MSG_INFO, 
+            var result = MessageBox.Show(Translation.MSG_RESET_DATA, Translation.MSG_INFO,
                 MessageBoxButton.OKCancel, MessageBoxImage.Warning);
             if (result == MessageBoxResult.OK)
             {
@@ -155,6 +156,7 @@ namespace Components
         private void ResetButtonClicked()
         {
             SASS = StartOnSystemStartup = true;
+            CAU = CheckApplicationUpdates = true;
             PNS = PlayNotifySound = true;
             // ISDB = IsSecureDB = true;
             WhatToStore = WTS = XClipperStore.All;
@@ -168,7 +170,7 @@ namespace Components
             HotKey = KEY_HK = "Oem3";
             CurrentAppLanguage = CAL = "locales\\en.xaml";
             TotalClipLength = TCL = 20;
-            BindDatabase = BTD = true;
+            BindDatabase = BTD = false;
             SetAppStartupEntry();
             WriteSettings();
             MessageBox.Show(Translation.SETTINGS_RESET);
@@ -180,6 +182,7 @@ namespace Components
         private void SaveButtonClicked()
         {
             StartOnSystemStartup = SASS;
+            CheckApplicationUpdates = CAU;
             PlayNotifySound = PNS;
             IsSecureDB = ISDB;
             WhatToStore = WTS;
@@ -191,8 +194,9 @@ namespace Components
             TotalClipLength = TCL;
             HotKey = KEY_HK;
             CurrentAppLanguage = CAL;
-            BindDatabase = BTD;
             SetAppStartupEntry();
+
+            ToggleBindDatabase();
 
             ToggleCustomPassword();
 
@@ -203,6 +207,13 @@ namespace Components
             WriteSettings();
 
             MessageBox.Show(Translation.SETTINGS_SAVE);
+        }
+
+        private void ToggleBindDatabase()
+        {
+            BindDatabase = BindDatabase;
+            if (BindDatabase == BTD == true)
+                FirebaseSingleton.GetInstance.InitConfig();
         }
 
         /// <summary>
@@ -253,7 +264,8 @@ namespace Components
                 if (result == MessageBoxResult.Yes)
                 {
                     MigrateDatabase();
-                }else
+                }
+                else
                 {
                     // Restore the value
                     CP = CustomPassword = CONNECTION_PASS.Decrypt();

@@ -53,6 +53,11 @@ namespace Components
         public static bool StartOnSystemStartup { get; set; } = true;
 
         /// <summary>
+        /// This will check for application updates.
+        /// </summary>
+        public static bool CheckApplicationUpdates { get; set; } = true;
+
+        /// <summary>
         /// This will tell if application should play sound when started.
         /// </summary>
         public static bool PlayNotifySound { get; set; } = true;
@@ -164,6 +169,7 @@ namespace Components
                     new XElement(nameof(IsShift), IsShift.ToString()),
                     new XElement(nameof(HotKey), HotKey.ToString()),
                     new XElement(nameof(StartOnSystemStartup), StartOnSystemStartup.ToString()),
+                    new XElement(nameof(CheckApplicationUpdates), CheckApplicationUpdates.ToString()),
                     new XElement(nameof(PlayNotifySound), PlayNotifySound.ToString()),
                     new XElement(nameof(IsSecureDB), IsSecureDB.ToString()),
                     new XElement(nameof(CurrentAppLanguage), CurrentAppLanguage.ToString()),
@@ -178,7 +184,11 @@ namespace Components
 
         public static void LoadSettings()
         {
-            if (!Directory.Exists(ApplicationDirectory)) Directory.CreateDirectory(ApplicationDirectory);
+            if (!Directory.Exists(ApplicationDirectory))
+            {
+                Directory.CreateDirectory(ApplicationDirectory);
+                Directory.CreateDirectory(ApplicationTempDirectory);
+            }
 
             LoadApplicationSetting();
             LoadFirebaseSetting();
@@ -205,6 +215,7 @@ namespace Components
             UseCustomPassword = settings.Element(nameof(UseCustomPassword)).Value.ToBool();
             CurrentAppLanguage = settings.Element(nameof(CurrentAppLanguage)).Value;
             StartOnSystemStartup = settings.Element(nameof(StartOnSystemStartup)).Value.ToBool();
+            CheckApplicationUpdates = settings.Element(nameof(CheckApplicationUpdates)).Value.ToBool();
             PlayNotifySound = settings.Element(nameof(PlayNotifySound)).Value.ToBool();
             BindDatabase = settings.Element(nameof(BindDatabase)).Value.ToBool();
         }

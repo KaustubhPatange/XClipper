@@ -11,6 +11,8 @@ using static Components.Constants;
 using System.IO;
 using System.Diagnostics;
 using System.Windows.Threading;
+using System.Runtime.InteropServices;
+using System.Text;
 
 namespace Components
 {
@@ -21,7 +23,7 @@ namespace Components
         {
             if (o is ScrollViewer)
             { return o; }
-            
+
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(o); i++)
             {
                 var child = VisualTreeHelper.GetChild(o, i);
@@ -50,7 +52,7 @@ namespace Components
             double dx = 0, dy = 0;
             if (window != Application.Current.MainWindow)
             {
-                switch(AppDisplayLocation)
+                switch (AppDisplayLocation)
                 {
                     case XClipperLocation.BottomRight:
                         dx = window.Width + 10;
@@ -66,11 +68,11 @@ namespace Components
                         break;
                     case XClipperLocation.Center:
                         X = screen.Width / 2 - mainX / 2 + mainX + 10;
-                        Y = screen.Height /2 - mainY / 2;
+                        Y = screen.Height / 2 - mainY / 2;
                         return;
                 }
             }
-           
+
             switch (AppDisplayLocation)
             {
                 case XClipperLocation.BottomRight:
@@ -162,6 +164,24 @@ DEL ""%~f0""";
         {
             return Regex.Replace(e.ToString(), "[^0-9.]", "").ToInt();
         }
+
+        [DllImport("Shlwapi.dll", CharSet = CharSet.Auto)]
+        public static extern Int32 StrFormatByteSize(long fileSize, [MarshalAs(UnmanagedType.LPTStr)] StringBuilder buffer, int bufferSize);
+        /// <summary>
+        /// Return a file size created by the StrFormatByteSize API function. 
+        /// </summary>
+        public static string ToFileSizeApi(this long file_size)
+        {
+            StringBuilder sb = new StringBuilder(20);
+            StrFormatByteSize(file_size, sb, 20);
+            return sb.ToString();
+        }
+
+        public static string GetProductVersion(string exeFile)
+        {
+            return FileVersionInfo.GetVersionInfo(exeFile).ProductVersion;
+        }
+
 
     }
 }

@@ -5,6 +5,8 @@
     <system:String x:Key="app_name">XClipper</system:String>
     <system:String x:Key="app_start_service">XClipper: Service Started</system:String>
     <system:String x:Key="app_isrun_service">XClipper: Service already running</system:String>
+    <system:String x:Key="app_update_title">Update available</system:String>
+    <system:String x:Key="app_update_text">Click to see more details.</system:String>
     <system:String x:Key="app_show">Show</system:String>
     <system:String x:Key="app_restart">Restart</system:String>
     <system:String x:Key="app_settings">Settings</system:String>
@@ -15,6 +17,7 @@
     <system:String x:Key="app_record">Record</system:String>
     <system:String x:Key="app_import">Import Database</system:String>
     <system:String x:Key="app_config_setting">Firebase Configuration</system:String>
+    <system:String x:Key="app_update">Check for update</system:String>
     <system:String x:Key="app_help">Help</system:String>
     <system:String x:Key="app_exit">Exit</system:String>
     <system:String x:Key="settings_tab_main">Main</system:String>
@@ -24,6 +27,7 @@
     <system:String x:Key="settings_general">General</system:String>
     <system:String x:Key="settings_hotkey">Hot Key</system:String>
     <system:String x:Key="settings_sass">Start application on System Startup</system:String>
+    <system:String x:Key="settings_cau">Check for application updates automatically</system:String>
     <system:String x:Key="settings_pns">Play notification sound</system:String>
     <system:String x:Key="settings_tcl">Maximum no. of clip items to store in database</system:String>
     <system:String x:Key="settings_wts">Types of clip to store</system:String>
@@ -41,10 +45,10 @@
     <system:String x:Key="settings_isdb">Protect database with encryption</system:String>
     <system:String x:Key="settings_scd">Devices</system:String>
     <system:String x:Key="settings_upgrade_license">Upgrade license to unlock all features,</system:String>
-    <system:String x:Key="settings_btd">Database binding</system:String>
+    <system:String x:Key="settings_btd">Database binding (Two way)</system:String>
     <system:String x:Key="settings_btd_tooltip">When checked, app will respond and sync data with online database.</system:String>
     <system:String x:Key="settings_qr_tooltip">Double click the QR Image to view in default image viewer.</system:String>
-    <system:String x:Key="settings_purchase_info">Option available in donated version. Click on learn more.</system:String>
+    <system:String x:Key="settings_purchase_info">Option available in paid version. Click on learn more.</system:String>
     <system:String x:Key="settings_reset_btn">Reset Defaults</system:String>
     <system:String x:Key="settings_save_btn">Save</system:String>
     <system:String x:Key="settings_reset">Settings Reset complete! If it didn't try restarting the application</system:String>
@@ -62,12 +66,18 @@
     <system:String x:Key="filter_none">None</system:String>
     <system:String x:Key="msg_ok">OK</system:String>
     <system:String x:Key="msg_information">Information</system:String>
+    <system:String x:Key="msg_download">Download</system:String>
+    <system:String x:Key="msg_details">Details</system:String>
     <system:String x:Key="msg_warning">Warning</system:String>
     <system:String x:Key="msg_err">Error</system:String>
     <system:String x:Key="msg_password">Password</system:String>
     <system:String x:Key="msg_learn">Learn more</system:String>
     <system:String x:Key="msg_info">Information</system:String>
     <system:String x:Key="msg_cancel">CANCEL</system:String>
+    <!--
+        Seems like Typography.captials doesn't seems to produce a good results,
+        that's why manually adding small text
+    -->
     <system:String x:Key="msg_cancel_small">Cancel</system:String>
     <system:String x:Key="msg_restore_db">Database restoration process is completed</system:String>
     <system:String x:Key="msg_enter_pass">Enter database password</system:String>
@@ -124,5 +134,7 @@
     <system:String x:Key="sync_export_success">Configurations are exported to the file.</system:String>
     <system:String x:Key="sync_id_default">XClipper is using default App Id for storing data</system:String>
     <system:String x:Key="sync_id_custom">XClipper is using custom App Id from configuration file</system:String>
+    <system:String x:Key="update_title">Update Checker</system:String>
+    <system:String x:Key="update_download_complete">Download completed. Click &quot;OK&quot; to install the update.&#10;&#10;Tip: Current process will killed during this update.</system:String>
 
 </ResourceDictionary>

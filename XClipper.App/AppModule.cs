@@ -12,7 +12,8 @@ namespace Components
             builder.RegisterType<ClipboardUtlity>().As<IClipboardUtlity>();
             builder.RegisterType<DatabaseHelper>().As<IDatabase<TableCopy>>();
             builder.RegisterType<ClipboardService>().As<IKeyboardRecorder>().SingleInstance();
-
+            builder.RegisterType<UpdaterService>().As<IUpdater>().SingleInstance();
+            
             return builder.Build().Also((e)=> Container = e);
         }
 

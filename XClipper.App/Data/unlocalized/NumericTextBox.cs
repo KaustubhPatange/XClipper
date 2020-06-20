@@ -33,11 +33,6 @@ namespace Components
                     e.Handled = true;
             }
             else e.Handled = true;
-
-
-           
-         /*   Regex regex = new Regex("[^0-9]+");
-            e.Handled = regex.IsMatch(e.Text);*/
             base.OnPreviewTextInput(e);
         }
     }

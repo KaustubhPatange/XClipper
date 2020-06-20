@@ -27,6 +27,8 @@ namespace Components
         public string APP_NAME = rm.GetString("app_name");
         public string APP_START_SERVICE = rm.GetString("app_start_service");
         public string APP_ISRUN_SERVICE = rm.GetString("app_isrun_service");
+        public string APP_UPDATE_TITLE = rm.GetString("app_update_title");
+        public string APP_UPDATE_TEXT = rm.GetString("app_update_text");
         public string APP_SHOW = rm.GetString("app_show");
         public string APP_SETTINGS = rm.GetString("app_settings");
         public string APP_RESTART = rm.GetString("app_restart");
@@ -37,6 +39,7 @@ namespace Components
         public string APP_RECORD = rm.GetString("app_record");
         public string APP_IMPORT = rm.GetString("app_import");
         public string APP_CONFIG_SETTING = rm.GetString("app_config_setting");
+        public string APP_UPDATE = rm.GetString("app_update");
         public string APP_HELP = rm.GetString("app_help");
         public string APP_EXIT = rm.GetString("app_exit");
         public string SETTINGS_GENERAL = rm.GetString("settings_general");
@@ -66,6 +69,7 @@ namespace Components
         public string FILTER_NONE = rm.GetString("filter_none");
         public string MSG_OK = rm.GetString("msg_ok");
         public string MSG_INFORMATION = rm.GetString("msg_information");
+        public string MSG_DOWNLOAD = rm.GetString("msg_download");
         public string MSG_WARNING = rm.GetString("msg_warning");
         public string MSG_ERR = rm.GetString("msg_err");
         public string MSG_PASSWORD = rm.GetString("msg_password");
@@ -73,6 +77,7 @@ namespace Components
         public string MSG_RESTART = rm.GetString("msg_restart");
         public string MSG_INFO = rm.GetString("msg_info");
         public string MSG_CANCEL = rm.GetString("msg_cancel");
+        public string MSG_CANCEL_SMALL = rm.GetString("msg_cancel_small");
         public string MSG_RESTORE_DB = rm.GetString("msg_restore_db");
         public string MSG_ENTER_PASS = rm.GetString("msg_enter_pass");
         public string MSG_PREMIUM_SUCCESS = rm.GetString("msg_premium_success");
@@ -115,5 +120,7 @@ namespace Components
         public string SYNC_EXPORT_SUCCESS = rm.GetString("sync_export_success");
         public string SYNC_ID_DEFAULT = rm.GetString("sync_id_default");
         public string SYNC_ID_CUSTOM = rm.GetString("sync_id_custom");
+        public string UPDATE_TITLE = rm.GetString("update_title");
+        public string UPDATE_DOWNLOAD_COMPLETE = rm.GetString("update_download_complete");
     }
 }

@@ -123,6 +123,7 @@
     <Compile Include="Helpers\ApplicationHelper.cs" />
     <Compile Include="models\FilterModel.cs" />
     <Compile Include="models\TableCopy.cs" />
+    <Compile Include="models\Update.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

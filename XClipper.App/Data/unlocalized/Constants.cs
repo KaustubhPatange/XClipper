@@ -17,16 +17,21 @@ namespace Components
         public static string BaseDirectory = AppDomain.CurrentDomain.BaseDirectory;
         public static string RoamingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         public static string ApplicationDirectory = Path.Combine(RoamingDirectory, "XClipper");
+        public static string ApplicationTempDirectory = Path.Combine(ApplicationDirectory, ".cache");
         public static string SettingsPath = Path.Combine(ApplicationDirectory, "config.xml");
         public static string LicenseFilePath = Path.Combine(ApplicationDirectory, "key.lic");
         public static string BackupFolder = Path.Combine(ApplicationDirectory, "Backup");
         public static string ImageFolder = Path.Combine(ApplicationDirectory, "Image");
         public static string DatabasePath = Path.Combine(ApplicationDirectory, "data.db");
         public static string CustomFirebasePath = Path.Combine(ApplicationDirectory, "custom-firebase.xml");
-        public static string QRImageFilePath = Path.Combine(ApplicationDirectory, "qr.png");
+        public static string QRImageFilePath = Path.Combine(ApplicationTempDirectory, "qr.png");
+        public static string UpdatePackageFile = Path.Combine(ApplicationTempDirectory, "package-update.exe");
 
-        #region Some random constants
+        public static string ApplicationVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
+        #region Some application specific constants
+
+        public const string UPDATE_URI = "https://pastebin.com/raw/FRS7n7Fc"; // todo: Change update uri
         public const string SETTINGS = "Settings";
 
         #endregion

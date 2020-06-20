@@ -24,6 +24,7 @@ using FireSharp.Extensions;
 using Components.UI;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using System.Reflection;
 
 namespace Components
 {
@@ -39,6 +40,7 @@ namespace Components
         private ClipWindow clipWindow;
         private WinForm.NotifyIcon notifyIcon;
         private SettingWindow settingWindow;
+        private UpdateWindow updateWindow;
         private BuyWindow buyWindow;
         private CustomSyncWindow configWindow;
         private DeviceWindow deviceWindow;
@@ -110,6 +112,8 @@ namespace Components
             binder = this;
 
             FirebaseSingleton.GetInstance.SetCallback(this);
+
+            CheckForUpdates();
         }
 
         protected override void OnExit(ExitEventArgs e)
@@ -142,28 +146,36 @@ namespace Components
             var RestoreMenutItem = CreateNewItem(Translation.APP_RESTORE, RestoreClicked);
             var ImportDataItem = CreateNewItem(Translation.APP_IMPORT, ImportDataClicked);
             var ConfigSettingItem = CreateNewItem(Translation.APP_CONFIG_SETTING, ConfigSettingClicked);
-
+            var UpdateSettingItem = CreateNewItem(Translation.APP_UPDATE, UpdateSettingClicked);
+           
             var HelpMenuItem = CreateNewItem(Translation.APP_HELP, (o, e) =>
             {
                 Process.Start(new ProcessStartInfo("https://github.com/KaustubhPatange/XClipper"));
             });
 
-            var items = new List<WinForm.MenuItem>() { ShowMenuItem, BuyWindowItem, RestartMenuItem, CreateSeparator(), BackupMenuItem, RestoreMenutItem, ImportDataItem, CreateSeparator(),  HelpMenuItem, CreateSeparator(), RecordMenuItem, DeleteMenuItem, SettingMenuItem, CreateSeparator(), AppExitMenuItem };
-         
-            if (LicenseStrategy == LicenseType.Premium)
+            var items = new List<WinForm.MenuItem>() { ShowMenuItem, BuyWindowItem, RestartMenuItem, CreateSeparator(), BackupMenuItem, RestoreMenutItem, ImportDataItem, CreateSeparator(), HelpMenuItem, CreateSeparator(), RecordMenuItem, DeleteMenuItem, CreateSeparator(), ConfigSettingItem, UpdateSettingItem, SettingMenuItem, CreateSeparator(), AppExitMenuItem };
+           
+            if (LicenseStrategy != LicenseType.Premium)
             {
-                items.Insert(7, ConfigSettingItem);
-                items.Insert(7, CreateSeparator());
+                items.Remove(ConfigSettingItem);
             }
-            
+            if (!IsPurchaseDone)
+            {
+                items.Remove(UpdateSettingItem);
+            }
+
             //  if (!IsPurchaseDone) items.Insert(1, BuyWindowItem);
             return items.ToArray();
         }
 
-
         #endregion
 
         #region Invokes
+
+        private void UpdateSettingClicked(object sender, EventArgs e)
+        {
+            CheckForUpdates();
+        }
 
         private void ImportDataClicked(object sender, EventArgs e)
         {
@@ -332,10 +344,10 @@ namespace Components
             settingWindow.Close();
 
             // A task to remove user.
-            Task.Run(async () => 
+            Task.Run(async () =>
             {
                 await FirebaseSingleton.GetInstance.RemoveUser();
-                
+
                 RunOnMainThread(() =>
                 {
                     MessageBox.Show(Translation.MSG_RESET_DATA_SUCCESS, Translation.MSG_INFO, MessageBoxButton.OK, MessageBoxImage.Information);
@@ -349,11 +361,11 @@ namespace Components
 
         public void OnDataAdded(ValueAddedEventArgs e)
         {
-         //   AppSingleton.GetInstance.CheckDataAndUpdate(e.Data);
+            //   AppSingleton.GetInstance.CheckDataAndUpdate(e.Data);
 
-//Added:1764456878cf916a, Path: /users/1PAF8EB-4KR35L-1ICT12V-H7M3FM/Devices/id
-//Added:POCO F1, Path: /users/1PAF8EB-4KR35L-1ICT12V-H7M3FM/Devices/model
-//Added:29, Path: /users/1PAF8EB-4KR35L-1ICT12V-H7M3FM/Devices/sdk
+            //Added:1764456878cf916a, Path: /users/1PAF8EB-4KR35L-1ICT12V-H7M3FM/Devices/id
+            //Added:POCO F1, Path: /users/1PAF8EB-4KR35L-1ICT12V-H7M3FM/Devices/model
+            //Added:29, Path: /users/1PAF8EB-4KR35L-1ICT12V-H7M3FM/Devices/sdk
 
             // Add user when node is inserted
             if (Regex.IsMatch(e.Path, DEVICE_REGEX_PATH_PATTERN))
@@ -374,7 +386,7 @@ namespace Components
                 AppSingleton.GetInstance.CheckDataAndUpdate(e.Data);
                 Debug.WriteLine("Path: " + e.Path + ", Changed:" + e.Data + ", Old Data: " + e.OldData);
             }
-              
+
         }
 
         public void OnDataRemoved(ValueRemovedEventArgs e)
@@ -391,6 +403,34 @@ namespace Components
         #endregion
 
         #region Method Events
+
+        private bool eventLock = false;
+        private void CheckForUpdates()
+        {
+            if (!IsPurchaseDone || !CheckApplicationUpdates) return;
+            var updater = AppModule.Container.Resolve<IUpdater>();
+            updater.Check((isAvailable, model) =>
+            {
+                if (isAvailable)
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        notifyIcon.BalloonTipTitle = Translation.APP_UPDATE_TITLE;
+                        notifyIcon.BalloonTipText = Translation.APP_UPDATE_TEXT;
+                        notifyIcon.ShowBalloonTip(3000);
+
+                        // An event lock will make sure it is subscribed only once.
+                        if (!eventLock)
+                            notifyIcon.BalloonTipClicked += (o, e) =>
+                            {
+                                if (updateWindow != null)
+                                    updateWindow.Close();
+                                updateWindow = new UpdateWindow(model.Desktop);
+                                updateWindow.ShowDialog();
+                            };
+                        eventLock = true;
+                    }));
+            });
+        }
 
         private void RestartAppClicked(object sender, EventArgs e)
         {

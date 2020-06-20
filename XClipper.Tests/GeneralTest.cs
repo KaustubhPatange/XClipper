@@ -9,6 +9,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Components.MainHelper;
 using System.Windows.Documents;
 using System.Collections.Generic;
+using RestSharp;
 
 namespace XClipper.Tests
 {
@@ -30,10 +31,15 @@ namespace XClipper.Tests
         }
 
         [TestMethod]
-        public void EncryptionTest()
+        public void ConnectionTest()
         {
-            string customUID = "1234567-4KR35L-1ICT12V-H7M3FM".Encrypt();
-            Debug.WriteLine(customUID);
+            FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(@"C:\Users\devel\Desktop\setup.exe");
+
+        }
+        
+        public class Upd
+        {
+            public string obsolute { get; set; }
         }
 
         [TestMethod]

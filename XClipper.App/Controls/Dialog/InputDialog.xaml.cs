@@ -6,7 +6,7 @@ namespace Components.Controls.Dialog
 {
     public partial class InputDialog : Window
     {
-        public static string Text;
+        public static string? Text;
         protected InputDialog()
         {
             InitializeComponent();

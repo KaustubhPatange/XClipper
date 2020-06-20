@@ -181,6 +181,8 @@
     <Compile Include="Data\helpers\DatabaseHelper.cs" />
     <Compile Include="Data\unlocalized\CustomHelpWindow.cs" />
     <Compile Include="Data\unlocalized\Properties\NumericTextBoxProperties.cs" />
+    <Compile Include="Data\unlocalized\Utilities\IUpdater.cs" />
+    <Compile Include="Data\unlocalized\Utilities\UpdaterService.cs" />
     <Compile Include="UI\BuyWindow.xaml.cs">
       <DependentUpon>BuyWindow.xaml</DependentUpon>
     </Compile>
@@ -206,7 +208,6 @@
     <Compile Include="Data\helpers\KeyPressHelper.cs" />
     <Compile Include="Data\helpers\MenuItemHelper.cs" />
     <Compile Include="Data\helpers\TableHelper.cs" />
-    <Compile Include="Data\helpers\ValueDescription.cs" />
     <Compile Include="Data\helpers\WhatToStoreHelper.cs" />
     <Compile Include="Data\helpers\TranslationHelper.cs" />
     <Compile Include="Data\unlocalized\DefaultSettings.cs" />
@@ -246,11 +247,15 @@
     <Compile Include="UI\DeviceWindow.xaml.cs">
       <DependentUpon>DeviceWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\UpdateWindow.xaml.cs">
+      <DependentUpon>UpdateWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModel\BaseViewModel.cs" />
     <Compile Include="ViewModel\BuyViewModel.cs" />
     <Compile Include="ViewModel\CustomSyncViewModel.cs" />
     <Compile Include="ViewModel\SettingViewModel.cs" />
     <Compile Include="ViewModel\DeviceViewModel.cs" />
+    <Compile Include="ViewModel\UpdateViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -353,6 +358,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UI\UpdateWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\edit.png" />
@@ -426,4 +435,7 @@
     <Error Condition="!Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" Text="This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=317567." HelpKeyword="BCLBUILD2001" />
     <Error Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" Text="The build restored NuGet packages. Build the project again to include these packages in the build. For more information, see http://go.microsoft.com/fwlink/?LinkID=317568." HelpKeyword="BCLBUILD2002" />
   </Target>
+  <PropertyGroup>
+    <PostBuildEvent>copy $(SolutionDir)\$(ProjectName)\Locales\en.xaml "$(TargetDir)\locales\en.xaml"</PostBuildEvent>
+  </PropertyGroup>
 </Project>
