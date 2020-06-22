@@ -19,6 +19,7 @@ import com.kpstv.xclipper.App.EXPORT_PREF
 import com.kpstv.xclipper.App.IMPORT_PREF
 import com.kpstv.xclipper.App.PERMISSION_REQUEST_CODE
 import com.kpstv.xclipper.R
+import com.kpstv.xclipper.extensions.SimpleFunction
 import com.kpstv.xclipper.extensions.getFormattedDate
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.isValidSQLite
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
@@ -40,7 +41,7 @@ class BackupPreference : PreferenceFragmentCompat(), KodeinAware {
         ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
     }
 
-    private var internalBlock: (() -> Unit)? = null
+    private var internalBlock: SimpleFunction? = null
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.backup_pref, rootKey)
 
@@ -144,7 +145,7 @@ class BackupPreference : PreferenceFragmentCompat(), KodeinAware {
         return name
     }
 
-    private fun checkAndAskForPermission(block: () -> Unit) = with(requireContext()) {
+    private fun checkAndAskForPermission(block: SimpleFunction) = with(requireContext()) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
             checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PERMISSION_GRANTED
         ) {

@@ -21,6 +21,9 @@ object App {
     private const val FB_MIN_DEVICE_CONNECTION = 1
     private const val FB_MAX_DEVICE_CONNECTION = 5
 
+    const val APP_UPDATE_URI = "https://pastebin.com/raw/FRS7n7Fc" // TODO: Change this update uri
+    const val APP_DOWNLOAD_URI = "https://play.google.com/store/apps/details?id=com.kpstv.xclipper"
+
     var APP_MAX_DEVICE = FB_MIN_DEVICE_CONNECTION
     var APP_MAX_ITEM = FB_MIN_ITEM_STORAGE
 
@@ -44,16 +47,15 @@ object App {
     const val DELAY_SPAN: Long = 20
     const val MAX_CHARACTER_TO_STORE = 1000
 
-    // TODO: Do all your jack jacks
     const val STANDARD_DATE_FORMAT = "yyyyMMddHHmmss"
 
     var FB_ENDPOINT: String = ""
-    var FB_APIKEY: String = ""
-    var FB_APPID: String = ""
+    var FB_API_KEY: String = ""
+    var FB_APP_ID: String = ""
     var UID: String = "" // TODO: remove this eg: 1PAF8EB-4KR35L-1ICT12V-H7M3FM
     lateinit var DeviceID: String
 
-    var BindToFirebase = true
+    var bindToFirebase = true
     var observeFirebase = true
 
     var showSuggestion = false
@@ -76,6 +78,7 @@ object App {
     const val QR_SCAN_REQUEST_CODE = 153
     const val TAG_DIALOG_REQUEST_CODE = 100
     const val TAG_DIALOG_RESULT_CODE = 1
+    const val UPDATE_REQUEST_CODE = 555
 
     const val TAG_FILTER_CHIP = "com.kpstv.xclipper.tag"
 

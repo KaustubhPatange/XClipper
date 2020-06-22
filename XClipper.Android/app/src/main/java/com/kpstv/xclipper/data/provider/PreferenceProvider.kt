@@ -12,6 +12,8 @@ interface PreferenceProvider {
     fun getBooleanKey(key: String, default: Boolean): Boolean
     fun putBooleanKey(key: String, value: Boolean)
 
+    fun removeKey(key: String)
+
     fun observePreference(block: (SharedPreferences, String) -> Unit)
 
     /*fun getStringSetKey(key: String, value: Set<String>?)

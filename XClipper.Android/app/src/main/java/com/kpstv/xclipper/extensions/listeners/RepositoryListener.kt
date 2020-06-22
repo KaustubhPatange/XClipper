@@ -1,5 +1,7 @@
 package com.kpstv.xclipper.extensions.listeners
 
+import com.kpstv.xclipper.extensions.SimpleFunction
+
 /**
  * Use to determine if any data exist in repository. Mainly used
  * with check functions which determine the availability of duplicate data.
@@ -8,8 +10,8 @@ package com.kpstv.xclipper.extensions.listeners
  * @param notFound Receives callback when not found
  */
 class RepositoryListener (
-    private val dataExist: () -> Unit,
-    private val notFound: () -> Unit
+    private val dataExist: SimpleFunction,
+    private val notFound: SimpleFunction
 ): RepositoryFunctions {
     override fun onDataExist() {
         dataExist.invoke()

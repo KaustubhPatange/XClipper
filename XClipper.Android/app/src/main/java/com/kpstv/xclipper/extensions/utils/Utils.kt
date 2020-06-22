@@ -22,7 +22,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ShareCompat
 import androidx.preference.PreferenceManager
 import com.google.zxing.integration.android.IntentIntegrator
-import com.kpstv.license.Decrypt
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.App.BIND_PREF
 import com.kpstv.xclipper.App.BLACKLIST_PREF
@@ -32,6 +31,7 @@ import com.kpstv.xclipper.data.model.AppPkg
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
+import com.kpstv.xclipper.extensions.SimpleFunction
 import com.kpstv.xclipper.service.ClipboardAccessibilityService
 import kotlinx.android.synthetic.main.dialog_connect.view.*
 import kotlinx.android.synthetic.main.dialog_progress_view.view.*
@@ -154,7 +154,7 @@ class Utils {
          * This will create and show dialog to user to enable accessibility service
          * to make clipboard capturing work even for the Android 10.
          */
-        fun showAccessibilityDialog(context: Context, block: () -> Unit): Unit = with(context) {
+        fun showAccessibilityDialog(context: Context, block: SimpleFunction): Unit = with(context) {
             AlertDialog.Builder(this)
                 .setMessage(context.getString(R.string.accessibility_capture))
                 .setPositiveButton(getString(R.string.ok)) { _, _ ->
@@ -281,7 +281,7 @@ class Utils {
         ) {
             dbConnectionProvider.detachDataFromAll()
             preferenceProvider.putBooleanKey(BIND_PREF, false)
-            App.BindToFirebase = false
+            App.bindToFirebase = false
         }
 
         fun loginToDatabase(
@@ -291,7 +291,7 @@ class Utils {
         ) {
             dbConnectionProvider.saveOptionsToAll(options)
             preferenceProvider.putBooleanKey(BIND_PREF, true)
-            App.BindToFirebase = true
+            App.bindToFirebase = true
         }
 
         fun isValidSQLite(stream: InputStream?): Boolean {
@@ -300,20 +300,5 @@ class Utils {
             val str = String(buffer)
             return str == "SQLite format 3\u0000"
         }
-
-        /* @JvmStatic
-         fun cafeBarToast(context: Context, message: String, buttonText: String, block: (CafeBar) -> Unit): CafeBar {
-             return CafeBar.builder(context)
-                 .content(message)
-                 .floating(true)
-                 .duration(CafeBar.Duration.INDEFINITE)
-                 .neutralText(buttonText)
-                 .onNeutral {
-                    block.invoke(it)
-                 }
-                 .autoDismiss(false)
-                 .showShadow(true)
-                 .build()
-         }*/
     }
 }

@@ -48,15 +48,15 @@ class DBConnectionProviderImpl(
 
     override fun isValidData(): Boolean {
         loadDataFromPreference()
-        return !(App.FB_APIKEY.isEmpty() && App.FB_APPID.isEmpty() && App.FB_ENDPOINT.isEmpty())
+        return !(App.FB_API_KEY.isEmpty() && App.FB_APP_ID.isEmpty() && App.FB_ENDPOINT.isEmpty())
     }
 
     override fun loadDataFromPreference() {
-        App.FB_APIKEY = preferenceProvider.getEncryptString(
+        App.FB_API_KEY = preferenceProvider.getEncryptString(
             App.FB_APIKEY_PREF,
             EMPTY_STRING
         ) ?: EMPTY_STRING
-        App.FB_APPID = preferenceProvider.getEncryptString(
+        App.FB_APP_ID = preferenceProvider.getEncryptString(
             App.FB_APPID_PREF,
             EMPTY_STRING
         ) ?: EMPTY_STRING
@@ -99,8 +99,8 @@ class DBConnectionProviderImpl(
         return if (isValidData()) {
             FBOptions.Builder().apply {
                 setUID(App.UID)
-                setApiKey(App.FB_APIKEY)
-                setAppId(App.FB_APPID)
+                setApiKey(App.FB_API_KEY)
+                setAppId(App.FB_APP_ID)
                 setEndPoint(App.FB_ENDPOINT)
                 setPassword(DatabaseEncryption.getPassword())
             }.build()
@@ -109,11 +109,11 @@ class DBConnectionProviderImpl(
     }
 
     override fun detachDataFromAll() {
-        preferenceProvider.putStringKey(App.FB_ENDPOINT_PREF, null)
-        preferenceProvider.putStringKey(App.FB_APPID_PREF, null)
-        preferenceProvider.putStringKey(App.FB_APIKEY_PREF, null)
-        preferenceProvider.putStringKey(App.FB_PASSWORD_PREF, null)
-        preferenceProvider.putStringKey(App.UID_PREF, null)
+        preferenceProvider.removeKey(App.FB_ENDPOINT_PREF)
+        preferenceProvider.removeKey(App.FB_APPID_PREF)
+        preferenceProvider.removeKey(App.FB_APIKEY_PREF)
+        preferenceProvider.removeKey(App.FB_PASSWORD_PREF)
+        preferenceProvider.removeKey(App.UID_PREF)
 
         loadDataFromPreference()
     }

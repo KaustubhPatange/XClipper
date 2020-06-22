@@ -13,12 +13,12 @@ import android.view.View
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.kpstv.license.Decrypt
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.ClipTag
 import com.kpstv.xclipper.data.model.SpecialMenu
+import com.kpstv.xclipper.extensions.SimpleFunction
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
 import com.kpstv.xclipper.extensions.show
 import com.kpstv.xclipper.extensions.small
@@ -40,10 +40,10 @@ class SpecialHelper(
     private lateinit var adapter: MenuAdapter
     private val specialList = ArrayList<SpecialMenu>()
 
-    private lateinit var onItemClick: () -> Unit
+    private lateinit var onItemClick: SimpleFunction
 
     private val data = clip.data
-    fun setActions(view: View, onItemClick: () -> Unit) = with(view){
+    fun setActions(view: View, onItemClick: SimpleFunction) = with(view){
         this@SpecialHelper.onItemClick = onItemClick
 
         setDefineTag(this)

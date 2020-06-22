@@ -1,15 +1,12 @@
 package com.kpstv.xclipper.extensions
 
-import androidx.annotation.IdRes
-import androidx.annotation.NavigationRes
-import androidx.navigation.NavController
 import com.ferfalk.simplesearchview.SimpleSearchView
 import com.kpstv.xclipper.App.STANDARD_DATE_FORMAT
-import com.kpstv.xclipper.R
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
 
+typealias SimpleFunction = () -> Unit
 
 fun SimpleSearchView.setOnQueryTextListener(
     onSubmit: ((String) -> Unit)? = null,
@@ -42,7 +39,7 @@ fun mainThread(block: suspend (() -> Unit)) {
     Coroutines.main { block.invoke() }
 }
 
-fun SimpleSearchView.setOnSearchCloseListener(block: () -> Unit) {
+fun SimpleSearchView.setOnSearchCloseListener(block: SimpleFunction) {
     setOnSearchViewListener(object : SimpleSearchView.SearchViewListener {
         override fun onSearchViewShownAnimation() {
 

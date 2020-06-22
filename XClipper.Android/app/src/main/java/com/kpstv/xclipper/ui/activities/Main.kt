@@ -52,7 +52,6 @@ class Main : AppCompatActivity(), KodeinAware {
         }
     }
 
-
     /**
      * Check if current theme has changed...
      */

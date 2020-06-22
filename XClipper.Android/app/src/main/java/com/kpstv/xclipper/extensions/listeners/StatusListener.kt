@@ -1,5 +1,7 @@
 package com.kpstv.xclipper.extensions.listeners
 
+import com.kpstv.xclipper.extensions.SimpleFunction
+
 /**
  * This class provides two listener mainly for performing actions after
  * success/complete or error.
@@ -10,10 +12,10 @@ package com.kpstv.xclipper.extensions.listeners
  * @param onAfter Used to execute some codes after the callbacks are invoked.
  */
 class StatusListener(
-    private val onBefore: (() -> Unit)? = null,
-    private val onComplete: (() -> Unit),
-    private val onError: (() -> Unit),
-    private val onAfter: (() -> Unit)? = null
+    private val onBefore: SimpleFunction? = null,
+    private val onComplete: SimpleFunction,
+    private val onError: SimpleFunction,
+    private val onAfter: SimpleFunction? = null
 ): CompleteAction {
     override fun onComplete() {
         onBefore?.invoke()

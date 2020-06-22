@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="Author">
+        <Preference
+            app:key="author_pref"
+            app:summary="@string/author_summary"
+            app:title="@string/author_title" />
+
+        <Preference
+            app:key="mail_pref"
+            app:summary="@string/mail_summary"
+            app:title="@string/mail_title" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="App">
+        <Preference
+            android:summary="com.kpstv.xclipper"
+            app:key="package_pref"
+            app:title="@string/package_title" />
+
+        <Preference
+            app:key="version_pref"
+            app:title="@string/version_title"
+            app:summary="1.0"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

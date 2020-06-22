@@ -1,5 +1,6 @@
 package com.kpstv.xclipper.ui.adapters
 
+import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.SpecialMenu
+import com.kpstv.xclipper.extensions.utils.Utils.Companion.getColorFromAttr
 import kotlinx.android.synthetic.main.item_special.view.*
 
 class MenuAdapter(
@@ -25,9 +27,25 @@ class MenuAdapter(
         holder.bind(list[position])
     }
 
-    fun MenuHolder.bind(item: SpecialMenu) = with(itemView) {
+    private fun MenuHolder.bind(item: SpecialMenu) = with(itemView) {
         is_text.text = item.title
         is_image.setImageDrawable(ContextCompat.getDrawable(context, item.image))
+
+        val defaultThemeColor = getColorFromAttr(
+            context = context,
+            attrColor = R.attr.colorTextSecondaryLight
+        )
+
+        if (item.imageTint == -1)
+            is_image.imageTintList = ColorStateList.valueOf(defaultThemeColor)
+        else
+            is_image.imageTintList =
+                ColorStateList.valueOf(ContextCompat.getColor(context, item.imageTint))
+
+        if (item.textColor == -1)
+            is_text.setTextColor(defaultThemeColor)
+        else
+            is_text.setTextColor(ContextCompat.getColor(context, item.textColor))
 
         mainLayout.setOnClickListener { item.onClick.invoke() }
     }

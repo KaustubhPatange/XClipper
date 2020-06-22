@@ -3,6 +3,7 @@ package com.kpstv.xclipper.ui.fragments
 import android.content.ClipData
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.Animation
@@ -17,8 +18,15 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.play.core.appupdate.AppUpdateManager
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.install.InstallStateUpdatedListener
+import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.InstallStatus
+import com.google.android.play.core.install.model.UpdateAvailability
 import com.kpstv.license.Decrypt
 import com.kpstv.xclipper.App
+import com.kpstv.xclipper.App.UPDATE_REQUEST_CODE
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.ToolbarState
 import com.kpstv.xclipper.data.model.Tag
@@ -55,13 +63,10 @@ class Home : Fragment(R.layout.fragment_main), KodeinAware {
     private val viewModelFactory by instance<MainViewModelFactory>()
     private val clipboardProvider by instance<ClipboardProvider>()
 
-    /*   private val clipboardManager: ClipboardManager by lazy {
-           requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-       }*/
-
     private lateinit var adapter: CIAdapter
 
     private lateinit var mainViewModel: MainViewModel
+    private lateinit var appUpdateManager: AppUpdateManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         mainViewModel = ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
@@ -96,7 +101,43 @@ class Home : Fragment(R.layout.fragment_main), KodeinAware {
             Utils.retrievePackageList(requireContext())
         }
 
+        checkForUpdates()
+
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    private fun checkForUpdates() = with(requireActivity()) {
+        appUpdateManager = AppUpdateManagerFactory.create(this)
+        val appUpdateInfoTask = appUpdateManager.appUpdateInfo
+        appUpdateManager.registerListener(listener)
+        appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
+            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+                && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)
+            ) {
+                appUpdateManager.startUpdateFlowForResult(
+                    appUpdateInfo,
+                    AppUpdateType.FLEXIBLE,
+                    this,
+                    UPDATE_REQUEST_CODE)
+            }
+        }
+    }
+
+    private val listener = InstallStateUpdatedListener { state ->
+        if (state.installStatus() == InstallStatus.DOWNLOADING) {
+            val bytesDownloaded = state.bytesDownloaded()
+            val totalBytesToDownload = state.totalBytesToDownload()
+            Log.e(TAG, "Bytes Downloaded: $bytesDownloaded, TotalBytes: $totalBytesToDownload" )
+        } else if (state.installStatus() == InstallStatus.DOWNLOADED) {
+            Snackbar.make(
+                requireView().findViewById(R.id.ci_recyclerView),
+                "An update has just been downloaded.",
+                Snackbar.LENGTH_INDEFINITE
+            ).apply {
+                setAction("RESTART") { appUpdateManager.completeUpdate() }
+                show()
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

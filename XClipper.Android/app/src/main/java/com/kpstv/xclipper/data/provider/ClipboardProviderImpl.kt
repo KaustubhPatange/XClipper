@@ -1,7 +1,6 @@
 package com.kpstv.xclipper.data.provider
 
 import android.content.ClipData
-import android.content.ClipDescription
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Context.CLIPBOARD_SERVICE
@@ -9,6 +8,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.data.repository.MainRepository
+import com.kpstv.xclipper.extensions.SimpleFunction
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.isPackageBlacklisted
 import com.kpstv.xclipper.service.ClipboardAccessibilityService.Companion.currentPackage
 
@@ -36,7 +36,7 @@ class ClipboardProviderImpl(
         isRecording = false
     }
 
-    override fun ignoreChange(block: () -> Unit) {
+    override fun ignoreChange(block: SimpleFunction) {
         stopObserving()
         block.invoke()
         startObserving()

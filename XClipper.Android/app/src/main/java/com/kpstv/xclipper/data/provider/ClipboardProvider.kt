@@ -2,7 +2,7 @@ package com.kpstv.xclipper.data.provider
 
 import android.content.ClipData
 import androidx.lifecycle.LiveData
-import com.kpstv.xclipper.data.model.Clip
+import com.kpstv.xclipper.extensions.SimpleFunction
 
 interface ClipboardProvider {
     fun startObserving()
@@ -10,7 +10,7 @@ interface ClipboardProvider {
     fun setClipboard(item: ClipData?)
     fun getClipboard(): ClipData?
     fun stopObserving()
-    fun ignoreChange(block: () -> Unit)
+    fun ignoreChange(block: SimpleFunction)
     fun setCurrentClip(text: String)
-    fun getCurrentClip() : LiveData<String>
+    fun getCurrentClip(): LiveData<String>
 }

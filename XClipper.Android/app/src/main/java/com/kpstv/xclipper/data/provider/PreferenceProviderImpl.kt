@@ -49,6 +49,12 @@ class PreferenceProviderImpl(
         _keyLiveData.postValue(key)
     }
 
+    override fun removeKey(key: String) {
+        preference.edit().apply {
+            remove(key)
+        }.apply()
+    }
+
     override fun observePreference(block: (SharedPreferences, String) -> Unit) {
         _keyLiveData.observeForever {
             block.invoke(preference, it)

@@ -120,4 +120,12 @@
     <string name="unpin">Unpin</string>
     <string name="ask_suggestion">Show overlay suggestion</string>
     <string name="err_database">Invalid database</string>
+    <string name="author_summary"><![CDATA[\@KaustubhPatange]]></string>
+    <string name="author_title">Owner</string>
+    <string name="mail_title">Send me an email</string>
+    <string name="mail_summary">Want to give feedback, bug report just hit me up</string>
+    <string name="version_title">Version</string>
+    <string name="package_title">Package</string>
+    <string name="upgrade">Upgrades</string>
+    <string name="about">About</string>
 </resources>

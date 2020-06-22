@@ -19,10 +19,8 @@ import com.kpstv.xclipper.extensions.listeners.ResponseListener
 import com.kpstv.xclipper.extensions.utils.ThemeUtils
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showConnectionDialog
 import com.kpstv.xclipper.ui.adapters.MenuAdapter
-import com.kpstv.xclipper.ui.fragments.settings.AccountPreference
-import com.kpstv.xclipper.ui.fragments.settings.BackupPreference
-import com.kpstv.xclipper.ui.fragments.settings.GeneralPreference
-import com.kpstv.xclipper.ui.fragments.settings.LookFeelPreference
+import com.kpstv.xclipper.ui.fragments.Upgrade
+import com.kpstv.xclipper.ui.fragments.settings.*
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import com.kpstv.xclipper.ui.viewmodels.MainViewModelFactory
 import es.dmoral.toasty.Toasty
@@ -40,6 +38,8 @@ class Settings : AppCompatActivity(), KodeinAware {
         const val ACCOUNT_PREF = "com.kpstv.xclipper.sync_pref"
         const val LOOK_FEEL_PREF = "com.kpstv.xclipper.look_feel_pref"
         const val BACKUP_PREF = "com.kpstv.xclipper.backup_pref"
+        const val UPGRADE_PREF = "com.kpstv.xclipper.upgrade_pref"
+        const val ABOUT_PREF = "com.kpstv.xclipper.about_pref"
     }
 
     override val kodein by kodein()
@@ -53,6 +53,8 @@ class Settings : AppCompatActivity(), KodeinAware {
     private val generalFragment = GeneralPreference()
     private val accountFragment = AccountPreference()
     private val backupFragment = BackupPreference()
+    private val upgradeFragment = Upgrade()
+    private val aboutFragment = AboutPreference()
     private val lookFeelFragment = LookFeelPreference(::onThemeChanged)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,26 +63,27 @@ class Settings : AppCompatActivity(), KodeinAware {
 
         setContentView(R.layout.activity_settings)
 
-        toolbar.title = getString(R.string.settings)
         toolbar.navigationIcon = ContextCompat.getDrawable(this, R.drawable.ic_arrow_back)
         toolbar.setNavigationOnClickListener { onBackPressed() }
 
-        settingsFragment.listener = {
-            when (it) {
-                GENERAL_PREF -> replaceFragment(generalFragment)
-                ACCOUNT_PREF -> replaceFragment(accountFragment)
-                LOOK_FEEL_PREF -> replaceFragment(lookFeelFragment)
-                BACKUP_PREF -> replaceFragment(backupFragment)
+        settingsFragment.listener = { pref, tag ->
+            when (pref) {
+                GENERAL_PREF -> replaceFragment(generalFragment, tag)
+                ACCOUNT_PREF -> replaceFragment(accountFragment, tag)
+                LOOK_FEEL_PREF -> replaceFragment(lookFeelFragment, tag)
+                BACKUP_PREF -> replaceFragment(backupFragment, tag)
+                UPGRADE_PREF -> replaceFragment(upgradeFragment, tag)
+                ABOUT_PREF -> replaceFragment(aboutFragment, tag)
             }
         }
-        replaceFragment(settingsFragment, false)
+        replaceFragment(settingsFragment, getString(R.string.settings), false)
 
         if (intent.getBooleanExtra(ACTION_REPLACE_FRAG, false))
-            replaceFragment(lookFeelFragment)
+            replaceFragment(lookFeelFragment, getString(R.string.look_feel))
     }
 
     class SettingsFragment : Fragment() {
-        lateinit var listener: (String) -> Unit
+        lateinit var listener: (String, String) -> Unit
         override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -97,7 +100,7 @@ class Settings : AppCompatActivity(), KodeinAware {
                     SpecialMenu(
                         title = getString(R.string.service),
                         image = R.drawable.ic_service
-                    ) { listener.invoke(GENERAL_PREF) })
+                    ) { listener.invoke(GENERAL_PREF, getString(R.string.service)) })
 
 
                 /** Sync Setting */
@@ -105,21 +108,39 @@ class Settings : AppCompatActivity(), KodeinAware {
                     SpecialMenu(
                         title = context.getString(R.string.account),
                         image = R.drawable.ic_account
-                    ) { listener.invoke(ACCOUNT_PREF) })
+                    ) { listener.invoke(ACCOUNT_PREF, getString(R.string.account)) })
 
                 /** Look & Feel Setting */
                 list.add(
                     SpecialMenu(
                         title = getString(R.string.look_feel),
                         image = R.drawable.ic_looks
-                    ) { listener.invoke(LOOK_FEEL_PREF) })
+                    ) { listener.invoke(LOOK_FEEL_PREF, getString(R.string.look_feel)) })
 
                 /** Backup Setting */
                 list.add(
                     SpecialMenu(
                         title = getString(R.string.backup),
                         image = R.drawable.ic_backup
-                    ) { listener.invoke(BACKUP_PREF) })
+                    ) { listener.invoke(BACKUP_PREF, getString(R.string.backup)) })
+
+                /** Upgrade Menu */
+                list.add(
+                    SpecialMenu(
+                        title = getString(R.string.upgrade),
+                        image = R.drawable.ic_upgrade,
+                        imageTint = R.color.palette5,
+                        textColor = R.color.palette5
+                    ) { listener.invoke(UPGRADE_PREF, getString(R.string.upgrade)) }
+                )
+
+                /** About Menu */
+                list.add(
+                    SpecialMenu(
+                        title = getString(R.string.about),
+                        image = R.drawable.ic_info
+                    ) { listener.invoke(ABOUT_PREF, getString(R.string.about)) }
+                )
 
                 recycler_view.layoutManager = LinearLayoutManager(requireContext())
                 recycler_view.adapter = MenuAdapter(list, R.layout.item_settings)
@@ -129,13 +150,15 @@ class Settings : AppCompatActivity(), KodeinAware {
         }
     }
 
-    private fun replaceFragment(fragment: Fragment, addToBackStack: Boolean = true) {
+    private fun replaceFragment(fragment: Fragment, tag: String, addToBackStack: Boolean = true) {
         val transition = supportFragmentManager
             .beginTransaction()
-            .replace(R.id.settings, fragment)
+            .replace(R.id.settingsContainer, fragment, tag)
         if (addToBackStack)
             transition.addToBackStack(null)
         transition.commit()
+
+        toolbar.title = tag
     }
 
     private fun onThemeChanged(value: Boolean) {
@@ -148,6 +171,8 @@ class Settings : AppCompatActivity(), KodeinAware {
     override fun onBackPressed() {
         if (supportFragmentManager.backStackEntryCount > 0) {
             supportFragmentManager.popBackStack()
+
+           toolbar.title = getString(R.string.settings)
         } else
             super.onBackPressed()
     }
@@ -162,7 +187,7 @@ class Settings : AppCompatActivity(), KodeinAware {
      * be not working.
      */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-      /** Parsing the connection result. */
+        /** Parsing the connection result. */
 
         val result =
             IntentIntegrator.parseActivityResult(requestCode, resultCode, data)

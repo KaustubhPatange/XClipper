@@ -12,7 +12,7 @@ import com.google.firebase.ktx.Firebase
 import com.kpstv.license.Decrypt
 import com.kpstv.xclipper.App.APP_MAX_DEVICE
 import com.kpstv.xclipper.App.APP_MAX_ITEM
-import com.kpstv.xclipper.App.BindToFirebase
+import com.kpstv.xclipper.App.bindToFirebase
 import com.kpstv.xclipper.App.DeviceID
 import com.kpstv.xclipper.App.UID
 import com.kpstv.xclipper.App.getMaxConnection
@@ -22,6 +22,7 @@ import com.kpstv.xclipper.data.localized.FBOptions
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.Device
 import com.kpstv.xclipper.data.model.User
+import com.kpstv.xclipper.extensions.SimpleFunction
 import com.kpstv.xclipper.extensions.cloneToEntries
 import com.kpstv.xclipper.extensions.decrypt
 import com.kpstv.xclipper.extensions.encrypt
@@ -233,7 +234,7 @@ class FirebaseProviderImpl(
      */
     private fun workWithData(
         validationContext: ValidationContext = ValidationContext.Default,
-        block: () -> Unit
+        block: SimpleFunction
     ) {
 
         /**
@@ -243,7 +244,7 @@ class FirebaseProviderImpl(
          * This check will make sure that user can only update firebase database
          *  when following criteria satisfies
          */
-        if (validationContext == ValidationContext.Default && !BindToFirebase && !dbConnectionProvider.isValidData()) return
+        if (validationContext == ValidationContext.Default && !bindToFirebase && !dbConnectionProvider.isValidData()) return
 
         /** Automated initialization of firebase database */
         if (isInitialized.value == false)

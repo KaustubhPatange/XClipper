@@ -25,6 +25,7 @@ namespace Components
         }
 
         #region Actual Bindings
+
         public string AppTitle { get; } = $"{Translation.UPDATE_TITLE} [{ApplicationVersion}]";
         public ICommand MainButton { get; set; }
         public int Progress { get; set; } = 0;

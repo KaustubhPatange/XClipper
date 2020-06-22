@@ -1,9 +1,7 @@
 package com.kpstv.xclipper.ui.fragments.settings
 
 import android.app.AlertDialog
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -82,7 +80,7 @@ class AccountPreference() : PreferenceFragmentCompat(), KodeinAware {
         /** Database binding preference */
         bindPreference = findPreference(BIND_PREF)
         bindPreference?.setOnPreferenceChangeListener { _, newValue ->
-            App.BindToFirebase = newValue as Boolean
+            App.bindToFirebase = newValue as Boolean
             true
         }
 

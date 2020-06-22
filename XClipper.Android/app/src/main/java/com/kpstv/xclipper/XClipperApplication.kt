@@ -4,16 +4,14 @@ import android.annotation.SuppressLint
 import android.app.Application
 import android.provider.Settings
 import com.kpstv.xclipper.App.BIND_PREF
-import com.kpstv.xclipper.App.BindToFirebase
+import com.kpstv.xclipper.App.bindToFirebase
 import com.kpstv.xclipper.App.DARK_PREF
 import com.kpstv.xclipper.App.DARK_THEME
 import com.kpstv.xclipper.App.DICTIONARY_LANGUAGE
 import com.kpstv.xclipper.App.DeviceID
-import com.kpstv.xclipper.App.EMPTY_STRING
 import com.kpstv.xclipper.App.LANG_PREF
 import com.kpstv.xclipper.App.SUGGESTION_PREF
 import com.kpstv.xclipper.App.UID
-import com.kpstv.xclipper.App.UID_PREF
 import com.kpstv.xclipper.App.showSuggestion
 import com.kpstv.xclipper.data.api.GoogleDictionaryApi
 import com.kpstv.xclipper.data.api.TinyUrlApi
@@ -126,7 +124,7 @@ class XClipperApplication : Application(), KodeinAware {
 
         DARK_THEME = preferenceProvider.getBooleanKey(DARK_PREF, true)
         showSuggestion = preferenceProvider.getBooleanKey(SUGGESTION_PREF, false)
-        BindToFirebase = if (UID.isBlank()) false
+        bindToFirebase = if (UID.isBlank()) false
         else
             preferenceProvider.getBooleanKey(BIND_PREF, false)
 

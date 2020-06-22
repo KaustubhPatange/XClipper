@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.NavDirections
 import androidx.navigation.findNavController
+import com.kpstv.xclipper.extensions.SimpleFunction
 import kotlinx.android.synthetic.main.fragment_welcome.view.*
 
 class WelcomeUtils {
@@ -46,7 +47,7 @@ class WelcomeUtils {
             @StringRes textId: Int,
             @StringRes nextTextId: Int,
             insertView: View? = null,
-            action: () -> Unit
+            action: SimpleFunction
         ) {
             val palette = ContextCompat.getColor(activity, paletteId)
             val nextPalette = ContextCompat.getColor(activity, nextPaletteId)

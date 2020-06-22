@@ -4,18 +4,16 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.annotation.MenuRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
-import com.kpstv.xclipper.App
 import com.kpstv.xclipper.App.BLANK_STRING
 import com.kpstv.xclipper.R
+import com.kpstv.xclipper.extensions.SimpleFunction
 import com.kpstv.xclipper.extensions.collapse
 import com.kpstv.xclipper.extensions.show
-import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.android.synthetic.main.dialog_allpurpose.view.*
 import kotlinx.android.synthetic.main.dialog_allpurpose.view.toolbar
 
@@ -28,15 +26,15 @@ class AllPurposeDialog : DialogFragment() {
 
     private var isPositiveButton = true
     private var positiveButtonText = "OK"
-    private var positiveOnClick: () -> Unit = { }
+    private var positiveOnClick: SimpleFunction = { }
 
     private var isNegativeButton = false
     private var negativeButtonText = "Cancel"
-    private var negativeOnClick: () -> Unit = { }
+    private var negativeOnClick: SimpleFunction = { }
 
     private var isNeutralButton = false
     private var neutralButtonText = "Cancel"
-    private var neutralOnClick: () -> Unit = { }
+    private var neutralOnClick: SimpleFunction = { }
 
     private lateinit var mainView: View
 
@@ -77,21 +75,21 @@ class AllPurposeDialog : DialogFragment() {
         return this
     }
 
-    fun setPositiveButton(buttonText: String, block: () -> Unit): AllPurposeDialog {
+    fun setPositiveButton(buttonText: String, block: SimpleFunction): AllPurposeDialog {
         isPositiveButton = true
         positiveButtonText = buttonText
         positiveOnClick = block
         return this
     }
 
-    fun setNegativeButton(buttonText: String, block: () -> Unit): AllPurposeDialog {
+    fun setNegativeButton(buttonText: String, block: SimpleFunction): AllPurposeDialog {
         isNegativeButton = true
         negativeButtonText = buttonText
         negativeOnClick = block
         return this
     }
 
-    fun setNeutralButton(buttonText: String, block: () -> Unit): AllPurposeDialog {
+    fun setNeutralButton(buttonText: String, block: SimpleFunction): AllPurposeDialog {
         isNeutralButton = true
         neutralButtonText = buttonText
         neutralOnClick = block

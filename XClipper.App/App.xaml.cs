@@ -147,14 +147,14 @@ namespace Components
             var ImportDataItem = CreateNewItem(Translation.APP_IMPORT, ImportDataClicked);
             var ConfigSettingItem = CreateNewItem(Translation.APP_CONFIG_SETTING, ConfigSettingClicked);
             var UpdateSettingItem = CreateNewItem(Translation.APP_UPDATE, UpdateSettingClicked);
-           
+
             var HelpMenuItem = CreateNewItem(Translation.APP_HELP, (o, e) =>
             {
                 Process.Start(new ProcessStartInfo("https://github.com/KaustubhPatange/XClipper"));
             });
 
             var items = new List<WinForm.MenuItem>() { ShowMenuItem, BuyWindowItem, RestartMenuItem, CreateSeparator(), BackupMenuItem, RestoreMenutItem, ImportDataItem, CreateSeparator(), HelpMenuItem, CreateSeparator(), RecordMenuItem, DeleteMenuItem, CreateSeparator(), ConfigSettingItem, UpdateSettingItem, SettingMenuItem, CreateSeparator(), AppExitMenuItem };
-           
+
             if (LicenseStrategy != LicenseType.Premium)
             {
                 items.Remove(ConfigSettingItem);
