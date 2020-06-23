@@ -37,12 +37,13 @@ interface MainRepository {
      *
      * If it does not exist then we will process and save it.
      *
-     * @param clip A clip which is contains encrypted data and no tags (usually coming from firebase).
+     * @param clip A clip which is contains encrypted string data and no [Clip.tags] (usually coming from firebase).
      */
     fun updateClip(clip: Clip?, filterType: FilterType = FilterType.Text)
+    // fun updateClip(clips: List<Clip>?)
 
     /**
-     * The function will change clip pin to the incoming value.
+     * The function will change [Clip.isPinned] to the incoming value.
      */
     fun updatePin(clip: Clip?, isPinned: Boolean)
 

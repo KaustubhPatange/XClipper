@@ -128,4 +128,6 @@
     <string name="package_title">Package</string>
     <string name="upgrade">Upgrades</string>
     <string name="about">About</string>
+    <string name="auto_sync_title">Automatic synchronization</string>
+    <string name="layout_empty_text">Copy text or click to create a new empty paste</string>
 </resources>

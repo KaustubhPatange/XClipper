@@ -53,11 +53,11 @@ class DBConnectionProviderImpl(
 
     override fun loadDataFromPreference() {
         App.FB_API_KEY = preferenceProvider.getEncryptString(
-            App.FB_APIKEY_PREF,
+            App.FB_API_KEY_PREF,
             EMPTY_STRING
         ) ?: EMPTY_STRING
         App.FB_APP_ID = preferenceProvider.getEncryptString(
-            App.FB_APPID_PREF,
+            App.FB_APP_ID_PREF,
             EMPTY_STRING
         ) ?: EMPTY_STRING
         App.FB_ENDPOINT = preferenceProvider.getEncryptString(
@@ -76,13 +76,13 @@ class DBConnectionProviderImpl(
 
     override fun saveOptionsToAll(options: FBOptions) {
         preferenceProvider.putEncryptString(
-            App.FB_APIKEY_PREF, options.apiKey
+            App.FB_API_KEY_PREF, options.apiKey
         )
         preferenceProvider.putEncryptString(
             App.FB_ENDPOINT_PREF, options.endpoint
         )
         preferenceProvider.putEncryptString(
-            App.FB_APPID_PREF, options.appId
+            App.FB_APP_ID_PREF, options.appId
         )
         preferenceProvider.putEncryptString(
             App.FB_PASSWORD_PREF, options.password
@@ -110,8 +110,8 @@ class DBConnectionProviderImpl(
 
     override fun detachDataFromAll() {
         preferenceProvider.removeKey(App.FB_ENDPOINT_PREF)
-        preferenceProvider.removeKey(App.FB_APPID_PREF)
-        preferenceProvider.removeKey(App.FB_APIKEY_PREF)
+        preferenceProvider.removeKey(App.FB_APP_ID_PREF)
+        preferenceProvider.removeKey(App.FB_API_KEY_PREF)
         preferenceProvider.removeKey(App.FB_PASSWORD_PREF)
         preferenceProvider.removeKey(App.UID_PREF)
 

@@ -3,6 +3,7 @@ package com.kpstv.xclipper
 import android.annotation.SuppressLint
 import android.app.Application
 import android.provider.Settings
+import com.kpstv.xclipper.App.AUTO_SYNC_PREF
 import com.kpstv.xclipper.App.BIND_PREF
 import com.kpstv.xclipper.App.bindToFirebase
 import com.kpstv.xclipper.App.DARK_PREF
@@ -12,6 +13,7 @@ import com.kpstv.xclipper.App.DeviceID
 import com.kpstv.xclipper.App.LANG_PREF
 import com.kpstv.xclipper.App.SUGGESTION_PREF
 import com.kpstv.xclipper.App.UID
+import com.kpstv.xclipper.App.runAutoSync
 import com.kpstv.xclipper.App.showSuggestion
 import com.kpstv.xclipper.data.api.GoogleDictionaryApi
 import com.kpstv.xclipper.data.api.TinyUrlApi
@@ -124,6 +126,7 @@ class XClipperApplication : Application(), KodeinAware {
 
         DARK_THEME = preferenceProvider.getBooleanKey(DARK_PREF, true)
         showSuggestion = preferenceProvider.getBooleanKey(SUGGESTION_PREF, false)
+        runAutoSync = preferenceProvider.getBooleanKey(AUTO_SYNC_PREF, false)
         bindToFirebase = if (UID.isBlank()) false
         else
             preferenceProvider.getBooleanKey(BIND_PREF, false)

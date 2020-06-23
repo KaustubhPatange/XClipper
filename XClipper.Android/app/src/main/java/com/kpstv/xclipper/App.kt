@@ -56,6 +56,7 @@ object App {
     lateinit var DeviceID: String
 
     var bindToFirebase = true
+    var runAutoSync = false
     var observeFirebase = true
 
     var showSuggestion = false
@@ -114,9 +115,10 @@ object App {
     const val CONNECT_PREF = "connect_pref"
     const val LOGOUT_PREF = "logout_pref"
     const val BIND_PREF = "bind_pref"
+    const val AUTO_SYNC_PREF = "autoSync_pref"
     const val UID_PREF = "uid_key"
-    const val FB_APIKEY_PREF = "apiKey_pref"
-    const val FB_APPID_PREF = "appId_pref"
+    const val FB_API_KEY_PREF = "apiKey_pref"
+    const val FB_APP_ID_PREF = "appId_pref"
     const val FB_PASSWORD_PREF = "password_pref"
     const val FB_ENDPOINT_PREF = "endpoint_pref"
     const val DARK_PREF = "dark_pref"

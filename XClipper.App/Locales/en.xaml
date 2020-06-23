@@ -123,7 +123,9 @@
     <system:String x:Key="sync_config_title">Firebase Configuration</system:String>
     <system:String x:Key="sync_config_reset">Reset Configuration</system:String>
     <system:String x:Key="sync_max_item">Maximum number of items</system:String>
+    <system:String x:Key="sync_max_item_tooltip">Cannot be greater than 200</system:String>
     <system:String x:Key="sync_max_item_length">Maximum length of clipboard content</system:String>
+    <system:String x:Key="sync_max_item_length_tooltip">Cannot be greater than 10000</system:String>
     <system:String x:Key="sync_max_device">Maximum number of concurrent device</system:String>
     <system:String x:Key="sync_import">Import configuration</system:String>
     <system:String x:Key="sync_import_success">Configuration imported successfully</system:String>

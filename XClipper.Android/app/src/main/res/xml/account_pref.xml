@@ -18,5 +18,10 @@
             app:summary="@string/bind_summary"
             app:key="bind_pref"
             app:title="@string/bind_title" />
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:summary="Retrieve data from database when app is launched"
+            app:key="autoSync_pref"
+            app:title="@string/auto_sync_title" />
     </PreferenceCategory>
 </PreferenceScreen>

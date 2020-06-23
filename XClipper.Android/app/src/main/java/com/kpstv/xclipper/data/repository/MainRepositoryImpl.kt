@@ -29,6 +29,7 @@ class MainRepositoryImpl(
     private val TAG = javaClass.simpleName
     private val lock = Any()
     private val lock1 = Any()
+    private val lock2 = Any()
 
     var data: LiveData<PagedList<Clip>>? = null
 
@@ -94,13 +95,17 @@ class MainRepositoryImpl(
     private fun firebaseUpdate(clip: Clip) {
         Coroutines.io {
             synchronized(lock1) {
-                val allData = clipDao.getAllData()
+                if (clip.data != null && clipDao.getData(clip.data) == null) {
+                    /** Insert the data */
+                    clipDao.insert(Clip.from(clip))
+                }
+                /*val allData = clipDao.getAllData()
 
                 val innerClip = allData.firstOrNull { it.data == clip.data }
                 if (innerClip != null) {
                     innerClip.clone(clip.data)
                     clipDao.update(clip)
-                } else processClipAndSave(clip)
+                } else processClipAndSave(clip)*/
             }
         }
     }
@@ -113,7 +118,7 @@ class MainRepositoryImpl(
              *  Synchronization is needed since, sometimes accessibility services automatically
              *  try to update data twice.
              */
-            synchronized(lock1) {
+            synchronized(lock2) {
                 val allData = clipDao.getAllData()
 
                 if (allData.isNotEmpty()) {
@@ -131,16 +136,6 @@ class MainRepositoryImpl(
                             finalClip.tags = (finalClip.tags!! + clip.tags!!)
 
                         clipDao.update(finalClip)
-
-                        /*clipProvider.processClip(
-                            clip.clone(innerClip.id!!)
-                        )?.let { finalClip ->
-                            */
-                        /** Merge the existing tags into the clip tags *//*
-                            if (finalClip.tags != null && clip.tags != null)
-                                finalClip.tags = (finalClip.tags!! + clip.tags!!)
-                            clipDao.update(finalClip)
-                        }*/
                         return@io
                     }
                 }
@@ -148,6 +143,21 @@ class MainRepositoryImpl(
             }
         }
     }
+
+  /*  override fun updateClip(clips: List<Clip>?) {
+        if (clips == null) return
+
+        Coroutines.io {
+            synchronized(lock) {
+                clips.forEach { clip ->
+                    if (clip.data != null && clipDao.getData(clip.data) == null) {
+                        *//** Insert the data *//*
+                        clipDao.insert(Clip.from(clip))
+                    }
+                }
+            }
+        }
+    }*/
 
     override fun updatePin(clip: Clip?, isPinned: Boolean) {
         if (clip == null) return

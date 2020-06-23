@@ -7,6 +7,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
 import com.kpstv.xclipper.App
+import com.kpstv.xclipper.App.AUTO_SYNC_PREF
 import com.kpstv.xclipper.App.BIND_PREF
 import com.kpstv.xclipper.App.CONNECT_PREF
 import com.kpstv.xclipper.App.LOGOUT_PREF
@@ -32,6 +33,7 @@ class AccountPreference() : PreferenceFragmentCompat(), KodeinAware {
         ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
     }
 
+    private var autoSyncPreference: SwitchPreferenceCompat? = null
     private var bindPreference: SwitchPreferenceCompat? = null
     private var logPreference: Preference? = null
     private var connectPreference: Preference? = null
@@ -84,6 +86,8 @@ class AccountPreference() : PreferenceFragmentCompat(), KodeinAware {
             true
         }
 
+        /** Auto sync preference */
+        autoSyncPreference = findPreference(AUTO_SYNC_PREF)
     }
 
     override fun onResume() {
@@ -103,10 +107,12 @@ class AccountPreference() : PreferenceFragmentCompat(), KodeinAware {
             connectPreference?.isEnabled = true
             logPreference?.isEnabled = false
             bindPreference?.isEnabled = false
+            autoSyncPreference?.isEnabled = false
         } else {
             connectPreference?.isEnabled = false
             logPreference?.isEnabled = true
             bindPreference?.isEnabled = true
+            autoSyncPreference?.isEnabled = true
         }
     }
 }

@@ -17,7 +17,7 @@ interface FirebaseProvider {
     fun initialize(options: FBOptions?)
     fun isLicensed(): Boolean
     fun isValidDevice(): Boolean
-    fun uploadData(unencrypted: Clip)
+    fun uploadData(unencryptedClip: Clip)
     fun addDevice(DeviceId: String, responseListener: ResponseListener<Unit>)
     fun removeDevice(DeviceId: String, responseListener: ResponseListener<Unit>)
     fun replaceData(unencryptedOldClip: Clip, unencryptedNewClip: Clip)

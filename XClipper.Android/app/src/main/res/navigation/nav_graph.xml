@@ -9,7 +9,7 @@
         android:id="@+id/fragment_home"
         android:name="com.kpstv.xclipper.ui.fragments.Home"
         android:label="Home"
-        tools:layout="@layout/fragment_main" />
+        tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/fragment_greet"
         android:name="com.kpstv.xclipper.ui.fragments.welcome.Greeting"

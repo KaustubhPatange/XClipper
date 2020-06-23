@@ -32,6 +32,9 @@ interface ClipDataDao {
     @Query("select * from table_clip where id = :id")
     fun getData(id: Int): Clip
 
+    @Query("select * from table_clip where data = :data")
+    fun getData(data: String): Clip?
+
     @Query("select * from table_clip")
     fun getAllData(): List<Clip>
 

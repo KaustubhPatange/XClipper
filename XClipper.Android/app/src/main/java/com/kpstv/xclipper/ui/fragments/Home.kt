@@ -14,7 +14,6 @@ import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
@@ -24,17 +23,15 @@ import com.google.android.play.core.install.InstallStateUpdatedListener
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
-import com.kpstv.license.Decrypt
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.App.UPDATE_REQUEST_CODE
+import com.kpstv.xclipper.App.runAutoSync
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.ToolbarState
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.data.provider.ClipboardProvider
-import com.kpstv.xclipper.extensions.cloneForAdapter
+import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.extensions.listeners.StatusListener
-import com.kpstv.xclipper.extensions.setOnQueryTextListener
-import com.kpstv.xclipper.extensions.setOnSearchCloseListener
 import com.kpstv.xclipper.extensions.utils.ThemeUtils
 import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.openAccessibility
@@ -47,7 +44,8 @@ import com.kpstv.xclipper.ui.dialogs.TagDialog
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import com.kpstv.xclipper.ui.viewmodels.MainViewModelFactory
 import es.dmoral.toasty.Toasty
-import kotlinx.android.synthetic.main.fragment_main.*
+import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.layout_empty.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
@@ -57,7 +55,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.concurrent.schedule
 
-class Home : Fragment(R.layout.fragment_main), KodeinAware {
+class Home : Fragment(R.layout.fragment_home), KodeinAware {
 
     override val kodein by kodein()
     private val viewModelFactory by instance<MainViewModelFactory>()
@@ -85,10 +83,9 @@ class Home : Fragment(R.layout.fragment_main), KodeinAware {
 
         setSearchViewListener()
 
-        fab_addItem.setOnClickListener {
-            val intent = Intent(requireContext(), EditDialog::class.java)
-            startActivity(intent)
-        }
+        fab_addItem.setOnClickListener(fabListener)
+
+        emptyLayout.setOnClickListener(fabListener)
 
         bindUI()
 
@@ -101,9 +98,16 @@ class Home : Fragment(R.layout.fragment_main), KodeinAware {
             Utils.retrievePackageList(requireContext())
         }
 
+        autoValidateOnStartup()
+
         checkForUpdates()
 
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    private val fabListener = View.OnClickListener {
+        val intent = Intent(requireContext(), EditDialog::class.java)
+        startActivity(intent)
     }
 
     private fun checkForUpdates() = with(requireActivity()) {
@@ -118,7 +122,8 @@ class Home : Fragment(R.layout.fragment_main), KodeinAware {
                     appUpdateInfo,
                     AppUpdateType.FLEXIBLE,
                     this,
-                    UPDATE_REQUEST_CODE)
+                    UPDATE_REQUEST_CODE
+                )
             }
         }
     }
@@ -127,7 +132,7 @@ class Home : Fragment(R.layout.fragment_main), KodeinAware {
         if (state.installStatus() == InstallStatus.DOWNLOADING) {
             val bytesDownloaded = state.bytesDownloaded()
             val totalBytesToDownload = state.totalBytesToDownload()
-            Log.e(TAG, "Bytes Downloaded: $bytesDownloaded, TotalBytes: $totalBytesToDownload" )
+            Log.e(TAG, "Bytes Downloaded: $bytesDownloaded, TotalBytes: $totalBytesToDownload")
         } else if (state.installStatus() == InstallStatus.DOWNLOADED) {
             Snackbar.make(
                 requireView().findViewById(R.id.ci_recyclerView),
@@ -149,6 +154,10 @@ class Home : Fragment(R.layout.fragment_main), KodeinAware {
 
     private fun bindUI() {
         mainViewModel.clipLiveData.observe(viewLifecycleOwner, Observer {
+            if (it.isEmpty())
+                layout_empty_parent.show()
+            else
+                layout_empty_parent.collapse()
             adapter.submitList(ArrayList(it?.cloneForAdapter()?.reversed()!!))
             mainViewModel.stateManager.clearSelectedItem()
         })
@@ -382,6 +391,7 @@ class Home : Fragment(R.layout.fragment_main), KodeinAware {
         val syncImage =
             LayoutInflater.from(requireContext())
                 .inflate(R.layout.imageview_menu_item, null) as ImageView
+
         syncImage.apply {
             setOnClickListener {
                 this.startAnimation(
@@ -413,6 +423,15 @@ class Home : Fragment(R.layout.fragment_main), KodeinAware {
 
         toolbar.menu.findItem(R.id.action_sync).actionView = syncImage
         toolbar.menu.findItem(R.id.action_setting).actionView = settingImage
+    }
+
+    /**
+     * This will automatically trigger data validation by clicking on toolbar
+     * sync button.
+     */
+    private fun autoValidateOnStartup() {
+        if (runAutoSync)
+            toolbar.menu.findItem(R.id.action_sync).actionView?.performClick()
     }
 
 

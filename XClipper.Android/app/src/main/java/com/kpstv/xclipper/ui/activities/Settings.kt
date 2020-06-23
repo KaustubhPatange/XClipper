@@ -50,12 +50,6 @@ class Settings : AppCompatActivity(), KodeinAware {
     }
 
     private val settingsFragment = SettingsFragment()
-    private val generalFragment = GeneralPreference()
-    private val accountFragment = AccountPreference()
-    private val backupFragment = BackupPreference()
-    private val upgradeFragment = Upgrade()
-    private val aboutFragment = AboutPreference()
-    private val lookFeelFragment = LookFeelPreference(::onThemeChanged)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -68,18 +62,18 @@ class Settings : AppCompatActivity(), KodeinAware {
 
         settingsFragment.listener = { pref, tag ->
             when (pref) {
-                GENERAL_PREF -> replaceFragment(generalFragment, tag)
-                ACCOUNT_PREF -> replaceFragment(accountFragment, tag)
-                LOOK_FEEL_PREF -> replaceFragment(lookFeelFragment, tag)
-                BACKUP_PREF -> replaceFragment(backupFragment, tag)
-                UPGRADE_PREF -> replaceFragment(upgradeFragment, tag)
-                ABOUT_PREF -> replaceFragment(aboutFragment, tag)
+                GENERAL_PREF -> replaceFragment(GeneralPreference(), tag)
+                ACCOUNT_PREF -> replaceFragment(AccountPreference(), tag)
+                LOOK_FEEL_PREF -> replaceFragment(LookFeelPreference(::onThemeChanged), tag)
+                BACKUP_PREF -> replaceFragment(BackupPreference(), tag)
+                UPGRADE_PREF -> replaceFragment(Upgrade(), tag)
+                ABOUT_PREF -> replaceFragment(AboutPreference(), tag)
             }
         }
         replaceFragment(settingsFragment, getString(R.string.settings), false)
 
         if (intent.getBooleanExtra(ACTION_REPLACE_FRAG, false))
-            replaceFragment(lookFeelFragment, getString(R.string.look_feel))
+            replaceFragment(LookFeelPreference(::onThemeChanged), getString(R.string.look_feel))
     }
 
     class SettingsFragment : Fragment() {

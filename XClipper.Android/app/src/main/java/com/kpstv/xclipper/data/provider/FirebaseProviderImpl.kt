@@ -12,9 +12,9 @@ import com.google.firebase.ktx.Firebase
 import com.kpstv.license.Decrypt
 import com.kpstv.xclipper.App.APP_MAX_DEVICE
 import com.kpstv.xclipper.App.APP_MAX_ITEM
-import com.kpstv.xclipper.App.bindToFirebase
 import com.kpstv.xclipper.App.DeviceID
 import com.kpstv.xclipper.App.UID
+import com.kpstv.xclipper.App.bindToFirebase
 import com.kpstv.xclipper.App.getMaxConnection
 import com.kpstv.xclipper.App.getMaxStorage
 import com.kpstv.xclipper.App.gson
@@ -22,7 +22,6 @@ import com.kpstv.xclipper.data.localized.FBOptions
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.Device
 import com.kpstv.xclipper.data.model.User
-import com.kpstv.xclipper.extensions.SimpleFunction
 import com.kpstv.xclipper.extensions.cloneToEntries
 import com.kpstv.xclipper.extensions.decrypt
 import com.kpstv.xclipper.extensions.encrypt
@@ -136,25 +135,29 @@ class FirebaseProviderImpl(
 
     override fun replaceData(unencryptedOldClip: Clip, unencryptedNewClip: Clip) {
         workWithData {
-            replace(unencryptedOldClip, unencryptedNewClip)
+            if (it)
+                replace(unencryptedOldClip, unencryptedNewClip)
         }
     }
 
     override fun deleteMultipleData(unencryptedClips: List<Clip>) {
         workWithData {
-            removeData(unencryptedClips)
+            if (it)
+                removeData(unencryptedClips)
         }
     }
 
     override fun deleteData(unencryptedClip: Clip) {
         workWithData {
-            removeData(unencryptedClip)
+            if (it)
+                removeData(unencryptedClip)
         }
     }
 
     override fun uploadData(unencryptedClip: Clip) {
         workWithData {
-            saveData(unencryptedClip)
+            if (it)
+                saveData(unencryptedClip)
         }
     }
 
@@ -222,7 +225,10 @@ class FirebaseProviderImpl(
 
     override fun getAllClipData(block: (List<Clip>?) -> Unit) {
         workWithData(ValidationContext.ForceInvoke) {
-            block.invoke(user?.Clips?.decrypt())
+            if (it)
+                block.invoke(user?.Clips?.decrypt())
+            else
+                block.invoke(null)
         }
     }
 
@@ -234,7 +240,7 @@ class FirebaseProviderImpl(
      */
     private fun workWithData(
         validationContext: ValidationContext = ValidationContext.Default,
-        block: SimpleFunction
+        block: (Boolean) -> Unit
     ) {
 
         /**
@@ -244,11 +250,21 @@ class FirebaseProviderImpl(
          * This check will make sure that user can only update firebase database
          *  when following criteria satisfies
          */
-        if (validationContext == ValidationContext.Default && !bindToFirebase && !dbConnectionProvider.isValidData()) return
+        if (validationContext == ValidationContext.Default && !bindToFirebase && !dbConnectionProvider.isValidData()) {
+            block.invoke(false)
+            return
+        }
 
         /** Automated initialization of firebase database */
-        if (isInitialized.value == false)
-            initialize(dbConnectionProvider.optionsProvider())
+        if (isInitialized.value == false) {
+            val options = dbConnectionProvider.optionsProvider()
+            if (options != null)
+                initialize(options)
+            else {
+                block.invoke(false)
+                return
+            }
+        }
 
         if (user == null || validationContext == ValidationContext.ForceInvoke) {
 
@@ -260,14 +276,14 @@ class FirebaseProviderImpl(
                         Log.e(TAG, "Check 4")
                         val json = gson.toJson(snap.value)
                         gson.fromJson(json, User::class.java).also { user = it }
-                        block.invoke()
+                        block.invoke(true)
                     },
                     onError = {
                         Log.e(TAG, "Error: ${it.message}")
                     }
                 ))
         } else
-            block.invoke()
+            block.invoke(false)
 
         Log.e(TAG, "Check 3")
     }
