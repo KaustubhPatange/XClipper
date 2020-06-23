@@ -213,7 +213,7 @@ namespace Components
         /// </summary>
         /// <param name="Text"></param>
         /// <returns></returns>
-        public async Task AddClip(string Text)
+        public async Task AddClip(string? Text)
         {
             await SetGlobalUser();
 

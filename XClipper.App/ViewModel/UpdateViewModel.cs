@@ -21,6 +21,7 @@ namespace Components
             this.updateModel = updateModel;
             MainButton = new RelayCommand(MainButtonClicked);
 
+            TotalBytes = $"{updateModel.FileSize} B";
             InfoText = $"version: {updateModel.Version} ({updateModel.PostDate})\n\n{updateModel.Changelog}\n\nSize: {updateModel.FileSize.ToFileSizeApi()}";
         }
 

@@ -15,9 +15,9 @@
     xmlns:ui="clr-namespace:System.Windows;assembly=PresentationCore"
     Title="{DynamicResource app_settings}"
     Width="370"
-    Height="420"
     Icon="pack://application:,,,/Resources/clipboard.png"
     ResizeMode="NoResize"
+    SizeToContent="Height"
     Topmost="True"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
@@ -28,7 +28,7 @@
     </Window.Resources>
     <Border Padding="5">
         <StackPanel Orientation="Vertical">
-            <TabControl Height="340">
+            <TabControl Height="auto">
                 <TabItem Header="{DynamicResource settings_tab_main}">
                     <StackPanel Margin="7" Orientation="Vertical">
 
@@ -41,7 +41,8 @@
                             Foreground="{c:Binding 'local:DefaultSettings.IsPurchaseDone ? media:Brushes.Black : media:Brushes.Gray'}"
                             IsChecked="{Binding CAU}"
                             IsEnabled="{Binding Source={x:Static local:DefaultSettings.IsPurchaseDone}}" />
-                        <CheckBox Content="{DynamicResource settings_pns}" IsChecked="{Binding PNS}" />
+                        <CheckBox Content="{DynamicResource settings_sdcn}" IsChecked="{Binding SDCN}" />
+                        <CheckBox Content="{DynamicResource settings_dsn}" IsChecked="{Binding DSN}" />
                         <Grid Margin="0,5,0,0" HorizontalAlignment="Stretch">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />

@@ -268,7 +268,7 @@ class FirebaseProviderImpl(
 
         if (user == null || validationContext == ValidationContext.ForceInvoke) {
 
-            if (UID.isEmpty()) return
+            /*if (UID.isEmpty()) return*/
 
             database.getReference(USER_REF).child(UID)
                 .addListenerForSingleValueEvent(FValueEventListener(
@@ -280,10 +280,11 @@ class FirebaseProviderImpl(
                     },
                     onError = {
                         Log.e(TAG, "Error: ${it.message}")
+                        block.invoke(false)
                     }
                 ))
         } else
-            block.invoke(false)
+            block.invoke(true)
 
         Log.e(TAG, "Check 3")
     }

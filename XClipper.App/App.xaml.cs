@@ -25,6 +25,11 @@ using Components.UI;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Reflection;
+using System.Net.Configuration;
+using SHDocVw;
+using System.Windows.Threading;
+
+#nullable enable
 
 namespace Components
 {
@@ -379,11 +384,20 @@ namespace Components
         public void OnDataChanged(ValueChangedEventArgs e)
         {
             // 1st value from real-time database is your 5th one in XClipper window.
-            // todo: Do something on Changed
 
             if (e.Path.Contains(PATH_CLIP_DATA))
             {
-                AppSingleton.GetInstance.CheckDataAndUpdate(e.Data);
+                AppSingleton.GetInstance.CheckDataAndUpdate(e.Data, (unencryptedData) =>
+                {
+                    DisplayNotifyMessage(Translation.APP_COPY_TITLE, unencryptedData.Truncate(NOTIFICATION_TRUNCATE_TEXT), () =>
+                    {
+                        var recorder = AppModule.Container.Resolve<IKeyboardRecorder>();
+                        recorder.Ignore(() =>
+                        {
+                            Clipboard.SetText(unencryptedData);
+                        });
+                    });
+                });
                 Debug.WriteLine("Path: " + e.Path + ", Changed:" + e.Data + ", Old Data: " + e.OldData);
             }
 
@@ -404,7 +418,7 @@ namespace Components
 
         #region Method Events
 
-        private bool eventLock = false;
+        private Update? updateModel = null;
         private void CheckForUpdates()
         {
             if (!IsPurchaseDone || !CheckApplicationUpdates) return;
@@ -412,24 +426,23 @@ namespace Components
             updater.Check((isAvailable, model) =>
             {
                 if (isAvailable)
-                    Dispatcher.BeginInvoke(new Action(() =>
-                    {
-                        notifyIcon.BalloonTipTitle = Translation.APP_UPDATE_TITLE;
-                        notifyIcon.BalloonTipText = Translation.APP_UPDATE_TEXT;
-                        notifyIcon.ShowBalloonTip(3000);
+                {
+                    updateModel = model;
 
-                        // An event lock will make sure it is subscribed only once.
-                        if (!eventLock)
-                            notifyIcon.BalloonTipClicked += (o, e) =>
-                            {
-                                if (updateWindow != null)
-                                    updateWindow.Close();
-                                updateWindow = new UpdateWindow(model.Desktop);
-                                updateWindow.ShowDialog();
-                            };
-                        eventLock = true;
-                    }));
+                    notifyIcon.BalloonTipTitle = Translation.APP_UPDATE_TITLE;
+                    notifyIcon.BalloonTipText = Translation.APP_UPDATE_TEXT;
+                    notifyIcon.ShowBalloonTip(3000);
+
+                    notifyIcon.BalloonTipClicked -= NotifyIcon_BalloonTipClicked;
+                    notifyIcon.BalloonTipClicked += UpdateAction_BalloonTipClicked;
+                }
             });
+        }
+
+        private void UpdateAction_BalloonTipClicked(object sender, EventArgs e)
+        {
+            CallUpdateWindow(updateModel?.Desktop);
+            updateModel = null;
         }
 
         private void RestartAppClicked(object sender, EventArgs e)
@@ -463,7 +476,7 @@ namespace Components
 
         private void DisplayNotifyMessage()
         {
-            if (PlayNotifySound)
+            if (DisplayStartNotification)
             {
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
@@ -471,6 +484,26 @@ namespace Components
                     notifyIcon.ShowBalloonTip(3000);
                 }));
             }
+        }
+
+        private Action? savedClick;
+        private void DisplayNotifyMessage(string title, string message, Action? Click = null)
+        {
+            notifyIcon.BalloonTipTitle = title;
+            notifyIcon.BalloonTipText = message;
+            notifyIcon.ShowBalloonTip(3000);
+
+            savedClick = Click;
+
+            notifyIcon.BalloonTipClicked -= NotifyIcon_BalloonTipClicked;
+            notifyIcon.BalloonTipClicked -= UpdateAction_BalloonTipClicked;
+            notifyIcon.BalloonTipClicked += NotifyIcon_BalloonTipClicked;
+        }
+
+        private void NotifyIcon_BalloonTipClicked(object sender, EventArgs e)
+        {
+            savedClick?.Invoke();
+            savedClick = null;
         }
 
         private void LaunchCodeUI()
@@ -485,6 +518,15 @@ namespace Components
             }
             else
                 clipWindow.CloseWindow();
+        }
+
+        private void CallUpdateWindow(Update.Windows? model)
+        {
+            if (model == null) return;
+            if (updateWindow != null)
+                updateWindow.Close();
+            updateWindow = new UpdateWindow(model);
+            updateWindow.ShowDialog();
         }
 
         private void CallDeviceWindow()

@@ -33,6 +33,7 @@ namespace Components
 
         public const string UPDATE_URI = "https://pastebin.com/raw/FRS7n7Fc"; // todo: Change update uri
         public const string SETTINGS = "Settings";
+        public const int NOTIFICATION_TRUNCATE_TEXT = 150;
 
         #endregion
 

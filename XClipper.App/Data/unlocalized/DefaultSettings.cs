@@ -58,9 +58,14 @@ namespace Components
         public static bool CheckApplicationUpdates { get; set; } = true;
 
         /// <summary>
-        /// This will tell if application should play sound when started.
+        /// This will tell if application should show notification when app is launched.
         /// </summary>
-        public static bool PlayNotifySound { get; set; } = true;
+        public static bool DisplayStartNotification { get; set; } = true;
+
+        /// <summary>
+        /// Shows a notification if data change occurs from other devices.
+        /// </summary>
+        public static bool ShowDataChangeNotification { get; set; } = true;
 
         /// <summary>
         /// This will set the current language file to be use.
@@ -68,7 +73,7 @@ namespace Components
         public static string CurrentAppLanguage { get; set; } = "locales\\en.xaml";
 
         /// <summary>
-        /// A configuration to password protect database.
+        /// A configuration to determine whether current database is password protected or not.
         /// </summary>
         public static bool IsSecureDB { get; set; } = false;
 
@@ -170,7 +175,8 @@ namespace Components
                     new XElement(nameof(HotKey), HotKey.ToString()),
                     new XElement(nameof(StartOnSystemStartup), StartOnSystemStartup.ToString()),
                     new XElement(nameof(CheckApplicationUpdates), CheckApplicationUpdates.ToString()),
-                    new XElement(nameof(PlayNotifySound), PlayNotifySound.ToString()),
+                    new XElement(nameof(ShowDataChangeNotification), ShowDataChangeNotification.ToString()),
+                    new XElement(nameof(DisplayStartNotification), DisplayStartNotification.ToString()),
                     new XElement(nameof(IsSecureDB), IsSecureDB.ToString()),
                     new XElement(nameof(CurrentAppLanguage), CurrentAppLanguage.ToString()),
                     new XElement(nameof(CustomPassword), CustomPassword.Encrypt()),
@@ -216,7 +222,8 @@ namespace Components
             CurrentAppLanguage = settings.Element(nameof(CurrentAppLanguage)).Value;
             StartOnSystemStartup = settings.Element(nameof(StartOnSystemStartup)).Value.ToBool();
             CheckApplicationUpdates = settings.Element(nameof(CheckApplicationUpdates)).Value.ToBool();
-            PlayNotifySound = settings.Element(nameof(PlayNotifySound)).Value.ToBool();
+            ShowDataChangeNotification = settings.Element(nameof(ShowDataChangeNotification)).Value.ToBool();
+            DisplayStartNotification = settings.Element(nameof(DisplayStartNotification)).Value.ToBool();
             BindDatabase = settings.Element(nameof(BindDatabase)).Value.ToBool();
         }
 

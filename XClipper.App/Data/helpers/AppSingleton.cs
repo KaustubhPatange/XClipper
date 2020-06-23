@@ -10,6 +10,8 @@ using static WK.Libraries.SharpClipboardNS.SharpClipboard;
 using System;
 using System.Diagnostics;
 
+#nullable enable
+
 namespace Components.viewModels
 {
     public class AppSingleton
@@ -199,19 +201,25 @@ namespace Components.viewModels
         /// If not exist such item, it will insert the data.
         /// </summary>
         /// <param name="EncryptedDatabaseText">Encrypted Text Data coming straight away from online database.</param>
-        public void CheckDataAndUpdate(string EncryptedDatabaseText)
+        /// <param name="invokeOnInserted">Data will be an unencrypted clip data.</param>
+        public void CheckDataAndUpdate(string? EncryptedDatabaseText, Action<string>? invokeOnInserted = null)
         {
             if (EncryptedDatabaseText == null) return;
 
             var decryptedText = EncryptedDatabaseText.DecryptBase64(DatabaseEncryptPassword);
 
-            var data = dataDB.GetAllData().FirstOrDefault(c => c.ContentType == ContentType.Text && c.RawText.DecryptBase64(DatabaseEncryptPassword) == decryptedText);
+            bool dataExist = false;
+            if (IsSecureDB)
+                dataExist = dataDB.GetAllData().Exists(c => c.RawText.DecryptBase64(DatabaseEncryptPassword) == decryptedText);
+            else
+                dataExist = dataDB.GetAllData().Exists(c => c.RawText == decryptedText);
             // todo: This data is always null, check it later.
-            if (data == null)
+            if (!dataExist)
             {
                 // Insert this data without updating online database.
                 Debug.WriteLine("Inserted Data");
                 InsertTextClipNoUpdate(decryptedText);
+                invokeOnInserted?.Invoke(decryptedText);
             }
         }
 

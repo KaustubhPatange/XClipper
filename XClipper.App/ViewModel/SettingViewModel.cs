@@ -61,7 +61,8 @@ namespace Components
         public RelayCommand<KeyEventArgs> KeyDownCommand { get; set; }
         public bool SASS { get; set; } = StartOnSystemStartup;
         public bool CAU { get; set; } = CheckApplicationUpdates;
-        public bool PNS { get; set; } = PlayNotifySound;
+        public bool DSN { get; set; } = DisplayStartNotification;
+        public bool SDCN { get; set; } = ShowDataChangeNotification;
         public XClipperStore WTS { get; set; } = WhatToStore;
         public XClipperLocation ADL { get; set; } = AppDisplayLocation;
         public bool KEY_IC { get; set; } = IsCtrl;
@@ -157,7 +158,8 @@ namespace Components
         {
             SASS = StartOnSystemStartup = true;
             CAU = CheckApplicationUpdates = true;
-            PNS = PlayNotifySound = true;
+            DSN = DisplayStartNotification = true;
+            SDCN = ShowDataChangeNotification = true;
             // ISDB = IsSecureDB = true;
             WhatToStore = WTS = XClipperStore.All;
             AppDisplayLocation = ADL = XClipperLocation.BottomRight;
@@ -183,7 +185,8 @@ namespace Components
         {
             StartOnSystemStartup = SASS;
             CheckApplicationUpdates = CAU;
-            PlayNotifySound = PNS;
+            DisplayStartNotification = DSN;
+            ShowDataChangeNotification = SDCN;
             IsSecureDB = ISDB;
             WhatToStore = WTS;
             AppDisplayLocation = ADL;

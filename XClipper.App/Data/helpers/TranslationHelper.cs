@@ -28,6 +28,7 @@ namespace Components
         public string APP_START_SERVICE = rm.GetString("app_start_service");
         public string APP_ISRUN_SERVICE = rm.GetString("app_isrun_service");
         public string APP_UPDATE_TITLE = rm.GetString("app_update_title");
+        public string APP_COPY_TITLE = rm.GetString("app_copy_title");
         public string APP_UPDATE_TEXT = rm.GetString("app_update_text");
         public string APP_SHOW = rm.GetString("app_show");
         public string APP_SETTINGS = rm.GetString("app_settings");
@@ -46,7 +47,7 @@ namespace Components
         public string SETTINGS_OTHER = rm.GetString("settings_other");
         public string SETTINGS_HOTKEY = rm.GetString("settings_hotkey");
         public string SETTINGS_SASS = rm.GetString("settings_sass");
-        public string SETTINGS_PNS = rm.GetString("settings_pns");
+        public string SETTINGS_DSN = rm.GetString("settings_dsn");
         public string SETTINGS_TCL = rm.GetString("settings_tcl");
         public string SETTINGS_WTS = rm.GetString("settings_wts");
         public string SETTINGS_ADL = rm.GetString("settings_adl");
