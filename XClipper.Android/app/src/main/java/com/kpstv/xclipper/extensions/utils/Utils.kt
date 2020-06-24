@@ -255,7 +255,7 @@ class Utils {
                     .setPrompt(getString(R.string.scan_code))
                     .setBarcodeImageEnabled(false)
                     .initiateScan()
-                //  activity.startActivityForResult(scanIntent, QR_SCAN_REQUEST_CODE)
+
                 alert.dismiss()
             }
         }

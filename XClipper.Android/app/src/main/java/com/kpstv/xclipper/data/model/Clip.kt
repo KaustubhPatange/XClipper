@@ -3,8 +3,8 @@ package com.kpstv.xclipper.data.model
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.JsonElement
-import com.kpstv.license.Decrypt
-import com.kpstv.license.Encrypt
+import com.kpstv.license.Encryption.Decrypt
+import com.kpstv.license.Encryption.Encrypt
 import com.kpstv.xclipper.data.converters.DateConverter
 import com.kpstv.xclipper.data.converters.DateFormatConverter
 import com.kpstv.xclipper.extensions.utils.ClipUtils

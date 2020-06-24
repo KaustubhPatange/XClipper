@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.paging.PagedList
 import androidx.paging.toLiveData
-import com.kpstv.license.Decrypt
 import com.kpstv.xclipper.App.LOCAL_MAX_ITEM_STORAGE
 import com.kpstv.xclipper.App.MAX_CHARACTER_TO_STORE
 import com.kpstv.xclipper.data.localized.ClipDataDao

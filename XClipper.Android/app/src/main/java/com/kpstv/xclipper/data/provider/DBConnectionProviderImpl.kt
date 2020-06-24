@@ -1,7 +1,7 @@
 package com.kpstv.xclipper.data.provider
 
-import com.kpstv.license.DatabaseEncryption
-import com.kpstv.license.DecryptPref
+import com.kpstv.license.Encryption
+import com.kpstv.license.Encryption.DecryptPref
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.App.EMPTY_STRING
 import com.kpstv.xclipper.data.localized.FBOptions
@@ -71,7 +71,7 @@ class DBConnectionProviderImpl(
             App.FB_PASSWORD_PREF,
             EMPTY_STRING
         ) ?: EMPTY_STRING
-        DatabaseEncryption.setPassword(fbPassword)
+        Encryption.setPassword(fbPassword)
     }
 
     override fun saveOptionsToAll(options: FBOptions) {
@@ -102,7 +102,7 @@ class DBConnectionProviderImpl(
                 setApiKey(App.FB_API_KEY)
                 setAppId(App.FB_APP_ID)
                 setEndPoint(App.FB_ENDPOINT)
-                setPassword(DatabaseEncryption.getPassword())
+                setPassword(Encryption.getPassword())
             }.build()
         } else
             null

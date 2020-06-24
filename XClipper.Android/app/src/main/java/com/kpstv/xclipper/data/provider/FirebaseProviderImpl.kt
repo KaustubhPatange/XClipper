@@ -9,7 +9,7 @@ import com.google.firebase.FirebaseOptions
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import com.kpstv.license.Decrypt
+import com.kpstv.license.Encryption.Decrypt
 import com.kpstv.xclipper.App.APP_MAX_DEVICE
 import com.kpstv.xclipper.App.APP_MAX_ITEM
 import com.kpstv.xclipper.App.DeviceID
@@ -44,6 +44,19 @@ class FirebaseProviderImpl(
     private var user: User? = null
     private var validDevice: Boolean = false
     private lateinit var database: FirebaseDatabase
+
+    /**
+     * There is drastic problem when device is being added. The thing is lot's of
+     * internal calls are made to [FBOptions], so during pushing device data to firebase
+     * in [observeDataChange] listener it still returns the cache version of data where the
+     * device is not added yet. Due to this device validation fails and causing
+     * [DBConnectionProvider] to run [DBConnectionProvider.detachDataFromAll] which is
+     * removing all the preference related to connection
+     *
+     * The only solution I found is to set [isDeviceAdding] to true to know if device is
+     * being added or not. In such case device validation will not be invoked.
+     */
+    private var isDeviceAdding = false
 
     override fun isInitialized() = isInitialized
 
@@ -122,12 +135,14 @@ class FirebaseProviderImpl(
     private fun updateDeviceList(list: List<Device>, responseListener: ResponseListener<Unit>) {
 
         Log.e(TAG, "ListSize: ${list.size}, List: $list")
+        isDeviceAdding = true
 
         /** Must pass toList to firebase otherwise it add list as linear data. */
         database.getReference(USER_REF).child(UID).child(DEVICE_REF)
             .setValue(list.toList()) { error, _ ->
                 if (error == null) {
                     responseListener.onComplete(Unit)
+                    isDeviceAdding = false
                 } else
                     responseListener.onError(java.lang.Exception(error.message))
             }
@@ -320,7 +335,8 @@ class FirebaseProviderImpl(
                 checkForUserDetailsAndUpdateLocal()
 
                 // Device validation is causing problem.
-                deviceValidated.invoke(validDevice)
+                if (!isDeviceAdding)
+                    deviceValidated.invoke(validDevice)
 
                 if (json != null && validDevice)
                     changed.invoke(user)

@@ -5,7 +5,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import com.kpstv.license.Decrypt
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.data.localized.FBOptions
 import com.kpstv.xclipper.data.model.Clip

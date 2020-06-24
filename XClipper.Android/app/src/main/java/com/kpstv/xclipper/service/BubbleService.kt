@@ -17,8 +17,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bsk.floatingbubblelib.FloatingBubbleConfig
 import com.bsk.floatingbubblelib.FloatingBubbleService
-import com.bsk.floatingbubblelib.FloatingBubbleTouch
-import com.kpstv.license.Decrypt
 import com.kpstv.xclipper.App.ACTION_INSERT_TEXT
 import com.kpstv.xclipper.App.ACTION_VIEW_CLOSE
 import com.kpstv.xclipper.App.EXTRA_SERVICE_TEXT

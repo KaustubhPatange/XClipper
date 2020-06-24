@@ -1,7 +1,7 @@
 package com.kpstv.xclipper.extensions
 
-import com.kpstv.license.Decrypt
-import com.kpstv.license.Encrypt
+import com.kpstv.license.Encryption.Decrypt
+import com.kpstv.license.Encryption.Encrypt
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.ClipEntry
 import com.kpstv.xclipper.data.model.ClipTag

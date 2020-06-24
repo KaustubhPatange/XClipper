@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.flexbox.FlexboxLayout
-import com.kpstv.license.Decrypt
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.extensions.collapse

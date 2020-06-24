@@ -4,10 +4,8 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
-import com.kpstv.license.Decrypt
-import com.kpstv.license.DecryptPref
-import com.kpstv.license.Encrypt
-import com.kpstv.license.EncryptPref
+import com.kpstv.license.Encryption.DecryptPref
+import com.kpstv.license.Encryption.EncryptPref
 
 class PreferenceProviderImpl(
     context: Context

@@ -6,8 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.kpstv.license.Decrypt
-import com.kpstv.license.Encrypt
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.App.STAGGERED_SPAN_COUNT
 import com.kpstv.xclipper.App.STAGGERED_SPAN_COUNT_MIN
@@ -99,7 +97,7 @@ class EditDialog : AppCompatActivity(), KodeinAware {
                 mainViewModel.postUpdateToRepository(
                     clip,
                     /** In the second parameter we are also supplying the tags as well. */
-                    clip.clone(text.Encrypt(), mainViewModel.editManager.getSelectedTags())
+                    clip.clone(text, mainViewModel.editManager.getSelectedTags())
                 )
                 postSuccess()
             }
@@ -160,7 +158,6 @@ class EditDialog : AppCompatActivity(), KodeinAware {
         del_recyclerView.layoutManager =
             StaggeredGridLayoutManager(span, StaggeredGridLayoutManager.HORIZONTAL)
     }
-
 
 
     override fun onDestroy() {
