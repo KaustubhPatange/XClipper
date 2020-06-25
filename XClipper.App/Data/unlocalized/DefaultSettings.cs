@@ -50,7 +50,7 @@ namespace Components
         /// <summary>
         /// This will tell if application should start on System Startup.
         /// </summary>
-        public static bool StartOnSystemStartup { get; set; } = true;
+        public static bool StartOnSystemStartup { get; set; } = false;
 
         /// <summary>
         /// This will check for application updates.

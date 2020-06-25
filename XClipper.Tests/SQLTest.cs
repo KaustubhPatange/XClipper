@@ -21,14 +21,14 @@ namespace XClipper.Tests
             
             SQLiteConnectionString options = new SQLiteConnectionString(DatabasePath, true, CONNECTION_PASS);
 
-            SQLiteConnection con = new SQLiteConnection(options);
+            SQLiteConnection con =  new SQLiteConnection(options);
 
-            con.CreateTable<TableCopy>();
+            con.CreateTable<TableCopy>(); 
 
             var t = new TableCopy
             {
                 Text = "Demo",
-                LongText = "dnejdedjkjd",
+                LongText = "dnejdedjkjd", 
                 ContentType = ContentType.Text,
                 IsPinned = false,
                 DateTime = "ddkdd",

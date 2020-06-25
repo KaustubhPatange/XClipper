@@ -57,6 +57,14 @@ class FirebaseUtils(
             )
         }
 
+    /**
+     *  This will remove the database snapshot observation.
+     *  You can restart the observation any time calling
+     *  [observeDatabaseChangeEvents]
+     */
+    fun removeDataChangeObservation() =
+        firebaseProvider.removeDataObservation()
+
     private val databaseInitializationObserver = Observer<Boolean> {
         if (it)
             observeDatabaseChangeEvents()

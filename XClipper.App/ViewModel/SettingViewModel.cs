@@ -156,11 +156,10 @@ namespace Components
         /// </summary>
         private void ResetButtonClicked()
         {
-            SASS = StartOnSystemStartup = true;
+            SASS = StartOnSystemStartup = false;
             CAU = CheckApplicationUpdates = true;
             DSN = DisplayStartNotification = true;
             SDCN = ShowDataChangeNotification = true;
-            // ISDB = IsSecureDB = true;
             WhatToStore = WTS = XClipperStore.All;
             AppDisplayLocation = ADL = XClipperLocation.BottomRight;
             IsCtrl = KEY_IC = true;

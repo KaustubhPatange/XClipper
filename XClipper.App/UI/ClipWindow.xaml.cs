@@ -34,7 +34,7 @@ namespace Components
     public partial class ClipWindow : Window, IClipBinder
     {
 
-        #region Variablel Definition
+        #region Variable Definition
 
         private PopupWindow _popupWindow;
         private MaterialMessage _materialMsgBox;
@@ -83,7 +83,7 @@ namespace Components
 
         #region UI Events
 
-        #region Unlocalised
+        #region Unlocalized
 
         /** A callback to handle INotifyCollectionChange Property */
         private void ClipWindow_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -149,7 +149,7 @@ namespace Components
             {
                 Thread.Sleep(400);
             });
-            CloseWindow();
+            _tbSearchBox.Clear();
         }
 
         private void SearchTextChanged(object sender, TextChangedEventArgs e)
@@ -309,7 +309,7 @@ namespace Components
                 ForegroundMainOperations();
             }
 
-            // This key bind will show popup menu.
+            // This key bind will show pop-up menu.
             if (e.Key == Key.Tab && IsCtrlPressed() && _lvClip.SelectedItems.Count > 0)
             {
                 ShowPopupWindow(_lvClip.SelectedItem as TableCopy);
@@ -349,7 +349,7 @@ namespace Components
         {
             //Debug.WriteLine("WPKD: " + e.Key.ToString());
             //Debug.WriteLine("WPKD: " + e.SystemKey.ToString());
-            // If pop up window is open, and space is pressed. It will put popup to focus.
+            // If pop up window is open, and space is pressed. It will put pop-up to focus.
             if (e.Key == Key.Space)
             {
                 if (_popupWindow.IsVisible)
@@ -554,7 +554,7 @@ namespace Components
         }
 
         /// <summary>
-        /// This will show popup window using the TableCopy model.
+        /// This will show pop-up window using the TableCopy model.
         /// </summary>
         /// <param name="model"></param>
         public void ShowPopupWindow(TableCopy model)

@@ -205,6 +205,7 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
     override fun onDestroy() {
         /** Ensures that we remove database initialization observation. */
         firebaseUtils.removeDatabaseInitializationObservation()
+        firebaseUtils.removeDataChangeObservation()
         super.onDestroy()
     }
 
@@ -213,6 +214,6 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
     /**
      * Returns true if the current package name is not part of blacklist app list.
      */
-    fun isPackageBlacklisted(pkg: CharSequence?) =
+    private fun isPackageBlacklisted(pkg: CharSequence?) =
         App.blackListedApps?.contains(pkg) == true
 }

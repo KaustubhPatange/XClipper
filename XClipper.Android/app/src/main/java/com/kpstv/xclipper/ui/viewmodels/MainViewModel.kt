@@ -183,6 +183,10 @@ class MainViewModel(
                 responseListener.onComplete(Unit)
             },
             error = {
+                logoutFromDatabase(
+                    preferenceProvider = preferenceProvider,
+                    dbConnectionProvider = dbConnectionProvider
+                )
                 responseListener.onError(it)
             }
         ))
@@ -241,6 +245,11 @@ class MainViewModel(
         }
     }
 
+    override fun onCleared() {
+        firebaseUtils.removeDatabaseInitializationObservation()
+        firebaseUtils.removeDataChangeObservation()
+        super.onCleared()
+    }
 
     private fun makeMySource(
         mainList: List<Clip>?,

@@ -45,6 +45,7 @@ object App {
     const val PERMISSION_REQUEST_CODE = 189
 
     const val DELAY_SPAN: Long = 20
+    const val DELAY_FIREBASE_SPAN: Long = 3000
     const val MAX_CHARACTER_TO_STORE = 1000
 
     const val STANDARD_DATE_FORMAT = "yyyyMMddHHmmss"
@@ -88,7 +89,7 @@ object App {
     const val DICTIONARY_WORD_PATTERN_REGEX = "\"word\":[\\s]?\".*?\""
     const val DICTIONARY_DEFINITION_PATTERN_REGEX = "\"definition\":[\\s]?\".*?\""
     const val PHONE_PATTERN_REGEX = "(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}" // matches international numbers
-    const val PHONE_PATTERN_REGEX1 = "(\\+\\d{2})?[\\s\\.]?(\\d{5})?[\\s.]?(\\d{5})" // matches some specific number patterns
+    const val PHONE_PATTERN_REGEX1 = "(\\+[\\d-]{1,4})[\\s\\.]?(\\d{5})[\\s\\.]?(\\d{5})" // matches some specific number patterns
     const val EMAIL_PATTERN_REGEX =
         "([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)"
     const val URL_PATTERN_REGEX =

@@ -113,6 +113,8 @@ class AccountPreference() : PreferenceFragmentCompat(), KodeinAware {
             logPreference?.isEnabled = true
             bindPreference?.isEnabled = true
             autoSyncPreference?.isEnabled = true
+
+            bindPreference?.isChecked = App.bindToFirebase
         }
     }
 }

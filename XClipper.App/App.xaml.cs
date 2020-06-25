@@ -373,10 +373,11 @@ namespace Components
             //Added:29, Path: /users/1PAF8EB-4KR35L-1ICT12V-H7M3FM/Devices/sdk
 
             // Add user when node is inserted
+            Debug.Write("[Add] Path: " + e.Path+", Change: "+ e.Data);
             if (Regex.IsMatch(e.Path, DEVICE_REGEX_PATH_PATTERN))
             {
                 Debug.WriteLine("Adding Device...");
-                Task.Run(async () => { await FirebaseSingleton.GetInstance.SetGlobalUser(); });
+                Task.Run(async () => { await FirebaseSingleton.GetInstance.SetGlobalUser(true); });
             }
 
         }
@@ -398,7 +399,7 @@ namespace Components
                         });
                     });
                 });
-                Debug.WriteLine("Path: " + e.Path + ", Changed:" + e.Data + ", Old Data: " + e.OldData);
+             //   Debug.WriteLine("Path: " + e.Path + ", Changed:" + e.Data + ", Old Data: " + e.OldData);
             }
 
         }
