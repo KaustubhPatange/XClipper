@@ -22,17 +22,13 @@ namespace Components
             LoadDefaultConfigurations();
 
             SaveCommand = new RelayCommand(SaveButtonClicked);
-            ResetCommand = new RelayCommand(ResetButtonClicked);
             ImportCommand = new RelayCommand(ImportButtonClicked);
             ExportCommand = new RelayCommand(ExportButtonClicked);
-
-            checkForReset();
         }
 
         #region Actual Bindings
 
         public ICommand SaveCommand { get; set; }
-        public ICommand ResetCommand { get; set; }
         public ICommand ImportCommand { get; set; }
         public ICommand ExportCommand { get; set; }
         public string FBE { get; set; }
@@ -46,7 +42,6 @@ namespace Components
         public int DMIL { get; set; } 
         public int DMC { get; set; } 
         public bool IAN { get; set; }
-        public bool ResetEnabled { get; set; } = false;
 
         #endregion
 
@@ -90,8 +85,6 @@ namespace Components
 
                         LoadFirebaseSetting();
 
-                        checkForReset();
-
                         LoadDefaultConfigurations();
 
                         // Remove existing firebase credentials
@@ -119,7 +112,7 @@ namespace Components
                 return;
             }
 
-            var firebaseData = new FirebaseData
+            FirebaseCurrent = new FirebaseData
             {
                 Endpoint = FBE,
                 AppId = FBAI,
@@ -144,13 +137,11 @@ namespace Components
 
             LoadDefaultConfigurations();
 
-            checkForReset();
-
             // Remove existing firebase credentials
             RemoveFirebaseCredentials();
 
             // Initialize new firebase Config
-            FirebaseSingleton.GetInstance.InitConfig(firebaseData);
+            FirebaseHelper.InitializeService();
 
             MsgBoxHelper.ShowInfo(Translation.MSG_CONFIG_SAVE);
         }
@@ -163,11 +154,11 @@ namespace Components
 
                 if (result == MessageBoxResult.Yes)
                 {
-                    if (FirebaseConfigurations.Count <= 0) // Make sure we don't fall under this method.
+                  /*  if (FirebaseConfigurations.Count <= 0) // Make sure we don't fall under this method.
                     {
                         MsgBoxHelper.ShowError(Translation.MSG_UNKNOWN_ERR);
                         return;
-                    }
+                    }*/
 
                     DMI = DatabaseMaxItem = FB_MAX_ITEM;
                     DMC = DatabaseMaxConnection = FB_MAX_CONNECTION;
@@ -184,9 +175,10 @@ namespace Components
                     RemoveFirebaseCredentials();
 
                     // Initialize with default config
-                    FirebaseSingleton.GetInstance.InitConfig(FirebaseConfigurations[0]);
+                  //  FirebaseHelper.InitializeService();
+                 //   FirebaseSingleton.GetInstance.InitConfig(FirebaseConfigurations[0]);
 
-                    checkForReset();
+                 //   checkForReset();
 
                     // This will automatically load the default database encrypt password.
                     LoadApplicationSetting();
@@ -198,7 +190,7 @@ namespace Components
 
         private void LoadDefaultConfigurations()
         {
-            if (FirebaseCurrent.Endpoint != FIREBASE_PATH)
+            if (FirebaseCurrent != null)
             {
                 FBE = FirebaseCurrent.Endpoint;
                 FBAI = FirebaseCurrent.AppId;
@@ -216,10 +208,6 @@ namespace Components
             DMC = DatabaseMaxConnection;
             DMIL = DatabaseMaxItemLength;
             UID = UniqueID;
-        }
-        private void checkForReset()
-        {
-            ResetEnabled = File.Exists(CustomFirebasePath);
         }
 
         #endregion

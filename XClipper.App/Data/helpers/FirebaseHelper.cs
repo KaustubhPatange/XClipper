@@ -2,15 +2,11 @@
 using FireSharp.Core.Interfaces;
 using FireSharp.Core.Response;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using RestSharp;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Ink;
 using static Components.DefaultSettings;
 using static Components.TranslationHelper;
 
@@ -20,6 +16,27 @@ namespace Components
 {
     public static class FirebaseHelper
     {
+        /// <summary>
+        /// This will initialize the client safely. It will report to the user in case of any issue.<br/><br/>
+        /// It will create a new instance after verifying <see cref="BindDatabase"/><br/>
+        /// Must be called after <see cref="LoadFirebaseSetting"/><br/>
+        /// </summary>
+        public static void InitializeService(IFirebaseBinder? binder = null)
+        {
+            if (binder != null)
+                FirebaseSingleton.GetInstance.BindUI(binder);
+            if (BindDatabase)
+            {
+                if (FirebaseCurrent == null)
+                {
+                    var result = MessageBox.Show(Translation.SYNC_CONFIG_ERR, Translation.MSG_ERR, MessageBoxButton.YesNoCancel, MessageBoxImage.Error);
+                    if (result == MessageBoxResult.Yes)
+                        binder?.OnNoConfigurationFound();
+                    return;
+                }
+                FirebaseSingleton.GetInstance.InitConfig(FirebaseCurrent);
+            }
+        }
         public static async Task<bool> RefreshAccessToken(FirebaseData? user)
         {
             if (user == null) return false;

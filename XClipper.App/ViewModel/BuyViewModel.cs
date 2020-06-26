@@ -31,7 +31,7 @@ namespace Components
 
         #region Actual Bindings
 
-        public LicenseType LT { get; set; } = LicenseType.Standard;
+        public LicenseType LT { get; set; } = LicenseType.Invalid;
         public ICommand VerifyCommand { get; set; }
         public ICommand ActivateCommand { get; set; }
         public string UID { get; private set; } = UniqueID;

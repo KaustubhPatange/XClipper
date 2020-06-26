@@ -19,6 +19,7 @@ namespace Components
         public static string RoamingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         public static string ApplicationDirectory = Path.Combine(RoamingDirectory, "XClipper");
         public static string ApplicationTempDirectory = Path.Combine(ApplicationDirectory, ".cache");
+        public static string ApplicationLogDirectory = Path.Combine(ApplicationDirectory, "logs");
         public static string SettingsPath = Path.Combine(ApplicationDirectory, "config.xml");
         public static string LicenseFilePath = Path.Combine(ApplicationDirectory, "key.lic");
         public static string BackupFolder = Path.Combine(ApplicationDirectory, "Backup");
@@ -27,7 +28,7 @@ namespace Components
         public static string CustomFirebasePath = Path.Combine(ApplicationDirectory, "custom-firebase.xml");
         public static string FirebaseCredentialPath = Path.Combine(ApplicationDirectory, "credentials-firebase.xml");
         public static string QRImageFilePath = Path.Combine(ApplicationTempDirectory, "qr.png");
-        public static string LogFilePath = Path.Combine(ApplicationDirectory, "xclipper");
+        public static string LogFilePath = Path.Combine(ApplicationLogDirectory, "xclipper");
         public static string UpdatePackageFile = Path.Combine(ApplicationTempDirectory, "package-update.exe");
 
         #endregion
@@ -36,6 +37,7 @@ namespace Components
         #region Some application specific constants
 
         public static string ApplicationVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+        public static string ApplicationWebsite = "https://kaustubhpatange.github.io/XClipper";
         public const string UPDATE_URI = "https://pastebin.com/raw/FRS7n7Fc"; // todo: Change update uri https://raw.githubusercontent.com/KaustubhPatange/XClipper/master/UPDATE
         public const string OAUTH_TOKEN_URI = "https://oauth2.googleapis.com/token";
         public const string SETTINGS = "Settings";

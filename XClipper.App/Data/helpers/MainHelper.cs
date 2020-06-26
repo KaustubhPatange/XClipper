@@ -135,7 +135,7 @@ DEL ""%~f0""";
         }
         public static void ActivatePaidFeatures()
         {
-            if (IsPurchaseDone && !File.Exists(CustomFirebasePath))
+            if (IsPurchaseDone && LicenseStrategy == LicenseType.Premium)
             {
                 DatabaseMaxItem = FB_MAX_ITEM;
                 DatabaseMaxItemLength = FB_MAX_LENGTH;

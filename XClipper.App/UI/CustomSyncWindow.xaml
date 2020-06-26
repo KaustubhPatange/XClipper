@@ -121,15 +121,7 @@
             Grid.Row="1"
             Margin="10"
             Orientation="Vertical">
-            <!--<Label Height="0.7" Background="DarkGray" />-->
             <DockPanel Margin="0,0,0,0">
-                <Button
-                    Width="130"
-                    Height="22"
-                    HorizontalAlignment="Left"
-                    Command="{Binding ResetCommand}"
-                    Content="{DynamicResource sync_config_reset}"
-                    IsEnabled="{Binding ResetEnabled}" />
                 <Button
                     Width="22"
                     Height="22"

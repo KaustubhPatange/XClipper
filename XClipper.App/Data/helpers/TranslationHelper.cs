@@ -92,6 +92,7 @@ namespace Components
         public string MSG_WRONG_SIGNIN = rm.GetString("msg_wrong_signin");
         public string MSG_UNKNOWN_ERR = rm.GetString("msg_unknown_err");
         public string MSG_LICENSE_CHECK = rm.GetString("msg_license_check");
+        public string MSG_LICENSE_UPDATE = rm.GetString("msg_license_update");
         public string POPUP_ADDED = rm.GetString("popup_added");
         public string POPUP_SPACE_FOCUS = rm.GetString("popup_space_focus");
         public string POPUP_EDIT_ERR = rm.GetString("popup_edit_err");
@@ -122,6 +123,7 @@ namespace Components
         public string SYNC_EXPORT_SUCCESS = rm.GetString("sync_export_success");
         public string SYNC_ID_DEFAULT = rm.GetString("sync_id_default");
         public string SYNC_ID_CUSTOM = rm.GetString("sync_id_custom");
+        public string SYNC_CONFIG_ERR = rm.GetString("sync_config_err");
         public string UPDATE_TITLE = rm.GetString("update_title");
         public string UPDATE_DOWNLOAD_COMPLETE = rm.GetString("update_download_complete");
     }

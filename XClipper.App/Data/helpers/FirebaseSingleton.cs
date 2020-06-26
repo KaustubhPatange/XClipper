@@ -208,10 +208,10 @@ namespace Components
             isClientInitialized = false;
 
             UID = UniqueID;
-            if (data == null && FirebaseConfigurations.Count > 0)
+            if (data == null)
             {
-                Log("Setting firebase configuration");
-                FirebaseCurrent = FirebaseConfigurations[0];
+                Log("Configuration is null");
+                return;
             }
             else FirebaseCurrent = data;
             if (FirebaseCurrent != null)
@@ -236,6 +236,14 @@ namespace Components
             }
             else
                 MsgBoxHelper.ShowError(Translation.MSG_FIREBASE_UNKNOWN_ERR);
+        }
+
+        public void UpdateConfigurations()
+        {
+            Log();
+            if (user != null)
+                SetCommonUserInfo(user);
+            else Log("Oops, user is still null");
         }
 
         /// <summary>
@@ -276,7 +284,7 @@ namespace Components
                 //clearAwaitedGlobalUserTask();
                 return false;
             }
-
+            if (FirebaseCurrent == null) return false;
             if (client == null)
             {
                 MsgBoxHelper.ShowError(Translation.MSG_FIREBASE_CLIENT_ERR);

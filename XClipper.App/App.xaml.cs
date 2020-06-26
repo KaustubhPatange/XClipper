@@ -23,6 +23,7 @@ using Components.UI;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Windows.Threading;
+using System.Globalization;
 
 #nullable enable
 
@@ -107,7 +108,7 @@ namespace Components
                 clipWindow.CloseWindow();
             });
 
-            FirebaseSingleton.GetInstance.BindUI(this);
+            FirebaseHelper.InitializeService(this);
 
             licenseService.Initiate(err =>
             {
@@ -149,7 +150,7 @@ namespace Components
             var BackupMenuItem = CreateNewItem(Translation.APP_BACKUP, BackupClicked);
             var RestoreMenutItem = CreateNewItem(Translation.APP_RESTORE, RestoreClicked);
             var ImportDataItem = CreateNewItem(Translation.APP_IMPORT, ImportDataClicked);
-            ConfigSettingItem = CreateNewItem(Translation.APP_CONFIG_SETTING, ConfigSettingClicked).Also(c => c.Visible = false);
+            ConfigSettingItem = CreateNewItem(Translation.APP_CONFIG_SETTING, ConfigSettingClicked);
             UpdateSettingItem = CreateNewItem(Translation.APP_UPDATE, UpdateSettingClicked).Also(c => c.Visible = false);
 
             var HelpMenuItem = CreateNewItem(Translation.APP_HELP, (o, e) =>
@@ -221,7 +222,10 @@ namespace Components
                             var pass = Microsoft.VisualBasic.Interaction.InputBox(Translation.MSG_ENTER_PASS, Translation.MSG_PASSWORD, CustomPassword);
 
                             // Override existing SQL connection with password in it...
-                            con = new SQLiteConnection(new SQLiteConnectionString(fileName, true, pass));
+                            using (var disposableConnection = new SQLiteConnection(new SQLiteConnectionString(fileName, true, pass)))
+                            {
+                                con = disposableConnection;
+                            }
 
                             // Using goto restart the process...
                             goto restartMethod;
@@ -233,11 +237,7 @@ namespace Components
         }
         private void ConfigSettingClicked(object sender, EventArgs e)
         {
-            if (configWindow != null)
-                configWindow.Close();
-
-            configWindow = new CustomSyncWindow();
-            configWindow.ShowDialog();
+            CallSyncWindow();
         }
 
         private void SettingMenuClicked(object sender, EventArgs e)
@@ -363,6 +363,11 @@ namespace Components
 
         #region IFirebaseBinder Events 
 
+        public void OnNoConfigurationFound()
+        {
+            CallSyncWindow();
+        }
+
         public void OnNeedToGenerateToken(string ClientId, string ClientSecret)
         {
             MsgBoxHelper.ShowWarning(Translation.MSG_NEED_AUTH);
@@ -428,16 +433,10 @@ namespace Components
 
         private void ActivateLicense()
         {
-            // Initialize firebase...
-            if (FirebaseCurrent == null) // Load config from configurations.
-                FirebaseSingleton.GetInstance.InitConfig(FirebaseConfigurations.Count > 0 ? FirebaseConfigurations[0] : null);
-            else // Or load data from firebase-config file.
-                FirebaseSingleton.GetInstance.InitConfig(FirebaseCurrent);
-
             ActivatePaidFeatures();
             CheckForUpdates();
             UpdateSettingItem.Visible = true;
-            if (LicenseStrategy == LicenseType.Premium) ConfigSettingItem.Visible = true;
+            FirebaseSingleton.GetInstance.UpdateConfigurations();
             if (IsPurchaseDone) UpdateSettingItem.Visible = true;
         }
 
@@ -463,8 +462,18 @@ namespace Components
 
         private void UpdateAction_BalloonTipClicked(object sender, EventArgs e)
         {
-            CallUpdateWindow(updateModel?.Desktop);
-            updateModel = null;
+            if (IsPurchaseDone)
+            {
+                CallUpdateWindow(updateModel?.Desktop);
+                updateModel = null;
+            } else
+            {
+                var result = MessageBox.Show(Translation.MSG_LICENSE_UPDATE, Translation.MSG_WARNING, MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (result == MessageBoxResult.Yes)
+                {
+                    AppModule.Container.Resolve<IUpdater>().Launch();
+                }
+            }
         }
 
         private void RestartAppClicked(object sender, EventArgs e)
@@ -583,6 +592,15 @@ namespace Components
 
             buyWindow = new BuyWindow(this);
             buyWindow.ShowDialog();
+        }
+
+        private void CallSyncWindow()
+        {
+            if (configWindow != null)
+                configWindow.Close();
+
+            configWindow = new CustomSyncWindow();
+            configWindow.ShowDialog();
         }
 
         #endregion

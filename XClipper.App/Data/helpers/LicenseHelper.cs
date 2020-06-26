@@ -32,8 +32,6 @@ namespace Components
                         var uid = obj["data"]["applicationId"].ToString();
                         var type = obj["data"]["licenseType"].ToString().ToEnum<LicenseType>();
 
-                        // We must firebase configuration data to this setting.
-                        FirebaseConfigurations.AddRange(JsonConvert.DeserializeObject<List<FirebaseData>>(obj["firebaseData"].ToString()));
                         if (uid == UniqueID)
                         {
                             IsPurchaseDone = type != LicenseType.Invalid;

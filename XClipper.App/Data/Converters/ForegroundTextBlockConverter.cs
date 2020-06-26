@@ -13,7 +13,7 @@ namespace Components
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var type = (LicenseType)value;
-            if (type == LicenseType.Standard || type == LicenseType.Premium)
+            if (type == LicenseType.Premium)
             {
                 var color = Application.Current.Resources["GreenBrush"] as SolidColorBrush;
                 return color;

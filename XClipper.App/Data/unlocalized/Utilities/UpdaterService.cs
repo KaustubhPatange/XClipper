@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using RestSharp;
 using System;
+using System.Diagnostics;
 using System.Reflection;
 using static Components.Constants;
 
@@ -26,6 +27,11 @@ namespace Components
                 else
                     block?.Invoke(false, null);
             });
+        }
+
+        public void Launch()
+        {
+            Process.Start(ApplicationWebsite);
         }
     }
 }

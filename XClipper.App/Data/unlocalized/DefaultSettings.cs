@@ -337,6 +337,7 @@ namespace Components
         /// <summary>
         /// Holds all the firebase configuration or any custom configuration as well.
         /// </summary>
+        [Obsolete("Should not be used", true)] // TODO: Remove this setting
         public static List<FirebaseData> FirebaseConfigurations { get; private set; } = new List<FirebaseData>();
 
         /// <summary>
@@ -404,7 +405,6 @@ namespace Components
         public static void WriteFirebaseSetting()
         {
             if (FirebaseCurrent == null) return;
-            if (FirebaseCurrent?.Endpoint == FIREBASE_PATH) return;
             var firebaseDoc = new XDocument();
             var config = new XElement(SETTINGS);
             config

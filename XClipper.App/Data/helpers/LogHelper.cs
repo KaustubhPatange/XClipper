@@ -31,8 +31,8 @@ namespace Components
                 currentMethodName = Regex.Match(method.DeclaringType.Name, "([A-Z])\\w+").Value;
             else currentMethodName = method.ToString();
 
-            if (!File.Exists(LOG_FILE))
-                File.Create(LOG_FILE).Close();
+            if (!Directory.Exists(ApplicationLogDirectory)) Directory.CreateDirectory(ApplicationLogDirectory);
+            if (!File.Exists(LOG_FILE)) File.Create(LOG_FILE).Close();
 
             using (StreamWriter writer = new StreamWriter(LOG_FILE, true))
             {

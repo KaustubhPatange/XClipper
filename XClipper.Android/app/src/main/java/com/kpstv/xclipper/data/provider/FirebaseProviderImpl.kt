@@ -443,11 +443,20 @@ class FirebaseProviderImpl(
         user?.LicenseStrategy?.let { licenseStrategy.postValue(it) }
     }
 
+    private fun removeUserDetailsAndUpdateLocal() {
+        HVLog.d()
+        user = null
+        licenseStrategy.postValue(LicenseType.Invalid)
+        APP_MAX_DEVICE = user?.TotalConnection ?: getMaxConnection(isLicensed())
+        APP_MAX_ITEM = user?.MaxItemStorage ?: getMaxStorage(isLicensed())
+    }
+
     override fun removeDataObservation() {
         HVLog.d()
         if (::database.isInitialized && ::valueListener.isInitialized) {
             database.getReference(USER_REF).child(UID)
                 .removeEventListener(valueListener)
+            removeUserDetailsAndUpdateLocal()
         }
     }
 

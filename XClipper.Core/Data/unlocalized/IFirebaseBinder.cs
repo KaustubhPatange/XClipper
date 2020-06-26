@@ -24,6 +24,11 @@ namespace Components
         /// <param name="ClientId"></param>
         /// <param name="ClientSecret"></param>
         void OnNeedToGenerateToken(string ClientId, string ClientSecret);
+
+        /// <summary>
+        /// When there is not configuration file this will be called.
+        /// </summary>
+        void OnNoConfigurationFound();
     }
 
     public class RemovedEventArgs : EventArgs
