@@ -2,7 +2,6 @@ package com.kpstv.xclipper.data.provider
 
 import android.content.Context
 import android.os.Build
-import android.os.Handler
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.FirebaseApp
@@ -13,7 +12,6 @@ import com.google.firebase.ktx.Firebase
 import com.kpstv.license.Encryption.Decrypt
 import com.kpstv.xclipper.App.APP_MAX_DEVICE
 import com.kpstv.xclipper.App.APP_MAX_ITEM
-import com.kpstv.xclipper.App.DELAY_FIREBASE_SPAN
 import com.kpstv.xclipper.App.DeviceID
 import com.kpstv.xclipper.App.UID
 import com.kpstv.xclipper.App.bindToFirebase
@@ -29,10 +27,6 @@ import com.kpstv.xclipper.extensions.decrypt
 import com.kpstv.xclipper.extensions.encrypt
 import com.kpstv.xclipper.extensions.listeners.FValueEventListener
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
-import com.kpstv.xclipper.extensions.mainThread
-import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.concurrent.schedule
 
 @ExperimentalStdlibApi
 class FirebaseProviderImpl(
@@ -59,10 +53,10 @@ class FirebaseProviderImpl(
      * [DBConnectionProvider] to run [DBConnectionProvider.detachDataFromAll] which is
      * removing all the preference related to connection
      *
-     * The only solution I found is to set [isDataChanging] to true to know if device/data
-     * being added or not. In such case [handler] will not post it's [Runnable].
+     * The only solution I found is to set [isDeviceAdding] to true to know if device is
+     * being added or not. In such case device validation will not be invoked.
      */
-    private var isDataChanging = false
+    private var isDeviceAdding = false
 
     override fun isInitialized() = isInitialized
 
@@ -105,18 +99,22 @@ class FirebaseProviderImpl(
             checkForUserDetailsAndUpdateLocal()
 
             if (list.size >= APP_MAX_DEVICE) {
-                responseListener.onError(java.lang.Exception("Maximum device connection reached"))
+                responseListener.onError(Exception("Maximum device connection reached"))
                 return@workWithData
             }
 
             if (list.count { it.id == DeviceId } > 0) {
-                responseListener.onError(java.lang.Exception("Device already exist"))
+                responseListener.onError(Exception("Device already exist"))
                 return@workWithData
             }
 
             list.add(Device(DeviceId, Build.VERSION.SDK_INT, Build.MODEL))
 
-            updateDeviceList(list, responseListener)
+            updateDeviceList(
+                list = list,
+                uploadStatus = UploadStatus.Adding,
+                responseListener = responseListener
+            )
         }
     }
 
@@ -128,29 +126,49 @@ class FirebaseProviderImpl(
                 else ArrayList<Device>()
 
             if (list.count { it.id == DeviceId } <= 0) {
-                responseListener.onError(java.lang.Exception("No device found with this ID"))
+                responseListener.onError(Exception("No device found with this ID"))
                 return@workWithData
             }
 
             val filterList = list.filter { it.id != DeviceId }
 
-            updateDeviceList(filterList, responseListener)
+            updateDeviceList(
+                list = filterList,
+                uploadStatus = UploadStatus.Removing,
+                responseListener = responseListener
+            )
         }
     }
 
-    private fun updateDeviceList(list: List<Device>, responseListener: ResponseListener<Unit>) {
+    /**
+     * This will update the device list with the given list.
+     *
+     * When the [uploadStatus] is [UploadStatus.Removing] it will remove
+     * the firebase data change observation through [removeDataObservation]
+     * and make [isInitialized] to true.
+     */
+    private fun updateDeviceList(
+        list: List<Device>,
+        uploadStatus: UploadStatus,
+        responseListener: ResponseListener<Unit>
+    ) {
 
         Log.e(TAG, "ListSize: ${list.size}, List: $list")
+        isDeviceAdding = true
 
         /** Must pass toList to firebase otherwise it add list as linear data. */
         database.getReference(USER_REF).child(UID).child(DEVICE_REF)
             .setValue(list.toList()) { error, _ ->
                 if (error == null) {
                     responseListener.onComplete(Unit)
+                    isDeviceAdding = false
                 } else
-                    responseListener.onError(java.lang.Exception(error.message))
-                database.goOffline()
-                isDataChanging = false
+                    responseListener.onError(Exception(error.message))
+
+                if (uploadStatus == UploadStatus.Removing) {
+                    isInitialized.postValue(false)
+                    removeDataObservation()
+                }
             }
     }
 
@@ -234,16 +252,12 @@ class FirebaseProviderImpl(
      * A common method which will submit the data to firebase.
      */
     private fun pushDataToFirebase(list: ArrayList<Clip>) {
-        database.goOnline()
         database.getReference(USER_REF).child(UID).child(CLIP_REF)
             .setValue(list.cloneToEntries()) { error, _ ->
                 if (error == null) {
                     user?.Clips = list
-                    Log.e(TAG, "Firebase: Success")
                 } else
                     Log.e(TAG, "Error: ${error.message}")
-                database.goOffline()
-                isDataChanging = false
             }
     }
 
@@ -253,8 +267,6 @@ class FirebaseProviderImpl(
                 block.invoke(user?.Clips?.decrypt())
             else
                 block.invoke(null)
-            database.goOffline()
-            isDataChanging = false
         }
     }
 
@@ -268,7 +280,6 @@ class FirebaseProviderImpl(
         validationContext: ValidationContext = ValidationContext.Default,
         block: (Boolean) -> Unit
     ) {
-
 
         /**
          * Make sure the device is a valid device so that we can make connection
@@ -292,13 +303,14 @@ class FirebaseProviderImpl(
                 return
             }
         }
-        database.goOnline()
 
         if (user == null || validationContext == ValidationContext.ForceInvoke) {
-            isDataChanging = true
+
+            /*if (UID.isEmpty()) return*/
             database.getReference(USER_REF).child(UID)
                 .addListenerForSingleValueEvent(FValueEventListener(
                     onDataChange = { snap ->
+                        Log.e(TAG, "Check 4")
                         val json = gson.toJson(snap.value)
                         gson.fromJson(json, User::class.java).also { user = it }
                         block.invoke(true)
@@ -306,112 +318,64 @@ class FirebaseProviderImpl(
                     onError = {
                         Log.e(TAG, "Error: ${it.message}")
                         block.invoke(false)
-                        database.goOffline()
-                        isDataChanging = false
                     }
                 ))
-        } else {
+        } else
             block.invoke(true)
-        }
 
+        Log.e(TAG, "Check 3")
     }
 
-    private var cancelToken = false
-    private var handler = Handler()
     private lateinit var valueListener: FValueEventListener
     override fun observeDataChange(
         changed: (User?) -> Unit,
         error: (Exception) -> Unit,
         deviceValidated: (Boolean) -> Unit
     ) {
-        cancelToken = false
-        handler.post(object : Runnable {
-            override fun run() {
-
-                if (cancelToken) {
-                    handler.removeCallbacks(this)
-                    return
-                }
-
-                if (!dbConnectionProvider.isValidData()) {
-                    error.invoke(Exception("Invalid account preference"))
-                    loopRunnableAfterDelay()
-                    return
-                }
-
-                if (isDataChanging) {
-                    error.invoke(Exception("Data is changing"))
-                    loopRunnableAfterDelay()
-                    return
-                }
-
-                /** Automated initialization of firebase database*/
-                if (isInitialized.value == false)
-                    initialize(dbConnectionProvider.optionsProvider())
-
-                if (!dbConnectionProvider.isValidData()) {
-                    loopRunnableAfterDelay()
-                    return
-                }
-
-                valueListener = FValueEventListener(
-                    onDataChange = { snap ->
-                        val json = gson.toJson(snap.value)
-                        val gotUser = gson.fromJson(json, User::class.java)
-                        if (gotUser == user) {
-                            mainThread { error.invoke(Exception("Pulled out same data")) }
-                            loopRunnableAfterDelay()
-                            return@FValueEventListener
-                        }
-
-                        user = gotUser
-
-                        /** Check for device validation*/
-                        validDevice = (user?.Devices ?: mutableListOf()).count {
-                            it.id == DeviceID
-                        } > 0
-
-                        /** Update the properties*/
-                        checkForUserDetailsAndUpdateLocal()
-
-                        /** Device validation is causing problem, so only invoke it when
-                         *  device is not adding.*/
-                        mainThread { deviceValidated.invoke(validDevice) }
-
-                        if (json != null && validDevice)
-                            mainThread { changed.invoke(user) }
-                        else if (json == null)
-                            mainThread { error.invoke(Exception("Database is null")) }
-                        else
-                            mainThread { error.invoke(Exception("Unknown error occurred")) }
-
-                        if (!validDevice) isInitialized.postValue(false)
-
-                        database.goOffline()
-                        loopRunnableAfterDelay()
-                    },
-                    onError = {
-                        error.invoke(it.toException())
-
-                        database.goOffline()
-                        loopRunnableAfterDelay()
-                    }
-                )
-
-                database.goOnline()
-                database.getReference(USER_REF).child(UID)
-                    .addListenerForSingleValueEvent(valueListener)
-            }
-        })
-    }
-
-    /**
-     * An extension method to re-post the runnable.
-     */
-    fun Runnable.loopRunnableAfterDelay() {
-        Timer("loopObservation").schedule(DELAY_FIREBASE_SPAN) {
-            mainThread { handler.post(this@loopRunnableAfterDelay) }
+        if (!dbConnectionProvider.isValidData()) {
+            error.invoke(Exception("Invalid account preference"))
+            return
         }
+
+        /** Automated initialization of firebase database */
+        if (isInitialized.value == false)
+            initialize(dbConnectionProvider.optionsProvider())
+
+        if (UID.isEmpty()) return
+
+        valueListener = FValueEventListener(
+            onDataChange = { snap ->
+                val json = gson.toJson(snap.value)
+                user = gson.fromJson(json, User::class.java)
+
+                /** Check for device validation*/
+                validDevice = (user?.Devices ?: mutableListOf()).count {
+                    it.id == DeviceID
+                } > 0
+
+                /** Update the properties*/
+                checkForUserDetailsAndUpdateLocal()
+
+                /** Device validation is causing problem, so only invoke it when
+                 *  device is not adding.*/
+                if (!isDeviceAdding)
+                    deviceValidated.invoke(validDevice)
+
+                if (json != null && validDevice)
+                    changed.invoke(user)
+                else
+                    error.invoke(Exception("Database is null"))
+
+                if (!isDeviceAdding && !validDevice)
+                    isInitialized.postValue(false)
+            },
+            onError = {
+                error.invoke(it.toException())
+            }
+        )
+
+        database.getReference(USER_REF).child(UID)
+            .addValueEventListener(valueListener)
     }
 
     /**
@@ -419,26 +383,24 @@ class FirebaseProviderImpl(
      * later purposes.
      */
     private fun checkForUserDetailsAndUpdateLocal() {
-        APP_MAX_DEVICE = if (user?.TotalConnection != 0) user?.TotalConnection ?: getMaxConnection(
-            isLicensed()
-        ) else getMaxConnection(isLicensed())
-        APP_MAX_ITEM = if (user?.MaxItemStorage != 0) user?.MaxItemStorage ?: getMaxStorage(
-            isLicensed()
-        ) else getMaxStorage(isLicensed())
-        /*APP_MAX_DEVICE = user?.TotalConnection ?: getMaxConnection(isLicensed())
-        APP_MAX_ITEM = user?.MaxItemStorage ?: getMaxStorage(isLicensed())*/
+        APP_MAX_DEVICE = user?.TotalConnection ?: getMaxConnection(isLicensed())
+        APP_MAX_ITEM = user?.MaxItemStorage ?: getMaxStorage(isLicensed())
     }
 
     override fun removeDataObservation() {
         if (::database.isInitialized && ::valueListener.isInitialized) {
-            /*database.getReference(USER_REF).child(UID)
-                .removeEventListener(valueListener)*/
-            cancelToken = true
+            database.getReference(USER_REF).child(UID)
+                .removeEventListener(valueListener)
         }
     }
 
     private enum class ValidationContext {
         Default,
         ForceInvoke
+    }
+
+    private enum class UploadStatus {
+        Adding,
+        Removing
     }
 }

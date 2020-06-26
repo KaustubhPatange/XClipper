@@ -23,6 +23,7 @@ import androidx.core.app.ShareCompat
 import androidx.preference.PreferenceManager
 import com.google.zxing.integration.android.IntentIntegrator
 import com.kpstv.xclipper.App
+import com.kpstv.xclipper.App.AUTO_SYNC_PREF
 import com.kpstv.xclipper.App.BIND_PREF
 import com.kpstv.xclipper.App.BLACKLIST_PREF
 import com.kpstv.xclipper.R
@@ -281,7 +282,9 @@ class Utils {
         ) {
             dbConnectionProvider.detachDataFromAll()
             preferenceProvider.putBooleanKey(BIND_PREF, false)
+            preferenceProvider.putBooleanKey(AUTO_SYNC_PREF, false)
             App.bindToFirebase = false
+            App.runAutoSync = false
         }
 
         fun loginToDatabase(
@@ -291,7 +294,9 @@ class Utils {
         ) {
             dbConnectionProvider.saveOptionsToAll(options)
             preferenceProvider.putBooleanKey(BIND_PREF, true)
+            preferenceProvider.putBooleanKey(AUTO_SYNC_PREF, true)
             App.bindToFirebase = true
+            App.runAutoSync = true
         }
 
         fun isValidSQLite(stream: InputStream?): Boolean {

@@ -55,11 +55,11 @@ class AccountPreference() : PreferenceFragmentCompat(), KodeinAware {
                         complete = {
                             dialog.dismiss()
                             bindPreference?.isChecked = false
+                            autoSyncPreference?.isChecked = false
                             Toasty.info(requireContext(), getString(R.string.logout_success)).show()
                         },
                         error = {
                             dialog.dismiss()
-
                             Toasty.error(requireContext(), it.message!!).show()
                         }
                     ))
@@ -115,6 +115,7 @@ class AccountPreference() : PreferenceFragmentCompat(), KodeinAware {
             autoSyncPreference?.isEnabled = true
 
             bindPreference?.isChecked = App.bindToFirebase
+            autoSyncPreference?.isChecked = App.runAutoSync
         }
     }
 }

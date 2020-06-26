@@ -58,13 +58,11 @@ class FirebaseUtils(
         }
 
     /**
-     *  This will remove the database snapshot observation.
-     *  You can restart the observation any time calling
-     *  [observeDatabaseChangeEvents]
+     * When the boolean is false it will automatically call [FirebaseProvider.removeDataObservation]
+     *
+     * If you think it will be only called when the device is removed successfully
+     * i.e in [FirebaseProvider.removeDevice].
      */
-    fun removeDataChangeObservation() =
-        firebaseProvider.removeDataObservation()
-
     private val databaseInitializationObserver = Observer<Boolean> {
         if (it)
             observeDatabaseChangeEvents()
@@ -76,6 +74,7 @@ class FirebaseUtils(
 
     fun removeDatabaseInitializationObservation() {
         firebaseProvider.isInitialized().removeObserver(databaseInitializationObserver)
+        firebaseProvider.removeDataObservation()
     }
 
 }

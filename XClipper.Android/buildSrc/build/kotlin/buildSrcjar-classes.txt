@@ -1,0 +1,1 @@
+D:\VisualStudioProjects\XClipper\XClipper.Android\buildSrc\build\classes\kotlin\main\CoreVersion.class;D:\VisualStudioProjects\XClipper\XClipper.Android\buildSrc\build\classes\kotlin\main\GradlePluginId.class;D:\VisualStudioProjects\XClipper\XClipper.Android\buildSrc\build\classes\kotlin\main\GradlePluginVersion.class

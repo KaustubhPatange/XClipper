@@ -239,15 +239,15 @@ class MainViewModel(
         }
 
         /** This is to observe the device validation when accessibility service is off. */
+        firebaseUtils.observeDatabaseInitialization()
         if (!isClipboardAccessibilityServiceRunning(application.applicationContext)) {
-            firebaseUtils.observeDatabaseInitialization()
             clipboardProvider.observeClipboardChange()
         }
     }
 
     override fun onCleared() {
         firebaseUtils.removeDatabaseInitializationObservation()
-        firebaseUtils.removeDataChangeObservation()
+        //firebaseUtils.removeDataChangeObservation()
         super.onCleared()
     }
 
