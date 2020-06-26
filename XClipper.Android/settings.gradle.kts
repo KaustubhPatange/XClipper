@@ -1,9 +1,3 @@
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-        google()
-    }
-}
-
-rootProject.name = "XClipper"
+rootProject.name ="XClipper"
+rootProject.buildFileName = "build.gradle.kts"
 include(":app", ":app:license")
