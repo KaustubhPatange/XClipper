@@ -6,6 +6,7 @@
 XClipper.Protect/
 XClipper.SecureApp/
 XClipper.Android/app/library_utils/
+XClipper.Android/buildSrc/build/
 
 # User-specific files
 *.suo

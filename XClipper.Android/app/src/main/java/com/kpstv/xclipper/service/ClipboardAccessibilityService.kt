@@ -5,10 +5,10 @@ import android.accessibilityservice.AccessibilityServiceInfo
 import android.content.*
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.os.Build
+import android.os.PowerManager
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
-import android.widget.Button
 import android.widget.EditText
 import androidx.lifecycle.MutableLiveData
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -18,7 +18,6 @@ import com.kpstv.xclipper.App.ACTION_VIEW_CLOSE
 import com.kpstv.xclipper.App.EXTRA_SERVICE_TEXT
 import com.kpstv.xclipper.App.showSuggestion
 import com.kpstv.xclipper.data.provider.ClipboardProvider
-import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.extensions.utils.FirebaseUtils
 import com.kpstv.xclipper.extensions.utils.KeyboardUtils.Companion.getKeyboardHeight
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.isSystemOverlayEnabled
@@ -45,16 +44,21 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
     override val kodein by kodein()
     private val firebaseUtils by instance<FirebaseUtils>()
     private val clipboardProvider by instance<ClipboardProvider>()
+    private lateinit var powerManager: PowerManager
 
     private var nodeInfo: AccessibilityNodeInfo? = null
+    /**
+     * Indicates whether a screen is active for interaction or not.
+     * If value is true -> Screen On
+     */
+    private val screenInteraction = MutableLiveData(true)
 
     private var runForNextEventAlso = false
-
     private val TAG = javaClass.simpleName
 
     override fun onCreate() {
         super.onCreate()
-
+        powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
         firebaseUtils.observeDatabaseChangeEvents()
     }
 
@@ -100,6 +104,11 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
                 nodeInfo = this
             }
         }
+
+        if (powerManager.isInteractive) {
+            updateScreenInteraction(true)
+        }else
+            updateScreenInteraction(false)
 
         if (event?.packageName != packageName)
             LocalBroadcastManager.getInstance(applicationContext)
@@ -209,6 +218,11 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
     }
 
     override fun onInterrupt() {}
+
+    private fun updateScreenInteraction(value: Boolean) {
+        if (screenInteraction.value != value)
+            screenInteraction.postValue(value)
+    }
 
     /**
      * Returns true if the current package name is not part of blacklist app list.

@@ -54,7 +54,7 @@ dependencies {
     implementation(LibraryDependency.APP_COMPAT)
     implementation(LibraryDependency.CORE_KTX)
     implementation(LibraryDependency.COLLECTIONS_KTX)
-    implementation(LibraryDependency.SUPPORT_CONSTRAINT_LAYOUT)
+    implementation(LibraryDependency.CONSTRAINT_LAYOUT)
     implementation(LibraryDependency.MATERIAL)
     implementation(LibraryDependency.PLAY_CORE)
     implementation(LibraryDependency.PLAY_CORE_KTX)
