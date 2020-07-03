@@ -179,8 +179,10 @@
     <Compile Include="Data\Converters\LicenseTextConverter.cs" />
     <Compile Include="Data\Converters\SyncForegroundConverter.cs" />
     <Compile Include="Data\helpers\DatabaseHelper.cs" />
+    <Compile Include="Data\helpers\LicenseHelper.cs" />
     <Compile Include="Data\unlocalized\CustomHelpWindow.cs" />
     <Compile Include="Data\unlocalized\Properties\NumericTextBoxProperties.cs" />
+    <Compile Include="Data\unlocalized\Utilities\ILicense.cs" />
     <Compile Include="Data\unlocalized\Utilities\IUpdater.cs" />
     <Compile Include="Data\unlocalized\Utilities\UpdaterService.cs" />
     <Compile Include="UI\BuyWindow.xaml.cs">

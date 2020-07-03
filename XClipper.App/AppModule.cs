@@ -13,6 +13,7 @@ namespace Components
             builder.RegisterType<DatabaseHelper>().As<IDatabase<TableCopy>>();
             builder.RegisterType<ClipboardService>().As<IKeyboardRecorder>().SingleInstance();
             builder.RegisterType<UpdaterService>().As<IUpdater>().SingleInstance();
+            builder.RegisterType<LicenseHelper>().As<ILicense>().SingleInstance();
             
             return builder.Build().Also((e)=> Container = e);
         }

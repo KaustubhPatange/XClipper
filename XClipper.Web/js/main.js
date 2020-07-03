@@ -5,12 +5,14 @@ AOS.init({
 });
 
 history.scrollRestoration = "manual";
+
 if (Number(window.screen.width < 600)) {
   const cards = document.getElementsByClassName("card");
   Array.from(cards).forEach((el) => {
     el.style.width = `${Number((window.screen.width - 54) / 16)}rem`;
   });
 }
+
 makeToActOnCard("freeCard", "freeCardHr");
 makeToActOnCard("standardCard", "standardCardHr");
 makeToActOnCard("premiumCard", "premiumCardHr");

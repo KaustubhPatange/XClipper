@@ -28,6 +28,7 @@ using System.Reflection;
 using System.Net.Configuration;
 using SHDocVw;
 using System.Windows.Threading;
+using System.ComponentModel;
 
 #nullable enable
 
@@ -50,8 +51,10 @@ namespace Components
         private CustomSyncWindow configWindow;
         private DeviceWindow deviceWindow;
         private IKeyboardRecorder recorder;
+        private ILicense licenseService;
         public static List<string> LanguageCollection = new List<string>();
         private Mutex appMutex;
+        private WinForm.MenuItem ConfigSettingItem, UpdateSettingItem;
         public static ResourceDictionary rm = new ResourceDictionary();
 
         // Some settings
@@ -65,6 +68,7 @@ namespace Components
         {
             AppModule.Configure();
             recorder = AppModule.Container.Resolve<IKeyboardRecorder>();
+            licenseService = AppModule.Container.Resolve<ILicense>();
 
             LoadSettings();
 
@@ -78,9 +82,9 @@ namespace Components
 
             SetAppStartupEntry();
 
-            CheckForLicense();
+            // CheckForLicense();
 
-            ActivatePaidFeatures();
+            // ActivatePaidFeatures();
         }
 
         #endregion
@@ -118,7 +122,21 @@ namespace Components
 
             FirebaseSingleton.GetInstance.SetCallback(this);
 
-            CheckForUpdates();
+            licenseService.Initiate(err =>
+            {
+                if (err != null)
+                {
+                    MessageBox.Show(err.Message, Translation.MSG_ERR, MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+                ActivatePaidFeatures();
+                CheckForUpdates();
+                UpdateSettingItem.Visible = true;
+                if (LicenseStrategy == LicenseType.Premium) ConfigSettingItem.Visible = true;
+                if (IsPurchaseDone) UpdateSettingItem.Visible = true;
+            });
+
+            //  CheckForUpdates();
         }
 
         protected override void OnExit(ExitEventArgs e)
@@ -150,8 +168,8 @@ namespace Components
             var BackupMenuItem = CreateNewItem(Translation.APP_BACKUP, BackupClicked);
             var RestoreMenutItem = CreateNewItem(Translation.APP_RESTORE, RestoreClicked);
             var ImportDataItem = CreateNewItem(Translation.APP_IMPORT, ImportDataClicked);
-            var ConfigSettingItem = CreateNewItem(Translation.APP_CONFIG_SETTING, ConfigSettingClicked);
-            var UpdateSettingItem = CreateNewItem(Translation.APP_UPDATE, UpdateSettingClicked);
+            ConfigSettingItem = CreateNewItem(Translation.APP_CONFIG_SETTING, ConfigSettingClicked).Also(c => c.Visible = false);
+            UpdateSettingItem = CreateNewItem(Translation.APP_UPDATE, UpdateSettingClicked).Also(c => c.Visible = false);
 
             var HelpMenuItem = CreateNewItem(Translation.APP_HELP, (o, e) =>
             {
@@ -159,15 +177,6 @@ namespace Components
             });
 
             var items = new List<WinForm.MenuItem>() { ShowMenuItem, BuyWindowItem, RestartMenuItem, CreateSeparator(), BackupMenuItem, RestoreMenutItem, ImportDataItem, CreateSeparator(), HelpMenuItem, CreateSeparator(), RecordMenuItem, DeleteMenuItem, CreateSeparator(), ConfigSettingItem, UpdateSettingItem, SettingMenuItem, CreateSeparator(), AppExitMenuItem };
-
-            if (LicenseStrategy != LicenseType.Premium)
-            {
-                items.Remove(ConfigSettingItem);
-            }
-            if (!IsPurchaseDone)
-            {
-                items.Remove(UpdateSettingItem);
-            }
 
             //  if (!IsPurchaseDone) items.Insert(1, BuyWindowItem);
             return items.ToArray();
@@ -373,7 +382,7 @@ namespace Components
             //Added:29, Path: /users/1PAF8EB-4KR35L-1ICT12V-H7M3FM/Devices/sdk
 
             // Add user when node is inserted
-            Debug.Write("[Add] Path: " + e.Path+", Change: "+ e.Data);
+            Debug.Write("[Add] Path: " + e.Path + ", Change: " + e.Data);
             if (Regex.IsMatch(e.Path, DEVICE_REGEX_PATH_PATTERN))
             {
                 Debug.WriteLine("Adding Device...");
@@ -399,7 +408,7 @@ namespace Components
                         });
                     });
                 });
-             //   Debug.WriteLine("Path: " + e.Path + ", Changed:" + e.Data + ", Old Data: " + e.OldData);
+                //   Debug.WriteLine("Path: " + e.Path + ", Changed:" + e.Data + ", Old Data: " + e.OldData);
             }
 
         }
