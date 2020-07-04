@@ -4,6 +4,8 @@ using static Components.Core;
 using static Components.Constants;
 using System.Xml.Linq;
 using static Components.LicenseHandler;
+using System.Windows.Documents;
+using System.Collections.Generic;
 
 namespace Components
 {
@@ -146,6 +148,11 @@ namespace Components
         /// A web API key for Firebase database.
         /// </summary>
         public static string FirebaseApiKey { get; set; } = FIREBASE_API_KEY;
+
+        /// <summary>
+        /// Holds all the firebase configuration or any custom configuration as well.
+        /// </summary>
+        public static List<FirebaseData> FirebaseConfigurations { get; set; } = new List<FirebaseData>();
 
         /// <summary>
         /// When set to true it will allow syncing of local database with online database.<br/> A valid binding can be,<br/><br/> 

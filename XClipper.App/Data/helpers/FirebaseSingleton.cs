@@ -1,8 +1,10 @@
-﻿using FireSharp;
+﻿using Autofac;
+using FireSharp;
 using FireSharp.Config;
 using FireSharp.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -16,13 +18,15 @@ namespace Components
     public sealed class FirebaseSingleton
     {
         #region Variable Declaration
-
+        
         private static FirebaseSingleton Instance;
         private IFirebaseClient client;
         private IFirebaseBinder binder;
+        private ILicense licenseService;
         private string UID;
         private bool alwaysForceInvoke = false;
         private User user;
+        private bool isClientInitialized = false;
 
         #endregion
 
@@ -40,23 +44,29 @@ namespace Components
         private FirebaseSingleton()
         {
             // Automatically Instantiate Firebase client
-            InitConfig();
+            licenseService = AppModule.Container.Resolve<ILicense>();
         }
 
         #endregion
 
         #region Private Methods
 
-        public void InitConfig()
+        public void InitConfig(FirebaseData? data = null)
         {
             UID = UniqueID;
+            if (data != null)
+            {
+                FirebaseApiKey = data.ApiKey;
+                FirebaseSecret = data.ApiSecret;
+                FirebaseEndpoint = data.Endpoint;
+                FirebaseAppId = data.AppId;
+            }
             IFirebaseConfig config = new FirebaseConfig
             {
                 AuthSecret = FirebaseSecret,
                 BasePath = FirebaseEndpoint
             };
             client = new FirebaseClient(config);
-
             Task.Run(async () => await SetGlobalUser(true));
         }
 
@@ -326,6 +336,14 @@ namespace Components
     {
         public string data { get; set; }
         public string time { get; set; }
+    }
+
+    public class FirebaseData
+    {
+        public string Endpoint { get; set; }
+        public string AppId { get; set; }
+        public string ApiKey { get; set; }
+        public string ApiSecret { get; set; }
     }
 
     #endregion

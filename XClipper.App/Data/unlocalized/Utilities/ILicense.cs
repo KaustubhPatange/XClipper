@@ -13,6 +13,7 @@ namespace Components
         /// </summary>
         /// <param name="block">This block will be run when license is validated</param>
         void Initiate(Action<Exception?> block);
+      //  bool CheckStatus();
        // void 
     }
 }
