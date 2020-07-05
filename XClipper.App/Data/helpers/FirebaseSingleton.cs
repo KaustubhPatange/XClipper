@@ -1,15 +1,16 @@
 ﻿using Autofac;
-using FireSharp;
-using FireSharp.Config;
-using FireSharp.Interfaces;
+using FireSharp.Core;
+using FireSharp.Core.Config;
+using FireSharp.Core.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static Components.Core;
 using static Components.DefaultSettings;
+using static Components.TranslationHelper;
+using static Components.FirebaseHelper;
 
 #nullable enable
 
@@ -18,15 +19,20 @@ namespace Components
     public sealed class FirebaseSingleton
     {
         #region Variable Declaration
-        
+
         private static FirebaseSingleton Instance;
         private IFirebaseClient client;
         private IFirebaseBinder binder;
-        private ILicense licenseService;
         private string UID;
         private bool alwaysForceInvoke = false;
         private User user;
-        private bool isClientInitialized = false;
+        private FirebaseData? currentAccount;
+
+        /// <summary>
+        /// Since <see cref="InitConfig(FirebaseData?)"/> is used in many cases it is not safe to call <br/>
+        /// <see cref="SetCallback"/> more than once. This boolean will make sure to call it once.
+        /// </summary>
+        private bool isBinded = false;
 
         #endregion
 
@@ -42,18 +48,68 @@ namespace Components
             }
         }
         private FirebaseSingleton()
-        {
-            // Automatically Instantiate Firebase client
-            licenseService = AppModule.Container.Resolve<ILicense>();
-        }
+        { }
 
         #endregion
 
         #region Private Methods
 
+        /// <summary>
+        /// This will check if the access Token is valid or not.
+        /// </summary>
+        /// <returns></returns>
+        private async Task<bool> TaskCheckForAccessTokenValidity()
+        {
+            if (string.IsNullOrEmpty(FirebaseRefreshToken))
+            {
+                if (currentAccount != null)
+                    binder.OnNeedToGenerateToken(currentAccount.Auth.ClientId, currentAccount.Auth.ClientSecret);
+                else
+                    MessageBox.Show(Translation.MSG_FIREBASE_USER_ERROR, Translation.MSG_ERR, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+            if (currentAccount == null)
+            {
+                MessageBox.Show(Translation.MSG_FIREBASE_USER_ERROR, Translation.MSG_ERR, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+            if (DateTime.Now.ToFormattedDateTime(false).ToInt() >= FirebaseTokenRefreshTime)
+            {
+                if (await RefreshAccessToken(currentAccount))
+                {
+                    // todo: Do something if token is refreshed.
+                    return true;
+                }else
+                {
+                    // todo: Do something if failed to refresh token.
+                }
+            }
+            return false;
+        }
+
+       
+        private async Task<User> _GetUser()
+        {
+            var data = await client.GetAsync($"users/{UID}");
+            if (data.Body != "null")
+            {
+                return data.ResultAs<User>().Also((user) => { this.user = user; });
+            }
+            else return await RegisterUser();
+        }
+
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// Initializes the Firebase client. Must be called if credentials are changed.
+        /// </summary>
+        /// <param name="data"></param>
         public void InitConfig(FirebaseData? data = null)
         {
             UID = UniqueID;
+            currentAccount = data;
             if (data != null)
             {
                 FirebaseApiKey = data.ApiKey;
@@ -67,6 +123,9 @@ namespace Components
                 BasePath = FirebaseEndpoint
             };
             client = new FirebaseClient(config);
+
+            // BindUI is already set, make sure to set callback to it.
+            SetCallback();
             Task.Run(async () => await SetGlobalUser(true));
         }
 
@@ -87,15 +146,23 @@ namespace Components
         }
 
         /// <summary>
-        /// This will load the user from the firebase database.
+        /// This will load the user from the firebase database.<br/>
+        /// Returns True if user is valid.
         /// </summary>
         /// <param name="forceInvoke">Forcefully load the data even if user is not null.</param>
-        /// <returns></returns>
-        public async Task SetGlobalUser(bool forceInvoke = false)
-       {
-            if (!BindDatabase) return;
+        /// <returns>True if user exist</returns>
+        public async Task<bool> SetGlobalUser(bool forceInvoke = false)
+        {
+            
+            if (client == null)
+            {
+                // todo: Do something when client isn't initialized
+                return false;
+                //MessageBox.Show()
+            }
+            if (!BindDatabase) return false;
 
-            if (alwaysForceInvoke || user == null || forceInvoke)
+            if (await TaskCheckForAccessTokenValidity() && (alwaysForceInvoke || user == null || forceInvoke))
             {
                 user = await _GetUser();
 
@@ -107,20 +174,8 @@ namespace Components
                 if (user.Devices != null && user.Devices.Count > 0)
                     alwaysForceInvoke = true;
             }
+            return user != null;
         }
-        private async Task<User> _GetUser()
-        {
-            var data = await client.GetAsync($"users/{UID}");
-            if (data.Body != "null")
-            {
-                return data.ResultAs<User>().Also((user) => { this.user = user; });
-            }
-            else return await RegisterUser();
-        }
-
-        #endregion
-
-        #region Methods
 
         /// <summary>
         /// Initialize the Instance with the UID supplied with it.
@@ -129,27 +184,37 @@ namespace Components
         public void Init(string UID) => this.UID = UID;
 
         /// <summary>
-        /// This sets call back to the binder events with an attached interface.
+        /// This will be used to set binder at the start of the application.
         /// </summary>
         /// <param name="binder"></param>
-        public async void SetCallback(IFirebaseBinder binder)
+        public void BindUI(IFirebaseBinder binder)
         {
             this.binder = binder;
-            await client.OnAsync($"users/{UID}", (o, a, c) => 
+        }
+
+        /// <summary>
+        /// This sets call back to the binder events with an attached interface.<br/>
+        /// Must be used after <see cref="FirebaseSingleton.BindUI(IFirebaseBinder)"/>
+        /// </summary>
+        private async void SetCallback()
+        {
+            if (isBinded) return;
+            await client.OnAsync($"users/{UID}", (o, a, c) =>
             {
                 if (BindDatabase)
-                    binder.OnDataAdded(a); 
-            }, 
-            (o,a,c)=> 
+                    binder.OnDataAdded(a);
+            },
+            (o, a, c) =>
             {
                 if (BindDatabase)
-                    binder.OnDataChanged(a); 
-            }, 
-            (o,a,c)=> 
+                    binder.OnDataChanged(a);
+            },
+            (o, a, c) =>
             {
                 if (BindDatabase)
-                    binder.OnDataRemoved(a); 
+                    binder.OnDataRemoved(a);
             });
+            isBinded = true;
         }
 
         /// <summary>
@@ -203,19 +268,24 @@ namespace Components
         {
             if (!BindDatabase) return new List<Device>();
 
-            await SetGlobalUser(true);
-            return user.Devices;
+            if (await SetGlobalUser(true))
+                return user.Devices;
+
+            return new List<Device>();
         }
 
         public async Task<List<Device>> RemoveDevice(string DeviceId)
         {
             if (!BindDatabase) return new List<Device>();
 
-            await SetGlobalUser(true);
+            if (await SetGlobalUser(true))
+            {
+                user.Devices = user.Devices.Where(d => d.id != DeviceId).ToList();
+                await client.UpdateAsync($"users/{UID}", user);
+                return user.Devices;
+            }
 
-            user.Devices = user.Devices.Where(d => d.id != DeviceId).ToList();
-            await client.UpdateAsync($"users/{UID}", user);
-            return user.Devices;
+            return new List<Device>();
         }
 
         /// <summary>
@@ -225,30 +295,29 @@ namespace Components
         /// <returns></returns>
         public async Task AddClip(string? Text)
         {
-            await SetGlobalUser();
-
-            if (!BindDatabase) return;
-
-            if (Text == null) return;
-            if (Text.Length > DatabaseMaxItemLength) return;
-            if (user.Clips == null)
-                user.Clips = new List<Clip>();
-            // Remove clip if greater than item
-            if (user.Clips.Count > DatabaseMaxItem)
-                user.Clips.RemoveAt(0);
-            user.Clips.Add(new Clip { data = Text.EncryptBase64(DatabaseEncryptPassword), time = DateTime.Now.ToFormattedDateTime(false) });
-            await client.UpdateAsync($"users/{UID}", user);
+            if (await SetGlobalUser())
+            {
+                if (Text == null) return;
+                if (Text.Length > DatabaseMaxItemLength) return;
+                if (user.Clips == null)
+                    user.Clips = new List<Clip>();
+                // Remove clip if greater than item
+                if (user.Clips.Count > DatabaseMaxItem)
+                    user.Clips.RemoveAt(0);
+                user.Clips.Add(new Clip { data = Text.EncryptBase64(DatabaseEncryptPassword), time = DateTime.Now.ToFormattedDateTime(false) });
+                await client.UpdateAsync($"users/{UID}", user);
+            }
         }
 
         public async Task RemoveClip(int position)
         {
-            if (!BindDatabase) return;
-
-            await SetGlobalUser();
-            if (user.Clips == null)
-                return;
-            user.Clips.RemoveAt(position);
-            await client.UpdateAsync($"users/{UID}", user);
+            if (await SetGlobalUser())
+            {
+                if (user.Clips == null)
+                    return;
+                user.Clips.RemoveAt(position);
+                await client.UpdateAsync($"users/{UID}", user);
+            }
         }
 
         /// <summary>
@@ -258,19 +327,18 @@ namespace Components
         /// <returns></returns>
         public async Task RemoveClip(string Text)
         {
-            await SetGlobalUser();
-
-            if (!BindDatabase) return;
-
-            if (Text == null) return;
-            if (user.Clips == null)
-                return;
-            foreach (var item in user.Clips)
+            if (await SetGlobalUser())
             {
-                if (item.data.DecryptBase64(DatabaseEncryptPassword) == Text)
+                if (Text == null) return;
+                if (user.Clips == null)
+                    return;
+                foreach (var item in user.Clips)
                 {
-                    user.Clips.Remove(item);
-                    await client.UpdateAsync($"users/{UID}", user);
+                    if (item.data.DecryptBase64(DatabaseEncryptPassword) == Text)
+                    {
+                        user.Clips.Remove(item);
+                        await client.UpdateAsync($"users/{UID}", user);
+                    }
                 }
             }
         }
@@ -281,13 +349,13 @@ namespace Components
         /// <returns></returns>
         public async Task RemoveAllClip()
         {
-            if (!BindDatabase) return;
-
-            await SetGlobalUser();
-            if (user.Clips == null)
-                return;
-            user.Clips.Clear();
-            await client.UpdateAsync($"users/{UID}", user);
+            if (await SetGlobalUser())
+            {
+                if (user.Clips == null)
+                    return;
+                user.Clips.Clear();
+                await client.UpdateAsync($"users/{UID}", user);
+            }
         }
 
         #endregion
@@ -298,7 +366,7 @@ namespace Components
 
     public class User
     {
-        
+
         /// <summary>
         /// Property tells whether the user has purchased license for this software or not.
         /// </summary>
@@ -340,10 +408,17 @@ namespace Components
 
     public class FirebaseData
     {
+        public OAuth Auth { get; set; }
         public string Endpoint { get; set; }
         public string AppId { get; set; }
         public string ApiKey { get; set; }
         public string ApiSecret { get; set; }
+    }
+
+    public class OAuth
+    {
+        public string ClientId { get; set; }
+        public string ClientSecret { get; set; }
     }
 
     #endregion

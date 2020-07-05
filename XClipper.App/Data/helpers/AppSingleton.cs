@@ -213,7 +213,6 @@ namespace Components.viewModels
                 dataExist = dataDB.GetAllData().Exists(c => c.RawText.DecryptBase64(DatabaseEncryptPassword) == decryptedText);
             else
                 dataExist = dataDB.GetAllData().Exists(c => c.RawText == decryptedText);
-            // todo: This data is always null, check it later.
             if (!dataExist)
             {
                 // Insert this data without updating online database.

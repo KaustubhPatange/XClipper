@@ -55,8 +55,8 @@
     <Reference Include="DynamicExpresso.Core, Version=2.3.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\DynamicExpresso.Core.2.3.1\lib\net45\DynamicExpresso.Core.dll</HintPath>
     </Reference>
-    <Reference Include="FireSharp, Version=2.0.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\FireSharp.2.0.4\lib\portable-net45+sl5+wp8+win8\FireSharp.dll</HintPath>
+    <Reference Include="FireSharp.Core">
+      <HintPath>..\..\FireSharp\FireSharp.Core\bin\Debug\netstandard1.1\FireSharp.Core.dll</HintPath>
     </Reference>
     <Reference Include="GalaSoft.MvvmLight, Version=5.4.1.0, Culture=neutral, PublicKeyToken=e7570ab207bcb616, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.dll</HintPath>
@@ -89,8 +89,8 @@
       <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.Extensions.Desktop.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PropertyChanged, Version=1.52.1.0, Culture=neutral, PublicKeyToken=ee3ee20bcf148ddd, processorArchitecture=MSIL">
       <HintPath>..\packages\PropertyChanged.Fody.1.52.1\lib\netstandard10\PropertyChanged.dll</HintPath>
@@ -184,6 +184,7 @@
     <Compile Include="Data\unlocalized\Properties\NumericTextBoxProperties.cs" />
     <Compile Include="Data\unlocalized\Utilities\ILicense.cs" />
     <Compile Include="Data\unlocalized\Utilities\IUpdater.cs" />
+    <Compile Include="Data\unlocalized\Utilities\NetworkUtility.cs" />
     <Compile Include="Data\unlocalized\Utilities\UpdaterService.cs" />
     <Compile Include="UI\BuyWindow.xaml.cs">
       <DependentUpon>BuyWindow.xaml</DependentUpon>
@@ -235,6 +236,9 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="UI\MaterialMessage.xaml.cs">
       <DependentUpon>MaterialMessage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\OAuthWindow.xaml.cs">
+      <DependentUpon>OAuthWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\PopupWindow.xaml.cs">
       <DependentUpon>PopupWindow.xaml</DependentUpon>
@@ -328,6 +332,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UI\OAuthWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\PopupWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -409,6 +417,15 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\import.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\sign_in.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\firebase.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\firebase1.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlite3.linux.1.1.13\build\net35\SQLitePCLRaw.lib.e_sqlite3.linux.targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.linux.1.1.13\build\net35\SQLitePCLRaw.lib.e_sqlite3.linux.targets')" />

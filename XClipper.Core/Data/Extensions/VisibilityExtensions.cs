@@ -100,5 +100,21 @@ namespace Components
         }
 
         #endregion
+
+        #region ProgressBar 
+        public static void Hide(this ProgressBar t)
+        {
+            t.Visibility = Visibility.Hidden;
+        }
+        public static void Visible(this ProgressBar t)
+        {
+            t.Visibility = Visibility.Visible;
+        }
+        public static void Collapsed(this ProgressBar t)
+        {
+            t.Visibility = Visibility.Collapsed;
+        }
+
+        #endregion
     }
 }

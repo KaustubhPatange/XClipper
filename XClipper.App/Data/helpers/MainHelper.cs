@@ -19,6 +19,7 @@ namespace Components
     public static class MainHelper
     {
         /** Return the DependencyObject if it is a ScrollViewer */
+        // todo: Categorization required. Put things into their respective places.
         public static DependencyObject GetScrollViewer(DependencyObject o)
         {
             if (o is ScrollViewer)

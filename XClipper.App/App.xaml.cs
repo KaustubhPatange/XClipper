@@ -17,18 +17,12 @@ using static Components.PathHelper;
 using SQLite;
 using static Components.TranslationHelper;
 using ClipboardManager.models;
-using static Components.LicenseHandler;
-using FireSharp.EventStreaming;
+using FireSharp.Core.EventStreaming;
 using Autofac;
-using FireSharp.Extensions;
 using Components.UI;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
-using System.Reflection;
-using System.Net.Configuration;
-using SHDocVw;
 using System.Windows.Threading;
-using System.ComponentModel;
 
 #nullable enable
 
@@ -45,6 +39,7 @@ namespace Components
         private KeyHookUtility hookUtility = new KeyHookUtility();
         private ClipWindow clipWindow;
         private WinForm.NotifyIcon notifyIcon;
+        private OAuthWindow authWindow;
         private SettingWindow settingWindow;
         private UpdateWindow updateWindow;
         private BuyWindow buyWindow;
@@ -81,10 +76,6 @@ namespace Components
             hookUtility.Subscribe(LaunchCodeUI);
 
             SetAppStartupEntry();
-
-            // CheckForLicense();
-
-            // ActivatePaidFeatures();
         }
 
         #endregion
@@ -120,21 +111,23 @@ namespace Components
 
             binder = this;
 
-            FirebaseSingleton.GetInstance.SetCallback(this);
+            FirebaseSingleton.GetInstance.BindUI(this);
 
-            licenseService.Initiate(err =>
-            {
-                if (err != null)
-                {
-                    MessageBox.Show(err.Message, Translation.MSG_ERR, MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
-                ActivatePaidFeatures();
-                CheckForUpdates();
-                UpdateSettingItem.Visible = true;
-                if (LicenseStrategy == LicenseType.Premium) ConfigSettingItem.Visible = true;
-                if (IsPurchaseDone) UpdateSettingItem.Visible = true;
-            });
+            CallAuthWindow();
+
+            //licenseService.Initiate(err =>
+            //{
+            //    if (err != null)
+            //    {
+            //        MessageBox.Show(err.Message, Translation.MSG_ERR, MessageBoxButton.OK, MessageBoxImage.Error);
+            //        return;
+            //    }
+            //    ActivatePaidFeatures();
+            //    CheckForUpdates();
+            //    UpdateSettingItem.Visible = true;
+            //    if (LicenseStrategy == LicenseType.Premium) ConfigSettingItem.Visible = true;
+            //    if (IsPurchaseDone) UpdateSettingItem.Visible = true;
+            //});
 
             //  CheckForUpdates();
         }
@@ -373,14 +366,13 @@ namespace Components
 
         #region IFirebaseBinder Events 
 
+        public void OnNeedToGenerateToken(string ClientId, string ClientSecret)
+        {
+            CallAuthWindow(ClientId, ClientSecret);
+        }
+
         public void OnDataAdded(ValueAddedEventArgs e)
         {
-            //   AppSingleton.GetInstance.CheckDataAndUpdate(e.Data);
-
-            //Added:1764456878cf916a, Path: /users/1PAF8EB-4KR35L-1ICT12V-H7M3FM/Devices/id
-            //Added:POCO F1, Path: /users/1PAF8EB-4KR35L-1ICT12V-H7M3FM/Devices/model
-            //Added:29, Path: /users/1PAF8EB-4KR35L-1ICT12V-H7M3FM/Devices/sdk
-
             // Add user when node is inserted
             Debug.Write("[Add] Path: " + e.Path + ", Change: " + e.Data);
             if (Regex.IsMatch(e.Path, DEVICE_REGEX_PATH_PATTERN))
@@ -546,6 +538,15 @@ namespace Components
 
             deviceWindow = new DeviceWindow();
             deviceWindow.ShowDialog();
+        }
+
+        private void CallAuthWindow(string Id, string secret)
+        {
+            if (authWindow != null)
+                authWindow.Close();
+
+            authWindow = new OAuthWindow(Id, secret);
+            authWindow.ShowDialog();
         }
 
         private void CallBuyWindow()

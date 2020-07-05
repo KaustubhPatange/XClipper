@@ -1,9 +1,5 @@
-﻿using FireSharp.EventStreaming;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+using FireSharp.Core.EventStreaming;
 
 namespace Components
 {
@@ -12,5 +8,12 @@ namespace Components
         void OnDataAdded(ValueAddedEventArgs e);
         void OnDataChanged(ValueChangedEventArgs e);
         void OnDataRemoved(ValueRemovedEventArgs e);
+
+        /// <summary>
+        /// This will be called whenever there is currently no Access Token.
+        /// </summary>
+        /// <param name="ClientId"></param>
+        /// <param name="ClientSecret"></param>
+        void OnNeedToGenerateToken(string ClientId, string ClientSecret);
     }
 }

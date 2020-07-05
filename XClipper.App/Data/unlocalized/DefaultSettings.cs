@@ -6,6 +6,7 @@ using System.Xml.Linq;
 using static Components.LicenseHandler;
 using System.Windows.Documents;
 using System.Collections.Generic;
+using System.Windows.Markup;
 
 namespace Components
 {
@@ -150,6 +151,26 @@ namespace Components
         public static string FirebaseApiKey { get; set; } = FIREBASE_API_KEY;
 
         /// <summary>
+        /// This token will be used to make call to firebase database.
+        /// </summary>
+        public static string FirebaseAccessToken { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Refresh token will be used to generate new access_Token
+        /// </summary>
+        public static string FirebaseRefreshToken { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Use this to determine whether to generate a new access token or not.
+        /// <code>
+        /// if (DateTime.Now.ToFormattedDateTime(false) >= <see cref="FirebaseAccessToken"/>) {<br/>
+        /// ......<br/>
+        /// }<br/>
+        /// </code>
+        /// </summary>
+        public static int FirebaseTokenRefreshTime { get; set; }
+
+        /// <summary>
         /// Holds all the firebase configuration or any custom configuration as well.
         /// </summary>
         public static List<FirebaseData> FirebaseConfigurations { get; set; } = new List<FirebaseData>();
@@ -166,6 +187,8 @@ namespace Components
 
 
         #region Methods
+
+        #region Write
 
         public static void WriteSettings()
         {
@@ -195,6 +218,54 @@ namespace Components
             document.Save(SettingsPath);
         }
 
+        /// <summary>
+        /// This will write firebase setting to a file.
+        /// </summary>
+        public static void WriteFirebaseSetting()
+        {
+            if (FirebaseEndpoint == FIREBASE_PATH || FirebaseSecret == FIREBASE_SECRET) return;
+            var firebaseDoc = new XDocument();
+            var config = new XElement(SETTINGS);
+            config
+                 .Add(
+                     new XElement(nameof(FirebaseEndpoint), FirebaseEndpoint.ToString()),
+                     new XElement(nameof(FirebaseSecret), FirebaseSecret.ToString()),
+                     new XElement(nameof(FirebaseAppId), FirebaseAppId.ToString()),
+                     new XElement(nameof(FirebaseApiKey), FirebaseApiKey.ToString()),
+                     new XElement(nameof(UniqueID), UniqueID.Encrypt()),
+                     new XElement(nameof(DatabaseEncryptPassword), DatabaseEncryptPassword.Encrypt()),
+                     new XElement(nameof(DatabaseMaxItem), DatabaseMaxItem.ToString()),
+                     new XElement(nameof(DatabaseMaxItemLength), DatabaseMaxItemLength.ToString()),
+                     new XElement(nameof(DatabaseMaxConnection), DatabaseMaxConnection.ToString())
+                 );
+            firebaseDoc.Add(config);
+            firebaseDoc.Save(CustomFirebasePath);
+        }
+
+        /// <summary>
+        /// Write Firebase Access, Refresh Token to a file.
+        /// </summary>
+        public static void WriteFirebaseCredentialSetting()
+        {
+            if (string.IsNullOrWhiteSpace(FirebaseAccessToken) ||
+                string.IsNullOrWhiteSpace(FirebaseRefreshToken) ||
+                FirebaseTokenRefreshTime == 0) return;
+
+            var doc = new XDocument();
+            var config = new XElement(SETTINGS);
+            config
+                .Add(
+                    new XElement(nameof(FirebaseAccessToken), FirebaseAccessToken.ToString()),
+                    new XElement(nameof(FirebaseRefreshToken), FirebaseRefreshToken.ToString()),
+                    new XElement(nameof(FirebaseTokenRefreshTime), FirebaseTokenRefreshTime.ToString())
+                 );
+            doc.Add(config);
+            doc.Save(FirebaseCredentialPath);
+        }
+
+        #endregion
+
+        #region Read
         public static void LoadSettings()
         {
             if (!Directory.Exists(ApplicationDirectory))
@@ -232,6 +303,9 @@ namespace Components
             ShowDataChangeNotification = settings.Element(nameof(ShowDataChangeNotification)).Value.ToBool();
             DisplayStartNotification = settings.Element(nameof(DisplayStartNotification)).Value.ToBool();
             BindDatabase = settings.Element(nameof(BindDatabase)).Value.ToBool();
+            FirebaseAccessToken = settings.Element(nameof(FirebaseAccessToken)).Value;
+            FirebaseRefreshToken = settings.Element(nameof(FirebaseRefreshToken)).Value;
+            FirebaseTokenRefreshTime = settings.Element(nameof(BindDatabase)).Value.ToInt();
         }
 
         /// <summary>
@@ -257,28 +331,22 @@ namespace Components
         }
 
         /// <summary>
-        /// This will write firebase setting to a file.
+        /// This will load Firebase credentials that to be used by <see cref="FirebaseSingleton"/>
         /// </summary>
-        public static void WriteFirebaseSetting()
+        public static void LoadFirebaseCredentials()
         {
-            if (FirebaseEndpoint == FIREBASE_PATH || FirebaseSecret == FIREBASE_SECRET) return;
-            var firebaseDoc = new XDocument();
-            var config = new XElement(SETTINGS);
-            config
-                 .Add(
-                     new XElement(nameof(FirebaseEndpoint), FirebaseEndpoint.ToString()),
-                     new XElement(nameof(FirebaseSecret), FirebaseSecret.ToString()),
-                     new XElement(nameof(FirebaseAppId), FirebaseAppId.ToString()),
-                     new XElement(nameof(FirebaseApiKey), FirebaseApiKey.ToString()),
-                     new XElement(nameof(UniqueID), UniqueID.Encrypt()),
-                     new XElement(nameof(DatabaseEncryptPassword), DatabaseEncryptPassword.Encrypt()),
-                     new XElement(nameof(DatabaseMaxItem), DatabaseMaxItem.ToString()),
-                     new XElement(nameof(DatabaseMaxItemLength), DatabaseMaxItemLength.ToString()),
-                     new XElement(nameof(DatabaseMaxConnection), DatabaseMaxConnection.ToString())
-                 );
-            firebaseDoc.Add(config);
-            firebaseDoc.Save(CustomFirebasePath);
+            // Load Firebase Credentials
+            if (File.Exists(FirebaseCredentialPath))
+            {
+                var firebaseDoc = XDocument.Load(FirebaseCredentialPath).Element(SETTINGS);
+
+                FirebaseAccessToken = firebaseDoc.Element(nameof(FirebaseAccessToken)).Value;
+                FirebaseRefreshToken = firebaseDoc.Element(nameof(FirebaseRefreshToken)).Value;
+                FirebaseTokenRefreshTime = firebaseDoc.Element(nameof(FirebaseTokenRefreshTime)).Value.ToInt();
+            }
         }
+
+        #endregion
 
         #endregion
 

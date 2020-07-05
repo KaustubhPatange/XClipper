@@ -24,6 +24,7 @@ namespace Components
         public static string ImageFolder = Path.Combine(ApplicationDirectory, "Image");
         public static string DatabasePath = Path.Combine(ApplicationDirectory, "data.db");
         public static string CustomFirebasePath = Path.Combine(ApplicationDirectory, "custom-firebase.xml");
+        public static string FirebaseCredentialPath = Path.Combine(ApplicationDirectory, "credentials-firebase.xml");
         public static string QRImageFilePath = Path.Combine(ApplicationTempDirectory, "qr.png");
         public static string UpdatePackageFile = Path.Combine(ApplicationTempDirectory, "package-update.exe");
 
@@ -32,6 +33,7 @@ namespace Components
         #region Some application specific constants
 
         public const string UPDATE_URI = "https://pastebin.com/raw/FRS7n7Fc"; // todo: Change update uri
+        public const string OAUTH_TOKEN_URI = "https://oauth2.googleapis.com/token";
         public const string SETTINGS = "Settings";
         public const int NOTIFICATION_TRUNCATE_TEXT = 150;
         public const int RESTSHARP_TIMEOUT = 15 * 3000;

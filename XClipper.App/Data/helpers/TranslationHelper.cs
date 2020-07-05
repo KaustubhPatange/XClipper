@@ -93,6 +93,7 @@ namespace Components
         public string MSG_CONFIG_SAVE = rm.GetString("msg_config_save");
         public string MSG_CONFIG_RESET = rm.GetString("msg_config_reset");
         public string MSG_CONFIG_RESET_SUCCESS = rm.GetString("msg_config_reset_success");
+        public string MSG_FIREBASE_USER_ERROR = rm.GetString("msg_firebase_user_error");
         public string POPUP_ADDED = rm.GetString("popup_added");
         public string POPUP_SPACE_FOCUS = rm.GetString("popup_space_focus");
         public string POPUP_EDIT_ERR = rm.GetString("popup_edit_err");

@@ -96,6 +96,8 @@
     <system:String x:Key="msg_config_save">Configuration saved successfully.</system:String>
     <system:String x:Key="msg_config_reset">This will reset the database configuration to its default.</system:String>
     <system:String x:Key="msg_config_reset_success">Original configuration restored.</system:String>
+    <system:String x:Key="msg_firebase_user_error">Firebase database is initialized but no credentials found. Report this error to developer.</system:String>
+    <system:String x:Key="msg_firebase_client">Firebase client is not initialized yet, wait till XClipper initializes it.</system:String>
     <system:String x:Key="popup_added">Added:</system:String>
     <system:String x:Key="popup_space_focus">...Press (Space) to Focus...</system:String>
     <system:String x:Key="popup_edit_err">Editing is not supported for this format</system:String>
@@ -140,5 +142,5 @@
     <system:String x:Key="sync_id_custom">XClipper is using custom App Id from configuration file</system:String>
     <system:String x:Key="update_title">Update Checker</system:String>
     <system:String x:Key="update_download_complete">Download completed. Click &quot;OK&quot; to install the update.&#10;&#10;Tip: Current process will killed during this update.</system:String>
-
+    <system:String x:Key="connect_title">Connect</system:String>
 </ResourceDictionary>

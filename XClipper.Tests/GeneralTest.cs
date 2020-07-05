@@ -10,12 +10,36 @@ using static Components.MainHelper;
 using System.Windows.Documents;
 using System.Collections.Generic;
 using RestSharp;
+using System.Net.NetworkInformation;
+using Components.UI;
 
 namespace XClipper.Tests
 {
     [TestClass]
     public class GeneralTest
     {
+        [System.Runtime.InteropServices.DllImport("wininet.dll")]
+        private extern static bool InternetGetConnectedState(out int Description, int ReservedValue);
+        public static bool CheckNet()
+        {
+            int desc;
+            return InternetGetConnectedState(out desc, 0);
+        }
+
+        [TestMethod]
+        public void CheckInternet()
+        {
+            
+            //Stopwatch s = new Stopwatch();
+            //s.Start();
+            ////    if (new Ping().Send("www.google.com.mx").Status == IPStatus.Success)
+            //if (CheckNet())
+            //{
+            //   Debug.WriteLine("Connection Exist");
+            //}
+            //Debug.WriteLine("Elapsed time: " + s.ElapsedMilliseconds);
+            //s.Stop();
+        }
 
         [TestMethod]
         public void CountMethod()
@@ -36,7 +60,7 @@ namespace XClipper.Tests
             FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(@"C:\Users\devel\Desktop\setup.exe");
 
         }
-        
+
         public class Upd
         {
             public string obsolute { get; set; }
@@ -45,7 +69,7 @@ namespace XClipper.Tests
         [TestMethod]
         public void DatabaseTest()
         {
-           // AppSingleton.GetInstance.Init();
+            // AppSingleton.GetInstance.Init();
 
 
             long milliseconds = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
@@ -80,7 +104,7 @@ namespace XClipper.Tests
             { }
         }
 
-        public class Boy: Person
+        public class Boy : Person
         {
             public override void Go()
             {
@@ -103,14 +127,14 @@ namespace XClipper.Tests
             }
         }
 
-        public class PersonJobBuilder: PersonBuilder
+        public class PersonJobBuilder : PersonBuilder
         {
-            public PersonJobBuilder SetPosition(string pos) 
+            public PersonJobBuilder SetPosition(string pos)
             {
                 person.Position = pos;
                 return this;
             }
-            
+
             public PersonJobBuilder SetStatus(string stat)
             {
                 person.Status = stat;

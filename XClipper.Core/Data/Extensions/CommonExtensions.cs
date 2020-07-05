@@ -39,14 +39,26 @@ namespace Components
             Text, Image, Files
         }
 
-        public static string ToFormattedDateTime(this DateTime value, bool useHypens)
+        /// <summary>
+        /// Creates a date format with yyyy-MM--dd HH-mm-ss if <paramref name="useHyphens"/> is true.<br/>
+        /// Creates a date format with yyyyMMddHHmmss if <paramref name="useHyphens"/> is false.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="useHyphens"></param>
+        /// <returns></returns>
+        public static string ToFormattedDateTime(this DateTime value, bool useHyphens)
         {
-            if (useHypens)
+            if (useHyphens)
                 return value.ToString("yyyy-MM-dd HH-mm-ss");
             else 
                 return value.ToString("yyyyMMddHHmmss");
         }
 
+        /// <summary>
+        /// Calls <see cref="ToFormattedDateTime(DateTime, bool)"/> with hyphens yyyy-MM--dd HH-mm-ss
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static string ToFormattedDateTime(this DateTime value)
         {
             return value.ToFormattedDateTime(true);
