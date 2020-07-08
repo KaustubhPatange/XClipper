@@ -27,6 +27,12 @@ namespace XClipper.Tests
         }
 
         [TestMethod]
+        public void RandomTest()
+        {
+            Debug.WriteLine(DateTime.Now.AddMinutes(50).ToFormattedDateTime());
+        }
+
+        [TestMethod]
         public void CheckInternet()
         {
             

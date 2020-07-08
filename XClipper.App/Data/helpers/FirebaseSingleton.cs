@@ -11,6 +11,9 @@ using static Components.DefaultSettings;
 using static Components.TranslationHelper;
 using static Components.FirebaseHelper;
 using System.Windows;
+using FireSharp.Core.Response;
+using System.Runtime.CompilerServices;
+using System.Windows.Documents;
 
 #nullable enable
 
@@ -19,6 +22,7 @@ namespace Components
     public sealed class FirebaseSingleton
     {
         #region Variable Declaration
+        public FirebaseData? CurrentAccount { get; private set; }
 
         private static FirebaseSingleton Instance;
         private IFirebaseClient client;
@@ -26,7 +30,6 @@ namespace Components
         private string UID;
         private bool alwaysForceInvoke = false;
         private User user;
-        private FirebaseData? currentAccount;
 
         /// <summary>
         /// Since <see cref="InitConfig(FirebaseData?)"/> is used in many cases it is not safe to call <br/>
@@ -61,45 +64,42 @@ namespace Components
         private async Task<bool> TaskCheckForAccessTokenValidity()
         {
             // When we don't need Auth for desktop client, we can return true.
-            if (currentAccount?.isAuthNeeded == false) return true;
+            if (CurrentAccount?.isAuthNeeded == false) return true;
 
             if (!IsValidCredential())
             {
-                if (currentAccount != null)
-                    binder.OnNeedToGenerateToken(currentAccount.DesktopAuth.ClientId, currentAccount.DesktopAuth.ClientSecret);
+                if (CurrentAccount != null)
+                    binder.OnNeedToGenerateToken(CurrentAccount.DesktopAuth.ClientId, CurrentAccount.DesktopAuth.ClientSecret);
                 else
                     MessageBox.Show(Translation.MSG_FIREBASE_USER_ERROR, Translation.MSG_ERR, MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
-            if (currentAccount == null)
+            if (CurrentAccount == null)
             {
                 MessageBox.Show(Translation.MSG_FIREBASE_USER_ERROR, Translation.MSG_ERR, MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
-            if (DateTime.Now.ToFormattedDateTime(false).ToLong() >= FirebaseCredential.TokenRefreshTime)
+            if (NeedToRefreshToken())
             {
-                if (await RefreshAccessToken(currentAccount).ConfigureAwait(false))
+                if (await RefreshAccessToken(CurrentAccount).ConfigureAwait(false))
                 {
                     CreateNewClient();
                     return true;
                 }
             }
             else return true;
-            
+
             return false;
         }
-
-       
         private async Task<User> _GetUser()
         {
-            var data = await client.GetAsync($"users/{UID}").ConfigureAwait(false);
+            var data = await client.SafeGetAsync($"users/{UID}").ConfigureAwait(false);
             if (data.Body != "null")
             {
                 return data.ResultAs<User>().Also((user) => { this.user = user; });
             }
             else return await RegisterUser().ConfigureAwait(false);
         }
-
 
         /// <summary>
         /// This must be called whenever client is changed.
@@ -109,14 +109,15 @@ namespace Components
             // We will set isBinded to false since we are creating a new client.
             isBinded = false;
             IFirebaseConfig config;
-            if (currentAccount?.isAuthNeeded == true)
+            if (CurrentAccount?.isAuthNeeded == true)
             {
                 config = new FirebaseConfig
                 {
                     AccessToken = FirebaseCredential?.AccessToken,
                     BasePath = FirebaseEndpoint
                 };
-            }else
+            }
+            else
             {
                 config = new FirebaseConfig
                 {
@@ -128,11 +129,12 @@ namespace Components
             // BindUI is already set, make sure to set callback to it.
             SetCallback();
 
-            Task.Run(async () => await SetGlobalUser(true).ConfigureAwait(false));
+            Task.Run(async () => await SetGlobalUserTask(true).ConfigureAwait(false));
         }
         #endregion
 
         #region Methods
+
 
         /// <summary>
         /// Initializes the Firebase client. Must be called if credentials are changed.
@@ -141,34 +143,41 @@ namespace Components
         public void InitConfig(FirebaseData? data = null)
         {
             UID = UniqueID;
-            currentAccount = data;
+            CurrentAccount = data;
             if (data != null)
             {
                 FirebaseApiKey = data.ApiKey;
                 FirebaseEndpoint = data.Endpoint;
                 FirebaseAppId = data.AppId;
-            }
 
-            if (currentAccount?.isAuthNeeded == true && !IsValidCredential())
-                binder.OnNeedToGenerateToken(currentAccount?.DesktopAuth.ClientId, currentAccount?.DesktopAuth.ClientSecret);
-            else 
-                CreateNewClient();
+                if (data.isAuthNeeded)
+                {
+                    if (!IsValidCredential())
+                        binder.OnNeedToGenerateToken(CurrentAccount?.DesktopAuth.ClientId, data.DesktopAuth.ClientSecret);
+                    else if (NeedToRefreshToken())
+                        TaskCheckForAccessTokenValidity(); // PS: I don't care.
+                    else CreateNewClient();
+                }
+                else CreateNewClient();
+            }
+            else
+                MessageBox.Show(Translation.MSG_FIREBASE_UNKNOWN_ERR, Translation.MSG_ERR, MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
         /// <summary>
         /// This will submit configuration change to database.
         /// </summary>
         /// <returns></returns>
-        public async Task SubmitConfigurations()
+        public async Task SubmitConfigurationsTask()
         {
             if (!BindDatabase) return;
-            await SetGlobalUser().ConfigureAwait(false);
+            await SetGlobalUserTask().ConfigureAwait(false);
 
             user.MaxItemStorage = DatabaseMaxItem;
             user.TotalConnection = DatabaseMaxConnection;
             user.IsLicensed = IsPurchaseDone;
 
-            await client.SetAsync($"users/{UID}", user).ConfigureAwait(false);
+            await client.SafeSetAsync($"users/{UID}", user).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -177,9 +186,9 @@ namespace Components
         /// </summary>
         /// <param name="forceInvoke">Forcefully load the data even if user is not null.</param>
         /// <returns>True if user exist</returns>
-        public async Task<bool> SetGlobalUser(bool forceInvoke = false)
+        public async Task<bool> SetGlobalUserTask(bool forceInvoke = false)
         {
-            
+
             if (client == null)
             {
                 MessageBox.Show(Translation.MSG_FIREBASE_CLIENT_ERR, Translation.MSG_INFO, MessageBoxButton.OK, MessageBoxImage.Error);
@@ -226,22 +235,40 @@ namespace Components
         private async void SetCallback()
         {
             if (isBinded) return;
-            await client.OnAsync($"users/{UID}", (o, a, c) =>
+            try
             {
-                if (BindDatabase)
-                    binder.OnDataAdded(a);
-            },
-            (o, a, c) =>
+                await client.OnAsync($"users/{UID}", (o, a, c) =>
+                {
+                    if (BindDatabase)
+                        binder.OnDataAdded(a);
+                }, (o, a, c) =>
+                {
+                    if (BindDatabase)
+                        binder.OnDataChanged(a);
+                }, (o, a, c) =>
+                {
+                    if (BindDatabase)
+                        binder.OnDataRemoved(a);
+                }).ConfigureAwait(false);
+            }
+            catch(Exception ex)
             {
-                if (BindDatabase)
-                    binder.OnDataChanged(a);
-            },
-            (o, a, c) =>
-            {
-                if (BindDatabase)
-                    binder.OnDataRemoved(a);
-            }).ConfigureAwait(true); // Synchronization context must be UI thread.
+                HandleError(ex, () => SetCallback());
+            }
             isBinded = true;
+        }
+
+        public async void HandleError(Exception ex, Action block)
+        {
+            if (ex.Message.Contains("401 (Unauthorized)"))
+            {
+                if (await RefreshAccessToken(CurrentAccount).ConfigureAwait(false))
+                {
+                    CreateNewClient();
+                    block.Invoke();
+                }
+                else MessageBox.Show(ex.Message, Translation.MSG_ERR, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         /// <summary>
@@ -250,7 +277,7 @@ namespace Components
         /// <returns></returns>
         private async Task<bool> IsUserExist()
         {
-            var response = await client.GetAsync($"users/{UID}").ConfigureAwait(false);
+            var response = await client.SafeGetAsync($"users/{UID}").ConfigureAwait(false);
             return response.Body != "null";
         }
 
@@ -267,7 +294,7 @@ namespace Components
                 var user = new User();
                 user.IsLicensed = IsPurchaseDone;
                 this.user = user;
-                await client.SetAsync($"users/{UID}", user).ConfigureAwait(false);
+                await client.SafeSetAsync($"users/{UID}", user).ConfigureAwait(false);
             }
             return user;
         }
@@ -278,7 +305,7 @@ namespace Components
         /// <returns></returns>
         public async Task RemoveUser()
         {
-            await client.DeleteAsync($"users/{UID}").ConfigureAwait(false);
+            await client.SafeDeleteAsync($"users/{UID}").ConfigureAwait(false);
             await RegisterUser().ConfigureAwait(false);
         }
 
@@ -295,7 +322,7 @@ namespace Components
         {
             if (!BindDatabase) return new List<Device>();
 
-            if (await SetGlobalUser(true).ConfigureAwait(false))
+            if (await SetGlobalUserTask(true).ConfigureAwait(false))
                 return user.Devices;
 
             return new List<Device>();
@@ -305,10 +332,10 @@ namespace Components
         {
             if (!BindDatabase) return new List<Device>();
 
-            if (await SetGlobalUser(true).ConfigureAwait(false))
+            if (await SetGlobalUserTask(true).ConfigureAwait(false))
             {
                 user.Devices = user.Devices.Where(d => d.id != DeviceId).ToList();
-                await client.UpdateAsync($"users/{UID}", user).ConfigureAwait(false);
+                await client.SafeUpdateAsync($"users/{UID}", user).ConfigureAwait(false);
                 return user.Devices;
             }
 
@@ -322,7 +349,7 @@ namespace Components
         /// <returns></returns>
         public async Task AddClip(string? Text)
         {
-            if (await SetGlobalUser().ConfigureAwait(false))
+            if (await SetGlobalUserTask().ConfigureAwait(false))
             {
                 if (Text == null) return;
                 if (Text.Length > DatabaseMaxItemLength) return;
@@ -332,18 +359,18 @@ namespace Components
                 if (user.Clips.Count > DatabaseMaxItem)
                     user.Clips.RemoveAt(0);
                 user.Clips.Add(new Clip { data = Text.EncryptBase64(DatabaseEncryptPassword), time = DateTime.Now.ToFormattedDateTime(false) });
-                await client.UpdateAsync($"users/{UID}", user).ConfigureAwait(false);
+                await client.SafeUpdateAsync($"users/{UID}", user).ConfigureAwait(false);
             }
         }
-
+        
         public async Task RemoveClip(int position)
         {
-            if (await SetGlobalUser().ConfigureAwait(false))
+            if (await SetGlobalUserTask().ConfigureAwait(false))
             {
                 if (user.Clips == null)
                     return;
                 user.Clips.RemoveAt(position);
-                await client.UpdateAsync($"users/{UID}", user).ConfigureAwait(false);
+                await client.SafeUpdateAsync($"users/{UID}", user).ConfigureAwait(false);
             }
         }
 
@@ -354,7 +381,7 @@ namespace Components
         /// <returns></returns>
         public async Task RemoveClip(string Text)
         {
-            if (await SetGlobalUser().ConfigureAwait(false))
+            if (await SetGlobalUserTask().ConfigureAwait(false))
             {
                 if (Text == null) return;
                 if (user.Clips == null)
@@ -364,7 +391,7 @@ namespace Components
                     if (item.data.DecryptBase64(DatabaseEncryptPassword) == Text)
                     {
                         user.Clips.Remove(item);
-                        await client.UpdateAsync($"users/{UID}", user).ConfigureAwait(false);
+                        await client.SafeUpdateAsync($"users/{UID}", user).ConfigureAwait(false);
                     }
                 }
             }
@@ -376,18 +403,22 @@ namespace Components
         /// <returns></returns>
         public async Task RemoveAllClip()
         {
-            if (await SetGlobalUser().ConfigureAwait(false))
+            if (await SetGlobalUserTask().ConfigureAwait(false))
             {
                 if (user.Clips == null)
                     return;
                 user.Clips.Clear();
-                await client.UpdateAsync($"users/{UID}", user).ConfigureAwait(false);
+                await client.SafeUpdateAsync($"users/{UID}", user).ConfigureAwait(false);
             }
         }
 
         #endregion
 
+      
+
     }
+
+    
 
     #region Entities
 
@@ -440,7 +471,7 @@ namespace Components
         public string AppId { get; set; }
         public string ApiKey { get; set; }
         public bool isAuthNeeded { get; set; }
-       // public string ApiSecret { get; set; }
+        // public string ApiSecret { get; set; }
     }
 
     public class OAuth

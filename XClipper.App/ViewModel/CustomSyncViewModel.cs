@@ -131,7 +131,7 @@ namespace Components
             // Initialize new firebase Config
             FirebaseSingleton.GetInstance.InitConfig();
 
-            Task.Run(async () => await FirebaseSingleton.GetInstance.SubmitConfigurations());
+            Task.Run(async () => await FirebaseSingleton.GetInstance.SubmitConfigurationsTask());
 
             MessageBox.Show(Translation.MSG_CONFIG_SAVE, Translation.MSG_INFO, MessageBoxButton.OK, MessageBoxImage.Information);
         }

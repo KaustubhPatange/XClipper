@@ -9,6 +9,7 @@ using Autofac;
 using static WK.Libraries.SharpClipboardNS.SharpClipboard;
 using System;
 using System.Diagnostics;
+using System.Drawing.Printing;
 
 #nullable enable
 
@@ -17,6 +18,10 @@ namespace Components.viewModels
     public class AppSingleton
     {
         #region Variable Declaration
+
+        private int TotalClips = 0;
+        private int TotalPage = 0;
+        private int Page = 1;
 
         private IClipBinder Binder;
         private IDatabase<TableCopy> dataDB;
@@ -48,6 +53,16 @@ namespace Components.viewModels
 
         #region Methods
 
+        public void ClearPaging() => Page = 1;
+        public bool CanFetchNext()
+        {
+            if (Page < TotalPage)
+            {
+                Page++;
+                return true;
+            }
+            return false;
+        }
         public void Close() => dataDB.CloseConnection();
         public void Init() => dataDB.Initialize();
 
@@ -133,12 +148,16 @@ namespace Components.viewModels
         {
             get
             {
-
                 var pinnedItems = dataDB.GetAllData().Where(x => x.IsPinned).Reverse();
                 var normalItems = dataDB.GetAllData().Where(x => !x.IsPinned)
                     .OrderByDescending(x => ParseDateTimeText(x.LastUsedDateTime));
 
-                return pinnedItems.Concat(normalItems).Take(TruncateList).ToList();
+                TotalClips = pinnedItems.Count() + normalItems.Count();
+                TotalPage = (TotalClips / TruncateList) + ((TotalClips % TruncateList != 0) ? 1 : 0);
+
+                // todo: Disabling pagination
+               // return pinnedItems.Concat(normalItems).Take(TruncateList * Page).ToList();
+                return pinnedItems.Concat(normalItems).ToList();
             }
         }
 

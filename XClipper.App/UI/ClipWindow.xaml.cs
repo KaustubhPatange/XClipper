@@ -22,9 +22,11 @@ using System.Collections.Specialized;
 using static Components.TranslationHelper;
 using System.Windows.Media.Imaging;
 using Autofac;
+using System.Windows.Media;
 
 namespace Components
 {
+    // todo: Pruning required
     /** Can't bind the viewModel to this class because of some complexity issues.
      *  
      *  Their is also another issue, since this app is solely based on key press events. Doing
@@ -76,6 +78,25 @@ namespace Components
              *  ListView.Items.CurrentChange event.
              */
             ((INotifyCollectionChanged)_lvClip.Items).CollectionChanged += ClipWindow_CollectionChanged;
+        }
+
+        /// <summary>
+        /// Will be raised when listview is scrolling.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void _lvClip_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            //var scrollViewer = GetScrollViewer(_lvClip) as ScrollViewer;
+            //if (scrollViewer.VerticalOffset == scrollViewer.ScrollableHeight)
+            //{
+            //    if (AppSingleton.GetInstance.CanFetchNext() && _lvClip.Items.Count > 0)
+            //    {
+            //        var lastItem = _lvClip.Items[_lvClip.Items.Count - 1];
+            //        _lvClip.ItemsSource = AppSingleton.GetInstance.ClipData;
+            //        _lvClip.ScrollIntoView(lastItem);
+            //    }
+            //}
         }
 
         #endregion
@@ -539,6 +560,7 @@ namespace Components
             _qrWindow.CloseWindow();
             Hide();
             _lvClip.ItemsSource = null;
+            AppSingleton.GetInstance.ClearPaging();
             _tbSearchBox.Clear();
         }
 
@@ -761,8 +783,8 @@ namespace Components
             ShowFilterWindow();
         }
 
-        #endregion
 
+        #endregion
 
     }
 }

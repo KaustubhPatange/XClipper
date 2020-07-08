@@ -366,7 +366,7 @@ namespace Components
 
         public void OnNeedToGenerateToken(string ClientId, string ClientSecret)
         {
-            MessageBox.Show(Translation.MSG_NEED_AUTH, Translation.MSG_INFO, MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show(Translation.MSG_NEED_AUTH, Translation.MSG_INFO, MessageBoxButton.OK, MessageBoxImage.Warning);
             CallAuthWindow(ClientId, ClientSecret);
         }
 
@@ -377,7 +377,7 @@ namespace Components
             if (Regex.IsMatch(e.Path, DEVICE_REGEX_PATH_PATTERN))
             {
                 Debug.WriteLine("Adding Device...");
-                Task.Run(async () => { await FirebaseSingleton.GetInstance.SetGlobalUser(true); });
+                Task.Run(async () => { await FirebaseSingleton.GetInstance.SetGlobalUserTask(true); });
             }
 
         }
@@ -410,7 +410,7 @@ namespace Components
             if (Regex.IsMatch(e.Path, DEVICE_REGEX_PATH_PATTERN))
             {
                 Debug.WriteLine("Removing Device...");
-                Task.Run(async () => { await FirebaseSingleton.GetInstance.SetGlobalUser(); });
+                Task.Run(async () => { await FirebaseSingleton.GetInstance.SetGlobalUserTask(); });
             }
         }
 

@@ -13,6 +13,7 @@ namespace Components
         {
             ListViewItem item = (ListViewItem)value;
             ListView listView = ItemsControl.ItemsControlFromItemContainer(item) as ListView;
+            if (listView == null) return "";
             int index = listView.ItemContainerGenerator.IndexFromContainer(item);
             if (index < 9)
                 return (index + 1).ToString();
