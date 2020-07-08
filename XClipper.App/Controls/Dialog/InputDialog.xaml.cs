@@ -50,6 +50,5 @@ namespace Components.Controls.Dialog
                     return null;
             }
         }
-       
     }
 }

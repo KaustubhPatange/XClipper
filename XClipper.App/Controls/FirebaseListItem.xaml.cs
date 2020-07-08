@@ -17,6 +17,11 @@ namespace Components.Controls
 {
     public partial class FirebaseListItem : UserControl
     {
+        public FirebaseListItem()
+        {
+            InitializeComponent();
+        }
+
         #region Item Max Value Property
 
         public static readonly DependencyProperty ItemMaxValueProperty =
@@ -48,10 +53,5 @@ namespace Components.Controls
         public static string GetTitle(FirebaseListItem element) => (string)element.GetValue(TitleProperty);
 
         #endregion
-
-        public FirebaseListItem()
-        {
-            InitializeComponent();
-        }
     }
 }

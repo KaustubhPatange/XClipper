@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Security.AccessControl;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using static Components.App;
+﻿using static Components.App;
 
 namespace Components
 {
@@ -94,6 +86,8 @@ namespace Components
         public string MSG_CONFIG_RESET = rm.GetString("msg_config_reset");
         public string MSG_CONFIG_RESET_SUCCESS = rm.GetString("msg_config_reset_success");
         public string MSG_FIREBASE_USER_ERROR = rm.GetString("msg_firebase_user_error");
+        public string MSG_FIREBASE_CLIENT_ERR = rm.GetString("msg_firebase_client_err");
+        public string MSG_NEED_AUTH = rm.GetString("msg_need_auth");
         public string POPUP_ADDED = rm.GetString("popup_added");
         public string POPUP_SPACE_FOCUS = rm.GetString("popup_space_focus");
         public string POPUP_EDIT_ERR = rm.GetString("popup_edit_err");

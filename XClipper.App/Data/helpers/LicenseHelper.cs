@@ -19,41 +19,43 @@ namespace Components
 {
     public class LicenseHelper : ILicense
     {
-
         public void Initiate(Action<Exception?> block)
         {
-            checkForLicense().ContinueWith(t =>
+            Task.Run(async () =>
             {
-                if (t?.Result != null)
+                var responseText = await CheckForLicense().ConfigureAwait(false);
+                Application.Current.Dispatcher.Invoke(delegate
                 {
-                    var obj = JObject.Parse(t.Result);
-                    var uid = obj["data"]["applicationId"].ToString();
-                    var type = obj["data"]["licenseType"].ToString().ToEnum<LicenseType>();
-
-                    // We must firebase configuration data to this setting
-                    FirebaseConfigurations.AddRange(JsonConvert.DeserializeObject<List<FirebaseData>>(obj["firebaseData"].ToString()));
-                    if (uid == UniqueID)
+                    if (responseText != null)
                     {
-                        IsPurchaseDone = type != LicenseType.Invalid;
-                        LicenseStrategy = type;
-                        block(null);
+                        var obj = JObject.Parse(responseText);
+                        var uid = obj["data"]["applicationId"].ToString();
+                        var type = obj["data"]["licenseType"].ToString().ToEnum<LicenseType>();
+
+                        // We must firebase configuration data to this setting.
+                        FirebaseConfigurations.AddRange(JsonConvert.DeserializeObject<List<FirebaseData>>(obj["firebaseData"].ToString()));
+                        if (uid == UniqueID)
+                        {
+                            IsPurchaseDone = type != LicenseType.Invalid;
+                            LicenseStrategy = type;
+                            block(null);
+                        }
+                        else block(new Exception("The given application Id doesn't match the current UID"));
                     }
-                    else block(new Exception("The given application Id doesn't match the current UID"));
-                    FirebaseSingleton.GetInstance.InitConfig(FirebaseConfigurations.Count > 0 ? FirebaseConfigurations[0] : null);
-                }
+                });
             });
         }
-        private async Task<string?> checkForLicense()
+        private async Task<string?> CheckForLicense()
         {
             var client = new RestClient($"{AUTHOR_SERVER}/xclipper/validate?uid={UniqueID}");
             client.Timeout = RESTSHARP_TIMEOUT;
             try
             {
-                var response = await client.ExecuteTaskAsync(new RestRequest(Method.GET));
+                var response = await client.ExecuteTaskAsync(new RestRequest(Method.GET)).ConfigureAwait(false);
                 if (response.StatusCode == HttpStatusCode.OK)
                     return response.Content;
             }
-            catch { }
+            finally { }
             return null;
         }
     }

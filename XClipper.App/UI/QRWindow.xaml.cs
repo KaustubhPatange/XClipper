@@ -12,7 +12,6 @@ namespace Components
 {
     public partial class QRWindow : Window
     {
-
         #region Constructor
 
         public QRWindow()

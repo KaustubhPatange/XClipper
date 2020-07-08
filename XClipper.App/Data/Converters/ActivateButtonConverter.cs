@@ -4,7 +4,6 @@ using System.Windows.Data;
 
 namespace Components
 {
-
     [ValueConversion(typeof(LicenseType), typeof(bool))]
     public class ActivateButtonConverter : IValueConverter
     {

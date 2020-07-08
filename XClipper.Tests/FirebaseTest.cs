@@ -15,7 +15,7 @@ namespace XClipper.Tests
         public void TestMethod1()
         {
 
-            FirebaseSingleton.GetInstance.Init("12345-67890-abcde-fghij");
+          //  FirebaseSingleton.GetInstance.Init("12345-67890-abcde-fghij");
 
             Task.Run(async () =>
             {

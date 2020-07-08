@@ -17,7 +17,6 @@ namespace Components
                 return Visibility.Visible;
             else
                 return Visibility.Collapsed;
-
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

@@ -1,6 +1,8 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using RestSharp;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using static Components.DefaultSettings;
 
@@ -10,15 +12,16 @@ namespace Components
     {
         public static async Task<bool> RefreshAccessToken(FirebaseData user)
         {
-            var client = new RestClient($"https://oauth2.googleapis.com/token?client_id={user.Auth.ClientId}&client_secret=_{user.Auth.ClientSecret}&refresh_token={FirebaseRefreshToken}&grant_type=refresh_token");
+            var client = new RestClient($"https://oauth2.googleapis.com/token?client_id={user.DesktopAuth.ClientId}&client_secret={user.DesktopAuth.ClientSecret}&refresh_token={FirebaseCredential.RefreshToken}&grant_type=refresh_token");
             client.Timeout = 30 * 1000;
             var request = new RestRequest(Method.POST);
             request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
             IRestResponse response = await client.ExecuteTaskAsync(request);
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                var obj = new JObject(response.Content);
-                HandleTokenDetails(obj["access_token"].ToString(), obj["refresh_token"].ToString());
+                var jsonKeyPairs = JsonConvert.DeserializeObject<Dictionary<string, string>>(response.Content);
+                string access_token = jsonKeyPairs["access_token"];
+                HandleTokenDetails(access_token, FirebaseCredential.RefreshToken);
                 return true;
             }
             return false;
@@ -32,9 +35,10 @@ namespace Components
         /// <param name="refreshToken"></param>
         public static void HandleTokenDetails(string accessToken, string refreshToken)
         {
-            FirebaseAccessToken = accessToken;
-            FirebaseRefreshToken = refreshToken;
-            FirebaseTokenRefreshTime = DateTime.Now.ToFormattedDateTime(false).ToInt();
+            FirebaseCredential.AccessToken = accessToken;
+            FirebaseCredential.RefreshToken = refreshToken;
+            // Generally, we create a refresh time of 50 min.
+            FirebaseCredential.TokenRefreshTime = (DateTime.Now.ToFormattedDateTime(false).ToLong() + 5000);
             WriteFirebaseCredentialSetting();
         }
     }

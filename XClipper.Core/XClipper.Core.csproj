@@ -109,6 +109,8 @@
   <ItemGroup>
     <Compile Include="Data\Extensions\CommonExtensions.cs" />
     <Compile Include="Data\Extensions\GenericExtensions.cs" />
+    <Compile Include="Data\Extensions\Misc\AuthEventArgs.cs" />
+    <Compile Include="Data\Extensions\Misc\AuthManager.cs" />
     <Compile Include="Data\Extensions\ScrollViewerExtensions.cs" />
     <Compile Include="Data\Extensions\TypeSpecific\CollectionExtensions.cs" />
     <Compile Include="Data\Extensions\TypeSpecific\LoopExtensions.cs" />

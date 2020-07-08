@@ -7,9 +7,68 @@ using static Components.LicenseHandler;
 using System.Windows.Documents;
 using System.Collections.Generic;
 using System.Windows.Markup;
+using System;
+
+#nullable enable
 
 namespace Components
 {
+
+    #region Setting Enums
+
+    public enum XClipperStore
+    {
+        [Description("Text Only")]
+        Text = 0,
+        [Description("Image Only")]
+        Image = 1,
+        [Description("Files Only")]
+        Files = 2,
+        [Description("Everything")]
+        All = 3
+    }
+
+    public enum XClipperLocation
+    {
+        [Description("Bottom Right")]
+        BottomRight = 0,
+        [Description("Bottom Left")]
+        BottomLeft = 1,
+        [Description("Top Right")]
+        TopRight = 2,
+        [Description("Top Left")]
+        TopLeft = 3,
+        [Description("Center")]
+        Center = 4
+    }
+
+    #endregion
+
+    #region Setting Models
+
+    public class Credential
+    {
+        /// <summary>
+        /// This token will be used to make call to firebase database.
+        /// </summary>
+        public string AccessToken { get; set; } = string.Empty;
+        /// <summary>
+        /// Refresh token will be used to generate new access_Token
+        /// </summary>
+        public string RefreshToken { get; set; } = string.Empty;
+        /// <summary>
+        /// Use this to determine whether to generate a new access token or not.
+        /// <code>
+        /// if (DateTime.Now.ToFormattedDateTime(false) >= <see cref="FirebaseAccessToken"/>) {<br/>
+        /// ......<br/>
+        /// }<br/>
+        /// </code>
+        /// </summary>
+        public long TokenRefreshTime { get; set; }
+    }
+
+    #endregion
+
     public static class DefaultSettings
     {
 
@@ -138,7 +197,7 @@ namespace Components
         /// <summary>
         /// The secret Auth key which will be used to make connection to database.
         /// </summary>
-        public static string FirebaseSecret { get; set; } = FIREBASE_SECRET;
+        public static string FirebaseSecret { get; set; } = string.Empty;
 
         /// <summary>
         /// The app Id of mobile package name that is needed to make connection for the mobile App.
@@ -151,24 +210,28 @@ namespace Components
         public static string FirebaseApiKey { get; set; } = FIREBASE_API_KEY;
 
         /// <summary>
-        /// This token will be used to make call to firebase database.
+        /// This stores all the credentials necessary for making connection with Firebase.
         /// </summary>
-        public static string FirebaseAccessToken { get; set; } = string.Empty;
+        public static Credential FirebaseCredential { get; set; } = new Credential();
+        ///// <summary>
+        ///// This token will be used to make call to firebase database.
+        ///// </summary>
+        //public static string FirebaseAccessToken { get; set; } = string.Empty;
 
-        /// <summary>
-        /// Refresh token will be used to generate new access_Token
-        /// </summary>
-        public static string FirebaseRefreshToken { get; set; } = string.Empty;
+        ///// <summary>
+        ///// Refresh token will be used to generate new access_Token
+        ///// </summary>
+        //public static string FirebaseRefreshToken { get; set; } = string.Empty;
 
-        /// <summary>
-        /// Use this to determine whether to generate a new access token or not.
-        /// <code>
-        /// if (DateTime.Now.ToFormattedDateTime(false) >= <see cref="FirebaseAccessToken"/>) {<br/>
-        /// ......<br/>
-        /// }<br/>
-        /// </code>
-        /// </summary>
-        public static int FirebaseTokenRefreshTime { get; set; }
+        ///// <summary>
+        ///// Use this to determine whether to generate a new access token or not.
+        ///// <code>
+        ///// if (DateTime.Now.ToFormattedDateTime(false) >= <see cref="FirebaseAccessToken"/>) {<br/>
+        ///// ......<br/>
+        ///// }<br/>
+        ///// </code>
+        ///// </summary>
+        //public static long FirebaseTokenRefreshTime { get; set; }
 
         /// <summary>
         /// Holds all the firebase configuration or any custom configuration as well.
@@ -247,20 +310,28 @@ namespace Components
         /// </summary>
         public static void WriteFirebaseCredentialSetting()
         {
-            if (string.IsNullOrWhiteSpace(FirebaseAccessToken) ||
-                string.IsNullOrWhiteSpace(FirebaseRefreshToken) ||
-                FirebaseTokenRefreshTime == 0) return;
+            if (!IsValidCredential()) return;
 
             var doc = new XDocument();
-            var config = new XElement(SETTINGS);
+            var config = new XElement(CREDENTIAL);
             config
                 .Add(
-                    new XElement(nameof(FirebaseAccessToken), FirebaseAccessToken.ToString()),
-                    new XElement(nameof(FirebaseRefreshToken), FirebaseRefreshToken.ToString()),
-                    new XElement(nameof(FirebaseTokenRefreshTime), FirebaseTokenRefreshTime.ToString())
+                    new XElement(nameof(FirebaseCredential.AccessToken), FirebaseCredential.AccessToken.ToString()),
+                    new XElement(nameof(FirebaseCredential.RefreshToken), FirebaseCredential.RefreshToken.ToString()),
+                    new XElement(nameof(FirebaseCredential.TokenRefreshTime), FirebaseCredential.TokenRefreshTime.ToString())
                  );
             doc.Add(config);
             doc.Save(FirebaseCredentialPath);
+        }
+
+        /// <summary>
+        /// Method checks if Firebase Access, Refresh Token are not null and empty.
+        /// </summary>
+        public static bool IsValidCredential()
+        {
+            return !(string.IsNullOrWhiteSpace(FirebaseCredential.AccessToken) ||
+               string.IsNullOrWhiteSpace(FirebaseCredential.RefreshToken) ||
+               FirebaseCredential.TokenRefreshTime == 0);
         }
 
         #endregion
@@ -276,6 +347,7 @@ namespace Components
 
             LoadApplicationSetting();
             LoadFirebaseSetting();
+            LoadFirebaseCredentials();
         }
 
         /// <summary>
@@ -303,9 +375,9 @@ namespace Components
             ShowDataChangeNotification = settings.Element(nameof(ShowDataChangeNotification)).Value.ToBool();
             DisplayStartNotification = settings.Element(nameof(DisplayStartNotification)).Value.ToBool();
             BindDatabase = settings.Element(nameof(BindDatabase)).Value.ToBool();
-            FirebaseAccessToken = settings.Element(nameof(FirebaseAccessToken)).Value;
-            FirebaseRefreshToken = settings.Element(nameof(FirebaseRefreshToken)).Value;
-            FirebaseTokenRefreshTime = settings.Element(nameof(BindDatabase)).Value.ToInt();
+            //FirebaseCredential.AccessToken = settings.Element(nameof(Credential.AccessToken)).Value;
+            //FirebaseCredential.RefreshToken = settings.Element(nameof(Credential.RefreshToken)).Value;
+            //FirebaseCredential.TokenRefreshTime = settings.Element(nameof(Credential.TokenRefreshTime)).Value.ToLong();
         }
 
         /// <summary>
@@ -338,11 +410,11 @@ namespace Components
             // Load Firebase Credentials
             if (File.Exists(FirebaseCredentialPath))
             {
-                var firebaseDoc = XDocument.Load(FirebaseCredentialPath).Element(SETTINGS);
+                var firebaseDoc = XDocument.Load(FirebaseCredentialPath).Element(CREDENTIAL);
 
-                FirebaseAccessToken = firebaseDoc.Element(nameof(FirebaseAccessToken)).Value;
-                FirebaseRefreshToken = firebaseDoc.Element(nameof(FirebaseRefreshToken)).Value;
-                FirebaseTokenRefreshTime = firebaseDoc.Element(nameof(FirebaseTokenRefreshTime)).Value.ToInt();
+                FirebaseCredential.AccessToken = firebaseDoc.Element(nameof(FirebaseCredential.AccessToken)).Value;
+                FirebaseCredential.RefreshToken = firebaseDoc.Element(nameof(FirebaseCredential.RefreshToken)).Value;
+                FirebaseCredential.TokenRefreshTime = firebaseDoc.Element(nameof(FirebaseCredential.TokenRefreshTime)).Value.ToLong();
             }
         }
 
@@ -351,34 +423,4 @@ namespace Components
         #endregion
 
     }
-
-    #region Setting Enums
-
-    public enum XClipperStore
-    {
-        [Description("Text Only")]
-        Text = 0,
-        [Description("Image Only")]
-        Image = 1,
-        [Description("Files Only")]
-        Files = 2,
-        [Description("Everything")]
-        All = 3
-    }
-
-    public enum XClipperLocation
-    {
-        [Description("Bottom Right")]
-        BottomRight = 0,
-        [Description("Bottom Left")]
-        BottomLeft = 1,
-        [Description("Top Right")]
-        TopRight = 2,
-        [Description("Top Left")]
-        TopLeft = 3,
-        [Description("Center")]
-        Center = 4
-    }
-
-    #endregion
 }

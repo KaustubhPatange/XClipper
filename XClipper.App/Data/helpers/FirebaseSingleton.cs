@@ -7,10 +7,10 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using static Components.DefaultSettings;
 using static Components.TranslationHelper;
 using static Components.FirebaseHelper;
+using System.Windows;
 
 #nullable enable
 
@@ -60,44 +60,76 @@ namespace Components
         /// <returns></returns>
         private async Task<bool> TaskCheckForAccessTokenValidity()
         {
-            if (string.IsNullOrEmpty(FirebaseRefreshToken))
+            // When we don't need Auth for desktop client, we can return true.
+            if (currentAccount?.isAuthNeeded == false) return true;
+
+            if (!IsValidCredential())
             {
                 if (currentAccount != null)
-                    binder.OnNeedToGenerateToken(currentAccount.Auth.ClientId, currentAccount.Auth.ClientSecret);
+                    binder.OnNeedToGenerateToken(currentAccount.DesktopAuth.ClientId, currentAccount.DesktopAuth.ClientSecret);
                 else
-                    MessageBox.Show(Translation.MSG_FIREBASE_USER_ERROR, Translation.MSG_ERR, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(Translation.MSG_FIREBASE_USER_ERROR, Translation.MSG_ERR, MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
             if (currentAccount == null)
             {
-                MessageBox.Show(Translation.MSG_FIREBASE_USER_ERROR, Translation.MSG_ERR, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(Translation.MSG_FIREBASE_USER_ERROR, Translation.MSG_ERR, MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
-            if (DateTime.Now.ToFormattedDateTime(false).ToInt() >= FirebaseTokenRefreshTime)
+            if (DateTime.Now.ToFormattedDateTime(false).ToLong() >= FirebaseCredential.TokenRefreshTime)
             {
-                if (await RefreshAccessToken(currentAccount))
+                if (await RefreshAccessToken(currentAccount).ConfigureAwait(false))
                 {
-                    // todo: Do something if token is refreshed.
+                    CreateNewClient();
                     return true;
-                }else
-                {
-                    // todo: Do something if failed to refresh token.
                 }
             }
+            else return true;
+            
             return false;
         }
 
        
         private async Task<User> _GetUser()
         {
-            var data = await client.GetAsync($"users/{UID}");
+            var data = await client.GetAsync($"users/{UID}").ConfigureAwait(false);
             if (data.Body != "null")
             {
                 return data.ResultAs<User>().Also((user) => { this.user = user; });
             }
-            else return await RegisterUser();
+            else return await RegisterUser().ConfigureAwait(false);
         }
 
+
+        /// <summary>
+        /// This must be called whenever client is changed.
+        /// </summary>
+        public void CreateNewClient()
+        {
+            // We will set isBinded to false since we are creating a new client.
+            isBinded = false;
+            IFirebaseConfig config;
+            if (currentAccount?.isAuthNeeded == true)
+            {
+                config = new FirebaseConfig
+                {
+                    AccessToken = FirebaseCredential?.AccessToken,
+                    BasePath = FirebaseEndpoint
+                };
+            }else
+            {
+                config = new FirebaseConfig
+                {
+                    BasePath = FirebaseEndpoint
+                };
+            }
+            client = new FirebaseClient(config);
+
+            // BindUI is already set, make sure to set callback to it.
+            SetCallback();
+
+            Task.Run(async () => await SetGlobalUser(true).ConfigureAwait(false));
+        }
         #endregion
 
         #region Methods
@@ -113,20 +145,14 @@ namespace Components
             if (data != null)
             {
                 FirebaseApiKey = data.ApiKey;
-                FirebaseSecret = data.ApiSecret;
                 FirebaseEndpoint = data.Endpoint;
                 FirebaseAppId = data.AppId;
             }
-            IFirebaseConfig config = new FirebaseConfig
-            {
-                AuthSecret = FirebaseSecret,
-                BasePath = FirebaseEndpoint
-            };
-            client = new FirebaseClient(config);
 
-            // BindUI is already set, make sure to set callback to it.
-            SetCallback();
-            Task.Run(async () => await SetGlobalUser(true));
+            if (currentAccount?.isAuthNeeded == true && !IsValidCredential())
+                binder.OnNeedToGenerateToken(currentAccount?.DesktopAuth.ClientId, currentAccount?.DesktopAuth.ClientSecret);
+            else 
+                CreateNewClient();
         }
 
         /// <summary>
@@ -136,13 +162,13 @@ namespace Components
         public async Task SubmitConfigurations()
         {
             if (!BindDatabase) return;
-            await SetGlobalUser();
+            await SetGlobalUser().ConfigureAwait(false);
 
             user.MaxItemStorage = DatabaseMaxItem;
             user.TotalConnection = DatabaseMaxConnection;
             user.IsLicensed = IsPurchaseDone;
 
-            await client.SetAsync($"users/{UID}", user);
+            await client.SetAsync($"users/{UID}", user).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -156,15 +182,15 @@ namespace Components
             
             if (client == null)
             {
+                MessageBox.Show(Translation.MSG_FIREBASE_CLIENT_ERR, Translation.MSG_INFO, MessageBoxButton.OK, MessageBoxImage.Error);
                 // todo: Do something when client isn't initialized
                 return false;
-                //MessageBox.Show()
             }
             if (!BindDatabase) return false;
 
-            if (await TaskCheckForAccessTokenValidity() && (alwaysForceInvoke || user == null || forceInvoke))
+            if (await TaskCheckForAccessTokenValidity().ConfigureAwait(false) && (alwaysForceInvoke || user == null || forceInvoke))
             {
-                user = await _GetUser();
+                user = await _GetUser().ConfigureAwait(false);
 
                 // todo: Set some other details for user...
                 user.IsLicensed = IsPurchaseDone;
@@ -177,6 +203,7 @@ namespace Components
             return user != null;
         }
 
+        [Obsolete("This method will be removed if all tests run fine.")]
         /// <summary>
         /// Initialize the Instance with the UID supplied with it.
         /// </summary>
@@ -213,7 +240,7 @@ namespace Components
             {
                 if (BindDatabase)
                     binder.OnDataRemoved(a);
-            });
+            }).ConfigureAwait(true); // Synchronization context must be UI thread.
             isBinded = true;
         }
 
@@ -223,7 +250,7 @@ namespace Components
         /// <returns></returns>
         private async Task<bool> IsUserExist()
         {
-            var response = await client.GetAsync($"users/{UID}");
+            var response = await client.GetAsync($"users/{UID}").ConfigureAwait(false);
             return response.Body != "null";
         }
 
@@ -234,13 +261,13 @@ namespace Components
         public async Task<User> RegisterUser()
         {
             if (!BindDatabase) return new User();
-            var exist = await IsUserExist();
+            var exist = await IsUserExist().ConfigureAwait(false);
             if (!exist)
             {
                 var user = new User();
                 user.IsLicensed = IsPurchaseDone;
                 this.user = user;
-                await client.SetAsync($"users/{UID}", user);
+                await client.SetAsync($"users/{UID}", user).ConfigureAwait(false);
             }
             return user;
         }
@@ -251,8 +278,8 @@ namespace Components
         /// <returns></returns>
         public async Task RemoveUser()
         {
-            await client.DeleteAsync($"users/{UID}");
-            await RegisterUser();
+            await client.DeleteAsync($"users/{UID}").ConfigureAwait(false);
+            await RegisterUser().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -268,7 +295,7 @@ namespace Components
         {
             if (!BindDatabase) return new List<Device>();
 
-            if (await SetGlobalUser(true))
+            if (await SetGlobalUser(true).ConfigureAwait(false))
                 return user.Devices;
 
             return new List<Device>();
@@ -278,10 +305,10 @@ namespace Components
         {
             if (!BindDatabase) return new List<Device>();
 
-            if (await SetGlobalUser(true))
+            if (await SetGlobalUser(true).ConfigureAwait(false))
             {
                 user.Devices = user.Devices.Where(d => d.id != DeviceId).ToList();
-                await client.UpdateAsync($"users/{UID}", user);
+                await client.UpdateAsync($"users/{UID}", user).ConfigureAwait(false);
                 return user.Devices;
             }
 
@@ -295,7 +322,7 @@ namespace Components
         /// <returns></returns>
         public async Task AddClip(string? Text)
         {
-            if (await SetGlobalUser())
+            if (await SetGlobalUser().ConfigureAwait(false))
             {
                 if (Text == null) return;
                 if (Text.Length > DatabaseMaxItemLength) return;
@@ -305,18 +332,18 @@ namespace Components
                 if (user.Clips.Count > DatabaseMaxItem)
                     user.Clips.RemoveAt(0);
                 user.Clips.Add(new Clip { data = Text.EncryptBase64(DatabaseEncryptPassword), time = DateTime.Now.ToFormattedDateTime(false) });
-                await client.UpdateAsync($"users/{UID}", user);
+                await client.UpdateAsync($"users/{UID}", user).ConfigureAwait(false);
             }
         }
 
         public async Task RemoveClip(int position)
         {
-            if (await SetGlobalUser())
+            if (await SetGlobalUser().ConfigureAwait(false))
             {
                 if (user.Clips == null)
                     return;
                 user.Clips.RemoveAt(position);
-                await client.UpdateAsync($"users/{UID}", user);
+                await client.UpdateAsync($"users/{UID}", user).ConfigureAwait(false);
             }
         }
 
@@ -327,7 +354,7 @@ namespace Components
         /// <returns></returns>
         public async Task RemoveClip(string Text)
         {
-            if (await SetGlobalUser())
+            if (await SetGlobalUser().ConfigureAwait(false))
             {
                 if (Text == null) return;
                 if (user.Clips == null)
@@ -337,7 +364,7 @@ namespace Components
                     if (item.data.DecryptBase64(DatabaseEncryptPassword) == Text)
                     {
                         user.Clips.Remove(item);
-                        await client.UpdateAsync($"users/{UID}", user);
+                        await client.UpdateAsync($"users/{UID}", user).ConfigureAwait(false);
                     }
                 }
             }
@@ -349,12 +376,12 @@ namespace Components
         /// <returns></returns>
         public async Task RemoveAllClip()
         {
-            if (await SetGlobalUser())
+            if (await SetGlobalUser().ConfigureAwait(false))
             {
                 if (user.Clips == null)
                     return;
                 user.Clips.Clear();
-                await client.UpdateAsync($"users/{UID}", user);
+                await client.UpdateAsync($"users/{UID}", user).ConfigureAwait(false);
             }
         }
 
@@ -408,11 +435,12 @@ namespace Components
 
     public class FirebaseData
     {
-        public OAuth Auth { get; set; }
+        public OAuth DesktopAuth { get; set; }
         public string Endpoint { get; set; }
         public string AppId { get; set; }
         public string ApiKey { get; set; }
-        public string ApiSecret { get; set; }
+        public bool isAuthNeeded { get; set; }
+       // public string ApiSecret { get; set; }
     }
 
     public class OAuth

@@ -9,7 +9,6 @@
     Width="300"
     Height="200"
     ResizeMode="NoResize"
-    Topmost="True"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
     <Grid>

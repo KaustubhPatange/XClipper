@@ -36,6 +36,8 @@ namespace Components
         #region Variable Declaration
 
         public ISettingEventBinder binder;
+        public static List<string> LanguageCollection = new List<string>();
+        public static ResourceDictionary rm = new ResourceDictionary();
         private KeyHookUtility hookUtility = new KeyHookUtility();
         private ClipWindow clipWindow;
         private WinForm.NotifyIcon notifyIcon;
@@ -47,10 +49,9 @@ namespace Components
         private DeviceWindow deviceWindow;
         private IKeyboardRecorder recorder;
         private ILicense licenseService;
-        public static List<string> LanguageCollection = new List<string>();
         private Mutex appMutex;
         private WinForm.MenuItem ConfigSettingItem, UpdateSettingItem;
-        public static ResourceDictionary rm = new ResourceDictionary();
+        private Update? updateModel = null;
 
         // Some settings
         private bool ToRecord = true;
@@ -68,8 +69,6 @@ namespace Components
             LoadSettings();
 
             AppSingleton.GetInstance.Init();
-
-            FirebaseSingleton.GetInstance.Init(UniqueID);
 
             recorder.StartRecording();
 
@@ -113,23 +112,22 @@ namespace Components
 
             FirebaseSingleton.GetInstance.BindUI(this);
 
-            CallAuthWindow();
+            licenseService.Initiate(err =>
+            {
+                if (err != null)
+                {
+                    MessageBox.Show(err.Message, Translation.MSG_ERR, MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+                // Initialize firebase.
+                FirebaseSingleton.GetInstance.InitConfig(FirebaseConfigurations.Count > 0 ? FirebaseConfigurations[0] : null);
 
-            //licenseService.Initiate(err =>
-            //{
-            //    if (err != null)
-            //    {
-            //        MessageBox.Show(err.Message, Translation.MSG_ERR, MessageBoxButton.OK, MessageBoxImage.Error);
-            //        return;
-            //    }
-            //    ActivatePaidFeatures();
-            //    CheckForUpdates();
-            //    UpdateSettingItem.Visible = true;
-            //    if (LicenseStrategy == LicenseType.Premium) ConfigSettingItem.Visible = true;
-            //    if (IsPurchaseDone) UpdateSettingItem.Visible = true;
-            //});
-
-            //  CheckForUpdates();
+                ActivatePaidFeatures();
+                CheckForUpdates();
+                UpdateSettingItem.Visible = true;
+                if (LicenseStrategy == LicenseType.Premium) ConfigSettingItem.Visible = true;
+                if (IsPurchaseDone) UpdateSettingItem.Visible = true;
+            });
         }
 
         protected override void OnExit(ExitEventArgs e)
@@ -368,6 +366,7 @@ namespace Components
 
         public void OnNeedToGenerateToken(string ClientId, string ClientSecret)
         {
+            MessageBox.Show(Translation.MSG_NEED_AUTH, Translation.MSG_INFO, MessageBoxButton.OK, MessageBoxImage.Information);
             CallAuthWindow(ClientId, ClientSecret);
         }
 
@@ -420,7 +419,6 @@ namespace Components
 
         #region Method Events
 
-        private Update? updateModel = null;
         private void CheckForUpdates()
         {
             if (!IsPurchaseDone || !CheckApplicationUpdates) return;
@@ -546,7 +544,10 @@ namespace Components
                 authWindow.Close();
 
             authWindow = new OAuthWindow(Id, secret);
-            authWindow.ShowDialog();
+            if (authWindow.ShowDialog() == true)
+            {
+                FirebaseSingleton.GetInstance.CreateNewClient();
+            }
         }
 
         private void CallBuyWindow()

@@ -11,7 +11,7 @@ namespace Components
         public EnumerationExtension(Type enumType)
         {
             if (enumType == null)
-                throw new ArgumentNullException("enumType");
+                throw new ArgumentNullException(nameof(enumType));
 
             EnumType = enumType;
         }
@@ -44,22 +44,21 @@ namespace Components
               ? descriptionAttribute.Description
               : enumValue.ToString();
         }
-        public class EnumerationMember
-        {
-            public string Description { get; set; }
-            public object Value { get; set; }
-        }
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
             var enumArray = Enum.GetValues(EnumType);
 
             var enumValues = new string[enumArray.Length];
-            for (int i=0; i < enumValues.Length; i++)
+            for (int i = 0; i < enumValues.Length; i++)
             {
                 enumValues[i] = EnumHelper.GetEnumDescription(enumArray.GetValue(i) as Enum);
             }
             return enumValues;
         }
-
+        public class EnumerationMember
+        {
+            public string Description { get; set; }
+            public object Value { get; set; }
+        }
     }
 }

@@ -9,6 +9,20 @@ namespace Components
     {
         private bool isFirstLaunch = true;
         private SharpClipboard factory = new SharpClipboard();
+        public ContentType ClipType { get; set; }
+        public string GetClipText
+        {
+            get { return factory.ClipboardText; }
+        }
+        public List<string> ClipFiles
+        {
+            get { return factory.ClipboardFiles; }
+        }
+
+        public Image GetClipImage
+        {
+            get { return factory.ClipboardImage; }
+        }
         public void BindUI(IKeyboardRecorder binder)
         {
             factory.ClipboardChanged += (o, e) =>
@@ -29,23 +43,5 @@ namespace Components
                 }
             };
         }
-
-        public ContentType ClipType { get; set; }
-
-        public string GetClipText
-        {
-            get { return factory.ClipboardText; }
-        }
-
-        public List<string> ClipFiles
-        {
-            get { return factory.ClipboardFiles; }
-        }
-
-        public Image GetClipImage
-        {
-            get { return factory.ClipboardImage; }
-        }
-
     }
 }
