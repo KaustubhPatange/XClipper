@@ -1,0 +1,13 @@
+{
+  "Desktop": {
+    "Version":"1.0.0.0",
+    "Changelog":"A pretty big changelog
+   Multiline supported",
+    "PostDate":"20th June 2020",
+    "DownloadUri":"https://www.dropbox.com/s/rswfsney3r42okx/adkupdate_1072.exe?dl=1",
+    "FileSize":8145064
+  },
+  "Mobile": {
+    "Version":"1.1"
+  }
+}

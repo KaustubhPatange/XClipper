@@ -63,7 +63,7 @@ namespace XClipper.Tests
         [TestMethod]
         public void ConnectionTest()
         {
-            FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(@"C:\Users\devel\Desktop\setup.exe");
+           // FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(@"C:\Users\devel\Desktop\setup.exe");
 
         }
 

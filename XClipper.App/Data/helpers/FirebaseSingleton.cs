@@ -17,6 +17,8 @@ using System.Windows.Documents;
 
 #nullable enable
 
+// todo: Write what this class does.
+
 namespace Components
 {
     public sealed class FirebaseSingleton
@@ -250,12 +252,13 @@ namespace Components
                     if (BindDatabase)
                         binder.OnDataRemoved(a);
                 }).ConfigureAwait(false);
+
+                isBinded = true;
             }
             catch(Exception ex)
             {
                 HandleError(ex, () => SetCallback());
             }
-            isBinded = true;
         }
 
         public async void HandleError(Exception ex, Action block)

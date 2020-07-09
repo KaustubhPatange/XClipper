@@ -7,7 +7,6 @@ namespace Components
 {
     public static class Constants
     {
-
         public static bool isFileExist()
         {
             return true;

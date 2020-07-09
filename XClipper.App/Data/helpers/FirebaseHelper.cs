@@ -54,6 +54,13 @@ namespace Components
             WriteFirebaseCredentialSetting();
         }
 
+        /**
+         * There might be some case where some user manually try to change the access token from
+         * credentials file or any other thing. In such case these safe methods are created to 
+         * catch such errors & refresh the token.
+         */
+        #region Safe FirebaseClient Extensions
+
         /// <summary>
         /// Use this instead of <see cref="IFirebaseClient.UpdateAsync{T}(string, T)"/>. 
         /// It will automatically check for invalid access token and refresh it.
@@ -167,5 +174,7 @@ namespace Components
             }
             return null;
         }
+
+        #endregion
     }
 }
