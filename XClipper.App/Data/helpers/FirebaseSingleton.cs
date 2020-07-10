@@ -11,9 +11,8 @@ using static Components.DefaultSettings;
 using static Components.TranslationHelper;
 using static Components.FirebaseHelper;
 using System.Windows;
-using FireSharp.Core.Response;
-using System.Runtime.CompilerServices;
-using System.Windows.Documents;
+using static Components.MainHelper;
+using Microsoft.VisualBasic.Logging;
 
 #nullable enable
 
@@ -24,7 +23,6 @@ namespace Components
     public sealed class FirebaseSingleton
     {
         #region Variable Declaration
-        public FirebaseData? CurrentAccount { get; private set; }
 
         private static FirebaseSingleton Instance;
         private IFirebaseClient client;
@@ -60,30 +58,31 @@ namespace Components
         #region Private Methods
 
         /// <summary>
-        /// This will check if the access Token is valid or not.
+        /// This will check if the access Token is valid or not. It will also 
+        /// update the client with new access token.
         /// </summary>
         /// <returns></returns>
-        private async Task<bool> TaskCheckForAccessTokenValidity()
+        private async Task<bool> CheckForAccessTokenValidity()
         {
             // When we don't need Auth for desktop client, we can return true.
-            if (CurrentAccount?.isAuthNeeded == false) return true;
+            if (FirebaseCurrent?.isAuthNeeded == false) return true;
 
             if (!IsValidCredential())
             {
-                if (CurrentAccount != null)
-                    binder.OnNeedToGenerateToken(CurrentAccount.DesktopAuth.ClientId, CurrentAccount.DesktopAuth.ClientSecret);
+                if (FirebaseCurrent != null)
+                    binder.OnNeedToGenerateToken(FirebaseCurrent.DesktopAuth.ClientId, FirebaseCurrent.DesktopAuth.ClientSecret);
                 else
                     MessageBox.Show(Translation.MSG_FIREBASE_USER_ERROR, Translation.MSG_ERR, MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
-            if (CurrentAccount == null)
+            if (FirebaseCurrent == null)
             {
                 MessageBox.Show(Translation.MSG_FIREBASE_USER_ERROR, Translation.MSG_ERR, MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
             if (NeedToRefreshToken())
             {
-                if (await RefreshAccessToken(CurrentAccount).ConfigureAwait(false))
+                if (await RefreshAccessToken(FirebaseCurrent).ConfigureAwait(false))
                 {
                     CreateNewClient();
                     return true;
@@ -96,6 +95,11 @@ namespace Components
         private async Task<User> _GetUser()
         {
             var data = await client.SafeGetAsync($"users/{UID}").ConfigureAwait(false);
+            if (data == null) // Sometimes it catch to this exception which is due to unknown error.
+            {
+                MessageBox.Show(Translation.MSG_UNKNOWN_ERR, Translation.MSG_ERR, MessageBoxButton.OK, MessageBoxImage.Error);
+                return null;
+            }
             if (data.Body != "null")
             {
                 return data.ResultAs<User>().Also((user) => { this.user = user; });
@@ -106,12 +110,12 @@ namespace Components
         /// <summary>
         /// This must be called whenever client is changed.
         /// </summary>
-        public void CreateNewClient()
+        private void CreateNewClient()
         {
             // We will set isBinded to false since we are creating a new client.
             isBinded = false;
             IFirebaseConfig config;
-            if (CurrentAccount?.isAuthNeeded == true)
+            if (FirebaseCurrent?.isAuthNeeded == true)
             {
                 config = new FirebaseConfig
                 {
@@ -135,8 +139,7 @@ namespace Components
         }
         #endregion
 
-        #region Methods
-
+        #region Configuration Methods
 
         /// <summary>
         /// Initializes the Firebase client. Must be called if credentials are changed.
@@ -145,22 +148,28 @@ namespace Components
         public void InitConfig(FirebaseData? data = null)
         {
             UID = UniqueID;
-            CurrentAccount = data;
-            if (data != null)
+            if (data == null && FirebaseConfigurations.Count > 0)
             {
-                FirebaseApiKey = data.ApiKey;
-                FirebaseEndpoint = data.Endpoint;
-                FirebaseAppId = data.AppId;
-
-                if (data.isAuthNeeded)
+                FirebaseCurrent = FirebaseConfigurations[0];
+            }
+            else FirebaseCurrent = data;
+            if (FirebaseCurrent != null)
+            {
+                CreateCurrentQRData(); // Create QR data for settings window.
+                if (FirebaseCurrent.isAuthNeeded)
                 {
                     if (!IsValidCredential())
-                        binder.OnNeedToGenerateToken(CurrentAccount?.DesktopAuth.ClientId, data.DesktopAuth.ClientSecret);
+                    {
+                        binder.OnNeedToGenerateToken(FirebaseCurrent.DesktopAuth.ClientId, FirebaseCurrent.DesktopAuth.ClientSecret);
+                        return;
+                    }
                     else if (NeedToRefreshToken())
-                        TaskCheckForAccessTokenValidity(); // PS: I don't care.
-                    else CreateNewClient();
+                    {
+                        CheckForAccessTokenValidity(); // PS: I don't care.
+                        return;
+                    }
                 }
-                else CreateNewClient();
+                CreateNewClient();
             }
             else
                 MessageBox.Show(Translation.MSG_FIREBASE_UNKNOWN_ERR, Translation.MSG_ERR, MessageBoxButton.OK, MessageBoxImage.Error);
@@ -199,7 +208,7 @@ namespace Components
             }
             if (!BindDatabase) return false;
 
-            if (await TaskCheckForAccessTokenValidity().ConfigureAwait(false) && (alwaysForceInvoke || user == null || forceInvoke))
+            if (await CheckForAccessTokenValidity().ConfigureAwait(false) && (alwaysForceInvoke || user == null || forceInvoke))
             {
                 user = await _GetUser().ConfigureAwait(false);
 
@@ -213,13 +222,6 @@ namespace Components
             }
             return user != null;
         }
-
-        [Obsolete("This method will be removed if all tests run fine.")]
-        /// <summary>
-        /// Initialize the Instance with the UID supplied with it.
-        /// </summary>
-        /// <param name="UID"></param>
-        public void Init(string UID) => this.UID = UID;
 
         /// <summary>
         /// This will be used to set binder at the start of the application.
@@ -257,22 +259,22 @@ namespace Components
             }
             catch(Exception ex)
             {
-                HandleError(ex, () => SetCallback());
+                if (ex.Message.Contains("401 (Unauthorized)"))
+                {
+                    if (await RefreshAccessToken(FirebaseCurrent).ConfigureAwait(false))
+                    {
+                        CreateNewClient();
+                        SetCallback();
+                    }
+                    else MessageBox.Show(ex.Message, Translation.MSG_ERR, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                LogHelper.Log(this, ex.StackTrace);
             }
         }
 
-        public async void HandleError(Exception ex, Action block)
-        {
-            if (ex.Message.Contains("401 (Unauthorized)"))
-            {
-                if (await RefreshAccessToken(CurrentAccount).ConfigureAwait(false))
-                {
-                    CreateNewClient();
-                    block.Invoke();
-                }
-                else MessageBox.Show(ex.Message, Translation.MSG_ERR, MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
+        #endregion
+
+        #region User Related Method
 
         /// <summary>
         /// Checks if the user exist in the nodes or not.
@@ -365,7 +367,7 @@ namespace Components
                 await client.SafeUpdateAsync($"users/{UID}", user).ConfigureAwait(false);
             }
         }
-        
+
         public async Task RemoveClip(int position)
         {
             if (await SetGlobalUserTask().ConfigureAwait(false))
@@ -417,11 +419,7 @@ namespace Components
 
         #endregion
 
-      
-
     }
-
-    
 
     #region Entities
 
@@ -470,17 +468,16 @@ namespace Components
     public class FirebaseData
     {
         public OAuth DesktopAuth { get; set; }
+        public OAuth MobileAuth { get; set; }
         public string Endpoint { get; set; }
         public string AppId { get; set; }
         public string ApiKey { get; set; }
         public bool isAuthNeeded { get; set; }
-        // public string ApiSecret { get; set; }
     }
-
     public class OAuth
     {
         public string ClientId { get; set; }
-        public string ClientSecret { get; set; }
+        public string? ClientSecret { get; set; }
     }
 
     #endregion

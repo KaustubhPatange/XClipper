@@ -11,8 +11,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.zxing.integration.android.IntentIntegrator
+import com.kpstv.xclipper.App
 import com.kpstv.xclipper.App.ACTION_REPLACE_FRAG
 import com.kpstv.xclipper.R
+import com.kpstv.xclipper.data.localized.FBOptions
 import com.kpstv.xclipper.data.model.SpecialMenu
 import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
@@ -21,6 +23,7 @@ import com.kpstv.xclipper.extensions.utils.Utils.Companion.showConnectionDialog
 import com.kpstv.xclipper.ui.adapters.MenuAdapter
 import com.kpstv.xclipper.ui.fragments.Upgrade
 import com.kpstv.xclipper.ui.fragments.settings.*
+import com.kpstv.xclipper.ui.helpers.AuthenticationHelper
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import com.kpstv.xclipper.ui.viewmodels.MainViewModelFactory
 import es.dmoral.toasty.Toasty
@@ -166,7 +169,7 @@ class Settings : AppCompatActivity(), KodeinAware {
         if (supportFragmentManager.backStackEntryCount > 0) {
             supportFragmentManager.popBackStack()
 
-           toolbar.title = getString(R.string.settings)
+            toolbar.title = getString(R.string.settings)
         } else
             super.onBackPressed()
     }
@@ -188,22 +191,30 @@ class Settings : AppCompatActivity(), KodeinAware {
         if (result?.contents != null) {
 
             dbConnectionProvider.processResult(result.contents, ResponseListener(
-                complete = {
+                complete = { options ->
 
-                    /** Here we will make a connection request to the database.*/
+                    /** Check if auth is needed, if so make a auth2 call */
 
-                    val dialog = showConnectionDialog(this)
-
-                    mainViewModel.updateDeviceConnection(it, ResponseListener(
-                        complete = {
-                            Toasty.info(this, getString(R.string.connect_success)).show()
-                            dialog.dismiss()
-                        },
-                        error = { e ->
-                            dialog.dismiss()
-                            Toasty.error(this, e.message!!).show()
-                        }
-                    ))
+                    if (options.isAuthNeeded) {
+                        AuthenticationHelper(this, options.authClientId!!).signIn(
+                            options = options,
+                            responseListener = ResponseListener(
+                                complete = {
+                                    /** Here we will make a connection request to the database.*/
+                                    makeAConnectionRequest(options)
+                                },
+                                error = {
+                                    Toasty.error(
+                                        this,
+                                        "Error: ${it.message}",
+                                        Toasty.LENGTH_LONG
+                                    ).show()
+                                }
+                            ))
+                    } else {
+                        /** Here we will make a connection request to the database.*/
+                        makeAConnectionRequest(options)
+                    }
                 },
                 error = {
                     Toasty.error(this, it.message!!).show()
@@ -211,5 +222,20 @@ class Settings : AppCompatActivity(), KodeinAware {
             ))
         }
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun makeAConnectionRequest(options: FBOptions) {
+        val dialog = showConnectionDialog(this)
+
+        mainViewModel.updateDeviceConnection(options, ResponseListener(
+            complete = {
+                Toasty.info(this, getString(R.string.connect_success)).show()
+                dialog.dismiss()
+            },
+            error = { e ->
+                dialog.dismiss()
+                Toasty.error(this, e.message!!).show()
+            }
+        ))
     }
 }

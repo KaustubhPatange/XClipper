@@ -1,13 +1,20 @@
 package com.kpstv.xclipper.data.localized
 
-import java.lang.Exception
-
 class FBOptions {
     lateinit var uid: String
+        private set
     lateinit var appId: String
+        private set
     lateinit var apiKey: String
+        private set
     lateinit var endpoint: String
+        private set
     lateinit var password: String
+        private set
+    var authClientId: String? = null
+        private set
+    var isAuthNeeded: Boolean = false
+        private set
 
     class Builder {
         private val options = FBOptions()
@@ -36,11 +43,21 @@ class FBOptions {
             return this
         }
 
+        fun setAuthClientId(value: String?): Builder {
+            options.authClientId = value
+            return this
+        }
+
+        fun setIsAuthNeeded(value: Boolean): Builder {
+            options.isAuthNeeded = value
+            return this
+        }
+
         fun build(): FBOptions {
             with(options) {
                 if (::uid.isInitialized && ::appId.isInitialized && ::apiKey.isInitialized && ::endpoint.isInitialized) {
                     return options
-                }else throw FBException("All properties not initialized")
+                } else throw FBException("All properties not initialized")
             }
         }
     }

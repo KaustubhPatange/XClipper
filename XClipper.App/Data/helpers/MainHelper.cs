@@ -183,6 +183,22 @@ DEL ""%~f0""";
             return FileVersionInfo.GetVersionInfo(exeFile).ProductVersion;
         }
 
-
+        /// <summary>
+        /// Set current QR data which will be used by SettingsWindow to generate QR code details.
+        /// </summary>
+        /// <returns></returns>
+        public static bool CreateCurrentQRData()
+        {
+            if (FirebaseCurrent == null) return false;
+            string mobileAuthDetails = FirebaseCurrent.isAuthNeeded ? $"true;{FirebaseCurrent.MobileAuth.ClientId}" : "false";
+            QRData = new QRCodeData
+            {
+                UID = UniqueID,
+                EncryptedData = ($"{FirebaseCurrent.AppId};{FirebaseCurrent.ApiKey};{FirebaseCurrent.Endpoint}" +
+                $";{DatabaseEncryptPassword};{mobileAuthDetails}")
+                .EncryptBase64Common()
+            };
+            return true;
+        }
     }
 }

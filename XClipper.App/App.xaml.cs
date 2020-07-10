@@ -119,8 +119,11 @@ namespace Components
                     MessageBox.Show(err.Message, Translation.MSG_ERR, MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
-                // Initialize firebase.
-                FirebaseSingleton.GetInstance.InitConfig(FirebaseConfigurations.Count > 0 ? FirebaseConfigurations[0] : null);
+                // Initialize firebase...
+                if (FirebaseCurrent == null) // Load config from configurations.
+                    FirebaseSingleton.GetInstance.InitConfig(FirebaseConfigurations.Count > 0 ? FirebaseConfigurations[0] : null);
+                else // Or load data from firebase-config file.
+                    FirebaseSingleton.GetInstance.InitConfig(FirebaseCurrent);
 
                 ActivatePaidFeatures();
                 CheckForUpdates();
@@ -238,6 +241,7 @@ namespace Components
                             goto restartMethod;
                         }
                     }
+                    LogHelper.Log(this, ex.StackTrace);
                 }
             }
         }
@@ -399,7 +403,6 @@ namespace Components
                         });
                     });
                 });
-                //   Debug.WriteLine("Path: " + e.Path + ", Changed:" + e.Data + ", Old Data: " + e.OldData);
             }
 
         }
@@ -546,7 +549,7 @@ namespace Components
             authWindow = new OAuthWindow(Id, secret);
             if (authWindow.ShowDialog() == true)
             {
-                FirebaseSingleton.GetInstance.CreateNewClient();
+                FirebaseSingleton.GetInstance.InitConfig();
             }
         }
 

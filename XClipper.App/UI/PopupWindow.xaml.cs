@@ -140,7 +140,7 @@ namespace Components
                     _toggleEditButton.Collapsed();
                     _btnPreview.Visible();
 
-                    _imgView.Source = (new ImageSourceConverter()).ConvertFromString(model.ImagePath) as ImageSource;
+                    _imgView.Source = new ImageSourceConverter().ConvertFromString(model.ImagePath) as ImageSource;
                     break;
                 case ContentType.Files:
                     var builder = new StringBuilder();

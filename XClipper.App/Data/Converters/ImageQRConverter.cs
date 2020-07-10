@@ -2,6 +2,7 @@
 using System;
 using System.Globalization;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Interop;
 using System.Windows.Media;
@@ -16,9 +17,12 @@ namespace Components
         public static ImageQRConverter Instance = new ImageQRConverter();
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var valueToConvert = value as string + ";" + $"{FirebaseAppId};{FirebaseApiKey};{FirebaseEndpoint};{DatabaseEncryptPassword}"
-                .EncryptBase64Common();
-
+            if (value == null)
+            {
+                return new BitmapImage(new Uri("pack://application:,,,/Resources/error.png", UriKind.Absolute));
+            }
+            var qrCodeData = value as QRCodeData;
+            var valueToConvert = qrCodeData.UID + ";" + qrCodeData.EncryptedData;
             var qrData = new QRCodeGenerator().CreateQrCode(valueToConvert, QRCodeGenerator.ECCLevel.L);
             var image = new QRCode(qrData).GetGraphic(20, System.Drawing.Color.Black, System.Drawing.Color.White, true);
 

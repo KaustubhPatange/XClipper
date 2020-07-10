@@ -43,6 +43,7 @@ object App {
     const val STAGGERED_SPAN_COUNT_MIN = 1
 
     const val PERMISSION_REQUEST_CODE = 189
+    const val AUTH_REQUEST_CODE = 210
 
     const val DELAY_SPAN: Long = 20
     const val DELAY_FIREBASE_SPAN: Long = 3000
@@ -53,6 +54,8 @@ object App {
     var FB_ENDPOINT: String = ""
     var FB_API_KEY: String = ""
     var FB_APP_ID: String = ""
+    var FB_TOKEN_ID: String = ""
+    var AUTH_NEEDED: Boolean = false
     var UID: String = "" // TODO: remove this eg: 1PAF8EB-4KR35L-1ICT12V-H7M3FM
     lateinit var DeviceID: String
 
@@ -118,10 +121,12 @@ object App {
     const val BIND_PREF = "bind_pref"
     const val AUTO_SYNC_PREF = "autoSync_pref"
     const val UID_PREF = "uid_key"
+    const val AUTH_NEEDED_PREF = "authNeed_pref"
     const val FB_API_KEY_PREF = "apiKey_pref"
     const val FB_APP_ID_PREF = "appId_pref"
     const val FB_PASSWORD_PREF = "password_pref"
     const val FB_ENDPOINT_PREF = "endpoint_pref"
+    const val FB_TOKEN_ID_PREF = "token_pref"
     const val DARK_PREF = "dark_pref"
     const val IMPORT_PREF = "import_pref"
     const val EXPORT_PREF = "export_pref"

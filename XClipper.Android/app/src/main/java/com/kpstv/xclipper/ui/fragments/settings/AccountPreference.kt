@@ -1,7 +1,9 @@
 package com.kpstv.xclipper.ui.fragments.settings
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
+import androidx.activity.result.ActivityResultLauncher
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -24,7 +26,7 @@ import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.kodein
 import org.kodein.di.generic.instance
 
-class AccountPreference() : PreferenceFragmentCompat(), KodeinAware {
+class AccountPreference : PreferenceFragmentCompat(), KodeinAware {
 
     override val kodein by kodein()
     private val preferenceProvider by instance<PreferenceProvider>()
@@ -37,6 +39,8 @@ class AccountPreference() : PreferenceFragmentCompat(), KodeinAware {
     private var bindPreference: SwitchPreferenceCompat? = null
     private var logPreference: Preference? = null
     private var connectPreference: Preference? = null
+    lateinit var getResult: ActivityResultLauncher<Intent?>
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.account_pref, rootKey)
 

@@ -4,10 +4,11 @@ using static Components.Core;
 using static Components.Constants;
 using System.Xml.Linq;
 using static Components.LicenseHandler;
-using System.Windows.Documents;
 using System.Collections.Generic;
-using System.Windows.Markup;
 using System;
+using static Components.MainHelper;
+using System.Windows.Forms;
+using System.Windows.Navigation;
 
 #nullable enable
 
@@ -67,10 +68,46 @@ namespace Components
         public long TokenRefreshTime { get; set; }
     }
 
+    public class QRCodeData
+    {
+        public string UID { get; set; }
+        public string EncryptedData { get; set; }
+    }
+
     #endregion
 
     public static class DefaultSettings
     {
+
+        #region Private Settings
+
+        /// <summary>
+        /// Will be used by <see cref="SettingWindow"/> to display QR code whenever
+        /// <see cref="FirebaseSingleton.InitConfig(FirebaseData?)"/> is called (i.e Firebase initialized).
+        /// </summary>
+        private static QRCodeData? _qrData;
+
+        /// <summary>
+        /// Tells which license strategy has to be applied.
+        /// </summary>
+        private static LicenseType _licenseStrategy;
+
+        /// <summary>
+        /// Max number of item to store in database.
+        /// </summary>
+        private static int _databaseMaxItem = FB_MIN_ITEM;
+
+        /// <summary>
+        /// Max number of item length to store in database.
+        /// </summary>
+        private static int _databaseMaxItemLength = FB_MIN_LENGTH;
+
+        /// <summary>
+        /// Determines the maximum number of device connections allowed.
+        /// </summary>
+        private static int _databaseMaxConnection = FB_MIN_CONNECTION;
+
+        #endregion
 
         #region Actual Settings
 
@@ -150,9 +187,20 @@ namespace Components
         public static bool IsPurchaseDone { get; set; }
 
         /// <summary>
-        /// This will hold which license strategy has to be applied.
+        /// <inheritdoc cref="_licenseStrategy"/>
         /// </summary>
-        public static LicenseType LicenseStrategy { get; set; }
+        public static LicenseType LicenseStrategy
+        {
+            get { return _licenseStrategy; }
+            set
+            {
+                if (value != _licenseStrategy)
+                {
+                    _licenseStrategy = value;
+                    NotifyStaticPropertyChanged(nameof(LicenseStrategy));
+                }
+            }
+        }
 
         /// <summary>
         /// Determines whether to use custom user input password or not.
@@ -169,41 +217,94 @@ namespace Components
         /// </summary>
         public static int TruncateList { get; set; } = 20;
 
-        /// <summary>
-        /// Max number of item to store in database.
-        /// </summary>
-        public static int DatabaseMaxItem { get; set; } = 5;
+       /// <summary>
+       /// <inheritdoc cref="_databaseMaxItem"/>
+       /// </summary>
+        public static int DatabaseMaxItem
+        {
+            get { return _databaseMaxItem; }
+            set
+            {
+                if (value != _databaseMaxItem)
+                {
+                    _databaseMaxItem = value;
+                    NotifyStaticPropertyChanged(nameof(DatabaseMaxItem));
+                }
+            }
+        }
 
         /// <summary>
-        /// Max number of item length to store in database.
+        /// <inheritdoc cref="_databaseMaxItemLength"/>
         /// </summary>
-        public static int DatabaseMaxItemLength { get; set; } = 1000;
+        public static int DatabaseMaxItemLength
+        {
+            get { return _databaseMaxItemLength; }
+            set
+            {
+                if (value != _databaseMaxItemLength)
+                {
+                    _databaseMaxItemLength = value;
+                    NotifyStaticPropertyChanged(nameof(DatabaseMaxItemLength));
+                }
+            }
+        }
 
         /// <summary>
-        /// Determines the maximum number of device connections allowed.
+        /// <inheritdoc cref="_databaseMaxConnection"/>
         /// </summary>
-        public static int DatabaseMaxConnection { get; set; } = 1;
+        public static int DatabaseMaxConnection
+        {
+            get { return _databaseMaxConnection; }
+            set
+            {
+                if (value != _databaseMaxConnection)
+                {
+                    _databaseMaxConnection = value;
+                    NotifyStaticPropertyChanged(nameof(DatabaseMaxConnection));
+                }
+            }
+        }
+
+        /// <summary> 
+        /// <inheritdoc cref="_qrData"/> 
+        /// </summary>
+        public static QRCodeData? QRData 
+        { 
+            get { return _qrData;  } 
+            set 
+            {
+                if (value != _qrData)
+                {
+                    _qrData = value;
+                    NotifyStaticPropertyChanged(nameof(QRData));
+                }
+            } 
+        }
 
         /// <summary>
         /// Password which will be used to decrypt item in database.
         /// </summary>
         public static string DatabaseEncryptPassword { get; set; } = FB_DEFAULT_PASS.Decrypt();
 
+        [Obsolete("The property will be removed use CurrentFirebase")]
         /// <summary>
         /// The endpoint Firebase URL https://example-pathio.com
         /// </summary>
         public static string FirebaseEndpoint { get; set; } = FIREBASE_PATH;
 
+        [Obsolete("The property will be removed use CurrentFirebase")]
         /// <summary>
         /// The secret Auth key which will be used to make connection to database.
         /// </summary>
         public static string FirebaseSecret { get; set; } = string.Empty;
 
+        [Obsolete("The property will be removed use CurrentFirebase")]
         /// <summary>
         /// The app Id of mobile package name that is needed to make connection for the mobile App.
         /// </summary>
         public static string FirebaseAppId { get; set; } = FIREBASE_APP_ID;
 
+        [Obsolete("The property will be removed use CurrentFirebase")]
         /// <summary>
         /// A web API key for Firebase database.
         /// </summary>
@@ -213,25 +314,11 @@ namespace Components
         /// This stores all the credentials necessary for making connection with Firebase.
         /// </summary>
         public static Credential FirebaseCredential { get; set; } = new Credential();
-        ///// <summary>
-        ///// This token will be used to make call to firebase database.
-        ///// </summary>
-        //public static string FirebaseAccessToken { get; set; } = string.Empty;
 
-        ///// <summary>
-        ///// Refresh token will be used to generate new access_Token
-        ///// </summary>
-        //public static string FirebaseRefreshToken { get; set; } = string.Empty;
-
-        ///// <summary>
-        ///// Use this to determine whether to generate a new access token or not.
-        ///// <code>
-        ///// if (DateTime.Now.ToFormattedDateTime(false) >= <see cref="FirebaseAccessToken"/>) {<br/>
-        ///// ......<br/>
-        ///// }<br/>
-        ///// </code>
-        ///// </summary>
-        //public static long FirebaseTokenRefreshTime { get; set; }
+        /// <summary>
+        /// Stores the current configuration that is being used by Firebase Singleton and helper class.
+        /// </summary>
+        public static FirebaseData? FirebaseCurrent { get; set; }
 
         /// <summary>
         /// Holds all the firebase configuration or any custom configuration as well.
@@ -248,6 +335,15 @@ namespace Components
         //    todo: 3. Data added to online database externally, respond to such changes locally.
         #endregion
 
+        #region Notify Static PropertyChange
+
+        public static event EventHandler<PropertyChangedEventArgs>? StaticPropertyChanged;
+        private static void NotifyStaticPropertyChanged(string propertyName)
+        {
+            StaticPropertyChanged?.Invoke(null, new PropertyChangedEventArgs(propertyName));
+        }
+
+        #endregion
 
         #region Methods
 
@@ -286,21 +382,44 @@ namespace Components
         /// </summary>
         public static void WriteFirebaseSetting()
         {
-            if (FirebaseEndpoint == FIREBASE_PATH || FirebaseSecret == FIREBASE_SECRET) return;
+            if (FirebaseCurrent == null) return;
+            if (FirebaseCurrent?.Endpoint == FIREBASE_PATH) return;
             var firebaseDoc = new XDocument();
             var config = new XElement(SETTINGS);
             config
                  .Add(
-                     new XElement(nameof(FirebaseEndpoint), FirebaseEndpoint.ToString()),
-                     new XElement(nameof(FirebaseSecret), FirebaseSecret.ToString()),
-                     new XElement(nameof(FirebaseAppId), FirebaseAppId.ToString()),
-                     new XElement(nameof(FirebaseApiKey), FirebaseApiKey.ToString()),
                      new XElement(nameof(UniqueID), UniqueID.Encrypt()),
                      new XElement(nameof(DatabaseEncryptPassword), DatabaseEncryptPassword.Encrypt()),
                      new XElement(nameof(DatabaseMaxItem), DatabaseMaxItem.ToString()),
                      new XElement(nameof(DatabaseMaxItemLength), DatabaseMaxItemLength.ToString()),
                      new XElement(nameof(DatabaseMaxConnection), DatabaseMaxConnection.ToString())
                  );
+            var firebaseConfig = new XElement(FIREBASE);
+            firebaseConfig
+                .Add(
+                    new XElement(nameof(FirebaseCurrent.Endpoint), FirebaseCurrent.Endpoint.ToString()),
+                    new XElement(nameof(FirebaseCurrent.ApiKey), FirebaseCurrent.ApiKey.ToString()),
+                    new XElement(nameof(FirebaseCurrent.AppId), FirebaseCurrent.AppId.ToString()),
+                    new XElement(nameof(FirebaseCurrent.isAuthNeeded), FirebaseCurrent.isAuthNeeded.ToString())
+                );
+
+            var desktopOAuth = new XElement(DESKTOP_AUTH);
+            desktopOAuth
+                .Add(
+                    new XElement(nameof(FirebaseCurrent.DesktopAuth.ClientId), FirebaseCurrent.DesktopAuth.ClientId.ToString()),
+                    new XElement(nameof(FirebaseCurrent.DesktopAuth.ClientSecret), FirebaseCurrent.DesktopAuth.ClientSecret?.ToString())
+                );
+            var mobileOAuth = new XElement(MOBILE_AUTH); // Mobile auth doesn't need ClientSecret
+            mobileOAuth
+                .Add(
+                    new XElement(nameof(FirebaseCurrent.MobileAuth.ClientId), FirebaseCurrent.MobileAuth.ClientId.ToString())
+                );
+
+            firebaseConfig.Add(mobileOAuth);
+            firebaseConfig.Add(desktopOAuth);
+
+            firebaseDoc.Add(firebaseConfig);
+            
             firebaseDoc.Add(config);
             firebaseDoc.Save(CustomFirebasePath);
         }
@@ -325,7 +444,7 @@ namespace Components
         }
 
         /// <summary>
-        /// Method checks if Firebase Access, Refresh Token are not null and empty.
+        /// Returns True if Firebase Access or Refresh Token are not null and empty.
         /// </summary>
         public static bool IsValidCredential()
         {
@@ -375,9 +494,6 @@ namespace Components
             ShowDataChangeNotification = settings.Element(nameof(ShowDataChangeNotification)).Value.ToBool();
             DisplayStartNotification = settings.Element(nameof(DisplayStartNotification)).Value.ToBool();
             BindDatabase = settings.Element(nameof(BindDatabase)).Value.ToBool();
-            //FirebaseCredential.AccessToken = settings.Element(nameof(Credential.AccessToken)).Value;
-            //FirebaseCredential.RefreshToken = settings.Element(nameof(Credential.RefreshToken)).Value;
-            //FirebaseCredential.TokenRefreshTime = settings.Element(nameof(Credential.TokenRefreshTime)).Value.ToLong();
         }
 
         /// <summary>
@@ -388,17 +504,35 @@ namespace Components
             // Loading custom firebase setting...
             if (File.Exists(CustomFirebasePath))
             {
-                var firebaseDoc = XDocument.Load(CustomFirebasePath).Element(SETTINGS);
+                var doc = XDocument.Load(CustomFirebasePath);
+                var settingDoc = doc.Element(SETTINGS);
+                var firebaseDoc = doc.Element(FIREBASE);
+                var desktopDoc = firebaseDoc.Element(DESKTOP_AUTH);
+                var mobileDoc = firebaseDoc.Element(MOBILE_AUTH);
 
-                FirebaseEndpoint = firebaseDoc.Element(nameof(FirebaseEndpoint)).Value;
-                FirebaseSecret = firebaseDoc.Element(nameof(FirebaseSecret)).Value;
-                FirebaseAppId = firebaseDoc.Element(nameof(FirebaseAppId)).Value;
-                FirebaseApiKey = firebaseDoc.Element(nameof(FirebaseApiKey)).Value;
-                UniqueID = firebaseDoc.Element(nameof(UniqueID)).Value.Decrypt();
-                DatabaseEncryptPassword = firebaseDoc.Element(nameof(DatabaseEncryptPassword)).Value.Decrypt();
-                DatabaseMaxConnection = firebaseDoc.Element(nameof(DatabaseMaxConnection)).Value.ToInt();
-                DatabaseMaxItemLength = firebaseDoc.Element(nameof(DatabaseMaxItemLength)).Value.ToInt();
-                DatabaseMaxItem = firebaseDoc.Element(nameof(DatabaseMaxItem)).Value.ToInt();
+                UniqueID = settingDoc.Element(nameof(UniqueID)).Value.Decrypt();
+                DatabaseEncryptPassword = settingDoc.Element(nameof(DatabaseEncryptPassword)).Value.Decrypt();
+                DatabaseMaxConnection = settingDoc.Element(nameof(DatabaseMaxConnection)).Value.ToInt();
+                DatabaseMaxItemLength = settingDoc.Element(nameof(DatabaseMaxItemLength)).Value.ToInt();
+                DatabaseMaxItem = settingDoc.Element(nameof(DatabaseMaxItem)).Value.ToInt();
+
+                if (FirebaseCurrent == null)
+                    FirebaseCurrent = new FirebaseData();
+
+                FirebaseCurrent.Endpoint = firebaseDoc.Element(nameof(FirebaseCurrent.Endpoint)).Value;
+                FirebaseCurrent.ApiKey = firebaseDoc.Element(nameof(FirebaseCurrent.ApiKey)).Value;
+                FirebaseCurrent.AppId = firebaseDoc.Element(nameof(FirebaseCurrent.AppId)).Value;
+                FirebaseCurrent.isAuthNeeded = firebaseDoc.Element(nameof(FirebaseCurrent.isAuthNeeded)).Value.ToBool();
+
+                var DesktopAuth = new OAuth();
+                DesktopAuth.ClientId = desktopDoc.Element(nameof(FirebaseCurrent.DesktopAuth.ClientId)).Value;
+                DesktopAuth.ClientSecret = desktopDoc.Element(nameof(FirebaseCurrent.DesktopAuth.ClientSecret)).Value;
+
+                var MobileAuth = new OAuth();
+                MobileAuth.ClientId = mobileDoc.Element(nameof(FirebaseCurrent.MobileAuth.ClientId)).Value;
+
+                FirebaseCurrent.DesktopAuth = DesktopAuth;
+                FirebaseCurrent.MobileAuth = MobileAuth;
             }
         }
 

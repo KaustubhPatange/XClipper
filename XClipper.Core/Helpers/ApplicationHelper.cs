@@ -13,6 +13,7 @@ namespace Components
 {
     public static class ApplicationHelper
     {
+
         #region Constants
 
         const UInt32 SWP_NOSIZE = 0x0001;

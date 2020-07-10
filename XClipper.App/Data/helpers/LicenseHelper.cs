@@ -54,6 +54,9 @@ namespace Components
                 var response = await client.ExecuteTaskAsync(new RestRequest(Method.GET)).ConfigureAwait(false);
                 if (response.StatusCode == HttpStatusCode.OK)
                     return response.Content;
+            }catch (Exception ex)
+            {
+                LogHelper.Log(this, ex.StackTrace);
             }
             finally { }
             return null;

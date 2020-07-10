@@ -5,13 +5,11 @@ using static Components.Constants;
 using static Components.LicenseHandler;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
-using System;
 using System.Windows;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Win32;
 using System.Xml.Linq;
-using Components.Controls;
 using Components.Controls.Dialog;
 
 namespace Components

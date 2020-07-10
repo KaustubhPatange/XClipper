@@ -123,7 +123,6 @@
     <Compile Include="Data\unlocalized\IKeyboardRecorder.cs" />
     <Compile Include="Data\unlocalized\ISettingEventBinder.cs" />
     <Compile Include="Data\unlocalized\MessageType.cs" />
-    <Compile Include="Helpers\LogHelper.cs" />
     <Compile Include="Helpers\PathHelper.cs" />
     <Compile Include="Helpers\RegistryHelper.cs" />
     <Compile Include="Helpers\ApplicationHelper.cs" />

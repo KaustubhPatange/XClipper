@@ -30,6 +30,8 @@ class DBConnectionProviderImpl(
                 val firebaseApiKey = firebaseConfigs[1]
                 val firebaseEndpoint = firebaseConfigs[2]
                 val firebasePassword = firebaseConfigs[3]
+                val isAuthNeeded = firebaseConfigs[4].toBoolean()
+                val firebaseAuthClientId = if (isAuthNeeded) firebaseConfigs[5] else null
 
                 responseListener.onComplete(
                     FBOptions.Builder().apply {
@@ -38,6 +40,8 @@ class DBConnectionProviderImpl(
                         setAppId(firebaseAppId)
                         setEndPoint(firebaseEndpoint)
                         setPassword(firebasePassword)
+                        setIsAuthNeeded(isAuthNeeded)
+                        setAuthClientId(firebaseAuthClientId)
                     }
                         .build()
                 )
@@ -64,6 +68,14 @@ class DBConnectionProviderImpl(
             App.FB_ENDPOINT_PREF,
             EMPTY_STRING
         ) ?: EMPTY_STRING
+        App.FB_TOKEN_ID = preferenceProvider.getEncryptString(
+            App.FB_TOKEN_ID_PREF,
+            EMPTY_STRING
+        ) ?: EMPTY_STRING
+        App.AUTH_NEEDED = preferenceProvider.getBooleanKey(
+            App.AUTH_NEEDED_PREF,
+            false
+        )
         App.UID = preferenceProvider.getStringKey(App.UID_PREF, EMPTY_STRING) ?: EMPTY_STRING
 
         /** This will initialize a password */
@@ -90,6 +102,9 @@ class DBConnectionProviderImpl(
         preferenceProvider.putStringKey(
             App.UID_PREF, options.uid
         )
+        preferenceProvider.putBooleanKey(
+            App.AUTH_NEEDED_PREF, options.isAuthNeeded
+        )
 
         /** This will load the data to App.kt properties */
         loadDataFromPreference()
@@ -103,6 +118,7 @@ class DBConnectionProviderImpl(
                 setAppId(App.FB_APP_ID)
                 setEndPoint(App.FB_ENDPOINT)
                 setPassword(Encryption.getPassword())
+                setIsAuthNeeded(App.AUTH_NEEDED)
             }.build()
         } else
             null
@@ -114,6 +130,7 @@ class DBConnectionProviderImpl(
         preferenceProvider.removeKey(App.FB_API_KEY_PREF)
         preferenceProvider.removeKey(App.FB_PASSWORD_PREF)
         preferenceProvider.removeKey(App.UID_PREF)
+        preferenceProvider.removeKey(App.AUTH_NEEDED_PREF)
 
         loadDataFromPreference()
     }

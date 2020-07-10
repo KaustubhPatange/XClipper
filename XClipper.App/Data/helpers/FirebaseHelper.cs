@@ -6,9 +6,13 @@ using Newtonsoft.Json.Linq;
 using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Ink;
 using static Components.DefaultSettings;
+
+#nullable enable
 
 namespace Components
 {
@@ -41,7 +45,7 @@ namespace Components
 
         /// <summary>
         /// This will set credential related settings in <see cref="DefaultSettings"/> and also
-        /// save this setting to file using <see cref="DefaultSettings.WriteFirebaseCredentialSetting"/>
+        /// save this setting to file using <see cref="WriteFirebaseCredentialSetting"/>
         /// </summary>
         /// <param name="accessToken"></param>
         /// <param name="refreshToken"></param>
@@ -80,12 +84,13 @@ namespace Components
             {
                 if (ex.Message.Contains("401 (Unauthorized)"))
                 {
-                    if (await RefreshAccessToken(FirebaseSingleton.GetInstance.CurrentAccount).ConfigureAwait(false))
+                    if (await RefreshAccessToken(FirebaseCurrent).ConfigureAwait(false))
                     {
                         client.UpdateConfig(new FirebaseConfig { AccessToken = FirebaseCredential.AccessToken });
                         return await SafeUpdateAsync(client, path, data).ConfigureAwait(false);
                     }
                 }
+                LogHelper.Log(typeof(FirebaseHelper), ex.StackTrace);
             }
             return null;
         }
@@ -109,12 +114,13 @@ namespace Components
             {
                 if (ex.Message.Contains("401 (Unauthorized)"))
                 {
-                    if (await RefreshAccessToken(FirebaseSingleton.GetInstance.CurrentAccount).ConfigureAwait(false))
+                    if (await RefreshAccessToken(FirebaseCurrent).ConfigureAwait(false))
                     {
                         client.UpdateConfig(new FirebaseConfig { AccessToken = FirebaseCredential.AccessToken });
                         return await SafeSetAsync(client, path, data).ConfigureAwait(false);
                     }
                 }
+                LogHelper.Log(typeof(FirebaseHelper), ex.StackTrace);
             }
             return null;
         }
@@ -137,12 +143,13 @@ namespace Components
             {
                 if (ex.Message.Contains("401 (Unauthorized)"))
                 {
-                    if (await RefreshAccessToken(FirebaseSingleton.GetInstance.CurrentAccount).ConfigureAwait(false))
+                    if (await RefreshAccessToken(FirebaseCurrent).ConfigureAwait(false))
                     {
                         client.UpdateConfig(new FirebaseConfig { AccessToken = FirebaseCredential.AccessToken });
                         return await SafeGetAsync(client, path).ConfigureAwait(false);
                     }
                 }
+                LogHelper.Log(typeof(FirebaseHelper), ex.StackTrace);
             }
             return null;
         }
@@ -165,12 +172,13 @@ namespace Components
             {
                 if (ex.Message.Contains("401 (Unauthorized)"))
                 {
-                    if (await RefreshAccessToken(FirebaseSingleton.GetInstance.CurrentAccount).ConfigureAwait(false))
+                    if (await RefreshAccessToken(FirebaseCurrent).ConfigureAwait(false))
                     {
                         client.UpdateConfig(new FirebaseConfig { AccessToken = FirebaseCredential.AccessToken });
                         return await SafeDeleteAsync(client, path).ConfigureAwait(false);
                     }
                 }
+                LogHelper.Log(typeof(FirebaseHelper), ex.StackTrace);
             }
             return null;
         }

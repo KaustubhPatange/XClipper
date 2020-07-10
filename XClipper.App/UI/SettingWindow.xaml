@@ -185,7 +185,7 @@
                                 <Image
                                     x:Name="_qrImage"
                                     Height="110"
-                                    Source="{Binding UID, Converter={x:Static local:ImageQRConverter.Instance}}">
+                                    Source="{Binding Path=(local:DefaultSettings.QRData), Converter={x:Static local:ImageQRConverter.Instance}}">
                                     <Image.ToolTip>
                                         <ToolTip Content="{DynamicResource settings_qr_tooltip}" />
                                     </Image.ToolTip>
@@ -213,28 +213,28 @@
                                 Title="{DynamicResource settings_mi}"
                                 Margin="0,10,0,0"
                                 ItemMaxValue="{Binding Source={x:Static local:Constants.FB_MAX_ITEM}}"
-                                ItemValue="{Binding FMI}"
+                                ItemValue="{Binding Path=(local:DefaultSettings.DatabaseMaxItem)}"
                                 ToolTip="{DynamicResource settings_mit}" />
 
                             <control:FirebaseListItem
                                 Title="{DynamicResource settings_mil}"
                                 Margin="0,3,0,0"
                                 ItemMaxValue="{Binding Source={x:Static local:Constants.FB_MAX_LENGTH}}"
-                                ItemValue="{Binding FMIL}"
+                                ItemValue="{Binding Path=(local:DefaultSettings.DatabaseMaxItemLength)}"
                                 ToolTip="{DynamicResource settings_milt}" />
 
                             <control:FirebaseListItem
                                 Title="{DynamicResource settings_mcd}"
                                 Margin="0,3,0,0"
                                 ItemMaxValue="{Binding Source={x:Static local:Constants.FB_MAX_CONNECTION}}"
-                                ItemValue="{Binding FMCD}"
+                                ItemValue="{Binding Path=(local:DefaultSettings.DatabaseMaxConnection)}"
                                 ToolTip="{DynamicResource settings_mcdt}" />
 
                             <StackPanel
                                 Margin="0,10,0,0"
                                 HorizontalAlignment="Center"
                                 Orientation="Horizontal"
-                                Visibility="{Binding Source={x:Static local:DefaultSettings.LicenseStrategy}, Converter={x:Static local:LicenseTextConverter.Instance}}">
+                                Visibility="{Binding Path=(local:DefaultSettings.LicenseStrategy), Converter={x:Static local:LicenseTextConverter.Instance}}">
                                 <TextBlock
                                     Margin="0,0,5,0"
                                     FontSize="11"

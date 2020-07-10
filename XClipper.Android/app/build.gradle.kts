@@ -52,6 +52,7 @@ dependencies {
         implementation(project(moduleId))
     implementation(LibraryDependency.KOTLIN_STDLIB)
     implementation(LibraryDependency.APP_COMPAT)
+    implementation(LibraryDependency.ACTIVITY)
     implementation(LibraryDependency.CORE_KTX)
     implementation(LibraryDependency.COLLECTIONS_KTX)
     implementation(LibraryDependency.CONSTRAINT_LAYOUT)
@@ -65,6 +66,8 @@ dependencies {
     kapt(LibraryDependency.ROOM_COMPILER_KAPT)
 
     implementation(LibraryDependency.FIREBASE_REALTIME_DATABASE)
+    implementation(LibraryDependency.FIREBASE_AUTH)
+    implementation(LibraryDependency.PLAY_SERVICE_AUTH)
     implementation(LibraryDependency.NAVIGATION_FRAGMENT)
     implementation(LibraryDependency.NAVIGATION_UI)
     implementation(LibraryDependency.PAGING)

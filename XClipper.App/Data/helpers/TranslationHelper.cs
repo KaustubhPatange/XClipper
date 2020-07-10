@@ -89,6 +89,7 @@ namespace Components
         public string MSG_FIREBASE_CLIENT_ERR = rm.GetString("msg_firebase_client_err");
         public string MSG_FIREBASE_UNKNOWN_ERR = rm.GetString("msg_firebase_unknown_err");
         public string MSG_NEED_AUTH = rm.GetString("msg_need_auth");
+        public string MSG_UNKNOWN_ERR = rm.GetString("msg_unknown_err");
         public string POPUP_ADDED = rm.GetString("popup_added");
         public string POPUP_SPACE_FOCUS = rm.GetString("popup_space_focus");
         public string POPUP_EDIT_ERR = rm.GetString("popup_edit_err");

@@ -12,6 +12,8 @@ namespace Components
             return true;
         }
 
+        #region Directory Constants
+
         public static string ApplicationLocation = Assembly.GetExecutingAssembly().Location;
         public static string BaseDirectory = AppDomain.CurrentDomain.BaseDirectory;
         public static string RoamingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -25,16 +27,22 @@ namespace Components
         public static string CustomFirebasePath = Path.Combine(ApplicationDirectory, "custom-firebase.xml");
         public static string FirebaseCredentialPath = Path.Combine(ApplicationDirectory, "credentials-firebase.xml");
         public static string QRImageFilePath = Path.Combine(ApplicationTempDirectory, "qr.png");
+        public static string LogFilePath = Path.Combine(ApplicationDirectory, "log.log");
         public static string UpdatePackageFile = Path.Combine(ApplicationTempDirectory, "package-update.exe");
 
-        public static string ApplicationVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+        #endregion
+
 
         #region Some application specific constants
 
-        public const string UPDATE_URI = "https://pastebin.com/raw/FRS7n7Fc"; // todo: Change update uri
+        public static string ApplicationVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+        public const string UPDATE_URI = "https://pastebin.com/raw/FRS7n7Fc"; // todo: Change update uri https://raw.githubusercontent.com/KaustubhPatange/XClipper/master/UPDATE
         public const string OAUTH_TOKEN_URI = "https://oauth2.googleapis.com/token";
         public const string SETTINGS = "Settings";
         public const string CREDENTIAL = "Credential";
+        public const string FIREBASE = "Firebase";
+        public const string DESKTOP_AUTH = "DesktopAuth";
+        public const string MOBILE_AUTH = "MobileAuth";
         public const int NOTIFICATION_TRUNCATE_TEXT = 150;
         public const int RESTSHARP_TIMEOUT = 15 * 3000;
 
@@ -56,6 +64,10 @@ namespace Components
         #endregion
 
         #region Database Constants
+
+        public const int FB_MIN_ITEM = 5;
+        public const int FB_MIN_LENGTH = 1000;
+        public const int FB_MIN_CONNECTION = 1;
 
         public const int FB_MAX_ITEM = 20;
         public const int FB_MAX_LENGTH = 10000;

@@ -100,6 +100,7 @@
     <system:String x:Key="msg_firebase_client_err">Firebase client is not initialized yet, wait till XClipper initializes it.</system:String>
     <system:String x:Key="msg_firebase_unknown_err">Unknown error with the Firebase Client. Report me if you get this message.</system:String>
     <system:String x:Key="msg_need_auth">In order to connect with database you first need to Sign-In.</system:String>
+    <system:String x:Key="msg_unknown_err">An unknown error occurred. Report me if you get this message.</system:String>
     <system:String x:Key="popup_added">Added:</system:String>
     <system:String x:Key="popup_space_focus">...Press (Space) to Focus...</system:String>
     <system:String x:Key="popup_edit_err">Editing is not supported for this format</system:String>

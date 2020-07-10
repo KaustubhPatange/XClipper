@@ -21,6 +21,9 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ShareCompat
 import androidx.preference.PreferenceManager
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.google.zxing.integration.android.IntentIntegrator
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.App.AUTO_SYNC_PREF
@@ -280,11 +283,15 @@ class Utils {
             preferenceProvider: PreferenceProvider,
             dbConnectionProvider: DBConnectionProvider
         ) {
+            if (dbConnectionProvider.optionsProvider()?.isAuthNeeded == true)
+                Firebase.auth.signOut()
             dbConnectionProvider.detachDataFromAll()
             preferenceProvider.putBooleanKey(BIND_PREF, false)
             preferenceProvider.putBooleanKey(AUTO_SYNC_PREF, false)
             App.bindToFirebase = false
             App.runAutoSync = false
+
+
         }
 
         fun loginToDatabase(
