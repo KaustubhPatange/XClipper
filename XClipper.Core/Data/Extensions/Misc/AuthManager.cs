@@ -42,6 +42,11 @@ namespace Components
             this.ClientId = ClientId;
             this.ClientSecret = ClientSecret;
         }
+        public void RemoveSubscribers()
+        {
+            FailureEvent = null;
+            SuccessEvent = null;
+        }
         public async Task SignInWithGoogle()
         {
             // Generates state and PKCE values.
@@ -110,7 +115,7 @@ namespace Components
             // Starts the code exchange at the Token Endpoint.
             performCodeExchange(code, code_verifier, redirectURI);
         }
-
+        
         private async void performCodeExchange(string code, string code_verifier, string redirectURI)
         {
             // builds the  request

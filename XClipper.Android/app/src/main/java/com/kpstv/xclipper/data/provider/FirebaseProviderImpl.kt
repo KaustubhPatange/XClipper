@@ -71,7 +71,7 @@ class FirebaseProviderImpl(
             .setDatabaseUrl(options.endpoint)
             .build()
 
-        FirebaseApp.getInstance().delete()
+    //    FirebaseApp.getInstance().delete()
 
         if (FirebaseApp.getApps(context).isEmpty())
             FirebaseApp.initializeApp(context, firebaseOptions)

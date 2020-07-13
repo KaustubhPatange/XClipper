@@ -9,8 +9,10 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Ink;
 using static Components.DefaultSettings;
+using static Components.TranslationHelper;
 
 #nullable enable
 
@@ -90,6 +92,7 @@ namespace Components
                         return await SafeUpdateAsync(client, path, data).ConfigureAwait(false);
                     }
                 }
+                CheckForUnauthorizedRequest(ex);
                 LogHelper.Log(typeof(FirebaseHelper), ex.StackTrace);
             }
             return null;
@@ -120,6 +123,7 @@ namespace Components
                         return await SafeSetAsync(client, path, data).ConfigureAwait(false);
                     }
                 }
+                CheckForUnauthorizedRequest(ex);
                 LogHelper.Log(typeof(FirebaseHelper), ex.StackTrace);
             }
             return null;
@@ -149,6 +153,7 @@ namespace Components
                         return await SafeGetAsync(client, path).ConfigureAwait(false);
                     }
                 }
+                CheckForUnauthorizedRequest(ex);
                 LogHelper.Log(typeof(FirebaseHelper), ex.StackTrace);
             }
             return null;
@@ -178,9 +183,28 @@ namespace Components
                         return await SafeDeleteAsync(client, path).ConfigureAwait(false);
                     }
                 }
+                CheckForUnauthorizedRequest(ex);
                 LogHelper.Log(typeof(FirebaseHelper), ex.StackTrace);
             }
             return null;
+        }
+
+        /// <summary>
+        /// This will check if user signed with wrong account and therefore needs 
+        /// to sign in again with proper account.
+        /// </summary>
+        /// <param name="ex"></param>
+        private static void CheckForUnauthorizedRequest(Exception ex)
+        {
+            if (ex.Message.Contains("Unauthorized request."))
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    RemoveFirebaseCredentials();
+                    MessageBox.Show(Translation.MSG_WRONG_SIGNIN, Translation.MSG_ERR, MessageBoxButton.OK, MessageBoxImage.Error);
+                    FirebaseSingleton.GetInstance.InitConfig(FirebaseCurrent);
+                });  
+            }
         }
 
         #endregion

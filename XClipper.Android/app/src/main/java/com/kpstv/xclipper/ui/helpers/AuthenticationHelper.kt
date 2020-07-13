@@ -74,7 +74,7 @@ class AuthenticationHelper(
             .setDatabaseUrl(options.endpoint)
             .build()
 
-        FirebaseApp.getInstance().delete()
+      //  FirebaseApp.getInstance().delete()
 
         val app = if (FirebaseApp.getApps(this).isEmpty())
             FirebaseApp.initializeApp(this, firebaseOptions)

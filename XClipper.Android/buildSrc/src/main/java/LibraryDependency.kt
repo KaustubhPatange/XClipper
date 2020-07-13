@@ -25,7 +25,7 @@ private object LibraryVersion {
     const val FLOATING_BUBBLE = "3.0.0"
     const val GIF_DRAWABLE = "1.2.19"
     const val REALTIME_DATABASE = "19.3.1"
-    const val FIREBASE_AUTH = "19.3.1"
+    const val FIREBASE_AUTH = "19.3.2"
     const val PLAY_SERVICE_AUTH = "18.0.0"
     const val ACTIVITY = "1.2.0-alpha06"
 }

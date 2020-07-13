@@ -3,7 +3,7 @@ plugins {
     kotlin(GradlePluginId.ANDROID_KTX)
     kotlin(GradlePluginId.ANDROID_EXTENSIONS_KTX)
     kotlin(GradlePluginId.KAPT)
-    id(GradlePluginId.GOOGLE_SERVICE)
+//    id(GradlePluginId.GOOGLE_SERVICE)
     id(GradlePluginId.SAFE_ARGS)
 }
 
