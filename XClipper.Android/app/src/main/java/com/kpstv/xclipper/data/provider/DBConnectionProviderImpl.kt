@@ -68,10 +68,6 @@ class DBConnectionProviderImpl(
             App.FB_ENDPOINT_PREF,
             EMPTY_STRING
         ) ?: EMPTY_STRING
-        App.FB_TOKEN_ID = preferenceProvider.getEncryptString(
-            App.FB_TOKEN_ID_PREF,
-            EMPTY_STRING
-        ) ?: EMPTY_STRING
         App.AUTH_NEEDED = preferenceProvider.getBooleanKey(
             App.AUTH_NEEDED_PREF,
             false

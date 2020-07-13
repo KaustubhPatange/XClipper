@@ -39,7 +39,6 @@ class AccountPreference : PreferenceFragmentCompat(), KodeinAware {
     private var bindPreference: SwitchPreferenceCompat? = null
     private var logPreference: Preference? = null
     private var connectPreference: Preference? = null
-    lateinit var getResult: ActivityResultLauncher<Intent?>
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.account_pref, rootKey)

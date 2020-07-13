@@ -84,7 +84,7 @@ namespace Components
             {
                 if (await RefreshAccessToken(FirebaseCurrent).ConfigureAwait(false))
                 {
-                    CreateNewClient();
+                    await CreateNewClient().ConfigureAwait(false);
                     return true;
                 }
             }
@@ -95,22 +95,33 @@ namespace Components
         private async Task<User> _GetUser()
         {
             var data = await client.SafeGetAsync($"users/{UID}").ConfigureAwait(false);
-            if (data == null) // Sometimes it catch to this exception which is due to unknown error.
+            if (data == null || data.Body == "null") // Sometimes it catch to this exception which is due to unknown error.
             {
-                MessageBox.Show(Translation.MSG_UNKNOWN_ERR, Translation.MSG_ERR, MessageBoxButton.OK, MessageBoxImage.Error);
-                return null;
+                return await RegisterUser().ConfigureAwait(false);
+                //MessageBox.Show(Translation.MSG_UNKNOWN_ERR, Translation.MSG_ERR, MessageBoxButton.OK, MessageBoxImage.Error);
+                //return null;
             }
-            if (data.Body != "null")
-            {
-                return data.ResultAs<User>().Also((user) => { this.user = user; });
-            }
-            else return await RegisterUser().ConfigureAwait(false);
+            else return data.ResultAs<User>().Also((user) => { this.user = user; });
+
+            //if (data.Body != "null")
+            //{
+            //    return data.ResultAs<User>().Also((user) => { this.user = user; });
+            //}
+            //else return await RegisterUser().ConfigureAwait(false);
+        }
+
+        private void SetCommonUserInfo(User user)
+        {
+            // todo: Set some other details for user...
+            user.MaxItemStorage = DatabaseMaxItem;
+            user.TotalConnection = DatabaseMaxConnection;
+            user.IsLicensed = IsPurchaseDone;
         }
 
         /// <summary>
         /// This must be called whenever client is changed.
         /// </summary>
-        private void CreateNewClient()
+        private async Task CreateNewClient()
         {
             // We will set isBinded to false since we are creating a new client.
             isBinded = false;
@@ -120,22 +131,22 @@ namespace Components
                 config = new FirebaseConfig
                 {
                     AccessToken = FirebaseCredential?.AccessToken,
-                    BasePath = FirebaseEndpoint
+                    BasePath = FirebaseCurrent.Endpoint
                 };
             }
             else
             {
                 config = new FirebaseConfig
                 {
-                    BasePath = FirebaseEndpoint
+                    BasePath = FirebaseCurrent.Endpoint
                 };
             }
             client = new FirebaseClient(config);
 
+            await SetGlobalUserTask(true).ConfigureAwait(false);
+
             // BindUI is already set, make sure to set callback to it.
             SetCallback();
-
-            Task.Run(async () => await SetGlobalUserTask(true).ConfigureAwait(false));
         }
         #endregion
 
@@ -184,9 +195,7 @@ namespace Components
             if (!BindDatabase) return;
             await SetGlobalUserTask().ConfigureAwait(false);
 
-            user.MaxItemStorage = DatabaseMaxItem;
-            user.TotalConnection = DatabaseMaxConnection;
-            user.IsLicensed = IsPurchaseDone;
+            SetCommonUserInfo(user);
 
             await client.SafeSetAsync($"users/{UID}", user).ConfigureAwait(false);
         }
@@ -199,7 +208,6 @@ namespace Components
         /// <returns>True if user exist</returns>
         public async Task<bool> SetGlobalUserTask(bool forceInvoke = false)
         {
-
             if (client == null)
             {
                 MessageBox.Show(Translation.MSG_FIREBASE_CLIENT_ERR, Translation.MSG_INFO, MessageBoxButton.OK, MessageBoxImage.Error);
@@ -212,10 +220,7 @@ namespace Components
             {
                 user = await _GetUser().ConfigureAwait(false);
 
-                // todo: Set some other details for user...
-                user.IsLicensed = IsPurchaseDone;
-                user.TotalConnection = DatabaseMaxConnection;
-                user.MaxItemStorage = DatabaseMaxItem;
+                SetCommonUserInfo(user);
 
                 if (user.Devices != null && user.Devices.Count > 0)
                     alwaysForceInvoke = true;
@@ -263,8 +268,7 @@ namespace Components
                 {
                     if (await RefreshAccessToken(FirebaseCurrent).ConfigureAwait(false))
                     {
-                        CreateNewClient();
-                        SetCallback();
+                        await CreateNewClient().ConfigureAwait(false);
                     }
                     else MessageBox.Show(ex.Message, Translation.MSG_ERR, MessageBoxButton.OK, MessageBoxImage.Error);
                 }
@@ -283,7 +287,7 @@ namespace Components
         private async Task<bool> IsUserExist()
         {
             var response = await client.SafeGetAsync($"users/{UID}").ConfigureAwait(false);
-            return response.Body != "null";
+            return response != null && response.Body != "null";
         }
 
         /// <summary>
@@ -297,7 +301,7 @@ namespace Components
             if (!exist)
             {
                 var user = new User();
-                user.IsLicensed = IsPurchaseDone;
+                SetCommonUserInfo(user);
                 this.user = user;
                 await client.SafeSetAsync($"users/{UID}", user).ConfigureAwait(false);
             }

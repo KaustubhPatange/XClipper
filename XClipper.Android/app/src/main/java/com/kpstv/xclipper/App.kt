@@ -54,9 +54,8 @@ object App {
     var FB_ENDPOINT: String = ""
     var FB_API_KEY: String = ""
     var FB_APP_ID: String = ""
-    var FB_TOKEN_ID: String = ""
     var AUTH_NEEDED: Boolean = false
-    var UID: String = "" // TODO: remove this eg: 1PAF8EB-4KR35L-1ICT12V-H7M3FM
+    var UID: String = ""
     lateinit var DeviceID: String
 
     var bindToFirebase = true
@@ -126,7 +125,6 @@ object App {
     const val FB_APP_ID_PREF = "appId_pref"
     const val FB_PASSWORD_PREF = "password_pref"
     const val FB_ENDPOINT_PREF = "endpoint_pref"
-    const val FB_TOKEN_ID_PREF = "token_pref"
     const val DARK_PREF = "dark_pref"
     const val IMPORT_PREF = "import_pref"
     const val EXPORT_PREF = "export_pref"

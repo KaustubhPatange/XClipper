@@ -549,7 +549,7 @@ namespace Components
             authWindow = new OAuthWindow(Id, secret);
             if (authWindow.ShowDialog() == true)
             {
-                FirebaseSingleton.GetInstance.InitConfig();
+                FirebaseSingleton.GetInstance.InitConfig(FirebaseCurrent);
             }
         }
 

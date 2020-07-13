@@ -82,6 +82,8 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
@@ -90,6 +92,7 @@
     <Compile Include="GeneralTest.cs" />
     <Compile Include="SQLTest.cs" />
     <Compile Include="FirebaseTest.cs" />
+    <Compile Include="PathTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

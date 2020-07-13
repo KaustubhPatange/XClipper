@@ -418,7 +418,7 @@ namespace Components
             firebaseConfig.Add(mobileOAuth);
             firebaseConfig.Add(desktopOAuth);
 
-            firebaseDoc.Add(firebaseConfig);
+            config.Add(firebaseConfig);
             
             firebaseDoc.Add(config);
             firebaseDoc.Save(CustomFirebasePath);
@@ -506,7 +506,7 @@ namespace Components
             {
                 var doc = XDocument.Load(CustomFirebasePath);
                 var settingDoc = doc.Element(SETTINGS);
-                var firebaseDoc = doc.Element(FIREBASE);
+                var firebaseDoc = settingDoc.Element(FIREBASE);
                 var desktopDoc = firebaseDoc.Element(DESKTOP_AUTH);
                 var mobileDoc = firebaseDoc.Element(MOBILE_AUTH);
 
@@ -550,6 +550,19 @@ namespace Components
                 FirebaseCredential.RefreshToken = firebaseDoc.Element(nameof(FirebaseCredential.RefreshToken)).Value;
                 FirebaseCredential.TokenRefreshTime = firebaseDoc.Element(nameof(FirebaseCredential.TokenRefreshTime)).Value.ToLong();
             }
+        }
+
+        #endregion
+
+        #region Delete
+
+        /// <summary>
+        /// This will remove current credentials so that we can re-auth.
+        /// </summary>
+        public static void RemoveFirebaseCredentials()
+        {
+            if (File.Exists(FirebaseCredentialPath)) File.Delete(FirebaseCredentialPath);
+            FirebaseCredential = new Credential();
         }
 
         #endregion

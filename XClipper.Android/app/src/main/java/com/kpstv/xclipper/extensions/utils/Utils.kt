@@ -21,6 +21,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ShareCompat
 import androidx.preference.PreferenceManager
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -37,6 +38,7 @@ import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.extensions.SimpleFunction
 import com.kpstv.xclipper.service.ClipboardAccessibilityService
+import com.kpstv.xclipper.ui.helpers.AuthenticationHelper
 import kotlinx.android.synthetic.main.dialog_connect.view.*
 import kotlinx.android.synthetic.main.dialog_progress_view.view.*
 import java.io.InputStream
@@ -280,9 +282,16 @@ class Utils {
         }
 
         fun logoutFromDatabase(
+            context: Context,
             preferenceProvider: PreferenceProvider,
             dbConnectionProvider: DBConnectionProvider
         ) {
+            dbConnectionProvider.optionsProvider()?.apply {
+                if (isAuthNeeded) {
+                    Firebase.auth.signOut()
+                    AuthenticationHelper.signOutGoogle(context, authClientId)
+                }
+            }
             if (dbConnectionProvider.optionsProvider()?.isAuthNeeded == true)
                 Firebase.auth.signOut()
             dbConnectionProvider.detachDataFromAll()

@@ -1,6 +1,7 @@
 package com.kpstv.xclipper.ui.viewmodels
 
 import android.app.Application
+import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
@@ -44,6 +45,7 @@ class MainViewModel(
     val dictionaryApiHelper: DictionaryApiHelper,
     val tinyUrlApiHelper: TinyUrlApiHelper
 ) : AndroidViewModel(application) {
+    val context: Context = application.applicationContext
 
     private val TAG = javaClass.simpleName
     private var _tag: Tag? = null
@@ -177,6 +179,7 @@ class MainViewModel(
         firebaseProvider.removeDevice(App.DeviceID, ResponseListener(
             complete = {
                 logoutFromDatabase(
+                    context = context,
                     preferenceProvider = preferenceProvider,
                     dbConnectionProvider = dbConnectionProvider
                 )
@@ -184,6 +187,7 @@ class MainViewModel(
             },
             error = {
                 logoutFromDatabase(
+                    context = context,
                     preferenceProvider = preferenceProvider,
                     dbConnectionProvider = dbConnectionProvider
                 )

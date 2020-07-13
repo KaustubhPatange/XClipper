@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Microsoft.Win32;
 using System.Xml.Linq;
 using Components.Controls.Dialog;
+using System.Text;
 
 namespace Components
 {
@@ -28,7 +29,6 @@ namespace Components
             checkForReset();
         }
 
-
         #region Actual Bindings
 
         public ICommand SaveCommand { get; set; }
@@ -36,13 +36,16 @@ namespace Components
         public ICommand ImportCommand { get; set; }
         public ICommand ExportCommand { get; set; }
         public string FBE { get; set; }
-        public string FBS { get; set; }
+        public string FMCI { get; set; }
+        public string FDCI { get; set; }
+        public string FDCS { get; set; }
         public string FBAK { get; set; }
         public string FBAI { get; set; }
         public string UID { get; set; } = UniqueID;
         public int DMI { get; set; } 
         public int DMIL { get; set; } 
         public int DMC { get; set; } 
+        public bool IAN { get; set; }
         public bool ResetEnabled { get; set; } = false;
 
         #endregion
@@ -81,7 +84,6 @@ namespace Components
                         .SetMessage(Translation.SYNC_IMPORT_MSG)
                         .SetTopMost(true)
                         .Show();
-                  //  var pass = Microsoft.VisualBasic.Interaction.InputBox(Translation.SYNC_IMPORT_MSG, Translation.MSG_PASSWORD, string.Empty);
                     if (pass == password)
                     {
                         File.Copy(ofd.FileName, CustomFirebasePath, true);
@@ -91,6 +93,9 @@ namespace Components
                         checkForReset();
 
                         LoadDefaultConfigurations();
+
+                        // Remove existing firebase credentials
+                        RemoveFirebaseCredentials();
 
                         FirebaseSingleton.GetInstance.InitConfig();
 
@@ -107,29 +112,45 @@ namespace Components
 
         private void SaveButtonClicked()
         {
-            if (string.IsNullOrWhiteSpace(FBE) || string.IsNullOrWhiteSpace(FBS) || string.IsNullOrWhiteSpace(FBAK) ||
-                string.IsNullOrWhiteSpace(FBAI))
+            if (string.IsNullOrWhiteSpace(FBE) || string.IsNullOrWhiteSpace(FBAK) || string.IsNullOrWhiteSpace(FBAI) ||
+                (IAN == string.IsNullOrWhiteSpace(FMCI) == string.IsNullOrWhiteSpace(FDCI) == string.IsNullOrWhiteSpace(FDCS)))
             {
                 MessageBox.Show(Translation.MSG_FIELD_EMPTY, Translation.MSG_ERR, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            FirebaseEndpoint = FBE;
-            FirebaseSecret = FBS;
-            FirebaseAppId = FBAI;
-            FirebaseApiKey = FBAK;
+            var firebaseData = new FirebaseData
+            {
+                Endpoint = FBE,
+                AppId = FBAI,
+                ApiKey = FBAK,
+                isAuthNeeded = IAN,
+                DesktopAuth = new OAuth
+                {
+                    ClientId = FDCI,
+                    ClientSecret = FDCS
+                },
+                MobileAuth = new OAuth
+                {
+                    ClientId = FMCI
+                }
+            };
+
             DatabaseMaxItem = DMI;
             DatabaseMaxItemLength = DMIL;
             DatabaseMaxConnection = DMC;
 
             WriteFirebaseSetting();
 
+            LoadDefaultConfigurations();
+
             checkForReset();
 
-            // Initialize new firebase Config
-            FirebaseSingleton.GetInstance.InitConfig();
+            // Remove existing firebase credentials
+            RemoveFirebaseCredentials();
 
-            Task.Run(async () => await FirebaseSingleton.GetInstance.SubmitConfigurationsTask());
+            // Initialize new firebase Config
+            FirebaseSingleton.GetInstance.InitConfig(firebaseData);
 
             MessageBox.Show(Translation.MSG_CONFIG_SAVE, Translation.MSG_INFO, MessageBoxButton.OK, MessageBoxImage.Information);
         }
@@ -142,20 +163,28 @@ namespace Components
 
                 if (result == MessageBoxResult.Yes)
                 {
-                    FirebaseEndpoint = FIREBASE_PATH;
-                    FirebaseSecret = FIREBASE_SECRET;
-                    FirebaseAppId = FIREBASE_APP_ID;
-                    FirebaseApiKey = FIREBASE_API_KEY;
+                    if (FirebaseConfigurations.Count <= 0) // Make sure we don't fall under this method.
+                    {
+                        MessageBox.Show(Translation.MSG_UNKNOWN_ERR, Translation.MSG_ERR, MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+
                     DMI = DatabaseMaxItem = FB_MAX_ITEM;
                     DMC = DatabaseMaxConnection = FB_MAX_CONNECTION;
                     DMIL = DatabaseMaxItemLength = FB_MAX_LENGTH;
                     UID = UniqueID = UNIQUE_ID;
 
-                    FBE = FBS = FBAI = FBAK = string.Empty;
+                    FBE = FMCI = FDCI = FDCS = FBAI = FBAK = string.Empty;
+
+                    IAN = false;
 
                     File.Delete(CustomFirebasePath);
 
-                    FirebaseSingleton.GetInstance.InitConfig();
+                    // Remove existing firebase credentials
+                    RemoveFirebaseCredentials();
+
+                    // Initialize with default config
+                    FirebaseSingleton.GetInstance.InitConfig(FirebaseConfigurations[0]);
 
                     checkForReset();
 
@@ -169,10 +198,20 @@ namespace Components
 
         private void LoadDefaultConfigurations()
         {
-            if (FirebaseEndpoint != FIREBASE_PATH) FBE = FirebaseEndpoint;
-            if (FirebaseSecret != FIREBASE_SECRET) FBS = FirebaseSecret;
-            if (FirebaseAppId != FIREBASE_APP_ID) FBAI = FirebaseAppId;
-            if (FirebaseApiKey != FIREBASE_API_KEY) FBAK = FirebaseApiKey;
+            if (FirebaseCurrent.Endpoint != FIREBASE_PATH)
+            {
+                FBE = FirebaseCurrent.Endpoint;
+                FBAI = FirebaseCurrent.AppId;
+                FBAK = FirebaseCurrent.ApiKey;
+
+                IAN = FirebaseCurrent.isAuthNeeded;
+                if (IAN)
+                {
+                    FDCI = FirebaseCurrent.DesktopAuth.ClientId;
+                    FDCS = FirebaseCurrent.DesktopAuth.ClientSecret;
+                    FMCI = FirebaseCurrent.MobileAuth.ClientId;
+                }
+            }
             DMI = DatabaseMaxItem;
             DMC = DatabaseMaxConnection;
             DMIL = DatabaseMaxItemLength;

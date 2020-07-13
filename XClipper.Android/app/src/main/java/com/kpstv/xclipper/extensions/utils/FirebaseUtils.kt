@@ -39,6 +39,7 @@ class FirebaseUtils(
                     if (!isValidated) {
 
                         Utils.logoutFromDatabase(
+                            context = context,
                             preferenceProvider = preferenceProvider,
                             dbConnectionProvider = dbConnectionProvider
                         )

@@ -73,9 +73,8 @@ class FirebaseProviderImpl(
 
         FirebaseApp.getInstance().delete()
 
-        val app = if (FirebaseApp.getApps(context).isEmpty())
+        if (FirebaseApp.getApps(context).isEmpty())
             FirebaseApp.initializeApp(context, firebaseOptions)
-        else null
 
         database = Firebase.database(options.endpoint)
         isInitialized.postValue(true)

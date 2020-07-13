@@ -25,6 +25,7 @@ namespace Components
             {
                 writer.Write($"[{DateTime.Now.ToFormattedDateTime()}][{c.ToString()}] - {message}");
                 writer.Flush();
+                writer.Close();
             }
         }
     }

@@ -45,7 +45,6 @@ class AuthenticationHelper(
                     return null
                 return GoogleSignIn.getSignedInAccountFromIntent(intent)
             }
-
         }
 
     private val getResult =
@@ -53,7 +52,7 @@ class AuthenticationHelper(
             try {
                 val account = task?.getResult(ApiException::class.java)!!
                 firebaseAuthWithGoogle(account.idToken!!)
-            } catch (e: ApiException) {
+            } catch (e: Exception) {
                 unregister()
                 responseListener.onError(e)
             }
@@ -68,11 +67,6 @@ class AuthenticationHelper(
     fun signIn(options: FBOptions, responseListener: ResponseListener<Unit>) = with(activity) {
         this@AuthenticationHelper.responseListener = responseListener
 
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(clientId)
-            .requestEmail()
-            .requestProfile()
-            .build()
 
         val firebaseOptions = FirebaseOptions.Builder()
             .setApiKey(options.apiKey)
@@ -86,7 +80,7 @@ class AuthenticationHelper(
             FirebaseApp.initializeApp(this, firebaseOptions)
         else FirebaseApp.getApps(this)[0]
 
-        googleSignInClient = GoogleSignIn.getClient(this, gso)
+        googleSignInClient = GoogleSignIn.getClient(this, defaultGoogleSignInOptions(clientId))
 
         auth = Firebase.auth(app)
 
@@ -111,5 +105,21 @@ class AuthenticationHelper(
 
     private fun unregister() {
         FirebaseApp.getApps(activity).clear()
+    }
+
+    companion object {
+        fun defaultGoogleSignInOptions(clientId: String): GoogleSignInOptions =
+            GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(clientId)
+                .requestEmail()
+                .build()
+
+        fun signOutGoogle(context: Context, clientId: String?): Boolean {
+            if (clientId == null) return false
+            val googleSignInClient =
+                GoogleSignIn.getClient(context, defaultGoogleSignInOptions(clientId))
+            googleSignInClient.signOut()
+            return true
+        }
     }
 }

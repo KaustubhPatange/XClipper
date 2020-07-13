@@ -26,6 +26,8 @@
     <system:String x:Key="settings_auth">Authentication</system:String>
     <system:String x:Key="settings_other">Other</system:String>
     <system:String x:Key="settings_general">General</system:String>
+    <system:String x:Key="settings_desktop">Desktop</system:String>
+    <system:String x:Key="settings_mobile">Mobile</system:String>
     <system:String x:Key="settings_hotkey">Hot Key</system:String>
     <system:String x:Key="settings_sass">Start application on System Startup</system:String>
     <system:String x:Key="settings_cau">Check for application updates automatically</system:String>
@@ -46,6 +48,7 @@
     <system:String x:Key="settings_ma">Mobile App</system:String>
     <system:String x:Key="settings_isdb">Protect database with encryption</system:String>
     <system:String x:Key="settings_scd">Devices</system:String>
+    <system:String x:Key="settings_ian">Is Authentication needed?</system:String>
     <system:String x:Key="settings_upgrade_license">Upgrade license to unlock all features,</system:String>
     <system:String x:Key="settings_btd">Database binding (Two way)</system:String>
     <system:String x:Key="settings_btd_tooltip">When checked, app will respond and sync data with online database.</system:String>
