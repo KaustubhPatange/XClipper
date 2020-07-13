@@ -14,6 +14,7 @@ import com.kpstv.xclipper.App.APP_MAX_DEVICE
 import com.kpstv.xclipper.App.APP_MAX_ITEM
 import com.kpstv.xclipper.App.DeviceID
 import com.kpstv.xclipper.App.UID
+import com.kpstv.xclipper.App.bindDelete
 import com.kpstv.xclipper.App.bindToFirebase
 import com.kpstv.xclipper.App.getMaxConnection
 import com.kpstv.xclipper.App.getMaxStorage
@@ -22,9 +23,7 @@ import com.kpstv.xclipper.data.localized.FBOptions
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.Device
 import com.kpstv.xclipper.data.model.User
-import com.kpstv.xclipper.extensions.cloneToEntries
-import com.kpstv.xclipper.extensions.decrypt
-import com.kpstv.xclipper.extensions.encrypt
+import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.extensions.listeners.FValueEventListener
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
 
@@ -70,8 +69,6 @@ class FirebaseProviderImpl(
             .setApplicationId(options.appId)
             .setDatabaseUrl(options.endpoint)
             .build()
-
-    //    FirebaseApp.getInstance().delete()
 
         if (FirebaseApp.getApps(context).isEmpty())
             FirebaseApp.initializeApp(context, firebaseOptions)
@@ -329,6 +326,7 @@ class FirebaseProviderImpl(
     private lateinit var valueListener: FValueEventListener
     override fun observeDataChange(
         changed: (User?) -> Unit,
+        removed: (List<String>) -> Unit,
         error: (Exception) -> Unit,
         deviceValidated: (Boolean) -> Unit
     ) {
@@ -346,14 +344,14 @@ class FirebaseProviderImpl(
         valueListener = FValueEventListener(
             onDataChange = { snap ->
                 val json = gson.toJson(snap.value)
-                user = gson.fromJson(json, User::class.java)
+                val firebaseUser = gson.fromJson(json, User::class.java)
 
-                /** Check for device validation*/
-                validDevice = (user?.Devices ?: mutableListOf()).count {
+                /** Check for device validation */
+                validDevice = (firebaseUser?.Devices ?: mutableListOf()).count {
                     it.id == DeviceID
                 } > 0
 
-                /** Update the properties*/
+                /** Update the properties */
                 checkForUserDetailsAndUpdateLocal()
 
                 /** Device validation is causing problem, so only invoke it when
@@ -361,13 +359,29 @@ class FirebaseProviderImpl(
                 if (!isDeviceAdding)
                     deviceValidated.invoke(validDevice)
 
+                /** Check for deletes, doing it on IO thread so rest job will be
+                 *  in continuation like normal. Publishing data will be posted on
+                 *  main thread (Reason: to process large number of list up to 1000). */
+                ioThread {
+                    if (bindDelete) {
+                        if (!user?.Clips.isNullOrEmpty()) {
+                            val userClips = user?.Clips?.decrypt()?.map { it.data!! }
+                            val firebaseClips = firebaseUser?.Clips?.decrypt()?.map { it.data!! }
+                            userClips?.minus(firebaseClips!!)
+                                ?.let { if (it.isNotEmpty()) mainThread { removed.invoke(it) } }
+                        }
+                    }
+                }
+
                 if (json != null && validDevice)
-                    changed.invoke(user)
+                    changed.invoke(firebaseUser)
                 else
                     error.invoke(Exception("Database is null"))
 
                 if (!isDeviceAdding && !validDevice)
                     isInitialized.postValue(false)
+
+                user = firebaseUser
             },
             onError = {
                 error.invoke(it.toException())

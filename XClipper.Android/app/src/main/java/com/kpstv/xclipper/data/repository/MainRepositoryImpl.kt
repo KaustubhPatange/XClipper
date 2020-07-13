@@ -98,13 +98,6 @@ class MainRepositoryImpl(
                     /** Insert the data */
                     clipDao.insert(Clip.from(clip))
                 }
-                /*val allData = clipDao.getAllData()
-
-                val innerClip = allData.firstOrNull { it.data == clip.data }
-                if (innerClip != null) {
-                    innerClip.clone(clip.data)
-                    clipDao.update(clip)
-                } else processClipAndSave(clip)*/
             }
         }
     }
@@ -142,21 +135,6 @@ class MainRepositoryImpl(
             }
         }
     }
-
-  /*  override fun updateClip(clips: List<Clip>?) {
-        if (clips == null) return
-
-        Coroutines.io {
-            synchronized(lock) {
-                clips.forEach { clip ->
-                    if (clip.data != null && clipDao.getData(clip.data) == null) {
-                        *//** Insert the data *//*
-                        clipDao.insert(Clip.from(clip))
-                    }
-                }
-            }
-        }
-    }*/
 
     override fun updatePin(clip: Clip?, isPinned: Boolean) {
         if (clip == null) return
@@ -263,8 +241,6 @@ class MainRepositoryImpl(
 
         val item = Clip.from(clip)
         saveClip(item)
-        /*clipProvider.processClip(clip)?.let { item ->
-        }*/
     }
 
     override fun updateRepository(unencryptedData: String?) {

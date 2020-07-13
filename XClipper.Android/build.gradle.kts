@@ -9,7 +9,6 @@ buildscript {
     dependencies {
         classpath(GradleDependency.GRADLE_BUILD_TOOLS)
         classpath(GradleDependency.KOTLIN_PLUGIN)
-       //classpath(GradleDependency.GOOGLE_SERVICE)
         classpath(GradleDependency.SAFE_ARGS)
     }
 }

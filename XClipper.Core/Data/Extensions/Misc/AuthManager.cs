@@ -42,11 +42,7 @@ namespace Components
             this.ClientId = ClientId;
             this.ClientSecret = ClientSecret;
         }
-        public void RemoveSubscribers()
-        {
-            FailureEvent = null;
-            SuccessEvent = null;
-        }
+
         public async Task SignInWithGoogle()
         {
             // Generates state and PKCE values.

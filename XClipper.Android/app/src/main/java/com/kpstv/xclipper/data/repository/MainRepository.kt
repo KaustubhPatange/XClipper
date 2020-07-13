@@ -40,7 +40,6 @@ interface MainRepository {
      * @param clip A clip which is contains encrypted string data and no [Clip.tags] (usually coming from firebase).
      */
     fun updateClip(clip: Clip?, filterType: FilterType = FilterType.Text)
-    // fun updateClip(clips: List<Clip>?)
 
     /**
      * The function will change [Clip.isPinned] to the incoming value.

@@ -10,6 +10,7 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.App.AUTO_SYNC_PREF
+import com.kpstv.xclipper.App.BIND_DELETE_PREF
 import com.kpstv.xclipper.App.BIND_PREF
 import com.kpstv.xclipper.App.CONNECT_PREF
 import com.kpstv.xclipper.App.LOGOUT_PREF
@@ -37,6 +38,7 @@ class AccountPreference : PreferenceFragmentCompat(), KodeinAware {
 
     private var autoSyncPreference: SwitchPreferenceCompat? = null
     private var bindPreference: SwitchPreferenceCompat? = null
+    private var bindDeletePreference: SwitchPreferenceCompat? = null
     private var logPreference: Preference? = null
     private var connectPreference: Preference? = null
 
@@ -91,6 +93,17 @@ class AccountPreference : PreferenceFragmentCompat(), KodeinAware {
 
         /** Auto sync preference */
         autoSyncPreference = findPreference(AUTO_SYNC_PREF)
+        autoSyncPreference?.setOnPreferenceChangeListener { _, newValue ->
+            App.runAutoSync = newValue as Boolean
+            true
+        }
+
+        /** Bind delete preference */
+        bindDeletePreference = findPreference(BIND_DELETE_PREF)
+        bindDeletePreference?.setOnPreferenceChangeListener { _, newValue ->
+            App.bindDelete = newValue as Boolean
+            true
+        }
     }
 
     override fun onResume() {
@@ -111,14 +124,17 @@ class AccountPreference : PreferenceFragmentCompat(), KodeinAware {
             logPreference?.isEnabled = false
             bindPreference?.isEnabled = false
             autoSyncPreference?.isEnabled = false
+            bindDeletePreference?.isEnabled = false
         } else {
             connectPreference?.isEnabled = false
             logPreference?.isEnabled = true
             bindPreference?.isEnabled = true
             autoSyncPreference?.isEnabled = true
+            bindDeletePreference?.isEnabled = true
 
             bindPreference?.isChecked = App.bindToFirebase
             autoSyncPreference?.isChecked = App.runAutoSync
+            bindDeletePreference?.isChecked = App.bindDelete
         }
     }
 }

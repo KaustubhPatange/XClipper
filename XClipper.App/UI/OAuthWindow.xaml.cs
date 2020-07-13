@@ -46,7 +46,6 @@ namespace Components.UI
         {
             authManager.SuccessEvent -= AuthManager_SuccessEvent;
             authManager.FailureEvent -= AuthManager_FailureEvent;
-            authManager.RemoveSubscribers();
             authManager = null;
         }
 

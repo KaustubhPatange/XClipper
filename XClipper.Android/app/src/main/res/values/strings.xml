@@ -130,4 +130,7 @@
     <string name="about">About</string>
     <string name="auto_sync_title">Automatic synchronization</string>
     <string name="layout_empty_text">Copy text or click to create a new empty paste</string>
+    <string name="auto_sync_summary">Retrieve data from database when app is launched</string>
+    <string name="bind_delete_title">Capture Delete</string>
+    <string name="bind_delete_summary">Enable local removal of item if it is being deleted across device</string>
 </resources>

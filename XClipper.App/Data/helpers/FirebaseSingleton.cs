@@ -98,16 +98,8 @@ namespace Components
             if (data == null || data.Body == "null") // Sometimes it catch to this exception which is due to unknown error.
             {
                 return await RegisterUser().ConfigureAwait(false);
-                //MessageBox.Show(Translation.MSG_UNKNOWN_ERR, Translation.MSG_ERR, MessageBoxButton.OK, MessageBoxImage.Error);
-                //return null;
             }
             else return data.ResultAs<User>().Also((user) => { this.user = user; });
-
-            //if (data.Body != "null")
-            //{
-            //    return data.ResultAs<User>().Also((user) => { this.user = user; });
-            //}
-            //else return await RegisterUser().ConfigureAwait(false);
         }
 
         private void SetCommonUserInfo(User user)

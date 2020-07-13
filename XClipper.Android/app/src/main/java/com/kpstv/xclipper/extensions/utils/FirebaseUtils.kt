@@ -32,6 +32,9 @@ class FirebaseUtils(
                         repository.updateClip(it?.Clips?.last()?.decrypt())
                     Log.e(TAG, "User has changed")
                 },
+                removed = { items -> // Unencrypted listOf data
+                    items.forEach { repository.deleteClip(it) }
+                },
                 error = {
                     Log.e(TAG, "Error: ${it.message}")
                 },

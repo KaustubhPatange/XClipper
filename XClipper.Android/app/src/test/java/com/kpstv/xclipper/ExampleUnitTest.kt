@@ -18,6 +18,14 @@ class ExampleUnitTest {
     private val TAG = javaClass.simpleName
 
     @Test
+    fun findWhichItemsAreNotInOtherList_test() {
+        val list1 = listOf(1,2,3,4,5)
+        val list2 = listOf(1,3)
+
+        println(list1.minus(list2))
+    }
+
+    @Test
     fun addition_isCorrect() {
         assertEquals(4, 2 + 2)
     }
@@ -48,7 +56,6 @@ class ExampleUnitTest {
     fun list_test() {
 
        val list = mutableListOf(1,23,412,41244,525475,745,32,532,3)
-
         list.sortBy { it }
 
       /*  val user1 = User(1, "text")

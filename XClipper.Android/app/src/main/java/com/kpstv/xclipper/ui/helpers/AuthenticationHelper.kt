@@ -67,14 +67,11 @@ class AuthenticationHelper(
     fun signIn(options: FBOptions, responseListener: ResponseListener<Unit>) = with(activity) {
         this@AuthenticationHelper.responseListener = responseListener
 
-
         val firebaseOptions = FirebaseOptions.Builder()
             .setApiKey(options.apiKey)
             .setApplicationId(options.appId)
             .setDatabaseUrl(options.endpoint)
             .build()
-
-      //  FirebaseApp.getInstance().delete()
 
         val app = if (FirebaseApp.getApps(this).isEmpty())
             FirebaseApp.initializeApp(this, firebaseOptions)

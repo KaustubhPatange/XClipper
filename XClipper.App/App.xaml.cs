@@ -377,11 +377,11 @@ namespace Components
         public void OnDataAdded(ValueAddedEventArgs e)
         {
             // Add user when node is inserted
-            Debug.Write("[Add] Path: " + e.Path + ", Change: " + e.Data);
+            Debug.WriteLine("[Add] Path: " + e.Path + ", Change: " + e.Data);
             if (Regex.IsMatch(e.Path, DEVICE_REGEX_PATH_PATTERN))
             {
                 Debug.WriteLine("Adding Device...");
-                Task.Run(async () => { await FirebaseSingleton.GetInstance.SetGlobalUserTask(true); });
+                Task.Run(async () => { await FirebaseSingleton.GetInstance.SetGlobalUserTask(true).ConfigureAwait(false); });
             }
 
         }
@@ -389,7 +389,7 @@ namespace Components
         public void OnDataChanged(ValueChangedEventArgs e)
         {
             // 1st value from real-time database is your 5th one in XClipper window.
-
+            Debug.WriteLine("[Changed] Path: " + e.Path + ", Data: " + e.Data);
             if (e.Path.Contains(PATH_CLIP_DATA))
             {
                 AppSingleton.GetInstance.CheckDataAndUpdate(e.Data, (unencryptedData) =>
@@ -410,10 +410,11 @@ namespace Components
         public void OnDataRemoved(ValueRemovedEventArgs e)
         {
             // Remove user node get's deleted
+            Debug.WriteLine("[Remove] Path: ");
             if (Regex.IsMatch(e.Path, DEVICE_REGEX_PATH_PATTERN))
             {
                 Debug.WriteLine("Removing Device...");
-                Task.Run(async () => { await FirebaseSingleton.GetInstance.SetGlobalUserTask(); });
+                Task.Run(async () => { await FirebaseSingleton.GetInstance.SetGlobalUserTask().ConfigureAwait(false); });
             }
         }
 
