@@ -25,7 +25,7 @@ namespace Components.viewModels
 
         private IClipBinder Binder;
         private IDatabase<TableCopy> dataDB;
-       // public SQLiteConnection dataDB;
+        // public SQLiteConnection dataDB;
         private static AppSingleton Instance = null;
 
         #endregion
@@ -156,7 +156,7 @@ namespace Components.viewModels
                 TotalPage = (TotalClips / TruncateList) + ((TotalClips % TruncateList != 0) ? 1 : 0);
 
                 // todo: Disabling pagination
-               // return pinnedItems.Concat(normalItems).Take(TruncateList * Page).ToList();
+                // return pinnedItems.Concat(normalItems).Take(TruncateList * Page).ToList();
                 return pinnedItems.Concat(normalItems).ToList();
             }
         }
@@ -202,8 +202,8 @@ namespace Components.viewModels
             dataDB.Insert(model);
 
             if (pushToDatabase)
-                Task.Run(async () => { await FirebaseSingleton.GetInstance.AddClip(model.ContentType == ContentType.Text ? model.RawText : null); });          
-          
+                FirebaseSingleton.GetInstance.AddClip(model.ContentType == ContentType.Text ? model.RawText : null).RunAsync();
+
         }
 
         public void InsertTextClipNoUpdate(string UnEncryptedText)
@@ -219,13 +219,13 @@ namespace Components.viewModels
         /// This will compare the given text data with the local database table items.
         /// If not exist such item, it will insert the data.
         /// </summary>
-        /// <param name="EncryptedDatabaseText">Encrypted Text Data coming straight away from online database.</param>
+        /// <param name="EncryptedText">Encrypted Text Data coming straight away from online database.</param>
         /// <param name="invokeOnInserted">Data will be an unencrypted clip data.</param>
-        public void CheckDataAndUpdate(string? EncryptedDatabaseText, Action<string>? invokeOnInserted = null)
+        public void CheckDataAndUpdate(string? EncryptedText, Action<string>? invokeOnInserted = null)
         {
-            if (EncryptedDatabaseText == null) return;
+            if (EncryptedText == null) return;
 
-            var decryptedText = EncryptedDatabaseText.DecryptBase64(DatabaseEncryptPassword);
+            var decryptedText = EncryptedText.DecryptBase64(DatabaseEncryptPassword);
 
             bool dataExist = false;
             if (IsSecureDB)
@@ -245,18 +245,32 @@ namespace Components.viewModels
 
         #region DeleteData
 
-        public void DeleteClipData(TableCopy model)
+        public bool DeleteClipData(string? data)
+        {
+            TableCopy? item = null;
+            if (IsSecureDB)
+                item = dataDB.GetAllData().Find(c => c.RawText.DecryptBase64(DatabaseEncryptPassword) == data);
+            else
+                item = dataDB.GetAllData().Find(c => c.RawText == data);
+
+            if (item != null) DeleteClipData(item);
+            return item != null;
+        }
+
+        public void DeleteClipData(TableCopy model, bool fromFirebase = true)
         {
             dataDB.Delete(model);
 
-            Task.Run(async () => { await FirebaseSingleton.GetInstance.RemoveClip(model.ContentType == ContentType.Text ? model.RawText : null); });
+            if (fromFirebase)
+                FirebaseSingleton.GetInstance.RemoveClip(model?.ContentType == ContentType.Text ? model.RawText : null).RunAsync();
         }
 
-        public void DeleteAllData()
+        public void DeleteAllData(bool fromFirebase = true)
         {
             dataDB.ClearAll<TableCopy>();
 
-            Task.Run(async () => { await FirebaseSingleton.GetInstance.RemoveAllClip(); });
+            if (fromFirebase)
+                FirebaseSingleton.GetInstance.RemoveAllClip().RunAsync();
         }
 
         #endregion

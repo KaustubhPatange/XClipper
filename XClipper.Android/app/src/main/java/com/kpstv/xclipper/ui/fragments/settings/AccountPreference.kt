@@ -13,11 +13,14 @@ import com.kpstv.xclipper.App.AUTO_SYNC_PREF
 import com.kpstv.xclipper.App.BIND_DELETE_PREF
 import com.kpstv.xclipper.App.BIND_PREF
 import com.kpstv.xclipper.App.CONNECT_PREF
+import com.kpstv.xclipper.App.FORCE_REMOVE_PREF
 import com.kpstv.xclipper.App.LOGOUT_PREF
 import com.kpstv.xclipper.App.UID
 import com.kpstv.xclipper.R
+import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
+import com.kpstv.xclipper.extensions.utils.Utils.Companion.logoutFromDatabase
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showConnectDialog
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showConnectionDialog
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
@@ -31,6 +34,7 @@ class AccountPreference : PreferenceFragmentCompat(), KodeinAware {
 
     override val kodein by kodein()
     private val preferenceProvider by instance<PreferenceProvider>()
+    private val dbConnectionProvider by instance<DBConnectionProvider>()
     private val viewModelFactory by instance<MainViewModelFactory>()
     private val mainViewModel: MainViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
@@ -104,6 +108,18 @@ class AccountPreference : PreferenceFragmentCompat(), KodeinAware {
             App.bindDelete = newValue as Boolean
             true
         }
+
+        /** Force logout preference */
+        findPreference<Preference>(FORCE_REMOVE_PREF)?.setOnPreferenceClickListener {
+            logoutFromDatabase(
+                context = requireContext(),
+                preferenceProvider = preferenceProvider,
+                dbConnectionProvider = dbConnectionProvider
+            )
+            Toasty.info(requireContext(), getString(R.string.force_logout_text)).show()
+            true
+        }
+
     }
 
     override fun onResume() {

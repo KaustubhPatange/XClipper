@@ -13,6 +13,7 @@ using static Components.FirebaseHelper;
 using System.Windows;
 using static Components.MainHelper;
 using Microsoft.VisualBasic.Logging;
+using System.CodeDom.Compiler;
 
 #nullable enable
 
@@ -99,7 +100,7 @@ namespace Components
             {
                 return await RegisterUser().ConfigureAwait(false);
             }
-            else return data.ResultAs<User>().Also((user) => { this.user = user; });
+            else return data.ResultAs<User>();//.Also((user) => { this.user = user; });
         }
 
         private void SetCommonUserInfo(User user)
@@ -108,6 +109,16 @@ namespace Components
             user.MaxItemStorage = DatabaseMaxItem;
             user.TotalConnection = DatabaseMaxConnection;
             user.IsLicensed = IsPurchaseDone;
+        }
+
+        private void CheckForDataRemoval(User? firebaseUser)
+        {
+            if (firebaseUser != null && user != null && BindDelete)
+            {
+                var items = user.Clips?.ConvertAll(c => c.data).Except(firebaseUser.Clips?.ConvertAll(c => c.data));
+                foreach (var data in items ?? new List<string>())
+                    binder.OnClipItemRemoved(new RemovedEventArgs(data.DecryptBase64(DatabaseEncryptPassword)));
+            }
         }
 
         /// <summary>
@@ -210,12 +221,16 @@ namespace Components
 
             if (await CheckForAccessTokenValidity().ConfigureAwait(false) && (alwaysForceInvoke || user == null || forceInvoke))
             {
-                user = await _GetUser().ConfigureAwait(false);
+                var firebaseUser = await _GetUser().ConfigureAwait(false);
 
-                SetCommonUserInfo(user);
+                SetCommonUserInfo(firebaseUser);
 
-                if (user.Devices != null && user.Devices.Count > 0)
+                CheckForDataRemoval(firebaseUser);
+
+                if (firebaseUser.Devices != null && firebaseUser.Devices.Count > 0)
                     alwaysForceInvoke = true;
+
+                user = firebaseUser;
             }
             return user != null;
         }
@@ -380,7 +395,7 @@ namespace Components
         /// </summary>
         /// <param name="Text"></param>
         /// <returns></returns>
-        public async Task RemoveClip(string Text)
+        public async Task RemoveClip(string? Text)
         {
             if (await SetGlobalUserTask().ConfigureAwait(false))
             {

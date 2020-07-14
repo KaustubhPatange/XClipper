@@ -115,6 +115,7 @@
     <Compile Include="Data\Extensions\TypeSpecific\CollectionExtensions.cs" />
     <Compile Include="Data\Extensions\TypeSpecific\LoopExtensions.cs" />
     <Compile Include="Data\Extensions\TypeSpecific\StringExtensions.cs" />
+    <Compile Include="Data\Extensions\TypeSpecific\TaskExtensions.cs" />
     <Compile Include="Data\Extensions\TypeSpecific\ValueConversionExtensions.cs" />
     <Compile Include="Data\Extensions\VisibilityExtensions.cs" />
     <Compile Include="Data\unlocalized\IClipBinder.cs" />

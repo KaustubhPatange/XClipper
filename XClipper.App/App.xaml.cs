@@ -156,14 +156,14 @@ namespace Components
             var SettingMenuItem = CreateNewItem(Translation.APP_SETTINGS, SettingMenuClicked);
             var RestartMenuItem = CreateNewItem(Translation.APP_RESTART, RestartAppClicked);
             var BuyWindowItem = CreateNewItem(Translation.APP_LICENSE, BuyMenuClicked);
-            var RecordMenuItem = CreateNewItem(Translation.APP_RECORD, RecordMenuClicked).Also(s => { s.Checked = ToRecord; });
+            var RecordMenuItem = CreateNewItem(Translation.APP_RECORD, this.RecordMenuClicked).Also(s => { s.Checked = ToRecord; });
             var AppExitMenuItem = CreateNewItem(Translation.APP_EXIT, delegate { Shutdown(); });
             var DeleteMenuItem = CreateNewItem(Translation.APP_DELETE, DeleteDataClicked);
             var BackupMenuItem = CreateNewItem(Translation.APP_BACKUP, BackupClicked);
             var RestoreMenutItem = CreateNewItem(Translation.APP_RESTORE, RestoreClicked);
             var ImportDataItem = CreateNewItem(Translation.APP_IMPORT, ImportDataClicked);
-            ConfigSettingItem = CreateNewItem(Translation.APP_CONFIG_SETTING, ConfigSettingClicked).Also(c => c.Visible = false);
-            UpdateSettingItem = CreateNewItem(Translation.APP_UPDATE, UpdateSettingClicked).Also(c => c.Visible = false);
+            ConfigSettingItem = CreateNewItem(Translation.APP_CONFIG_SETTING, this.ConfigSettingClicked).Also(c => c.Visible = false);
+            UpdateSettingItem = CreateNewItem(Translation.APP_UPDATE, this.UpdateSettingClicked).Also(c => c.Visible = false);
 
             var HelpMenuItem = CreateNewItem(Translation.APP_HELP, (o, e) =>
             {
@@ -355,7 +355,7 @@ namespace Components
             // A task to remove user.
             Task.Run(async () =>
             {
-                await FirebaseSingleton.GetInstance.RemoveUser();
+                await FirebaseSingleton.GetInstance.RemoveUser().ConfigureAwait(false);
 
                 RunOnMainThread(() =>
                 {
@@ -381,7 +381,7 @@ namespace Components
             if (Regex.IsMatch(e.Path, DEVICE_REGEX_PATH_PATTERN))
             {
                 Debug.WriteLine("Adding Device...");
-                Task.Run(async () => { await FirebaseSingleton.GetInstance.SetGlobalUserTask(true).ConfigureAwait(false); });
+                FirebaseSingleton.GetInstance.SetGlobalUserTask(true).RunAsync();
             }
 
         }
@@ -404,18 +404,27 @@ namespace Components
                     });
                 });
             }
-
         }
 
         public void OnDataRemoved(ValueRemovedEventArgs e)
         {
             // Remove user node get's deleted
-            Debug.WriteLine("[Remove] Path: ");
+            Debug.WriteLine("[Remove] Path: " + e.Path);
+            if (Regex.IsMatch(e.Path, CLIP_REGEX_PATH_PATTERN))
+            {
+                FirebaseSingleton.GetInstance.SetGlobalUserTask(true).RunAsync();
+            }
             if (Regex.IsMatch(e.Path, DEVICE_REGEX_PATH_PATTERN))
             {
                 Debug.WriteLine("Removing Device...");
-                Task.Run(async () => { await FirebaseSingleton.GetInstance.SetGlobalUserTask().ConfigureAwait(false); });
+                FirebaseSingleton.GetInstance.SetGlobalUserTask().RunAsync();
             }
+        }
+
+        public void OnClipItemRemoved(RemovedEventArgs e)
+        {
+            Debug.Write("[Removed Clip] Data: " + e.data);
+            Debug.WriteLine(", " + AppSingleton.GetInstance.DeleteClipData(e.data));
         }
 
 
@@ -562,7 +571,6 @@ namespace Components
             buyWindow = new BuyWindow();
             buyWindow.ShowDialog();
         }
-
 
         #endregion
     }

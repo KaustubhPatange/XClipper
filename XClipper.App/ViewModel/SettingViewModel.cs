@@ -79,6 +79,7 @@ namespace Components
         public string FDP { get; set; } = DatabaseEncryptPassword;
         public string UID { get; private set; } = UniqueID;
         public bool BTD { get; set; } = BindDatabase;
+        public bool BFD { get; set; } = BindDelete;
         public bool ISDB
         {
             get { return is_secure_db; }
@@ -172,6 +173,7 @@ namespace Components
             CurrentAppLanguage = CAL = "locales\\en.xaml";
             TotalClipLength = TCL = 20;
             BindDatabase = BTD = false;
+            BindDelete = BFD = false;
             SetAppStartupEntry();
             WriteSettings();
             MessageBox.Show(Translation.SETTINGS_RESET);
@@ -196,6 +198,7 @@ namespace Components
             TotalClipLength = TCL;
             HotKey = KEY_HK;
             CurrentAppLanguage = CAL;
+            BindDelete = BFD;
             SetAppStartupEntry();
 
             ToggleBindDatabase();
@@ -213,7 +216,7 @@ namespace Components
 
         private void ToggleBindDatabase()
         {
-            BindDatabase = BindDatabase;
+            BindDatabase = BTD;
             if (BindDatabase == BTD == true)
                 FirebaseSingleton.GetInstance.InitConfig();
         }
@@ -229,7 +232,7 @@ namespace Components
                 if (result == MessageBoxResult.Yes)
                 {
                     // Remove the user from firebase
-                    Task.Run(async () => { await FirebaseSingleton.GetInstance.RemoveUser(); });
+                    FirebaseSingleton.GetInstance.RemoveUser().RunAsync();
 
                     DatabaseEncryptPassword = FDP;
                 }

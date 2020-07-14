@@ -28,6 +28,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.zxing.integration.android.IntentIntegrator
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.App.AUTO_SYNC_PREF
+import com.kpstv.xclipper.App.BIND_DELETE_PREF
 import com.kpstv.xclipper.App.BIND_PREF
 import com.kpstv.xclipper.App.BLACKLIST_PREF
 import com.kpstv.xclipper.R
@@ -292,15 +293,13 @@ class Utils {
                     AuthenticationHelper.signOutGoogle(context, authClientId)
                 }
             }
-            if (dbConnectionProvider.optionsProvider()?.isAuthNeeded == true)
-                Firebase.auth.signOut()
             dbConnectionProvider.detachDataFromAll()
             preferenceProvider.putBooleanKey(BIND_PREF, false)
             preferenceProvider.putBooleanKey(AUTO_SYNC_PREF, false)
+            preferenceProvider.putBooleanKey(BIND_DELETE_PREF, false)
             App.bindToFirebase = false
             App.runAutoSync = false
-
-
+            App.bindDelete = false
         }
 
         fun loginToDatabase(

@@ -217,9 +217,9 @@ namespace Components
         /// </summary>
         public static int TruncateList { get; set; } = 20;
 
-       /// <summary>
-       /// <inheritdoc cref="_databaseMaxItem"/>
-       /// </summary>
+        /// <summary>
+        /// <inheritdoc cref="_databaseMaxItem"/>
+        /// </summary>
         public static int DatabaseMaxItem
         {
             get { return _databaseMaxItem; }
@@ -268,17 +268,17 @@ namespace Components
         /// <summary> 
         /// <inheritdoc cref="_qrData"/> 
         /// </summary>
-        public static QRCodeData? QRData 
-        { 
-            get { return _qrData;  } 
-            set 
+        public static QRCodeData? QRData
+        {
+            get { return _qrData; }
+            set
             {
                 if (value != _qrData)
                 {
                     _qrData = value;
                     NotifyStaticPropertyChanged(nameof(QRData));
                 }
-            } 
+            }
         }
 
         /// <summary>
@@ -333,6 +333,12 @@ namespace Components
         /// </summary>
         public static bool BindDatabase { get; set; } = false;
         //    todo: 3. Data added to online database externally, respond to such changes locally.
+
+        /// <summary>
+        /// When set to true, App will respond to delete request coming from database.
+        /// </summary>
+        public static bool BindDelete { get; set; } = false;
+
         #endregion
 
         #region Notify Static PropertyChange
@@ -371,7 +377,8 @@ namespace Components
                     new XElement(nameof(CustomPassword), CustomPassword.Encrypt()),
                     new XElement(nameof(DatabaseEncryptPassword), DatabaseEncryptPassword.Encrypt()),
                     new XElement(nameof(UseCustomPassword), UseCustomPassword.ToString()),
-                    new XElement(nameof(BindDatabase), BindDatabase.ToString())
+                    new XElement(nameof(BindDatabase), BindDatabase.ToString()),
+                    new XElement(nameof(BindDelete), BindDelete.ToString())
                     );
             document.Add(settings);
             document.Save(SettingsPath);
@@ -419,7 +426,7 @@ namespace Components
             firebaseConfig.Add(desktopOAuth);
 
             config.Add(firebaseConfig);
-            
+
             firebaseDoc.Add(config);
             firebaseDoc.Save(CustomFirebasePath);
         }
@@ -494,6 +501,7 @@ namespace Components
             ShowDataChangeNotification = settings.Element(nameof(ShowDataChangeNotification)).Value.ToBool();
             DisplayStartNotification = settings.Element(nameof(DisplayStartNotification)).Value.ToBool();
             BindDatabase = settings.Element(nameof(BindDatabase)).Value.ToBool();
+            BindDelete = settings.Element(nameof(BindDelete)).Value.ToBool();
         }
 
         /// <summary>

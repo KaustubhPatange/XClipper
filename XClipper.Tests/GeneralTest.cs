@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using RestSharp;
 using System.Net.NetworkInformation;
 using Components.UI;
+using System.Windows.Navigation;
 
 namespace XClipper.Tests
 {
@@ -33,9 +34,97 @@ namespace XClipper.Tests
         }
 
         [TestMethod]
+        public void FindTest()
+        {
+            var d = userClips().ConvertAll(c => c.data);
+            var e = firebaseClips().ConvertAll(c => c.data);
+            foreach (var clip in d.Except(e))
+                Debug.WriteLine("Data: " + clip + Environment.NewLine);
+        }
+
+        private List<Clip> userClips()
+        {
+            return new List<Clip>
+{
+    new Clip
+    {
+        data = "SSjU+RxELxLlwWtipeUxrQF/YrQDDay+NFDcwW6TBdXk3hBtCuvUwHWhEWJNK1SUCooo7tvly0aWjdyHU6vb0OV2NY/XP5Fkd0leLM2z2Drqz+iZETsRCBOD7WMEnx85",
+        time = "20200712121739"
+    },
+    new Clip
+    {
+        data = "stscRIpo6kDs8+ocKaolg5Vl2OiOPYYNfWmEyCU/d4yzCDdpzuJhuX9T7b+va1k/+/zRsX3oEuDamPB6xK6JUhbZlyKnUDtA42MaaCUonFM=",
+        time = "20200712121745"
+    },
+    new Clip
+    {
+        data = "A/9LuKrLy+f7wgBR1a5/40S7NdHhs6UdMfxaKEY+2dBKsUI9lpfETBe0HjCSC8Y/IlWJX1V8Dsf7iIptGA+22pQBMdkrKDEZUu3VJ35wHIL3B11bsjUo+BicDa6kI8VKjzuUe7SnOuD9Z08dW11/MXW0j6j4Vr8M7jDbJqV7qdHqyNXmwu4HXYH+gGYkETvKKGeqEVFMd48YyzZTma8w27Br5lW8xKXFKAzamAuwY24JdQIr0qoaEnyHaHI8J52FXDWMPw26uScBQ/nSexxvCvxcowkfsa68IWnViYD1ZnKAB65vmC4LAQIftJfnaLiMZT6abJp+20pI647LWEvSqsxJTjIT/HNjHvpOAuOf3yY=",
+        time = "20200712122113"
+    },
+    new Clip
+    {
+        data = "uNkGO5q9O3iePSZ56zY1pw==",
+        time = "20200712122228"
+    },
+    new Clip
+    {
+        data = "wTKTthUqHNiJwGT87PFD0w==",
+        time = "20200712122255"
+    },
+    new Clip
+    {
+        data = "LyEeWWprd0EG2kDUeLWKQfK5LxGjTBMa00WI/IKkHssjWF5m+z9be5ydPQQd4ryn4N5jGmaIh8jARBl4jxAY6wvkbahDkh3Hz3AZiy4hKFKkjgf9PCmW4ZR8E9ILsVy2kgJOc7924HT1RujOoZsGkvNRe8clsMbDahaMybrsN64/SyBUjxsUUjTrxUqOmQCc8cuh1yffNJR0HSwEtiut7c1nk3hUnVNkW47WugawS2e5QRUAJFOXDDOVcLiT8B1Omajen8yt3U0mDtjCFlxJCNAfhoGkHpNlKu6e5VWwOqz6shsNBo3AfZMvqTZE75dGu8U46rCS0mA/BxupfJ6l0Oo+qnldKPPyBFlYJTjkCLKSOXtaqdmexszsqfxe0N1O60+fHD7hU433SIcFzuZQwdj7vRLGwp+7yrW1yAWh/YAJhZUrNgK73Sz3XgYPP042b6jHD2/c9Vn5PzoSZdmKD9zTKKnJ4owskA5APb4bjIoKV9iTrFLYS5GHiQJGk3zzbqsbb8UYfhCo35tT/4PRoA==",
+        time = "20200714215730"
+    },
+    new Clip
+    {
+        data = "Q+02+HIFXj1PbvMqOEym7f9/KEiWw5MBPnN3E4CLsexMxANVBg0bAE8d0/OSzOiTOSOxsqxMdpARj9BrkjdHDQ==",
+        time = "20200714223156"
+    }
+};
+        }
+
+        private List<Clip> firebaseClips()
+        {
+            return new List<Clip>
+{
+    new Clip
+    {
+        data = "SSjU+RxELxLlwWtipeUxrQF/YrQDDay+NFDcwW6TBdXk3hBtCuvUwHWhEWJNK1SUCooo7tvly0aWjdyHU6vb0OV2NY/XP5Fkd0leLM2z2Drqz+iZETsRCBOD7WMEnx85",
+        time = "20200712121739"
+    },
+    new Clip
+    {
+        data = "stscRIpo6kDs8+ocKaolg5Vl2OiOPYYNfWmEyCU/d4yzCDdpzuJhuX9T7b+va1k/+/zRsX3oEuDamPB6xK6JUhbZlyKnUDtA42MaaCUonFM=",
+        time = "20200712121745"
+    },
+    new Clip
+    {
+        data = "A/9LuKrLy+f7wgBR1a5/40S7NdHhs6UdMfxaKEY+2dBKsUI9lpfETBe0HjCSC8Y/IlWJX1V8Dsf7iIptGA+22pQBMdkrKDEZUu3VJ35wHIL3B11bsjUo+BicDa6kI8VKjzuUe7SnOuD9Z08dW11/MXW0j6j4Vr8M7jDbJqV7qdHqyNXmwu4HXYH+gGYkETvKKGeqEVFMd48YyzZTma8w27Br5lW8xKXFKAzamAuwY24JdQIr0qoaEnyHaHI8J52FXDWMPw26uScBQ/nSexxvCvxcowkfsa68IWnViYD1ZnKAB65vmC4LAQIftJfnaLiMZT6abJp+20pI647LWEvSqsxJTjIT/HNjHvpOAuOf3yY=",
+        time = "20200712122113"
+    },
+    new Clip
+    {
+        data = "uNkGO5q9O3iePSZ56zY1pw==",
+        time = "20200712122228"
+    },
+    new Clip
+    {
+        data = "wTKTthUqHNiJwGT87PFD0w==",
+        time = "20200712122255"
+    },
+    new Clip
+    {
+        data = "LyEeWWprd0EG2kDUeLWKQfK5LxGjTBMa00WI/IKkHssjWF5m+z9be5ydPQQd4ryn4N5jGmaIh8jARBl4jxAY6wvkbahDkh3Hz3AZiy4hKFKkjgf9PCmW4ZR8E9ILsVy2kgJOc7924HT1RujOoZsGkvNRe8clsMbDahaMybrsN64/SyBUjxsUUjTrxUqOmQCc8cuh1yffNJR0HSwEtiut7c1nk3hUnVNkW47WugawS2e5QRUAJFOXDDOVcLiT8B1Omajen8yt3U0mDtjCFlxJCNAfhoGkHpNlKu6e5VWwOqz6shsNBo3AfZMvqTZE75dGu8U46rCS0mA/BxupfJ6l0Oo+qnldKPPyBFlYJTjkCLKSOXtaqdmexszsqfxe0N1O60+fHD7hU433SIcFzuZQwdj7vRLGwp+7yrW1yAWh/YAJhZUrNgK73Sz3XgYPP042b6jHD2/c9Vn5PzoSZdmKD9zTKKnJ4owskA5APb4bjIoKV9iTrFLYS5GHiQJGk3zzbqsbb8UYfhCo35tT/4PRoA==",
+        time = "20200714215730"
+    }
+};
+        }
+
+        [TestMethod]
         public void CheckInternet()
         {
-            
+
             //Stopwatch s = new Stopwatch();
             //s.Start();
             ////    if (new Ping().Send("www.google.com.mx").Status == IPStatus.Success)
@@ -63,7 +152,7 @@ namespace XClipper.Tests
         [TestMethod]
         public void ConnectionTest()
         {
-           // FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(@"C:\Users\devel\Desktop\setup.exe");
+            // FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(@"C:\Users\devel\Desktop\setup.exe");
 
         }
 

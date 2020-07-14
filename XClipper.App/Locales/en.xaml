@@ -24,6 +24,7 @@
     <system:String x:Key="settings_tab_main">Main</system:String>
     <system:String x:Key="settings_tab_connect">Connect</system:String>
     <system:String x:Key="settings_auth">Authentication</system:String>
+    <system:String x:Key="settings_relate">Relations</system:String>
     <system:String x:Key="settings_other">Other</system:String>
     <system:String x:Key="settings_general">General</system:String>
     <system:String x:Key="settings_desktop">Desktop</system:String>
@@ -52,6 +53,8 @@
     <system:String x:Key="settings_upgrade_license">Upgrade license to unlock all features,</system:String>
     <system:String x:Key="settings_btd">Database binding (Two way)</system:String>
     <system:String x:Key="settings_btd_tooltip">When checked, app will respond and sync data with online database.</system:String>
+    <system:String x:Key="settings_bfd">Bind Deletion (Two Way)</system:String>
+    <system:String x:Key="settings_bfd_tooltip">When checked, app will delete item locally if removed from server.</system:String>
     <system:String x:Key="settings_qr_tooltip">Double click the QR Image to view in default image viewer.</system:String>
     <system:String x:Key="settings_purchase_info">Option available in paid version. Click on learn more.</system:String>
     <system:String x:Key="settings_reset_btn">Reset Defaults</system:String>

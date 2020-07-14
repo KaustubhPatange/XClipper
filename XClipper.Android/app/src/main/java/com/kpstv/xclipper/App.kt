@@ -121,6 +121,7 @@ object App {
     const val BIND_PREF = "bind_pref"
     const val BIND_DELETE_PREF = "bindDelete_pref"
     const val AUTO_SYNC_PREF = "autoSync_pref"
+    const val FORCE_REMOVE_PREF = "forceRemove_pref"
     const val UID_PREF = "uid_key"
     const val AUTH_NEEDED_PREF = "authNeed_pref"
     const val FB_API_KEY_PREF = "apiKey_pref"

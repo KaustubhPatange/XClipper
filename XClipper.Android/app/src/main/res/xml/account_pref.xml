@@ -29,4 +29,10 @@
             app:key="bindDelete_pref"
             app:title="@string/bind_delete_title" />
     </PreferenceCategory>
+    <PreferenceCategory app:title="Developer">
+        <Preference
+            app:key="forceRemove_pref"
+            app:title="@string/force_logout_title"
+            app:summary="@string/force_logout_summary"/>
+    </PreferenceCategory>
 </PreferenceScreen>

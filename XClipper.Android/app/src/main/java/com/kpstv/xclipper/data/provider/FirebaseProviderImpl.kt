@@ -3,6 +3,7 @@ package com.kpstv.xclipper.data.provider
 import android.content.Context
 import android.os.Build
 import android.util.Log
+import androidx.annotation.experimental.Experimental
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
@@ -100,8 +101,11 @@ class FirebaseProviderImpl(
                 return@workWithData
             }
 
+            /** For some reasons [DeviceID] already exist in the database
+             *  we will post success response.
+             */
             if (list.count { it.id == DeviceId } > 0) {
-                responseListener.onError(Exception("Device already exist"))
+                responseListener.onComplete(Unit)
                 return@workWithData
             }
 
