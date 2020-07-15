@@ -46,6 +46,15 @@ body {
         font-size: 6vw; */
 }
 
+.modal-header {
+  background: #ff5733;
+}
+
+.modal-content {
+  background: #232531;
+  color: white;
+}
+
 .title1 {
   margin-top: 60px;
   letter-spacing: 5px;

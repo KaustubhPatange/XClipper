@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="XClipper.Web/css/style.css">
     <link rel="stylesheet" href="XClipper.Web/css/custom-btn.css">
 
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
@@ -67,10 +68,6 @@
                     <div class="col-md-10" style="margin-top: 45px;">
                         <a href="#" class="btn-custom" data-aos="fade-up" data-aos-delay="400">
                             <span>Download</span></a>
-                        <div id="paypal-button-container"></div>
-                        <!-- <div style="margin-top: 20px;" data-aos="fade-up" data-aos-delay="500">
-                            <span class="watch-span">Watch Video</span>
-                        </div> -->
                     </div>
 
                 </div>
@@ -113,7 +110,7 @@
                                 <span>✔️ Database Encryption</span><br>
                                 <span>✔️ No advertisements</span><br><br>
                                 <p class="card-text">A pricing plan suitable for every standard user.</p>
-                                <a href="#" class="btn btn-primary">Purchase</a>
+                                <a onclick="standardPurchaseClick()" class="btn btn-primary">Purchase</a>
                             </div>
                         </div>
                     </div>
@@ -137,6 +134,40 @@
                 </div>
         </section>
 
+        <div class="modal fade" id="standardPurchase">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Standard Purchase</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <div style="justify-content: center;">
+                                <span style=" color: white;" for="uid">Unique ID: </span><a target="_blank"
+                                    style="font-size: 12px; text-align: center;" href="google.com">How to get
+                                    this?</a>
+                            </div>
+
+                            <input style="margin-top: 10px; background: #1b1d24; border-color: #515670; color: white;"
+                                type="text" class="form-control" id="usr">
+                        </div>
+                        <span style="font-size: 14px;"><a href="google.com">Learn more</a>, about this purchase
+                            category.</span>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div style="border-color: #515670;" class="modal-footer">
+                        <div style="margin-top: 10px;" class="container text-center">
+                            <div id="render-paypal-button"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <hr id="videoHr" class="customHr" style="margin-bottom: 20px;">
 
         <section id="videoSection">
@@ -153,41 +184,13 @@
             </div>
             <footer class="site-footer">
                 <div class="container">
-                    <!-- <div class="row mb-5">
-                        <div class="col-md-4">
-                            <h2 class="footer-heading text-uppercase mb-4">About Event</h2>
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit aliquid quibusdam fugit
-                                architecto.</p>
-                        </div>
-                        <div class="col-md-3 ml-auto">
-                            <h2 class="footer-heading text-uppercase mb-4">Quick Links</h2>
-                            <ul class="list-unstyled">
-                                <li><a href="#">About Us</a></li>
-                                <li><a href="#">Speakers</a></li>
-                                <li><a href="#">Gallery</a></li>
-                                <li><a href="#">Contact Us</a></li>
-                            </ul>
-                        </div>
-                        <div class="col-md-4">
-                            <h2 class="footer-heading text-uppercase mb-4">Connect with Us</h2>
-                            <p>
-                                <a href="#" class="p-2 pl-0"><span class="icon-facebook"></span></a>
-                                <a href="#" class="p-2"><span class="icon-twitter"></span></a>
-                                <a href="#" class="p-2"><span class="icon-youtube"></span></a>
-                                <a href="#" class="p-2"><span class="icon-instagram"></span></a>
-                            </p>
-                        </div>
-                    </div> -->
                     <div class="row">
-
                         <div class="col-md-12">
                             <div>
                                 <p>
-                                    <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
                                     Copyright &copy;
                                     <script>document.write(new Date().getFullYear());</script> <a
                                         href="https://github.com/KastubhPatange" target="_blank">Kaustubh Patange</a>
-                                    <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
                                 </p>
                             </div>
                         </div>
@@ -198,7 +201,9 @@
     </div>
 
 </body>
-
+<!-- Current sandbox ID -->
+<script
+    src="https://www.paypal.com/sdk/js?client-id=ASwXlP0xbZyKXI-rqIMHOXmVtLe1xuKL0CqL0gqfNt7lq_yBtTd5Hs3fuRP-6C6cFS5FCAdspP3Gt5Y1"></script>
 <script src="XClipper.Web/js/jquery-3.3.1.min.js"></script>
 <script src="XClipper.Web/js/jquery-migrate-3.0.1.min.js"></script>
 <script src="XClipper.Web/js/jquery-ui.js"></script>
@@ -212,5 +217,6 @@
 <script src="XClipper.Web/js/aos.js"></script>
 <script async defer src="https://buttons.github.io/buttons.js"></script>
 <script src="XClipper.Web/js/main.js"></script>
+<script src="XClipper.Web/js/purchase.js"></script>
 
 </html>
