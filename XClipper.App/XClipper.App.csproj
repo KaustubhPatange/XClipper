@@ -483,7 +483,6 @@
   <PropertyGroup>
     <PostBuildEvent>md "$(SolutionDir)libraries\FireSharp.custom"
 copy "$(SolutionDir)\$(ProjectName)\Locales\en.xaml" "$(TargetDir)\locales\en.xaml"
-copy "$(TargetDir)FireSharp.Core.dll" "$(SolutionDir)libraries\FireSharp.custom\FireSharp.Core.dll"
-copy "$(TargetDir)FireSharp.Core.pdb" "$(SolutionDir)libraries\FireSharp.custom\FireSharp.Core.pdb"</PostBuildEvent>
+copy "$(TargetDir)FireSharp.Core.dll" "$(SolutionDir)libraries\FireSharp.custom\FireSharp.Core.dll"</PostBuildEvent>
   </PropertyGroup>
 </Project>

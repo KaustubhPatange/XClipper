@@ -32,6 +32,8 @@ namespace Components
         {
             FailureEvent?.Invoke(new ErrorEventArgs(new Exception(message)));
         }
+
+
         /// <summary>
         /// This method will set all required parameters need to be their for making OAuth2 call.
         /// </summary>
