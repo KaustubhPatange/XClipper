@@ -3,6 +3,7 @@ AOS.init({
   easing: "slide",
   once: true,
 });
+
 history.scrollRestoration = "manual";
 
 if (Number(window.screen.width < 600)) {
@@ -53,8 +54,4 @@ function scrollToSection(elementId, secondElementId) {
 
 function openGithub() {
   window.open("https://github.com/KaustubhPatange/XClipper");
-}
-
-function showAlert() {
-  alert("Hello\nHow are you?");
 }

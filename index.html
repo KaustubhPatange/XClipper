@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="XClipper.Web/css/aos.css">
     <link rel="stylesheet" href="XClipper.Web/css/style.css">
     <link rel="stylesheet" href="XClipper.Web/css/custom-btn.css">
-
+    <link rel="stylesheet" href="XClipper.Web/css/loader.css">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
@@ -57,9 +57,6 @@
 
                             </div>
                             <div class="smalltitle">
-                                <span>
-                                    <!-- <a style="color:#CCE915" href="google.com">Getting started</a> 📜
-                                    (github-wiki)</span> -->
 
                             </div>
                         </div>
@@ -127,41 +124,41 @@
                                 <span>✔️ Database Encryption</span><br>
                                 <span>✔️ No advertisements</span><br><br>
                                 <p class="card-text">A pricing plan for all helping folks out there.</p>
-                                <a href="#" class="btn btn-primary">Purchase</a>
+                                <a onclick="premiumPurchaseClick()" class="btn btn-primary">Purchase</a>
                             </div>
                         </div>
                     </div>
                 </div>
         </section>
 
-        <div class="modal fade" id="standardPurchase">
+        <div class="modal fade" id="purchaseModal">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <!-- Modal Header -->
                     <div class="modal-header">
-                        <h4 class="modal-title">Standard Purchase</h4>
+                        <h4 id="purchaseModel-title" class="modal-title">Standard Purchase</h4>
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
                     <!-- Modal body -->
                     <div class="modal-body">
                         <div class="form-group">
                             <div style="justify-content: center;">
-                                <span style=" color: white;" for="uid">Unique ID: </span><a target="_blank"
-                                    style="font-size: 12px; text-align: center;" href="google.com">How to get
+                                <span style=" color: white;" for="uidInput">Unique ID: </span><a target="_blank"
+                                    class="purchase-dialog-link" href="google.com">How to get
                                     this?</a>
                             </div>
 
                             <input style="margin-top: 10px; background: #1b1d24; border-color: #515670; color: white;"
-                                type="text" class="form-control" id="usr">
+                                type="text" class="form-control" id="uidInput">
                         </div>
-                        <span style="font-size: 14px;"><a href="google.com">Learn more</a>, about this purchase
+                        <span style="font-size: 14px;"><a href="google.com">Learn more</a>, about this pricing
                             category.</span>
                     </div>
 
                     <!-- Modal footer -->
-                    <div style="border-color: #515670;" class="modal-footer">
+                    <div style="border-color: #515670; background: #515670;" class="modal-footer">
                         <div style="margin-top: 10px;" class="container text-center">
-                            <div id="render-paypal-button"></div>
+                            <div id="render-payment-button"></div>
                         </div>
                     </div>
                 </div>
@@ -190,7 +187,8 @@
                                 <p>
                                     Copyright &copy;
                                     <script>document.write(new Date().getFullYear());</script> <a
-                                        href="https://github.com/KastubhPatange" target="_blank">Kaustubh Patange</a>
+                                        href="https://github.com/KastubhPatange" target="_blank">Kaustubh
+                                        Patange</a>
                                 </p>
                             </div>
                         </div>
@@ -199,11 +197,12 @@
             </footer>
         </section>
     </div>
-
 </body>
-<!-- Current sandbox ID -->
+<!-- TODO: Change sandbox Client ID -->
 <script
-    src="https://www.paypal.com/sdk/js?client-id=ASwXlP0xbZyKXI-rqIMHOXmVtLe1xuKL0CqL0gqfNt7lq_yBtTd5Hs3fuRP-6C6cFS5FCAdspP3Gt5Y1"></script>
+    src="https://www.paypal.com/sdk/js?currency=USD&client-id=ASwXlP0xbZyKXI-rqIMHOXmVtLe1xuKL0CqL0gqfNt7lq_yBtTd5Hs3fuRP-6C6cFS5FCAdspP3Gt5Y1"></script>
+<script src="XClipper.Web/js/toast.min.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="XClipper.Web/js/jquery-3.3.1.min.js"></script>
 <script src="XClipper.Web/js/jquery-migrate-3.0.1.min.js"></script>
 <script src="XClipper.Web/js/jquery-ui.js"></script>

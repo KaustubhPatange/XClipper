@@ -127,7 +127,20 @@ body {
   background-color: #2d303b;
 }
 
-#purchaseSection {
+.purchase-dialog-input {
+  margin-top: 10px;
+  background: #1b1d24;
+  border-color: #515670;
+  color: white;
+}
+
+#mdb-preloader.loaded {
+  opacity: 0;
+  transition: 0.3s ease-in 1s;
+}
+
+.purchase-dialog-link {
+  font-size: 12px;
 }
 
 .card-text {

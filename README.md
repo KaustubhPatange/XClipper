@@ -13,7 +13,7 @@
 
 <!-- [![XClipper Website](https://img.shields.io/badge/XClipper-Site-blue.svg?style=for-the-badge&logo=windows)](https://kaustubhpatange.github.io/xclipper) -->
 
-<a href="https://kaustubhpatange.github.io/XClipper"><img width="120px" src="icon.png"/></a>
+<a href="https://kaustubhpatange.github.io/XClipper"><img width="120px" src="XClipper.Web/images/icon.png"/></a>
 
 ## Features
 
