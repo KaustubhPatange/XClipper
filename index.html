@@ -143,6 +143,7 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <div style="justify-content: center;">
+                                <!-- TODO: Change this link for how to get UID -->
                                 <span style=" color: white;" for="uidInput">Unique ID: </span><a target="_blank"
                                     class="purchase-dialog-link" href="google.com">How to get
                                     this?</a>
@@ -151,14 +152,31 @@
                             <input style="margin-top: 10px; background: #1b1d24; border-color: #515670; color: white;"
                                 type="text" class="form-control" id="uidInput">
                         </div>
-                        <span style="font-size: 14px;"><a href="google.com">Learn more</a>, about this pricing
+                        <span style="font-size: 14px;"><a target="_blank" id="purchaseModal-link">Learn more</a>,
+                            about this pricing
                             category.</span>
                     </div>
 
                     <!-- Modal footer -->
                     <div style="border-color: #515670; background: #515670;" class="modal-footer">
                         <div style="margin-top: 10px;" class="container text-center">
-                            <div id="render-payment-button"></div>
+                            <div id="modal-payment" style="display: none;">
+                                <div id="render-payment-button"></div>
+                                <span style="font-size: 13px; color: #fefefe;">Problems with purchase, <a
+                                        target="_blank" href="google.com">read FAQs</a></span>
+                            </div>
+                            <!-- TODO: Change this faq link -->
+                            <div id="modal-progress" style="display: none; margin-bottom: 10px" class="loader"></div>
+                            <div style="margin-bottom: 10px; display: none;" id="modal-content-success">
+                                <span style="font-size: 20px; color: #15c90b;">Payment
+                                    Completed<br></span>
+                                <span>Restart XClipper instance on PC</span>
+                            </div>
+                            <div style="margin-bottom: 10px;" id="modal-content-failed">
+                                <span style="font-size: 20px; color: #7e0326;">Payment
+                                    Failed<br></span>
+                                <span id="modal-content-text-subtitle">Error code: </span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -216,6 +234,6 @@
 <script src="XClipper.Web/js/aos.js"></script>
 <script async defer src="https://buttons.github.io/buttons.js"></script>
 <script src="XClipper.Web/js/main.js"></script>
-<script src="XClipper.Web/js/purchase.js"></script>
+<script src="XClipper.Web/js/purchase.min.js"></script>
 
 </html>
