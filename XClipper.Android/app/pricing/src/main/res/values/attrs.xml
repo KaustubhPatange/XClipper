@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="Card">
+        <attr name="cardBackgroundColor" format="color"/>
+        <attr name="purchaseType" format="string"/>
+        <attr name="purchaseTypeColor" format="color"/>
+        <attr name="separatorColor" format="color"/>
+        <attr name="purchaseAmount" format="string"/>
+        <attr name="purchaseAmountColor" format="color"/>
+        <attr name="purchaseDescription" format="string"/>
+        <attr name="purchaseDescriptionColor" format="color"/>
+        <attr name="purchaseButtonText" format="string"/>
+        <attr name="purchaseButtonTextColor" format="color"/>
+        <attr name="purchaseButtonColor" format="color"/>
+    </declare-styleable>
+</resources>
