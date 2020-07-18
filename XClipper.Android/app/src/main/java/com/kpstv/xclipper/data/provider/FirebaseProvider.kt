@@ -6,8 +6,10 @@ import com.kpstv.xclipper.data.localized.FBOptions
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.Device
 import com.kpstv.xclipper.data.model.User
+import com.kpstv.xclipper.extensions.LicenseType
 import com.kpstv.xclipper.extensions.listeners.RepositoryListener
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
+import kotlinx.coroutines.flow.Flow
 import java.lang.Exception
 
 interface FirebaseProvider {
@@ -24,6 +26,11 @@ interface FirebaseProvider {
     fun deleteData(unencryptedClip: Clip)
     fun deleteMultipleData(unencryptedClips: List<Clip>)
     fun clearData()
+
+    /**
+     * @return [LicenseType] from current firebase configuration.
+     */
+    fun getLicenseStrategy(): LiveData<LicenseType>
 
     /**
      * @return An unencrypted list of clip model.

@@ -1,11 +1,12 @@
 package com.kpstv.xclipper.data.model
 
-import com.google.gson.annotations.SerializedName
+import com.kpstv.xclipper.extensions.LicenseType
 
-data class User (
+data class User(
     val IsLicensed: Boolean,
     val TotalConnection: Int,
     val MaxItemStorage: Int,
+    val LicenseStrategy: LicenseType?,
     var Clips: List<Clip>?,
     var Devices: List<Device>?
 )

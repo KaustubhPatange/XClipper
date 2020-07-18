@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Build
 import android.util.Log
 import androidx.annotation.experimental.Experimental
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
@@ -27,6 +28,8 @@ import com.kpstv.xclipper.data.model.User
 import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.extensions.listeners.FValueEventListener
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 @ExperimentalStdlibApi
 class FirebaseProviderImpl(
@@ -43,6 +46,7 @@ class FirebaseProviderImpl(
     private var isInitialized = MutableLiveData(false)
     private var user: User? = null
     private var validDevice: Boolean = false
+    private var licenseStrategy = MutableLiveData(LicenseType.Invalid)
     private lateinit var database: FirebaseDatabase
 
     /**
@@ -83,6 +87,8 @@ class FirebaseProviderImpl(
     override fun isLicensed(): Boolean = user?.IsLicensed ?: false
 
     override fun isValidDevice(): Boolean = validDevice
+
+    override fun getLicenseStrategy() = licenseStrategy
 
     override fun clearData() {
         user = null
@@ -403,6 +409,7 @@ class FirebaseProviderImpl(
     private fun checkForUserDetailsAndUpdateLocal() {
         APP_MAX_DEVICE = user?.TotalConnection ?: getMaxConnection(isLicensed())
         APP_MAX_ITEM = user?.MaxItemStorage ?: getMaxStorage(isLicensed())
+        user?.LicenseStrategy?.let { licenseStrategy.postValue(it) }
     }
 
     override fun removeDataObservation() {

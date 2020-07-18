@@ -1,6 +1,7 @@
 package com.kpstv.xclipper.extensions
 
 import com.ferfalk.simplesearchview.SimpleSearchView
+import com.google.gson.annotations.SerializedName
 import com.kpstv.xclipper.App.STANDARD_DATE_FORMAT
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
@@ -70,6 +71,14 @@ fun <T> lazyDeferred(block: suspend CoroutineScope.() -> T): Lazy<Deferred<T>> {
 fun Date.getFormattedDate(): String =
     SimpleDateFormat(STANDARD_DATE_FORMAT, Locale.US).format(this)
 
+enum class LicenseType {
+    @SerializedName("0")
+    Standard,
+    @SerializedName("1")
+    Premium,
+    @SerializedName("2")
+    Invalid
+}
 
 /**
  * Basically checks if string is an enum of a particular class.

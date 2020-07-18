@@ -27,7 +27,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="15dp"
-                    android:text="Standard"
+                    android:text="Purchase Type"
                     android:textSize="20sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -49,7 +49,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="15dp"
-                    android:text="$12"
+                    android:text="$0"
                     android:textSize="40sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -76,11 +76,12 @@
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/purchase_button"
         app:backgroundTint="@color/white"
-        android:layout_width="140dp"
-        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:textSize="12sp"
+        android:layout_height="42dp"
         android:gravity="center"
         app:layout_anchor="@id/mainCard"
         app:layout_anchorGravity="bottom|center"
-        android:text="Purchase" />
+        android:text="   Purchase" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

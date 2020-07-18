@@ -109,6 +109,7 @@ namespace Components
             user.MaxItemStorage = DatabaseMaxItem;
             user.TotalConnection = DatabaseMaxConnection;
             user.IsLicensed = IsPurchaseDone;
+            user.LicenseStrategy = LicenseStrategy;
         }
 
         private void CheckForDataRemoval(User? firebaseUser)
@@ -436,6 +437,10 @@ namespace Components
 
     public class User
     {
+        /// <summary>
+        /// Property tells what type of license user owns.
+        /// </summary>
+        public LicenseType LicenseStrategy { get; set; }
 
         /// <summary>
         /// Property tells whether the user has purchased license for this software or not.
