@@ -111,15 +111,6 @@ namespace Components
         }
 
         /// <summary>
-        /// This method will check for license and activate some extra features.
-        /// </summary>
-        public static void CheckForLicense()
-        {
-            LicenseStrategy = IsActivated(new Uri(LicenseFilePath));
-            IsPurchaseDone = LicenseStrategy != LicenseType.Invalid;
-        }
-
-        /// <summary>
         /// This method will restart the application.
         /// </summary>
         public static void RestartApplication()

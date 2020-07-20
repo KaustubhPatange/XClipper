@@ -26,12 +26,11 @@ using System.Windows.Media;
 
 namespace Components
 {
-    // todo: Pruning required
     /** Can't bind the viewModel to this class because of some complexity issues.
      *  
      *  Their is also another issue, since this app is solely based on key press events. Doing
-     *  this using View Model would increase lots of complexity. As for eg: I can't bind
-     *  Ctrl + Q as Key only accepts single value. */
+     *  this using View Model would increase lots of complexity.
+     */
 
     public partial class ClipWindow : Window, IClipBinder
     {
@@ -78,25 +77,6 @@ namespace Components
              *  ListView.Items.CurrentChange event.
              */
             ((INotifyCollectionChanged)_lvClip.Items).CollectionChanged += ClipWindow_CollectionChanged;
-        }
-
-        /// <summary>
-        /// Will be raised when listview is scrolling.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void _lvClip_ScrollChanged(object sender, ScrollChangedEventArgs e)
-        {
-            //var scrollViewer = GetScrollViewer(_lvClip) as ScrollViewer;
-            //if (scrollViewer.VerticalOffset == scrollViewer.ScrollableHeight)
-            //{
-            //    if (AppSingleton.GetInstance.CanFetchNext() && _lvClip.Items.Count > 0)
-            //    {
-            //        var lastItem = _lvClip.Items[_lvClip.Items.Count - 1];
-            //        _lvClip.ItemsSource = AppSingleton.GetInstance.ClipData;
-            //        _lvClip.ScrollIntoView(lastItem);
-            //    }
-            //}
         }
 
         #endregion
@@ -256,20 +236,6 @@ namespace Components
         #region Key Capture Events
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            //Debug.WriteLine("Pressed Key: " + e.Key.ToString());
-            //Debug.WriteLine("Pressed SystemKey: " + e.SystemKey.ToString());
-
-
-            // This key bind will show context menu
-            //if (e.Key == Key.Apps)
-            //{
-            //    if (_lvClip.SelectedItems.Count > 0)
-            //    {
-            //        var card = FindCardItem(_lvClip.SelectedIndex);
-            //        card.ContextMenu.
-            //    }
-            //}
-
             // This key bind will show qr window
             if (e.Key == Key.R && IsCtrlPressed())
                 ShowQRWindow();
@@ -368,8 +334,6 @@ namespace Components
          PreviewKeyDown instead. */
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            //Debug.WriteLine("WPKD: " + e.Key.ToString());
-            //Debug.WriteLine("WPKD: " + e.SystemKey.ToString());
             // If pop up window is open, and space is pressed. It will put pop-up to focus.
             if (e.Key == Key.Space)
             {
@@ -468,8 +432,6 @@ namespace Components
                 if (dataTemplate != null && templateParent != null)
                 {
                     return (dataTemplate.FindName("Item_MaterialCard", templateParent) as Card);
-                    //    .FindName("Item_StackPanel") as StackPanel;
-                    //return panel.FindName("Item_TextBlock") as TextBlock;
                 }
             }
             return null;
@@ -554,7 +516,6 @@ namespace Components
         /// </summary>
         public void CloseWindow()
         {
-            //Close();
             _filterWindow.Hide();
             _popupWindow.CloseWindow();
             _qrWindow.CloseWindow();
@@ -569,7 +530,6 @@ namespace Components
         /// </summary>
         public void ShowFilterWindow()
         {
-            //if (_lvClip.SelectedItems.Count <= 0) return;
             HideAllWindows();
             _filterWindow.Show();
             _filterWindow.SetUpWindow(_lvClip.SelectedIndex);

@@ -28,10 +28,7 @@
             HorizontalAlignment="Center"
             VerticalAlignment="Center">
             <Image Height="85" Source="pack://application:,,,/Resources/firebase1.jpg" />
-            <Label
-                Height="1"
-                Margin="10,5,10,0"
-                Background="DarkGray" />
+            <Separator Margin="10,5,10,0" Background="DarkGray" />
         </StackPanel>
         <Button
             x:Name="button"

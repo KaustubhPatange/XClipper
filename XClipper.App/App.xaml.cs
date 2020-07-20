@@ -156,23 +156,22 @@ namespace Components
             var SettingMenuItem = CreateNewItem(Translation.APP_SETTINGS, SettingMenuClicked);
             var RestartMenuItem = CreateNewItem(Translation.APP_RESTART, RestartAppClicked);
             var BuyWindowItem = CreateNewItem(Translation.APP_LICENSE, BuyMenuClicked);
-            var RecordMenuItem = CreateNewItem(Translation.APP_RECORD, this.RecordMenuClicked).Also(s => { s.Checked = ToRecord; });
+            var RecordMenuItem = CreateNewItem(Translation.APP_RECORD, RecordMenuClicked).Also(s => { s.Checked = ToRecord; });
             var AppExitMenuItem = CreateNewItem(Translation.APP_EXIT, delegate { Shutdown(); });
             var DeleteMenuItem = CreateNewItem(Translation.APP_DELETE, DeleteDataClicked);
             var BackupMenuItem = CreateNewItem(Translation.APP_BACKUP, BackupClicked);
             var RestoreMenutItem = CreateNewItem(Translation.APP_RESTORE, RestoreClicked);
             var ImportDataItem = CreateNewItem(Translation.APP_IMPORT, ImportDataClicked);
-            ConfigSettingItem = CreateNewItem(Translation.APP_CONFIG_SETTING, this.ConfigSettingClicked).Also(c => c.Visible = false);
-            UpdateSettingItem = CreateNewItem(Translation.APP_UPDATE, this.UpdateSettingClicked).Also(c => c.Visible = false);
+            ConfigSettingItem = CreateNewItem(Translation.APP_CONFIG_SETTING, ConfigSettingClicked).Also(c => c.Visible = false);
+            UpdateSettingItem = CreateNewItem(Translation.APP_UPDATE, UpdateSettingClicked).Also(c => c.Visible = false);
 
             var HelpMenuItem = CreateNewItem(Translation.APP_HELP, (o, e) =>
             {
                 Process.Start(new ProcessStartInfo("https://github.com/KaustubhPatange/XClipper"));
             });
 
-            var items = new List<WinForm.MenuItem>() { ShowMenuItem, BuyWindowItem, RestartMenuItem, CreateSeparator(), BackupMenuItem, RestoreMenutItem, ImportDataItem, CreateSeparator(), HelpMenuItem, CreateSeparator(), RecordMenuItem, DeleteMenuItem, CreateSeparator(), ConfigSettingItem, UpdateSettingItem, SettingMenuItem, CreateSeparator(), AppExitMenuItem };
+            var items = new List<WinForm.MenuItem>() { ShowMenuItem, RestartMenuItem, CreateSeparator(), BackupMenuItem, RestoreMenutItem, ImportDataItem, CreateSeparator(), HelpMenuItem, CreateSeparator(), RecordMenuItem, DeleteMenuItem, CreateSeparator(), BuyWindowItem, ConfigSettingItem, UpdateSettingItem, SettingMenuItem, CreateSeparator(), AppExitMenuItem };
 
-            //  if (!IsPurchaseDone) items.Insert(1, BuyWindowItem);
             return items.ToArray();
         }
 

@@ -91,6 +91,7 @@ namespace Components
         public string MSG_NEED_AUTH = rm.GetString("msg_need_auth");
         public string MSG_WRONG_SIGNIN = rm.GetString("msg_wrong_signin");
         public string MSG_UNKNOWN_ERR = rm.GetString("msg_unknown_err");
+        public string MSG_LICENSE_CHECK = rm.GetString("msg_license_check");
         public string POPUP_ADDED = rm.GetString("popup_added");
         public string POPUP_SPACE_FOCUS = rm.GetString("popup_space_focus");
         public string POPUP_EDIT_ERR = rm.GetString("popup_edit_err");
@@ -110,6 +111,8 @@ namespace Components
         public string BUY_ACTIVATE = rm.GetString("buy_activate");
         public string BUY_IS_ACTIVATE = rm.GetString("buy_is_activate");
         public string BUY_NOT_ACTIVATE = rm.GetString("buy_not_activate");
+        public string BUY_LICENSE_SUCCESS = rm.GetString("buy_license_success");
+        public string BUY_LICENSE_EXIST = rm.GetString("buy_license_exist");
         public string SYNC_IMPORT = rm.GetString("sync_import");
         public string SYNC_IMPORT_SUCCESS = rm.GetString("sync_import_success");
         public string SYNC_IMPORT_ERR = rm.GetString("sync_import_err");

@@ -12,7 +12,7 @@
     <system:String x:Key="app_restart">Restart</system:String>
     <system:String x:Key="app_settings">Settings</system:String>
     <system:String x:Key="app_delete">Delete All Data</system:String>
-    <system:String x:Key="app_license">Buy License</system:String>
+    <system:String x:Key="app_license">License Configuration</system:String>
     <system:String x:Key="app_backup">Backup Database</system:String>
     <system:String x:Key="app_restore">Restore Database</system:String>
     <system:String x:Key="app_record">Record</system:String>
@@ -98,7 +98,7 @@
     <system:String x:Key="msg_merge_encrypt">The database file might be an encrypted one, if so kindly enter the password in the next dialog.</system:String>
     <system:String x:Key="msg_delete_all">This will remove all clips stored in database. Are you sure?</system:String>
     <system:String x:Key="msg_delete_db">This will migrate the existing SQlite database to sqlite3 database.</system:String>
-    <system:String x:Key="msg_field_empty">One or more field is empty.</system:String>
+    <system:String x:Key="msg_field_empty">One or more field is empty or wrong.</system:String>
     <system:String x:Key="msg_config_save">Configuration saved successfully.</system:String>
     <system:String x:Key="msg_config_reset">This will reset the database configuration to its default.</system:String>
     <system:String x:Key="msg_config_reset_success">Original configuration restored.</system:String>
@@ -108,6 +108,7 @@
     <system:String x:Key="msg_need_auth">In order to connect with database you first need to Sign-In.</system:String>
     <system:String x:Key="msg_wrong_signin">Account credentials are not valid for this account. You need to sign-In again</system:String>
     <system:String x:Key="msg_unknown_err">An unknown error occurred. Report me if you get this message.</system:String>
+    <system:String x:Key="msg_license_check">License validation is completed.</system:String>
     <system:String x:Key="popup_added">Added:</system:String>
     <system:String x:Key="popup_space_focus">...Press (Space) to Focus...</system:String>
     <system:String x:Key="popup_edit_err">Editing is not supported for this format</system:String>
@@ -127,11 +128,17 @@
     <system:String x:Key="clip_file_select">Select a save file path</system:String>
     <system:String x:Key="clip_file_select2">Select a database file or a backup file</system:String>
     <system:String x:Key="clip_cpl">Choose a paste location</system:String>
-    <system:String x:Key="buy_unique">Unique ID</system:String>
+    <system:String x:Key="buy_unique">Unique Id</system:String>
+    <system:String x:Key="buy_verify">Verify</system:String>
+    <system:String x:Key="buy_activation">Activation</system:String>
+    <system:String x:Key="buy_tools">Tools</system:String>
     <system:String x:Key="buy_key">Key</system:String>
+    <system:String x:Key="buy_help">How to use?</system:String>
     <system:String x:Key="buy_activate">Activate</system:String>
     <system:String x:Key="buy_is_activate">License Activated</system:String>
     <system:String x:Key="buy_not_activate">Not Activated</system:String>
+    <system:String x:Key="buy_license_success">Your order is created! Click OK to activate license.</system:String>
+    <system:String x:Key="buy_license_exist">Your order already exist.</system:String>
     <system:String x:Key="device_title">Connected Device</system:String>
     <system:String x:Key="device_disconnect">Disconnect</system:String>
     <system:String x:Key="sync_config_title">Firebase Configuration</system:String>

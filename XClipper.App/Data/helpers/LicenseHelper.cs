@@ -23,6 +23,9 @@ namespace Components
         {
             Task.Run(async () =>
             {
+                // Set this to true to indicate that we are checking license.
+                IsCheckingForLicense = true;
+
                 var responseText = await CheckForLicense().ConfigureAwait(false);
                 Application.Current.Dispatcher.Invoke(delegate
                 {
@@ -38,16 +41,19 @@ namespace Components
                         {
                             IsPurchaseDone = type != LicenseType.Invalid;
                             LicenseStrategy = type;
-                            block(null);
+                            block?.Invoke(null);
                         }
-                        else block(new Exception("The given application Id doesn't match the current UID"));
+                        else block?.Invoke(new Exception("The given application Id doesn't match the current UID"));
                     }
                 });
+
+                // Set this to false to indicate that license checking is completed.
+                IsCheckingForLicense = false;
             });
         }
         private async Task<string?> CheckForLicense()
         {
-            var client = new RestClient($"{AUTHOR_SERVER}/xclipper/validate?uid={UniqueID}");
+            var client = new RestClient($"{BACKEND_SERVER}/validate?uid={UniqueID}");
             client.Timeout = RESTSHARP_TIMEOUT;
             try
             {

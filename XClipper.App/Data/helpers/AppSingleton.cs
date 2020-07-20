@@ -154,9 +154,7 @@ namespace Components.viewModels
 
                 TotalClips = pinnedItems.Count() + normalItems.Count();
                 TotalPage = (TotalClips / TruncateList) + ((TotalClips % TruncateList != 0) ? 1 : 0);
-
-                // todo: Disabling pagination
-                // return pinnedItems.Concat(normalItems).Take(TruncateList * Page).ToList();
+                
                 return pinnedItems.Concat(normalItems).ToList();
             }
         }

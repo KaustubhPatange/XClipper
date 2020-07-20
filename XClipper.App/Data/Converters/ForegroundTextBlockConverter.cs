@@ -6,14 +6,14 @@ using System.Windows.Media;
 
 namespace Components
 {
-    [ValueConversion(typeof(bool), typeof(SolidColorBrush))]
+    [ValueConversion(typeof(LicenseType), typeof(SolidColorBrush))]
     public class ForegroundTextBlockConverter : IValueConverter
     {
         public static ForegroundTextBlockConverter Instance = new ForegroundTextBlockConverter();
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var activated = (bool)value;
-            if (activated)
+            var type = (LicenseType)value;
+            if (type == LicenseType.Standard || type == LicenseType.Premium)
             {
                 var color = Application.Current.Resources["GreenBrush"] as SolidColorBrush;
                 return color;

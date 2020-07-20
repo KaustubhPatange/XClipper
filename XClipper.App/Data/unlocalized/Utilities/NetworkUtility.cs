@@ -1,7 +1,4 @@
-﻿using RestSharp;
-using System.Threading.Tasks;
-
-namespace Components
+﻿namespace Components
 {
     public static class NetworkUtility
     {

@@ -11,6 +11,7 @@ import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.ToolbarState
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.extensions.utils.ThemeUtils
+import com.kpstv.xclipper.ui.helpers.UpdateHelper
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import com.kpstv.xclipper.ui.viewmodels.MainViewModelFactory
 import kotlinx.android.synthetic.main.fragment_home.*
@@ -50,6 +51,8 @@ class Main : AppCompatActivity(), KodeinAware {
         if (preferenceProvider.getBooleanKey(TUTORIAL_PREF, false)) {
             navController.navigate(R.id.fragment_home, null, navOptions)
         }
+
+        UpdateHelper(this)
     }
 
     /**

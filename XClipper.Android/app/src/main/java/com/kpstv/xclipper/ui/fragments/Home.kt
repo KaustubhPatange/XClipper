@@ -3,7 +3,6 @@ package com.kpstv.xclipper.ui.fragments
 import android.content.ClipData
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.Animation
@@ -18,13 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.appupdate.AppUpdateManager
-import com.google.android.play.core.appupdate.AppUpdateManagerFactory
-import com.google.android.play.core.install.InstallStateUpdatedListener
-import com.google.android.play.core.install.model.AppUpdateType
-import com.google.android.play.core.install.model.InstallStatus
-import com.google.android.play.core.install.model.UpdateAvailability
 import com.kpstv.xclipper.App
-import com.kpstv.xclipper.App.UPDATE_REQUEST_CODE
 import com.kpstv.xclipper.App.runAutoSync
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.ToolbarState
@@ -100,7 +93,8 @@ class Home : Fragment(R.layout.fragment_home), KodeinAware {
 
         autoValidateOnStartup()
 
-        checkForUpdates()
+        // TODO: Remove this obsolete methods after testing Auto-update
+        // checkForUpdates()
 
         super.onViewCreated(view, savedInstanceState)
     }
@@ -110,40 +104,55 @@ class Home : Fragment(R.layout.fragment_home), KodeinAware {
         startActivity(intent)
     }
 
-    private fun checkForUpdates() = with(requireActivity()) {
-        appUpdateManager = AppUpdateManagerFactory.create(this)
-        val appUpdateInfoTask = appUpdateManager.appUpdateInfo
-        appUpdateManager.registerListener(listener)
-        appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
-            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
-                && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)
-            ) {
-                appUpdateManager.startUpdateFlowForResult(
-                    appUpdateInfo,
-                    AppUpdateType.FLEXIBLE,
-                    this,
-                    UPDATE_REQUEST_CODE
-                )
-            }
-        }
-    }
+    /* private fun checkForUpdates() = with(requireActivity()) {
+         appUpdateManager = AppUpdateManagerFactory.create(this)
+         val appUpdateInfoTask = appUpdateManager.appUpdateInfo
+         appUpdateManager.registerListener(listener)
+         appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
+             if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+                 && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)
+             ) {
+                 appUpdateManager.startUpdateFlowForResult(
+                     appUpdateInfo,
+                     AppUpdateType.FLEXIBLE,
+                     this,
+                     UPDATE_REQUEST_CODE
+                 )
+             }
+         }
+     }
 
-    private val listener = InstallStateUpdatedListener { state ->
-        if (state.installStatus() == InstallStatus.DOWNLOADING) {
-            val bytesDownloaded = state.bytesDownloaded()
-            val totalBytesToDownload = state.totalBytesToDownload()
-            Log.e(TAG, "Bytes Downloaded: $bytesDownloaded, TotalBytes: $totalBytesToDownload")
-        } else if (state.installStatus() == InstallStatus.DOWNLOADED) {
-            Snackbar.make(
-                requireView().findViewById(R.id.ci_recyclerView),
-                "An update has just been downloaded.",
-                Snackbar.LENGTH_INDEFINITE
-            ).apply {
-                setAction("RESTART") { appUpdateManager.completeUpdate() }
-                show()
-            }
-        }
-    }
+     private val listener = InstallStateUpdatedListener { state ->
+         if (state.installStatus() == InstallStatus.DOWNLOADING) {
+             val bytesDownloaded = state.bytesDownloaded()
+             val totalBytesToDownload = state.totalBytesToDownload()
+             Log.e(TAG, "Bytes Downloaded: $bytesDownloaded, TotalBytes: $totalBytesToDownload")
+         } else if (state.installStatus() == InstallStatus.DOWNLOADED) {
+             popupSnackbarForCompleteUpdate()
+         }
+     }
+
+     override fun onResume() {
+         super.onResume()
+         appUpdateManager
+             .appUpdateInfo
+             .addOnSuccessListener { appUpdateInfo ->
+                 if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
+                     popupSnackbarForCompleteUpdate()
+                 }
+             }
+     }
+
+     private fun popupSnackbarForCompleteUpdate() {
+         Snackbar.make(
+             requireView().findViewById(R.id.ci_recyclerView),
+             "An update has just been downloaded.",
+             Snackbar.LENGTH_INDEFINITE
+         ).apply {
+             setAction("RESTART") { appUpdateManager.completeUpdate() }
+             show()
+         }
+     }*/
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -159,7 +168,7 @@ class Home : Fragment(R.layout.fragment_home), KodeinAware {
             else
                 layout_empty_parent.collapse()
             adapter.submitList(ArrayList(it?.cloneForAdapter()?.reversed()!!))
-            mainViewModel.stateManager.clearSelectedItem()
+            // mainViewModel.stateManager.clearSelectedItem() TODO: Why clear selected item find out!
         })
         mainViewModel.stateManager.toolbarState.observe(viewLifecycleOwner, Observer { state ->
             when (state) {

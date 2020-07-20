@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">XClipper</string>
+    <string name="app_website">https://kaustubhpatange.github.io/XClipper</string>
     <string name="accessibility_service_description">This will let XClipper capture some clipboard clips if system detects any copy/cut action.\n\n\nThis feature is still in BETA for Android 10+ users.</string>
 
     <string name="testStringSmall">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</string>
@@ -139,4 +140,6 @@
     <string name="standard_pricing">Get a standard pricing model with maximum server storage you can get.</string>
     <string name="premium_pricing">Store your data on your own server for lifetime which is secure &#38; free.</string>
     <string name="awesome">You are awesome!</string>
+    <string name="update_download_complete">Update downloaded</string>
+    <string name="update_downoad_install">Click OK to apply update!</string>
 </resources>

@@ -90,7 +90,7 @@ namespace Components
         /// <summary>
         /// Tells which license strategy has to be applied.
         /// </summary>
-        private static LicenseType _licenseStrategy;
+        private static LicenseType _licenseStrategy = LicenseType.Invalid;
 
         /// <summary>
         /// Max number of item to store in database.
@@ -106,6 +106,12 @@ namespace Components
         /// Determines the maximum number of device connections allowed.
         /// </summary>
         private static int _databaseMaxConnection = FB_MIN_CONNECTION;
+
+        /// <summary>
+        /// We will use this property to create a loading effect when
+        /// app is checking for license.
+        /// </summary>
+        private static bool _IsCheckingForLicense = false;
 
         #endregion
 
@@ -218,6 +224,22 @@ namespace Components
         public static int TruncateList { get; set; } = 20;
 
         /// <summary>
+        /// <inheritdoc cref="_IsCheckingForLicense"/>
+        /// </summary>
+        public static bool IsCheckingForLicense
+        {
+            get { return _IsCheckingForLicense; }
+            set
+            {
+                if (value != _IsCheckingForLicense)
+                {
+                    _IsCheckingForLicense = value;
+                    NotifyStaticPropertyChanged(nameof(IsCheckingForLicense));
+                }
+            }
+        }
+
+        /// <summary>
         /// <inheritdoc cref="_databaseMaxItem"/>
         /// </summary>
         public static int DatabaseMaxItem
@@ -286,30 +308,6 @@ namespace Components
         /// </summary>
         public static string DatabaseEncryptPassword { get; set; } = FB_DEFAULT_PASS.Decrypt();
 
-        [Obsolete("The property will be removed use CurrentFirebase")]
-        /// <summary>
-        /// The endpoint Firebase URL https://example-pathio.com
-        /// </summary>
-        public static string FirebaseEndpoint { get; set; } = FIREBASE_PATH;
-
-        [Obsolete("The property will be removed use CurrentFirebase")]
-        /// <summary>
-        /// The secret Auth key which will be used to make connection to database.
-        /// </summary>
-        public static string FirebaseSecret { get; set; } = string.Empty;
-
-        [Obsolete("The property will be removed use CurrentFirebase")]
-        /// <summary>
-        /// The app Id of mobile package name that is needed to make connection for the mobile App.
-        /// </summary>
-        public static string FirebaseAppId { get; set; } = FIREBASE_APP_ID;
-
-        [Obsolete("The property will be removed use CurrentFirebase")]
-        /// <summary>
-        /// A web API key for Firebase database.
-        /// </summary>
-        public static string FirebaseApiKey { get; set; } = FIREBASE_API_KEY;
-
         /// <summary>
         /// This stores all the credentials necessary for making connection with Firebase.
         /// </summary>
@@ -323,7 +321,7 @@ namespace Components
         /// <summary>
         /// Holds all the firebase configuration or any custom configuration as well.
         /// </summary>
-        public static List<FirebaseData> FirebaseConfigurations { get; set; } = new List<FirebaseData>();
+        public static List<FirebaseData> FirebaseConfigurations { get; private set; } = new List<FirebaseData>();
 
         /// <summary>
         /// When set to true it will allow syncing of local database with online database.<br/> A valid binding can be,<br/><br/> 

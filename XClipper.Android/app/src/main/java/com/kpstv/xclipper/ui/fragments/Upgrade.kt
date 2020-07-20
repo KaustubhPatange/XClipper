@@ -1,5 +1,9 @@
 package com.kpstv.xclipper.ui.fragments
 
+import android.content.Intent
+import android.content.Intent.ACTION_VIEW
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.animation.AnimationUtils
@@ -10,7 +14,6 @@ import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.extensions.LicenseType
 import com.kpstv.xclipper.extensions.hide
 import com.kpstv.xclipper.extensions.show
-import com.kpstv.xclipper.extensions.utils.Utils
 import kotlinx.android.synthetic.main.fragment_upgrade.*
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.kodein
@@ -20,7 +23,6 @@ class Upgrade : Fragment(R.layout.fragment_upgrade), KodeinAware {
 
     override val kodein by kodein()
     private val firebaseProvider by instance<FirebaseProvider>()
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -47,11 +49,17 @@ class Upgrade : Fragment(R.layout.fragment_upgrade), KodeinAware {
         })
 
         standardCard.setButtonClickListener {
-
+            launch(getString(R.string.app_website))
         }
 
         premiumCard.setButtonClickListener {
-
+            launch(getString(R.string.app_website))
         }
     }
+
+    private fun launch(url: String) =
+        startActivity(Intent(ACTION_VIEW).apply {
+            data = Uri.parse(url)
+            flags = FLAG_ACTIVITY_NEW_TASK
+        })
 }

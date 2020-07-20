@@ -2,6 +2,7 @@ package com.kpstv.xclipper.ui.adapters
 
 import android.content.Context
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -54,7 +55,6 @@ class CIAdapter(
         )
 
     override fun onBindViewHolder(holder: MainHolder, position: Int) {
-
         val clip = getItem(position)
 
         holder.itemView.ci_textView.text = clip.data
@@ -112,7 +112,6 @@ class CIAdapter(
         })
 
         selectedItem.observe(context as LifecycleOwner, Observer {
-
 
             /** Will figure out where to place this */
             setPinMovements(clip, holder)
@@ -218,11 +217,6 @@ class CIAdapter(
     fun setMenuItemClick(block: (Clip, Int, MENU_TYPE) -> Unit) {
         this.menuClick = block;
     }
-
-    /* fun submitList(list: ArrayList<Clip>) {
-         this.list = list
-         notifyDataSetChanged()
-     }*/
 
     enum class MENU_TYPE {
         Edit, Pin, Special, Share
