@@ -123,14 +123,14 @@ start XClipper.exe
 DEL ""%~f0""";
 
             File.WriteAllText(file, batch);
-
-            var p = new Process();
-            p.StartInfo.FileName = file;
-            p.StartInfo.UseShellExecute = false;
-            p.StartInfo.WorkingDirectory = BaseDirectory;
-            p.StartInfo.CreateNoWindow = true;
-            p.Start();
-
+            using (var p = new Process())
+            {
+                p.StartInfo.FileName = file;
+                p.StartInfo.UseShellExecute = false;
+                p.StartInfo.WorkingDirectory = BaseDirectory;
+                p.StartInfo.CreateNoWindow = true;
+                p.Start();
+            }
             Application.Current.Shutdown();
         }
         public static void ActivatePaidFeatures()
@@ -158,14 +158,15 @@ DEL ""%~f0""";
         }
 
         [DllImport("Shlwapi.dll", CharSet = CharSet.Auto)]
-        public static extern Int32 StrFormatByteSize(long fileSize, [MarshalAs(UnmanagedType.LPTStr)] StringBuilder buffer, int bufferSize);
+      //  public static extern Int32 StrFormatByteSize(long fileSize, [MarshalAs(UnmanagedType.LPTStr)] StringBuilder buffer, int bufferSize);
+        static extern Int32 StrFormatByteSize(long fileSize, [MarshalAs(UnmanagedType.LPWStr)] StringBuilder buffer, int bufferSize);
         /// <summary>
         /// Return a file size created by the StrFormatByteSize API function. 
         /// </summary>
-        public static string ToFileSizeApi(this long file_size)
+        public static string ToFileSizeApi(this long fileSize)
         {
             StringBuilder sb = new StringBuilder(20);
-            StrFormatByteSize(file_size, sb, 20);
+            StrFormatByteSize(fileSize, sb, 20);
             return sb.ToString();
         }
 
@@ -186,7 +187,7 @@ DEL ""%~f0""";
             {
                 UID = UniqueID,
                 EncryptedData = ($"{FirebaseCurrent.AppId};{FirebaseCurrent.ApiKey};{FirebaseCurrent.Endpoint}" +
-                $";{DatabaseEncryptPassword};{mobileAuthDetails}")
+                $";{DatabaseEncryptPassword};{mobileAuthDetails};{BindDatabase}")
                 .EncryptBase64Common()
             };
             return true;

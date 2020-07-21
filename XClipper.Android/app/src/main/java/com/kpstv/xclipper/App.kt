@@ -98,7 +98,11 @@ object App {
     const val URL_PATTERN_REGEX =
         "https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)"
     const val MAP_PATTERN_REGEX =
-        "[-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?),\\s*[-+]?(180(\\.0+)?|((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?)"
+        "[-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?)°?\\s*(N|S|E|W)?,\\s*[-+]?(180(\\.0+)?|((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?)°?\\s*(N|S|E|W)?"
+    const val DATE_PATTERN_REGEX =
+        "(\\d){1,2}[/\\.\\s-]?(\\d){1,2}[/\\.\\s-]?(\\d){4}"
+    const val DATE_PATTERN_REGEX1 =
+        "(\\d){4}[/\\.\\s-]?(\\d){1,2}[/\\.\\s-]?(\\d){1,2}"
 
     const val APP_CLIP_DATA = "com.kpstv.xclipper.clip_data"
 

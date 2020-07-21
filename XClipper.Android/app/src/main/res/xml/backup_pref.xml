@@ -12,5 +12,4 @@
         app:summary="Save all the data to a local database"
         app:key="export_pref"/>
 
-
 </PreferenceScreen>

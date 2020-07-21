@@ -32,6 +32,12 @@ class DBConnectionProviderImpl(
                 val firebasePassword = firebaseConfigs[3]
                 val isAuthNeeded = firebaseConfigs[4].toBoolean()
                 val firebaseAuthClientId = if (isAuthNeeded) firebaseConfigs[5] else null
+                val hasBinded = firebaseConfigs[6].toBoolean()
+
+                if (!hasBinded) {
+                    responseListener.onError(Exception("Enable & apply \"Database binding\" from desktop application."))
+                    return
+                }
 
                 responseListener.onComplete(
                     FBOptions.Builder().apply {

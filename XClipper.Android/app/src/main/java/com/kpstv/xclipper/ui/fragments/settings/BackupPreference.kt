@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.OpenableColumns
+import android.util.Log
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.Preference
@@ -32,8 +33,10 @@ import java.util.*
 
 class BackupPreference : PreferenceFragmentCompat(), KodeinAware {
 
-    private val EXPORT_RESULT_CODE = 110
-    private val IMPORT_RESULT_CODE = 111
+    companion object {
+        private const val EXPORT_RESULT_CODE = 110
+        private const val IMPORT_RESULT_CODE = 111
+    }
 
     override val kodein by kodein()
     private val viewModelFactory by instance<MainViewModelFactory>()
@@ -66,7 +69,7 @@ class BackupPreference : PreferenceFragmentCompat(), KodeinAware {
             checkAndAskForPermission {
                 val intent = Intent(ACTION_OPEN_DOCUMENT).apply {
                     addCategory(CATEGORY_OPENABLE)
-                    type = "application/octet-stream"
+                    type = "*/*" // application/octet-stream
                 }
                 startActivityForResult(intent, IMPORT_RESULT_CODE)
             }
@@ -74,7 +77,6 @@ class BackupPreference : PreferenceFragmentCompat(), KodeinAware {
         }
     }
 
-    private val TAG = javaClass.simpleName
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             EXPORT_RESULT_CODE -> {
@@ -130,19 +132,6 @@ class BackupPreference : PreferenceFragmentCompat(), KodeinAware {
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
-    }
-
-
-    fun ContentResolver.getFileName(fileUri: Uri): String {
-        var name = ""
-        val returnCursor = this.query(fileUri, null, null, null, null)
-        if (returnCursor != null) {
-            val nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-            returnCursor.moveToFirst()
-            name = returnCursor.getString(nameIndex)
-            returnCursor.close()
-        }
-        return name
     }
 
     private fun checkAndAskForPermission(block: SimpleFunction) = with(requireContext()) {

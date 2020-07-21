@@ -59,6 +59,7 @@
     <system:String x:Key="settings_purchase_info">Option available in paid version. Click on learn more.</system:String>
     <system:String x:Key="settings_reset_btn">Reset Defaults</system:String>
     <system:String x:Key="settings_save_btn">Save</system:String>
+    <system:String x:Key="settings_apply_btn">Apply</system:String>
     <system:String x:Key="settings_reset">Settings Reset complete! If it didn't try restarting the application</system:String>
     <system:String x:Key="settings_save">Settings applied! If it didn't try restarting the application</system:String>
     <system:String x:Key="settings_fb_password">This will delete all existing data on firebase (if exist) since migration operations are costly</system:String>

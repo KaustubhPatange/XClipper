@@ -135,7 +135,7 @@
     <string name="bind_delete_title">Capture Delete</string>
     <string name="bind_delete_summary">Enable local removal of item if it is being deleted across device</string>
     <string name="force_logout_title">Force logout</string>
-    <string name="force_logout_summary">Sometimes logout doesn\'t succeed as expected. Use this key to forcefully remove the credentials</string>
+    <string name="force_logout_summary">Sometimes logout doesn\'t succeed as expected. Use this to forcefully remove the credentials</string>
     <string name="force_logout_text">Silently send a logout request</string>
     <string name="standard_pricing">Get a standard pricing model with maximum server storage you can get.</string>
     <string name="premium_pricing">Store your data on your own server for lifetime which is secure &#38; free.</string>

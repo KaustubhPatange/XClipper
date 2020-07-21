@@ -320,7 +320,7 @@
                     MinWidth="80"
                     MinHeight="22"
                     Command="{Binding SaveCommand}"
-                    Content="{DynamicResource settings_save_btn}" />
+                    Content="{DynamicResource settings_apply_btn}" />
             </Grid>
 
             <!--#endregion-->

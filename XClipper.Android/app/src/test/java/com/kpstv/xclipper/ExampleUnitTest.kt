@@ -17,6 +17,12 @@ import kotlin.collections.HashMap
 class ExampleUnitTest {
     private val TAG = javaClass.simpleName
 
+
+    @Test
+    fun regexTest() {
+        val d = "(\\d){1,2}[/\\.\\s-]?(\\d){1,2}[/\\.\\s-]?(\\d){4}".toRegex()
+    }
+
     @Test
     fun findWhichItemsAreNotInOtherList_test() {
         val list1 = listOf(1,2,3,4,5)
