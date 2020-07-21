@@ -313,11 +313,9 @@ class FirebaseProviderImpl(
 
         if (user == null || validationContext == ValidationContext.ForceInvoke) {
 
-            /*if (UID.isEmpty()) return*/
             database.getReference(USER_REF).child(UID)
                 .addListenerForSingleValueEvent(FValueEventListener(
                     onDataChange = { snap ->
-                        Log.e(TAG, "Check 4")
                         val json = gson.toJson(snap.value)
                         gson.fromJson(json, User::class.java).also { user = it }
                         block.invoke(true)
@@ -329,8 +327,6 @@ class FirebaseProviderImpl(
                 ))
         } else
             block.invoke(true)
-
-        Log.e(TAG, "Check 3")
     }
 
     private lateinit var valueListener: FValueEventListener

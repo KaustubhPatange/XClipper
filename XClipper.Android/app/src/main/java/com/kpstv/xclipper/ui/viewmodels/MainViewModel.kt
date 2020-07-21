@@ -62,6 +62,7 @@ class MainViewModel(
     val currentClip: LiveData<String>
         get() = clipboardProvider.getCurrentClip()
 
+    // TODO: Remove this obsolete method
     fun postCurrentClip(text: String?) {
         if (text == null) return
         clipboardProvider.setCurrentClip(text)
@@ -98,6 +99,7 @@ class MainViewModel(
         }
     }
 
+    // TODO: Remove this obsolete method
     fun postToRepository(unencryptedData: String) {
         mainRepository.updateRepository(unencryptedData)
     }

@@ -1,6 +1,5 @@
 package com.kpstv.xclipper.ui.viewmodels.managers
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.kpstv.xclipper.data.model.Tag
@@ -43,6 +42,12 @@ class MainSearchManager {
         _tagArray.remove(tag)
         _tagArrayFilter.postValue(_tagArray)
     }
+
+    /**
+     * Determines if any search filter is applied.
+     */
+    fun anyFilterApplied() =
+        _searchArray.isNotEmpty() || _searchString.value?.isNotEmpty() == true || _tagArray.isNotEmpty()
 
     fun clearSearch() = _searchString.postValue("")
     private val TAG = javaClass.simpleName

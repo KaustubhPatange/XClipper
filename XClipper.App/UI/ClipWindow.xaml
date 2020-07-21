@@ -108,6 +108,7 @@
                 Background="{StaticResource BackgroundBrush}"
                 GiveFeedback="_lvClip_GiveFeedback"
                 MouseMove="_lvClip_MouseMove"
+                ScrollViewer.CanContentScroll="True"
                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
                 SelectionChanged="_lvClip_SelectionChanged">
                 <ListView.ItemContainerStyle>

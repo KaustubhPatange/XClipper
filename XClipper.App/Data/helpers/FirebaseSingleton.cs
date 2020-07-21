@@ -73,12 +73,12 @@ namespace Components
                 if (FirebaseCurrent != null)
                     binder.OnNeedToGenerateToken(FirebaseCurrent.DesktopAuth.ClientId, FirebaseCurrent.DesktopAuth.ClientSecret);
                 else
-                    MessageBox.Show(Translation.MSG_FIREBASE_USER_ERROR, Translation.MSG_ERR, MessageBoxButton.OK, MessageBoxImage.Error);
+                    MsgBoxHelper.ShowError(Translation.MSG_FIREBASE_USER_ERROR);
                 return false;
             }
             if (FirebaseCurrent == null)
             {
-                MessageBox.Show(Translation.MSG_FIREBASE_USER_ERROR, Translation.MSG_ERR, MessageBoxButton.OK, MessageBoxImage.Error);
+                MsgBoxHelper.ShowError(Translation.MSG_FIREBASE_USER_ERROR);
                 return false;
             }
             if (NeedToRefreshToken())
@@ -187,7 +187,7 @@ namespace Components
                 CreateNewClient();
             }
             else
-                MessageBox.Show(Translation.MSG_FIREBASE_UNKNOWN_ERR, Translation.MSG_ERR, MessageBoxButton.OK, MessageBoxImage.Error);
+                MsgBoxHelper.ShowError(Translation.MSG_FIREBASE_UNKNOWN_ERR);
         }
 
         /// <summary>
@@ -214,7 +214,7 @@ namespace Components
         {
             if (client == null)
             {
-                MessageBox.Show(Translation.MSG_FIREBASE_CLIENT_ERR, Translation.MSG_INFO, MessageBoxButton.OK, MessageBoxImage.Error);
+                MsgBoxHelper.ShowError(Translation.MSG_FIREBASE_CLIENT_ERR);
                 // todo: Do something when client isn't initialized
                 return false;
             }
@@ -278,7 +278,7 @@ namespace Components
                     {
                         await CreateNewClient().ConfigureAwait(false);
                     }
-                    else MessageBox.Show(ex.Message, Translation.MSG_ERR, MessageBoxButton.OK, MessageBoxImage.Error);
+                    else MsgBoxHelper.ShowError(ex.Message);
                 }
                 LogHelper.Log(this, ex.StackTrace);
             }

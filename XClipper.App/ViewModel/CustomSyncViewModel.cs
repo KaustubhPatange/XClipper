@@ -61,7 +61,7 @@ namespace Components
             {
                 File.Copy(CustomFirebasePath, sfd.FileName, true);
 
-                MessageBox.Show(Translation.SYNC_EXPORT_SUCCESS, Translation.MSG_INFO, MessageBoxButton.OK, MessageBoxImage.Information);
+                MsgBoxHelper.ShowInfo(Translation.SYNC_EXPORT_SUCCESS);
             }
         }
 
@@ -99,13 +99,13 @@ namespace Components
 
                         FirebaseSingleton.GetInstance.InitConfig();
 
-                        MessageBox.Show(Translation.SYNC_IMPORT_SUCCESS, Translation.MSG_INFO, MessageBoxButton.OK, MessageBoxImage.Information);
+                        MsgBoxHelper.ShowInfo(Translation.SYNC_IMPORT_SUCCESS);
                     }else
-                        MessageBox.Show(Translation.SYNC_IMPORT_ERR2, Translation.MSG_ERR, MessageBoxButton.OK, MessageBoxImage.Error);
+                        MsgBoxHelper.ShowError(Translation.SYNC_IMPORT_ERR2);
                     return;
                 }catch { }
 
-                MessageBox.Show(Translation.SYNC_IMPORT_ERR, Translation.MSG_ERR, MessageBoxButton.OK, MessageBoxImage.Error);
+                MsgBoxHelper.ShowError(Translation.SYNC_IMPORT_ERR);
             }
         }
 
@@ -115,7 +115,7 @@ namespace Components
             if (string.IsNullOrWhiteSpace(FBE) || string.IsNullOrWhiteSpace(FBAK) || string.IsNullOrWhiteSpace(FBAI) ||
                 (IAN == string.IsNullOrWhiteSpace(FMCI) == string.IsNullOrWhiteSpace(FDCI) == string.IsNullOrWhiteSpace(FDCS)))
             {
-                MessageBox.Show(Translation.MSG_FIELD_EMPTY, Translation.MSG_ERR, MessageBoxButton.OK, MessageBoxImage.Error);
+                MsgBoxHelper.ShowError(Translation.MSG_FIELD_EMPTY);
                 return;
             }
 
@@ -152,7 +152,7 @@ namespace Components
             // Initialize new firebase Config
             FirebaseSingleton.GetInstance.InitConfig(firebaseData);
 
-            MessageBox.Show(Translation.MSG_CONFIG_SAVE, Translation.MSG_INFO, MessageBoxButton.OK, MessageBoxImage.Information);
+            MsgBoxHelper.ShowInfo(Translation.MSG_CONFIG_SAVE);
         }
 
         private void ResetButtonClicked()
@@ -165,7 +165,7 @@ namespace Components
                 {
                     if (FirebaseConfigurations.Count <= 0) // Make sure we don't fall under this method.
                     {
-                        MessageBox.Show(Translation.MSG_UNKNOWN_ERR, Translation.MSG_ERR, MessageBoxButton.OK, MessageBoxImage.Error);
+                        MsgBoxHelper.ShowError(Translation.MSG_UNKNOWN_ERR);
                         return;
                     }
 
@@ -191,7 +191,7 @@ namespace Components
                     // This will automatically load the default database encrypt password.
                     LoadApplicationSetting();
 
-                    MessageBox.Show(Translation.MSG_CONFIG_RESET_SUCCESS, Translation.MSG_INFO, MessageBoxButton.OK, MessageBoxImage.Information);
+                    MsgBoxHelper.ShowInfo(Translation.MSG_CONFIG_RESET_SUCCESS);
                 }
             }
         }

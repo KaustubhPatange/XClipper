@@ -3,6 +3,7 @@ package com.kpstv.xclipper.ui.fragments
 import android.content.ClipData
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.Animation
@@ -57,7 +58,7 @@ class Home : Fragment(R.layout.fragment_home), KodeinAware {
     private lateinit var adapter: CIAdapter
 
     private lateinit var mainViewModel: MainViewModel
-    private lateinit var appUpdateManager: AppUpdateManager
+    private lateinit var appUpdateManager: AppUpdateManager // TODO: Remove this
 
     override fun onCreate(savedInstanceState: Bundle?) {
         mainViewModel = ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
@@ -163,12 +164,13 @@ class Home : Fragment(R.layout.fragment_home), KodeinAware {
 
     private fun bindUI() {
         mainViewModel.clipLiveData.observe(viewLifecycleOwner, Observer {
-            if (it.isEmpty())
+            if (it.isEmpty() && !mainViewModel.searchManager.anyFilterApplied())
                 layout_empty_parent.show()
             else
                 layout_empty_parent.collapse()
             adapter.submitList(ArrayList(it?.cloneForAdapter()?.reversed()!!))
-            // mainViewModel.stateManager.clearSelectedItem() TODO: Why clear selected item find out!
+            if (mainViewModel.searchManager.anyFilterApplied())
+                mainViewModel.stateManager.clearSelectedItem()
         })
         mainViewModel.stateManager.toolbarState.observe(viewLifecycleOwner, Observer { state ->
             when (state) {
@@ -176,11 +178,9 @@ class Home : Fragment(R.layout.fragment_home), KodeinAware {
                     setNormalToolbar()
                     mainViewModel.stateManager.clearSelectedList()
                 }
-
                 ToolbarState.MultiSelectionState -> {
                     setSelectedToolbar()
                 }
-
                 else -> {
                     // TODO: When exhaustive
                 }
@@ -224,8 +224,6 @@ class Home : Fragment(R.layout.fragment_home), KodeinAware {
                 }
                 CIAdapter.MENU_TYPE.Pin -> {
                     mainViewModel.changeClipPin(clip, !clip.isPinned)
-
-                    /*Toasty.info(requireContext(), "Clip updated").show()*/
                 }
                 CIAdapter.MENU_TYPE.Special -> {
                     MoreBottomSheet(

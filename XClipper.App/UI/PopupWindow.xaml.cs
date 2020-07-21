@@ -40,8 +40,8 @@ namespace Components
 
             CalculateXY(ref X, ref Y, this);
 
-            this.Left = X;
-            this.Top = Y;
+            Left = X;
+            Top = Y;
 
         }
 
@@ -50,7 +50,7 @@ namespace Components
 
         #region UI Events
 
-        #region Unlocalised
+        #region Unlocalized
 
         private void EditButton_Clicked(object sender, RoutedEventArgs e)
         {

@@ -129,13 +129,18 @@ namespace Components
 
         }
 
-        /** Whenever mouse is placed on certain position on window, we will manipulate
-         *  ScollViewer on listview. */
+        /// <summary>
+        /// Whenever mouse is placed on certain position on window, we will manipulate
+        /// scrollViewer on listview.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Window_MouseEnter(object sender, MouseEventArgs e)
         {
             var point = e.GetPosition(sender as Window);
-
             var scrollViewer = GetScrollViewer(_lvClip) as ScrollViewer;
+            //scrollViewer.Loaded -= ScrollViewer_Loaded;
+            //scrollViewer.Loaded += ScrollViewer_Loaded;
 
             if (scrollViewer == null || isMouseKeyDown) return;
             if (point.X > 260)
@@ -143,6 +148,13 @@ namespace Components
             else
                 scrollViewer.HideVerticalScrollBar();
         }
+
+        //private void ScrollViewer_Loaded(object sender, RoutedEventArgs e)
+        //{
+        //    var scrollViewer = (sender as ScrollViewer);
+        //    var color = Application.Current.Resources["BackgroundBrush"] as SolidColorBrush;
+        //    ((System.Windows.Shapes.Rectangle)scrollViewer.Template.FindName("Corner", scrollViewer)).Fill = color;
+        //}
 
         private async void CloseButtonClick(object sender, RoutedEventArgs e)
         {
@@ -745,6 +757,6 @@ namespace Components
 
 
         #endregion
-
+       
     }
 }

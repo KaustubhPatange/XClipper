@@ -37,7 +37,7 @@ namespace Components.UI
         private void AuthManager_FailureEvent(ErrorEventArgs args)
         {
             RemoveAuthEvents();
-            MessageBox.Show(args.GetException().Message, Translation.MSG_ERR, MessageBoxButton.OK, MessageBoxImage.Error);
+            MsgBoxHelper.ShowError(args.GetException().Message);
             DialogResult = false;
             Close();
         }

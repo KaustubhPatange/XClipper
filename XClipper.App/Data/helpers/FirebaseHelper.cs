@@ -201,7 +201,7 @@ namespace Components
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     RemoveFirebaseCredentials();
-                    MessageBox.Show(Translation.MSG_WRONG_SIGNIN, Translation.MSG_ERR, MessageBoxButton.OK, MessageBoxImage.Error);
+                MsgBoxHelper.ShowError(Translation.MSG_WRONG_SIGNIN);
                     FirebaseSingleton.GetInstance.InitConfig(FirebaseCurrent);
                 });  
             }

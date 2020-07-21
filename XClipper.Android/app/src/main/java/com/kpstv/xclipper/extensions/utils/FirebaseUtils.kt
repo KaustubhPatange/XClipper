@@ -30,7 +30,7 @@ class FirebaseUtils(
                 changed = {
                     if (App.observeFirebase)
                         repository.updateClip(it?.Clips?.last()?.decrypt())
-                    Log.e(TAG, "User has changed")
+//                    Log.e(TAG, "User has changed")
                 },
                 removed = { items -> // Unencrypted listOf data
                     items.forEach { repository.deleteClip(it) }
@@ -55,7 +55,7 @@ class FirebaseUtils(
                                 Toasty.LENGTH_LONG
                             ).show()
                         }
-                    }else
+                    } else
                         shownToast = false
                 }
             )
@@ -80,5 +80,4 @@ class FirebaseUtils(
         firebaseProvider.isInitialized().removeObserver(databaseInitializationObserver)
         firebaseProvider.removeDataObservation()
     }
-
 }

@@ -50,7 +50,7 @@ namespace Components
             var recorder = AppModule.Container.Resolve<ILicense>();
             recorder.Initiate((e) =>
             {
-                MessageBox.Show(Translation.MSG_LICENSE_CHECK, Translation.MSG_INFO, MessageBoxButton.OK, MessageBoxImage.Information);
+                MsgBoxHelper.ShowInfo(Translation.MSG_LICENSE_CHECK);
             });
         }
 
@@ -62,7 +62,7 @@ namespace Components
         {
             if (string.IsNullOrWhiteSpace(TI) || string.IsNullOrWhiteSpace(UID) || LT == LicenseType.Invalid)
             {
-                MessageBox.Show(Translation.MSG_FIELD_EMPTY, Translation.MSG_WARNING, MessageBoxButton.OK, MessageBoxImage.Warning);
+                MsgBoxHelper.ShowWarning(Translation.MSG_FIELD_EMPTY);
                 return;
             }
             IsProgressiveWork = true;
@@ -77,19 +77,19 @@ namespace Components
                     switch (obj["status"].ToString())
                     {
                         case "success":
-                            MessageBox.Show(Translation.BUY_LICENSE_SUCCESS, Translation.MSG_INFO, MessageBoxButton.OK, MessageBoxImage.Information);
+                            MsgBoxHelper.ShowInfo(Translation.BUY_LICENSE_SUCCESS);
                             VerificationMethod();
                             break;
                         case "exist":
-                            MessageBox.Show(Translation.BUY_LICENSE_EXIST, Translation.MSG_INFO, MessageBoxButton.OK, MessageBoxImage.Information);
+                            MsgBoxHelper.ShowInfo(Translation.BUY_LICENSE_EXIST);
                             break;
                     }
                 }
                 else
-                    MessageBox.Show(obj["message"].ToString(), Translation.MSG_ERR, MessageBoxButton.OK, MessageBoxImage.Error);
+                    MsgBoxHelper.ShowError(obj["message"].ToString());
             }
             else
-                MessageBox.Show(Translation.MSG_UNKNOWN_ERR, Translation.MSG_INFO, MessageBoxButton.OK, MessageBoxImage.Error);
+                MsgBoxHelper.ShowError(Translation.MSG_UNKNOWN_ERR);
 
             IsProgressiveWork = false;
         }

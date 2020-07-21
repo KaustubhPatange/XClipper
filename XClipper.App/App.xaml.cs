@@ -116,7 +116,7 @@ namespace Components
             {
                 if (err != null)
                 {
-                    MessageBox.Show(err.Message, Translation.MSG_ERR, MessageBoxButton.OK, MessageBoxImage.Error);
+                    MsgBoxHelper.ShowError(err.Message);
                     return;
                 }
                 // Initialize firebase...
@@ -219,7 +219,7 @@ namespace Components
 
                     // Merge tables into existing database...
                     AppSingleton.GetInstance.InsertAll(list);
-                    MessageBox.Show(Translation.MSG_CLIP_IMPORT, Translation.MSG_INFO);
+                    MsgBoxHelper.ShowInfo(Translation.MSG_CLIP_IMPORT);
 
                 }
                 catch (SQLiteException ex)
@@ -293,7 +293,7 @@ namespace Components
 
                 File.Delete(db); Directory.Delete(tmp);
 
-                MessageBox.Show(Translation.MSG_RESTORE_DB, Translation.MSG_INFORMATION);
+                MsgBoxHelper.ShowInfo(Translation.MSG_RESTORE_DB);
             }
         }
 
@@ -358,7 +358,7 @@ namespace Components
 
                 RunOnMainThread(() =>
                 {
-                    MessageBox.Show(Translation.MSG_RESET_DATA_SUCCESS, Translation.MSG_INFO, MessageBoxButton.OK, MessageBoxImage.Information);
+                MsgBoxHelper.ShowInfo(Translation.MSG_RESET_DATA_SUCCESS);
                 });
             });
         }
@@ -369,7 +369,7 @@ namespace Components
 
         public void OnNeedToGenerateToken(string ClientId, string ClientSecret)
         {
-            MessageBox.Show(Translation.MSG_NEED_AUTH, Translation.MSG_INFO, MessageBoxButton.OK, MessageBoxImage.Warning);
+            MsgBoxHelper.ShowWarning(Translation.MSG_NEED_AUTH);
             CallAuthWindow(ClientId, ClientSecret);
         }
 

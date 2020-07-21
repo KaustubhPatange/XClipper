@@ -1,9 +1,13 @@
 package com.kpstv.xclipper.ui.helpers
 
+import android.app.Activity
+import android.app.Application
+import android.content.ComponentCallbacks
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
@@ -13,6 +17,17 @@ import com.google.android.play.core.install.model.InstallStatus
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.ui.fragments.Home
 
+/**
+ * A class created to manage updates. I created this to prevent my Home fragment
+ * for holding less responsibility.
+ *
+ * An update is not a part of UI code but still needs to be managed somehow, that's why
+ * this class instance should be register on a MainActivity, where using
+ * [fragmentLifeCycleCallbacks] we can track Home fragment and launch update method.
+ *
+ * There maybe a better code for handling this stuff, if you've let me know. At least
+ * for now Home fragment is following single responsibility principle.
+ */
 class UpdateHelper(
     private val activity: FragmentActivity
 ) {
@@ -75,31 +90,38 @@ class UpdateHelper(
 
     private val TAG = javaClass.simpleName
 
-    init {
+    private val fragmentLifeCycleCallbacks = object : FragmentManager.FragmentLifecycleCallbacks() {
+        override fun onFragmentViewCreated(
+            fm: FragmentManager,
+            f: Fragment,
+            v: View,
+            savedInstanceState: Bundle?
+        ) {
+            super.onFragmentViewCreated(fm, f, v, savedInstanceState)
+            if (f is Home) // For Home Fragment only
+                checkForUpdates()
+        }
+
+        override fun onFragmentResumed(fm: FragmentManager, f: Fragment) {
+            super.onFragmentResumed(fm, f)
+            if (f is Home) // For Home Fragment only
+                registerCallbackOnResume()
+        }
+    }
+
+    fun register() : UpdateHelper {
         activity.supportFragmentManager.registerFragmentLifecycleCallbacks(
-            object : FragmentManager.FragmentLifecycleCallbacks() {
-                override fun onFragmentViewCreated(
-                    fm: FragmentManager,
-                    f: Fragment,
-                    v: View,
-                    savedInstanceState: Bundle?
-                ) {
-                    super.onFragmentViewCreated(fm, f, v, savedInstanceState)
-                    if (f is Home) // For Home Fragment only
-                        checkForUpdates()
-                }
+            fragmentLifeCycleCallbacks, true
+        )
+        return this
+    }
 
-                override fun onFragmentResumed(fm: FragmentManager, f: Fragment) {
-                    super.onFragmentResumed(fm, f)
-                    if (f is Home) // For Home Fragment only
-                        registerCallbackOnResume()
-                }
-
-                /*override fun onFragmentViewDestroyed(fm: FragmentManager, f: Fragment) {
-                    appUpdateManager.unregisterListener(listener)
-                    super.onFragmentViewDestroyed(fm, f)
-                }*/
-            }, true
+    /**
+     * Must be called when activity is destroying.
+     */
+    fun unregister() {
+        activity.supportFragmentManager.unregisterFragmentLifecycleCallbacks(
+            fragmentLifeCycleCallbacks
         )
     }
 }

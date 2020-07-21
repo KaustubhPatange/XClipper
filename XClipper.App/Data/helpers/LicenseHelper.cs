@@ -53,7 +53,7 @@ namespace Components
         }
         private async Task<string?> CheckForLicense()
         {
-            var client = new RestClient($"{BACKEND_SERVER}/validate?uid={UniqueID}");
+            var client = new RestClient(VALIDATION_SERVER(UniqueID));
             client.Timeout = RESTSHARP_TIMEOUT;
             try
             {

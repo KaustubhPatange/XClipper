@@ -31,6 +31,7 @@ class Main : AppCompatActivity(), KodeinAware {
     var isDarkTheme = true
 
     private lateinit var mainViewModel: MainViewModel
+    private lateinit var updateHelper: UpdateHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +53,7 @@ class Main : AppCompatActivity(), KodeinAware {
             navController.navigate(R.id.fragment_home, null, navOptions)
         }
 
-        UpdateHelper(this)
+        updateHelper = UpdateHelper(this).register()
     }
 
     /**
@@ -75,5 +76,11 @@ class Main : AppCompatActivity(), KodeinAware {
             searchView?.onBackPressed() == true -> return
             else -> super.onBackPressed()
         }
+    }
+
+
+    override fun onDestroy() {
+        updateHelper.unregister()
+        super.onDestroy()
     }
 }
