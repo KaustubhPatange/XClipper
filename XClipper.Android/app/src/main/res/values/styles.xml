@@ -9,7 +9,7 @@
         <item name="colorTextPrimary">@color/colorTextPrimary</item>
         <item name="colorTextSecondary">@color/colorTextSecondary</item>
         <item name="colorTextSecondaryLight">@color/colorTextSecondaryLight</item>
-        <item name="colorForeground">@color/colorCard</item>
+        <item name="colorForeground">@color/colorClickCard</item>
         <item name="colorSeparator">@color/colorSeparator</item>
         <item name="colorSelected">@color/colorSelected</item>
         <item name="colorCurrentClip">@color/colorSelectedClip</item>
@@ -67,7 +67,7 @@
         <item name="colorTextPrimary">@color/colorTextPrimary</item>
         <item name="colorTextSecondary">@color/colorTextSecondary</item>
         <item name="colorTextSecondaryLight">@color/colorTextSecondaryLight</item>
-        <item name="colorForeground">@color/colorCard</item>
+        <item name="colorForeground">@color/colorClickCard</item>
         <item name="colorSeparator">@color/colorSeparator</item>
         <item name="background">@color/colorBackground</item>
         <item name="colorSelected">@color/colorSelected</item>
@@ -87,7 +87,7 @@
         <item name="colorTextPrimary">@color/colorTextPrimary_Light</item>
         <item name="colorTextSecondary">@color/colorTextSecondary_Light</item>
         <item name="colorTextSecondaryLight">@color/colorTextSecondaryLight_Light</item>
-        <item name="colorForeground">@color/colorCard_Light</item>
+        <item name="colorForeground">@color/colorClickCard_Light</item>
         <item name="colorSeparator">@color/colorSeparator_Light</item>
         <item name="colorSelected">@color/colorSelected_Light</item>
         <item name="colorCurrentClip">@color/colorSelectedClip_Light</item>
@@ -98,7 +98,7 @@
         <item name="colorTextPrimary">@color/colorTextPrimary_Light</item>
         <item name="colorTextSecondary">@color/colorTextSecondary_Light</item>
         <item name="colorTextSecondaryLight">@color/colorTextSecondaryLight_Light</item>
-        <item name="colorForeground">@color/colorCard_Light</item>
+        <item name="colorForeground">@color/colorClickCard_Light</item>
         <item name="colorSeparator">@color/colorSeparator_Light</item>
         <item name="background">@color/colorBackground_Light</item>
         <item name="colorSelected">@color/colorSelected_Light</item>

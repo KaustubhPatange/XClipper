@@ -12,9 +12,11 @@ import com.kpstv.xclipper.App.DICTIONARY_LANGUAGE
 import com.kpstv.xclipper.App.DeviceID
 import com.kpstv.xclipper.App.LANG_PREF
 import com.kpstv.xclipper.App.SUGGESTION_PREF
+import com.kpstv.xclipper.App.SWIPE_DELETE_PREF
 import com.kpstv.xclipper.App.UID
 import com.kpstv.xclipper.App.runAutoSync
 import com.kpstv.xclipper.App.showSuggestion
+import com.kpstv.xclipper.App.swipeToDelete
 import com.kpstv.xclipper.data.api.GoogleDictionaryApi
 import com.kpstv.xclipper.data.api.TinyUrlApi
 import com.kpstv.xclipper.data.db.MainDatabase
@@ -127,6 +129,7 @@ class XClipperApplication : Application(), KodeinAware {
         DARK_THEME = preferenceProvider.getBooleanKey(DARK_PREF, true)
         showSuggestion = preferenceProvider.getBooleanKey(SUGGESTION_PREF, false)
         runAutoSync = preferenceProvider.getBooleanKey(AUTO_SYNC_PREF, false)
+        swipeToDelete = preferenceProvider.getBooleanKey(SWIPE_DELETE_PREF, true)
         bindToFirebase = if (UID.isBlank()) false
         else
             preferenceProvider.getBooleanKey(BIND_PREF, false)

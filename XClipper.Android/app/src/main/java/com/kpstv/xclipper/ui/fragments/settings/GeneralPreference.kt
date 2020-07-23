@@ -12,6 +12,7 @@ import com.kpstv.xclipper.App.DICTIONARY_LANGUAGE
 import com.kpstv.xclipper.App.LANG_PREF
 import com.kpstv.xclipper.App.SERVICE_PREF
 import com.kpstv.xclipper.App.SUGGESTION_PREF
+import com.kpstv.xclipper.App.SWIPE_DELETE_PREF
 import com.kpstv.xclipper.App.showSuggestion
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.isClipboardAccessibilityServiceRunning
@@ -20,6 +21,7 @@ import com.kpstv.xclipper.extensions.utils.Utils.Companion.openAccessibility
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.retrievePackageList
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showAccessibilityDialog
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showOverlayDialog
+import es.dmoral.toasty.Toasty
 
 
 class GeneralPreference : PreferenceFragmentCompat() {
@@ -79,6 +81,13 @@ class GeneralPreference : PreferenceFragmentCompat() {
                     checkForService()
                 }
             else openAccessibility(requireContext())
+            true
+        }
+
+        /** Swipe to delete preference */
+        findPreference<SwitchPreferenceCompat>(SWIPE_DELETE_PREF)?.setOnPreferenceClickListener {
+
+            Toasty.info(requireContext(), getString(R.string.settings_restart)).show()
             true
         }
 

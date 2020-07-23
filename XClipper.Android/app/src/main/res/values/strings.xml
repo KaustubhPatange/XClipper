@@ -93,7 +93,7 @@
     <string name="blacklist_summary">Apps in which clipboard capturing is disabled</string>
     <string name="blacklist_title">Ignored Apps</string>
     <string name="suggest_title">Suggestions</string>
-    <string name="suggest_summary">[BETA] Show a small bubble whenever keyboard pops out containing your latest clips.</string>
+    <string name="suggest_summary">[BETA] Show a small bubble whenever keyboard pops out containing your latest clips</string>
     <string name="palette1_text">XClipper monitor your clipboard and makes an extensive use of it.\n\n\nIt also provide certain actions related to your clip.\n\n\nMoreover it will provide you suggestions during any paste.</string>
     <string name="palette2_text">Accessibility,\n\n\nYou need to turn on \"accessibility\" service for this app.\n\n\nThis is due to background service restrictions imposed by Google.\n\n\nThe service will keep running in background capturing your clipboard data.</string>
     <string name="palette3_text">Suggestions [BETA],\n\n\nGet a small bubble whenever keyboard pops out containing all your clips.\n\n\nEnable it from App Settings > General > Suggestions.</string>
@@ -142,4 +142,8 @@
     <string name="awesome">You are awesome!</string>
     <string name="update_download_complete">Update downloaded</string>
     <string name="update_downoad_install">Click OK to apply update!</string>
+    <string name="item_removed">Item removed permanently</string>
+    <string name="swipe_title">Swipe to delete</string>
+    <string name="swipe_summary">Swiping item to right will delete it permanently</string>
+    <string name="settings_restart">Restart needed to apply changes</string>
 </resources>

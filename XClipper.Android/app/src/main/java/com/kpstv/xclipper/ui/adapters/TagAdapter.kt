@@ -1,6 +1,5 @@
 package com.kpstv.xclipper.ui.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,8 +13,7 @@ import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.DialogState
 import com.kpstv.xclipper.data.model.ClipTag
 import com.kpstv.xclipper.data.model.Tag
-import kotlinx.android.synthetic.main.tag_item.view.*
-import java.util.*
+import kotlinx.android.synthetic.main.item_tag_chip.view.*
 import kotlin.collections.ArrayList
 
 class TagAdapter(
@@ -37,7 +35,7 @@ class TagAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TagHolder =
         TagHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.tag_item, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.item_tag_chip, parent, false)
         )
 
     override fun onBindViewHolder(holder: TagHolder, position: Int) {

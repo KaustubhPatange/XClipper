@@ -19,12 +19,18 @@
         <SwitchPreferenceCompat
             app:dependency="service_pref"
             app:key="suggestion_pref"
-            app:title="@string/suggest_title"
-            app:summary="@string/suggest_summary"/>
+            app:summary="@string/suggest_summary"
+            app:title="@string/suggest_title" />
 
     </PreferenceCategory>
 
     <PreferenceCategory app:title="Other">
+
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            app:key="swipe_delete_pref"
+            app:summary="@string/swipe_summary"
+            app:title="@string/swipe_title" />
 
         <ListPreference
             android:summary="@string/lang_summary"

@@ -64,6 +64,7 @@ object App {
     var observeFirebase = true
 
     var showSuggestion = false
+    var swipeToDelete = true
 
     fun getMaxConnection(isLicensed: Boolean): Int =
         if (isLicensed) FB_MAX_DEVICE_CONNECTION else FB_MIN_DEVICE_CONNECTION
@@ -100,9 +101,9 @@ object App {
     const val MAP_PATTERN_REGEX =
         "[-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?)°?\\s*(N|S|E|W)?,\\s*[-+]?(180(\\.0+)?|((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?)°?\\s*(N|S|E|W)?"
     const val DATE_PATTERN_REGEX =
-        "(\\d){1,2}[/\\.\\s-]?(\\d){1,2}[/\\.\\s-]?(\\d){4}"
+        "(\\d){1,2}[/\\.\\s-](\\d){1,2}[/\\.\\s-](\\d){4}"
     const val DATE_PATTERN_REGEX1 =
-        "(\\d){4}[/\\.\\s-]?(\\d){1,2}[/\\.\\s-]?(\\d){1,2}"
+        "(\\d){4}[/\\.\\s-](\\d){1,2}[/\\.\\s-](\\d){1,2}"
 
     const val APP_CLIP_DATA = "com.kpstv.xclipper.clip_data"
 
@@ -118,6 +119,7 @@ object App {
     const val TUTORIAL_PREF = "tutorial_pref"
     const val SERVICE_PREF = "service_pref"
     const val SUGGESTION_PREF = "suggestion_pref"
+    const val SWIPE_DELETE_PREF = "swipe_delete_pref"
     const val LANG_PREF = "lang_pref"
     const val BLACKLIST_PREF = "blacklist_pref"
     const val CONNECT_PREF = "connect_pref"

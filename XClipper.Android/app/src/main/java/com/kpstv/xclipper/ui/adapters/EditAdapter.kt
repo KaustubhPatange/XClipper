@@ -9,10 +9,9 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.Tag
-import kotlinx.android.synthetic.main.tag_item.view.*
+import kotlinx.android.synthetic.main.item_tag_chip.view.*
 
 
 class EditAdapter(
@@ -33,7 +32,7 @@ class EditAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         EditHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.tag_item, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.item_tag_chip, parent, false)
         )
 
     override fun onBindViewHolder(holder: EditHolder, position: Int) {

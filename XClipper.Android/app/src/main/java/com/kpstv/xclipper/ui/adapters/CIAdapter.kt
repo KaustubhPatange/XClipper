@@ -2,7 +2,6 @@ package com.kpstv.xclipper.ui.adapters
 
 import android.content.Context
 import android.graphics.Color
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,10 +20,11 @@ import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.extensions.collapse
 import com.kpstv.xclipper.extensions.hide
 import com.kpstv.xclipper.extensions.show
+import com.kpstv.xclipper.extensions.utils.ThemeUtils.Companion.CARD_CLICK_COLOR
 import com.kpstv.xclipper.extensions.utils.ThemeUtils.Companion.CARD_COLOR
 import com.kpstv.xclipper.extensions.utils.ThemeUtils.Companion.CARD_SELECTED_COLOR
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.getColorFromAttr
-import kotlinx.android.synthetic.main.content_item.view.*
+import kotlinx.android.synthetic.main.item_clip.view.*
 import java.util.*
 
 class CIAdapter(
@@ -51,7 +51,7 @@ class CIAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainHolder =
         MainHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.content_item, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.item_clip, parent, false)
         )
 
     override fun onBindViewHolder(holder: MainHolder, position: Int) {
@@ -118,9 +118,9 @@ class CIAdapter(
 
             if (it == clip) {
                 holder.itemView.hiddenLayout.show()
-                holder.itemView.mainCard.setCardBackgroundColor(CARD_COLOR)
+                holder.itemView.mainCard.setCardBackgroundColor(CARD_CLICK_COLOR)
             } else {
-                holder.itemView.mainCard.setCardBackgroundColor(Color.TRANSPARENT)
+                holder.itemView.mainCard.setCardBackgroundColor(CARD_COLOR)
                 holder.itemView.hiddenLayout.visibility = View.GONE
             }
         })
@@ -148,7 +148,7 @@ class CIAdapter(
                      * it kinda forgets about it due to recreation of whole list.
                      */
                     if (selectedItem.value != clip)
-                        holder.itemView.mainCard.setCardBackgroundColor(Color.TRANSPARENT)
+                        holder.itemView.mainCard.setCardBackgroundColor(CARD_COLOR)
                 }
             }
         })
@@ -217,6 +217,9 @@ class CIAdapter(
     fun setMenuItemClick(block: (Clip, Int, MENU_TYPE) -> Unit) {
         this.menuClick = block;
     }
+
+    fun getItemAt(pos: Int): Clip =
+        getItem(pos)
 
     enum class MENU_TYPE {
         Edit, Pin, Special, Share

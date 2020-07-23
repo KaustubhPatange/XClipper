@@ -3,7 +3,6 @@ package com.kpstv.xclipper.ui.fragments
 import android.content.ClipData
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.Animation
@@ -14,12 +13,14 @@ import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.App.runAutoSync
+import com.kpstv.xclipper.App.swipeToDelete
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.ToolbarState
 import com.kpstv.xclipper.data.model.Tag
@@ -169,8 +170,7 @@ class Home : Fragment(R.layout.fragment_home), KodeinAware {
             else
                 layout_empty_parent.collapse()
             adapter.submitList(ArrayList(it?.cloneForAdapter()?.reversed()!!))
-            if (mainViewModel.searchManager.anyFilterApplied())
-                mainViewModel.stateManager.clearSelectedItem()
+            mainViewModel.stateManager.clearSelectedItem()
         })
         mainViewModel.stateManager.toolbarState.observe(viewLifecycleOwner, Observer { state ->
             when (state) {
@@ -246,6 +246,13 @@ class Home : Fragment(R.layout.fragment_home), KodeinAware {
         ci_recyclerView.adapter = adapter
         ci_recyclerView.setHasFixedSize(true)
 
+        /** Swipe to delete item */
+
+        if (swipeToDelete)
+            ItemTouchHelper(SwipeToDeleteCallback(requireContext()) { pos ->
+                mainViewModel.deleteFromRepository(adapter.getItemAt(pos))
+                Toasty.info(requireContext(), getString(R.string.item_removed)).show()
+            }).attachToRecyclerView(ci_recyclerView)
     }
 
     /**

@@ -2,10 +2,7 @@ package com.kpstv.xclipper.ui.viewmodels
 
 import android.app.Application
 import android.content.Context
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.*
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.data.localized.FBOptions
 import com.kpstv.xclipper.data.model.Clip
@@ -199,7 +196,6 @@ class MainViewModel(
     }
 
     init {
-
         mainRepository.getAllLiveClip().observeForever {
             _clipLiveData.postValue(it)
         }

@@ -28,6 +28,7 @@ private object LibraryVersion {
     const val FIREBASE_AUTH = "19.3.2"
     const val PLAY_SERVICE_AUTH = "18.0.0"
     const val ACTIVITY = "1.2.0-alpha06"
+    const val FRAGMENT = "1.2.5"
 }
 
 object LibraryDependency {
@@ -35,7 +36,8 @@ object LibraryDependency {
     const val CORE_KTX = "androidx.core:core-ktx:${LibraryVersion.CORE_KTX}"
     const val COLLECTIONS_KTX = "androidx.collection:collection-ktx:${LibraryVersion.COLLECTIONS_KTX}"
     const val APP_COMPAT = "androidx.appcompat:appcompat:${LibraryVersion.APP_COMPAT}"
-    const val ACTIVITY = "androidx.activity:activity-ktx:${LibraryVersion.ACTIVITY}"
+    const val ACTIVITY_KTX = "androidx.activity:activity-ktx:${LibraryVersion.ACTIVITY}"
+    const val FRAGMENT_KTX = "androidx.fragment:fragment-ktx:${LibraryVersion.FRAGMENT}"
     const val CONSTRAINT_LAYOUT = "androidx.constraintlayout:constraintlayout:${LibraryVersion.CONSTRAINT_LAYOUT}"
     const val MATERIAL = "com.google.android.material:material:${LibraryVersion.MATERIAL}"
     const val PLAY_CORE = "com.google.android.play:core:${LibraryVersion.PLAY_CORE}"

@@ -6,7 +6,9 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.ACTION_EDIT
 import android.net.Uri
+import android.provider.CalendarContract
 import android.provider.ContactsContract
 import android.util.Log
 import android.view.View
@@ -27,6 +29,8 @@ import com.kpstv.xclipper.ui.adapters.MenuAdapter
 import com.kpstv.xclipper.ui.dialogs.AllPurposeDialog
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.bottom_sheet_more.view.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 @SuppressLint("SetTextI18n")
 class SpecialHelper(
@@ -43,7 +47,7 @@ class SpecialHelper(
     private lateinit var onItemClick: SimpleFunction
 
     private val data = clip.data
-    fun setActions(view: View, onItemClick: SimpleFunction) = with(view){
+    fun setActions(view: View, onItemClick: SimpleFunction) = with(view) {
         this@SpecialHelper.onItemClick = onItemClick
 
         setDefineTag(this)
@@ -57,6 +61,8 @@ class SpecialHelper(
         setShortenUrl(this)
 
         setPhoneNumber(this)
+
+        setDateSpecials(this)
 
         setRecyclerView(this)
     }
@@ -100,6 +106,43 @@ class SpecialHelper(
         }
     }
 
+    /** This will set options related to date tag */
+    private fun setDateSpecials(view: View) = with(view) {
+
+        if (clip.tags?.containsKey(ClipTag.DATE.small()) == false) return@with
+
+        val dateString = clip.tags?.getValue(ClipTag.DATE.small()) ?: return@with
+
+        specialList.add(
+            SpecialMenu(
+                title = "Set a calender event",
+                image = R.drawable.ic_calender
+            ) {
+                /** Parse the date now */
+                val dateValues = dateString.split("/",".","-", " ")
+
+                val year = if (dateValues[0].length == 4) dateValues[0] else dateValues[2]
+                val month = dateValues[1]
+                val day = if (dateValues[0].length in 2 downTo 1) dateValues[0] else dateValues[2]
+
+                val eventTime = Calendar.getInstance()
+                eventTime.set(year.toInt(), month.toInt(), day.toInt())
+                val intent = Intent(ACTION_EDIT).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    type = "vnd.android.cursor.item/event"
+                    putExtra(
+                        CalendarContract.EXTRA_EVENT_BEGIN_TIME,
+                        eventTime.timeInMillis
+                    )
+                    putExtra(
+                        CalendarContract.EXTRA_EVENT_END_TIME,
+                        eventTime.timeInMillis
+                    )
+                }
+                runAction(intent)
+            }
+        )
+    }
 
     /** This will set options if Email tag exist */
     private fun setForEmail(view: View) = with(view) {
