@@ -6,11 +6,8 @@ using static Components.DefaultSettings;
 using static Components.Constants;
 using System.Net;
 using Newtonsoft.Json.Linq;
-using System.Windows.Threading;
 using System.Windows;
-using System.Linq;
 using Newtonsoft.Json;
-using System.Windows.Documents;
 using System.Collections.Generic;
 
 #nullable enable

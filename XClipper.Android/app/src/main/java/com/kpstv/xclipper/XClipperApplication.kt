@@ -136,8 +136,5 @@ class XClipperApplication : Application(), KodeinAware {
 
         /** Initialize firebase data */
         firebaseProvider.initialize(dbConnectionProvider.optionsProvider())
-
-        // TODO: Already doing this in retrievePackages App.blackListedApps = pref.getStringSet("blacklist_pref", mutableSetOf())
     }
-
 }

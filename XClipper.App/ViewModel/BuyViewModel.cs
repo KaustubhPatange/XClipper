@@ -18,8 +18,11 @@ namespace Components
     {
         #region Constructor
 
-        public BuyViewModel()
+        private IBuyEventBinder binder;
+        public BuyViewModel(IBuyEventBinder binder)
         {
+            this.binder = binder;
+
             VerifyCommand = new RelayCommand(VerificationMethod);
             ActivateCommand = new RelayCommand(ActivationMethod);
         }
@@ -78,7 +81,7 @@ namespace Components
                     {
                         case "success":
                             MsgBoxHelper.ShowInfo(Translation.BUY_LICENSE_SUCCESS);
-                            VerificationMethod();
+                            binder.OnLicenseActivationSucceed();
                             break;
                         case "exist":
                             MsgBoxHelper.ShowInfo(Translation.BUY_LICENSE_EXIST);

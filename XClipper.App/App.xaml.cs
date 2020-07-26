@@ -31,11 +31,10 @@ namespace Components
     /** For language edit Solution Explorer/Locales/en.xaml and paste it to locales/en.xaml 
       * to create a fake linking between static and dynamic resource binding.
       */
-    public partial class App : Application, ISettingEventBinder, IFirebaseBinder
+    public partial class App : Application, ISettingEventBinder, IFirebaseBinder, IBuyEventBinder
     {
         #region Variable Declaration
 
-        public ISettingEventBinder binder;
         public static List<string> LanguageCollection = new List<string>();
         public static ResourceDictionary rm = new ResourceDictionary();
         private KeyHookUtility hookUtility = new KeyHookUtility();
@@ -108,8 +107,6 @@ namespace Components
                 clipWindow.CloseWindow();
             });
 
-            binder = this;
-
             FirebaseSingleton.GetInstance.BindUI(this);
 
             licenseService.Initiate(err =>
@@ -119,17 +116,7 @@ namespace Components
                     MsgBoxHelper.ShowError(err.Message);
                     return;
                 }
-                // Initialize firebase...
-                if (FirebaseCurrent == null) // Load config from configurations.
-                    FirebaseSingleton.GetInstance.InitConfig(FirebaseConfigurations.Count > 0 ? FirebaseConfigurations[0] : null);
-                else // Or load data from firebase-config file.
-                    FirebaseSingleton.GetInstance.InitConfig(FirebaseCurrent);
-
-                ActivatePaidFeatures();
-                CheckForUpdates();
-                UpdateSettingItem.Visible = true;
-                if (LicenseStrategy == LicenseType.Premium) ConfigSettingItem.Visible = true;
-                if (IsPurchaseDone) UpdateSettingItem.Visible = true;
+                ActivateLicense();
             });
         }
 
@@ -258,7 +245,7 @@ namespace Components
             if (settingWindow != null)
                 settingWindow.Close();
 
-            settingWindow = new SettingWindow(binder);
+            settingWindow = new SettingWindow(this);
             settingWindow.ShowDialog();
         }
 
@@ -331,6 +318,15 @@ namespace Components
         }
 
         #endregion
+
+        #endregion
+
+        #region IBuyEventBinder Events
+
+        public void OnLicenseActivationSucceed()
+        {
+            ActivateLicense();
+        }
 
         #endregion
 
@@ -430,6 +426,21 @@ namespace Components
         #endregion
 
         #region Method Events
+
+        private void ActivateLicense()
+        {
+            // Initialize firebase...
+            if (FirebaseCurrent == null) // Load config from configurations.
+                FirebaseSingleton.GetInstance.InitConfig(FirebaseConfigurations.Count > 0 ? FirebaseConfigurations[0] : null);
+            else // Or load data from firebase-config file.
+                FirebaseSingleton.GetInstance.InitConfig(FirebaseCurrent);
+
+            ActivatePaidFeatures();
+            CheckForUpdates();
+            UpdateSettingItem.Visible = true;
+            if (LicenseStrategy == LicenseType.Premium) ConfigSettingItem.Visible = true;
+            if (IsPurchaseDone) UpdateSettingItem.Visible = true;
+        }
 
         private void CheckForUpdates()
         {
@@ -567,7 +578,7 @@ namespace Components
             if (buyWindow != null)
                 buyWindow.Close();
 
-            buyWindow = new BuyWindow();
+            buyWindow = new BuyWindow(this);
             buyWindow.ShowDialog();
         }
 

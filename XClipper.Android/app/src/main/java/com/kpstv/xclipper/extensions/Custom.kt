@@ -1,9 +1,12 @@
 package com.kpstv.xclipper.extensions
 
+import android.util.Log
 import com.ferfalk.simplesearchview.SimpleSearchView
 import com.google.gson.annotations.SerializedName
 import com.kpstv.xclipper.App.STANDARD_DATE_FORMAT
+import com.kpstv.xclipper.BuildConfig
 import kotlinx.coroutines.*
+import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -60,6 +63,16 @@ fun SimpleSearchView.setOnSearchCloseListener(block: SimpleFunction) {
     })
 }
 
+fun logger(TAG: String, message: String) {
+    if (BuildConfig.DEBUG)
+        Log.e(TAG, message)
+}
+
+fun logger(TAG: String, message: String, exception: Exception) {
+    if (BuildConfig.DEBUG)
+        Log.e(TAG, message, exception)
+}
+
 fun <T> lazyDeferred(block: suspend CoroutineScope.() -> T): Lazy<Deferred<T>> {
     return lazy {
         GlobalScope.async(start = CoroutineStart.LAZY) {
@@ -89,5 +102,4 @@ enum class LicenseType {
 inline fun <reified T : Enum<T>> enumValueOrNull(name: String): T? {
     return enumValues<T>().find { it.name == name }
 }
-
 

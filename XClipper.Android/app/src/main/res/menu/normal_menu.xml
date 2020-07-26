@@ -2,8 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- TODO: Fix the color grading on light theme. -->
-
     <item android:id="@+id/action_tag"
         android:icon="@drawable/ic_tag"
         android:title="@string/tag"
@@ -26,15 +24,4 @@
         android:icon="@drawable/ic_search"
         android:title="@string/search"
         app:showAsAction="always" />
-<!--
-    <item
-        android:id="@+id/action_help"
-        android:title="@string/help"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/action_faq"
-        android:title="@string/faqs"
-        app:showAsAction="never" />-->
-
 </menu>

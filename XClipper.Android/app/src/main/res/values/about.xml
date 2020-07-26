@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="author_owner">\@KaustubhPatange</string>
+    <string name="author_link">https://github.com/KaustubhPatange</string>
+    <string name="author_mail">developerkp16@gmail.com</string>
+
+    <string name="app_website">https://kaustubhpatange.github.io/XClipper</string>
+    <string name="app_github">https://github.com/KaustubhPatange/XClipper</string>
+    <string name="app_github_issues">https://github.com/KaustubhPatange/XClipper/issues</string>
+
+</resources>

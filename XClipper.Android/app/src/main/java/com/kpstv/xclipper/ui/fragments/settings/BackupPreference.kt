@@ -56,7 +56,7 @@ class BackupPreference : PreferenceFragmentCompat(), KodeinAware {
                     flags = FLAG_GRANT_WRITE_URI_PERMISSION
                     putExtra(
                         EXTRA_TITLE,
-                        "backup-${Calendar.getInstance().time.getFormattedDate()}.db"
+                        "xclipper-${Calendar.getInstance().time.getFormattedDate()}.db"
                     )
                 }
                 startActivityForResult(intent, EXPORT_RESULT_CODE)
@@ -90,7 +90,6 @@ class BackupPreference : PreferenceFragmentCompat(), KodeinAware {
 
                         /** Using scope storage to write to a file */
                         contentResolver.openOutputStream(uri)?.apply {
-
                             write(databasePath.readBytes())
                             close()
                         }

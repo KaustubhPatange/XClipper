@@ -7,11 +7,11 @@ namespace Components
 {
     public partial class BuyWindow : Window
     {
-        public BuyWindow()
+        public BuyWindow(IBuyEventBinder binder)
         {
             InitializeComponent();
 
-            this.DataContext = new BuyViewModel();
+            this.DataContext = new BuyViewModel(binder);
         }
     }
 }

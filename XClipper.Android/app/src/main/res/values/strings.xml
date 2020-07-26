@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">XClipper</string>
-    <string name="app_website">https://kaustubhpatange.github.io/XClipper</string>
+
     <string name="accessibility_service_description">This will let XClipper capture some clipboard clips if system detects any copy/cut action.\n\n\nThis feature is still in BETA for Android 10+ users.</string>
 
     <string name="testStringSmall">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</string>
@@ -121,10 +121,9 @@
     <string name="unpin">Unpin</string>
     <string name="ask_suggestion">Show overlay suggestion</string>
     <string name="err_database">Invalid database</string>
-    <string name="author_summary"><![CDATA[\@KaustubhPatange]]></string>
     <string name="author_title">Owner</string>
     <string name="mail_title">Send me an email</string>
-    <string name="mail_summary">Want to give feedback, bug report just hit me up</string>
+    <string name="mail_summary">Want to give feedback or a quick chat just hit me up</string>
     <string name="version_title">Version</string>
     <string name="package_title">Package</string>
     <string name="upgrade">Upgrades</string>
@@ -146,4 +145,7 @@
     <string name="swipe_title">Swipe to delete</string>
     <string name="swipe_summary">Swiping item to right will delete it permanently</string>
     <string name="settings_restart">Restart needed to apply changes</string>
+    <string name="website_title">Official Website</string>
+    <string name="report_title">Report a bug</string>
+    <string name="report_summary">Create a Github issue in the official repository</string>
 </resources>

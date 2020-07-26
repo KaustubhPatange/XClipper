@@ -6,7 +6,6 @@ import android.content.*
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.os.Build
 import android.os.PowerManager
-import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.EditText
@@ -18,10 +17,12 @@ import com.kpstv.xclipper.App.ACTION_VIEW_CLOSE
 import com.kpstv.xclipper.App.EXTRA_SERVICE_TEXT
 import com.kpstv.xclipper.App.showSuggestion
 import com.kpstv.xclipper.data.provider.ClipboardProvider
+import com.kpstv.xclipper.extensions.logger
 import com.kpstv.xclipper.extensions.utils.FirebaseUtils
 import com.kpstv.xclipper.extensions.utils.KeyboardUtils.Companion.getKeyboardHeight
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.isSystemOverlayEnabled
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.retrievePackageList
+import es.dmoral.toasty.Toasty
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.kodein
 import org.kodein.di.generic.instance
@@ -38,6 +39,7 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
     private val keyboardHeight: MutableLiveData<Int> = MutableLiveData()
 
     private fun postKeyboardValue(value: Int) {
+        // TODO: Try not showing keyboard in XClipper app.
         if (keyboardHeight.value != value) keyboardHeight.postValue(value)
     }
 
@@ -47,6 +49,7 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
     private lateinit var powerManager: PowerManager
 
     private var nodeInfo: AccessibilityNodeInfo? = null
+
     /**
      * Indicates whether a screen is active for interaction or not.
      * If value is true -> Screen On
@@ -71,35 +74,41 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
          * eg: Press and hold a text > a pop comes with different options like
          * copy, paste, select all, etc.
          */
-        return (event?.eventType == AccessibilityEvent.TYPE_VIEW_TEXT_SELECTION_CHANGED
-                && event.fromIndex == event.toIndex
-                && event.currentItemIndex != -1)
+        if ((event?.eventType == AccessibilityEvent.TYPE_VIEW_TEXT_SELECTION_CHANGED
+                    && event.fromIndex == event.toIndex
+                    && event.currentItemIndex != -1)
+        ) {
+            if (event.className == EditText::class.java.name && event.scrollX != -1) return false
+            return true
+        }
 
-                ||
-
-                /**
-                 * This second condition is a hack whenever someone clicks copy or cut context button,
-                 * it detects this behaviour as copy.
-                 *
-                 * Disadvantages: Event TYPE_VIEW_CLICKED is fired whenever you touch on the screen,
-                 * this means if there is a text which contains "copy" it's gonna consider that as a
-                 * copy behaviour.
-                 */
-                (event?.eventType == AccessibilityEvent.TYPE_VIEW_CLICKED && event.text != null &&
-                (event.contentDescription?.toString()?.toLowerCase(Locale.ROOT)?.contains("copy") == true
-                        || event.text?.toString()?.toLowerCase(Locale.ROOT)?.contains("copy") == true
-                        || event.contentDescription == "Cut"))
+        /**
+         * This second condition is a hack whenever someone clicks copy or cut context button,
+         * it detects this behaviour as copy.
+         *
+         * Disadvantages: Event TYPE_VIEW_CLICKED is fired whenever you touch on the screen,
+         * this means if there is a text which contains "copy" it's gonna consider that as a
+         * copy behaviour.
+         */
+        if (event?.eventType == AccessibilityEvent.TYPE_VIEW_CLICKED && event.text != null &&
+            (event.contentDescription?.toString()?.toLowerCase(Locale.ROOT)
+                ?.contains("copy") == true
+                    || event.text?.toString()?.toLowerCase(Locale.ROOT)
+                ?.contains("copy") == true
+                    || event.contentDescription == "Cut")
+        )
+            return true
+        return false
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         currentPackage = event?.packageName
 
+        //  logger(TAG, "Event: $event")
+
         postKeyboardValue(getKeyboardHeight(applicationContext))
 
-     //   Log.e(TAG, "Event: $event")
-
         event?.source?.apply {
-
             if (className == EditText::class.java.name) {
                 nodeInfo = this
             }
@@ -107,29 +116,25 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
 
         if (powerManager.isInteractive) {
             updateScreenInteraction(true)
-        }else
+        } else
             updateScreenInteraction(false)
 
         if (event?.packageName != packageName)
             LocalBroadcastManager.getInstance(applicationContext)
                 .sendBroadcast(Intent(ACTION_VIEW_CLOSE))
 
-         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && supportedEventTypes(event) && !isPackageBlacklisted(
-                 event?.packageName
-             )
-         ) {
-
-             runForNextEventAlso = true
-
-             Log.e(TAG, "Running for first time")
-
-             runActivity(FLAG_ACTIVITY_NEW_TASK)
-
-             return
-         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && supportedEventTypes(event) && !isPackageBlacklisted(
+                event?.packageName
+            )
+        ) {
+            runForNextEventAlso = true
+            logger(TAG, "Running for first time")
+            runActivity(FLAG_ACTIVITY_NEW_TASK)
+            return
+        }
 
         if (runForNextEventAlso) {
-            Log.e(TAG, "Running for second time")
+            logger(TAG, "Running for second time")
             runForNextEventAlso = false
             runActivity(FLAG_ACTIVITY_NEW_TASK)
         }
@@ -138,7 +143,7 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
 
     override fun onServiceConnected() {
         super.onServiceConnected()
-        Log.e(TAG, "Service Connected")
+        logger(TAG, "Service Connected")
         val info = AccessibilityServiceInfo()
 
         info.apply {
@@ -155,15 +160,23 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
         retrievePackageList(applicationContext)
 
         keyboardHeight.observeForever { value ->
-            Log.e(TAG, "Value: $value")
+            logger(TAG, "Value: $value")
 
             /** A safe check to make sure we should check permission if we
              *  are using service related to it. */
             if (isSystemOverlayEnabled(applicationContext) && showSuggestion) {
                 if (value > 100)
-                    startService(Intent(applicationContext, BubbleService::class.java))
+                    try {
+                        startService(Intent(applicationContext, BubbleService::class.java))
+                    } catch (e: Exception) {
+                        logger(TAG, "Bubble launched failed", e)
+                    }
                 else
-                    stopService(Intent(applicationContext, BubbleService::class.java))
+                    try {
+                        stopService(Intent(applicationContext, BubbleService::class.java))
+                    } catch (e: Exception) {
+                        logger(TAG, "Bubble launched failed", e)
+                    }
             }
         }
 
@@ -174,28 +187,30 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
                     if (intent?.hasExtra(EXTRA_SERVICE_TEXT) == true) {
                         val pasteData = intent.getStringExtra(EXTRA_SERVICE_TEXT)
 
-                        if (nodeInfo != null) {
-                            with(nodeInfo!!) {
-                                refresh()
-                                clipboardProvider.ignoreChange {
+                        if (!(nodeInfo != null && nodeInfo?.packageName != currentPackage) && context != null) {
+                            Toasty.info(context, "Click on text field to capture it").show()
+                            return
+                        }
+                        with(nodeInfo!!) {
+                            refresh()
+                            clipboardProvider.ignoreChange {
 
-                                    /** Saving current clipboard */
-                                    val currentClipboard = clipboardProvider.getClipboard()
+                                /** Saving current clipboard */
+                                val currentClipboard = clipboardProvider.getClipboard()
 
-                                    /** Setting data to be paste */
-                                    clipboardProvider.setClipboard(
-                                        ClipData.newPlainText(
-                                            "copied",
-                                            pasteData
-                                        )
+                                /** Setting data to be paste */
+                                clipboardProvider.setClipboard(
+                                    ClipData.newPlainText(
+                                        "copied",
+                                        pasteData
                                     )
+                                )
 
-                                    /** Make an actual paste request */
-                                    performAction(AccessibilityNodeInfo.ACTION_PASTE)
+                                /** Make an actual paste request */
+                                performAction(AccessibilityNodeInfo.ACTION_PASTE)
 
-                                    /** Restore previous clipboard */
-                                    clipboardProvider.setClipboard(currentClipboard)
-                                }
+                                /** Restore previous clipboard */
+                                clipboardProvider.setClipboard(currentClipboard)
                             }
                         }
                     }

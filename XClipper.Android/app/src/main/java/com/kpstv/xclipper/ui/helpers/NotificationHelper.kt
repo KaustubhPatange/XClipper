@@ -59,7 +59,6 @@ class NotificationHelper(
         }
 
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            // TODO: Set small icon for notification
             .setSmallIcon(R.drawable.ic_clip)
             .setContentTitle(getString(R.string.clip_content))
             .setContentText(text)

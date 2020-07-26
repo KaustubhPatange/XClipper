@@ -5,7 +5,7 @@
     <PreferenceCategory app:title="Author">
         <Preference
             app:key="author_pref"
-            app:summary="@string/author_summary"
+            app:summary="@string/author_owner"
             app:title="@string/author_title" />
 
         <Preference
@@ -22,9 +22,17 @@
 
         <Preference
             app:key="version_pref"
-            app:title="@string/version_title"
-            app:summary="1.0"/>
+            app:summary="1.0"
+            app:title="@string/version_title" />
 
+        <Preference
+            app:key="website_pref"
+            app:title="@string/website_title" />
+
+        <Preference
+            app:key="report_pref"
+            app:title="@string/report_title"
+            app:summary="@string/report_summary"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

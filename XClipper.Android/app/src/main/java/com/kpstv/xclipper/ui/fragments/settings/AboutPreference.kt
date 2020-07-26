@@ -4,7 +4,6 @@ import android.content.Intent
 import android.content.Intent.ACTION_VIEW
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -16,20 +15,31 @@ class AboutPreference : PreferenceFragmentCompat() {
         setPreferencesFromResource(R.xml.about_pref, rootKey)
 
         findPreference<Preference>("author_pref")?.setOnPreferenceClickListener {
-            commonIntentLaunch("https://kaustubhpatange.github.io")
+            commonIntentLaunch(getString(R.string.author_link))
             true
         }
 
         findPreference<Preference>("mail_pref")?.setOnPreferenceClickListener {
-            commonIntentLaunch("mailto:developerkp16@gmail.com")
+            commonIntentLaunch("mailto:${getString(R.string.author_mail)}")
             true
         }
 
-        requireContext().packageManager.getPackageInfo(requireContext().packageName, 0).versionName
-
         findPreference<Preference>("package_pref")?.summary = requireContext().packageName
+        findPreference<Preference>("version_pref")?.summary =
+            "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})"
 
-        findPreference<Preference>("version_pref")?.summary = "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})"
+        findPreference<Preference>("website_pref")?.apply {
+            summary = getString(R.string.app_website)
+            setOnPreferenceClickListener {
+                commonIntentLaunch(getString(R.string.app_website))
+                true
+            }
+        }
+
+        findPreference<Preference>("report_pref")?.setOnPreferenceClickListener {
+            commonIntentLaunch(getString(R.string.app_github_issues))
+            true
+        }
     }
 
     private fun commonIntentLaunch(value: String) {

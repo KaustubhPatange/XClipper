@@ -158,10 +158,6 @@ class CIAdapter(
         clip: Clip,
         holder: MainHolder
     ) {
-        /** TODO: Fix this, if possible */
-        /*holder.itemView.ci_pinImage.setImageDrawable(
-            VectorDrawableCompat.create(context.resources, R.drawable.ic_pin, context.theme)
-        )*/
         if (clip.isPinned) {
             setButtonDrawable(
                 holder.itemView,

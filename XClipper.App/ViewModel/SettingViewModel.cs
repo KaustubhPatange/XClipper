@@ -204,7 +204,7 @@ namespace Components
 
             ToggleCustomPassword();
 
-            ToggleSecureDatabase();
+            ToggleSecureSqlDatabase();
 
             ToggleFirebasePassword();
 
@@ -221,7 +221,7 @@ namespace Components
         }
 
         /// <summary>
-        /// This method will delete all existing Firebase storage database.
+        /// This method will change the current firebase password to new one.
         /// </summary>
         private void ToggleFirebasePassword()
         {
@@ -254,9 +254,9 @@ namespace Components
         }
 
         /// <summary>
-        /// This will delete and create new secure database.
+        /// This will delete and create new secure SQL database.
         /// </summary>
-        private void ToggleSecureDatabase()
+        private void ToggleSecureSqlDatabase()
         {
             if (previousSecureDBValue != is_secure_db)
             {
