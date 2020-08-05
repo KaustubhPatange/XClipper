@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.zxing.integration.android.IntentIntegrator
-import com.kpstv.xclipper.App
 import com.kpstv.xclipper.App.ACTION_REPLACE_FRAG
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.FBOptions
