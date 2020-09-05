@@ -14,6 +14,8 @@ using System.Windows;
 using static Components.MainHelper;
 using Microsoft.VisualBasic.Logging;
 using System.CodeDom.Compiler;
+using System.Windows.Media.Converters;
+using System.Data.SqlTypes;
 
 #nullable enable
 
@@ -24,6 +26,15 @@ namespace Components
     public sealed class FirebaseSingleton
     {
         #region Variable Declaration
+
+        /// <summary>
+        /// We will set a boolean which will let me know if there is on going operation is going.
+        /// </summary>
+        private bool isPreviousAddRemaining, isPreviousRemoveRemaining, isGlobalUserExecuting = false;
+        private bool isClientInitialized = false;
+        private readonly List<string> addStack = new List<string>();
+        private readonly List<string> removeStack = new List<string>();
+        private readonly List<object> globalUserStack = new List<object>();
 
         private static FirebaseSingleton Instance;
         private IFirebaseClient client;
@@ -116,6 +127,7 @@ namespace Components
         {
             if (firebaseUser != null && user != null && BindDelete)
             {
+                if (firebaseUser.Clips == null) return;
                 var items = user.Clips?.ConvertAll(c => c.data).Except(firebaseUser.Clips?.ConvertAll(c => c.data));
                 foreach (var data in items ?? new List<string>())
                     binder.OnClipItemRemoved(new RemovedEventArgs(data.DecryptBase64(DatabaseEncryptPassword)));
@@ -151,7 +163,10 @@ namespace Components
 
             // BindUI is already set, make sure to set callback to it.
             SetCallback();
+
+            isClientInitialized = true;
         }
+
         #endregion
 
         #region Configuration Methods
@@ -162,6 +177,8 @@ namespace Components
         /// <param name="data"></param>
         public void InitConfig(FirebaseData? data = null)
         {
+            isClientInitialized = false;
+
             UID = UniqueID;
             if (data == null && FirebaseConfigurations.Count > 0)
             {
@@ -212,13 +229,33 @@ namespace Components
         /// <returns>True if user exist</returns>
         public async Task<bool> SetGlobalUserTask(bool forceInvoke = false)
         {
+            if (isGlobalUserExecuting)
+            {
+                globalUserStack.Add(new object());
+                return false;
+            }
+            isGlobalUserExecuting = true;
+
+            // Return if database observing is disabled.
+            if (!BindDatabase)
+            {
+                clearAwaitedGlobalUserTask();
+                return false;
+            }
+
             if (client == null)
             {
                 MsgBoxHelper.ShowError(Translation.MSG_FIREBASE_CLIENT_ERR);
+                clearAwaitedGlobalUserTask();
+               
                 // todo: Do something when client isn't initialized
+                /* 
+                 * We can implement a call stack to this, all you need to do is to make
+                 * a stack that accepts data & operation name. Once this client is
+                 * initialized we can do our job.
+                 */
                 return false;
             }
-            if (!BindDatabase) return false;
 
             if (await CheckForAccessTokenValidity().ConfigureAwait(false) && (alwaysForceInvoke || user == null || forceInvoke))
             {
@@ -233,7 +270,20 @@ namespace Components
 
                 user = firebaseUser;
             }
+
+            clearAwaitedGlobalUserTask();
+
             return user != null;
+        }
+
+        private void clearAwaitedGlobalUserTask()
+        {
+            isGlobalUserExecuting = false;
+            if (globalUserStack.Count > 0)
+            {
+                globalUserStack.Clear();
+                SetGlobalUserTask().RunAsync();
+            }
         }
 
         /// <summary>
@@ -360,12 +410,20 @@ namespace Components
         }
 
         /// <summary>
-        /// Add a clip data to the server instance.
+        /// Add a clip data to the server instance. Also support multiple calls which
+        /// is maintained through stack.
         /// </summary>
         /// <param name="Text"></param>
         /// <returns></returns>
         public async Task AddClip(string? Text)
         {
+            // If some add operation is going, we will add it to stack.
+            if (isPreviousAddRemaining && Text != null)
+            {
+                addStack.Add(Text);
+                return;
+            }
+            isPreviousAddRemaining = true;
             if (await SetGlobalUserTask().ConfigureAwait(false))
             {
                 if (Text == null) return;
@@ -375,9 +433,20 @@ namespace Components
                 // Remove clip if greater than item
                 if (user.Clips.Count > DatabaseMaxItem)
                     user.Clips.RemoveAt(0);
+                
+                // Add data from current [Text]
                 user.Clips.Add(new Clip { data = Text.EncryptBase64(DatabaseEncryptPassword), time = DateTime.Now.ToFormattedDateTime(false) });
+
+                // Also add data from stack
+                foreach (var stackText in addStack)
+                    user.Clips.Add(new Clip { data = stackText.EncryptBase64(DatabaseEncryptPassword), time = DateTime.Now.ToFormattedDateTime(false) });
+
+                // Clear the stack after adding them all.
+                addStack.Clear(); 
+
                 await client.SafeUpdateAsync($"users/{UID}", user).ConfigureAwait(false);
             }
+            isPreviousAddRemaining = false;
         }
 
         public async Task RemoveClip(int position)
@@ -398,21 +467,35 @@ namespace Components
         /// <returns></returns>
         public async Task RemoveClip(string? Text)
         {
+            // If some remove operation is going, we will add it to stack.
+            if (isPreviousRemoveRemaining && Text != null)
+            {
+                removeStack.Add(Text);
+                return;
+            }
+
+            isPreviousRemoveRemaining = true;
+
             if (await SetGlobalUserTask().ConfigureAwait(false))
             {
                 if (Text == null) return;
                 if (user.Clips == null)
                     return;
-                foreach (var item in user.Clips)
-                {
-                    if (item.data.DecryptBase64(DatabaseEncryptPassword) == Text)
-                    {
-                        user.Clips.Remove(item);
-                        await client.SafeUpdateAsync($"users/{UID}", user).ConfigureAwait(false);
-                    }
-                }
+
+                var originalListCount = user.Clips.Count;
+                // Add current one to stack as well to perform LINQ 
+                removeStack.Add(Text);
+
+                user.Clips.RemoveAll(c => removeStack.Exists(d => d == c.data.DecryptBase64(DatabaseEncryptPassword)));
+
+                if (originalListCount != user.Clips.Count)
+                    await client.SafeUpdateAsync($"users/{UID}", user).ConfigureAwait(false);
+                
+                removeStack.Clear();
             }
+            isPreviousRemoveRemaining = false;
         }
+
 
         /// <summary>
         /// Remove all clip data of user.

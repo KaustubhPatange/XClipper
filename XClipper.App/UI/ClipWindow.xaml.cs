@@ -163,6 +163,7 @@ namespace Components
                 Thread.Sleep(400);
             });
             _tbSearchBox.Clear();
+            CloseWindow();
         }
 
         private void SearchTextChanged(object sender, TextChangedEventArgs e)
