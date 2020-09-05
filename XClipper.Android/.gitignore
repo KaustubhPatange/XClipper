@@ -2,6 +2,7 @@
 *.apk
 .gradle
 /local.properties
+/buildSrc
 /.idea/caches
 /.idea/libraries
 /.idea/modules.xml
