@@ -61,6 +61,7 @@ dependencies {
     implementation(LibraryDependency.PLAY_CORE_KTX)
     implementation(LibraryDependency.COROUTINES_CORE)
     implementation(LibraryDependency.COROUTINES_ANDROID)
+    implementation(LibraryDependency.WORK_MANAGER)
     implementation(LibraryDependency.GSON)
     implementation(LibraryDependency.ROOM_RUNTIME)
     kapt(LibraryDependency.ROOM_COMPILER_KAPT)

@@ -5,12 +5,14 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.*
+import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat.getSystemService
 import com.kpstv.xclipper.App.ACTION_OPEN_APP
 import com.kpstv.xclipper.App.ACTION_SMART_OPTIONS
 import com.kpstv.xclipper.App.APP_CLIP_DATA
 import com.kpstv.xclipper.data.repository.MainRepository
+import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.ui.activities.Main
 import com.kpstv.xclipper.ui.dialogs.SpecialDialog
 import com.kpstv.xclipper.ui.helpers.NotificationHelper.Companion.NOTIFICATION_ID
@@ -23,6 +25,10 @@ class AppBroadcastReceiver : BroadcastReceiver(), KodeinAware {
     private val TAG = javaClass.simpleName
     override lateinit var kodein: Kodein
     private val repository by instance<MainRepository>()
+
+    companion object {
+        const val ACTION_OPEN_ACCESSIBILITY = "com.kpstv.action_open_accessibility"
+    }
 
     override fun onReceive(context: Context?, intent: Intent?) {
         kodein = (context?.applicationContext as KodeinAware).kodein
@@ -58,6 +64,10 @@ class AppBroadcastReceiver : BroadcastReceiver(), KodeinAware {
 
                     collapseStatusBar(context)
                 }
+                ACTION_OPEN_ACCESSIBILITY -> {
+                    Utils.openAccessibility(context)
+                    Toast.makeText(context, "Opening accessibility", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
@@ -70,6 +80,4 @@ class AppBroadcastReceiver : BroadcastReceiver(), KodeinAware {
     private fun collapseStatusBar(context: Context) {
         context.sendBroadcast(Intent(ACTION_CLOSE_SYSTEM_DIALOGS))
     }
-
-
 }

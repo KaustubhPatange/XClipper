@@ -29,6 +29,7 @@ private object LibraryVersion {
     const val PLAY_SERVICE_AUTH = "18.0.0"
     const val ACTIVITY = "1.2.0-alpha06"
     const val FRAGMENT = "1.2.5"
+    const val WORK_MANAGER = "2.4.0"
 }
 
 object LibraryDependency {
@@ -38,6 +39,7 @@ object LibraryDependency {
     const val APP_COMPAT = "androidx.appcompat:appcompat:${LibraryVersion.APP_COMPAT}"
     const val ACTIVITY_KTX = "androidx.activity:activity-ktx:${LibraryVersion.ACTIVITY}"
     const val FRAGMENT_KTX = "androidx.fragment:fragment-ktx:${LibraryVersion.FRAGMENT}"
+    const val WORK_MANAGER = "androidx.work:work-runtime-ktx:${LibraryVersion.WORK_MANAGER}"
     const val CONSTRAINT_LAYOUT = "androidx.constraintlayout:constraintlayout:${LibraryVersion.CONSTRAINT_LAYOUT}"
     const val MATERIAL = "com.google.android.material:material:${LibraryVersion.MATERIAL}"
     const val PLAY_CORE = "com.google.android.play:core:${LibraryVersion.PLAY_CORE}"

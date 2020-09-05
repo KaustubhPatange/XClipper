@@ -16,6 +16,7 @@ import com.kpstv.xclipper.App.ACTION_SMART_OPTIONS
 import com.kpstv.xclipper.App.APP_CLIP_DATA
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.service.AppBroadcastReceiver
+import java.util.*
 
 class NotificationHelper(
     private val context: Context
@@ -23,6 +24,7 @@ class NotificationHelper(
     companion object {
         const val CHANNEL_ID = "my_channel_01"
         const val NOTIFICATION_ID = 23
+        private const val ACCESSIBILITY_NOTIFICATION_ID = 34
     }
 
     private lateinit var manager: NotificationManager
@@ -38,7 +40,7 @@ class NotificationHelper(
         }
     }
 
-    fun pushNotification(text: String) = with(context) {
+    fun pushNotification(text: String): Unit = with(context) {
         val openIntent = PendingIntent.getBroadcast(
             context,
             0,
@@ -79,4 +81,28 @@ class NotificationHelper(
 
         manager.notify(NOTIFICATION_ID, notification)
     }
+
+    fun sendAccessibilityDisabledNotification(context: Context): Unit = with(context) {
+        val openIntent = PendingIntent.getBroadcast(
+            this,
+            getRandomNumberCode(),
+            Intent(this, AppBroadcastReceiver::class.java).apply {
+                action = AppBroadcastReceiver.ACTION_OPEN_ACCESSIBILITY
+            },
+            0
+        )
+        val notification = NotificationCompat.Builder(this, CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_clip)
+            .setContentTitle("Clipboard monitoring is disabled")
+            .setContentText("Accessibility service is not started, click to enable it.")
+            .setAutoCancel(true)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
+            .setContentIntent(openIntent)
+            .build()
+
+        manager.notify(ACCESSIBILITY_NOTIFICATION_ID, notification)
+    }
+
+    private fun getRandomNumberCode() = Random().nextInt(400) + 150
 }

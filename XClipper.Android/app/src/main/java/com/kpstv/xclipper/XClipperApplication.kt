@@ -25,6 +25,7 @@ import com.kpstv.xclipper.data.repository.*
 import com.kpstv.xclipper.extensions.utils.FirebaseUtils
 import com.kpstv.xclipper.extensions.utils.RetrofitUtils
 import com.kpstv.xclipper.extensions.utils.interceptors.NetworkConnectionInterceptor
+import com.kpstv.xclipper.service.worker.AccessibilityWorker
 import com.kpstv.xclipper.ui.helpers.DictionaryApiHelper
 import com.kpstv.xclipper.ui.helpers.NotificationHelper
 import com.kpstv.xclipper.ui.helpers.TinyUrlApiHelper
@@ -37,7 +38,7 @@ import org.kodein.di.generic.instance
 import org.kodein.di.generic.provider
 import org.kodein.di.generic.singleton
 
-
+@Suppress("unused")
 @SuppressLint("HardwareIds")
 @ExperimentalStdlibApi
 class XClipperApplication : Application(), KodeinAware {
@@ -136,5 +137,8 @@ class XClipperApplication : Application(), KodeinAware {
 
         /** Initialize firebase data */
         firebaseProvider.initialize(dbConnectionProvider.optionsProvider())
+
+        /** Initialize accessibility worker */
+        AccessibilityWorker.schedule(this)
     }
 }
