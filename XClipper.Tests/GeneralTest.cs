@@ -13,6 +13,7 @@ using RestSharp;
 using System.Net.NetworkInformation;
 using Components.UI;
 using System.Windows.Navigation;
+using System.Data;
 
 namespace XClipper.Tests
 {
@@ -25,6 +26,24 @@ namespace XClipper.Tests
         {
             int desc;
             return InternetGetConnectedState(out desc, 0);
+        }
+
+        [TestMethod]
+        public void LinqTest()
+        {
+            var dictionary = new Dictionary<string, string>();
+            dictionary.Add("1", "one");
+            dictionary.Add("2", "two");
+            dictionary.Add("3", "three");
+            dictionary.Add("4", "four");
+            var data = dictionary.FirstOrDefault(c => c.Value == "four");
+            if (data.Key == null && data.Value == null)
+                Debug.WriteLine("not exist");
+            else Debug.WriteLine("exist");
+            //Debug.WriteLine(data);
+            //if (data.is)
+            //    Debug.WriteLine("not exist");
+            //else Debug.WriteLine("exist");
         }
 
         [TestMethod]

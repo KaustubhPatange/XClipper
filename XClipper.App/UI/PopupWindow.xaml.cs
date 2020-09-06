@@ -229,7 +229,7 @@ namespace Components
                         }
                         break;
                 }
-                AppSingleton.GetInstance.UpdateData(model);
+                AppSingleton.GetInstance.ModifyData(SAVED_TEXT, model);
             }
             _tbText.IsReadOnly = true;
             _scrollViewer.BorderThickness = new Thickness(0);

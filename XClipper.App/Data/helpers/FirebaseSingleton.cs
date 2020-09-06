@@ -30,10 +30,11 @@ namespace Components
         /// <summary>
         /// We will set a boolean which will let me know if there is on going operation is going.
         /// </summary>
-        private bool isPreviousAddRemaining, isPreviousRemoveRemaining, isGlobalUserExecuting = false;
+        private bool isPreviousAddRemaining, isPreviousRemoveRemaining, isPreviousUpdateRemaining, isGlobalUserExecuting = false;
         private bool isClientInitialized = false;
         private readonly List<string> addStack = new List<string>();
         private readonly List<string> removeStack = new List<string>();
+        private readonly Dictionary<string, string> updateStack = new Dictionary<string, string>();
         private readonly List<object> globalUserStack = new List<object>();
 
         private static FirebaseSingleton Instance;
@@ -101,7 +102,7 @@ namespace Components
                 }
             }
             else return true;
-
+            
             return false;
         }
         private async Task<User> _GetUser()
@@ -125,12 +126,19 @@ namespace Components
 
         private void CheckForDataRemoval(User? firebaseUser)
         {
-            if (firebaseUser != null && user != null && BindDelete)
+            try
             {
-                if (firebaseUser.Clips == null) return;
-                var items = user.Clips?.ConvertAll(c => c.data).Except(firebaseUser.Clips?.ConvertAll(c => c.data));
-                foreach (var data in items ?? new List<string>())
-                    binder.OnClipItemRemoved(new RemovedEventArgs(data.DecryptBase64(DatabaseEncryptPassword)));
+                if (firebaseUser != null && user != null && BindDelete)
+                {
+                    if (user.Clips == null || firebaseUser.Clips == null) return;
+                    var items = user.Clips?.ConvertAll(c => c.data).Except(firebaseUser.Clips?.ConvertAll(c => c.data));
+                    foreach (var data in items ?? new List<string>())
+                        binder.OnClipItemRemoved(new RemovedEventArgs(data.DecryptBase64(DatabaseEncryptPassword)));
+                }
+            }
+            catch
+            {
+                // User must not try to remove data manually from Firebase, this may cause app to crash.
             }
         }
 
@@ -247,7 +255,7 @@ namespace Components
             {
                 MsgBoxHelper.ShowError(Translation.MSG_FIREBASE_CLIENT_ERR);
                 clearAwaitedGlobalUserTask();
-               
+
                 // todo: Do something when client isn't initialized
                 /* 
                  * We can implement a call stack to this, all you need to do is to make
@@ -320,7 +328,7 @@ namespace Components
 
                 isBinded = true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 if (ex.Message.Contains("401 (Unauthorized)"))
                 {
@@ -433,7 +441,7 @@ namespace Components
                 // Remove clip if greater than item
                 if (user.Clips.Count > DatabaseMaxItem)
                     user.Clips.RemoveAt(0);
-                
+
                 // Add data from current [Text]
                 user.Clips.Add(new Clip { data = Text.EncryptBase64(DatabaseEncryptPassword), time = DateTime.Now.ToFormattedDateTime(false) });
 
@@ -442,13 +450,14 @@ namespace Components
                     user.Clips.Add(new Clip { data = stackText.EncryptBase64(DatabaseEncryptPassword), time = DateTime.Now.ToFormattedDateTime(false) });
 
                 // Clear the stack after adding them all.
-                addStack.Clear(); 
+                addStack.Clear();
 
                 await client.SafeUpdateAsync($"users/{UID}", user).ConfigureAwait(false);
             }
             isPreviousAddRemaining = false;
         }
 
+        [Obsolete("Currently of no use")] // todo: Remove if not needed.
         public async Task RemoveClip(int position)
         {
             if (await SetGlobalUserTask().ConfigureAwait(false))
@@ -461,7 +470,7 @@ namespace Components
         }
 
         /// <summary>
-        /// Removes the clip data of user.
+        /// Removes the clip data of user. Synchronization is possible.
         /// </summary>
         /// <param name="Text"></param>
         /// <returns></returns>
@@ -490,7 +499,7 @@ namespace Components
 
                 if (originalListCount != user.Clips.Count)
                     await client.SafeUpdateAsync($"users/{UID}", user).ConfigureAwait(false);
-                
+
                 removeStack.Clear();
             }
             isPreviousRemoveRemaining = false;
@@ -510,6 +519,48 @@ namespace Components
                 user.Clips.Clear();
                 await client.SafeUpdateAsync($"users/{UID}", user).ConfigureAwait(false);
             }
+        }
+
+        /// <summary>
+        /// Updates an existing data with the new data. Both this data should not be in
+        /// any encrypted format.
+        /// </summary>
+        /// <param name="oldUnencryptedData"></param>
+        /// <param name="newUnencryptedData"></param>
+        /// <returns></returns>
+        public async Task UpdateData(string oldUnencryptedData, string newUnencryptedData)
+        {
+            // Adding new data to stack to save network calls.
+            if (isPreviousUpdateRemaining)
+            {
+                updateStack.Add(oldUnencryptedData, newUnencryptedData);
+                return;
+            }
+            isPreviousUpdateRemaining = true;
+
+            if (await SetGlobalUserTask().ConfigureAwait(false))
+            {
+                if (user.Clips == null)
+                    return;
+
+                // Add current item to existing stack.
+                updateStack.Add(oldUnencryptedData, newUnencryptedData);
+                foreach(var clip in user.Clips)
+                {
+                    var decryptedData = clip.data. DecryptBase64(DatabaseEncryptPassword);
+                    var item = updateStack.FirstOrDefault(c => c.Key == decryptedData);
+                    if (item.Key != null && item.Value != null)
+                    {
+                        clip.data = item.Value.EncryptBase64(DatabaseEncryptPassword);
+                    }
+                }
+
+                updateStack.Clear();
+
+                await client.SafeUpdateAsync($"users/{UID}", user).ConfigureAwait(false);
+            }
+
+            isPreviousUpdateRemaining = false;
         }
 
         #endregion

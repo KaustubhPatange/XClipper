@@ -113,6 +113,11 @@ namespace Components
         /// </summary>
         private static bool _IsCheckingForLicense = false;
 
+        /// <summary>
+        /// A string to hold if purchase complete.
+        /// </summary>
+        private static bool _IsPurchaseDone = false;
+
         #endregion
 
         #region Actual Settings
@@ -188,9 +193,20 @@ namespace Components
         public static string UniqueID { get; set; } = UNIQUE_ID;
 
         /// <summary>
-        /// A string to hold if purchase complete.
+        /// <inheritdoc cref="_IsPurchaseDone"/>
         /// </summary>
-        public static bool IsPurchaseDone { get; set; }
+        public static bool IsPurchaseDone
+        {
+            get { return _IsPurchaseDone; }
+            set
+            {
+                if (value != _IsPurchaseDone)
+                {
+                    _IsPurchaseDone = value;
+                    NotifyStaticPropertyChanged(nameof(IsPurchaseDone));
+                }
+            }
+        }
 
         /// <summary>
         /// <inheritdoc cref="_licenseStrategy"/>

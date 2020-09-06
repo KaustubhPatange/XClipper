@@ -239,17 +239,28 @@ namespace Components.viewModels
             }
         }
 
+        /// <summary>
+        /// Method will modify existing data locally as well as from Firebase.
+        /// </summary>
+        public void ModifyData(string oldData, TableCopy newData)
+        {
+            UpdateData(newData);
+            if (newData?.ContentType == ContentType.Text)
+                FirebaseSingleton.GetInstance.UpdateData(oldData, newData.RawText).RunAsync();
+        }
         #endregion
 
         #region DeleteData
 
         public bool DeleteClipData(string? data)
         {
-            TableCopy? item = null;
-            if (IsSecureDB)
-                item = dataDB.GetAllData().Find(c => c.RawText.DecryptBase64(DatabaseEncryptPassword) == data);
-            else
-                item = dataDB.GetAllData().Find(c => c.RawText == data);
+           // TableCopy? item = null;
+            //if (IsSecureDB)
+            //    item = dataDB.GetAllData().Find(c => c.RawText.DecryptBase64(DatabaseEncryptPassword) == data);
+            //else
+            //    item = dataDB.GetAllData().Find(c => c.RawText == data);
+
+            TableCopy item = dataDB.GetAllData().Find(c => c.RawText == data);
 
             if (item != null) DeleteClipData(item);
             return item != null;
@@ -275,5 +286,4 @@ namespace Components.viewModels
 
         #endregion    
     }
-
 }

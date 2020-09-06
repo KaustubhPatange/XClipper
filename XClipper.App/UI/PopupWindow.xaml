@@ -97,6 +97,7 @@
                     BorderThickness="0"
                     Click="CloseButton_Clicked"
                     DockPanel.Dock="Right"
+                    Focusable="False"
                     Style="{StaticResource ButtonStyle}"
                     ToolTip="Close (Escape)">
 
@@ -126,6 +127,7 @@
                     HorizontalAlignment="Right"
                     Click="PreviewButton_Clicked"
                     DockPanel.Dock="Right"
+                    Focusable="False"
                     Style="{StaticResource ButtonStyle}"
                     ToolTip="Preview (Enter)">
                     <materialDesign:PackIcon

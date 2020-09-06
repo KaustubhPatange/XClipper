@@ -378,12 +378,11 @@ namespace Components
                 Debug.WriteLine("Adding Device...");
                 FirebaseSingleton.GetInstance.SetGlobalUserTask(true).RunAsync();
             }
-
         }
 
         public void OnDataChanged(ValueChangedEventArgs e)
         {
-            // 1st value from real-time database is your 5th one in XClipper window.
+            // 1st value from real-time database is your last value in XClipper app.
             Debug.WriteLine("[Changed] Path: " + e.Path + ", Data: " + e.Data);
             if (e.Path.Contains(PATH_CLIP_DATA))
             {
@@ -509,18 +508,22 @@ namespace Components
             }
         }
 
+        private object notifyLock = new object();
         private Action? savedClick;
         private void DisplayNotifyMessage(string title, string message, Action? Click = null)
         {
-            notifyIcon.BalloonTipTitle = title;
-            notifyIcon.BalloonTipText = message;
-            notifyIcon.ShowBalloonTip(3000);
+           lock(notifyLock) // synchronized
+            {
+                notifyIcon.BalloonTipTitle = title;
+                notifyIcon.BalloonTipText = message;
+                notifyIcon.ShowBalloonTip(3000);
 
-            savedClick = Click;
+                savedClick = Click;
 
-            notifyIcon.BalloonTipClicked -= NotifyIcon_BalloonTipClicked;
-            notifyIcon.BalloonTipClicked -= UpdateAction_BalloonTipClicked;
-            notifyIcon.BalloonTipClicked += NotifyIcon_BalloonTipClicked;
+                notifyIcon.BalloonTipClicked -= NotifyIcon_BalloonTipClicked;
+                notifyIcon.BalloonTipClicked -= UpdateAction_BalloonTipClicked;
+                notifyIcon.BalloonTipClicked += NotifyIcon_BalloonTipClicked;
+            }
         }
 
         private void NotifyIcon_BalloonTipClicked(object sender, EventArgs e)
