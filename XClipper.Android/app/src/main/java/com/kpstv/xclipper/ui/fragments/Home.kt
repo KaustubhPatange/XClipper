@@ -282,10 +282,6 @@ class Home : Fragment(R.layout.fragment_home), KodeinAware {
             true
         }
 
-
-        //   Log.e(TAG, "Action View: ${}")
-        //  val item = toolbar.menu.findItem(R.id.action_search)
-
         mainViewModel.stateManager.selectedItemClips.observe(viewLifecycleOwner, Observer {
             if (it.size > 0)
                 toolbar.subtitle = "${it.size} ${getString(R.string.selected)}"

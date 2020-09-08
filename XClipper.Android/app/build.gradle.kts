@@ -10,6 +10,8 @@ android {
     compileSdkVersion(AndroidConfig.COMPILE_SDK_VERSION)
     buildToolsVersion(AndroidConfig.BUILD_TOOLS_VERSION)
 
+    viewBinding.isEnabled = true
+
     defaultConfig {
         applicationId = AndroidConfig.ID
         vectorDrawables.useSupportLibrary = true
@@ -93,6 +95,7 @@ dependencies {
     implementation(LibraryDependency.ROUND_BOTTOM_SHEET)
     implementation(LibraryDependency.FLOATING_BUBBLE)
     implementation(LibraryDependency.GIF_DRAWABLE)
+    implementation(LibraryDependency.HVLOG)
 
     debugImplementation(TestLibraryDependency.ANDROID_DEBUG_DB)
     testImplementation(TestLibraryDependency.JUNIT)

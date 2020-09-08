@@ -247,14 +247,14 @@ namespace Components
             // Return if database observing is disabled.
             if (!BindDatabase)
             {
-                clearAwaitedGlobalUserTask();
+                //clearAwaitedGlobalUserTask();
                 return false;
             }
 
             if (client == null)
             {
                 MsgBoxHelper.ShowError(Translation.MSG_FIREBASE_CLIENT_ERR);
-                clearAwaitedGlobalUserTask();
+                //clearAwaitedGlobalUserTask();
 
                 // todo: Do something when client isn't initialized
                 /* 
@@ -279,18 +279,18 @@ namespace Components
                 user = firebaseUser;
             }
 
-            clearAwaitedGlobalUserTask();
+            await clearAwaitedGlobalUserTask().ConfigureAwait(false);
 
             return user != null;
         }
 
-        private void clearAwaitedGlobalUserTask()
+        private async Task clearAwaitedGlobalUserTask()
         {
             isGlobalUserExecuting = false;
             if (globalUserStack.Count > 0)
             {
                 globalUserStack.Clear();
-                SetGlobalUserTask().RunAsync();
+                await SetGlobalUserTask().ConfigureAwait(false);
             }
         }
 

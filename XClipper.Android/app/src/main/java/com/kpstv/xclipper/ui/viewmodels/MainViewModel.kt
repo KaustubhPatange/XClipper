@@ -274,5 +274,4 @@ class MainViewModel(
                 mediatorLiveData.postValue(list.toList())
         }
     }
-
 }

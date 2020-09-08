@@ -2,7 +2,6 @@ package com.kpstv.xclipper.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import kotlinx.android.synthetic.main.dialog_create_tag.view.*
 
 @Entity(tableName = "table_tag")
 data class Tag(

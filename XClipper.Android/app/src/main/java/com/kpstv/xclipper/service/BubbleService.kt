@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -23,10 +22,11 @@ import com.kpstv.xclipper.App.EXTRA_SERVICE_TEXT
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.repository.MainRepository
+import com.kpstv.xclipper.databinding.BubbleViewBinding
+import com.kpstv.xclipper.databinding.ItemBubbleServiceBinding
 import com.kpstv.xclipper.extensions.hide
+import com.kpstv.xclipper.extensions.layoutInflater
 import com.kpstv.xclipper.extensions.show
-import kotlinx.android.synthetic.main.bubble_view.view.*
-import kotlinx.android.synthetic.main.item_bubble_service.view.*
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.kodein
 import org.kodein.di.generic.instance
@@ -40,9 +40,7 @@ class BubbleService : FloatingBubbleService(), KodeinAware {
 
     override fun getConfig(): FloatingBubbleConfig {
 
-        val view = LayoutInflater.from(applicationContext).inflate(
-            R.layout.bubble_view, null
-        )
+        val binding = BubbleViewBinding.inflate(applicationContext.layoutInflater())
 
         /** Setting adapter and onClick to send PASTE event. */
         adapter = PageClipAdapter {
@@ -57,10 +55,10 @@ class BubbleService : FloatingBubbleService(), KodeinAware {
         /** Pagination */
         repository.getDataSource().observeForever(pageObserver)
 
-        view.recycler_view.layoutManager = LinearLayoutManager(this)
-        view.recycler_view.adapter = adapter
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        binding.recyclerView.adapter = adapter
 
-        view.mainLayout.setOnClickListener {
+        binding.root.setOnClickListener {
             setState(false)
         }
 
@@ -78,7 +76,7 @@ class BubbleService : FloatingBubbleService(), KodeinAware {
 
         return FloatingBubbleConfig.Builder() // Set the drawable for the bubblec
             .bubbleIcon(ContextCompat.getDrawable(applicationContext, R.drawable.bubble_icon))
-            .expandableView(view)
+            .expandableView(binding.root)
             .build()
     }
 
@@ -117,23 +115,21 @@ class BubbleService : FloatingBubbleService(), KodeinAware {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             PageClipHolder(
-                LayoutInflater.from(parent.context).inflate(
-                    R.layout.item_bubble_service, parent, false
-                )
+                ItemBubbleServiceBinding.inflate(parent.context.layoutInflater()).root
             )
 
         override fun onBindViewHolder(holder: PageClipHolder, position: Int) {
             val clip = getItem(position)
-            with(holder.itemView) {
+            with(ItemBubbleServiceBinding.bind(holder.itemView)) {
 
                 /** This will show a small line which indicates this is a pinned clip. */
                 if (clip?.isPinned == true)
-                    ibc_pinView.show()
+                    ibcPinView.show()
                 else
-                    ibc_pinView.hide()
+                    ibcPinView.hide()
 
-                ibc_textView.text = clip?.data
-                ibc_textView.setOnClickListener {
+                ibcTextView.text = clip?.data
+                ibcTextView.setOnClickListener {
                     onClick.invoke(clip?.data!!)
                 }
             }

@@ -41,6 +41,7 @@ interface FirebaseProvider {
      * Should be called only by one specific class, because this lambdas are stored
      * internally for some use cases.
      */
+    fun isObservingChanges(): Boolean
     fun observeDataChange(changed: (User?) -> Unit, removed: (List<String>) -> Unit, error: (Exception) -> Unit, deviceValidated: (Boolean) -> Unit)
     fun removeDataObservation()
 }

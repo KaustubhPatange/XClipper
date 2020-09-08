@@ -1,6 +1,8 @@
 package com.kpstv.xclipper.extensions
 
+import android.content.Context
 import android.util.Log
+import android.view.LayoutInflater
 import com.ferfalk.simplesearchview.SimpleSearchView
 import com.google.gson.annotations.SerializedName
 import com.kpstv.xclipper.App.STANDARD_DATE_FORMAT
@@ -103,3 +105,4 @@ inline fun <reified T : Enum<T>> enumValueOrNull(name: String): T? {
     return enumValues<T>().find { it.name == name }
 }
 
+fun Context.layoutInflater(): LayoutInflater = LayoutInflater.from(this)

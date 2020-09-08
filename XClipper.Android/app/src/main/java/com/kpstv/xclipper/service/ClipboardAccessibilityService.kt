@@ -17,6 +17,7 @@ import com.kpstv.xclipper.App.ACTION_VIEW_CLOSE
 import com.kpstv.xclipper.App.EXTRA_SERVICE_TEXT
 import com.kpstv.xclipper.App.showSuggestion
 import com.kpstv.xclipper.data.provider.ClipboardProvider
+import com.kpstv.hvlog.HVLog
 import com.kpstv.xclipper.extensions.logger
 import com.kpstv.xclipper.extensions.utils.FirebaseUtils
 import com.kpstv.xclipper.extensions.utils.KeyboardUtils.Companion.getKeyboardHeight
@@ -62,7 +63,7 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
     override fun onCreate() {
         super.onCreate()
         powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
-        firebaseUtils.observeDatabaseChangeEvents()
+        HVLog.d()
     }
 
     /** Some hacks I figured out which would trigger copy/cut for Android 10 */
@@ -79,6 +80,7 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
                     && event.currentItemIndex != -1)
         ) {
             if (event.className == EditText::class.java.name && event.scrollX != -1) return false
+            HVLog.d("Copy captured - 1")
             return true
         }
 
@@ -96,8 +98,10 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
                     || event.text?.toString()?.toLowerCase(Locale.ROOT)
                 ?.contains("copy") == true
                     || event.contentDescription == "Cut")
-        )
+        ) {
+            HVLog.d("Copy captured - 2")
             return true
+        }
         return false
     }
 
@@ -140,9 +144,10 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
         }
     }
 
-
     override fun onServiceConnected() {
         super.onServiceConnected()
+        HVLog.d()
+
         logger(TAG, "Service Connected")
         val info = AccessibilityServiceInfo()
 
@@ -155,6 +160,7 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
 
         serviceInfo = info
 
+        firebaseUtils.observeDatabaseChangeEvents()
         clipboardProvider.observeClipboardChange()
 
         retrievePackageList(applicationContext)
@@ -185,6 +191,8 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
             .registerReceiver(object : BroadcastReceiver() {
                 override fun onReceive(context: Context?, intent: Intent?) {
                     if (intent?.hasExtra(EXTRA_SERVICE_TEXT) == true) {
+                        HVLog.d("Received ${::EXTRA_SERVICE_TEXT.name}")
+
                         val pasteData = intent.getStringExtra(EXTRA_SERVICE_TEXT)
 
                         if (!(nodeInfo != null && nodeInfo?.packageName != currentPackage) && context != null) {
@@ -211,6 +219,8 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
 
                                 /** Restore previous clipboard */
                                 clipboardProvider.setClipboard(currentClipboard)
+
+                                HVLog.d("Pasted into current clip")
                             }
                         }
                     }
@@ -227,6 +237,8 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
     }
 
     override fun onDestroy() {
+        HVLog.d()
+
         /** Ensures that we remove database initialization observation. */
         firebaseUtils.removeDatabaseInitializationObservation()
         super.onDestroy()

@@ -5,7 +5,6 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.navOptions
 import com.kpstv.xclipper.App.TUTORIAL_PREF
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.provider.PreferenceProvider
@@ -36,7 +35,10 @@ class WatchVideo : Fragment(R.layout.fragment_welcome), KodeinAware {
                     .setPopUpTo(R.id.fragment_greet, true)
                     .build()
 
-                findNavController().navigate(WatchVideoDirections.actionWatchVideoToFragmentHome(), options)
+                findNavController().navigate(
+                    WatchVideoDirections.actionWatchVideoToFragmentHome(),
+                    options
+                )
             }/*,
             insertView = LayoutInflater.from(context).inflate(
                 R.layout.layout_watch, null

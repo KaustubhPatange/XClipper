@@ -3,11 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
- <!--   <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="djkdjkejd edjejke fjkef"/>-->
-
     <fragment xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/nav_host_fragment"
         android:name="androidx.navigation.fragment.NavHostFragment"

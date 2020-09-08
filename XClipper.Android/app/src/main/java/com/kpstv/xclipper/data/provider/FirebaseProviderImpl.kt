@@ -3,14 +3,13 @@ package com.kpstv.xclipper.data.provider
 import android.content.Context
 import android.os.Build
 import android.util.Log
-import androidx.annotation.experimental.Experimental
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.kpstv.hvlog.HVLog
 import com.kpstv.license.Encryption.Decrypt
 import com.kpstv.xclipper.App.APP_MAX_DEVICE
 import com.kpstv.xclipper.App.APP_MAX_ITEM
@@ -28,8 +27,6 @@ import com.kpstv.xclipper.data.model.User
 import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.extensions.listeners.FValueEventListener
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 
 @ExperimentalStdlibApi
 class FirebaseProviderImpl(
@@ -81,6 +78,7 @@ class FirebaseProviderImpl(
         database = Firebase.database(options.endpoint)
         isInitialized.postValue(true)
 
+        HVLog.d()
         Log.e(TAG, "Firebase Database has been initialized")
     }
 
@@ -95,7 +93,9 @@ class FirebaseProviderImpl(
     }
 
     override fun addDevice(DeviceId: String, responseListener: ResponseListener<Unit>) {
+        HVLog.d("Adding Device...")
         workWithData(ValidationContext.ForceInvoke) {
+            HVLog.d("Inside WorkWithData...")
             val list =
                 if (user?.Devices != null) ArrayList(user?.Devices!!)
                 else ArrayList<Device>()
@@ -104,6 +104,7 @@ class FirebaseProviderImpl(
 
             if (list.size >= APP_MAX_DEVICE) {
                 responseListener.onError(Exception("Maximum device connection reached"))
+                HVLog.w("Maximum device reached...")
                 return@workWithData
             }
 
@@ -112,6 +113,7 @@ class FirebaseProviderImpl(
              */
             if (list.count { it.id == DeviceId } > 0) {
                 responseListener.onComplete(Unit)
+                HVLog.w("DeviceID already present")
                 return@workWithData
             }
 
@@ -127,13 +129,16 @@ class FirebaseProviderImpl(
 
 
     override fun removeDevice(DeviceId: String, responseListener: ResponseListener<Unit>) {
+        HVLog.d("Removing device...")
         workWithData(ValidationContext.ForceInvoke) {
+            HVLog.d("Inside WorkWithData...")
             val list =
                 if (user?.Devices != null) ArrayList(user?.Devices!!)
                 else ArrayList<Device>()
 
             if (list.count { it.id == DeviceId } <= 0) {
                 responseListener.onError(Exception("No device found with this ID"))
+                HVLog.d("No device ID found...")
                 return@workWithData
             }
 
@@ -159,6 +164,7 @@ class FirebaseProviderImpl(
         uploadStatus: UploadStatus,
         responseListener: ResponseListener<Unit>
     ) {
+        HVLog.d()
 
         Log.e(TAG, "ListSize: ${list.size}, List: $list")
         isDeviceAdding = true
@@ -166,6 +172,7 @@ class FirebaseProviderImpl(
         /** Must pass toList to firebase otherwise it add list as linear data. */
         database.getReference(USER_REF).child(UID).child(DEVICE_REF)
             .setValue(list.toList()) { error, _ ->
+                HVLog.d("Work completed, ${error?.message}")
                 if (error == null) {
                     responseListener.onComplete(Unit)
                     isDeviceAdding = false
@@ -180,28 +187,36 @@ class FirebaseProviderImpl(
     }
 
     override fun replaceData(unencryptedOldClip: Clip, unencryptedNewClip: Clip) {
+        HVLog.d()
         workWithData {
+            HVLog.d("To process $it")
             if (it)
                 replace(unencryptedOldClip, unencryptedNewClip)
         }
     }
 
     override fun deleteMultipleData(unencryptedClips: List<Clip>) {
+        HVLog.d()
         workWithData {
+            HVLog.d("To process $it")
             if (it)
                 removeData(unencryptedClips)
         }
     }
 
     override fun deleteData(unencryptedClip: Clip) {
+        HVLog.d()
         workWithData {
+            HVLog.d("To process $it")
             if (it)
                 removeData(unencryptedClip)
         }
     }
 
     override fun uploadData(unencryptedClip: Clip) {
+        HVLog.d()
         workWithData {
+            HVLog.d("To process $it")
             if (it)
                 saveData(unencryptedClip)
         }
@@ -209,7 +224,9 @@ class FirebaseProviderImpl(
 
     private fun replace(unencryptedOldClip: Clip, unencryptedNewClip: Clip) {
         /** Save data when clips are null */
+        HVLog.d()
         if (user?.Clips == null) {
+            HVLog.d("Saving first data")
             saveData(unencryptedNewClip)
         } else {
             val list =
@@ -222,6 +239,7 @@ class FirebaseProviderImpl(
     }
 
     private fun removeData(unencryptedClip: Clip) {
+        HVLog.d()
         removeData(List(1) { unencryptedClip })
     }
 
@@ -240,6 +258,7 @@ class FirebaseProviderImpl(
     }
 
     private fun saveData(unencryptedClip: Clip) {
+        HVLog.d()
 
         checkForUserDetailsAndUpdateLocal()
 
@@ -259,8 +278,10 @@ class FirebaseProviderImpl(
      * A common method which will submit the data to firebase.
      */
     private fun pushDataToFirebase(list: ArrayList<Clip>) {
+        HVLog.d()
         database.getReference(USER_REF).child(UID).child(CLIP_REF)
             .setValue(list.cloneToEntries()) { error, _ ->
+                HVLog.d("Completed, ${error?.message}")
                 if (error == null) {
                     user?.Clips = list
                 } else
@@ -269,7 +290,9 @@ class FirebaseProviderImpl(
     }
 
     override fun getAllClipData(block: (List<Clip>?) -> Unit) {
+        HVLog.d()
         workWithData(ValidationContext.ForceInvoke) {
+            HVLog.d("To process $it")
             if (it)
                 block.invoke(user?.Clips?.decrypt())
             else
@@ -287,7 +310,7 @@ class FirebaseProviderImpl(
         validationContext: ValidationContext = ValidationContext.Default,
         block: (Boolean) -> Unit
     ) {
-
+        HVLog.d()
         /**
          * Make sure the device is a valid device so that we can make connection
          * and work with the database.
@@ -296,6 +319,7 @@ class FirebaseProviderImpl(
          *  when following criteria satisfies
          */
         if (validationContext == ValidationContext.Default && !bindToFirebase && !dbConnectionProvider.isValidData()) {
+            HVLog.d("Returning false - 1")
             block.invoke(false)
             return
         }
@@ -306,13 +330,14 @@ class FirebaseProviderImpl(
             if (options != null)
                 initialize(options)
             else {
+                HVLog.d("Returning false - 2")
                 block.invoke(false)
                 return
             }
         }
 
         if (user == null || validationContext == ValidationContext.ForceInvoke) {
-
+            HVLog.d("Getting user for first time")
             database.getReference(USER_REF).child(UID)
                 .addListenerForSingleValueEvent(FValueEventListener(
                     onDataChange = { snap ->
@@ -329,6 +354,8 @@ class FirebaseProviderImpl(
             block.invoke(true)
     }
 
+    override fun isObservingChanges() = ::valueListener.isInitialized
+
     private lateinit var valueListener: FValueEventListener
     override fun observeDataChange(
         changed: (User?) -> Unit,
@@ -336,7 +363,9 @@ class FirebaseProviderImpl(
         error: (Exception) -> Unit,
         deviceValidated: (Boolean) -> Unit
     ) {
+        HVLog.d()
         if (!dbConnectionProvider.isValidData()) {
+            HVLog.d("Invalid account preference")
             error.invoke(Exception("Invalid account preference"))
             return
         }
@@ -345,10 +374,14 @@ class FirebaseProviderImpl(
         if (isInitialized.value == false)
             initialize(dbConnectionProvider.optionsProvider())
 
-        if (UID.isEmpty()) return
+        if (UID.isEmpty()) {
+            HVLog.d("Empty UID")
+            return
+        }
 
         valueListener = FValueEventListener(
             onDataChange = { snap ->
+                HVLog.d("OnDataChanging")
                 val json = gson.toJson(snap.value)
                 val firebaseUser = gson.fromJson(json, User::class.java)
 
@@ -391,6 +424,7 @@ class FirebaseProviderImpl(
             },
             onError = {
                 error.invoke(it.toException())
+                HVLog.d("onError")
             }
         )
 
@@ -403,12 +437,14 @@ class FirebaseProviderImpl(
      * later purposes.
      */
     private fun checkForUserDetailsAndUpdateLocal() {
+        HVLog.d()
         APP_MAX_DEVICE = user?.TotalConnection ?: getMaxConnection(isLicensed())
         APP_MAX_ITEM = user?.MaxItemStorage ?: getMaxStorage(isLicensed())
         user?.LicenseStrategy?.let { licenseStrategy.postValue(it) }
     }
 
     override fun removeDataObservation() {
+        HVLog.d()
         if (::database.isInitialized && ::valueListener.isInitialized) {
             database.getReference(USER_REF).child(UID)
                 .removeEventListener(valueListener)

@@ -30,6 +30,7 @@ private object LibraryVersion {
     const val ACTIVITY = "1.2.0-alpha06"
     const val FRAGMENT = "1.2.5"
     const val WORK_MANAGER = "2.4.0"
+    const val HVLOG = "0.1-alpha02"
 }
 
 object LibraryDependency {
@@ -75,4 +76,5 @@ object LibraryDependency {
     const val ROUND_BOTTOM_SHEET = "com.github.Deishelon:RoundedBottomSheet:${LibraryVersion.ROUND_BOTTOM_SHEET}"
     const val FLOATING_BUBBLE = "com.github.bijoysingh:floating-bubble:${LibraryVersion.FLOATING_BUBBLE}"
     const val GIF_DRAWABLE = "pl.droidsonroids.gif:android-gif-drawable:${LibraryVersion.GIF_DRAWABLE}"
+    const val HVLOG = "io.github.kaustubhpatange:hvlog:${LibraryVersion.HVLOG}"
 }

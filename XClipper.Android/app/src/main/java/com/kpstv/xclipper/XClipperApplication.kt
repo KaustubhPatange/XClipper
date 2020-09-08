@@ -3,6 +3,7 @@ package com.kpstv.xclipper
 import android.annotation.SuppressLint
 import android.app.Application
 import android.provider.Settings
+import com.kpstv.hvlog.HVLog
 import com.kpstv.xclipper.App.AUTO_SYNC_PREF
 import com.kpstv.xclipper.App.BIND_PREF
 import com.kpstv.xclipper.App.bindToFirebase
@@ -115,13 +116,16 @@ class XClipperApplication : Application(), KodeinAware {
 
     private fun init() {
 
-        // Set device ID at startup
+        /** Setup HVLog */
+        HVLog.Config.init(this)
+
+        /** Set device ID at startup */
         DeviceID = Settings.Secure.getString(
             contentResolver,
             Settings.Secure.ANDROID_ID
         )
 
-        // Load settings here
+        /** Load settings here */
         DICTIONARY_LANGUAGE = preferenceProvider.getStringKey(LANG_PREF, "en")!!
 
         /** This will load firebase config setting */

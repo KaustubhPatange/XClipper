@@ -14,15 +14,12 @@ import android.os.Build
 import android.provider.Settings
 import android.telephony.TelephonyManager
 import android.util.TypedValue
-import android.view.LayoutInflater
 import android.view.accessibility.AccessibilityManager
 import androidx.annotation.AttrRes
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ShareCompat
 import androidx.preference.PreferenceManager
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.zxing.integration.android.IntentIntegrator
@@ -37,11 +34,12 @@ import com.kpstv.xclipper.data.model.AppPkg
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
+import com.kpstv.xclipper.databinding.DialogConnectBinding
+import com.kpstv.xclipper.databinding.DialogProgressViewBinding
 import com.kpstv.xclipper.extensions.SimpleFunction
+import com.kpstv.xclipper.extensions.layoutInflater
 import com.kpstv.xclipper.service.ClipboardAccessibilityService
 import com.kpstv.xclipper.ui.helpers.AuthenticationHelper
-import kotlinx.android.synthetic.main.dialog_connect.view.*
-import kotlinx.android.synthetic.main.dialog_progress_view.view.*
 import java.io.InputStream
 import java.util.*
 
@@ -248,13 +246,13 @@ class Utils {
          * This will show connection dialog and from there we can initiate QR scanning.
          */
         fun showConnectDialog(activity: Activity): Unit = with(activity) {
-            val view = LayoutInflater.from(this).inflate(R.layout.dialog_connect, null)
+            val binding = DialogConnectBinding.inflate(layoutInflater)
 
             val alert = AlertDialog.Builder(this)
-                .setView(view)
+                .setView(binding.root)
                 .show()
 
-            view.btn_scan_connect.setOnClickListener {
+            binding.btnScanConnect.setOnClickListener {
                 IntentIntegrator(this)
                     .setDesiredBarcodeFormats(IntentIntegrator.QR_CODE)
                     .setOrientationLocked(false)
@@ -268,14 +266,14 @@ class Utils {
         }
 
         fun showConnectionDialog(context: Context): AlertDialog = with(context) {
-            val view = LayoutInflater.from(this).inflate(R.layout.dialog_progress_view, null)
+            val binding = DialogProgressViewBinding.inflate(layoutInflater())
 
             val dialog = AlertDialog.Builder(this)
                 .setCancelable(false)
-                .setView(view)
+                .setView(binding.root)
                 .show()
 
-            view.btn_cancel.setOnClickListener {
+            binding.btnCancel.setOnClickListener {
                 dialog.dismiss()
             }
 
