@@ -118,6 +118,7 @@ class XClipperApplication : Application(), KodeinAware {
 
         /** Setup HVLog */
         HVLog.Config.init(this)
+        HVLog.Config.compactClassName = true
 
         /** Set device ID at startup */
         DeviceID = Settings.Secure.getString(

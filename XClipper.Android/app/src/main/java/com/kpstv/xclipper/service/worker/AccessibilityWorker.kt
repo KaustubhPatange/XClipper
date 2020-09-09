@@ -27,12 +27,8 @@ class AccessibilityWorker(
         private const val UNIQUE_ID = "xclipper_accessibility_worker"
         fun schedule(context: Context) {
             val request = PeriodicWorkRequestBuilder<AccessibilityWorker>(
-                20,
-                TimeUnit.MINUTES,
-                5,
-                TimeUnit.MINUTES
-            )
-                .build()
+                20, TimeUnit.MINUTES, 5, TimeUnit.MINUTES
+            ).build()
 
             WorkManager.getInstance(context)
                 .enqueueUniquePeriodicWork(UNIQUE_ID, ExistingPeriodicWorkPolicy.REPLACE, request)

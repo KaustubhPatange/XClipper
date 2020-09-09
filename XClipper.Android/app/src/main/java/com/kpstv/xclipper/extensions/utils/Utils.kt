@@ -183,7 +183,7 @@ class Utils {
         }
 
         @RequiresApi(Build.VERSION_CODES.M)
-        fun showOverlayDialog(context: Context) = with(context) {
+        fun showOverlayDialog(context: Context): AlertDialog = with(context) {
             AlertDialog.Builder(this)
                 .setMessage(getString(R.string.suggestion_capture))
                 .setPositiveButton(getString(R.string.ok)) { _, _ ->

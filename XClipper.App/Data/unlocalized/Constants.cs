@@ -27,7 +27,7 @@ namespace Components
         public static string CustomFirebasePath = Path.Combine(ApplicationDirectory, "custom-firebase.xml");
         public static string FirebaseCredentialPath = Path.Combine(ApplicationDirectory, "credentials-firebase.xml");
         public static string QRImageFilePath = Path.Combine(ApplicationTempDirectory, "qr.png");
-        public static string LogFilePath = Path.Combine(ApplicationDirectory, "log.log");
+        public static string LogFilePath = Path.Combine(ApplicationDirectory, "xclipper");
         public static string UpdatePackageFile = Path.Combine(ApplicationTempDirectory, "package-update.exe");
 
         #endregion

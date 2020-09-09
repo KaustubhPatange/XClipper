@@ -16,6 +16,9 @@ using Microsoft.VisualBasic.Logging;
 using System.CodeDom.Compiler;
 using System.Windows.Media.Converters;
 using System.Data.SqlTypes;
+using System.Windows.Forms;
+using System.Threading;
+using System.Diagnostics;
 
 #nullable enable
 
@@ -43,6 +46,7 @@ namespace Components
         private string UID;
         private bool alwaysForceInvoke = false;
         private User user;
+        private readonly string tag = nameof(FirebaseSingleton);
 
         /// <summary>
         /// Since <see cref="InitConfig(FirebaseData?)"/> is used in many cases it is not safe to call <br/>
@@ -70,6 +74,11 @@ namespace Components
 
         #region Private Methods
 
+        private void Log(string? message = null)
+        {
+            LogHelper.Log(tag, message);
+        }
+
         /// <summary>
         /// This will check if the access Token is valid or not. It will also 
         /// update the client with new access token.
@@ -78,10 +87,12 @@ namespace Components
         private async Task<bool> CheckForAccessTokenValidity()
         {
             // When we don't need Auth for desktop client, we can return true.
+            Log($"Checking for token : {FirebaseCurrent?.isAuthNeeded}");
             if (FirebaseCurrent?.isAuthNeeded == false) return true;
 
             if (!IsValidCredential())
             {
+                Log("Credentials are not valid");
                 if (FirebaseCurrent != null)
                     binder.OnNeedToGenerateToken(FirebaseCurrent.DesktopAuth.ClientId, FirebaseCurrent.DesktopAuth.ClientSecret);
                 else
@@ -95,6 +106,7 @@ namespace Components
             }
             if (NeedToRefreshToken())
             {
+                Log("Need to refresh token");
                 if (await RefreshAccessToken(FirebaseCurrent).ConfigureAwait(false))
                 {
                     await CreateNewClient().ConfigureAwait(false);
@@ -105,11 +117,15 @@ namespace Components
             
             return false;
         }
-        private async Task<User> _GetUser()
+        private async Task<User?> _GetUser()
         {
+            Log();
             var data = await client.SafeGetAsync($"users/{UID}").ConfigureAwait(false);
+            if (data != null && data.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                return null;
             if (data == null || data.Body == "null") // Sometimes it catch to this exception which is due to unknown error.
             {
+                Log("Data body is null");
                 return await RegisterUser().ConfigureAwait(false);
             }
             else return data.ResultAs<User>();//.Also((user) => { this.user = user; });
@@ -117,6 +133,7 @@ namespace Components
 
         private void SetCommonUserInfo(User user)
         {
+            Log($"User null? {user == null}");
             // todo: Set some other details for user...
             user.MaxItemStorage = DatabaseMaxItem;
             user.TotalConnection = DatabaseMaxConnection;
@@ -130,6 +147,7 @@ namespace Components
             {
                 if (firebaseUser != null && user != null && BindDelete)
                 {
+                    Log();
                     if (user.Clips == null || firebaseUser.Clips == null) return;
                     var items = user.Clips?.ConvertAll(c => c.data).Except(firebaseUser.Clips?.ConvertAll(c => c.data));
                     foreach (var data in items ?? new List<string>())
@@ -138,7 +156,7 @@ namespace Components
             }
             catch
             {
-                // User must not try to remove data manually from Firebase, this may cause app to crash.
+                // todo: User must not try to remove data manually from Firebase, this may cause app to crash.
             }
         }
 
@@ -147,6 +165,7 @@ namespace Components
         /// </summary>
         private async Task CreateNewClient()
         {
+            Log();
             // We will set isBinded to false since we are creating a new client.
             isBinded = false;
             IFirebaseConfig config;
@@ -185,11 +204,13 @@ namespace Components
         /// <param name="data"></param>
         public void InitConfig(FirebaseData? data = null)
         {
+            Log();
             isClientInitialized = false;
 
             UID = UniqueID;
             if (data == null && FirebaseConfigurations.Count > 0)
             {
+                Log("Setting firebase configuration");
                 FirebaseCurrent = FirebaseConfigurations[0];
             }
             else FirebaseCurrent = data;
@@ -200,11 +221,13 @@ namespace Components
                 {
                     if (!IsValidCredential())
                     {
+                        Log("Token not valid");
                         binder.OnNeedToGenerateToken(FirebaseCurrent.DesktopAuth.ClientId, FirebaseCurrent.DesktopAuth.ClientSecret);
                         return;
                     }
                     else if (NeedToRefreshToken())
                     {
+                        Log("We need to refresh token");
                         CheckForAccessTokenValidity(); // PS: I don't care.
                         return;
                     }
@@ -221,6 +244,7 @@ namespace Components
         /// <returns></returns>
         public async Task SubmitConfigurationsTask()
         {
+            Log();
             if (!BindDatabase) return;
             await SetGlobalUserTask().ConfigureAwait(false);
 
@@ -237,9 +261,11 @@ namespace Components
         /// <returns>True if user exist</returns>
         public async Task<bool> SetGlobalUserTask(bool forceInvoke = false)
         {
+            Log();
             if (isGlobalUserExecuting)
             {
                 globalUserStack.Add(new object());
+                Log($"Added to global stack: {globalUserStack.Count}");
                 return false;
             }
             isGlobalUserExecuting = true;
@@ -267,28 +293,40 @@ namespace Components
 
             if (await CheckForAccessTokenValidity().ConfigureAwait(false) && (alwaysForceInvoke || user == null || forceInvoke))
             {
+                Log("Check complete");
                 var firebaseUser = await _GetUser().ConfigureAwait(false);
 
-                SetCommonUserInfo(firebaseUser);
+                if (firebaseUser != null)
+                {
+                    SetCommonUserInfo(firebaseUser);
 
-                CheckForDataRemoval(firebaseUser);
+                    CheckForDataRemoval(firebaseUser);
 
-                if (firebaseUser.Devices != null && firebaseUser.Devices.Count > 0)
-                    alwaysForceInvoke = true;
+                    if (firebaseUser.Devices != null && firebaseUser.Devices.Count > 0)
+                        alwaysForceInvoke = true;
 
-                user = firebaseUser;
+                    user = firebaseUser;
+                } else
+                {
+                    globalUserStack.Clear();
+                    return false;
+                }
             }
 
             await clearAwaitedGlobalUserTask().ConfigureAwait(false);
+
+            Log("Execution complete");
 
             return user != null;
         }
 
         private async Task clearAwaitedGlobalUserTask()
         {
+            Log();
             isGlobalUserExecuting = false;
             if (globalUserStack.Count > 0)
             {
+                Log("You need to clear the task");
                 globalUserStack.Clear();
                 await SetGlobalUserTask().ConfigureAwait(false);
             }
@@ -309,6 +347,7 @@ namespace Components
         /// </summary>
         private async void SetCallback()
         {
+            Log();
             if (isBinded) return;
             try
             {
@@ -352,6 +391,7 @@ namespace Components
         /// <returns></returns>
         private async Task<bool> IsUserExist()
         {
+            Log();
             var response = await client.SafeGetAsync($"users/{UID}").ConfigureAwait(false);
             return response != null && response.Body != "null";
         }
@@ -362,10 +402,12 @@ namespace Components
         /// <returns></returns>
         public async Task<User> RegisterUser()
         {
+            Log();
             if (!BindDatabase) return new User();
             var exist = await IsUserExist().ConfigureAwait(false);
             if (!exist)
             {
+                Log("Registering data for first time");
                 var user = new User();
                 SetCommonUserInfo(user);
                 this.user = user;
@@ -380,6 +422,7 @@ namespace Components
         /// <returns></returns>
         public async Task RemoveUser()
         {
+            Log();
             await client.SafeDeleteAsync($"users/{UID}").ConfigureAwait(false);
             await RegisterUser().ConfigureAwait(false);
         }
@@ -395,6 +438,7 @@ namespace Components
 
         public async Task<List<Device>?> GetDeviceListAsync()
         {
+            Log();
             if (!BindDatabase) return new List<Device>();
 
             if (await SetGlobalUserTask(true).ConfigureAwait(false))
@@ -405,6 +449,7 @@ namespace Components
 
         public async Task<List<Device>> RemoveDevice(string DeviceId)
         {
+            Log($"Device Id: {DeviceId}");
             if (!BindDatabase) return new List<Device>();
 
             if (await SetGlobalUserTask(true).ConfigureAwait(false))
@@ -425,10 +470,12 @@ namespace Components
         /// <returns></returns>
         public async Task AddClip(string? Text)
         {
+            Log();
             // If some add operation is going, we will add it to stack.
             if (isPreviousAddRemaining && Text != null)
             {
                 addStack.Add(Text);
+                Log($"Adding to addStack: {addStack.Count}");
                 return;
             }
             isPreviousAddRemaining = true;
@@ -453,6 +500,8 @@ namespace Components
                 addStack.Clear();
 
                 await client.SafeUpdateAsync($"users/{UID}", user).ConfigureAwait(false);
+                
+                Log("Completed");
             }
             isPreviousAddRemaining = false;
         }
@@ -476,10 +525,12 @@ namespace Components
         /// <returns></returns>
         public async Task RemoveClip(string? Text)
         {
+            Log();
             // If some remove operation is going, we will add it to stack.
             if (isPreviousRemoveRemaining && Text != null)
             {
                 removeStack.Add(Text);
+                Log($"Adding to removeStack: {removeStack.Count}");
                 return;
             }
 
@@ -501,6 +552,8 @@ namespace Components
                     await client.SafeUpdateAsync($"users/{UID}", user).ConfigureAwait(false);
 
                 removeStack.Clear();
+
+                Log("Completed");
             }
             isPreviousRemoveRemaining = false;
         }
@@ -512,6 +565,7 @@ namespace Components
         /// <returns></returns>
         public async Task RemoveAllClip()
         {
+            Log();
             if (await SetGlobalUserTask().ConfigureAwait(false))
             {
                 if (user.Clips == null)
@@ -530,10 +584,12 @@ namespace Components
         /// <returns></returns>
         public async Task UpdateData(string oldUnencryptedData, string newUnencryptedData)
         {
+            Log();
             // Adding new data to stack to save network calls.
             if (isPreviousUpdateRemaining)
             {
                 updateStack.Add(oldUnencryptedData, newUnencryptedData);
+                Log($"Adding to updateStack: {updateStack.Count}");
                 return;
             }
             isPreviousUpdateRemaining = true;
@@ -558,6 +614,8 @@ namespace Components
                 updateStack.Clear();
 
                 await client.SafeUpdateAsync($"users/{UID}", user).ConfigureAwait(false);
+
+                Log("Completed");
             }
 
             isPreviousUpdateRemaining = false;

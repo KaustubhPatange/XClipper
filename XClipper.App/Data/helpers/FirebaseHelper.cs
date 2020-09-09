@@ -92,8 +92,9 @@ namespace Components
                         return await SafeUpdateAsync(client, path, data).ConfigureAwait(false);
                     }
                 }
-                CheckForUnauthorizedRequest(ex);
                 LogHelper.Log(typeof(FirebaseHelper), ex.StackTrace);
+                if (CheckForUnauthorizedRequest(ex))
+                    return CreateUnAuthorizedException();
             }
             return null;
         }
@@ -124,6 +125,7 @@ namespace Components
                     }
                 }
                 CheckForUnauthorizedRequest(ex);
+
                 LogHelper.Log(typeof(FirebaseHelper), ex.StackTrace);
             }
             return null;
@@ -153,8 +155,9 @@ namespace Components
                         return await SafeGetAsync(client, path).ConfigureAwait(false);
                     }
                 }
-                CheckForUnauthorizedRequest(ex);
                 LogHelper.Log(typeof(FirebaseHelper), ex.StackTrace);
+                if (CheckForUnauthorizedRequest(ex))
+                    return CreateUnAuthorizedException();
             }
             return null;
         }
@@ -183,8 +186,9 @@ namespace Components
                         return await SafeDeleteAsync(client, path).ConfigureAwait(false);
                     }
                 }
-                CheckForUnauthorizedRequest(ex);
                 LogHelper.Log(typeof(FirebaseHelper), ex.StackTrace);
+                if (CheckForUnauthorizedRequest(ex))
+                    return CreateUnAuthorizedException();
             }
             return null;
         }
@@ -194,17 +198,24 @@ namespace Components
         /// to sign in again with proper account.
         /// </summary>
         /// <param name="ex"></param>
-        private static void CheckForUnauthorizedRequest(Exception ex)
+        private static bool CheckForUnauthorizedRequest(Exception ex)
         {
             if (ex.Message.Contains("Unauthorized request."))
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     RemoveFirebaseCredentials();
-                MsgBoxHelper.ShowError(Translation.MSG_WRONG_SIGNIN);
-                    FirebaseSingleton.GetInstance.InitConfig(FirebaseCurrent);
-                });  
+                    MsgBoxHelper.ShowError(Translation.MSG_WRONG_SIGNIN);
+                    //FirebaseSingleton.GetInstance.InitConfig(FirebaseCurrent);
+                });
+                return true;
             }
+            return false;
+        }
+
+        private static FirebaseResponse CreateUnAuthorizedException()
+        {
+            return new FirebaseResponse("error", System.Net.HttpStatusCode.Unauthorized);
         }
 
         #endregion

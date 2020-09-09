@@ -28,7 +28,7 @@ class Main : AppCompatActivity(), KodeinAware {
     private val viewModelFactory by instance<MainViewModelFactory>()
     private val preferenceProvider by instance<PreferenceProvider>()
 
-    var isDarkTheme = true
+    private var isDarkTheme = true
 
     private lateinit var mainViewModel: MainViewModel
     private lateinit var updateHelper: UpdateHelper
