@@ -179,6 +179,9 @@
     <Compile Include="Controls\Dialog\InputDialog.xaml.cs">
       <DependentUpon>InputDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\UpgradeTipItem.xaml.cs">
+      <DependentUpon>UpgradeTipItem.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Data\Converters\ActivateButtonConverter.cs" />
     <Compile Include="Data\Converters\FileVisibilityConverter.cs" />
     <Compile Include="Data\Converters\ImageQRConverter.cs" />
@@ -305,6 +308,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Controls\Dialog\InputDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\UpgradeTipItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

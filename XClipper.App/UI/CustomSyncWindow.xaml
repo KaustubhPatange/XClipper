@@ -81,12 +81,13 @@
             </TabItem>
 
             <TabItem Header="{DynamicResource settings_auth}">
-                <StackPanel Orientation="Vertical">
+                <StackPanel IsEnabled="{Binding Path=(local:DefaultSettings.IsPurchaseDone)}" Orientation="Vertical">
                     <CheckBox
                         Name="_authNeeded"
                         Margin="10,10,10,7"
                         Content="{DynamicResource settings_ian}"
-                        IsChecked="{Binding IAN, UpdateSourceTrigger=PropertyChanged}" />
+                        IsChecked="{Binding IAN, UpdateSourceTrigger=PropertyChanged}"
+                        IsEnabled="{Binding Path=(local:DefaultSettings.IsPurchaseDone)}" />
 
                     <GroupBox Margin="3" IsEnabled="{Binding ElementName=_authNeeded, Path=IsChecked}">
                         <GroupBox.Header>
@@ -113,6 +114,8 @@
                             <TextBox Margin="0,5,0,0" Text="{Binding FMCI, UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>
                     </GroupBox>
+
+                    <control:UpgradeTipItem Margin="0,10,0,0" />
                 </StackPanel>
             </TabItem>
         </TabControl>

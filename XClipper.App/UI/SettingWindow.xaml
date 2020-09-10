@@ -39,7 +39,7 @@
                             Content="{DynamicResource settings_cau}"
                             Foreground="{c:Binding 'local:DefaultSettings.IsPurchaseDone ? media:Brushes.Black : media:Brushes.Gray'}"
                             IsChecked="{Binding CAU}"
-                            IsEnabled="{Binding Source={x:Static local:DefaultSettings.IsPurchaseDone}}" />
+                            IsEnabled="{Binding Path=(local:DefaultSettings.IsPurchaseDone)}" />
                         <CheckBox Content="{DynamicResource settings_sdcn}" IsChecked="{Binding SDCN}" />
                         <CheckBox Content="{DynamicResource settings_dsn}" IsChecked="{Binding DSN}" />
                         <Grid Margin="0,5,0,0" HorizontalAlignment="Stretch">
@@ -109,7 +109,7 @@
                                 DockPanel.Dock="Left"
                                 Foreground="{c:Binding 'local:DefaultSettings.IsPurchaseDone ? media:Brushes.Black : media:Brushes.Gray'}"
                                 IsChecked="{Binding ISDB, UpdateSourceTrigger=PropertyChanged}"
-                                IsEnabled="{x:Static local:DefaultSettings.IsPurchaseDone}" />
+                                IsEnabled="{Binding Path=(local:DefaultSettings.IsPurchaseDone)}" />
 
                             <TextBlock
                                 Margin="0,3,0,0"
@@ -229,26 +229,7 @@
                                 ItemValue="{Binding Path=(local:DefaultSettings.DatabaseMaxConnection)}"
                                 ToolTip="{DynamicResource settings_mcdt}" />
 
-                            <StackPanel
-                                Margin="0,10,0,0"
-                                HorizontalAlignment="Center"
-                                Orientation="Horizontal"
-                                Visibility="{Binding Path=(local:DefaultSettings.LicenseStrategy), Converter={x:Static local:LicenseTextConverter.Instance}}">
-                                <TextBlock
-                                    Margin="0,0,5,0"
-                                    FontSize="11"
-                                    FontWeight="Medium"
-                                    Foreground="Red"
-                                    Text="{DynamicResource settings_upgrade_license}" />
-                                <TextBlock>
-                                    <Hyperlink Command="{Binding PurchaseCommand}">
-                                        <TextBlock
-                                            VerticalAlignment="Top"
-                                            FontSize="11"
-                                            Text="{DynamicResource msg_learn}" />
-                                    </Hyperlink>
-                                </TextBlock>
-                            </StackPanel>
+                            <control:UpgradeTipItem Margin="0,10,0,0" />
 
                             <control:GroupSeparator Margin="0,10,0,0" Header="{DynamicResource settings_relate}" />
 
