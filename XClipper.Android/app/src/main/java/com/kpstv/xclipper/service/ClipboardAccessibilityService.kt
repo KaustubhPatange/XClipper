@@ -11,13 +11,14 @@ import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.EditText
 import androidx.lifecycle.MutableLiveData
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.kpstv.hvlog.HVLog
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.App.ACTION_INSERT_TEXT
 import com.kpstv.xclipper.App.ACTION_VIEW_CLOSE
 import com.kpstv.xclipper.App.EXTRA_SERVICE_TEXT
 import com.kpstv.xclipper.App.showSuggestion
 import com.kpstv.xclipper.data.provider.ClipboardProvider
-import com.kpstv.hvlog.HVLog
+import com.kpstv.xclipper.extensions.ConcatArrayList
 import com.kpstv.xclipper.extensions.logger
 import com.kpstv.xclipper.extensions.utils.FirebaseUtils
 import com.kpstv.xclipper.extensions.utils.KeyboardUtils.Companion.getKeyboardHeight
@@ -50,6 +51,7 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
     private lateinit var powerManager: PowerManager
 
     private var nodeInfo: AccessibilityNodeInfo? = null
+    private val eventList: ConcatArrayList<Int> = ConcatArrayList(4)
 
     /**
      * Indicates whether a screen is active for interaction or not.
@@ -80,6 +82,11 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
                     && event.currentItemIndex != -1)
         ) {
             if (event.className == EditText::class.java.name && event.scrollX != -1) return false
+            /** I don't know what Gmail is doing, but it cast it's EditText class as TextView
+             *  when someone is writing, due to which above event fails to exclude it.
+             *  This should protect his mistake.
+             */
+            if (eventList.any { it == AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED}) return false
             HVLog.d("Copy captured - 1")
             return true
         }
@@ -97,7 +104,8 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
                 ?.contains("copy") == true
                     || event.text?.toString()?.toLowerCase(Locale.ROOT)
                 ?.contains("copy") == true
-                    || event.contentDescription == "Cut")
+                    || event.contentDescription == "Cut"
+                    || event.contentDescription == "Copy")
         ) {
             HVLog.d("Copy captured - 2")
             return true
@@ -108,7 +116,10 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         currentPackage = event?.packageName
 
-        //  logger(TAG, "Event: $event")
+        logger(TAG, "Event: $event")
+
+        if (event?.eventType != null)
+            eventList.add(event.eventType)
 
         postKeyboardValue(getKeyboardHeight(applicationContext))
 

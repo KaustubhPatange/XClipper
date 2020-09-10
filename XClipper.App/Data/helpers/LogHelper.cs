@@ -26,7 +26,7 @@ namespace Components
         public static void Log(object c, string? message = null)
         {
             var method = new StackTrace().GetFrame(2).GetMethod();
-            var currentMethodName = "";
+            string currentMethodName;
             if (method.DeclaringType.Name.Contains("<"))
                 currentMethodName = Regex.Match(method.DeclaringType.Name, "([A-Z])\\w+").Value;
             else currentMethodName = method.ToString();
@@ -36,13 +36,10 @@ namespace Components
 
             using (StreamWriter writer = new StreamWriter(LOG_FILE, true))
             {
-                writer.Write($"[{DateTime.Now.ToFormattedDateTime()}] [{c}] [{currentMethodName}] - " + message + "\n");
+                writer.Write($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.SSS}] [{c}] [{currentMethodName}] - " + message + "\n");
                 writer.Flush();
                 writer.Close();
             }
         }
-        //currentMethodName	{Void InitConfig(Components.FirebaseData)}	System.Reflection.MethodBase {System.Reflection.RuntimeMethodInfo}
-        // currentMethodName	{Void MoveNext()}	System.Reflection.MethodBase {System.Reflection.RuntimeMethodInfo}
-        // ((System.Reflection.RuntimeMethodInfo)currentMethodName).DeclaringType	{Name = "<CreateNewClient>d__25" FullName = "Components.FirebaseSingleton+<CreateNewClient>d__25"}	System.Type {System.RuntimeType}
     }
 }

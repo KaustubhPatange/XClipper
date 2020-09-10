@@ -281,7 +281,7 @@ namespace Components
             {
                 MsgBoxHelper.ShowError(Translation.MSG_FIREBASE_CLIENT_ERR);
                 //clearAwaitedGlobalUserTask();
-
+                
                 // todo: Do something when client isn't initialized
                 /* 
                  * We can implement a call stack to this, all you need to do is to make

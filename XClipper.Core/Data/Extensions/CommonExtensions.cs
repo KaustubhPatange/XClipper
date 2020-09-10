@@ -55,7 +55,7 @@ namespace Components
         }
 
         /// <summary>
-        /// Calls <see cref="ToFormattedDateTime(DateTime, bool)"/> with hyphens yyyy-MM--dd HH-mm-ss
+        /// Calls <see cref="ToFormattedDateTime(DateTime, bool)"/> with hyphens yyyy-MM-dd HH-mm-ss
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
