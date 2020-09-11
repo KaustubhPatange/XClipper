@@ -2,9 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item android:id="@+id/action_copy"
+    <item
+        android:id="@+id/action_open"
+        android:icon="@drawable/ic_link"
+        android:title="@string/open_link"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_copy"
         android:icon="@drawable/ic_copy_white"
         android:title="@string/copy_name"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom" />
 
 </menu>

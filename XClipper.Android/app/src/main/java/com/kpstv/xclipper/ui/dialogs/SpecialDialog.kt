@@ -56,11 +56,12 @@ class SpecialDialog : AppCompatActivity(), KodeinAware {
                     btn_ok.setOnClickListener { finish() }
 
                     SpecialHelper(
-                        context = context,
+                        context = this@SpecialDialog,
                         dictionaryApiHelper = dictionaryApiHelper,
                         tinyUrlApiHelper = tinyUrlApiHelper,
                         supportFragmentManager = supportFragmentManager,
-                        clip = clip
+                        clip = clip,
+                        isDialog = true
                     ).setActions(this) {
                         finish()
                     }

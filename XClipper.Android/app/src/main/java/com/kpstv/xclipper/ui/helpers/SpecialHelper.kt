@@ -38,7 +38,8 @@ class SpecialHelper(
     private val tinyUrlApiHelper: TinyUrlApiHelper,
     private val dictionaryApiHelper: DictionaryApiHelper,
     private val supportFragmentManager: FragmentManager,
-    private val clip: Clip
+    private val clip: Clip,
+    private val isDialog: Boolean = false
 ) {
     private val TAG = javaClass.simpleName
     private lateinit var adapter: MenuAdapter
@@ -58,7 +59,7 @@ class SpecialHelper(
 
         setForMap(this)
 
-        setShortenUrl(this)
+        setForUrl(this)
 
         setPhoneNumber(this)
 
@@ -250,7 +251,7 @@ class SpecialHelper(
 
 
     /** This will set one of the item as shorten url*/
-    private fun setShortenUrl(view: View) = with(view) {
+    private fun setForUrl(view: View) = with(view) {
 
         val urlData = clip.tags?.containsKey(ClipTag.URL.small())
 
@@ -286,30 +287,47 @@ class SpecialHelper(
 
                     /** Initiate creation of shorten url. */
                     tinyUrlApiHelper.createShortenUrl(data!!, ResponseListener(
-                        complete = {
+                        complete = { urlInfo ->
 
                             /** We've the shorten url. */
-                            dialog.setMessage(it.shortUrl)
+                            dialog.setMessage(urlInfo.shortUrl)
                                 .setIsProgressDialog(false)
                                 .setShowPositiveButton(true)
                                 .setToolbarMenu(R.menu.url_menu)
                                 .setToolbarMenuItemListener { item ->
-                                    if (item.itemId == R.id.action_copy) {
-
-                                        /** Set shorten url to clipboard */
-                                        val clipboardManager =
-                                            context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                                        clipboardManager.setPrimaryClip(
-                                            ClipData.newPlainText(
-                                                it.shortUrl,
-                                                it.shortUrl
+                                    when(item.itemId) {
+                                        R.id.action_copy -> {
+                                            /** Set shorten url to clipboard */
+                                            val clipboardManager =
+                                                context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                                            clipboardManager.setPrimaryClip(
+                                                ClipData.newPlainText(
+                                                    urlInfo.shortUrl,
+                                                    urlInfo.shortUrl
+                                                )
                                             )
-                                        )
 
-                                        Toasty.info(context, context.getString(R.string.ctc)).show()
+                                            Toasty.info(context, context.getString(R.string.ctc)).show()
 
-                                        /** Close the dialog box */
-                                        dialog.dismiss()
+                                            /** Close the dialog box */
+                                            dialog.dismiss()
+
+                                            if (isDialog)
+                                                onItemClick.invoke()
+                                        }
+                                        R.id.action_open -> {
+                                            val intent = Intent(Intent.ACTION_VIEW).apply {
+                                                setData(Uri.parse(urlInfo.shortUrl))
+                                            }
+
+                                            runAction(intent)
+
+                                            /** Close the dialog box */
+                                            dialog.dismiss()
+
+                                            if (isDialog)
+                                                onItemClick.invoke()
+                                        }
                                     }
                                     true
                                 }
@@ -321,12 +339,13 @@ class SpecialHelper(
                         }
                     ))
 
-                    /** Dismiss the dialog from this callback hell */
-                    onItemClick.invoke()
+                    if (!isDialog) {
+                        /** Dismiss if not a dialog */
+                        onItemClick.invoke()
+                    }
                 }
             )
         }
-
     }
 
     /** This will perform startActivity on intent  */
@@ -337,8 +356,8 @@ class SpecialHelper(
             Toasty.error(context, context.getString(R.string.err_action)).show()
         }
 
-        /** Dismiss the dialog from this callback hell */
-        onItemClick.invoke()
+        /** Dismiss the dialog from this callback hell *//*
+        onItemClick.invoke()*/ // TODO: Undo this
     }
 
     /**

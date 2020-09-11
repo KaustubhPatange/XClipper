@@ -63,29 +63,8 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/bsm_recyclerView"
+        android:overScrollMode="never"
         tools:listitem="@layout/item_special"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-
-    <!--<com.google.android.material.button.MaterialButton
-        style="@style/CustomButtonStyle"
-        android:background="?selectableItemBackground"
-        android:drawableLeft="@drawable/ic_search"
-        android:text="text" />
-    <com.google.android.material.button.MaterialButton
-        style="@style/CustomButtonStyle"
-        android:background="?selectableItemBackground"
-        android:drawableLeft="@drawable/ic_search"
-        android:text="text" />
-    <com.google.android.material.button.MaterialButton
-        style="@style/CustomButtonStyle"
-        android:background="?selectableItemBackground"
-        android:drawableLeft="@drawable/ic_search"
-        android:text="text" />
-    <com.google.android.material.button.MaterialButton
-        style="@style/CustomButtonStyle"
-        android:background="?selectableItemBackground"
-        android:drawableLeft="@drawable/ic_search"
-        android:text="text" />-->
-
 </LinearLayout>
