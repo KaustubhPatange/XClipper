@@ -131,14 +131,19 @@ namespace Components
             else return data.ResultAs<User>();//.Also((user) => { this.user = user; });
         }
 
-        private void SetCommonUserInfo(User user)
+        private async Task SetCommonUserInfo(User user)
         {
             Log($"User null? {user == null}");
+            var originallyLicensed = user.IsLicensed;
+
             // todo: Set some other details for user...
             user.MaxItemStorage = DatabaseMaxItem;
             user.TotalConnection = DatabaseMaxConnection;
             user.IsLicensed = IsPurchaseDone;
             user.LicenseStrategy = LicenseStrategy;
+
+            if (originallyLicensed != IsPurchaseDone)
+                await client.SafeUpdateAsync($"users/{UID}", user).ConfigureAwait(false);
         }
 
         private void CheckForDataRemoval(User? firebaseUser)

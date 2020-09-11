@@ -12,147 +12,154 @@
     xmlns:ui="clr-namespace:System.Windows;assembly=PresentationCore"
     Title="{DynamicResource sync_config_title}"
     Width="310"
-    Height="390"
     Icon="pack://application:,,,/Resources/clipboard.png"
     ResizeMode="NoResize"
+    SizeToContent="Height"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="auto" />
-        </Grid.RowDefinitions>
+    <StackPanel Orientation="Vertical">
+        <ProgressBar
+            Height="3"
+            BorderThickness="0"
+            IsIndeterminate="{Binding Path=(local:DefaultSettings.IsCheckingForLicense)}" />
+        <Grid Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
 
-        <TabControl Grid.Row="0">
-            <TabItem Header="{DynamicResource settings_general}">
-                <StackPanel Margin="10" Orientation="Vertical">
+            <TabControl Grid.Row="0">
+                <TabItem Header="{DynamicResource settings_general}">
+                    <StackPanel Margin="10" Orientation="Vertical">
 
-                    <StackPanel Margin="0,0,0,0" Orientation="Vertical">
-                        <TextBlock Text="Firebase Endpoint:" />
-                        <TextBox Margin="0,5,0,0" Text="{Binding FBE, UpdateSourceTrigger=PropertyChanged}" />
+                        <StackPanel Margin="0,0,0,0" Orientation="Vertical">
+                            <TextBlock Text="Firebase Endpoint:" />
+                            <TextBox Margin="0,5,0,0" Text="{Binding FBE, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+
+                        <StackPanel Margin="0,10,0,0" Orientation="Vertical">
+                            <TextBlock Text="Firebase App Id:" />
+                            <TextBox Margin="0,5,0,0" Text="{Binding FBAI, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+
+                        <StackPanel Margin="0,10,0,0" Orientation="Vertical">
+                            <TextBlock Text="Firebase API Key:" />
+                            <TextBox Margin="0,5,0,0" Text="{Binding FBAK, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                        <control:GroupSeparator Margin="0,10,0,0" Header="{DynamicResource settings_other}" />
+
+                        <DockPanel Margin="0,10,0,0" ToolTip="{DynamicResource sync_max_item_tooltip}">
+                            <TextBlock Text="{DynamicResource sync_max_item}" />
+                            <local:NumericTextBox
+                                Width="70"
+                                HorizontalAlignment="Right"
+                                local:NumericTextBoxProperties.MaxNumber="200"
+                                Text="{Binding DMI, UpdateSourceTrigger=PropertyChanged}"
+                                TextAlignment="Center" />
+                        </DockPanel>
+
+                        <DockPanel Margin="0,5,0,0" ToolTip="{DynamicResource sync_max_item_length_tooltip}">
+                            <TextBlock Text="{DynamicResource sync_max_item_length}" />
+                            <local:NumericTextBox
+                                Width="70"
+                                HorizontalAlignment="Right"
+                                local:NumericTextBoxProperties.MaxNumber="10000"
+                                Text="{Binding DMIL, UpdateSourceTrigger=PropertyChanged}"
+                                TextAlignment="Center" />
+                        </DockPanel>
+
+                        <DockPanel Margin="0,5,0,0">
+                            <TextBlock Text="{DynamicResource sync_max_device}" />
+                            <local:NumericTextBox
+                                Width="50"
+                                HorizontalAlignment="Right"
+                                Text="{Binding DMC, UpdateSourceTrigger=PropertyChanged}"
+                                TextAlignment="Center" />
+                        </DockPanel>
+                        <TextBlock
+                            Margin="0,10,0,0"
+                            FontSize="10"
+                            FontWeight="Medium"
+                            Foreground="{Binding UID, Converter={x:Static local:SyncIdForegroundConverter.Instance}, UpdateSourceTrigger=PropertyChanged}"
+                            Text="{Binding UID, Converter={x:Static local:SyncIdTextConverter.Instance}, UpdateSourceTrigger=PropertyChanged}" />
                     </StackPanel>
+                </TabItem>
 
-                    <StackPanel Margin="0,10,0,0" Orientation="Vertical">
-                        <TextBlock Text="Firebase App Id:" />
-                        <TextBox Margin="0,5,0,0" Text="{Binding FBAI, UpdateSourceTrigger=PropertyChanged}" />
-                    </StackPanel>
+                <TabItem Header="{DynamicResource settings_auth}">
+                    <StackPanel IsEnabled="{Binding Path=(local:DefaultSettings.IsPurchaseDone)}" Orientation="Vertical">
 
-                    <StackPanel Margin="0,10,0,0" Orientation="Vertical">
-                        <TextBlock Text="Firebase API Key:" />
-                        <TextBox Margin="0,5,0,0" Text="{Binding FBAK, UpdateSourceTrigger=PropertyChanged}" />
-                    </StackPanel>
-                    <control:GroupSeparator Margin="0,10,0,0" Header="{DynamicResource settings_other}" />
+                        <CheckBox
+                            Name="_authNeeded"
+                            Margin="10,10,10,7"
+                            Content="{DynamicResource settings_ian}"
+                            IsChecked="{Binding IAN, UpdateSourceTrigger=PropertyChanged}"
+                            IsEnabled="{Binding Path=(local:DefaultSettings.IsPurchaseDone)}" />
 
-                    <DockPanel Margin="0,10,0,0" ToolTip="{DynamicResource sync_max_item_tooltip}">
-                        <TextBlock Text="{DynamicResource sync_max_item}" />
-                        <local:NumericTextBox
-                            Width="70"
-                            HorizontalAlignment="Right"
-                            local:NumericTextBoxProperties.MaxNumber="200"
-                            Text="{Binding DMI, UpdateSourceTrigger=PropertyChanged}"
-                            TextAlignment="Center" />
-                    </DockPanel>
+                        <GroupBox Margin="3" IsEnabled="{Binding ElementName=_authNeeded, Path=IsChecked}">
+                            <GroupBox.Header>
+                                <TextBlock Foreground="{Binding IAN, Converter={x:Static local:TextForegroundConverter.Instance}}" Text="Desktop" />
+                            </GroupBox.Header>
+                            <StackPanel Margin="10" Orientation="Vertical">
+                                <StackPanel Margin="0,0,0,0" Orientation="Vertical">
+                                    <TextBlock Foreground="{Binding IAN, Converter={x:Static local:TextForegroundConverter.Instance}}" Text="Client Id:" />
+                                    <TextBox Margin="0,5,0,0" Text="{Binding FDCI, UpdateSourceTrigger=PropertyChanged}" />
+                                </StackPanel>
+                                <StackPanel Margin="0,10,0,0" Orientation="Vertical">
+                                    <TextBlock Foreground="{Binding IAN, Converter={x:Static local:TextForegroundConverter.Instance}}" Text="Client Secret:" />
+                                    <TextBox Margin="0,5,0,0" Text="{Binding FDCS, UpdateSourceTrigger=PropertyChanged}" />
+                                </StackPanel>
+                            </StackPanel>
+                        </GroupBox>
 
-                    <DockPanel Margin="0,5,0,0" ToolTip="{DynamicResource sync_max_item_length_tooltip}">
-                        <TextBlock Text="{DynamicResource sync_max_item_length}" />
-                        <local:NumericTextBox
-                            Width="70"
-                            HorizontalAlignment="Right"
-                            local:NumericTextBoxProperties.MaxNumber="10000"
-                            Text="{Binding DMIL, UpdateSourceTrigger=PropertyChanged}"
-                            TextAlignment="Center" />
-                    </DockPanel>
-
-                    <DockPanel Margin="0,5,0,0">
-                        <TextBlock Text="{DynamicResource sync_max_device}" />
-                        <local:NumericTextBox
-                            Width="50"
-                            HorizontalAlignment="Right"
-                            Text="{Binding DMC, UpdateSourceTrigger=PropertyChanged}"
-                            TextAlignment="Center" />
-                    </DockPanel>
-                    <TextBlock
-                        Margin="0,10,0,0"
-                        FontSize="10"
-                        FontWeight="Medium"
-                        Foreground="{Binding UID, Converter={x:Static local:SyncIdForegroundConverter.Instance}, UpdateSourceTrigger=PropertyChanged}"
-                        Text="{Binding UID, Converter={x:Static local:SyncIdTextConverter.Instance}, UpdateSourceTrigger=PropertyChanged}" />
-                </StackPanel>
-            </TabItem>
-
-            <TabItem Header="{DynamicResource settings_auth}">
-                <StackPanel IsEnabled="{Binding Path=(local:DefaultSettings.IsPurchaseDone)}" Orientation="Vertical">
-                    <CheckBox
-                        Name="_authNeeded"
-                        Margin="10,10,10,7"
-                        Content="{DynamicResource settings_ian}"
-                        IsChecked="{Binding IAN, UpdateSourceTrigger=PropertyChanged}"
-                        IsEnabled="{Binding Path=(local:DefaultSettings.IsPurchaseDone)}" />
-
-                    <GroupBox Margin="3" IsEnabled="{Binding ElementName=_authNeeded, Path=IsChecked}">
-                        <GroupBox.Header>
-                            <TextBlock Foreground="{Binding IAN, Converter={x:Static local:TextForegroundConverter.Instance}}" Text="Desktop" />
-                        </GroupBox.Header>
-                        <StackPanel Margin="10" Orientation="Vertical">
-                            <StackPanel Margin="0,0,0,0" Orientation="Vertical">
+                        <GroupBox Margin="3" IsEnabled="{Binding ElementName=_authNeeded, Path=IsChecked}">
+                            <GroupBox.Header>
+                                <TextBlock Foreground="{Binding IAN, Converter={x:Static local:TextForegroundConverter.Instance}}" Text="Mobile" />
+                            </GroupBox.Header>
+                            <StackPanel Margin="10" Orientation="Vertical">
                                 <TextBlock Foreground="{Binding IAN, Converter={x:Static local:TextForegroundConverter.Instance}}" Text="Client Id:" />
-                                <TextBox Margin="0,5,0,0" Text="{Binding FDCI, UpdateSourceTrigger=PropertyChanged}" />
+                                <TextBox Margin="0,5,0,0" Text="{Binding FMCI, UpdateSourceTrigger=PropertyChanged}" />
                             </StackPanel>
-                            <StackPanel Margin="0,10,0,0" Orientation="Vertical">
-                                <TextBlock Foreground="{Binding IAN, Converter={x:Static local:TextForegroundConverter.Instance}}" Text="Client Secret:" />
-                                <TextBox Margin="0,5,0,0" Text="{Binding FDCS, UpdateSourceTrigger=PropertyChanged}" />
-                            </StackPanel>
-                        </StackPanel>
-                    </GroupBox>
+                        </GroupBox>
 
-                    <GroupBox Margin="3" IsEnabled="{Binding ElementName=_authNeeded, Path=IsChecked}">
-                        <GroupBox.Header>
-                            <TextBlock Foreground="{Binding IAN, Converter={x:Static local:TextForegroundConverter.Instance}}" Text="Mobile" />
-                        </GroupBox.Header>
-                        <StackPanel Margin="10" Orientation="Vertical">
-                            <TextBlock Foreground="{Binding IAN, Converter={x:Static local:TextForegroundConverter.Instance}}" Text="Client Id:" />
-                            <TextBox Margin="0,5,0,0" Text="{Binding FMCI, UpdateSourceTrigger=PropertyChanged}" />
-                        </StackPanel>
-                    </GroupBox>
+                        <control:UpgradeTipItem Margin="0,10,0,10" />
+                    </StackPanel>
+                </TabItem>
+            </TabControl>
 
-                    <control:UpgradeTipItem Margin="0,10,0,0" />
-                </StackPanel>
-            </TabItem>
-        </TabControl>
-
-        <StackPanel
-            Grid.Row="1"
-            Margin="10"
-            Orientation="Vertical">
-            <DockPanel Margin="0,0,0,0">
-                <Button
-                    Width="22"
-                    Height="22"
-                    Margin="5,0,0,0"
-                    Padding="3"
-                    HorizontalAlignment="Left"
-                    Command="{Binding ExportCommand}"
-                    IsEnabled="{Binding ResetEnabled}"
-                    ToolTip="{DynamicResource sync_export}">
-                    <Image Source="pack://application:,,,/Resources/export.png" />
-                </Button>
-                <Button
-                    Width="22"
-                    Height="22"
-                    Margin="5,0,0,0"
-                    Padding="3"
-                    HorizontalAlignment="Left"
-                    Command="{Binding ImportCommand}"
-                    ToolTip="{DynamicResource sync_import}">
-                    <Image Source="pack://application:,,,/Resources/import.png" />
-                </Button>
-                <Button
-                    Width="70"
-                    Height="22"
-                    HorizontalAlignment="Right"
-                    Command="{Binding SaveCommand}"
-                    Content="{DynamicResource settings_save_btn}" />
-            </DockPanel>
-        </StackPanel>
-    </Grid>
+            <StackPanel
+                Grid.Row="1"
+                Margin="10"
+                Orientation="Vertical">
+                <DockPanel Margin="0,0,0,0">
+                    <Button
+                        Width="22"
+                        Height="22"
+                        Margin="5,0,0,0"
+                        Padding="3"
+                        HorizontalAlignment="Left"
+                        Command="{Binding ExportCommand}"
+                        IsEnabled="{Binding EE}"
+                        ToolTip="{DynamicResource sync_export}">
+                        <Image Source="pack://application:,,,/Resources/export.png" />
+                    </Button>
+                    <Button
+                        Width="22"
+                        Height="22"
+                        Margin="5,0,0,0"
+                        Padding="3"
+                        HorizontalAlignment="Left"
+                        Command="{Binding ImportCommand}"
+                        ToolTip="{DynamicResource sync_import}">
+                        <Image Source="pack://application:,,,/Resources/import.png" />
+                    </Button>
+                    <Button
+                        Width="70"
+                        Height="22"
+                        HorizontalAlignment="Right"
+                        Command="{Binding SaveCommand}"
+                        Content="{DynamicResource settings_save_btn}" />
+                </DockPanel>
+            </StackPanel>
+        </Grid>
+    </StackPanel>
 </local:CustomHelpWindow>

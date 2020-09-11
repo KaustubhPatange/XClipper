@@ -62,7 +62,8 @@
     <system:String x:Key="settings_apply_btn">Apply</system:String>
     <system:String x:Key="settings_reset">Settings Reset complete! If it didn't try restarting the application</system:String>
     <system:String x:Key="settings_save">Settings applied! If it didn't try restarting the application</system:String>
-    <system:String x:Key="settings_fb_password">This will delete all existing data on firebase (if exist) since migration operations are costly</system:String>
+    <system:String x:Key="settings_save_warning">Some settings didn't apply correctly! Try to enable them again.</system:String>
+    <system:String x:Key="settings_fb_password">This will delete all existing data on firebase (if exist) since migration operations are costly.</system:String>
     <system:String x:Key="filter_header">Filter</system:String>
     <system:String x:Key="filter_title">Filter Items by:</system:String>
     <system:String x:Key="filter_index">Filter Index</system:String>
@@ -151,7 +152,7 @@
     <system:String x:Key="sync_max_item_length_tooltip">Cannot be greater than 10000</system:String>
     <system:String x:Key="sync_max_device">Maximum number of concurrent device</system:String>
     <system:String x:Key="sync_import">Import configuration</system:String>
-    <system:String x:Key="sync_import_success">Configuration imported successfully. Click &quot;Save&quot; to apply it.</system:String>
+    <system:String x:Key="sync_import_success">Configuration imported successfully. Do you want to apply this configuration?</system:String>
     <system:String x:Key="sync_import_err">Not a valid configuration file</system:String>
     <system:String x:Key="sync_import_err2">The password you enter is not a valid one.</system:String>
     <system:String x:Key="sync_import_msg">Enter your end-to-end encryption password.</system:String>

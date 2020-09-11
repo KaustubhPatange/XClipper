@@ -27,16 +27,29 @@ namespace Components
                 FirebaseSingleton.GetInstance.BindUI(binder);
             if (BindDatabase)
             {
-                if (FirebaseCurrent == null)
+                if (!PerformSafetyChecks(doOnNoConfigurationFile: () =>
                 {
-                    var result = MessageBox.Show(Translation.SYNC_CONFIG_ERR, Translation.MSG_ERR, MessageBoxButton.YesNoCancel, MessageBoxImage.Error);
-                    if (result == MessageBoxResult.Yes)
-                        binder?.OnNoConfigurationFound();
-                    return;
-                }
+                    binder?.OnNoConfigurationFound();
+                })) return;
+
                 FirebaseSingleton.GetInstance.InitConfig(FirebaseCurrent);
             }
         }
+
+        public static bool PerformSafetyChecks(Action doOnNoConfigurationFile)
+        {
+            if (FirebaseCurrent == null)
+            {
+                var result = MessageBox.Show(Translation.SYNC_CONFIG_ERR, Translation.MSG_ERR, MessageBoxButton.YesNoCancel, MessageBoxImage.Error);
+                if (result == MessageBoxResult.Yes)
+                {
+                    doOnNoConfigurationFile?.Invoke();
+                }
+                return false;
+            }
+            return true;
+        }
+
         public static async Task<bool> RefreshAccessToken(FirebaseData? user)
         {
             if (user == null) return false;

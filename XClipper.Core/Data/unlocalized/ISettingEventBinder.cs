@@ -11,5 +11,6 @@ namespace Components
         void OnBuyButtonClicked();
         void OnConnectedDeviceClicked();
         void OnDataResetButtonClicked();
+        void OnNoConfigurationFound();
     }
 }

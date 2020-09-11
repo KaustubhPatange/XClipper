@@ -200,7 +200,7 @@ namespace Components
             BindDelete = BFD;
             SetAppStartupEntry();
 
-            ToggleBindDatabase();
+            var isBindApplied = ToggleBindDatabase();
 
             ToggleCustomPassword();
 
@@ -210,14 +210,26 @@ namespace Components
 
             WriteSettings();
 
-            MsgBoxHelper.ShowInfo(Translation.SETTINGS_SAVE);
+            if (!isBindApplied)
+                MsgBoxHelper.ShowWarning(Translation.SETTINGS_SAVE_WARNING);
+            else
+                MsgBoxHelper.ShowInfo(Translation.SETTINGS_SAVE);
         }
 
-        private void ToggleBindDatabase()
+        private bool ToggleBindDatabase()
         {
+            if (!FirebaseHelper.PerformSafetyChecks(doOnNoConfigurationFile: () => {
+                _settingbinder?.OnNoConfigurationFound();
+            }))
+            {
+                BindDatabase = BTD = false;
+                return false;
+            }
+
             BindDatabase = BTD;
             if (BindDatabase == BTD == true)
-                FirebaseSingleton.GetInstance.InitConfig();
+                FirebaseHelper.InitializeService();
+            return true;
         }
 
         /// <summary>

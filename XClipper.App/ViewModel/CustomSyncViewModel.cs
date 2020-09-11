@@ -12,18 +12,24 @@ using Microsoft.Win32;
 using System.Xml.Linq;
 using Components.Controls.Dialog;
 using System.Text;
+using Components.UI;
 
 namespace Components
 {
     public class CustomSyncViewModel : BaseViewModel
     {
-        public CustomSyncViewModel()
+        private ICustomSyncBinder binder;
+        public CustomSyncViewModel(ICustomSyncBinder binder)
         {
+            this.binder = binder;
+
             LoadDefaultConfigurations();
 
             SaveCommand = new RelayCommand(SaveButtonClicked);
             ImportCommand = new RelayCommand(ImportButtonClicked);
             ExportCommand = new RelayCommand(ExportButtonClicked);
+
+            CheckExportEnabled();
         }
 
         #region Actual Bindings
@@ -31,6 +37,7 @@ namespace Components
         public ICommand SaveCommand { get; set; }
         public ICommand ImportCommand { get; set; }
         public ICommand ExportCommand { get; set; }
+
         public string FBE { get; set; }
         public string FMCI { get; set; }
         public string FDCI { get; set; }
@@ -42,6 +49,7 @@ namespace Components
         public int DMIL { get; set; } 
         public int DMC { get; set; } 
         public bool IAN { get; set; }
+        public bool EE { get; set; } // Export enabled
 
         #endregion
 
@@ -90,9 +98,11 @@ namespace Components
                         // Remove existing firebase credentials
                         RemoveFirebaseCredentials();
 
-                        FirebaseSingleton.GetInstance.InitConfig();
+                        CheckExportEnabled();
 
-                        MsgBoxHelper.ShowInfo(Translation.SYNC_IMPORT_SUCCESS);
+                        var result = MessageBox.Show(Translation.SYNC_IMPORT_SUCCESS, Translation.MSG_INFO, MessageBoxButton.YesNo, MessageBoxImage.Information);
+                        if (result == MessageBoxResult.Yes)
+                            SaveButtonClicked();
                     }else
                         MsgBoxHelper.ShowError(Translation.SYNC_IMPORT_ERR2);
                     return;
@@ -144,48 +154,8 @@ namespace Components
             FirebaseHelper.InitializeService();
 
             MsgBoxHelper.ShowInfo(Translation.MSG_CONFIG_SAVE);
-        }
 
-        private void ResetButtonClicked()
-        {
-            if (File.Exists(CustomFirebasePath))
-            {
-                var result = MessageBox.Show(Translation.MSG_CONFIG_RESET, Translation.MSG_WARNING, MessageBoxButton.YesNo, MessageBoxImage.Warning);
-
-                if (result == MessageBoxResult.Yes)
-                {
-                  /*  if (FirebaseConfigurations.Count <= 0) // Make sure we don't fall under this method.
-                    {
-                        MsgBoxHelper.ShowError(Translation.MSG_UNKNOWN_ERR);
-                        return;
-                    }*/
-
-                    DMI = DatabaseMaxItem = FB_MAX_ITEM;
-                    DMC = DatabaseMaxConnection = FB_MAX_CONNECTION;
-                    DMIL = DatabaseMaxItemLength = FB_MAX_LENGTH;
-                    UID = UniqueID = UNIQUE_ID;
-
-                    FBE = FMCI = FDCI = FDCS = FBAI = FBAK = string.Empty;
-
-                    IAN = false;
-
-                    File.Delete(CustomFirebasePath);
-
-                    // Remove existing firebase credentials
-                    RemoveFirebaseCredentials();
-
-                    // Initialize with default config
-                  //  FirebaseHelper.InitializeService();
-                 //   FirebaseSingleton.GetInstance.InitConfig(FirebaseConfigurations[0]);
-
-                 //   checkForReset();
-
-                    // This will automatically load the default database encrypt password.
-                    LoadApplicationSetting();
-
-                    MsgBoxHelper.ShowInfo(Translation.MSG_CONFIG_RESET_SUCCESS);
-                }
-            }
+            binder.OnCloseWindow();
         }
 
         private void LoadDefaultConfigurations()
@@ -208,6 +178,11 @@ namespace Components
             DMC = DatabaseMaxConnection;
             DMIL = DatabaseMaxItemLength;
             UID = UniqueID;
+        }
+
+        private void CheckExportEnabled()
+        {
+            EE = File.Exists(CustomFirebasePath);
         }
 
         #endregion
