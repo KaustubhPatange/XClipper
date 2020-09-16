@@ -79,6 +79,14 @@ namespace Components
             LogHelper.Log(tag, message);
         }
 
+        private void ClearAllStack()
+        {
+            addStack.Clear(); isPreviousAddRemaining = false;
+            removeStack.Clear(); isPreviousRemoveRemaining = false;
+            globalUserStack.Clear(); isGlobalUserExecuting = false;
+            updateStack.Clear(); isPreviousUpdateRemaining = false;
+        }
+
         /// <summary>
         /// This will check if the access Token is valid or not. It will also 
         /// update the client with new access token.
@@ -189,6 +197,7 @@ namespace Components
                     BasePath = FirebaseCurrent.Endpoint
                 };
             }
+            if (client != null) client.Dispose();
             client = new FirebaseClient(config);
 
             await SetGlobalUserTask(true).ConfigureAwait(false);
@@ -219,6 +228,10 @@ namespace Components
                 return;
             }
             else FirebaseCurrent = data;
+
+            // Clearing stacks...
+            ClearAllStack();
+
             if (FirebaseCurrent != null)
             {
                 CreateCurrentQRData(); // Create QR data for settings window.

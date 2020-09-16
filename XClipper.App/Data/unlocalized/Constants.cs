@@ -85,5 +85,11 @@ namespace Components
         public const string PATH_CLIP_DATA = "/Clips/data";
 
         #endregion
+
+        #region Help links
+
+        public const string DATA_SYNCHRONIZATION = "https://github.com/KaustubhPatange/XClipper/wiki/Data-Synchronization";
+
+        #endregion
     }
 }

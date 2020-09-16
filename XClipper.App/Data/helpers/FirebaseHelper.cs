@@ -16,6 +16,7 @@ namespace Components
 {
     public static class FirebaseHelper
     {
+        private const int TIMEOUT = 10;
         /// <summary>
         /// This will initialize the client safely. It will report to the user in case of any issue.<br/><br/>
         /// It will create a new instance after verifying <see cref="BindDatabase"/><br/>
@@ -109,7 +110,7 @@ namespace Components
         {
             try
             {
-                var response = await client.UpdateAsync(path, data).ConfigureAwait(false);
+                var response = await client.UpdateAsync(path, data).TimeoutAfter(TimeSpan.FromSeconds(TIMEOUT)).ConfigureAwait(false);
                 return response;
             }
             catch (Exception ex)
@@ -122,7 +123,7 @@ namespace Components
                         return await SafeUpdateAsync(client, path, data).ConfigureAwait(false);
                     }
                 }
-                LogHelper.Log(typeof(FirebaseHelper), ex.StackTrace);
+                LogHelper.Log(typeof(FirebaseHelper), ex.Message + ex.StackTrace);
                 if (CheckForUnauthorizedRequest(ex))
                     return CreateUnAuthorizedException();
             }
@@ -141,7 +142,7 @@ namespace Components
         {
             try
             {
-                var response = await client.SetAsync(path, data).ConfigureAwait(false);
+                var response = await client.SetAsync(path, data).TimeoutAfter(TimeSpan.FromSeconds(TIMEOUT)).ConfigureAwait(false);
                 return response;
             }
             catch (Exception ex)
@@ -156,7 +157,7 @@ namespace Components
                 }
                 CheckForUnauthorizedRequest(ex);
 
-                LogHelper.Log(typeof(FirebaseHelper), ex.StackTrace);
+                LogHelper.Log(typeof(FirebaseHelper), ex.Message + ex.StackTrace);
             }
             return null;
         }
@@ -172,7 +173,7 @@ namespace Components
         {
             try
             {
-                var response = await client.GetAsync(path).ConfigureAwait(false);
+                var response = await client.GetAsync(path).TimeoutAfter(TimeSpan.FromSeconds(TIMEOUT)).ConfigureAwait(false);
                 return response;
             }
             catch (Exception ex)
@@ -185,7 +186,7 @@ namespace Components
                         return await SafeGetAsync(client, path).ConfigureAwait(false);
                     }
                 }
-                LogHelper.Log(typeof(FirebaseHelper), ex.StackTrace);
+                LogHelper.Log(typeof(FirebaseHelper), ex.Message + ex.StackTrace);
                 if (CheckForUnauthorizedRequest(ex))
                     return CreateUnAuthorizedException();
             }
@@ -203,7 +204,7 @@ namespace Components
         {
             try
             {
-                var response = await client.DeleteAsync(path).ConfigureAwait(false);
+                var response = await client.DeleteAsync(path).TimeoutAfter(TimeSpan.FromSeconds(TIMEOUT)).ConfigureAwait(false);
                 return response;
             }
             catch (Exception ex)
@@ -216,7 +217,7 @@ namespace Components
                         return await SafeDeleteAsync(client, path).ConfigureAwait(false);
                     }
                 }
-                LogHelper.Log(typeof(FirebaseHelper), ex.StackTrace);
+                LogHelper.Log(typeof(FirebaseHelper), ex.Message + ex.StackTrace);
                 if (CheckForUnauthorizedRequest(ex))
                     return CreateUnAuthorizedException();
             }
@@ -236,6 +237,7 @@ namespace Components
                 {
                     RemoveFirebaseCredentials();
                     MsgBoxHelper.ShowError(Translation.MSG_WRONG_SIGNIN);
+                    InitializeService();
                     //FirebaseSingleton.GetInstance.InitConfig(FirebaseCurrent);
                 });
                 return true;

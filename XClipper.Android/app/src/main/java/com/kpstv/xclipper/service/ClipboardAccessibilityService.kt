@@ -88,6 +88,7 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
              */
             if (eventList.any { it == AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED}) return false
             HVLog.d("Copy captured - 1")
+            eventList.clear()
             return true
         }
 
@@ -108,6 +109,7 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
                     || event.contentDescription == "Copy")
         ) {
             HVLog.d("Copy captured - 2")
+            eventList.clear()
             return true
         }
         return false
@@ -116,7 +118,7 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         currentPackage = event?.packageName
 
-        logger(TAG, "Event: $event")
+       // logger(TAG, "Event: $event")
 
         if (event?.eventType != null)
             eventList.add(event.eventType)

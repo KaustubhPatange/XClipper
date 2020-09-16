@@ -356,8 +356,8 @@ class SpecialHelper(
             Toasty.error(context, context.getString(R.string.err_action)).show()
         }
 
-        /** Dismiss the dialog from this callback hell *//*
-        onItemClick.invoke()*/ // TODO: Undo this
+        /** Dismiss the dialog from this callback hell */
+        onItemClick.invoke()
     }
 
     /**

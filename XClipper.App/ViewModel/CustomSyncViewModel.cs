@@ -45,9 +45,9 @@ namespace Components
         public string FBAK { get; set; }
         public string FBAI { get; set; }
         public string UID { get; set; } = UniqueID;
-        public int DMI { get; set; } 
-        public int DMIL { get; set; } 
-        public int DMC { get; set; } 
+        public int DMI { get; set; }
+        public int DMIL { get; set; }
+        public int DMC { get; set; }
         public bool IAN { get; set; }
         public bool EE { get; set; } // Export enabled
 
@@ -103,10 +103,12 @@ namespace Components
                         var result = MessageBox.Show(Translation.SYNC_IMPORT_SUCCESS, Translation.MSG_INFO, MessageBoxButton.YesNo, MessageBoxImage.Information);
                         if (result == MessageBoxResult.Yes)
                             SaveButtonClicked();
-                    }else
+                    }
+                    else
                         MsgBoxHelper.ShowError(Translation.SYNC_IMPORT_ERR2);
                     return;
-                }catch { }
+                }
+                catch { }
 
                 MsgBoxHelper.ShowError(Translation.SYNC_IMPORT_ERR);
             }
@@ -115,8 +117,12 @@ namespace Components
 
         private void SaveButtonClicked()
         {
-            if (string.IsNullOrWhiteSpace(FBE) || string.IsNullOrWhiteSpace(FBAK) || string.IsNullOrWhiteSpace(FBAI) ||
-                (IAN == string.IsNullOrWhiteSpace(FMCI) == string.IsNullOrWhiteSpace(FDCI) == string.IsNullOrWhiteSpace(FDCS)))
+            if (string.IsNullOrWhiteSpace(FBE) || string.IsNullOrWhiteSpace(FBAK) || string.IsNullOrWhiteSpace(FBAI))
+            {
+                MsgBoxHelper.ShowError(Translation.MSG_FIELD_EMPTY);
+                return;
+            }
+            if (IAN && (string.IsNullOrWhiteSpace(FMCI) || string.IsNullOrWhiteSpace(FDCI) || string.IsNullOrWhiteSpace(FDCS)))
             {
                 MsgBoxHelper.ShowError(Translation.MSG_FIELD_EMPTY);
                 return;

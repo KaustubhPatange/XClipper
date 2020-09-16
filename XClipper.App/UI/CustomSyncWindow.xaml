@@ -73,6 +73,7 @@
                             <local:NumericTextBox
                                 Width="50"
                                 HorizontalAlignment="Right"
+                                local:NumericTextBoxProperties.MaxNumber="10"
                                 Text="{Binding DMC, UpdateSourceTrigger=PropertyChanged}"
                                 TextAlignment="Center" />
                         </DockPanel>

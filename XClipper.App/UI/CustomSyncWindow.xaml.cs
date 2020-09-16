@@ -1,4 +1,7 @@
-﻿namespace Components.UI
+﻿using System.Diagnostics;
+using static Components.Constants;
+
+namespace Components.UI
 {
     public partial class CustomSyncWindow : CustomHelpWindow, ICustomSyncBinder
     {
@@ -16,7 +19,7 @@
 
         public override void OnHelpButtonClicked()
         {
-            // todo: Add link for Firebase help button.
+            Process.Start(DATA_SYNCHRONIZATION);
         }
     }
 
