@@ -4,8 +4,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using ClipboardManager.models;
-using static Components.LicenseHandler;
 using System;
 using static Components.Constants;
 using System.IO;
@@ -13,8 +11,6 @@ using System.Diagnostics;
 using System.Windows.Threading;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Components
 {
@@ -193,26 +189,6 @@ DEL ""%~f0""";
                 .EncryptBase64Common()
             };
             return true;
-        }
-
-        public static async Task<TResult> TimeoutAfter<TResult>(this Task<TResult> task, TimeSpan timeout, bool safeMode = false)
-        {
-            using (var timeoutCancellationTokenSource = new CancellationTokenSource())
-            {
-                var completedTask = await Task.WhenAny(task, Task.Delay(timeout, timeoutCancellationTokenSource.Token));
-                if (completedTask == task)
-                {
-                    timeoutCancellationTokenSource.Cancel();
-                    return await task;  // Very important in order to propagate exceptions
-                }
-                else
-                {
-                    if (!safeMode)
-                        throw new TimeoutException("The operation has timed out.");
-                    else LogHelper.Log("Unknown", "The operation has timed out safely.");
-                    return default;
-                }
-            }
         }
     }
 }

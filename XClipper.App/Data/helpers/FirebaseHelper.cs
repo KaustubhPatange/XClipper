@@ -16,7 +16,7 @@ namespace Components
 {
     public static class FirebaseHelper
     {
-        private const int TIMEOUT = 10;
+        private const int TIMEOUT = 40;
         /// <summary>
         /// This will initialize the client safely. It will report to the user in case of any issue.<br/><br/>
         /// It will create a new instance after verifying <see cref="BindDatabase"/><br/>
@@ -58,13 +58,20 @@ namespace Components
             client.Timeout = 30 * 1000;
             var request = new RestRequest(Method.POST);
             request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
-            IRestResponse response = await client.ExecuteTaskAsync(request).ConfigureAwait(false);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            try
             {
-                var jsonKeyPairs = JsonConvert.DeserializeObject<Dictionary<string, string>>(response.Content);
-                string access_token = jsonKeyPairs["access_token"];
-                HandleTokenDetails(access_token, FirebaseCredential.RefreshToken);
-                return true;
+                IRestResponse response = await client.ExecuteTaskAsync(request).TimeoutAfter(TimeSpan.FromSeconds(TIMEOUT)).ConfigureAwait(false);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    var jsonKeyPairs = JsonConvert.DeserializeObject<Dictionary<string, string>>(response.Content);
+                    string access_token = jsonKeyPairs["access_token"];
+                    HandleTokenDetails(access_token, FirebaseCredential.RefreshToken);
+                    return true;
+                }
+            }
+            catch(TimeoutException ex)
+            {
+                LogHelper.Log(typeof(FirebaseHelper), ex.Message + ex.StackTrace);
             }
             return false;
         }

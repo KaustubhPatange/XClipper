@@ -173,12 +173,10 @@ namespace Components
                 FBAK = FirebaseCurrent.ApiKey;
 
                 IAN = FirebaseCurrent.isAuthNeeded;
-                if (IAN)
-                {
-                    FDCI = FirebaseCurrent.DesktopAuth.ClientId;
-                    FDCS = FirebaseCurrent.DesktopAuth.ClientSecret;
-                    FMCI = FirebaseCurrent.MobileAuth.ClientId;
-                }
+
+                FDCI = FirebaseCurrent.DesktopAuth.ClientId;
+                FDCS = FirebaseCurrent.DesktopAuth.ClientSecret;
+                FMCI = FirebaseCurrent.MobileAuth.ClientId;
             }
             DMI = DatabaseMaxItem;
             DMC = DatabaseMaxConnection;

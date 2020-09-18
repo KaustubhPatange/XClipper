@@ -19,6 +19,7 @@ using System.Data.SqlTypes;
 using System.Windows.Forms;
 using System.Threading;
 using System.Diagnostics;
+using System.Configuration;
 
 #nullable enable
 
@@ -39,6 +40,8 @@ namespace Components
         private readonly List<string> removeStack = new List<string>();
         private readonly Dictionary<string, string> updateStack = new Dictionary<string, string>();
         private readonly List<object> globalUserStack = new List<object>();
+
+        private TimeSpan TIMEOUT_SPAN = TimeSpan.FromSeconds(15);
 
         private static FirebaseSingleton Instance;
         private IFirebaseClient client;
@@ -324,7 +327,7 @@ namespace Components
 
                 if (firebaseUser != null)
                 {
-                    SetCommonUserInfo(firebaseUser);
+                    await SetCommonUserInfo(firebaseUser).ConfigureAwait(false);
 
                     CheckForDataRemoval(firebaseUser);
 
