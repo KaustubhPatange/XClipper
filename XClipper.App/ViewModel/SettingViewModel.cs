@@ -218,7 +218,8 @@ namespace Components
 
         private bool ToggleBindDatabase()
         {
-            if (!FirebaseHelper.PerformSafetyChecks(doOnNoConfigurationFile: () => {
+            if (!FirebaseHelper.PerformSafetyChecks(doOnNoConfigurationFile: () =>
+            {
                 _settingbinder?.OnNoConfigurationFound();
             }))
             {

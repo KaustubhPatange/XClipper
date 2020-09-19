@@ -133,6 +133,7 @@
     <system:String x:Key="clip_cpl">Choose a paste location</system:String>
     <system:String x:Key="buy_unique">Unique Id</system:String>
     <system:String x:Key="buy_verify">Verify</system:String>
+    <system:String x:Key="buy_verify_tooltip">Use this option to validate license in-case automatic validation fails.</system:String>
     <system:String x:Key="buy_activation">Activation</system:String>
     <system:String x:Key="buy_tools">Tools</system:String>
     <system:String x:Key="buy_key">Key</system:String>

@@ -22,5 +22,9 @@ namespace Components
             return t;
         }
 
+        public static bool IsEmpty<T>(this List<T> t)
+        {
+            return t != null && t.Count == 0;
+        }
     }
 }

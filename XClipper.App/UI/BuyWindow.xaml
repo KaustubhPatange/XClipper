@@ -38,7 +38,8 @@
                         HorizontalAlignment="Right"
                         Command="{Binding VerifyCommand}"
                         Content="{DynamicResource buy_verify}"
-                        IsEnabled="{c:Binding !(local:DefaultSettings.IsCheckingForLicense)}" />
+                        IsEnabled="{c:Binding !(local:DefaultSettings.IsCheckingForLicense)}"
+                        ToolTip="{DynamicResource buy_verify_tooltip}" />
                 </StackPanel>
                 <StackPanel Margin="10,0,10,0">
                     <control:GroupSeparator Margin="0,10,0,0" Header="{DynamicResource buy_tools}" />
@@ -62,7 +63,7 @@
 
                                 <DockPanel Margin="0,15,0,5" HorizontalAlignment="Right">
                                     <TextBlock VerticalAlignment="Center">
-                                        <Hyperlink local:HyperlinkProperties.IsExternal="True">
+                                        <Hyperlink local:HyperlinkProperties.IsExternal="True" NavigateUri="{Binding Source={x:Static local:Constants.MANUAL_ACTIVATION}}">
                                             <TextBlock FontSize="11" Text="{DynamicResource buy_help}" />
                                         </Hyperlink>
                                     </TextBlock>

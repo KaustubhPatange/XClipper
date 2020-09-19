@@ -18,7 +18,7 @@ import com.kpstv.xclipper.App.ACTION_VIEW_CLOSE
 import com.kpstv.xclipper.App.EXTRA_SERVICE_TEXT
 import com.kpstv.xclipper.App.showSuggestion
 import com.kpstv.xclipper.data.provider.ClipboardProvider
-import com.kpstv.xclipper.extensions.ConcatArrayList
+import com.kpstv.xclipper.extensions.StripArrayList
 import com.kpstv.xclipper.extensions.logger
 import com.kpstv.xclipper.extensions.utils.FirebaseUtils
 import com.kpstv.xclipper.extensions.utils.KeyboardUtils.Companion.getKeyboardHeight
@@ -51,7 +51,7 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
     private lateinit var powerManager: PowerManager
 
     private var nodeInfo: AccessibilityNodeInfo? = null
-    private val eventList: ConcatArrayList<Int> = ConcatArrayList(4)
+    private val eventList: StripArrayList<Int> = StripArrayList(4)
 
     /**
      * Indicates whether a screen is active for interaction or not.
@@ -86,7 +86,7 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
              *  when someone is writing, due to which above event fails to exclude it.
              *  This should protect his mistake.
              */
-            if (eventList.any { it == AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED}) return false
+            if (eventList.any { it == AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED }) return false
             HVLog.d("Copy captured - 1")
             eventList.clear()
             return true
@@ -118,7 +118,7 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         currentPackage = event?.packageName
 
-       // logger(TAG, "Event: $event")
+        // logger(TAG, "Event: $event")
 
         if (event?.eventType != null)
             eventList.add(event.eventType)

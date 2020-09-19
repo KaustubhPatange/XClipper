@@ -91,7 +91,8 @@ namespace Components.viewModels
         }
         public void DeleteData(List<TableCopy> models)
         {
-            models.ForEach((model) => { DeleteClipData(model); });
+            DeleteClipData(models);
+            //models.ForEach((model) => { DeleteClipData(model); });
             Binder.OnModelDeleted(ClipData);
         }
         public void TogglePin(TableCopy model)
@@ -226,10 +227,7 @@ namespace Components.viewModels
             var decryptedText = EncryptedText.DecryptBase64(DatabaseEncryptPassword);
 
             bool dataExist = false;
-            if (IsSecureDB)
-                dataExist = dataDB.GetAllData().Exists(c => c.RawText.DecryptBase64(DatabaseEncryptPassword) == decryptedText);
-            else
-                dataExist = dataDB.GetAllData().Exists(c => c.RawText == decryptedText);
+            dataExist = dataDB.GetAllData().Exists(c => c.RawText == decryptedText);
             if (!dataExist)
             {
                 // Insert this data without updating online database.
@@ -252,20 +250,24 @@ namespace Components.viewModels
 
         #region DeleteData
 
+        /// <summary>
+        /// This will delete the clip based on matched RawText from local database.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
         public bool DeleteClipData(string? data)
         {
-           // TableCopy? item = null;
-            //if (IsSecureDB)
-            //    item = dataDB.GetAllData().Find(c => c.RawText.DecryptBase64(DatabaseEncryptPassword) == data);
-            //else
-            //    item = dataDB.GetAllData().Find(c => c.RawText == data);
-
             TableCopy item = dataDB.GetAllData().Find(c => c.RawText == data);
 
             if (item != null) DeleteClipData(item);
             return item != null;
         }
 
+        /// <summary>
+        /// This will delete item locally as well as from Firebase.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="fromFirebase"></param>
         public void DeleteClipData(TableCopy model, bool fromFirebase = true)
         {
             dataDB.Delete(model);
@@ -274,6 +276,23 @@ namespace Components.viewModels
                 FirebaseSingleton.GetInstance.RemoveClip(model?.ContentType == ContentType.Text ? model.RawText : null).RunAsync();
         }
 
+        /// <summary>
+        /// This will delete list of items locally as well as from Firebase.
+        /// </summary>
+        /// <param name="models"></param>
+        /// <param name="fromFirebase"></param>
+        public void DeleteClipData(List<TableCopy> models, bool fromFirebase = true)
+        {
+            dataDB.Delete(models);
+
+            if (fromFirebase)
+                FirebaseSingleton.GetInstance.RemoveClip(models.Select(c => c.RawText).ToList()).RunAsync();
+        }
+
+        /// <summary>
+        /// This will remove all data from database.
+        /// </summary>
+        /// <param name="fromFirebase"></param>
         public void DeleteAllData(bool fromFirebase = true)
         {
             dataDB.ClearAll<TableCopy>();

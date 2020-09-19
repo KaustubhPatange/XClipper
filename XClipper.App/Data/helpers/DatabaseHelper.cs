@@ -1,5 +1,6 @@
 ﻿using ClipboardManager.models;
 using SQLite;
+using SQLiteNetExtensions.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Windows.Documents;
@@ -24,6 +25,11 @@ namespace Components
         public void Delete(TableCopy model)
         {
             dataDB.Delete(model);
+        }
+
+        public void Delete(List<TableCopy> models)
+        {
+            dataDB.DeleteAll(models);
         }
 
         public void Insert(TableCopy model)

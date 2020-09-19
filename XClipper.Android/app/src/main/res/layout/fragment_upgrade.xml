@@ -11,22 +11,9 @@
         android:orientation="vertical">
 
         <com.kpstv.pricing.Card
-            android:id="@+id/standardCard"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardBackgroundColor="?colorForeground"
-            app:purchaseAmount="$12"
-            app:purchaseButtonColor="@color/palette4"
-            app:purchaseDescription="@string/standard_pricing"
-            app:purchaseType="Standard"
-            app:purchaseTypeColor="@color/palette3"
-            app:separatorColor="?background" />
-
-        <com.kpstv.pricing.Card
             android:id="@+id/premiumCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
             app:cardBackgroundColor="?colorForeground"
             app:purchaseAmount="$20"
             app:purchaseButtonColor="@color/palette4"

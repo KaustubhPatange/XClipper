@@ -30,14 +30,12 @@ class Upgrade : Fragment(R.layout.fragment_upgrade), KodeinAware {
         firebaseProvider.getLicenseStrategy().observe(viewLifecycleOwner, Observer { licenseType ->
             when (licenseType) {
                 LicenseType.Standard -> {
-                    standardCard.hide()
                     supportLayout.hide()
                 }
                 LicenseType.Invalid -> {
                     supportLayout.hide()
                 }
                 else -> {
-                    standardCard.hide()
                     premiumCard.hide()
                     supportLayout.show()
 
@@ -47,10 +45,6 @@ class Upgrade : Fragment(R.layout.fragment_upgrade), KodeinAware {
                 }
             }
         })
-
-        standardCard.setButtonClickListener {
-            launch(getString(R.string.app_website))
-        }
 
         premiumCard.setButtonClickListener {
             launch(getString(R.string.app_website))

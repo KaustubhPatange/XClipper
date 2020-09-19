@@ -17,9 +17,9 @@ namespace Components
             var request = new RestRequest();
             client.ExecuteAsync(request, (response) =>
             {
-                var updateInfo = JsonConvert.DeserializeObject<Update>(response.Content);
+                Update? updateInfo = JsonConvert.DeserializeObject<Update>(response.Content);
 
-                int version = updateInfo.Desktop.Version.Replace(".", "").ToInt(); // eg: 1001
+                int version = updateInfo?.Desktop.Version.Replace(".", "").ToInt() ?? 0; // eg: 1001
                 int appVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString().Replace(".", "").ToInt(); // eg: 1000
 
                 if (version > appVersion)

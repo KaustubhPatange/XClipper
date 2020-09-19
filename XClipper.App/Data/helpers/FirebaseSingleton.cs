@@ -587,6 +587,32 @@ namespace Components
             isPreviousRemoveRemaining = false;
         }
 
+        /// <summary>
+        /// Removes list of Clip item that matches input list of string items.
+        /// </summary>
+        /// <param name="items"></param>
+        /// <returns></returns>
+        public async Task RemoveClip(List<string> items)
+        {
+            Log();
+
+            if (await SetGlobalUserTask().ConfigureAwait(false))
+            {
+                if (items.IsEmpty()) return;
+                if (user.Clips == null) return;
+
+                var originalCount = items.Count;
+
+                foreach (var item in items)
+                    user.Clips.RemoveAll(c => c.data.DecryptBase64(DatabaseEncryptPassword) == item);
+
+                if (originalCount != user.Clips.Count)
+                    await client.SafeUpdateAsync($"users/{UID}", user).ConfigureAwait(false);
+
+                Log("Completed");
+            }
+        }
+
 
         /// <summary>
         /// Remove all clip data of user.
