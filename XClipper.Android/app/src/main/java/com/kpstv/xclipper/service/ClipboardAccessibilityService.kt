@@ -71,6 +71,27 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
     /** Some hacks I figured out which would trigger copy/cut for Android 10 */
     private fun supportedEventTypes(event: AccessibilityEvent?): Boolean {
         /**
+         * This second condition is a hack whenever someone clicks copy or cut context button,
+         * it detects this behaviour as copy.
+         *
+         * Disadvantages: Event TYPE_VIEW_CLICKED is fired whenever you touch on the screen,
+         * this means if there is a text which contains "copy" it's gonna consider that as a
+         * copy behaviour.
+         */
+        if (event?.eventType == AccessibilityEvent.TYPE_VIEW_CLICKED && event.text != null &&
+            (event.contentDescription?.toString()?.toLowerCase(Locale.ROOT)
+                ?.contains("copy") == true
+                    || event.text?.toString()?.toLowerCase(Locale.ROOT)
+                ?.contains("copy") == true
+                    || event.contentDescription == "Cut"
+                    || event.contentDescription == "Copy")
+        ) {
+            HVLog.d("Copy captured - 2")
+            eventList.clear()
+            return true
+        }
+
+        /**
          * This first condition will allow to capture text from an text selection,
          * whether on chrome or somewhere else.
          *
@@ -88,27 +109,6 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
              */
             if (eventList.any { it == AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED }) return false
             HVLog.d("Copy captured - 1")
-            eventList.clear()
-            return true
-        }
-
-        /**
-         * This second condition is a hack whenever someone clicks copy or cut context button,
-         * it detects this behaviour as copy.
-         *
-         * Disadvantages: Event TYPE_VIEW_CLICKED is fired whenever you touch on the screen,
-         * this means if there is a text which contains "copy" it's gonna consider that as a
-         * copy behaviour.
-         */
-        if (event?.eventType == AccessibilityEvent.TYPE_VIEW_CLICKED && event.text != null &&
-            (event.contentDescription?.toString()?.toLowerCase(Locale.ROOT)
-                ?.contains("copy") == true
-                    || event.text?.toString()?.toLowerCase(Locale.ROOT)
-                ?.contains("copy") == true
-                    || event.contentDescription == "Cut"
-                    || event.contentDescription == "Copy")
-        ) {
-            HVLog.d("Copy captured - 2")
             eventList.clear()
             return true
         }

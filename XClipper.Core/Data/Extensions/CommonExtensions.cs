@@ -42,7 +42,7 @@ namespace Components
         }
 
         /// <summary>
-        /// Creates a date format with yyyy-MM--dd HH-mm-ss if <paramref name="useHyphens"/> is true.<br/>
+        /// Creates a date format with yyyy-MM-dd HH-mm-ss if <paramref name="useHyphens"/> is true.<br/>
         /// Creates a date format with yyyyMMddHHmmss if <paramref name="useHyphens"/> is false.
         /// </summary>
         /// <param name="value"></param>
@@ -54,6 +54,16 @@ namespace Components
                 return value.ToString("yyyy-MM-dd HH-mm-ss");
             else
                 return value.ToString("yyyyMMddHHmmss");
+        }
+
+        /// <summary>
+        /// Returns the date with yyyy-MM-dd format.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static string ToFormattedDate(this DateTime value)
+        {
+            return value.ToString("yyyy-MM-dd");
         }
 
         /// <summary>

@@ -9,11 +9,13 @@
 
 **XClipper** is a clipboard manager 🔗 for Windows 💻 which helps to track clipboard activities and makes it easier to interact with them ❤️
 
-**_To download application click the icon from below_** 👇 **_for donated version, [click here](https://github.com/KaustubhPatange/XClipper/wiki/Purchasing-License)_**
-
 <!-- [![XClipper Website](https://img.shields.io/badge/XClipper-Site-blue.svg?style=for-the-badge&logo=windows)](https://kaustubhpatange.github.io/xclipper) -->
 
 <a href="https://kaustubhpatange.github.io/XClipper"><img width="120px" src="XClipper.Web/images/icon.png"/></a>
+
+**_To download desktop application click the above icon_** 👆. **_For Android application [visit here](/XClipper.Android)_**.
+
+<!-- - Reference for [Android application](/XClipper.Android). -->
 
 ## Features
 
@@ -29,6 +31,13 @@ Originally inspired from [Ditto](https://ditto-cp.sourceforge.io/) which offers 
 
 Since this project involves **license** system 📃 some of the source files has been ignored. [Read this guide]() in order to compile 🗃 the project.
 
+## Tutorials
+
+All of the individual documentation topics can be found in this repo's [wiki](https://github.com/KaustubhPatange/XClipper/wiki), following are some general topics which you might should take a look at!
+
+- [Introduction to XClipper - Basic usage](https://github.com/KaustubhPatange/XClipper/wiki/Introduction)
+- [Start synchronizing clipboard activity](https://github.com/KaustubhPatange/XClipper/wiki/Data-Synchronization)
+
 ## Built with 🛠
 
 - [Material Design](http://materialdesigninxaml.net/) - Toolkit to easily bring beautiful desktop applications to life, using a modern and popular design language.
@@ -42,6 +51,10 @@ Since this project involves **license** system 📃 some of the source files has
 - [Data Binding](https://docs.microsoft.com/en-us/dotnet/desktop-wpf/data/data-binding-overview)
   - [CalcBinding](https://github.com/Alex141/CalcBinding) - Aan advanced Binding markup extension that allows you to write calculated binding expressions in xaml, without custom converters
 - [SQLite-Net-Extension](https://bitbucket.org/twincoders/sqlite-net-extensions) - An extension to sqlite-net library.
+
+## Contributing
+
+If you want to contribute to this project, you're always welcome! [See Contributing Guidelines](/CONTRIBUTING.md).
 
 ## License
 

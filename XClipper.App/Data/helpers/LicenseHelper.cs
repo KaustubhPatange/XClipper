@@ -29,6 +29,12 @@ namespace Components
                     if (responseText != null)
                     {
                         var obj = JObject.Parse(responseText);
+
+                        if (obj["status"].ToString() == "error")
+                        {
+                            block?.Invoke(new InvalidLicenseException(obj["message"].ToString()));
+                            return;
+                        }
                         var uid = obj["data"]["applicationId"].ToString();
                         var type = obj["data"]["licenseType"].ToString().ToEnum<LicenseType>();
 
@@ -61,6 +67,24 @@ namespace Components
             }
             finally { }
             return null;
+        }
+    }
+
+    [Serializable]
+    public class InvalidLicenseException : Exception
+    {
+        public InvalidLicenseException(string message) : base(message)
+        { }
+
+        public InvalidLicenseException()
+        { }
+
+        public InvalidLicenseException(string message, Exception innerException) : base(message, innerException)
+        { }
+
+        protected InvalidLicenseException(System.Runtime.Serialization.SerializationInfo serializationInfo, System.Runtime.Serialization.StreamingContext streamingContext)
+        {
+            throw new NotImplementedException();
         }
     }
 }

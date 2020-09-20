@@ -111,6 +111,7 @@
     <system:String x:Key="msg_wrong_signin">Account credentials are not valid for this account. You need to sign-In again</system:String>
     <system:String x:Key="msg_unknown_err">An unknown error occurred. Report me if you get this message.</system:String>
     <system:String x:Key="msg_license_check">License validation is completed.</system:String>
+    <system:String x:Key="msg_license_check_err">No license is associated with this UID.</system:String>
     <system:String x:Key="msg_license_update" xml:space="preserve">Automatic updates are disabled (Upgrade to remove it).&#10;&#10;You need to manually install the update from website.</system:String>
     <system:String x:Key="popup_added">Added:</system:String>
     <system:String x:Key="popup_space_focus">...Press (Space) to Focus...</system:String>
@@ -143,6 +144,8 @@
     <system:String x:Key="buy_not_activate">Not Activated</system:String>
     <system:String x:Key="buy_license_success">Your order is created! Click OK to activate license.</system:String>
     <system:String x:Key="buy_license_exist">Your order already exist.</system:String>
+    <system:String x:Key="buy_migrate_title">Migration</system:String>
+    <system:String x:Key="buy_migrate">Migrate</system:String>
     <system:String x:Key="device_title">Connected Device</system:String>
     <system:String x:Key="device_disconnect">Disconnect</system:String>
     <system:String x:Key="sync_config_title">Firebase Configuration</system:String>

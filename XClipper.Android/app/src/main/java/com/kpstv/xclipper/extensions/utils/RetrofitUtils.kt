@@ -39,7 +39,7 @@ class RetrofitUtils(
         return httpBuilder
             ?: OkHttpClient.Builder()
                 .addInterceptor(interceptor)
-                // .addInterceptor(loggingInterceptor)  // TODO: Uncomment this interceptor when debugging
+                // .addInterceptor(loggingInterceptor)  // TODO: Uncomment this interceptor when needed for debugging
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
                 .also { httpBuilder = it }

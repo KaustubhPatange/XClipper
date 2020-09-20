@@ -73,7 +73,33 @@
                                         Margin="15,0,0,0"
                                         Command="{Binding ActivateCommand}"
                                         Content="{DynamicResource buy_activate}"
-                                        IsEnabled="{c:Binding '!IsProgressiveWork or !local:DefaultSettings.IsCheckingForLicense'}" />
+                                        IsEnabled="{c:Binding !(IsProgressiveWork or local:DefaultSettings.IsCheckingForLicense)}" />
+                                </DockPanel>
+
+                            </StackPanel>
+                        </TabItem>
+                        <TabItem Header="{DynamicResource buy_migrate_title}">
+                            <StackPanel Margin="5" Orientation="Vertical">
+
+                                <TextBlock Text="Transaction Id" />
+                                <TextBox Margin="0,5,0,0" Text="{Binding MTI, UpdateSourceTrigger=PropertyChanged}" />
+
+                                <TextBlock Margin="0,10,0,0" Text="Date of purchase" />
+                                <DatePicker Margin="0,5,0,0" SelectedDate="{Binding DOP, UpdateSourceTrigger=PropertyChanged}" />
+
+                                <DockPanel Margin="0,15,0,5" HorizontalAlignment="Right">
+                                    <TextBlock VerticalAlignment="Center">
+                                        <Hyperlink local:HyperlinkProperties.IsExternal="True" NavigateUri="{Binding Source={x:Static local:Constants.MIGRATION_GUIDE}}">
+                                            <TextBlock FontSize="11" Text="{DynamicResource buy_help}" />
+                                        </Hyperlink>
+                                    </TextBlock>
+                                    <Button
+                                        Width="80"
+                                        Height="22"
+                                        Margin="15,0,0,0"
+                                        Command="{Binding MigrateCommand}"
+                                        Content="{DynamicResource buy_migrate}"
+                                        IsEnabled="{c:Binding !(IsProgressiveWork or local:DefaultSettings.IsCheckingForLicense)}" />
                                 </DockPanel>
 
                             </StackPanel>

@@ -30,7 +30,7 @@ private object LibraryVersion {
     const val ACTIVITY = "1.2.0-alpha06"
     const val FRAGMENT = "1.2.5"
     const val WORK_MANAGER = "2.4.0"
-    const val HVLOG = "0.1-alpha02"
+    const val HVLOG = "0.1-alpha03"
 }
 
 object LibraryDependency {

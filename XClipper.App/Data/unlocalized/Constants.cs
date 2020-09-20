@@ -90,6 +90,7 @@ namespace Components
 
         public const string DATA_SYNCHRONIZATION = "https://github.com/KaustubhPatange/XClipper/wiki/Data-Synchronization";
         public const string MANUAL_ACTIVATION = "https://github.com/KaustubhPatange/XClipper/wiki/Manual-License-Activation";
+        public const string MIGRATION_GUIDE = "https://github.com/KaustubhPatange/XClipper/wiki/Migrating-License";
 
         #endregion
     }

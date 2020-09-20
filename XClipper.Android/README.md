@@ -1,8 +1,12 @@
-# XClipper
+# XClipper (Android)
 
-<!-- ## Compilation Guide
+> An android XClipper client to communicate with the desktop application to simulate the sharing of clipboard activity.
 
-Since this project involves a private payment system 📃 some of the source files has been ignored. Read this [guide](https://github.com/KaustubhPatange/Moviesy/wiki/Compilation-guide) in order to compile 🗃 the project. -->
+<a target="_blank" href="https://play.google.com/store/apps/details?id=com.kpstv.xclipper"><img width="175px" src="https://camo.githubusercontent.com/f9dc78b44989eb93046dee0cc745b113ae8f9c2c/68747470733a2f2f7777772e62696e672e636f6d2f74683f69643d4f49502e614b56796e464857494546775079454c6b416473775148614353267069643d4170692672733d31"/></a>
+
+## Compilation Guide
+
+Todo: Not yet implemented
 
 ## Built with 🛠
 
@@ -19,6 +23,7 @@ Since this project involves a private payment system 📃 some of the source fil
   - [Kodein](https://kodein.org/Kodein-DI/) - A simple Kotlin dependency retrieval container.
 - [Retrofit](https://square.github.io/retrofit/) - A type-safe HTTP client for Android and Java.
 - [Material Components for Android](https://github.com/material-components/material-components-android) - Modular and customizable Material Design UI components for Android.
+- [Firebase](https://firebase.google.com) - A suite of tools that helps you quickly develop high-quality apps.
 - [Gradle Kotlin DSL](https://docs.gradle.org/current/userguide/kotlin_dsl.html) - For writing Gradle build scripts using Kotlin.
 
 ## License

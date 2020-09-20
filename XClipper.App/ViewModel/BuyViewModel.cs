@@ -11,6 +11,8 @@ using static Components.Core;
 using RestSharp;
 using Autofac;
 using Newtonsoft.Json.Linq;
+using System.Windows.Controls;
+using System;
 
 namespace Components
 {
@@ -25,6 +27,7 @@ namespace Components
 
             VerifyCommand = new RelayCommand(VerificationMethod);
             ActivateCommand = new RelayCommand(ActivationMethod);
+            MigrateCommand = new RelayCommand(MigrationMethod);
         }
 
         #endregion
@@ -34,15 +37,59 @@ namespace Components
         public LicenseType LT { get; set; } = LicenseType.Invalid;
         public ICommand VerifyCommand { get; set; }
         public ICommand ActivateCommand { get; set; }
+        public ICommand MigrateCommand { get; set; }
         public string UID { get; private set; } = UniqueID;
         public string TI { get; set; }
+        /// <summary>
+        /// This Transaction Id is for migration tab.
+        /// </summary>
+        public string MTI { get; set; }
+        public DateTime DOP { get; set; } = DateTime.Today;
         public int PC { get; set; } = 0;
         public string KEY { get; set; }
         public bool IsProgressiveWork { get; set; } = false;
 
+
         #endregion
 
         #region Method Events
+
+        /// <summary>
+        /// Suppose you reinstall windows or somehow your UID changes, XClipper will not be able to activate your license.
+        /// In such case you can use this tool migrate existing UID with the current one. 
+        /// </summary>
+        private async void MigrationMethod()
+        {
+            if (string.IsNullOrWhiteSpace(MTI) || string.IsNullOrWhiteSpace(UID))
+            {
+                MsgBoxHelper.ShowWarning(Translation.MSG_FIELD_EMPTY);
+                return;
+            }
+            IsProgressiveWork = true;
+
+            var client = new RestClient(MIGRATION_SERVER(UID, MTI, DOP.ToFormattedDate()));
+            var response = await client.ExecuteTaskAsync(new RestRequest(Method.POST)).ConfigureAwait(true);
+            if (response.StatusCode != System.Net.HttpStatusCode.NotFound)
+            {
+                var obj = JObject.Parse(response.Content);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    switch (obj["status"].ToString())
+                    {
+                        case "success":
+                            //MsgBoxHelper.ShowInfo(obj["message"].ToString());
+                            VerificationMethod();
+                            break;
+                    }
+                }
+                else
+                    MsgBoxHelper.ShowError(obj["message"].ToString());
+            }
+            else
+                MsgBoxHelper.ShowError(Translation.MSG_UNKNOWN_ERR);
+
+            IsProgressiveWork = false;
+        }
 
         /// <summary>
         /// Verification method is same as License Checker from <see cref="ILicense.Initiate(System.Action{System.Exception?})"/><br/>
@@ -53,7 +100,10 @@ namespace Components
             var recorder = AppModule.Container.Resolve<ILicense>();
             recorder.Initiate((e) =>
             {
-                MsgBoxHelper.ShowInfo(Translation.MSG_LICENSE_CHECK);
+                if (e == null)
+                    MsgBoxHelper.ShowInfo(Translation.MSG_LICENSE_CHECK);
+                else 
+                    MsgBoxHelper.ShowError(Translation.MSG_LICENSE_CHECK_ERR);
             });
         }
 

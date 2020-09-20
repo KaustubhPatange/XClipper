@@ -112,6 +112,7 @@ namespace Components
 
             licenseService.Initiate(err =>
             {
+                if (err is InvalidLicenseException) return;
                 if (err != null)
                 {
                     MsgBoxHelper.ShowError(err.Message);

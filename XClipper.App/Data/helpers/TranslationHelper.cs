@@ -93,6 +93,7 @@ namespace Components
         public string MSG_WRONG_SIGNIN = rm.GetString("msg_wrong_signin");
         public string MSG_UNKNOWN_ERR = rm.GetString("msg_unknown_err");
         public string MSG_LICENSE_CHECK = rm.GetString("msg_license_check");
+        public string MSG_LICENSE_CHECK_ERR = rm.GetString("msg_license_check_err");
         public string MSG_LICENSE_UPDATE = rm.GetString("msg_license_update");
         public string POPUP_ADDED = rm.GetString("popup_added");
         public string POPUP_SPACE_FOCUS = rm.GetString("popup_space_focus");
