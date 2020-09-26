@@ -68,10 +68,6 @@ namespace Components
 
         #region Database Constants
 
-        public const int FB_MIN_ITEM = 5;
-        public const int FB_MIN_LENGTH = 1000;
-        public const int FB_MIN_CONNECTION = 1;
-
         public const int FB_MAX_ITEM = 20;
         public const int FB_MAX_LENGTH = 10000;
         public const int FB_MAX_CONNECTION = 5;

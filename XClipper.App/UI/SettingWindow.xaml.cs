@@ -1,10 +1,4 @@
-﻿using QRCoder;
-using System;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Windows;
-using System.Windows.Input;
-using System.Windows.Media.Imaging;
+﻿using System.Windows;
 
 namespace Components
 {

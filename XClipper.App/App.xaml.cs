@@ -442,7 +442,6 @@ namespace Components
 
         private void ActivateLicense()
         {
-            ActivatePaidFeatures();
             CheckForUpdates();
             UpdateSettingItem.Visible = true;
             FirebaseSingleton.GetInstance.UpdateConfigurations();

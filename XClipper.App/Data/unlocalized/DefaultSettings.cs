@@ -95,17 +95,17 @@ namespace Components
         /// <summary>
         /// Max number of item to store in database.
         /// </summary>
-        private static int _databaseMaxItem = FB_MIN_ITEM;
+        private static int _databaseMaxItem = FB_MAX_ITEM;
 
         /// <summary>
         /// Max number of item length to store in database.
         /// </summary>
-        private static int _databaseMaxItemLength = FB_MIN_LENGTH;
+        private static int _databaseMaxItemLength = FB_MAX_LENGTH;
 
         /// <summary>
         /// Determines the maximum number of device connections allowed.
         /// </summary>
-        private static int _databaseMaxConnection = FB_MIN_CONNECTION;
+        private static int _databaseMaxConnection = FB_MAX_CONNECTION;
 
         /// <summary>
         /// We will use this property to create a loading effect when

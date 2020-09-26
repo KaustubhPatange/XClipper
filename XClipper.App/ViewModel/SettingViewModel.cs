@@ -97,6 +97,7 @@ namespace Components
                 is_secure_db = value;
             }
         }
+        public string QRTooltip { get; set; } = QRData == null ? Translation.SETTINGS_QR_TOOLTIP_NO_BIND : Translation.SETTINGS_QR_TOOLTIP;
 
         #endregion
 

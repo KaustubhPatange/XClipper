@@ -191,7 +191,7 @@
                                         Height="110"
                                         Source="{Binding Path=(local:DefaultSettings.QRData), Converter={x:Static local:ImageQRConverter.Instance}}">
                                         <Image.ToolTip>
-                                            <ToolTip Content="{DynamicResource settings_qr_tooltip}" />
+                                            <ToolTip Content="{Binding QRTooltip}" />
                                         </Image.ToolTip>
                                         <Image.InputBindings>
                                             <MouseBinding

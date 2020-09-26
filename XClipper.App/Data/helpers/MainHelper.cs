@@ -131,6 +131,8 @@ DEL ""%~f0""";
             }
             Application.Current.Shutdown();
         }
+
+        [Obsolete("The method is of no use")]
         public static void ActivatePaidFeatures()
         {
             if (IsPurchaseDone && LicenseStrategy == LicenseType.Premium)

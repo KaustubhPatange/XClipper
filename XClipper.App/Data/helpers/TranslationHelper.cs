@@ -51,6 +51,8 @@ namespace Components
         public string SETTINGS_SAVE = rm.GetString("settings_save");
         public string SETTINGS_FB_PASSWORD = rm.GetString("settings_fb_password");
         public string SETTINGS_SAVE_WARNING = rm.GetString("settings_save_warning");
+        public string SETTINGS_QR_TOOLTIP = rm.GetString("settings_qr_tooltip");
+        public string SETTINGS_QR_TOOLTIP_NO_BIND = rm.GetString("settings_qr_tooltip_no_bind");
         public string FILTER_HEADER = rm.GetString("filter_header");
         public string FILTER_TITLE = rm.GetString("filter_title");
         public string FILTER_INDEX = rm.GetString("filter_index");
