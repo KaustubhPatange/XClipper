@@ -29,6 +29,12 @@ namespace Components
         /// When there is not configuration file this will be called.
         /// </summary>
         void OnNoConfigurationFound();
+
+        /// <summary>
+        /// When user select to not provide a configuration file, it should
+        /// reset the firebase setting.
+        /// </summary>
+        void OnResetFirebaseConfig();
     }
 
     public class RemovedEventArgs : EventArgs

@@ -1,15 +1,32 @@
-**_The feature is available in donated version, [see how to activate it](https://github.com/KaustubhPatange/XClipper/wiki/Purchasing-License)_**.
+## Steps
 
-- This feature encrypts the XClipper database with a password.
+- [Why to use secure database?](#why-to-use-secure-database)
+- [Migrating database to secure database](#migrating-database-to-secure-database)
 
-If you've noticed, all the clips are stored in file **data.db** on your local computer. By using some third-party tools you can easily view their contents other than using XClipper.
+### Why to use secure database?
 
-If you don't want to make this happen, you can always encrypt the database with a password using this feature. XClipper can only open the database when you provide it a one-time password.
+XClipper saves all the clipboard data locally in `%appdata%/XClipper/data.db` which is not at all not encrypted. Even though the online database can be further protected it is also necessary to protect the local database.
 
-## Working through
+**Why?** Well, if you see anyone with this database can read all your saved clipboard data.
 
-- Right-click **XClipper** icon in the _system tray_ to open options menu.
-- Now navigate to Settings (_a new window will be displayed_).
-- **_Check_** Protect database with encryption.
-- Use a _custom password_ or keep the default one.
-- Once set click on **Save** button, a migration task will be performed and then you can close the Settings window.
+<>
+
+| Before (no secure database)                                                    | After (secure database)                                                       |
+| ------------------------------------------------------------------------------ | ----------------------------------------------------------------------------- |
+| <img src="https://androdevkit.files.wordpress.com/2020/09/protect-before.png"> | <img src="https://androdevkit.files.wordpress.com/2020/09/protect-after.png"> |
+
+### Migrating database to secure database
+
+> Secure database makes sure that no one else other than you with the correct password can perform R/W operation on it.
+
+- Open the "**settings**" of the XClipper application from the system tray.
+- Enable the "**Protect database with encryption**" option (as shown below).
+
+<>
+
+<img src="https://androdevkit.files.wordpress.com/2020/09/2020-09-26-11-18-26.png" height="350px"/>
+
+<>
+
+- You can also set a "**Custom password**" as shown above if you want. Make sure your password has no _spaces_ between them.
+- Once done, proceed to click the "**Apply**" button. XClipper will then migrate your current database with a secure one.

@@ -364,9 +364,17 @@ namespace Components
 
         #region IFirebaseBinder Events 
 
-        public void OnNoConfigurationFound()
+        public void OnNoConfigurationFound() => CallSyncWindow();
+
+        public void OnResetFirebaseConfig()
         {
-            CallSyncWindow();
+            // Reset the firebase configuration settings
+            BindDatabase = BindDelete = false;
+            WriteSettings();
+           
+            RemoveFirebaseCredentials();
+
+            DisplayNotifyMessage(Translation.SYNC_DISABLED_TITLE, Translation.SYNC_DISABLED_TEXT);
         }
 
         public void OnNeedToGenerateToken(string ClientId, string ClientSecret)

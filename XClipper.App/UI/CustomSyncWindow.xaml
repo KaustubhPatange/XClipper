@@ -11,7 +11,7 @@
     xmlns:system="clr-namespace:System.IO;assembly=System"
     xmlns:ui="clr-namespace:System.Windows;assembly=PresentationCore"
     Title="{DynamicResource sync_config_title}"
-    Width="310"
+    Width="320"
     Icon="pack://application:,,,/Resources/clipboard.png"
     ResizeMode="NoResize"
     SizeToContent="Height"
@@ -48,32 +48,32 @@
                         </StackPanel>
                         <control:GroupSeparator Margin="0,10,0,0" Header="{DynamicResource settings_other}" />
 
-                        <DockPanel Margin="0,10,0,0" ToolTip="{DynamicResource sync_max_item_tooltip}">
+                        <DockPanel Margin="0,10,0,0" ToolTip="{Binding MAX_ITEM, Converter={x:Static local:CustomSyncTooltipConverter.Instance}}">
                             <TextBlock Text="{DynamicResource sync_max_item}" />
                             <local:NumericTextBox
                                 Width="70"
                                 HorizontalAlignment="Right"
-                                local:NumericTextBoxProperties.MaxNumber="200"
+                                local:NumericTextBoxProperties.MaxNumber="{Binding MAX_ITEM}"
                                 Text="{Binding DMI, UpdateSourceTrigger=PropertyChanged}"
                                 TextAlignment="Center" />
                         </DockPanel>
 
-                        <DockPanel Margin="0,5,0,0" ToolTip="{DynamicResource sync_max_item_length_tooltip}">
+                        <DockPanel Margin="0,5,0,0" ToolTip="{Binding MAX_CONTENT, Converter={x:Static local:CustomSyncTooltipConverter.Instance}}">
                             <TextBlock Text="{DynamicResource sync_max_item_length}" />
                             <local:NumericTextBox
                                 Width="70"
                                 HorizontalAlignment="Right"
-                                local:NumericTextBoxProperties.MaxNumber="10000"
+                                local:NumericTextBoxProperties.MaxNumber="{Binding MAX_CONTENT}"
                                 Text="{Binding DMIL, UpdateSourceTrigger=PropertyChanged}"
                                 TextAlignment="Center" />
                         </DockPanel>
 
-                        <DockPanel Margin="0,5,0,0">
+                        <DockPanel Margin="0,5,0,0" ToolTip="{Binding MAX_DEVICE, Converter={x:Static local:CustomSyncTooltipConverter.Instance}}">
                             <TextBlock Text="{DynamicResource sync_max_device}" />
                             <local:NumericTextBox
                                 Width="50"
                                 HorizontalAlignment="Right"
-                                local:NumericTextBoxProperties.MaxNumber="10"
+                                local:NumericTextBoxProperties.MaxNumber="{Binding MAX_DEVICE}"
                                 Text="{Binding DMC, UpdateSourceTrigger=PropertyChanged}"
                                 TextAlignment="Center" />
                         </DockPanel>

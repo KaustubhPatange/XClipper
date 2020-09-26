@@ -7,6 +7,7 @@ XClipper.Protect/
 XClipper.SecureApp/
 XClipper.Android/app/library_utils/
 XClipper.Android/buildSrc/build/
+XClipper.Android/app/release/
 XClipper.Web/js/purchase.js
 
 # User-specific files

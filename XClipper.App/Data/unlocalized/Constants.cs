@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
@@ -76,6 +77,14 @@ namespace Components
         public const int FB_MAX_CONNECTION = 5;
         public const string FB_DEFAULT_PASS = "JfbY+e0iD/RMVJDOF5MWphCDGB45G/0kLtF4Vv+sbF7SL3VdbP3GyMgvPVz3e56e1pmrJct0LRMHH2Sz+hLASpqz/1YTvV3GF6e7pHBcuWVpuzkMDHEDJG3IXRj9VIFA";
 
+        public const int SYNC_MIN_ITEM = 50;
+        public const int SYNC_MIN_LENGTH = 5000;
+        public const int SYNC_MIN_CONNECTION = 5;
+
+        public const int SYNC_MAX_ITEM = 200;
+        public const int SYNC_MAX_LENGTH = 10000;
+        public const int SYNC_MAX_CONNECTION = 10;
+
         #endregion
 
         #region Database Path Constants
@@ -88,9 +97,14 @@ namespace Components
 
         #region Help links
 
+        public const string MOBILE_APP = "https://github.com/KaustubhPatange/XClipper"; // todo: change it with playstore url or github XClipper.Android url
+
         public const string DATA_SYNCHRONIZATION = "https://github.com/KaustubhPatange/XClipper/wiki/Data-Synchronization";
         public const string MANUAL_ACTIVATION = "https://github.com/KaustubhPatange/XClipper/wiki/Manual-License-Activation";
         public const string MIGRATION_GUIDE = "https://github.com/KaustubhPatange/XClipper/wiki/Migrating-License";
+        public const string SECURE_DB = "https://github.com/KaustubhPatange/XClipper/wiki/Using-secure-database";
+
+        public const string UPGRADE_LICENSE = "https://kaustubhpatange.github.io/XClipper"; // todo: change this which is used in UpgradeTipItem
 
         #endregion
     }

@@ -31,13 +31,16 @@ namespace Components
                 if (!PerformSafetyChecks(doOnNoConfigurationFile: () =>
                 {
                     binder?.OnNoConfigurationFound();
+                }, doOnResetConfiguration: () =>
+                {
+                    binder?.OnResetFirebaseConfig();
                 })) return;
 
                 FirebaseSingleton.GetInstance.InitConfig(FirebaseCurrent);
             }
         }
 
-        public static bool PerformSafetyChecks(Action doOnNoConfigurationFile)
+        public static bool PerformSafetyChecks(Action doOnNoConfigurationFile, Action? doOnResetConfiguration = null)
         {
             if (FirebaseCurrent == null)
             {
@@ -45,6 +48,10 @@ namespace Components
                 if (result == MessageBoxResult.Yes)
                 {
                     doOnNoConfigurationFile?.Invoke();
+                }
+                else if (result == MessageBoxResult.No)
+                {
+                    doOnResetConfiguration?.Invoke();
                 }
                 return false;
             }
@@ -69,7 +76,7 @@ namespace Components
                     return true;
                 }
             }
-            catch(TimeoutException ex)
+            catch (TimeoutException ex)
             {
                 LogHelper.Log(typeof(FirebaseHelper), ex.Message + ex.StackTrace);
             }

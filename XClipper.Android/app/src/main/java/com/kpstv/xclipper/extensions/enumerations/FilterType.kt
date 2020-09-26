@@ -15,5 +15,4 @@ enum class FilterType {
      * update data, time by querying id as filter.
      */
     Text,
-
 }

@@ -148,12 +148,14 @@
     <system:String x:Key="buy_migrate">Migrate</system:String>
     <system:String x:Key="device_title">Connected Device</system:String>
     <system:String x:Key="device_disconnect">Disconnect</system:String>
+
+    <system:String x:Key="sync_disabled_title">Synchronization disabled</system:String>
+    <system:String x:Key="sync_disabled_text">To enable it go to Settings &gt; Connect.</system:String>
     <system:String x:Key="sync_config_title">Firebase Configuration</system:String>
     <system:String x:Key="sync_config_reset">Reset Configuration</system:String>
+    <system:String x:Key="sync_greater_text">Cannot be greater than</system:String>
     <system:String x:Key="sync_max_item">Maximum number of items</system:String>
-    <system:String x:Key="sync_max_item_tooltip">Cannot be greater than 200</system:String>
     <system:String x:Key="sync_max_item_length">Maximum length of clipboard content</system:String>
-    <system:String x:Key="sync_max_item_length_tooltip">Cannot be greater than 10000</system:String>
     <system:String x:Key="sync_max_device">Maximum number of concurrent device</system:String>
     <system:String x:Key="sync_import">Import configuration</system:String>
     <system:String x:Key="sync_import_success">Configuration imported successfully. Do you want to apply this configuration?</system:String>

@@ -51,7 +51,7 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
     private lateinit var powerManager: PowerManager
 
     private var nodeInfo: AccessibilityNodeInfo? = null
-    private val eventList: StripArrayList<Int> = StripArrayList(4)
+    private val eventList: StripArrayList<Int> = StripArrayList(4) // TODO: Try to fix it by stripping to 3
 
     /**
      * Indicates whether a screen is active for interaction or not.
@@ -103,9 +103,9 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
                     && event.currentItemIndex != -1)
         ) {
             if (event.className == EditText::class.java.name && event.scrollX != -1) return false
-            /** I don't know what Gmail is doing, but it cast it's EditText class as TextView
+            /** I don't know what Gmail is doing, but it cast the EditText class as TextView
              *  when someone is writing, due to which above event fails to exclude it.
-             *  This should protect his mistake.
+             *  This should prevent it.
              */
             if (eventList.any { it == AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED }) return false
             HVLog.d("Copy captured - 1")

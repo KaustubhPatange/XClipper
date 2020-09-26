@@ -4,6 +4,7 @@ import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityServiceInfo
 import android.app.Activity
 import android.app.ActivityManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
@@ -11,6 +12,7 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.content.pm.ServiceInfo
 import android.os.Build
+import android.os.Bundle
 import android.provider.Settings
 import android.telephony.TelephonyManager
 import android.util.TypedValue
@@ -28,6 +30,7 @@ import com.kpstv.xclipper.App.AUTO_SYNC_PREF
 import com.kpstv.xclipper.App.BIND_DELETE_PREF
 import com.kpstv.xclipper.App.BIND_PREF
 import com.kpstv.xclipper.App.BLACKLIST_PREF
+import com.kpstv.xclipper.BuildConfig
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.FBOptions
 import com.kpstv.xclipper.data.model.AppPkg
@@ -176,8 +179,13 @@ class Utils {
         }
 
         fun openAccessibility(context: Context) = with(context) {
+            val bundle = Bundle()
+            val componentName = ComponentName(BuildConfig.APPLICATION_ID, ClipboardAccessibilityService::class.java.name).flattenToString()
+            bundle.putString(App.EXTRA_FRAGMENT_ARG_KEY, componentName)
             val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS).apply {
                 flags = FLAG_ACTIVITY_NEW_TASK
+                putExtra(App.EXTRA_FRAGMENT_ARG_KEY, componentName)
+                putExtra(App.EXTRA_SHOW_FRAGMENT_ARGUMENTS, bundle)
             }
             startActivity(intent)
         }

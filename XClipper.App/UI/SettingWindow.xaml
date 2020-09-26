@@ -121,7 +121,7 @@
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Center">
 
-                                    <Hyperlink local:HyperlinkProperties.IsExternal="true" NavigateUri="https://github.com/KaustubhPatange/XClipper/wiki/Password-Protect-Database">
+                                    <Hyperlink local:HyperlinkProperties.IsExternal="true" NavigateUri="{Binding Source={x:Static local:Constants.SECURE_DB}}">
                                         <TextBlock Text="{DynamicResource msg_learn}" />
                                     </Hyperlink>
                                 </TextBlock>
@@ -207,7 +207,7 @@
                                     Orientation="Horizontal">
                                     <TextBlock Text="{DynamicResource settings_sc}" />
                                     <TextBlock Margin="5,0,0,0" HorizontalAlignment="Right">
-                                        <Hyperlink local:HyperlinkProperties.IsExternal="true" NavigateUri="https://github.com/KaustubhPatange/XClipper">
+                                        <Hyperlink local:HyperlinkProperties.IsExternal="true" NavigateUri="{Binding Source={x:Static local:Constants.MOBILE_APP}}">
                                             <TextBlock VerticalAlignment="Top" Text="{DynamicResource settings_ma}" />
                                         </Hyperlink>
                                     </TextBlock>

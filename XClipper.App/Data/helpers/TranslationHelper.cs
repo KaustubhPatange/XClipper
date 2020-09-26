@@ -116,6 +116,9 @@ namespace Components
         public string BUY_NOT_ACTIVATE = rm.GetString("buy_not_activate");
         public string BUY_LICENSE_SUCCESS = rm.GetString("buy_license_success");
         public string BUY_LICENSE_EXIST = rm.GetString("buy_license_exist");
+        public string SYNC_GREATER_TEXT = rm.GetString("sync_greater_text");
+        public string SYNC_DISABLED_TITLE = rm.GetString("sync_disabled_title");
+        public string SYNC_DISABLED_TEXT = rm.GetString("sync_disabled_text");
         public string SYNC_IMPORT = rm.GetString("sync_import");
         public string SYNC_IMPORT_SUCCESS = rm.GetString("sync_import_success");
         public string SYNC_IMPORT_ERR = rm.GetString("sync_import_err");
