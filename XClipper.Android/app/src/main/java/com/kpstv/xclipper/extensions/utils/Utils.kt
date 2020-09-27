@@ -11,6 +11,7 @@ import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.content.pm.ServiceInfo
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -214,7 +215,7 @@ class Utils {
         @RequiresApi(Build.VERSION_CODES.M)
         fun openSystemOverlay(context: Context) = with(context) {
             val myIntent =
-                Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION).apply {
+                Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName")).apply {
                     flags = FLAG_ACTIVITY_NEW_TASK
                 }
             startActivity(myIntent)

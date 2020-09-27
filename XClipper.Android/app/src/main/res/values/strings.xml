@@ -76,7 +76,7 @@
     <string name="err_uid">Not a valid UID</string>
     <string name="connect_success">Connected successfully!</string>
     <string name="accessibility_capture">In order to capture clipboard clips you need to enable service from accessibility settings.\n\n1. Click OK to open accessibility settings.\n2. Search for XClipper.\n3. Click and enable the service.</string>
-    <string name="suggestion_capture">You need to enable System overlay permission.\n\n1. Click OK to open Display Overlay settings\n2. Search for XClipper (you might need to scroll down)\n3. Select it and check the box.</string>
+    <string name="suggestion_capture">You need to enable System overlay permission.\n\n1. Click OK to open Display Overlay settings\n2. Enable \"Allow display over other apps\".</string>
     <string name="scan_code">Scan the app code</string>
     <string name="connect_request">Attempting to make a connection with database…</string>
     <string name="dark_title">Dark Theme</string>
