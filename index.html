@@ -40,6 +40,11 @@
                             Buy</button>
                     </div>
                     <div style="margin-left: 15px;">
+                        <button onclick="showContactForm()" type="button" class="btn github-btn">
+                            <i style="margin-right: 3px;" class="fa fa-info-circle"></i>
+                            Contact</button>
+                    </div>
+                    <div style="margin-left: 15px;">
                         <button onclick="scrollToVideo()" type="button" class="btn github-btn">
                             <i style="margin-right: 3px;" class="fa fa-play"></i>
                             Watch Video</button>
@@ -114,6 +119,30 @@
                 </div>
         </section>
 
+        <!-- This is a basic dialog that can be shown anywhere. -->
+        <div class="modal fade" id="dialog-modal">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <!-- Header -->
+                    <div class="modal-header">
+                        <h4 id="dialog-title" class="modal-title">Title</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <!-- Body -->
+                    <div class="modal-body">
+                        <div>
+                            <span id="dialog-content">Content</span>
+                        </div>
+                    </div>
+                    <!-- Footer -->
+                    <div style="border-color: #515670; background: #515670;" class="modal-footer">
+                        <a id="dialog-button" data-dismiss="modal" class="btn btn-primary">Button</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- This is a purchase dialog for showing purchase box. -->
         <div class="modal fade" id="purchaseModal">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -162,6 +191,50 @@
                                 <span id="modal-content-text-subtitle">Error code: </span>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- This is contact form dialog -->
+        <div class="modal fade" id="contact-modal">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <!-- Header -->
+                    <div class="modal-header">
+                        <h4 id="contact-title" class="modal-title">Contact me</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <!-- Body -->
+                    <div class="modal-body">
+                        <div>
+                            <form onsubmit="contactSubmit()" id="contact-form">
+                                <div class="form-group">
+                                    <span style=" color: white;" for="emailInput">Email: </span>
+                                    <input
+                                        style="margin-top: 10px; background: #1b1d24; border-color: #515670; color: white;"
+                                        type="email" aria-describedby="emailHelp" class="form-control"
+                                        id="emailInput" />
+                                </div>
+                                <div class="form-group" style="margin-top: 15px;">
+                                    <span style=" color: white;" for="subjectInput">Subject: </span>
+                                    <input
+                                        style="margin-top: 10px; background: #1b1d24; border-color: #515670; color: white;"
+                                        type="text" class="form-control" id="subjectInput" />
+                                </div>
+                                <div class="form-group" style="margin-top: 15px;">
+                                    <span style=" color: white;">Message: </span>
+                                    <textarea
+                                        style="margin-top: 10px; background: #1b1d24; border-color: #515670; color: white;"
+                                        class="form-control" id="messageTextArea" rows="4"></textarea>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- Footer -->
+                    <div style="border-color: #515670; background: #515670;" class="modal-footer">
+                        <button id="contact-button" type="submit" form="contact-form"
+                            class="btn btn-primary">Submit</button>
                     </div>
                 </div>
             </div>

@@ -55,3 +55,63 @@ function scrollToSection(elementId, secondElementId) {
 function openGithub() {
   window.open("https://github.com/KaustubhPatange/XClipper");
 }
+
+function showContactForm() {
+  document.getElementById("contact-button").disabled = false;
+  document.getElementById("emailInput").value = "";
+  document.getElementById("subjectInput").value = "";
+  document.getElementById("messageTextArea").value = "";
+  $("#contact-modal").modal("show");
+}
+
+function contactSubmit() {
+  const fromEmail = document.getElementById("emailInput").value;
+  const title = document.getElementById("subjectInput").value;
+  const message = document.getElementById("messageTextArea").value;
+  if (isEmptyOrSpaces(title) || isEmptyOrSpaces(message)) {
+    showToast("One or more fields are empty!");
+    return;
+  }
+  const params = {
+    email: fromEmail,
+    subject: title,
+    body: message,
+  };
+  const xmlHttp = new XMLHttpRequest();
+  xmlHttp.onreadystatechange = function () {
+    if (xmlHttp.readyState == 4) {
+      showToast(
+        "Thank you for contacting, I'll reach out to you soon!",
+        false,
+        4000
+      );
+      $("#contact-modal").modal("hide");
+    }
+  };
+  xmlHttp.open(
+    "POST",
+    "https://script.google.com/macros/s/AKfycbzX3zKSJvupqu914uo-p4IVCPXFFjVidJ4aG7gaHYTWPe8Sgmqq/exec",
+    true
+  );
+  xmlHttp.send(JSON.stringify(params));
+  document.getElementById("contact-button").disabled = true;
+}
+
+function isEmptyOrSpaces(str) {
+  return str === null || str.match(/^ *$/) !== null;
+}
+
+function showToast(msg, error = true, timeSpan = 2500) {
+  const options = {
+    style: {
+      main: {
+        background: Boolean(error) ? "#ff5733" : " #0A8E72",
+        "font-family": "roboto mono",
+      },
+    },
+    settings: {
+      duration: timeSpan,
+    },
+  };
+  iqwerty.toast.toast(msg, options);
+}
