@@ -14,7 +14,7 @@ if (Number(window.screen.width < 600)) {
 }
 
 makeToActOnCard("freeCard", "freeCardHr");
-makeToActOnCard("standardCard", "standardCardHr");
+// makeToActOnCard("standardCard", "standardCardHr");
 makeToActOnCard("premiumCard", "premiumCardHr");
 
 function makeToActOnCard(cardElement, cardElementHr) {
@@ -64,7 +64,7 @@ function showContactForm() {
   $("#contact-modal").modal("show");
 }
 
-function contactSubmit() {
+function contactSubmit(e) {
   const fromEmail = document.getElementById("emailInput").value;
   const title = document.getElementById("subjectInput").value;
   const message = document.getElementById("messageTextArea").value;
@@ -95,6 +95,8 @@ function contactSubmit() {
   );
   xmlHttp.send(JSON.stringify(params));
   document.getElementById("contact-button").disabled = true;
+
+  return false;
 }
 
 function isEmptyOrSpaces(str) {
