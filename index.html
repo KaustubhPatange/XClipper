@@ -6,7 +6,6 @@
     <link rel="shortcut icon" href="XClipper.Web/Images/icon.png" type="image/png" />
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
     <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
     <link rel="stylesheet" href="XClipper.Web/fonts/icomoon/style.css">
     <link rel="stylesheet" href="XClipper.Web/css/bootstrap.min.css">
@@ -20,6 +19,7 @@
     <link rel="stylesheet" href="XClipper.Web/css/style.css">
     <link rel="stylesheet" href="XClipper.Web/css/custom-btn.css">
     <link rel="stylesheet" href="XClipper.Web/css/loader.css">
+    <link rel="stylesheet" href="XClipper.Web/css/popover.css">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
@@ -68,12 +68,21 @@
                     </div>
 
                     <div class="col-md-10" style="margin-top: 45px;">
-                        <a href="#" class="btn-custom" data-aos="fade-up" data-aos-delay="400">
-                            <span>Download</span></a>
+                        <div class="popover__wrapper">
+                            <a href="#" id="download-button" class="btn-custom" data-aos="fade-up" data-aos-delay="400">
+                                <span>Download</span></a>
+                            <div class="popover__content">
+                                <a target="_blank" id="btn-window"><button type="button" class="btn btn-windows"><i
+                                            class="fa fa-windows" aria-hidden="true"></i> Windows</button></a>
+                                <a target="_blank"
+                                    href="https://play.google.com/store/apps/details?id=com.kpstv.xclipper">
+                                    <button type="button" class="btn btn-android"><i class="fa fa-android"
+                                            aria-hidden="true"></i> Android</button>
+                                </a>
+                            </div>
+                        </div>
                     </div>
-
                 </div>
-            </div>
 
         </section>
 
@@ -83,8 +92,8 @@
             <div class="container mainContainer">
                 <h2 data-aos="fade-up" style="margin-bottom: 50px;" data-aos-delay="200">Pricing</h2>
                 <div data-aos="fade-up" data-aos-delay="300" class="row align-items-center">
-                    <div class="col-lg-4">
-                        <div id="freeCard" class="card" style="width: 19rem;">
+                    <div class="card-container">
+                        <div id="freeCard" class="card">
                             <div class="card-body">
                                 <h5 class="card-title">Free</h5>
                                 <hr id="freeCardHr" class="customCardHr">
@@ -98,9 +107,7 @@
                                 <a href="#" class="btn btn-primary">Download</a>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div id="premiumCard" class="card" style="width: 19rem;">
+                        <div id="premiumCard" class="card">
                             <div class="card-body">
                                 <h5 class="card-title">Premium (<sup><span style="font-size: 12px">$</span></sup>20)
                                 </h5>
@@ -278,7 +285,9 @@
     src="https://www.paypal.com/sdk/js?currency=USD&client-id=ASwXlP0xbZyKXI-rqIMHOXmVtLe1xuKL0CqL0gqfNt7lq_yBtTd5Hs3fuRP-6C6cFS5FCAdspP3Gt5Y1"></script>
 <script src="XClipper.Web/js/toast.min.js"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-<script src="XClipper.Web/js/jquery-3.3.1.min.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<!-- <script src="XClipper.Web/js/jquery-3.3.1.min.js"></script> -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="XClipper.Web/js/jquery-migrate-3.0.1.min.js"></script>
 <script src="XClipper.Web/js/jquery-ui.js"></script>
 <script src="XClipper.Web/js/popper.min.js"></script>

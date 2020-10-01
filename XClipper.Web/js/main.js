@@ -17,6 +17,10 @@ makeToActOnCard("freeCard", "freeCardHr");
 // makeToActOnCard("standardCard", "standardCardHr");
 makeToActOnCard("premiumCard", "premiumCardHr");
 
+$(document).ready(function () {
+  loadInformation();
+});
+
 function makeToActOnCard(cardElement, cardElementHr) {
   var card = document.getElementById(cardElement);
   var cardHr = document.getElementById(cardElementHr);
@@ -64,11 +68,15 @@ function showContactForm() {
   $("#contact-modal").modal("show");
 }
 
-function contactSubmit(e) {
+function contactSubmit() {
   const fromEmail = document.getElementById("emailInput").value;
   const title = document.getElementById("subjectInput").value;
   const message = document.getElementById("messageTextArea").value;
-  if (isEmptyOrSpaces(title) || isEmptyOrSpaces(message)) {
+  if (
+    isEmptyOrSpaces(fromEmail) ||
+    isEmptyOrSpaces(title) ||
+    isEmptyOrSpaces(message)
+  ) {
     showToast("One or more fields are empty!");
     return;
   }
@@ -116,4 +124,23 @@ function showToast(msg, error = true, timeSpan = 2500) {
     },
   };
   iqwerty.toast.toast(msg, options);
+}
+
+function downloadClick() {
+  document.getElementById("download-popup").style.display = "block";
+}
+
+function downloadFocusOut() {
+  document.getElementById("download-popup").style.display = "none";
+}
+
+async function loadInformation() {
+  const options = {
+    url: "https://pastebin.com/raw/fnrK1Mcx",
+    method: "GET",
+  };
+  const response = await promisifiedRequest(options);
+  const jObject = JSON.parse(response);
+
+  document.getElementById("btn-window").href = jObject.Desktop.DownloadUri;
 }

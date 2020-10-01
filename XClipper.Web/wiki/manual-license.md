@@ -1,8 +1,6 @@
 > This method can be used in case if your transaction is completed but the license is not activated.
 
-> If you want to know why can't you activate XClipper from the mobile application. Read this [FAQ]().
-
-// TODO: create an FAQ to say why PC application is important for licensing.
+> If you want to know why can't you activate XClipper from the mobile application. Read this [FAQ](https://github.com/KaustubhPatange/XClipper/wiki/FAQs#q-why-pc-application-is-a-single-source-of-truth).
 
 ## Steps
 

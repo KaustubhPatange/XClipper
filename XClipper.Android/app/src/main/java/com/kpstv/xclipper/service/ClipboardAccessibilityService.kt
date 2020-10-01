@@ -51,7 +51,7 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
     private lateinit var powerManager: PowerManager
 
     private var nodeInfo: AccessibilityNodeInfo? = null
-    private val eventList: StripArrayList<Int> = StripArrayList(4) // TODO: Try to fix it by stripping to 3
+    private val eventList: StripArrayList<Int> = StripArrayList(3) // TODO: Try to fix it by stripping 4 to 3
 
     /**
      * Indicates whether a screen is active for interaction or not.
@@ -118,7 +118,7 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         currentPackage = event?.packageName
 
-        // logger(TAG, "Event: $event")
+       // logger(TAG, "SourceText: ${event?.source}; Text is null: ${event?.text.isNullOrEmpty()}; $event")
 
         if (event?.eventType != null)
             eventList.add(event.eventType)
