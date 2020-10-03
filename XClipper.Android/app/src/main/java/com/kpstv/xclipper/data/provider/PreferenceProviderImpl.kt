@@ -2,6 +2,7 @@ package com.kpstv.xclipper.data.provider
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.core.content.edit
 import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
 import com.kpstv.license.Encryption.DecryptPref
@@ -46,6 +47,15 @@ class PreferenceProviderImpl(
         }.apply()
         _keyLiveData.postValue(key)
     }
+
+    override fun putLongKey(key: String, value: Long) {
+        preference.edit {
+            putLong(key, value)
+        }
+    }
+
+    override fun getLongKey(key: String, default: Long) =
+        preference.getLong(key, default)
 
     override fun removeKey(key: String) {
         preference.edit().apply {
