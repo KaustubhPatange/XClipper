@@ -1,4 +1,10 @@
 package com.kpstv.xclipper.extensions.enumerations
 
-class SyncError {
+/**
+ * Specifies the error that has to be deal when sync button
+ * is clicked & there are issues.
+ */
+enum class FirebaseState {
+    NOT_INITIALIZED,
+    UNKNOWN_ERROR
 }

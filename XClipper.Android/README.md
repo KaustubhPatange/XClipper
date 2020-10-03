@@ -1,4 +1,6 @@
-# XClipper (Android)
+<img width="120px" src="../XClipper.Web/images/icon-mobile.png"/>
+
+# XClipper for Android
 
 > An android XClipper client to communicate with the desktop application to simulate the sharing of clipboard activity.
 

@@ -54,8 +54,15 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
     private val eventList: StripArrayList<Int> = StripArrayList(3) // TODO: Try to fix it by stripping 4 to 3
 
     /**
+     * TODO: Remove this unused parameter
+     *
      * Indicates whether a screen is active for interaction or not.
      * If value is true -> Screen On
+     *
+     * This was supposed to stop all connection of Firebase when the user's
+     * screen go off as a performance improvement over network.
+     * There is no implementation yet but I think it's of no use since the
+     * library is smart to optimize the network calls.
      */
     private val screenInteraction = MutableLiveData(true)
 

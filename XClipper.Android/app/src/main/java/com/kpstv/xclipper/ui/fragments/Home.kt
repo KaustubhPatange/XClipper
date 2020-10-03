@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.play.core.appupdate.AppUpdateManager
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.App.runAutoSync
 import com.kpstv.xclipper.App.swipeToDelete
@@ -26,7 +25,9 @@ import com.kpstv.xclipper.data.localized.ToolbarState
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.extensions.*
+import com.kpstv.xclipper.extensions.enumerations.FirebaseState
 import com.kpstv.xclipper.extensions.listeners.StatusListener
+import com.kpstv.xclipper.extensions.utils.FirebaseUtils
 import com.kpstv.xclipper.extensions.utils.ThemeUtils
 import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.openAccessibility
@@ -55,18 +56,17 @@ class Home : Fragment(R.layout.fragment_home), KodeinAware {
     override val kodein by kodein()
     private val viewModelFactory by instance<MainViewModelFactory>()
     private val clipboardProvider by instance<ClipboardProvider>()
+    private val firebaseUtils by instance<FirebaseUtils>()
 
     private lateinit var adapter: CIAdapter
 
     private lateinit var mainViewModel: MainViewModel
-    private lateinit var appUpdateManager: AppUpdateManager // TODO: Remove this
 
     override fun onCreate(savedInstanceState: Bundle?) {
         mainViewModel = ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
         super.onCreate(savedInstanceState)
     }
 
-    private val TAG = javaClass.simpleName
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         requireActivity().window.statusBarColor =
@@ -95,9 +95,6 @@ class Home : Fragment(R.layout.fragment_home), KodeinAware {
 
         autoValidateOnStartup()
 
-        // TODO: Remove this obsolete methods after testing Auto-update
-        // checkForUpdates()
-
         super.onViewCreated(view, savedInstanceState)
     }
 
@@ -105,56 +102,6 @@ class Home : Fragment(R.layout.fragment_home), KodeinAware {
         val intent = Intent(requireContext(), EditDialog::class.java)
         startActivity(intent)
     }
-
-    /* private fun checkForUpdates() = with(requireActivity()) {
-         appUpdateManager = AppUpdateManagerFactory.create(this)
-         val appUpdateInfoTask = appUpdateManager.appUpdateInfo
-         appUpdateManager.registerListener(listener)
-         appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
-             if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
-                 && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)
-             ) {
-                 appUpdateManager.startUpdateFlowForResult(
-                     appUpdateInfo,
-                     AppUpdateType.FLEXIBLE,
-                     this,
-                     UPDATE_REQUEST_CODE
-                 )
-             }
-         }
-     }
-
-     private val listener = InstallStateUpdatedListener { state ->
-         if (state.installStatus() == InstallStatus.DOWNLOADING) {
-             val bytesDownloaded = state.bytesDownloaded()
-             val totalBytesToDownload = state.totalBytesToDownload()
-             Log.e(TAG, "Bytes Downloaded: $bytesDownloaded, TotalBytes: $totalBytesToDownload")
-         } else if (state.installStatus() == InstallStatus.DOWNLOADED) {
-             popupSnackbarForCompleteUpdate()
-         }
-     }
-
-     override fun onResume() {
-         super.onResume()
-         appUpdateManager
-             .appUpdateInfo
-             .addOnSuccessListener { appUpdateInfo ->
-                 if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
-                     popupSnackbarForCompleteUpdate()
-                 }
-             }
-     }
-
-     private fun popupSnackbarForCompleteUpdate() {
-         Snackbar.make(
-             requireView().findViewById(R.id.ci_recyclerView),
-             "An update has just been downloaded.",
-             Snackbar.LENGTH_INDEFINITE
-         ).apply {
-             setAction("RESTART") { appUpdateManager.completeUpdate() }
-             show()
-         }
-     }*/
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -418,7 +365,15 @@ class Home : Fragment(R.layout.fragment_home), KodeinAware {
                         Toasty.info(requireContext(), getString(R.string.sync_complete)).show()
                     },
                     onError = {
-                        Toasty.error(requireContext(), getString(R.string.error_sync)).show()
+                        val message = when(firebaseUtils.retrieveFirebaseStatus()) {
+                            FirebaseState.NOT_INITIALIZED -> {
+                                getString(R.string.error_sync_uninitialized)
+                            }
+                            else -> {
+                                getString(R.string.error_sync)
+                            }
+                        }
+                        Toasty.error(requireContext(), message).show()
                     }
                 ))
             }
@@ -473,5 +428,4 @@ class Home : Fragment(R.layout.fragment_home), KodeinAware {
         }
         startActivity(intent)
     }
-
 }

@@ -11,6 +11,7 @@ import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.hvlog.HVLog
 import com.kpstv.xclipper.extensions.decrypt
+import com.kpstv.xclipper.extensions.enumerations.FirebaseState
 import es.dmoral.toasty.Toasty
 
 class FirebaseUtils(
@@ -85,5 +86,11 @@ class FirebaseUtils(
         HVLog.d()
         firebaseProvider.isInitialized().removeObserver(databaseInitializationObserver)
         firebaseProvider.removeDataObservation()
+    }
+
+    fun retrieveFirebaseStatus(): FirebaseState {
+        return if (firebaseProvider.isInitialized().value == false)
+            FirebaseState.NOT_INITIALIZED
+        else FirebaseState.UNKNOWN_ERROR
     }
 }

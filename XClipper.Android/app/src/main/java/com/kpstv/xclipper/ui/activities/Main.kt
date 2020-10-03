@@ -11,6 +11,7 @@ import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.ToolbarState
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.extensions.utils.ThemeUtils
+import com.kpstv.xclipper.ui.helpers.ReviewHelper
 import com.kpstv.xclipper.ui.helpers.UpdateHelper
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import com.kpstv.xclipper.ui.viewmodels.MainViewModelFactory
@@ -31,7 +32,6 @@ class Main : AppCompatActivity(), KodeinAware {
     private var isDarkTheme = true
 
     private lateinit var mainViewModel: MainViewModel
-    private lateinit var updateHelper: UpdateHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,7 +53,8 @@ class Main : AppCompatActivity(), KodeinAware {
             navController.navigate(R.id.fragment_home, null, navOptions)
         }
 
-        updateHelper = UpdateHelper(this).register()
+        UpdateHelper(this).register()
+        ReviewHelper(this).register()
     }
 
     /**
@@ -76,11 +77,5 @@ class Main : AppCompatActivity(), KodeinAware {
             searchView?.onBackPressed() == true -> return
             else -> super.onBackPressed()
         }
-    }
-
-
-    override fun onDestroy() {
-        updateHelper.unregister()
-        super.onDestroy()
     }
 }

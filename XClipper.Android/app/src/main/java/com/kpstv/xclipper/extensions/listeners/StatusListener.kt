@@ -1,5 +1,6 @@
 package com.kpstv.xclipper.extensions.listeners
 
+import com.kpstv.xclipper.extensions.ErrorFunction
 import com.kpstv.xclipper.extensions.SimpleFunction
 
 /**
@@ -14,7 +15,7 @@ import com.kpstv.xclipper.extensions.SimpleFunction
 class StatusListener(
     private val onBefore: SimpleFunction? = null,
     private val onComplete: SimpleFunction,
-    private val onError: SimpleFunction,
+    private val onError: ErrorFunction,
     private val onAfter: SimpleFunction? = null
 ): CompleteAction {
     override fun onComplete() {
@@ -23,15 +24,14 @@ class StatusListener(
         onAfter?.invoke()
     }
 
-    override fun onError() {
+    override fun onError(error: Exception?) {
         onBefore?.invoke()
-        onError.invoke()
+        onError.invoke(error)
         onAfter?.invoke()
     }
-
 }
 
 private interface CompleteAction {
     fun onComplete()
-    fun onError()
+    fun onError(error: Exception? = null)
 }

@@ -25,7 +25,7 @@ class WatchVideo : Fragment(R.layout.fragment_welcome), KodeinAware {
             view = view,
             activity = requireActivity(),
             paletteId = R.color.palette7,
-            nextPaletteId = R.color.colorPrimary,
+            nextPaletteId = R.color.palette8,
             textId = R.string.palette7_text,
             nextTextId = R.string.next_8,
             action = {
@@ -39,18 +39,7 @@ class WatchVideo : Fragment(R.layout.fragment_welcome), KodeinAware {
                     WatchVideoDirections.actionWatchVideoToFragmentHome(),
                     options
                 )
-            }/*,
-            insertView = LayoutInflater.from(context).inflate(
-                R.layout.layout_watch, null
-            ).apply {
-                btn_common.setOnClickListener {
-                    val intent = Intent(ACTION_VIEW).apply {
-                        flags = FLAG_ACTIVITY_NEW_TASK
-                        data = Uri.parse("https://google.com")
-                    }
-                    requireContext().startActivity(intent)
-                }
-            }*/
+            }
         )
     }
 }

@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 typealias SimpleFunction = () -> Unit
+typealias ErrorFunction = (Exception?) -> Unit
 
 fun SimpleSearchView.setOnQueryTextListener(
     onSubmit: ((String) -> Unit)? = null,

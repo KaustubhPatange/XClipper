@@ -136,7 +136,7 @@ function downloadFocusOut() {
 
 async function loadInformation() {
   const options = {
-    url: "https://pastebin.com/raw/fnrK1Mcx", // todo: Change to real update url
+    url: "https://pastebin.com/raw/fnrK1Mcx", // TODO: Change to real update url
     method: "GET",
   };
   const response = await promisifiedRequest(options);
