@@ -168,6 +168,11 @@ namespace Components
 
         #region Invokes
 
+        private void StopSyncClicked(object sender, EventArgs e)
+        {
+
+        }
+
         private void UpdateSettingClicked(object sender, EventArgs e)
         {
             CheckForUpdates();
