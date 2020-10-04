@@ -244,12 +244,20 @@
                                     IsChecked="{Binding BTD, UpdateSourceTrigger=PropertyChanged}"
                                     IsEnabled="{c:Binding '!local:DefaultSettings.IsCheckingForLicense'}"
                                     ToolTip="{DynamicResource settings_btd_tooltip}" />
-                                <CheckBox
-                                    Margin="0,5,0,0"
-                                    Content="{DynamicResource settings_bfd}"
-                                    IsChecked="{Binding BFD, UpdateSourceTrigger=PropertyChanged}"
-                                    IsEnabled="{c:Binding '!local:DefaultSettings.IsCheckingForLicense'}"
-                                    ToolTip="{DynamicResource settings_bfd_tooltip}" />
+                                <WrapPanel>
+                                    <CheckBox
+                                        Margin="0,5,10,0"
+                                        Content="{DynamicResource settings_bfd}"
+                                        IsChecked="{Binding BFD, UpdateSourceTrigger=PropertyChanged}"
+                                        IsEnabled="{c:Binding '!local:DefaultSettings.IsCheckingForLicense and BTD'}"
+                                        ToolTip="{DynamicResource settings_bfd_tooltip}" />
+                                    <CheckBox
+                                        Margin="0,5,0,0"
+                                        Content="{DynamicResource settings_biu}"
+                                        IsChecked="{Binding BIU, UpdateSourceTrigger=PropertyChanged}"
+                                        IsEnabled="{c:Binding '!local:DefaultSettings.IsCheckingForLicense and BTD'}"
+                                        ToolTip="{DynamicResource settings_biu_tooltip}" />
+                                </WrapPanel>
 
                                 <Grid Margin="0,5,0,0">
                                     <Grid.ColumnDefinitions>

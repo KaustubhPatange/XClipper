@@ -10,16 +10,13 @@ using System.Threading.Tasks;
 using static Components.DefaultSettings;
 using static Components.TranslationHelper;
 using static Components.FirebaseHelper;
-using System.Windows;
 using static Components.MainHelper;
-using Microsoft.VisualBasic.Logging;
-using System.CodeDom.Compiler;
-using System.Windows.Media.Converters;
-using System.Data.SqlTypes;
-using System.Windows.Forms;
-using System.Threading;
-using System.Diagnostics;
-using System.Configuration;
+using static Components.Constants;
+using Firebase.Storage;
+using System.IO;
+using RestSharp;
+using Newtonsoft.Json.Linq;
+using System.Text.RegularExpressions;
 
 #nullable enable
 
@@ -35,11 +32,13 @@ namespace Components
         /// We will set a boolean which will let me know if there is on going operation is going.
         /// </summary>
         private bool isPreviousAddRemaining, isPreviousRemoveRemaining, isPreviousUpdateRemaining, isGlobalUserExecuting = false;
+        private bool isPreviousAddImageRemaining, isPreviousRemoveImageRemaining = false;
         private bool isClientInitialized = false;
         private readonly List<string> addStack = new List<string>();
         private readonly List<string> removeStack = new List<string>();
         private readonly Dictionary<string, string> updateStack = new Dictionary<string, string>();
         private readonly List<object> globalUserStack = new List<object>();
+        private readonly List<string> addImageStack, removeImageStack = new List<string>();
 
         private TimeSpan TIMEOUT_SPAN = TimeSpan.FromSeconds(15);
 
@@ -88,6 +87,7 @@ namespace Components
             removeStack.Clear(); isPreviousRemoveRemaining = false;
             globalUserStack.Clear(); isGlobalUserExecuting = false;
             updateStack.Clear(); isPreviousUpdateRemaining = false;
+            isPreviousAddImageRemaining = isPreviousRemoveImageRemaining = false;
         }
 
         /// <summary>
@@ -676,6 +676,75 @@ namespace Components
             isPreviousUpdateRemaining = false;
         }
 
+        /// <summary>
+        /// Add image related data to firebase, well not whole image but it's uploaded on
+        /// Firebase Storage & then the url is shared in the database.
+        /// </summary>
+        /// <param name="imagePath"></param>
+        /// <returns></returns>
+        public async Task AddImage(string? imagePath)
+        {
+            Log();
+            if (imagePath == null) return;
+            if (FirebaseCurrent?.Storage == null) return;
+            if (isPreviousAddImageRemaining)
+            {
+                addImageStack.Add(imagePath);
+                Log($"Adding to addImageStack: {addImageStack.Count}");
+                return;
+            }
+            isPreviousAddImageRemaining = true;
+            var stream = File.Open(imagePath, FileMode.Open);
+            var fileName = Path.GetFileName(imagePath);
+            var targetUrl = await new FirebaseStorage(FirebaseCurrent.Storage)
+               .Child("XClipper")
+               .Child("images")
+               .Child(fileName)
+               .PutAsync(stream);
+            stream.Close();
+
+            var response = await new RestClient(targetUrl).ExecuteTaskAsync(new RestRequest(Method.GET))
+                .TimeoutAfter(TimeSpan.FromSeconds(30)).ConfigureAwait(false);
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                var obj = JObject.Parse(response.Content);
+                var imageUrl = $"{targetUrl}?alt=media&token={obj["downloadTokens"]}";
+
+                AddClip($"![{fileName}]({imageUrl})"); // PS: I don't care what happens next!
+            }
+   
+            isPreviousAddImageRemaining = false;
+        }
+        
+        /// <summary>
+        /// Removes an image from Firebase Storage as well as routes to call remove clip method.
+        /// </summary>
+        /// <param name="imageMarkdownText">Must be in markdown format, <code>![]()</code></param>
+        /// <returns></returns>
+        public async Task RemoveImage(string imageMarkdownText)
+        {
+            Log();
+            if (FirebaseCurrent?.Storage == null) return;
+            if (isPreviousRemoveImageRemaining)
+            {
+                addImageStack.Add(imageMarkdownText);
+                Log($"Adding to addImageStack: {addImageStack.Count}");
+                return;
+            }
+            isPreviousRemoveImageRemaining = true;
+            var fileName = Regex.Match(imageMarkdownText, PATH_CLIP_IMAGE_DATA).Groups[2].Value;
+
+            await new FirebaseStorage(FirebaseCurrent.Storage)
+                .Child("XClipper")
+                .Child("images")
+                .Child(fileName)
+                .DeleteAsync().ConfigureAwait(false);
+
+            RemoveClip(imageMarkdownText); // PS: I don't care what happens next!
+
+            isPreviousRemoveImageRemaining = false;
+        }
+
         #endregion
 
     }
@@ -730,11 +799,20 @@ namespace Components
 
     public class FirebaseData
     {
+        private string _endpoint;
         public OAuth DesktopAuth { get; set; }
         public OAuth MobileAuth { get; set; }
-        public string Endpoint { get; set; }
+        public string Endpoint {
+            get { return _endpoint; }
+            set 
+            {
+                _endpoint = value;
+                Storage = _endpoint.Replace("firebaseio.com", "appspot.com");
+            } 
+        }
         public string AppId { get; set; }
         public string ApiKey { get; set; }
+        public string Storage { get; set; }
         public bool isAuthNeeded { get; set; }
     }
     public class OAuth

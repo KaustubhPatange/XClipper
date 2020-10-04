@@ -9,6 +9,7 @@ using System;
 using static Components.MainHelper;
 using System.Windows.Forms;
 using System.Windows.Navigation;
+using System.Security.RightsManagement;
 
 #nullable enable
 
@@ -354,6 +355,11 @@ namespace Components
         /// </summary>
         public static bool BindDelete { get; set; } = false;
 
+        /// <summary>
+        /// When set to true, App will respond to image related queries.
+        /// </summary>
+        public static bool BindImage { get; set; } = true;
+
         #endregion
 
         #region Notify Static PropertyChange
@@ -393,7 +399,8 @@ namespace Components
                     new XElement(nameof(DatabaseEncryptPassword), DatabaseEncryptPassword.Encrypt()),
                     new XElement(nameof(UseCustomPassword), UseCustomPassword.ToString()),
                     new XElement(nameof(BindDatabase), BindDatabase.ToString()),
-                    new XElement(nameof(BindDelete), BindDelete.ToString())
+                    new XElement(nameof(BindDelete), BindDelete.ToString()),
+                    new XElement(nameof(BindImage), BindImage.ToString())
                     );
             document.Add(settings);
             document.Save(SettingsPath);
@@ -516,6 +523,7 @@ namespace Components
             DisplayStartNotification = settings.Element(nameof(DisplayStartNotification)).Value.ToBool();
             BindDatabase = settings.Element(nameof(BindDatabase)).Value.ToBool();
             BindDelete = settings.Element(nameof(BindDelete)).Value.ToBool();
+            BindImage = settings.Element(nameof(BindImage)).Value.ToBool();
         }
 
         /// <summary>

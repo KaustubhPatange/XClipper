@@ -11,6 +11,11 @@ using System.Diagnostics;
 using System.Windows.Threading;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading.Tasks;
+using RestSharp;
+using System.Drawing;
+using RestSharp.Extensions;
+using System.Net.Http;
 
 namespace Components
 {
@@ -191,6 +196,20 @@ DEL ""%~f0""";
                 .EncryptBase64Common()
             };
             return true;
+        }
+
+        public static async Task DownloadFile(string url, string outImagePath)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                using (HttpResponseMessage response = await client.GetAsync(url).ConfigureAwait(false))
+                using (Stream dataStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
+                using (FileStream fileOutStream = File.Create(outImagePath))
+                {
+                    dataStream.Seek(0, SeekOrigin.Begin);
+                    dataStream.CopyTo(fileOutStream);
+                }
+            }
         }
     }
 }

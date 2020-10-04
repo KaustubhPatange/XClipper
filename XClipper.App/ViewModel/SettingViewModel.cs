@@ -79,6 +79,7 @@ namespace Components
         public string FDP { get; set; } = DatabaseEncryptPassword;
         public string UID { get; private set; } = UniqueID;
         public bool BTD { get; set; } = BindDatabase;
+        public bool BIU { get; set; } = BindImage;
         public bool BFD { get; set; } = BindDelete;
         public bool ISDB
         {
@@ -174,6 +175,7 @@ namespace Components
             TotalClipLength = TCL = 20;
             BindDatabase = BTD = false;
             BindDelete = BFD = false;
+            BindImage = BIU = true;
             SetAppStartupEntry();
             WriteSettings();
             MsgBoxHelper.ShowInfo(Translation.SETTINGS_RESET);
@@ -199,6 +201,7 @@ namespace Components
             HotKey = KEY_HK;
             CurrentAppLanguage = CAL;
             BindDelete = BFD;
+            BindImage = BIU;
             SetAppStartupEntry();
 
             var isBindApplied = ToggleBindDatabase();

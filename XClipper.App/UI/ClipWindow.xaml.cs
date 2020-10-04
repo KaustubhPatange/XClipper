@@ -534,7 +534,6 @@ namespace Components
             _qrWindow.CloseWindow();
             Hide();
             _lvClip.ItemsSource = null;
-            AppSingleton.GetInstance.ClearPaging();
             _tbSearchBox.Clear();
         }
 

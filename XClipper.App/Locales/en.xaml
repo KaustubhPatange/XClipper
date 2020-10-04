@@ -53,8 +53,10 @@
     <system:String x:Key="settings_upgrade_license">Upgrade license to unlock all features,</system:String>
     <system:String x:Key="settings_btd">Database binding (Two way)</system:String>
     <system:String x:Key="settings_btd_tooltip">When checked, app will respond and sync data with online database.</system:String>
-    <system:String x:Key="settings_bfd">Bind Deletion (Two Way)</system:String>
+    <system:String x:Key="settings_bfd">Bind Deletion (Two way)</system:String>
     <system:String x:Key="settings_bfd_tooltip">When checked, app will delete item locally if removed from server.</system:String>
+    <system:String x:Key="settings_biu">Bind Image (Two way)</system:String>
+    <system:String x:Key="settings_biu_tooltip">When checked, app will synchronize image related queries to/from server.</system:String>
     <system:String x:Key="settings_qr_tooltip_no_bind">Enable &quot;Database Binding&quot; to display QR code for connecting to mobile device.</system:String>
     <system:String x:Key="settings_qr_tooltip">Double click the QR Image to view in default image viewer.</system:String>
     <system:String x:Key="settings_purchase_info">Option available in paid version. Click on learn more.</system:String>

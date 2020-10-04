@@ -4,12 +4,15 @@ using System.Linq;
 using static Components.MainHelper;
 using static Components.DefaultSettings;
 using static Components.TableHelper;
+using static Components.Constants;
 using System.Threading.Tasks;
 using Autofac;
 using static WK.Libraries.SharpClipboardNS.SharpClipboard;
 using System;
 using System.Diagnostics;
 using System.Drawing.Printing;
+using System.Text.RegularExpressions;
+using System.IO;
 
 #nullable enable
 
@@ -53,16 +56,6 @@ namespace Components.viewModels
 
         #region Methods
 
-        public void ClearPaging() => Page = 1;
-        public bool CanFetchNext()
-        {
-            if (Page < TotalPage)
-            {
-                Page++;
-                return true;
-            }
-            return false;
-        }
         public void Close() => dataDB.CloseConnection();
         public void Init() => dataDB.Initialize();
 
@@ -155,7 +148,7 @@ namespace Components.viewModels
 
                 TotalClips = pinnedItems.Count() + normalItems.Count();
                 TotalPage = (TotalClips / TruncateList) + ((TotalClips % TruncateList != 0) ? 1 : 0);
-                
+
                 return pinnedItems.Concat(normalItems).ToList();
             }
         }
@@ -201,8 +194,10 @@ namespace Components.viewModels
             dataDB.Insert(model);
 
             if (pushToDatabase)
+            {
                 FirebaseSingleton.GetInstance.AddClip(model.ContentType == ContentType.Text ? model.RawText : null).RunAsync();
-
+                FirebaseSingleton.GetInstance.AddImage(model.ContentType == ContentType.Image ? model.ImagePath : null).RunAsync();
+            }
         }
 
         public void InsertTextClipNoUpdate(string UnEncryptedText)
@@ -226,6 +221,12 @@ namespace Components.viewModels
 
             var decryptedText = EncryptedText.DecryptBase64(DatabaseEncryptPassword);
 
+            if (Regex.IsMatch(decryptedText, PATH_CLIP_IMAGE_DATA))
+            {
+                UpdateDataForImage(decryptedText, invokeOnInserted);
+                return;
+            }
+
             bool dataExist = false;
             dataExist = dataDB.GetAllData().Exists(c => c.RawText == decryptedText);
             if (!dataExist)
@@ -238,6 +239,32 @@ namespace Components.viewModels
         }
 
         /// <summary>
+        /// This will add Image related queries to the local database coming from server.<br/><br/>
+        /// 
+        /// It also serves an additional purpose, naturally we cannot directly add image to <br/>
+        /// server because the image alt in markdown must match the local database model fileName. <br/><br/>
+        /// 
+        /// That's why this can use to find the image markdown from the server, then down the image <br/>
+        /// and update it to local server. <br/>
+        /// </summary>
+        /// <param name="unEncryptedText"></param>
+        /// <param name="invokeOnInserted"></param>
+        public async void UpdateDataForImage(string unEncryptedText, Action<string>? invokeOnInserted = null)
+        {
+            var match = Regex.Match(unEncryptedText, PATH_CLIP_IMAGE_DATA);
+            var fileName = match.Groups[2].Value;
+            var imageUri = match.Groups[5].Value;
+
+            bool dataExist = dataDB.GetAllData().Exists(c => c.ImagePath.EndsWith(fileName));
+            if (!dataExist)
+            {
+                var filePath = Path.Combine(ImageFolder, fileName);
+                await DownloadFile(imageUri, filePath).ConfigureAwait(false);
+                InsertContent(CreateTable(filePath, ContentTypes.Image));
+            }
+        }
+
+        /// <summary>
         /// Method will modify existing data locally as well as from Firebase.
         /// </summary>
         public void ModifyData(string oldData, TableCopy newData)
@@ -246,6 +273,8 @@ namespace Components.viewModels
             if (newData?.ContentType == ContentType.Text)
                 FirebaseSingleton.GetInstance.UpdateData(oldData, newData.RawText).RunAsync();
         }
+
+
         #endregion
 
         #region DeleteData
