@@ -13,6 +13,7 @@ using System.Diagnostics;
 using System.Drawing.Printing;
 using System.Text.RegularExpressions;
 using System.IO;
+using RestSharp.Extensions;
 
 #nullable enable
 
@@ -76,11 +77,6 @@ namespace Components.viewModels
         public void MakeExitRequest()
         {
             Binder.OnExitRequest();
-        }
-        public void DeleteData(TableCopy model)
-        {
-            DeleteClipData(model);
-            Binder.OnModelDeleted(ClipData);
         }
         public void DeleteData(List<TableCopy> models)
         {
@@ -252,15 +248,17 @@ namespace Components.viewModels
         public async void UpdateDataForImage(string unEncryptedText, Action<string>? invokeOnInserted = null)
         {
             var match = Regex.Match(unEncryptedText, PATH_CLIP_IMAGE_DATA);
-            var fileName = match.Groups[2].Value;
+            var fileName = match.Groups[2].Value.UrlDecode();
             var imageUri = match.Groups[5].Value;
 
-            bool dataExist = dataDB.GetAllData().Exists(c => c.ImagePath.EndsWith(fileName));
+            bool dataExist = dataDB.GetAllData().Exists(c => c?.ImagePath?.EndsWith(fileName) ?? false);
             if (!dataExist)
             {
                 var filePath = Path.Combine(ImageFolder, fileName);
                 await DownloadFile(imageUri, filePath).ConfigureAwait(false);
-                InsertContent(CreateTable(filePath, ContentTypes.Image));
+                InsertContent(CreateTable(filePath, ContentTypes.Image), false);
+                invokeOnInserted?.Invoke(unEncryptedText); 
+                // TODO: show some valid response when image is added to database. Currently it shows notify message with text.
             }
         }
 
@@ -273,7 +271,6 @@ namespace Components.viewModels
             if (newData?.ContentType == ContentType.Text)
                 FirebaseSingleton.GetInstance.UpdateData(oldData, newData.RawText).RunAsync();
         }
-
 
         #endregion
 
@@ -288,7 +285,7 @@ namespace Components.viewModels
         {
             TableCopy item = dataDB.GetAllData().Find(c => c.RawText == data);
 
-            if (item != null) DeleteClipData(item);
+            if (item != null) DeleteClipData(item, false);
             return item != null;
         }
 
@@ -302,7 +299,17 @@ namespace Components.viewModels
             dataDB.Delete(model);
 
             if (fromFirebase)
-                FirebaseSingleton.GetInstance.RemoveClip(model?.ContentType == ContentType.Text ? model.RawText : null).RunAsync();
+            {
+                switch (model?.ContentType)
+                {
+                    case ContentType.Text:
+                        FirebaseSingleton.GetInstance.RemoveClip(model.RawText).RunAsync();
+                        break;
+                    case ContentType.Image:
+                        FirebaseSingleton.GetInstance.RemoveImage(Path.GetFileName(model.ImagePath)).RunAsync();
+                        break;
+                }
+            }
         }
 
         /// <summary>
@@ -315,7 +322,11 @@ namespace Components.viewModels
             dataDB.Delete(models);
 
             if (fromFirebase)
-                FirebaseSingleton.GetInstance.RemoveClip(models.Select(c => c.RawText).ToList()).RunAsync();
+            {
+                FirebaseSingleton.GetInstance.RemoveClip(models.Select(c => c.RawText).OfType<string>().ToList()).RunAsync();
+                FirebaseSingleton.GetInstance.RemoveImageList(models.Select(c => c.ImagePath).OfType<string>()
+                    .Select(c => Path.GetFileName(c)).ToList()).RunAsync();
+            }
         }
 
         /// <summary>

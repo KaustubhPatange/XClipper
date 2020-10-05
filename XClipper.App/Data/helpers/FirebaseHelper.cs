@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.Security.RightsManagement;
 using System.Threading.Tasks;
 using System.Windows;
 using static Components.DefaultSettings;

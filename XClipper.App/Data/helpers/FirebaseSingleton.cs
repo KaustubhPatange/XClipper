@@ -32,13 +32,14 @@ namespace Components
         /// We will set a boolean which will let me know if there is on going operation is going.
         /// </summary>
         private bool isPreviousAddRemaining, isPreviousRemoveRemaining, isPreviousUpdateRemaining, isGlobalUserExecuting = false;
-        private bool isPreviousAddImageRemaining, isPreviousRemoveImageRemaining = false;
+        //private bool isPreviousAddImageRemaining, isPreviousRemoveImageRemaining = false;
         private bool isClientInitialized = false;
         private readonly List<string> addStack = new List<string>();
         private readonly List<string> removeStack = new List<string>();
         private readonly Dictionary<string, string> updateStack = new Dictionary<string, string>();
         private readonly List<object> globalUserStack = new List<object>();
-        private readonly List<string> addImageStack, removeImageStack = new List<string>();
+        //private readonly List<string> addImageStack = new List<string>();
+        //private readonly List<string> removeImageStack = new List<string>();
 
         private TimeSpan TIMEOUT_SPAN = TimeSpan.FromSeconds(15);
 
@@ -87,7 +88,7 @@ namespace Components
             removeStack.Clear(); isPreviousRemoveRemaining = false;
             globalUserStack.Clear(); isGlobalUserExecuting = false;
             updateStack.Clear(); isPreviousUpdateRemaining = false;
-            isPreviousAddImageRemaining = isPreviousRemoveImageRemaining = false;
+          //  isPreviousAddImageRemaining = isPreviousRemoveImageRemaining = false;
         }
 
         /// <summary>
@@ -499,9 +500,10 @@ namespace Components
         /// <returns></returns>
         public async Task AddClip(string? Text)
         {
+            if (Text == null) return;
             Log();
             // If some add operation is going, we will add it to stack.
-            if (isPreviousAddRemaining && Text != null)
+            if (isPreviousAddRemaining)
             {
                 addStack.Add(Text);
                 Log($"Adding to addStack: {addStack.Count}");
@@ -554,9 +556,10 @@ namespace Components
         /// <returns></returns>
         public async Task RemoveClip(string? Text)
         {
+            if (Text == null) return;
             Log();
             // If some remove operation is going, we will add it to stack.
-            if (isPreviousRemoveRemaining && Text != null)
+            if (isPreviousRemoveRemaining)
             {
                 removeStack.Add(Text);
                 Log($"Adding to removeStack: {removeStack.Count}");
@@ -684,65 +687,87 @@ namespace Components
         /// <returns></returns>
         public async Task AddImage(string? imagePath)
         {
-            Log();
             if (imagePath == null) return;
+            Log();
             if (FirebaseCurrent?.Storage == null) return;
-            if (isPreviousAddImageRemaining)
-            {
-                addImageStack.Add(imagePath);
-                Log($"Adding to addImageStack: {addImageStack.Count}");
-                return;
-            }
-            isPreviousAddImageRemaining = true;
+            //if (isPreviousAddImageRemaining)
+            //{
+            //    addImageStack.Add(imagePath);
+            //    Log($"Adding to addImageStack: {addImageStack.Count}");
+            //    return;
+            //}
+            //isPreviousAddImageRemaining = true;
             var stream = File.Open(imagePath, FileMode.Open);
             var fileName = Path.GetFileName(imagePath);
-            var targetUrl = await new FirebaseStorage(FirebaseCurrent.Storage)
+
+            var pathRef = new FirebaseStorage(FirebaseCurrent.Storage)
                .Child("XClipper")
                .Child("images")
-               .Child(fileName)
-               .PutAsync(stream);
+               .Child(fileName);
+            
+            await pathRef.PutAsync(stream); // Push to storage
+
             stream.Close();
+            var downloadUrl = await pathRef.GetDownloadUrlAsync().ConfigureAwait(false); // Retrieve download url
 
-            var response = await new RestClient(targetUrl).ExecuteTaskAsync(new RestRequest(Method.GET))
-                .TimeoutAfter(TimeSpan.FromSeconds(30)).ConfigureAwait(false);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK)
-            {
-                var obj = JObject.Parse(response.Content);
-                var imageUrl = $"{targetUrl}?alt=media&token={obj["downloadTokens"]}";
-
-                AddClip($"![{fileName}]({imageUrl})"); // PS: I don't care what happens next!
-            }
+            AddClip($"![{fileName}]({downloadUrl})");
    
-            isPreviousAddImageRemaining = false;
+            //isPreviousAddImageRemaining = false;
         }
-        
+
         /// <summary>
         /// Removes an image from Firebase Storage as well as routes to call remove clip method.
         /// </summary>
-        /// <param name="imageMarkdownText">Must be in markdown format, <code>![]()</code></param>
+        /// <param name="fileName"></param>
         /// <returns></returns>
-        public async Task RemoveImage(string imageMarkdownText)
+        public async Task RemoveImage(string fileName)
         {
             Log();
             if (FirebaseCurrent?.Storage == null) return;
-            if (isPreviousRemoveImageRemaining)
-            {
-                addImageStack.Add(imageMarkdownText);
-                Log($"Adding to addImageStack: {addImageStack.Count}");
-                return;
-            }
-            isPreviousRemoveImageRemaining = true;
-            var fileName = Regex.Match(imageMarkdownText, PATH_CLIP_IMAGE_DATA).Groups[2].Value;
+            //if (isPreviousRemoveImageRemaining)
+            //{
+            //    addImageStack.Add(fileName);
+            //    Log($"Adding to addImageStack: {addImageStack.Count}");
+            //    return;
+            //}
+            //isPreviousRemoveImageRemaining = true;
 
-            await new FirebaseStorage(FirebaseCurrent.Storage)
+            var pathRef = new FirebaseStorage(FirebaseCurrent.Storage)
+                .Child("XClipper")
+                .Child("images")
+                .Child(fileName);
+
+            try
+            {
+                var downloadUrl = await pathRef.GetDownloadUrlAsync().ConfigureAwait(false);
+                await new FirebaseStorage(FirebaseCurrent.Storage)
                 .Child("XClipper")
                 .Child("images")
                 .Child(fileName)
                 .DeleteAsync().ConfigureAwait(false);
 
-            RemoveClip(imageMarkdownText); // PS: I don't care what happens next!
+                RemoveClip($"![{fileName}]({downloadUrl})"); // PS I don't care what happens next!
+            }
+            finally
+            {
+                //isPreviousRemoveImageRemaining = false;
+            }
+        }
 
-            isPreviousRemoveImageRemaining = false;
+        /// <summary>
+        /// This will remove list of images from storage & route to remove it from firebase database.
+        /// </summary>
+        /// <param name="fileNames"></param>
+        /// <returns></returns>
+        public async Task RemoveImageList(List<string> fileNames)
+        {
+            Log();
+            if (FirebaseCurrent?.Storage == null) return;
+
+            foreach(var fileName in fileNames)
+            {
+                await RemoveImage(fileName).ConfigureAwait(false);
+            }
         }
 
         #endregion
@@ -807,7 +832,7 @@ namespace Components
             set 
             {
                 _endpoint = value;
-                Storage = _endpoint.Replace("firebaseio.com", "appspot.com");
+                Storage = _endpoint.Replace("firebaseio.com/", "appspot.com").Replace("https://","");
             } 
         }
         public string AppId { get; set; }
