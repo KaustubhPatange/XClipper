@@ -7,6 +7,7 @@
     <system:String x:Key="app_isrun_service">XClipper: Service already running</system:String>
     <system:String x:Key="app_update_title">Update available</system:String>
     <system:String x:Key="app_copy_title">Click to set clipboard</system:String>
+    <system:String x:Key="app_copy_title_image">Click to view the image</system:String>
     <system:String x:Key="app_update_text">Click to see more details.</system:String>
     <system:String x:Key="app_show">Show</system:String>
     <system:String x:Key="app_restart">Restart</system:String>

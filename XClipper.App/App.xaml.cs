@@ -120,6 +120,8 @@ namespace Components
                 }
                 ActivateLicense();
             });
+
+            AppNotificationHelper.register();
         }
 
         protected override void OnExit(ExitEventArgs e)
@@ -167,11 +169,6 @@ namespace Components
         #endregion
 
         #region Invokes
-
-        private void StopSyncClicked(object sender, EventArgs e)
-        {
-
-        }
 
         private void UpdateSettingClicked(object sender, EventArgs e)
         {
@@ -360,7 +357,7 @@ namespace Components
 
                 RunOnMainThread(() =>
                 {
-                MsgBoxHelper.ShowInfo(Translation.MSG_RESET_DATA_SUCCESS);
+                    MsgBoxHelper.ShowInfo(Translation.MSG_RESET_DATA_SUCCESS);
                 });
             });
         }
@@ -376,7 +373,7 @@ namespace Components
             // Reset the firebase configuration settings
             BindDatabase = BindDelete = false;
             WriteSettings();
-           
+
             RemoveFirebaseCredentials();
 
             DisplayNotifyMessage(Translation.SYNC_DISABLED_TITLE, Translation.SYNC_DISABLED_TEXT);
@@ -405,16 +402,27 @@ namespace Components
             Debug.WriteLine("[Changed] Path: " + e.Path + ", Data: " + e.Data);
             if (e.Path.Contains(PATH_CLIP_DATA))
             {
-                AppSingleton.GetInstance.CheckDataAndUpdate(e.Data, (unencryptedData, type) =>
+                AppSingleton.GetInstance.CheckDataAndUpdate(e.Data, (data, type) =>
                 {
-                    DisplayNotifyMessage(Translation.APP_COPY_TITLE, unencryptedData.Truncate(NOTIFICATION_TRUNCATE_TEXT), () =>
+                    switch (type)
                     {
-                        var recorder = AppModule.Container.Resolve<IKeyboardRecorder>();
-                        recorder.Ignore(() =>
-                        {
-                            Clipboard.SetText(unencryptedData);
-                        });
-                    });
+                        case ContentType.Text:
+                            Task.Run(() => { AppNotificationHelper.DisplayToastForText(rawText: data); });
+                            break;
+                        case ContentType.Image:
+                            Task.Run(() => { AppNotificationHelper.DisplayToastForImage(imagePath: data); });
+                            break;
+                    }
+
+                    // TODO: Check if above code works and remove below code along with it's implementation.
+                    //DisplayNotifyMessage(Translation.APP_COPY_TITLE, unencryptedData.Truncate(NOTIFICATION_TRUNCATE_TEXT), () =>
+                    //{
+                    //    var recorder = AppModule.Container.Resolve<IKeyboardRecorder>();
+                    //    recorder.Ignore(() =>
+                    //    {
+                    //        Clipboard.SetText(unencryptedData);
+                    //    });
+                    //});
                 });
             }
         }
@@ -479,7 +487,8 @@ namespace Components
             {
                 CallUpdateWindow(updateModel?.Desktop);
                 updateModel = null;
-            } else
+            }
+            else
             {
                 var result = MessageBox.Show(Translation.MSG_LICENSE_UPDATE, Translation.MSG_WARNING, MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 if (result == MessageBoxResult.Yes)
@@ -534,7 +543,7 @@ namespace Components
         private Action? savedClick;
         private void DisplayNotifyMessage(string title, string message, Action? Click = null)
         {
-           lock(notifyLock) // synchronized
+            lock (notifyLock) // synchronized
             {
                 notifyIcon.BalloonTipTitle = title;
                 notifyIcon.BalloonTipText = message;

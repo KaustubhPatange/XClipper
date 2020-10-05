@@ -230,7 +230,7 @@ namespace Components.viewModels
                 // Insert this data without updating online database.
                 Debug.WriteLine("Inserted Data");
                 InsertTextClipNoUpdate(decryptedText);
-                invokeOnInserted?.Invoke(decryptedText, ContentType.Text);
+                invokeOnInserted?.Invoke(decryptedText, ContentType.Text); // Return the unencrypted text
             }
         }
 
@@ -257,7 +257,7 @@ namespace Components.viewModels
                 var filePath = Path.Combine(ImageFolder, fileName);
                 await DownloadFile(imageUri, filePath).ConfigureAwait(false);
                 InsertContent(CreateTable(filePath, ContentTypes.Image), false);
-                invokeOnInserted?.Invoke(unEncryptedText, ContentType.Image);
+                invokeOnInserted?.Invoke(filePath, ContentType.Image); // Return image file path
             }
         }
 

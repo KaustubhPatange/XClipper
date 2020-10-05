@@ -21,6 +21,7 @@ namespace Components
         public string APP_ISRUN_SERVICE = rm.GetString("app_isrun_service");
         public string APP_UPDATE_TITLE = rm.GetString("app_update_title");
         public string APP_COPY_TITLE = rm.GetString("app_copy_title");
+        public string APP_COPY_TITLE_IMAGE = rm.GetString("app_copy_title_image");
         public string APP_UPDATE_TEXT = rm.GetString("app_update_text");
         public string APP_SHOW = rm.GetString("app_show");
         public string APP_SETTINGS = rm.GetString("app_settings");
