@@ -13,6 +13,8 @@ using System.IO;
 
 namespace Components
 {
+	// TODO: Add a custom logo for ToastVisual.
+
 	public static class AppNotificationHelper
 	{
 		public static void register()

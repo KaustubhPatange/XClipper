@@ -1,6 +1,7 @@
 package com.kpstv.xclipper
 
 import org.junit.Test
+import kotlin.system.measureTimeMillis
 
 class GenericTest {
 
@@ -16,5 +17,18 @@ class GenericTest {
         }else {
             println("Classes are different")
         }
+    }
+
+    @Test
+    fun assertRegexMatchTest() {
+
+        val seconds= measureTimeMillis {
+            val regex = "^(!\\[)(.*?)(])(\\((https?://.*?)\\))$".toRegex()
+
+            val text = "![Hello.png](https://google.com)"
+
+            println(regex.matches(text))
+        }
+        println("Time took: $seconds")
     }
 }

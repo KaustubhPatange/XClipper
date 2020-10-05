@@ -34,20 +34,33 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/ci_textView"
+            <FrameLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
-                android:ellipsize="end"
-                android:maxLines="5"
-                android:text="@string/testStringSmall"
-                android:textColor="?colorTextPrimary"
-                android:textSize="15sp"
+                app:layout_constrainedHeight="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/ci_copyButton"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/ci_imageView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxHeight="200dp" />
+
+                <TextView
+                    android:id="@+id/ci_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="5"
+                    android:text="@string/testStringSmall"
+                    android:textColor="?colorTextPrimary"
+                    android:textSize="15sp" />
+
+            </FrameLayout>
 
             <ImageButton
                 android:id="@+id/ci_copyButton"

@@ -87,7 +87,6 @@ data class ClipEntry(
         fun from(clip: Clip): ClipEntry = with(clip) {
             ClipEntry(data, DateConverter.fromDateToString(time))
         }
-
     }
 }
 

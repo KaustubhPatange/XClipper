@@ -1,7 +1,6 @@
 package com.kpstv.xclipper.ui.adapters
 
 import android.content.Context
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +13,9 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.google.android.flexbox.FlexboxLayout
+import com.kpstv.xclipper.App
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.extensions.collapse
@@ -57,7 +58,18 @@ class CIAdapter(
     override fun onBindViewHolder(holder: MainHolder, position: Int) {
         val clip = getItem(position)
 
-        holder.itemView.ci_textView.text = clip.data
+        val result = App.MARKDOWN_IMAGE_ONLY_REGEX.toRegex().matchEntire(clip.data ?: "")
+        if (result != null) {
+            val image = result.groups[5]?.value
+            holder.itemView.ci_textView.collapse()
+            holder.itemView.ci_imageView.show()
+            holder.itemView.ci_imageView.load(image)
+        }else {
+            holder.itemView.ci_copyButton.show()
+            holder.itemView.ci_imageView.collapse()
+            holder.itemView.ci_textView.show()
+            holder.itemView.ci_textView.text = clip.data
+        }
 
         holder.itemView.mainCard.setOnClickListener { onClick.invoke(clip, position) }
 
@@ -121,7 +133,7 @@ class CIAdapter(
                 holder.itemView.mainCard.setCardBackgroundColor(CARD_CLICK_COLOR)
             } else {
                 holder.itemView.mainCard.setCardBackgroundColor(CARD_COLOR)
-                holder.itemView.hiddenLayout.visibility = View.GONE
+                holder.itemView.hiddenLayout.collapse()
             }
         })
 
