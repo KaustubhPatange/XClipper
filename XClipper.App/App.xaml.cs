@@ -405,7 +405,7 @@ namespace Components
             Debug.WriteLine("[Changed] Path: " + e.Path + ", Data: " + e.Data);
             if (e.Path.Contains(PATH_CLIP_DATA))
             {
-                AppSingleton.GetInstance.CheckDataAndUpdate(e.Data, (unencryptedData) =>
+                AppSingleton.GetInstance.CheckDataAndUpdate(e.Data, (unencryptedData, type) =>
                 {
                     DisplayNotifyMessage(Translation.APP_COPY_TITLE, unencryptedData.Truncate(NOTIFICATION_TRUNCATE_TEXT), () =>
                     {

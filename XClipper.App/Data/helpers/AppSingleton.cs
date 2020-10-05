@@ -211,7 +211,7 @@ namespace Components.viewModels
         /// </summary>
         /// <param name="EncryptedText">Encrypted Text Data coming straight away from online database.</param>
         /// <param name="invokeOnInserted">Data will be an unencrypted clip data.</param>
-        public void CheckDataAndUpdate(string? EncryptedText, Action<string>? invokeOnInserted = null)
+        public void CheckDataAndUpdate(string? EncryptedText, Action<string, ContentType>? invokeOnInserted = null)
         {
             if (EncryptedText == null) return;
 
@@ -230,7 +230,7 @@ namespace Components.viewModels
                 // Insert this data without updating online database.
                 Debug.WriteLine("Inserted Data");
                 InsertTextClipNoUpdate(decryptedText);
-                invokeOnInserted?.Invoke(decryptedText);
+                invokeOnInserted?.Invoke(decryptedText, ContentType.Text);
             }
         }
 
@@ -245,7 +245,7 @@ namespace Components.viewModels
         /// </summary>
         /// <param name="unEncryptedText"></param>
         /// <param name="invokeOnInserted"></param>
-        public async void UpdateDataForImage(string unEncryptedText, Action<string>? invokeOnInserted = null)
+        public async void UpdateDataForImage(string unEncryptedText, Action<string, ContentType>? invokeOnInserted = null)
         {
             var match = Regex.Match(unEncryptedText, PATH_CLIP_IMAGE_DATA);
             var fileName = match.Groups[2].Value.UrlDecode();
@@ -257,8 +257,7 @@ namespace Components.viewModels
                 var filePath = Path.Combine(ImageFolder, fileName);
                 await DownloadFile(imageUri, filePath).ConfigureAwait(false);
                 InsertContent(CreateTable(filePath, ContentTypes.Image), false);
-                invokeOnInserted?.Invoke(unEncryptedText); 
-                // TODO: show some valid response when image is added to database. Currently it shows notify message with text.
+                invokeOnInserted?.Invoke(unEncryptedText, ContentType.Image);
             }
         }
 

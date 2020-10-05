@@ -268,6 +268,7 @@ namespace Components
             else Log("Oops, user is still null");
         }
 
+        // TODO: Code is of no use
         /// <summary>
         /// This will submit configuration change to database.
         /// </summary>
