@@ -367,6 +367,16 @@ namespace Components
 
         #region IFirebaseBinder Events 
 
+        public void OnImageAddedToStorage()
+        {
+            AppNotificationHelper.ShowBasicToast(
+                dispatcher: Dispatcher,
+                title: Translation.MSG_IMAGE_UPLOAD_TITLE,
+                message: Translation.MSG_IMAGE_UPLOAD_TEXT,
+                silent: !PlayNoticationSound
+            ).RunAsync();
+        }
+
         public void OnNoConfigurationFound() => CallSyncWindow();
 
         public void OnResetFirebaseConfig()

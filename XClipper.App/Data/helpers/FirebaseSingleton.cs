@@ -32,6 +32,7 @@ namespace Components
         /// We will set a boolean which will let me know if there is on going operation is going.
         /// </summary>
         private bool isPreviousAddRemaining, isPreviousRemoveRemaining, isPreviousUpdateRemaining, isGlobalUserExecuting = false;
+        // TODO: Remove this stacks for image Add & remove
         //private bool isPreviousAddImageRemaining, isPreviousRemoveImageRemaining = false;
         private bool isClientInitialized = false;
         private readonly List<string> addStack = new List<string>();
@@ -707,6 +708,8 @@ namespace Components
                .Child(fileName);
             
             await pathRef.PutAsync(stream); // Push to storage
+
+            binder.OnImageAddedToStorage();
 
             stream.Close();
             var downloadUrl = await pathRef.GetDownloadUrlAsync().ConfigureAwait(false); // Retrieve download url

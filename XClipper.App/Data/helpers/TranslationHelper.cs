@@ -98,6 +98,8 @@ namespace Components
         public string MSG_LICENSE_CHECK = rm.GetString("msg_license_check");
         public string MSG_LICENSE_CHECK_ERR = rm.GetString("msg_license_check_err");
         public string MSG_LICENSE_UPDATE = rm.GetString("msg_license_update");
+        public string MSG_IMAGE_UPLOAD_TITLE = rm.GetString("msg_image_upload_title");
+        public string MSG_IMAGE_UPLOAD_TEXT = rm.GetString("msg_image_upload_text");
         public string POPUP_ADDED = rm.GetString("popup_added");
         public string POPUP_SPACE_FOCUS = rm.GetString("popup_space_focus");
         public string POPUP_EDIT_ERR = rm.GetString("popup_edit_err");

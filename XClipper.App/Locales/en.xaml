@@ -118,6 +118,8 @@
     <system:String x:Key="msg_license_check">License validation is completed.</system:String>
     <system:String x:Key="msg_license_check_err">No license is associated with this UID.</system:String>
     <system:String x:Key="msg_license_update" xml:space="preserve">Automatic updates are disabled (Upgrade to remove it).&#10;&#10;You need to manually install the update from website.</system:String>
+    <system:String x:Key="msg_image_upload_title">Firebase storage</system:String>
+    <system:String x:Key="msg_image_upload_text">1 image uploaded.</system:String>
     <system:String x:Key="popup_added">Added:</system:String>
     <system:String x:Key="popup_space_focus">...Press (Space) to Focus...</system:String>
     <system:String x:Key="popup_edit_err">Editing is not supported for this format</system:String>

@@ -35,6 +35,11 @@ namespace Components
         /// reset the firebase setting.
         /// </summary>
         void OnResetFirebaseConfig();
+
+        /// <summary>
+        /// This will trigger when an image is added to firebase storage.
+        /// </summary>
+        void OnImageAddedToStorage();
     }
 
     public class RemovedEventArgs : EventArgs
