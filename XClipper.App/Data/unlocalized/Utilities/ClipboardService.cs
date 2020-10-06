@@ -7,6 +7,7 @@ using static Components.Constants;
 using static Components.TableHelper;
 using ClipboardManager.models;
 using System.Diagnostics;
+using System.Windows.Threading;
 
 namespace Components
 {
@@ -18,9 +19,12 @@ namespace Components
         private bool ToRecord = false;
         private IClipboardUtlity binder;
 
+        private long lastRecordMilliSeconds = 0;
+        private long offset = 500;
+
         #endregion
 
-        #region Contructor
+        #region Constructor
         public ClipboardService(IClipboardUtlity utility)
         {
             binder = utility;
@@ -55,9 +59,18 @@ namespace Components
 
         public void OnChanged()
         {
-
             if (!ToRecord)
                 return;
+
+            /**
+             * We will debounce the record span by the <see cref="offset"/>.
+             */ 
+            var currentMilliSeconds = GetCurrentMilliSeconds();
+
+            if ((lastRecordMilliSeconds + offset) > currentMilliSeconds)
+                return;
+
+            lastRecordMilliSeconds = GetCurrentMilliSeconds();
 
             /* We will capture copy/cut Text, Image (eg: PrintScr) and Files
              * and save it to database.
@@ -104,5 +117,14 @@ namespace Components
 
         #endregion
 
+
+        #region
+
+        private long GetCurrentMilliSeconds()
+        {
+            return DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+        }
+
+        #endregion
     }
 }
