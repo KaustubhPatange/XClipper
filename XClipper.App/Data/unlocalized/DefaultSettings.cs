@@ -363,7 +363,7 @@ namespace Components
         /// <summary>
         /// When set to true, App will respond to image related queries.
         /// </summary>
-        public static bool BindImage { get; set; } = true;
+        public static bool BindImage { get; set; } = false;
 
         #endregion
 

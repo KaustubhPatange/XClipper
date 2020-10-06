@@ -177,7 +177,7 @@ namespace Components
             TotalClipLength = TCL = 20;
             BindDatabase = BTD = false;
             BindDelete = BFD = false;
-            BindImage = BIU = true;
+            BindImage = BIU = false;
             SetAppStartupEntry();
             WriteSettings();
             MsgBoxHelper.ShowInfo(Translation.SETTINGS_RESET);

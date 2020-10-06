@@ -117,8 +117,7 @@ namespace Components
 
         #endregion
 
-
-        #region
+        #region Methods
 
         private long GetCurrentMilliSeconds()
         {

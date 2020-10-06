@@ -57,6 +57,7 @@ dependencies {
     implementation(LibraryDependency.FRAGMENT_KTX)
     implementation(LibraryDependency.CORE_KTX)
     implementation(LibraryDependency.COLLECTIONS_KTX)
+    implementation(LibraryDependency.RECYCLERVIEW)
     implementation(LibraryDependency.CONSTRAINT_LAYOUT)
     implementation(LibraryDependency.MATERIAL)
     implementation(LibraryDependency.PLAY_CORE)
