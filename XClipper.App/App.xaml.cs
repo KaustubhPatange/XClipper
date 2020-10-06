@@ -24,6 +24,7 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Windows.Threading;
 using System.Globalization;
+using System.Drawing;
 
 #nullable enable
 
@@ -121,7 +122,7 @@ namespace Components
                 ActivateLicense();
             });
 
-            AppNotificationHelper.register();
+            NotificationActivator.register();
         }
 
         protected override void OnExit(ExitEventArgs e)
@@ -376,7 +377,12 @@ namespace Components
 
             RemoveFirebaseCredentials();
 
-            DisplayNotifyMessage(Translation.SYNC_DISABLED_TITLE, Translation.SYNC_DISABLED_TEXT);
+            AppNotificationHelper.ShowBasicToast(
+                dispatcher: Dispatcher,
+                Translation.SYNC_DISABLED_TITLE,
+                message: Translation.SYNC_DISABLED_TEXT,
+                silent: !PlayNoticationSound
+            ).RunAsync();
         }
 
         public void OnNeedToGenerateToken(string ClientId, string ClientSecret)
@@ -407,10 +413,35 @@ namespace Components
                     switch (type)
                     {
                         case ContentType.Text:
-                            Task.Run(() => { AppNotificationHelper.DisplayToastForText(rawText: data); });
+                            AppNotificationHelper.ShowBasicToast(
+                                dispatcher: Dispatcher,
+                                title: Translation.APP_COPY_TITLE,
+                                message: data.Truncate(NOTIFICATION_TRUNCATE_TEXT),
+                                silent: !PlayNoticationSound,
+                                audioType: ToastAudioType.MAIL,
+                                doOnActivated: () =>
+                                {
+                                    var recorder = AppModule.Container.Resolve<IKeyboardRecorder>();
+                                    recorder.Ignore(() =>
+                                    {
+                                        Clipboard.SetText(data); // Set text as current clipboard.
+                                    });
+                                }
+                            ).RunAsync();
                             break;
                         case ContentType.Image:
-                            Task.Run(() => { AppNotificationHelper.DisplayToastForImage(imagePath: data); });
+                            AppNotificationHelper.ShowImageToast(
+                                dispatcher: Dispatcher,
+                                imagePath: data,
+                                title: Translation.APP_COPY_TITLE_IMAGE,
+                                message: data,
+                                silent: !PlayNoticationSound,
+                                audioType: ToastAudioType.MAIL,
+                                doOnActivated: () =>
+                                {
+                                    Process.Start(data); // Show image on default image viewer.
+                                }
+                            ).RunAsync();
                             break;
                     }
 
@@ -471,12 +502,16 @@ namespace Components
                 {
                     updateModel = model;
 
-                    notifyIcon.BalloonTipTitle = Translation.APP_UPDATE_TITLE;
-                    notifyIcon.BalloonTipText = Translation.APP_UPDATE_TEXT;
-                    notifyIcon.ShowBalloonTip(3000);
-
-                    notifyIcon.BalloonTipClicked -= NotifyIcon_BalloonTipClicked;
-                    notifyIcon.BalloonTipClicked += UpdateAction_BalloonTipClicked;
+                    AppNotificationHelper.ShowBasicToast(
+                        dispatcher: Dispatcher,
+                        title: Translation.APP_UPDATE_TITLE,
+                        message: Translation.APP_UPDATE_TEXT,
+                        silent: !PlayNoticationSound,
+                        doOnActivated: () =>
+                        {
+                            UpdateAction_BalloonTipClicked(this, EventArgs.Empty);
+                        }
+                    ).RunAsync();
                 }
             });
         }
@@ -531,37 +566,38 @@ namespace Components
         {
             if (DisplayStartNotification)
             {
-                Dispatcher.BeginInvoke(new Action(() =>
-                {
-                    notifyIcon.BalloonTipText = Translation.APP_START_SERVICE;
-                    notifyIcon.ShowBalloonTip(3000);
-                }));
+                AppNotificationHelper.ShowBasicToast(
+                    dispatcher: Dispatcher,
+                    title: Translation.APP_START_SERVICE,
+                    silent: !PlayNoticationSound
+                ).RunAsync();
             }
         }
 
-        private object notifyLock = new object();
-        private Action? savedClick;
-        private void DisplayNotifyMessage(string title, string message, Action? Click = null)
-        {
-            lock (notifyLock) // synchronized
-            {
-                notifyIcon.BalloonTipTitle = title;
-                notifyIcon.BalloonTipText = message;
-                notifyIcon.ShowBalloonTip(3000);
+        // TODO: Remove this code after testing notifications
+        //private object notifyLock = new object();
+        //private Action? savedClick;
+        //private void DisplayNotifyMessage(string title, string message, Action? Click = null)
+        //{
+        //    lock (notifyLock) // synchronized
+        //    {
+        //        notifyIcon.BalloonTipTitle = title;
+        //        notifyIcon.BalloonTipText = message;
+        //        notifyIcon.ShowBalloonTip(3000);
 
-                savedClick = Click;
+        //        savedClick = Click;
 
-                notifyIcon.BalloonTipClicked -= NotifyIcon_BalloonTipClicked;
-                notifyIcon.BalloonTipClicked -= UpdateAction_BalloonTipClicked;
-                notifyIcon.BalloonTipClicked += NotifyIcon_BalloonTipClicked;
-            }
-        }
+        //        notifyIcon.BalloonTipClicked -= NotifyIcon_BalloonTipClicked;
+        //        notifyIcon.BalloonTipClicked -= UpdateAction_BalloonTipClicked;
+        //        notifyIcon.BalloonTipClicked += NotifyIcon_BalloonTipClicked;
+        //    }
+        //}
 
-        private void NotifyIcon_BalloonTipClicked(object sender, EventArgs e)
-        {
-            savedClick?.Invoke();
-            savedClick = null;
-        }
+        //private void NotifyIcon_BalloonTipClicked(object sender, EventArgs e)
+        //{
+        //    savedClick?.Invoke();
+        //    savedClick = null;
+        //}
 
         private void LaunchCodeUI()
         {

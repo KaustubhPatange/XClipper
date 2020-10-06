@@ -88,7 +88,8 @@ namespace Components
                     }
                 }
 
-              //  binder.GetClipImage.Save(filePath);
+                // TODO: There was a GDI+ error causing from below code.
+                //  binder.GetClipImage.Save(filePath);
 
                 AppSingleton.GetInstance.InsertContent(CreateTable(filePath, ContentTypes.Image));
             }

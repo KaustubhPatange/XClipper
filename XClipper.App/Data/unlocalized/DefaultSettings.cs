@@ -174,6 +174,11 @@ namespace Components
         public static bool DisplayStartNotification { get; set; } = true;
 
         /// <summary>
+        /// This will sound when notification is shown.
+        /// </summary>
+        public static bool PlayNoticationSound { get; set; } = true;
+
+        /// <summary>
         /// Shows a notification if data change occurs from other devices.
         /// </summary>
         public static bool ShowDataChangeNotification { get; set; } = true;
@@ -393,6 +398,7 @@ namespace Components
                     new XElement(nameof(CheckApplicationUpdates), CheckApplicationUpdates.ToString()),
                     new XElement(nameof(ShowDataChangeNotification), ShowDataChangeNotification.ToString()),
                     new XElement(nameof(DisplayStartNotification), DisplayStartNotification.ToString()),
+                    new XElement(nameof(PlayNoticationSound), PlayNoticationSound.ToString()),
                     new XElement(nameof(IsSecureDB), IsSecureDB.ToString()),
                     new XElement(nameof(CurrentAppLanguage), CurrentAppLanguage.ToString()),
                     new XElement(nameof(CustomPassword), CustomPassword.Encrypt()),
@@ -521,6 +527,7 @@ namespace Components
             CheckApplicationUpdates = settings.Element(nameof(CheckApplicationUpdates)).Value.ToBool();
             ShowDataChangeNotification = settings.Element(nameof(ShowDataChangeNotification)).Value.ToBool();
             DisplayStartNotification = settings.Element(nameof(DisplayStartNotification)).Value.ToBool();
+            PlayNoticationSound = settings.Element(nameof(PlayNoticationSound)).Value.ToBool();
             BindDatabase = settings.Element(nameof(BindDatabase)).Value.ToBool();
             BindDelete = settings.Element(nameof(BindDelete)).Value.ToBool();
             BindImage = settings.Element(nameof(BindImage)).Value.ToBool();

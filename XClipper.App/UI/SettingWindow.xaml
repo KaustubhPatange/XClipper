@@ -47,6 +47,7 @@
                                 IsEnabled="{Binding Path=(local:DefaultSettings.IsPurchaseDone)}" />
                             <CheckBox Content="{DynamicResource settings_sdcn}" IsChecked="{Binding SDCN}" />
                             <CheckBox Content="{DynamicResource settings_dsn}" IsChecked="{Binding DSN}" />
+                            <CheckBox Content="{DynamicResource settings_pns}" IsChecked="{Binding PNS}" />
                             <Grid Margin="0,5,0,0" HorizontalAlignment="Stretch">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />

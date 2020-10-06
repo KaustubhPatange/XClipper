@@ -33,8 +33,9 @@
     <system:String x:Key="settings_hotkey">Hot Key</system:String>
     <system:String x:Key="settings_sass">Start application on System Startup</system:String>
     <system:String x:Key="settings_cau">Check for application updates automatically</system:String>
-    <system:String x:Key="settings_sdcn">Show notification if copy action takes place across devices.</system:String>
+    <system:String x:Key="settings_sdcn">Show notification if copy action takes place across devices</system:String>
     <system:String x:Key="settings_dsn">Display notification when app is launched</system:String>
+    <system:String x:Key="settings_pns">Play notification sound</system:String>
     <system:String x:Key="settings_tcl">Maximum no. of clip items to store in database</system:String>
     <system:String x:Key="settings_wts">Types of clip to store</system:String>
     <system:String x:Key="settings_adl">Window display location</system:String>

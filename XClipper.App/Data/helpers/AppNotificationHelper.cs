@@ -2,33 +2,38 @@
 using NotificationsExtensions;
 using NotificationsExtensions.Toasts;
 using System;
-using System.Collections.Generic;
 using System.Reflection;
-using static Components.TranslationHelper;
-using static Components.Constants;
-using Autofac;
-using System.Windows;
-using System.Diagnostics;
-using System.IO;
+using System.Threading.Tasks;
+using System.ComponentModel;
+using System.Windows.Threading;
+
+#nullable enable
 
 namespace Components
 {
 	// TODO: Add a custom logo for ToastVisual.
 
+	public enum ToastAudioType
+	{
+		[Description("ms-winsoundevent:Notification.Default")]
+		DEFAULT,
+		[Description("ms-winsoundevent:Notification.Mail")]
+		MAIL,
+		[Description("ms-winsoundevent:Notification.Reminder")]
+		REMINDER,
+	}
 	public static class AppNotificationHelper
 	{
-		public static void register()
-		{
-			NotificationActivator.RegisterComType(typeof(NotificationActivator), OnActivated);
-
-			NotificationHelper.RegisterComServer(typeof(NotificationActivator), Assembly.GetExecutingAssembly().Location);
-		}
 
 		/// <summary>
-		/// This will show notification for Text type data.
+		/// A basic toast
 		/// </summary>
-		/// <param name="rawText"></param>
-		public static async void DisplayToastForText(string rawText)
+		/// <param name="title"></param>
+		/// <param name="message"></param>
+		/// <param name="silent"></param>
+		/// <param name="doOnActivated"></param>
+		public static async Task ShowBasicToast(Dispatcher dispatcher, string title, string? message = null, bool silent = false, 
+			ToastAudioType audioType = ToastAudioType.DEFAULT, Action? doOnActivated = null)
 		{
 			var visual = new ToastVisual
 			{
@@ -36,23 +41,24 @@ namespace Components
 				{
 					Children =
 					{
-						new AdaptiveText { Text = Translation.APP_COPY_TITLE },
-						new AdaptiveText { Text = rawText.Truncate(NOTIFICATION_TRUNCATE_TEXT) },
+						new AdaptiveText { Text = title }
 					}
 				}
 			};
 
-			var request = CreateRequest(visual);
+			if (message != null)
+				visual.BindingGeneric.Children.Add(new AdaptiveText { Text = message });
+
+			var request = CreateRequest(visual, audioType, Silent: silent);
 
 			var result = await ToastManager.ShowAsync(request).ConfigureAwait(false);
 
 			if (result == ToastResult.Activated)
 			{
-				var recorder = AppModule.Container.Resolve<IKeyboardRecorder>();
-				recorder.Ignore(() =>
+				if (doOnActivated != null)
 				{
-					Clipboard.SetText(rawText);
-				});
+					dispatcher?.Invoke(doOnActivated);
+				}
 			}
 		}
 
@@ -60,7 +66,8 @@ namespace Components
 		/// This will show notification for image type data.
 		/// </summary>
 		/// <param name="imagePath"></param>
-		public static async void DisplayToastForImage(string imagePath)
+		public static async Task ShowImageToast(Dispatcher dispatcher, string imagePath, string? title = null, string? message = null,
+			bool silent = false, ToastAudioType audioType = ToastAudioType.DEFAULT, Action? doOnActivated = null)
 		{
 			var visual = new ToastVisual
 			{
@@ -69,25 +76,30 @@ namespace Components
 					Children =
 					{
 						new AdaptiveImage { Source = imagePath },
-						new AdaptiveText { Text = Translation.APP_COPY_TITLE_IMAGE },
-						new AdaptiveText { Text = imagePath },
 					}
 				}
 			};
 
-			var request = CreateRequest(visual);
+			if (title != null)
+				visual.BindingGeneric.Children.Add(new AdaptiveText { Text = title });
+
+			if (message != null)
+				visual.BindingGeneric.Children.Add(new AdaptiveText { Text = message });
+
+			var request = CreateRequest(visual, audioType, Silent: silent);
 
 			var result = await ToastManager.ShowAsync(request).ConfigureAwait(false);
 
 			if (result == ToastResult.Activated)
 			{
-				Process.Start(imagePath);
+				if (doOnActivated != null)
+				{
+					dispatcher?.Invoke(doOnActivated);
+				}
 			}
 		}
-
-		private const string MessageId = "Message";
 		
-		private static ToastRequest CreateRequest(ToastVisual visual, ToastDuration duration = ToastDuration.Short, bool Silent = false)
+		private static ToastRequest CreateRequest(ToastVisual visual, ToastAudioType audioType, ToastDuration duration = ToastDuration.Short, bool Silent = false)
 		{
 			var toastContent = new ToastContent
 			{
@@ -96,7 +108,7 @@ namespace Components
 				Audio = new NotificationsExtensions.Toasts.ToastAudio
 				{
 					Silent = Silent,
-					Src = new Uri("ms-winsoundevent:Notification.Mail")
+					Src = new Uri(EnumHelper.GetEnumDescription(audioType))
 				}
 			};
 
@@ -108,21 +120,6 @@ namespace Components
 				AppId = "XClipper.Wpf",
 				ActivatorId = typeof(NotificationActivator).GUID
 			};
-		}
-
-		private static void OnActivated(string arguments, Dictionary<string, string> data)
-		{
-			var result = "Activated";
-			if ((arguments?.StartsWith("action=")).GetValueOrDefault())
-			{
-				result = arguments.Substring("action=".Length);
-
-				if ((data?.ContainsKey(MessageId)).GetValueOrDefault())
-				{
-					// dispatch data[MessageId] for interactive toasts.
-				}
-			}
-			// dispatch result to know if toast is activated (click or interacted).
 		}
 	}
 }

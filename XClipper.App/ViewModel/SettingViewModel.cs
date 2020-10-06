@@ -62,6 +62,7 @@ namespace Components
         public bool SASS { get; set; } = StartOnSystemStartup;
         public bool CAU { get; set; } = CheckApplicationUpdates;
         public bool DSN { get; set; } = DisplayStartNotification;
+        public bool PNS { get; set; } = PlayNoticationSound;
         public bool SDCN { get; set; } = ShowDataChangeNotification;
         public XClipperStore WTS { get; set; } = WhatToStore;
         public XClipperLocation ADL { get; set; } = AppDisplayLocation;
@@ -161,6 +162,7 @@ namespace Components
             SASS = StartOnSystemStartup = false;
             CAU = CheckApplicationUpdates = true;
             DSN = DisplayStartNotification = true;
+            PNS = PlayNoticationSound = true;
             SDCN = ShowDataChangeNotification = true;
             WhatToStore = WTS = XClipperStore.All;
             AppDisplayLocation = ADL = XClipperLocation.BottomRight;
@@ -189,6 +191,7 @@ namespace Components
             StartOnSystemStartup = SASS;
             CheckApplicationUpdates = CAU;
             DisplayStartNotification = DSN;
+            PlayNoticationSound = PNS;
             ShowDataChangeNotification = SDCN;
             IsSecureDB = ISDB;
             WhatToStore = WTS;

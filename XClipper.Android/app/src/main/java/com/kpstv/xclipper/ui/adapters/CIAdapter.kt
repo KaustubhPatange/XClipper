@@ -66,7 +66,7 @@ class CIAdapter(
         val result = App.MARKDOWN_IMAGE_ONLY_REGEX.toRegex().matchEntire(clip.data ?: "")
         if (result != null) {
             val imageUrl = result.groups[5]?.value
-            
+
             holder.itemView.ci_imageView.show()
             holder.itemView.ci_imageView.load(imageUrl)
 
