@@ -721,7 +721,7 @@ namespace Components
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public async Task RemoveImage(string fileName)
+        public async Task RemoveImage(string fileName, bool onlyFromStorage = false)
         {
             Log();
             if (FirebaseCurrent?.Storage == null) return;
@@ -747,7 +747,8 @@ namespace Components
                 .Child(fileName)
                 .DeleteAsync().ConfigureAwait(false);
 
-                RemoveClip($"![{fileName}]({downloadUrl})"); // PS I don't care what happens next!
+                if (!onlyFromStorage)
+                    RemoveClip($"![{fileName}]({downloadUrl})"); // PS I don't care what happens next!
             }
             finally
             {

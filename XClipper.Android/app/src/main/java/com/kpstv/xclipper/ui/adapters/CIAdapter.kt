@@ -13,7 +13,9 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import coil.Coil
 import coil.load
+import coil.request.ImageRequest
 import com.google.android.flexbox.FlexboxLayout
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.R
@@ -58,17 +60,23 @@ class CIAdapter(
     override fun onBindViewHolder(holder: MainHolder, position: Int) {
         val clip = getItem(position)
 
+        holder.itemView.ci_textView.show()
+        holder.itemView.ci_textView.text = clip.data
+
         val result = App.MARKDOWN_IMAGE_ONLY_REGEX.toRegex().matchEntire(clip.data ?: "")
         if (result != null) {
-            val image = result.groups[5]?.value
-            holder.itemView.ci_textView.collapse()
+            val imageUrl = result.groups[5]?.value
             holder.itemView.ci_imageView.show()
-            holder.itemView.ci_imageView.load(image)
+            holder.itemView.ci_imageView.load(imageUrl)
+            val request = ImageRequest.Builder(context)
+                .data(imageUrl)
+                .target(holder.itemView.ci_imageView)
+                .listener(onSuccess = { _, _ ->
+                    holder.itemView.ci_textView.hide()
+                }).build()
+            Coil.enqueue(request)
         }else {
-            holder.itemView.ci_copyButton.show()
             holder.itemView.ci_imageView.collapse()
-            holder.itemView.ci_textView.show()
-            holder.itemView.ci_textView.text = clip.data
         }
 
         holder.itemView.mainCard.setOnClickListener { onClick.invoke(clip, position) }

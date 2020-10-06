@@ -34,7 +34,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <FrameLayout
+            <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
@@ -43,12 +43,6 @@
                 app:layout_constraintEnd_toStartOf="@id/ci_copyButton"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
-
-                <ImageView
-                    android:id="@+id/ci_imageView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxHeight="200dp" />
 
                 <TextView
                     android:id="@+id/ci_textView"
@@ -60,7 +54,13 @@
                     android:textColor="?colorTextPrimary"
                     android:textSize="15sp" />
 
-            </FrameLayout>
+                <ImageView
+                    android:id="@+id/ci_imageView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxHeight="200dp" />
+
+            </RelativeLayout>
 
             <ImageButton
                 android:id="@+id/ci_copyButton"

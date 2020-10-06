@@ -305,7 +305,7 @@ namespace Components.viewModels
                         FirebaseSingleton.GetInstance.RemoveClip(model.RawText).RunAsync();
                         break;
                     case ContentType.Image:
-                        FirebaseSingleton.GetInstance.RemoveImage(Path.GetFileName(model.ImagePath)).RunAsync();
+                        FirebaseSingleton.GetInstance.RemoveImage(Path.GetFileName(model.ImagePath), true).RunAsync();
                         break;
                 }
             }
