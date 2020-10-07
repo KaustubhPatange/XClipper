@@ -167,6 +167,17 @@ body {
   font-size: 12px;
 }
 
+.error-link {
+  font-size: 14px;
+  color: #aea98f;
+  text-decoration: underline;
+}
+
+.error-link:hover {
+  text-decoration: underline;
+  text-decoration-color: #aea98f;
+}
+
 .card-text {
   font-size: 13px;
 }

@@ -402,7 +402,7 @@ namespace Components
                 dispatcher: Dispatcher,
                 Translation.SYNC_DISABLED_TITLE,
                 message: Translation.SYNC_DISABLED_TEXT,
-                silent: !PlayNoticationSound
+                silent: !PlayNoticationSound 
             ).RunAsync();
         }
 
@@ -414,7 +414,6 @@ namespace Components
 
         public void OnDataAdded(ValueAddedEventArgs e)
         {
-            // Add user when node is inserted
             Debug.WriteLine("[Add] Path: " + e.Path + ", Change: " + e.Data);
             if (Regex.IsMatch(e.Path, DEVICE_REGEX_PATH_PATTERN))
             {
@@ -481,7 +480,6 @@ namespace Components
 
         public void OnDataRemoved(ValueRemovedEventArgs e)
         {
-            // Remove user node get's deleted
             Debug.WriteLine("[Remove] Path: " + e.Path);
             if (Regex.IsMatch(e.Path, CLIP_REGEX_PATH_PATTERN))
             {
@@ -496,8 +494,8 @@ namespace Components
 
         public void OnClipItemRemoved(RemovedEventArgs e)
         {
-            Debug.Write("[Removed Clip] Data: " + e.data);
-            Debug.WriteLine(", " + AppSingleton.GetInstance.DeleteClipData(e.data));
+            Debug.Write("[Removed Clip] Data: " + e?.data);
+            Debug.WriteLine(", " + AppSingleton.GetInstance.DeleteClipData(e?.data));
         }
 
         #endregion

@@ -185,7 +185,10 @@
                             <div id="modal-payment" style="display: none;">
                                 <div id="render-payment-button"></div>
                                 <span style="font-size: 13px; color: #fefefe;">Problems with purchase, <a
-                                        target="_blank" href="google.com">read FAQs</a></span>
+                                        target="_blank"
+                                        href="https://github.com/KaustubhPatange/XClipper/wiki/FAQs#purchase-faqs"><span
+                                            style="color: #fa8050;">read
+                                            FAQs</span></a></span>
                             </div>
                             <!-- TODO: Change this faq link -->
                             <div id="modal-progress" style="display: none; margin-bottom: 10px" class="loader"></div>
@@ -194,10 +197,13 @@
                                     Completed<br></span>
                                 <span>Restart XClipper instance on PC</span>
                             </div>
-                            <div style="margin-bottom: 10px; display: none;" id="modal-content-failed">
-                                <span style="font-size: 20px; color: #7e0326;">Payment
-                                    Failed<br></span>
-                                <span id="modal-content-text-subtitle">Error code: </span>
+                            <div style="display: block;" id="modal-content-failed">
+                                <span style="font-size: 20px; color: #7e0326;">Payment Failed</span><br />
+                                <span id="modal-content-text-subtitle">Error: </span>
+                                <a href="https://github.com/KaustubhPatange/XClipper/wiki/FAQs#purchase-faqs"><span
+                                        id="modal-content-text-subtitle" class="error-link"></span></a>
+                                <br />
+
                             </div>
                         </div>
                     </div>
@@ -302,6 +308,6 @@
 <script src="XClipper.Web/js/aos.js"></script>
 <script async defer src="https://buttons.github.io/buttons.js"></script>
 <script src="XClipper.Web/js/main.js"></script>
-<script src="XClipper.Web/js/purchase.min.js"></script>
+<script src="XClipper.Web/js/purchase.js"></script>
 
 </html>
