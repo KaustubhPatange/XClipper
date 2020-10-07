@@ -51,6 +51,7 @@ class CIAdapter(
     private lateinit var copyClick: (Clip, Int) -> Unit
     private lateinit var menuClick: (Clip, Int, MENU_TYPE) -> Unit
 
+    override fun getItemViewType(position: Int) = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainHolder =
         MainHolder(
@@ -60,8 +61,6 @@ class CIAdapter(
     override fun onBindViewHolder(holder: MainHolder, position: Int) {
         val clip = getItem(position)
 
-        holder.itemView.ci_imageView.collapse()
-        holder.itemView.ci_textView.show()
         holder.itemView.ci_textView.text = clip.data
 
         renderImageMarkdown(holder, clip.data)

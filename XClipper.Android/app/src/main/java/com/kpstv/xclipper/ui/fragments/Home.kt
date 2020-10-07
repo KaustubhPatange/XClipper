@@ -190,8 +190,8 @@ class Home : Fragment(R.layout.fragment_home), KodeinAware {
         }
 
         ci_recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        ci_recyclerView.recycledViewPool.setMaxRecycledViews(0, 15)
         ci_recyclerView.adapter = adapter
-        ci_recyclerView.setHasFixedSize(true)
 
         /** Swipe to delete item */
 
