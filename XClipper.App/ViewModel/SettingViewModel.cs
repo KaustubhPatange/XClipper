@@ -37,7 +37,6 @@ namespace Components
             KeyDownCommand = new RelayCommand<KeyEventArgs>(OnKeyDown, null);
             SaveCommand = new RelayCommand(SaveButtonClicked);
             ResetCommand = new RelayCommand(ResetButtonClicked);
-            PurchaseCommand = new RelayCommand(PurchaseButtonClicked);
             ConnectedCommand = new RelayCommand(ConnectedButtonClicked);
             ResetDataCommand = new RelayCommand(ResetDataButtonClicked);
             QRImageCommand = new RelayCommand<ImageSource>(QRImageDoubleClicked);
@@ -55,7 +54,6 @@ namespace Components
         public ICommand QRImageCommand { get; set; }
         public ICommand SaveCommand { get; set; }
         public ICommand ResetCommand { get; set; }
-        public ICommand PurchaseCommand { get; set; }
         public ICommand ConnectedCommand { get; set; }
         public ICommand ResetDataCommand { get; set; }
         public RelayCommand<KeyEventArgs> KeyDownCommand { get; set; }
@@ -116,14 +114,6 @@ namespace Components
         private void ConnectedButtonClicked()
         {
             _settingbinder?.OnConnectedDeviceClicked();
-        }
-
-        /// <summary>
-        /// This event will be raised when learn-more link is clicked in Connect Tab.
-        /// </summary>
-        private void PurchaseButtonClicked()
-        {
-            _settingbinder?.OnBuyButtonClicked();
         }
 
         /// <summary>

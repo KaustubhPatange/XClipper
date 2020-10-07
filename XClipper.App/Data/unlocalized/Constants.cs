@@ -100,6 +100,7 @@ namespace Components
         public const string MANUAL_ACTIVATION = "https://github.com/KaustubhPatange/XClipper/wiki/Manual-License-Activation";
         public const string MIGRATION_GUIDE = "https://github.com/KaustubhPatange/XClipper/wiki/Migrating-License";
         public const string SECURE_DB = "https://github.com/KaustubhPatange/XClipper/wiki/Using-secure-database";
+        public const string SECURE_FIREBASE = "https://github.com/KaustubhPatange/XClipper/wiki/Securing-Database";
 
         public const string UPGRADE_LICENSE = "https://kaustubhpatange.github.io/XClipper"; // todo: change this which is used in UpgradeTipItem
 

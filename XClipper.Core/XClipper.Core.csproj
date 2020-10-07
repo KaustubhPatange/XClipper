@@ -120,6 +120,7 @@
     <Compile Include="Data\Extensions\VisibilityExtensions.cs" />
     <Compile Include="Data\unlocalized\IBuyEventBinder.cs" />
     <Compile Include="Data\unlocalized\IClipBinder.cs" />
+    <Compile Include="Data\unlocalized\IClipServiceBinder.cs" />
     <Compile Include="Data\unlocalized\IDatabase.cs" />
     <Compile Include="Data\unlocalized\IFirebaseBinder.cs" />
     <Compile Include="Data\unlocalized\IKeyboardRecorder.cs" />

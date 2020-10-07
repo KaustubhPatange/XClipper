@@ -30,9 +30,6 @@ using System.Drawing;
 
 namespace Components
 {
-    /** For language edit Solution Explorer/Locales/en.xaml and paste it to locales/en.xaml 
-      * to create a fake linking between static and dynamic resource binding.
-      */
     public partial class App : Application, ISettingEventBinder, IFirebaseBinder, IBuyEventBinder, IClipServiceBinder
     {
         #region Variable Declaration
@@ -327,7 +324,7 @@ namespace Components
         #endregion
 
         #region IClipServiceBinder Events
-
+        
         public void OnImageSaveFailed()
         {
             AppNotificationHelper.ShowBasicToast(
@@ -354,11 +351,6 @@ namespace Components
         #endregion
 
         #region ISettingEventBinder Events
-
-        public void OnBuyButtonClicked()
-        {
-            CallBuyWindow();
-        }
 
         public void OnConnectedDeviceClicked()
         {
@@ -507,7 +499,6 @@ namespace Components
             Debug.Write("[Removed Clip] Data: " + e.data);
             Debug.WriteLine(", " + AppSingleton.GetInstance.DeleteClipData(e.data));
         }
-
 
         #endregion
 

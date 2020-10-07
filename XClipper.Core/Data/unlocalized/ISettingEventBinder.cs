@@ -8,7 +8,6 @@ namespace Components
 {
     public interface ISettingEventBinder
     {
-        void OnBuyButtonClicked();
         void OnConnectedDeviceClicked();
         void OnDataResetButtonClicked();
         void OnNoConfigurationFound();

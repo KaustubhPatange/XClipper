@@ -17,7 +17,7 @@
             Foreground="Red"
             Text="{DynamicResource settings_upgrade_license}" />
         <TextBlock>
-            <Hyperlink Command="{Binding PurchaseCommand}" NavigateUri="{Binding Source={x:Static local:Constants.UPGRADE_LICENSE}}">
+            <Hyperlink local:HyperlinkProperties.IsExternal="True" NavigateUri="{Binding Source={x:Static local:Constants.UPGRADE_LICENSE}}">
                 <TextBlock
                     VerticalAlignment="Top"
                     FontSize="11"
