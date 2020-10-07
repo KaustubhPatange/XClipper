@@ -9,6 +9,8 @@ using ClipboardManager.models;
 using System.Diagnostics;
 using System.Windows.Threading;
 
+#nullable enable
+
 namespace Components
 {
     /** This will be used to manage clipboard activities. */
@@ -18,6 +20,7 @@ namespace Components
 
         private bool ToRecord = false;
         private IClipboardUtlity binder;
+        private IClipServiceBinder? appBinder;
 
         private long lastRecordMilliSeconds = 0;
         private long offset = 500;
@@ -52,6 +55,10 @@ namespace Components
             StartRecording();
         }
 
+        public void SetAppBinder(IClipServiceBinder binder)
+        {
+            appBinder = binder;
+        }
 
         #endregion
 
@@ -95,14 +102,19 @@ namespace Components
                 {
                     using (FileStream fs = new FileStream(filePath, FileMode.Create, FileAccess.ReadWrite))
                     {
-                        binder.GetClipImage.Save(memory, System.Drawing.Imaging.ImageFormat.Png);
-                        byte[] bytes = memory.ToArray();
-                        fs.Write(bytes, 0, bytes.Length);
+                        try
+                        {
+                            binder.GetClipImage.Save(memory, System.Drawing.Imaging.ImageFormat.Png);
+                            byte[] bytes = memory.ToArray();
+                            fs.Write(bytes, 0, bytes.Length);
+                        }catch (Exception ex)
+                        {
+                            // There is a GDI+ as well as NullReference exception causing from below code.
+                            LogHelper.Log(this, ex.Message + ex.StackTrace);
+                            appBinder?.OnImageSaveFailed();
+                        }
                     }
                 }
-
-                // TODO: There was a GDI+ error causing from below code.
-                //  binder.GetClipImage.Save(filePath);
 
                 AppSingleton.GetInstance.InsertContent(CreateTable(filePath, ContentTypes.Image));
             }

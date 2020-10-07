@@ -98,7 +98,7 @@
 
                         <GroupBox Margin="3" IsEnabled="{Binding ElementName=_authNeeded, Path=IsChecked}">
                             <GroupBox.Header>
-                                <TextBlock Foreground="{Binding IAN, Converter={x:Static local:TextForegroundConverter.Instance}}" Text="Desktop" />
+                                <TextBlock Foreground="{Binding IAN, Converter={x:Static local:TextForegroundConverter.Instance}}" Text="{DynamicResource settings_desktop}" />
                             </GroupBox.Header>
                             <StackPanel Margin="10" Orientation="Vertical">
                                 <StackPanel Margin="0,0,0,0" Orientation="Vertical">
@@ -114,7 +114,7 @@
 
                         <GroupBox Margin="3" IsEnabled="{Binding ElementName=_authNeeded, Path=IsChecked}">
                             <GroupBox.Header>
-                                <TextBlock Foreground="{Binding IAN, Converter={x:Static local:TextForegroundConverter.Instance}}" Text="Mobile" />
+                                <TextBlock Foreground="{Binding IAN, Converter={x:Static local:TextForegroundConverter.Instance}}" Text="{DynamicResource settings_mobile}" />
                             </GroupBox.Header>
                             <StackPanel Margin="10" Orientation="Vertical">
                                 <TextBlock Foreground="{Binding IAN, Converter={x:Static local:TextForegroundConverter.Instance}}" Text="Client Id:" />

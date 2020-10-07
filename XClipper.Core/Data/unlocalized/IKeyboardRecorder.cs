@@ -26,5 +26,11 @@ namespace Components
         /// </summary>
         /// <param name="block"></param>
         void Ignore(Action block);
+
+        /// <summary>
+        /// An injected interface that provides a smooth communication with the App class.
+        /// </summary>
+        /// <param name="binder"></param>
+        void SetAppBinder(IClipServiceBinder binder);
     }
 }

@@ -33,7 +33,7 @@ namespace Components
     /** For language edit Solution Explorer/Locales/en.xaml and paste it to locales/en.xaml 
       * to create a fake linking between static and dynamic resource binding.
       */
-    public partial class App : Application, ISettingEventBinder, IFirebaseBinder, IBuyEventBinder
+    public partial class App : Application, ISettingEventBinder, IFirebaseBinder, IBuyEventBinder, IClipServiceBinder
     {
         #region Variable Declaration
 
@@ -71,6 +71,7 @@ namespace Components
 
             AppSingleton.GetInstance.Init();
 
+            recorder.SetAppBinder(this);
             recorder.StartRecording();
 
             hookUtility.Subscribe(LaunchCodeUI);
@@ -322,6 +323,24 @@ namespace Components
         }
 
         #endregion
+
+        #endregion
+
+        #region IClipServiceBinder Events
+
+        public void OnImageSaveFailed()
+        {
+            AppNotificationHelper.ShowBasicToast(
+                dispatcher: Dispatcher,
+                title: Translation.MSG_IMAGE_SAVE_FAILED_TITLE,
+                message: Translation.MSG_IMAGE_SAVE_FAILED_TEXT,
+                silent: !PlayNoticationSound,
+                doOnActivated: () =>
+                {
+                    Process.Start("explorer.exe", ApplicationLogDirectory);
+                }
+            ).RunAsync();
+        }
 
         #endregion
 

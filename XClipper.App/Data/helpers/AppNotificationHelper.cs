@@ -115,9 +115,9 @@ namespace Components
 			return new ToastRequest
 			{
 				ToastXml = toastContent.GetContent(),
-				ShortcutFileName = "XClipper.Wpf.lnk",
+				ShortcutFileName = "XClipper.lnk",
 				ShortcutTargetFilePath = Assembly.GetExecutingAssembly().Location,
-				AppId = "XClipper.Wpf",
+				AppId = "XClipper",
 				ActivatorId = typeof(NotificationActivator).GUID
 			};
 		}
