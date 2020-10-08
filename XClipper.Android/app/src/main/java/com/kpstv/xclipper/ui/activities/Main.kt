@@ -11,7 +11,6 @@ import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.ToolbarState
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.extensions.utils.ThemeUtils
-import com.kpstv.xclipper.ui.helpers.ReviewHelper
 import com.kpstv.xclipper.ui.helpers.UpdateHelper
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import com.kpstv.xclipper.ui.viewmodels.MainViewModelFactory
@@ -54,7 +53,6 @@ class Main : AppCompatActivity(), KodeinAware {
         }
 
         UpdateHelper(this).register()
-        ReviewHelper(this).register()
     }
 
     /**

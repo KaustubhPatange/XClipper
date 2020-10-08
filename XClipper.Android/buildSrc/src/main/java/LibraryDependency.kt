@@ -32,6 +32,7 @@ private object LibraryVersion {
     const val WORK_MANAGER = "2.4.0"
     const val HVLOG = "0.1-alpha03"
     const val COIL = "1.0.0-rc3"
+    const val GLIDE = "4.11.0"
     const val RECYCLERVIEW = "1.1.0"
 }
 
@@ -80,5 +81,7 @@ object LibraryDependency {
     const val GIF_DRAWABLE = "pl.droidsonroids.gif:android-gif-drawable:${LibraryVersion.GIF_DRAWABLE}"
     const val HVLOG = "io.github.kaustubhpatange:hvlog:${LibraryVersion.HVLOG}"
     const val COIL = "io.coil-kt:coil:${LibraryVersion.COIL}"
+    const val GLIDE = "com.github.bumptech.glide:glide:${LibraryVersion.GLIDE}"
+    const val GLIDE_COMPILER = "com.github.bumptech.glide:compiler:${LibraryVersion.GLIDE}"
     const val RECYCLERVIEW = "androidx.recyclerview:recyclerview:${LibraryVersion.RECYCLERVIEW}"
 }

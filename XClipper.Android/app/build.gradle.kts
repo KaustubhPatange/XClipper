@@ -97,7 +97,10 @@ dependencies {
     implementation(LibraryDependency.FLOATING_BUBBLE)
     implementation(LibraryDependency.GIF_DRAWABLE)
     implementation(LibraryDependency.HVLOG)
-    implementation(LibraryDependency.COIL)
+  //  implementation(LibraryDependency.COIL) // TODO: Remove this dependency
+    implementation(LibraryDependency.GLIDE)
+
+    kapt(LibraryDependency.GLIDE_COMPILER)
 
     debugImplementation(TestLibraryDependency.ANDROID_DEBUG_DB)
     testImplementation(TestLibraryDependency.JUNIT)

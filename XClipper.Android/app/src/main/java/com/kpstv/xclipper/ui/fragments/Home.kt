@@ -37,9 +37,11 @@ import com.kpstv.xclipper.ui.activities.Settings
 import com.kpstv.xclipper.ui.adapters.CIAdapter
 import com.kpstv.xclipper.ui.dialogs.EditDialog
 import com.kpstv.xclipper.ui.dialogs.TagDialog
+import com.kpstv.xclipper.ui.helpers.ReviewHelper
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import com.kpstv.xclipper.ui.viewmodels.MainViewModelFactory
 import es.dmoral.toasty.Toasty
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.layout_empty.*
 import kotlinx.coroutines.GlobalScope
@@ -83,6 +85,8 @@ class Home : Fragment(R.layout.fragment_home), KodeinAware {
         emptyLayout.setOnClickListener(fabListener)
 
         bindUI()
+
+        registerReviewHelper(view)
 
         checkForAccessibilityService()
 
@@ -365,7 +369,7 @@ class Home : Fragment(R.layout.fragment_home), KodeinAware {
                         Toasty.info(requireContext(), getString(R.string.sync_complete)).show()
                     },
                     onError = {
-                        val message = when(firebaseUtils.retrieveFirebaseStatus()) {
+                        val message = when (firebaseUtils.retrieveFirebaseStatus()) {
                             FirebaseState.NOT_INITIALIZED -> {
                                 getString(R.string.error_sync_uninitialized)
                             }
@@ -416,6 +420,21 @@ class Home : Fragment(R.layout.fragment_home), KodeinAware {
         }
     }
 
+    /**
+     * Register a review helper to automatically manage and show review dialog
+     */
+    private fun registerReviewHelper(view: View) {
+        ReviewHelper(
+            activity = requireActivity(),
+            onNeedToShowReview = { helper ->
+                Snackbar.make(view, getString(R.string.review_text), Snackbar.LENGTH_LONG)
+                    .setAction(getString(R.string.review)) {
+                        helper.requestForReview()
+                    }
+                    .show()
+            }
+        ).register()
+    }
 
     /**
      * So I found out that sometimes in Android 10, clipboard still not get captured using the

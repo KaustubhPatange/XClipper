@@ -47,7 +47,7 @@ namespace Components
             ToRecord = false;
         }
 
-       
+
         public void Ignore(Action block)
         {
             StopRecording();
@@ -71,7 +71,7 @@ namespace Components
 
             /**
              * We will debounce the record span by the <see cref="offset"/>.
-             */ 
+             */
             var currentMilliSeconds = GetCurrentMilliSeconds();
 
             if ((lastRecordMilliSeconds + offset) > currentMilliSeconds)
@@ -107,7 +107,9 @@ namespace Components
                             binder.GetClipImage.Save(memory, System.Drawing.Imaging.ImageFormat.Png);
                             byte[] bytes = memory.ToArray();
                             fs.Write(bytes, 0, bytes.Length);
-                        }catch (Exception ex)
+                            //AppSingleton.GetInstance.InsertContent(CreateTable(filePath, ContentTypes.Image));
+                        }
+                        catch (Exception ex)
                         {
                             // There is a GDI+ as well as NullReference exception causing from below code.
                             LogHelper.Log(this, ex.Message + ex.StackTrace);
@@ -116,7 +118,6 @@ namespace Components
                     }
                 }
 
-                AppSingleton.GetInstance.InsertContent(CreateTable(filePath, ContentTypes.Image));
             }
             else if (binder.ClipType == ContentType.Files && ToStoreFilesClips())
             {

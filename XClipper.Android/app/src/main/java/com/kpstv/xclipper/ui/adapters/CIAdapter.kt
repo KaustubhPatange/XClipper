@@ -13,9 +13,6 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import coil.Coil
-import coil.load
-import coil.request.ImageRequest
 import com.google.android.flexbox.FlexboxLayout
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.R
@@ -27,6 +24,7 @@ import com.kpstv.xclipper.extensions.utils.ThemeUtils.Companion.CARD_CLICK_COLOR
 import com.kpstv.xclipper.extensions.utils.ThemeUtils.Companion.CARD_COLOR
 import com.kpstv.xclipper.extensions.utils.ThemeUtils.Companion.CARD_SELECTED_COLOR
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.getColorFromAttr
+import com.kpstv.yts.extensions.load
 import kotlinx.android.synthetic.main.item_clip.view.*
 import java.util.*
 
@@ -165,23 +163,34 @@ class CIAdapter(
             val imageUrl = result.groups[5]?.value
 
             holder.itemView.ci_imageView.show()
-            holder.itemView.ci_imageView.load(imageUrl)
+            //holder.itemView.ci_imageView.load(imageUrl)
 
-            val request = ImageRequest.Builder(context)
-                .data(imageUrl)
-                .target(holder.itemView.ci_imageView)
-                .listener(
-                    onSuccess = { _, _ ->
-                        holder.itemView.ci_textView.hide()
-                    },
-                    onError = { _, _ ->
-                        holder.itemView.ci_imageView.collapse()
-                        holder.itemView.ci_textView.show()
-                    }
-                ).build()
-            Coil.enqueue(request)
+            holder.itemView.ci_imageView.load(
+                uri = imageUrl,
+                onSuccess = {
+                   // holder.itemView.ci_textView.hide()
+                },
+                onError = {
+                    holder.itemView.ci_imageView.collapse()
+                   // holder.itemView.ci_textView.show()
+                }
+            )
+
+//            val request = ImageRequest.Builder(context)
+//                .data(imageUrl)
+//                .target(holder.itemView.ci_imageView)
+//                .listener(
+//                    onSuccess = { _, _ ->
+//                        holder.itemView.ci_textView.hide()
+//                    },
+//                    onError = { _, _ ->
+//                        holder.itemView.ci_imageView.collapse()
+//                        holder.itemView.ci_textView.show()
+//                    }
+//                ).build()
+//            Coil.enqueue(request)
         } else {
-            holder.itemView.ci_textView.show()
+          //  holder.itemView.ci_textView.show()
             holder.itemView.ci_imageView.collapse()
         }
     }

@@ -149,4 +149,7 @@
     <string name="website_title">Official Website</string>
     <string name="report_title">Report a bug</string>
     <string name="report_summary">Create a Github issue in the official repository</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="review">Review</string>
+    <string name="review_text">Help us grow by reviewing the app :)</string>
 </resources>
