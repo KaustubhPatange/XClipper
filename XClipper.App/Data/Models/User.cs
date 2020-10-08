@@ -1,0 +1,82 @@
+﻿using System.Collections.Generic;
+using System.Xml.Linq;
+using static Components.DefaultSettings;
+
+#nullable enable
+
+namespace Components
+{
+    public class User
+    {
+        /// <summary>
+        /// Property tells what type of license user owns.
+        /// </summary>
+        public LicenseType LicenseStrategy { get; set; }
+
+        /// <summary>
+        /// Property tells whether the user has purchased license for this software or not.
+        /// </summary>
+        public bool IsLicensed { get; set; }
+
+        /// <summary>
+        /// Property tells the maximum number of device to be connected.
+        /// </summary>
+        public int TotalConnection { get; set; } = DatabaseMaxConnection;
+
+        /// <summary>
+        /// Property denotes the maximum this database can hold.
+        /// </summary>
+        public int MaxItemStorage { get; set; } = DatabaseMaxItem;
+
+        /// <summary>
+        /// Property tells the last connected Android device given its ID. Null means no one is connected.
+        /// </summary>
+        public List<Device>? Devices { get; set; }
+
+        /// <summary>
+        /// Property stores all the clip data.
+        /// </summary>
+        public List<Clip>? Clips { get; set; }
+
+        public static XElement ToNode(User t)
+        {
+            var node = new XElement(nameof(User));
+            node.Add(new XElement(nameof(t.IsLicensed), t.IsLicensed));
+            node.Add(new XElement(nameof(t.MaxItemStorage), t.MaxItemStorage));
+            node.Add(new XElement(nameof(t.TotalConnection), t.TotalConnection));
+            node.Add(new XElement(nameof(t.LicenseStrategy), (int)t.LicenseStrategy));
+
+            var deviceList = new XElement(nameof(t.Devices));
+            foreach (var device in t.Devices) deviceList.Add(Device.ToNode(device));
+
+            var clipList = new XElement(nameof(Clip));
+            foreach (var clip in t.Clips) clipList.Add(Clip.ToNode(clip));
+
+            node.Add(deviceList);
+            node.Add(clipList);
+
+            return node;
+        }
+
+        public static User FromNode(XElement t)
+        {
+            var model = new User();
+            model.IsLicensed = t.Element(nameof(model.IsLicensed)).Value.ToBool();
+            model.MaxItemStorage = t.Element(nameof(model.MaxItemStorage)).Value.ToInt();
+            model.TotalConnection = t.Element(nameof(model.TotalConnection)).Value.ToInt();
+            model.LicenseStrategy = (LicenseType) t.Element(nameof(model.LicenseStrategy)).Value.ToInt();
+
+            var deviceList = new List<Device>();
+            var xDeviceList = t.Element(nameof(model.Devices));
+            foreach (var xDevice in xDeviceList.Elements()) deviceList.Add(Device.FromNode(xDevice));
+            model.Devices = deviceList;
+
+            var clipList = new List<Clip>();
+            var xClipList = t.Element(nameof(model.Clips));
+            foreach (var xClip in xClipList.Elements()) clipList.Add(Clip.FromNode(xClip));
+            model.Clips = clipList;
+
+            return model;
+        }
+    }
+}

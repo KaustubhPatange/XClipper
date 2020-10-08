@@ -17,6 +17,7 @@ using System.IO;
 using RestSharp;
 using Newtonsoft.Json.Linq;
 using System.Text.RegularExpressions;
+using System.Security.RightsManagement;
 
 #nullable enable
 
@@ -24,7 +25,7 @@ using System.Text.RegularExpressions;
 
 namespace Components
 {
-    public sealed class FirebaseSingleton
+    public sealed class FirebaseSingleton : IDisposable
     {
         #region Variable Declaration
 
@@ -32,15 +33,12 @@ namespace Components
         /// We will set a boolean which will let me know if there is on going operation is going.
         /// </summary>
         private bool isPreviousAddRemaining, isPreviousRemoveRemaining, isPreviousUpdateRemaining, isGlobalUserExecuting = false;
-        // TODO: Remove this stacks for image Add & remove
-        //private bool isPreviousAddImageRemaining, isPreviousRemoveImageRemaining = false;
+     
         private bool isClientInitialized = false;
         private readonly List<string> addStack = new List<string>();
         private readonly List<string> removeStack = new List<string>();
         private readonly Dictionary<string, string> updateStack = new Dictionary<string, string>();
         private readonly List<object> globalUserStack = new List<object>();
-        //private readonly List<string> addImageStack = new List<string>();
-        //private readonly List<string> removeImageStack = new List<string>();
 
         private TimeSpan TIMEOUT_SPAN = TimeSpan.FromSeconds(15);
 
@@ -89,7 +87,6 @@ namespace Components
             removeStack.Clear(); isPreviousRemoveRemaining = false;
             globalUserStack.Clear(); isGlobalUserExecuting = false;
             updateStack.Clear(); isPreviousUpdateRemaining = false;
-          //  isPreviousAddImageRemaining = isPreviousRemoveImageRemaining = false;
         }
 
         /// <summary>
@@ -415,7 +412,7 @@ namespace Components
 
         #endregion
 
-        #region User Related Method
+        #region User Handling Method
 
         /// <summary>
         /// Checks if the user exist in the nodes or not.
@@ -692,13 +689,7 @@ namespace Components
             if (imagePath == null) return;
             Log();
             if (FirebaseCurrent?.Storage == null) return;
-            //if (isPreviousAddImageRemaining)
-            //{
-            //    addImageStack.Add(imagePath);
-            //    Log($"Adding to addImageStack: {addImageStack.Count}");
-            //    return;
-            //}
-            //isPreviousAddImageRemaining = true;
+
             var stream = File.Open(imagePath, FileMode.Open);
             var fileName = Path.GetFileName(imagePath);
 
@@ -715,8 +706,6 @@ namespace Components
             var downloadUrl = await pathRef.GetDownloadUrlAsync().ConfigureAwait(false); // Retrieve download url
 
             AddClip($"![{fileName}]({downloadUrl})");
-   
-            //isPreviousAddImageRemaining = false;
         }
 
         /// <summary>
@@ -728,13 +717,6 @@ namespace Components
         {
             Log();
             if (FirebaseCurrent?.Storage == null) return;
-            //if (isPreviousRemoveImageRemaining)
-            //{
-            //    addImageStack.Add(fileName);
-            //    Log($"Adding to addImageStack: {addImageStack.Count}");
-            //    return;
-            //}
-            //isPreviousRemoveImageRemaining = true;
 
             var pathRef = new FirebaseStorage(FirebaseCurrent.Storage)
                 .Child("XClipper")
@@ -754,9 +736,7 @@ namespace Components
                     RemoveClip($"![{fileName}]({downloadUrl})"); // PS I don't care what happens next!
             }
             finally
-            {
-                //isPreviousRemoveImageRemaining = false;
-            }
+            { }
         }
 
         /// <summary>
@@ -777,79 +757,9 @@ namespace Components
 
         #endregion
 
-    }
-
-    #region Entities
-
-    public class User
-    {
-        /// <summary>
-        /// Property tells what type of license user owns.
-        /// </summary>
-        public LicenseType LicenseStrategy { get; set; }
-
-        /// <summary>
-        /// Property tells whether the user has purchased license for this software or not.
-        /// </summary>
-        public bool IsLicensed { get; set; }
-
-        /// <summary>
-        /// Property tells the maximum number of device to be connected.
-        /// </summary>
-        public int TotalConnection { get; set; } = DatabaseMaxConnection;
-
-        /// <summary>
-        /// Property denotes the maximum this database can hold.
-        /// </summary>
-        public int MaxItemStorage { get; set; } = DatabaseMaxItem;
-
-        /// <summary>
-        /// Property tells the last connected Android device given its ID. Null means no one is connected.
-        /// </summary>
-        public List<Device>? Devices { get; set; }
-
-        /// <summary>
-        /// Property stores all the clip data.
-        /// </summary>
-        public List<Clip>? Clips { get; set; }
-    }
-
-    public class Device
-    {
-        public string id { get; set; }
-        public int sdk { get; set; }
-        public string model { get; set; }
-    }
-
-    public class Clip
-    {
-        public string data { get; set; }
-        public string time { get; set; }
-    }
-
-    public class FirebaseData
-    {
-        private string _endpoint;
-        public OAuth DesktopAuth { get; set; }
-        public OAuth MobileAuth { get; set; }
-        public string Endpoint {
-            get { return _endpoint; }
-            set 
-            {
-                _endpoint = value;
-                Storage = _endpoint.Replace("firebaseio.com/", "appspot.com").Replace("https://","");
-            } 
+        public void Dispose()
+        {
+            client.Dispose();
         }
-        public string AppId { get; set; }
-        public string ApiKey { get; set; }
-        public string Storage { get; set; }
-        public bool isAuthNeeded { get; set; }
     }
-    public class OAuth
-    {
-        public string ClientId { get; set; }
-        public string? ClientSecret { get; set; }
-    }
-
-    #endregion
 }
