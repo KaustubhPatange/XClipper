@@ -22,9 +22,6 @@ namespace Components
         private IClipboardUtlity binder;
         private IClipServiceBinder? appBinder;
 
-        private long lastRecordMilliSeconds = 0;
-        private long offset = 500;
-
         #endregion
 
         #region Constructor
@@ -69,16 +66,6 @@ namespace Components
             if (!ToRecord)
                 return;
 
-            /**
-             * We will debounce the record span by the <see cref="offset"/>.
-             */
-            var currentMilliSeconds = GetCurrentMilliSeconds();
-
-            if ((lastRecordMilliSeconds + offset) > currentMilliSeconds)
-                return;
-
-            lastRecordMilliSeconds = GetCurrentMilliSeconds();
-
             /* We will capture copy/cut Text, Image (eg: PrintScr) and Files
              * and save it to database.
              */
@@ -107,7 +94,7 @@ namespace Components
                             binder.GetClipImage.Save(memory, System.Drawing.Imaging.ImageFormat.Png);
                             byte[] bytes = memory.ToArray();
                             fs.Write(bytes, 0, bytes.Length);
-                            //AppSingleton.GetInstance.InsertContent(CreateTable(filePath, ContentTypes.Image));
+                            //AppSingleton.GetInstance.InsertContent(CreateTable(filePath, ContentTypes.Image)); // TODO: Enable it again
                         }
                         catch (Exception ex)
                         {
@@ -126,15 +113,6 @@ namespace Components
 
                 binder.ClipFiles.Clear();
             }
-        }
-
-        #endregion
-
-        #region Methods
-
-        private long GetCurrentMilliSeconds()
-        {
-            return DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
         }
 
         #endregion
