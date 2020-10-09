@@ -314,12 +314,6 @@ class FirebaseProviderImpl(
         validationContext: ValidationContext = ValidationContext.Default,
         block: (Boolean) -> Unit
     ) {
-        if (!validateUser()) {
-            HVLog.d("Inconsistent behavior")
-            block.invoke(false)
-            return
-        }
-
         HVLog.d()
         /**
          * Make sure the device is a valid device so that we can make connection
@@ -424,11 +418,6 @@ class FirebaseProviderImpl(
 
                 if (json == null)
                     error.invoke(Exception("Database is null"))
-
-//                if (json != null && validDevice)
-//                    changed.invoke(firebaseUser)
-//                else
-//                    error.invoke(Exception("Database is null"))
 
                 if (!isDeviceAdding && !validDevice)
                     isInitialized.postValue(false)
