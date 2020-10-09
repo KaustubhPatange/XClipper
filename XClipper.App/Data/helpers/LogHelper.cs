@@ -41,5 +41,13 @@ namespace Components
                 writer.Close();
             }
         }
+
+        /// <summary>
+        /// This method will open the current log file
+        /// </summary>
+        public static void OpenLogFile()
+        {
+            Process.Start(LOG_FILE);
+        }
     }
 }

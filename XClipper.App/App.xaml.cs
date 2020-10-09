@@ -379,7 +379,7 @@ namespace Components
 
         #region IFirebaseBinder Events 
 
-        public void OnImageAddedToStorage()
+        public void SendNotification(string title, string message, Action? onActive)
         {
             AppNotificationHelper.ShowBasicToast(
                 dispatcher: Dispatcher,

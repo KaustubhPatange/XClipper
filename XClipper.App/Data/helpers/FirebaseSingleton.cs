@@ -60,7 +60,7 @@ namespace Components
 
         /// <summary>
         /// Since <see cref="InitConfig(FirebaseData?)"/> is used in many cases it is not safe to call <br/>
-        /// <see cref="SetCallback"/> more than once. This boolean will make sure to call it once.
+        /// <see cref="SetUserCallback"/> more than once. This boolean will make sure to call it once.
         /// </summary>
         private bool isBinded = false;
 
@@ -145,6 +145,7 @@ namespace Components
             if (data == null || data.Body == "null") // Sometimes it catch to this exception which is due to unknown error.
             {
                 Log("Data body is null");
+                binder.SendNotification(Translation.SYNC_ERROR_TITLE, Translation.SYNC_UNKNOWN_ERROR, LogHelper.OpenLogFile);
                 return await RegisterUser().ConfigureAwait(false);
             }
             else return data.ResultAs<User>();//.Also((user) => { this.user = user; });
@@ -238,7 +239,7 @@ namespace Components
             await SetGlobalUserTask(true).ConfigureAwait(false);
 
             // BindUI is already set, make sure to set callback to it.
-            SetCallback();
+            SetUserCallback();
 
             isClientInitialized = true;
         }
@@ -420,7 +421,7 @@ namespace Components
         /// This sets call back to the binder events with an attached interface.<br/>
         /// Must be used after <see cref="FirebaseSingleton.BindUI(IFirebaseBinder)"/>
         /// </summary>
-        private async void SetCallback()
+        private async void SetUserCallback()
         {
             Log();
             if (isBinded) return;
@@ -454,6 +455,11 @@ namespace Components
                 }
                 LogHelper.Log(this, ex.StackTrace);
             }
+        }
+
+        private async void SetClipCallbacks()
+        {
+
         }
 
         #endregion
@@ -757,7 +763,7 @@ namespace Components
 
             await pathRef.PutAsync(stream); // Push to storage
 
-            binder.OnImageAddedToStorage();
+            binder.SendNotification(Translation.MSG_IMAGE_UPLOAD_TITLE, Translation.MSG_IMAGE_UPLOAD_TEXT);
 
             stream.Close();
             var downloadUrl = await pathRef.GetDownloadUrlAsync().ConfigureAwait(false); // Retrieve download url

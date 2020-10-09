@@ -136,6 +136,8 @@ namespace Components
         public string SYNC_ID_DEFAULT = rm.GetString("sync_id_default");
         public string SYNC_ID_CUSTOM = rm.GetString("sync_id_custom");
         public string SYNC_CONFIG_ERR = rm.GetString("sync_config_err");
+        public string SYNC_ERROR_TITLE = rm.GetString("sync_error_title");
+        public string SYNC_UNKNOWN_ERROR = rm.GetString("sync_unknown_error");
         public string UPDATE_TITLE = rm.GetString("update_title");
         public string UPDATE_DOWNLOAD_COMPLETE = rm.GetString("update_download_complete");
     }

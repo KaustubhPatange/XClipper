@@ -1,7 +1,8 @@
-﻿
-using FireSharp.Core.EventStreaming;
+﻿using FireSharp.Core.EventStreaming;
 using System;
 using System.Collections.Generic;
+
+#nullable enable
 
 namespace Components
 {
@@ -37,9 +38,9 @@ namespace Components
         void OnResetFirebaseConfig();
 
         /// <summary>
-        /// This will trigger when an image is added to firebase storage.
+        /// This will allow us to send notification from firebase.
         /// </summary>
-        void OnImageAddedToStorage();
+        void SendNotification(string title, string message, Action? onActive = null);
     }
 
     public class RemovedEventArgs : EventArgs

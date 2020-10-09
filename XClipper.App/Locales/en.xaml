@@ -177,6 +177,8 @@
     <system:String x:Key="sync_id_custom">XClipper will use custom App Id from configuration file.</system:String>
     <system:String x:Key="sync_config_err" xml:space="preserve">No Firebase configuration file found. Would you like to create it?&#10;&#10;You can always create it from System Tray &gt; XClipper &gt; FirebaseConfiguration.</system:String>
     <system:String x:Key="sync_insecure_database">Your database is not secure,</system:String>
+    <system:String x:Key="sync_error_title">Oops...</system:String>
+    <system:String x:Key="sync_unknown_error">Unknown error occurred, check logs for more details</system:String>
     <system:String x:Key="update_title">Update Checker</system:String>
     <system:String x:Key="update_download_complete">Download completed. Click &quot;OK&quot; to install the update.&#10;&#10;Tip: Current process will killed during this update.</system:String>
     <system:String x:Key="connect_title">Connect</system:String>
