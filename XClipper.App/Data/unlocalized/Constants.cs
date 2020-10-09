@@ -24,13 +24,14 @@ namespace Components
         public static string SettingsPath = Path.Combine(ApplicationDirectory, "config.xml");
         public static string LicenseFilePath = Path.Combine(ApplicationDirectory, "key.lic");
         public static string BackupFolder = Path.Combine(ApplicationDirectory, "Backup");
-        public static string ImageFolder = Path.Combine(ApplicationDirectory, "Image-temp");
+        public static string ImageFolder = Path.Combine(ApplicationDirectory, "Image");
         public static string DatabasePath = Path.Combine(ApplicationDirectory, "data.db");
         public static string CustomFirebasePath = Path.Combine(ApplicationDirectory, "custom-firebase.xml");
         public static string FirebaseCredentialPath = Path.Combine(ApplicationDirectory, "credentials-firebase.xml");
         public static string QRImageFilePath = Path.Combine(ApplicationTempDirectory, "qr.png");
         public static string LogFilePath = Path.Combine(ApplicationLogDirectory, "xclipper");
         public static string UpdatePackageFile = Path.Combine(ApplicationTempDirectory, "package-update.exe");
+        public static string UserStateFile = Path.Combine(ApplicationDirectory, "user.xml");
 
         #endregion
 
@@ -86,7 +87,7 @@ namespace Components
         #region Database Path Constants
 
         public const string DEVICE_REGEX_PATH_PATTERN = @"\/Devices\/sdk";
-        public const string CLIP_REGEX_PATH_PATTERN = @"\/Clips\/\d+";
+        public const string CLIP_REGEX_PATH_PATTERN = @"\/Clips";
         public const string PATH_CLIP_DATA = "/Clips/data";
         public const string PATH_CLIP_IMAGE_DATA = @"^(!\[)(.*?)(])(\((https?:\/\/.*?)\))$";
 

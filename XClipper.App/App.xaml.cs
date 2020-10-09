@@ -126,6 +126,7 @@ namespace Components
         protected override void OnExit(ExitEventArgs e)
         {
             hookUtility.Unsubscribe();
+            FirebaseSingleton.GetInstance.SaveUserState();
 
             base.OnExit(e);
         }
@@ -365,7 +366,7 @@ namespace Components
             // A task to remove user.
             Task.Run(async () =>
             {
-                await FirebaseSingleton.GetInstance.RemoveUser().ConfigureAwait(false);
+                await FirebaseSingleton.GetInstance.ResetUser().ConfigureAwait(false);
 
                 RunOnMainThread(() =>
                 {
@@ -480,6 +481,7 @@ namespace Components
 
         public void OnDataRemoved(ValueRemovedEventArgs e)
         {
+            LogHelper.Log(this, "[Remove] Path: " + e.Path);
             Debug.WriteLine("[Remove] Path: " + e.Path);
             if (Regex.IsMatch(e.Path, CLIP_REGEX_PATH_PATTERN))
             {
@@ -494,6 +496,7 @@ namespace Components
 
         public void OnClipItemRemoved(RemovedEventArgs e)
         {
+            LogHelper.Log(this, "[Remove Clip] Data: " + e?.data);
             Debug.Write("[Removed Clip] Data: " + e?.data);
             Debug.WriteLine(", " + AppSingleton.GetInstance.DeleteClipData(e?.data));
         }

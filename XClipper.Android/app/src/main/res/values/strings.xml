@@ -152,4 +152,5 @@
     <string name="dismiss">Dismiss</string>
     <string name="review">Review</string>
     <string name="review_text">Help us grow by reviewing the app :)</string>
+    <string name="inconsistent_data">Inconsistent data detected, shutting down the service</string>
 </resources>

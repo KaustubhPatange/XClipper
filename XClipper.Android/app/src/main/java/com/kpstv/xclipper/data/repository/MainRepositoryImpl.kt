@@ -119,8 +119,6 @@ class MainRepositoryImpl(
                     else
                         allData.firstOrNull { it.id == clip.id }
                     if (innerClip != null) {
-//                         Log.e(TAG, "Update Clip Id: ${innerClip.id}")
-
                         val finalClip = Clip.from(clip.clone(innerClip.id!!))
 
                         /** Merge the existing tags into the clip tags */

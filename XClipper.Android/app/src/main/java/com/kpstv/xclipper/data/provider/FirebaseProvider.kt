@@ -1,20 +1,16 @@
 package com.kpstv.xclipper.data.provider
 
 import androidx.lifecycle.LiveData
-import com.google.firebase.database.DatabaseException
 import com.kpstv.xclipper.data.localized.FBOptions
 import com.kpstv.xclipper.data.model.Clip
-import com.kpstv.xclipper.data.model.Device
 import com.kpstv.xclipper.data.model.User
 import com.kpstv.xclipper.extensions.LicenseType
-import com.kpstv.xclipper.extensions.listeners.RepositoryListener
+import com.kpstv.xclipper.extensions.SimpleFunction
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
-import kotlinx.coroutines.flow.Flow
-import java.lang.Exception
 
 interface FirebaseProvider {
     /** Property will expose database initialization live data */
-    fun isInitialized() : LiveData<Boolean>
+    fun isInitialized(): LiveData<Boolean>
 
     fun initialize(options: FBOptions?)
     fun isLicensed(): Boolean
@@ -42,6 +38,13 @@ interface FirebaseProvider {
      * internally for some use cases.
      */
     fun isObservingChanges(): Boolean
-    fun observeDataChange(changed: (User?) -> Unit, removed: (List<String>) -> Unit, error: (Exception) -> Unit, deviceValidated: (Boolean) -> Unit)
+    fun observeDataChange(
+        changed: (Clip?) -> Unit,
+        removed: (String?) -> Unit,
+        error: (Exception) -> Unit,
+        deviceValidated: (Boolean) -> Unit,
+        inconsistentData: SimpleFunction
+    )
+
     fun removeDataObservation()
 }

@@ -18,6 +18,8 @@ using RestSharp;
 using Newtonsoft.Json.Linq;
 using System.Text.RegularExpressions;
 using System.Security.RightsManagement;
+using System.Xml.Linq;
+using System.Data.SqlTypes;
 
 #nullable enable
 
@@ -33,7 +35,7 @@ namespace Components
         /// We will set a boolean which will let me know if there is on going operation is going.
         /// </summary>
         private bool isPreviousAddRemaining, isPreviousRemoveRemaining, isPreviousUpdateRemaining, isGlobalUserExecuting = false;
-     
+
         private bool isClientInitialized = false;
         private readonly List<string> addStack = new List<string>();
         private readonly List<string> removeStack = new List<string>();
@@ -46,6 +48,12 @@ namespace Components
         private IFirebaseClient client;
         private IFirebaseBinder binder;
         private string UID;
+
+        /// <summary>
+        /// This will make sure that if there are any devices connected it will forcefully execute <br/>
+        /// the if branch in <see cref="SetGlobalUserTask(bool)"/> which will then check for any <br/>
+        /// data removal objects.
+        /// </summary>
         private bool alwaysForceInvoke = false;
         private User user;
         private readonly string tag = nameof(FirebaseSingleton);
@@ -124,10 +132,11 @@ namespace Components
                 }
             }
             else return true;
-            
+
             return false;
         }
-        private async Task<User?> _GetUser()
+
+        private async Task<User?> FetchUser()
         {
             Log();
             var data = await client.SafeGetAsync($"users/{UID}").ConfigureAwait(false);
@@ -156,22 +165,46 @@ namespace Components
                 await client.SafeUpdateAsync($"users/{UID}", user).ConfigureAwait(false);
         }
 
-        private void CheckForDataRemoval(User? firebaseUser)
+        private bool CheckForDataRemoval(User? firebaseUser)
         {
+            bool userInvoked = false;
+            bool firebaseInvoked = false;
             try
             {
                 if (firebaseUser != null && user != null && BindDelete)
                 {
                     Log();
-                    if (user.Clips == null || firebaseUser.Clips == null) return;
-                    var items = user.Clips?.ConvertAll(c => c.data).Except(firebaseUser.Clips?.ConvertAll(c => c.data));
+                    if (user.Clips == null || firebaseUser.Clips == null) return false;
+
+                    userInvoked = true;
+                    var userClips = user.Clips?.ConvertAll(c => c.data).ToList();
+
+                    firebaseInvoked = true;
+                    var firebaseClips = firebaseUser.Clips?.ConvertAll(c => c.data).ToList();
+
+                    var items = userClips.Except(firebaseClips);
+                    //   var items = user.Clips?.ConvertAll(c => c.data).Except(firebaseUser.Clips?.ConvertAll(c => c.data));
                     foreach (var data in items ?? new List<string>())
                         binder.OnClipItemRemoved(new RemovedEventArgs(data.DecryptBase64(DatabaseEncryptPassword)));
                 }
+                return true;
             }
             catch
             {
-                // todo: User must not try to remove data manually from Firebase, this may cause app to crash.
+                /**
+                 * User must not try to remove data manually from database, this may cause inconsistent of data which
+                 * will result failure in delivering proper results.
+                 * 
+                 * The best solution in such case would be to upload the current state of user.
+                 */
+                if (firebaseInvoked)
+                {
+                    PushUser();
+                }else
+                {
+                    ResetUser();
+                }
+                return false;
             }
         }
 
@@ -230,6 +263,14 @@ namespace Components
                 return;
             }
             else FirebaseCurrent = data;
+
+            /* Load the previous state of user or if user is not null it means some configuration
+            *  has changed and we should delete the previous state file to avoid any further errors.
+            */
+            if (user == null)
+                LoadUserState();
+            else
+                File.Delete(UserStateFile);
 
             // Clearing stacks...
             ClearAllStack();
@@ -310,8 +351,8 @@ namespace Components
             {
                 MsgBoxHelper.ShowError(Translation.MSG_FIREBASE_CLIENT_ERR);
                 //clearAwaitedGlobalUserTask();
-                
-                // todo: Do something when client isn't initialized
+
+                // todo: Do something when client isn't initialized (I guess this check would be of use).
                 /* 
                  * We can implement a call stack to this, all you need to do is to make
                  * a stack that accepts data & operation name. Once this client is
@@ -323,19 +364,24 @@ namespace Components
             if (await CheckForAccessTokenValidity().ConfigureAwait(false) && (alwaysForceInvoke || user == null || forceInvoke))
             {
                 Log("Check complete");
-                var firebaseUser = await _GetUser().ConfigureAwait(false);
+                var firebaseUser = await FetchUser().ConfigureAwait(false);
 
                 if (firebaseUser != null)
                 {
                     await SetCommonUserInfo(firebaseUser).ConfigureAwait(false);
 
-                    CheckForDataRemoval(firebaseUser);
+                    bool allChecksPassed = CheckForDataRemoval(firebaseUser);
 
-                    if (firebaseUser.Devices != null && firebaseUser.Devices.Count > 0)
-                        alwaysForceInvoke = true;
+                    Log("Check Passed: " + allChecksPassed);
 
-                    user = firebaseUser;
-                } else
+                    if (allChecksPassed)
+                    {
+                        if (firebaseUser.Devices != null && firebaseUser.Devices.Count > 0)
+                            alwaysForceInvoke = true;
+                        user = firebaseUser;
+                    }
+                }
+                else
                 {
                     globalUserStack.Clear();
                     return false;
@@ -440,7 +486,7 @@ namespace Components
                 var user = new User();
                 SetCommonUserInfo(user);
                 this.user = user;
-                await client.SafeSetAsync($"users/{UID}", user).ConfigureAwait(false);
+                await PushUser().ConfigureAwait(false);
             }
             return user;
         }
@@ -449,11 +495,22 @@ namespace Components
         /// Removes all data associated with the UID.
         /// </summary>
         /// <returns></returns>
-        public async Task RemoveUser()
+        public async Task ResetUser()
         {
             Log();
             await client.SafeDeleteAsync($"users/{UID}").ConfigureAwait(false);
             await RegisterUser().ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// This will push the current state of the user to the database
+        /// </summary>
+        /// <returns></returns>
+        public async Task PushUser()
+        {
+            Log("Is User null: " + (user != null));
+            if (user != null)
+                await client.SafeSetAsync($"users/{UID}", user).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -530,7 +587,7 @@ namespace Components
                 addStack.Clear();
 
                 await client.SafeUpdateAsync($"users/{UID}", user).ConfigureAwait(false);
-                
+
                 Log("Completed");
             }
             isPreviousAddRemaining = false;
@@ -658,9 +715,9 @@ namespace Components
 
                 // Add current item to existing stack.
                 updateStack.Add(oldUnencryptedData, newUnencryptedData);
-                foreach(var clip in user.Clips)
+                foreach (var clip in user.Clips)
                 {
-                    var decryptedData = clip.data. DecryptBase64(DatabaseEncryptPassword);
+                    var decryptedData = clip.data.DecryptBase64(DatabaseEncryptPassword);
                     var item = updateStack.FirstOrDefault(c => c.Key == decryptedData);
                     if (item.Key != null && item.Value != null)
                     {
@@ -697,7 +754,7 @@ namespace Components
                .Child("XClipper")
                .Child("images")
                .Child(fileName);
-            
+
             await pathRef.PutAsync(stream); // Push to storage
 
             binder.OnImageAddedToStorage();
@@ -749,13 +806,39 @@ namespace Components
             Log();
             if (FirebaseCurrent?.Storage == null) return;
 
-            foreach(var fileName in fileNames)
+            foreach (var fileName in fileNames)
             {
                 await RemoveImage(fileName).ConfigureAwait(false);
             }
         }
 
         #endregion
+
+        public void SaveUserState()
+        {
+            if (user != null)
+            {
+                Log("Saved current user state");
+                File.WriteAllText(UserStateFile, User.ToNode(user).ToString());
+            }
+        }
+
+        public void LoadUserState()
+        {
+            if (File.Exists(UserStateFile))
+            {
+                try
+                {
+                    var xml = File.ReadAllText(UserStateFile);
+                    user = User.FromNode(XElement.Parse(xml));
+                    Log("Previous user state is restored");
+                }
+                catch
+                {
+                    Log("Invalid previous user state");
+                }
+            }
+        }
 
         public void Dispose()
         {

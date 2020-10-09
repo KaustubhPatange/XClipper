@@ -3,13 +3,13 @@ package com.kpstv.xclipper.extensions.utils
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.Observer
+import com.kpstv.hvlog.HVLog
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.data.repository.MainRepository
-import com.kpstv.hvlog.HVLog
 import com.kpstv.xclipper.extensions.decrypt
 import com.kpstv.xclipper.extensions.enumerations.FirebaseState
 import es.dmoral.toasty.Toasty
@@ -32,12 +32,12 @@ class FirebaseUtils(
 
             HVLog.d("Attached")
             firebaseProvider.observeDataChange(
-                changed = {
+                changed = { clip -> // Unencrypted data
                     if (App.observeFirebase)
-                        repository.updateClip(it?.Clips?.last()?.decrypt())
+                        repository.updateClip(clip?.decrypt())
                 },
-                removed = { items -> // Unencrypted listOf data
-                    items.forEach { repository.deleteClip(it) }
+                removed = { item -> // Unencrypted listOf data
+                    repository.deleteClip(item)
                 },
                 error = {
                     HVLog.d()
@@ -62,6 +62,9 @@ class FirebaseUtils(
                         }
                     } else
                         shownToast = false
+                },
+                inconsistentData = {
+                    Toasty.error(context, getString(R.string.inconsistent_data), Toasty.LENGTH_LONG).show()
                 }
             )
         }

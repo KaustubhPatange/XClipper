@@ -3,12 +3,13 @@ package com.kpstv.xclipper.extensions.listeners
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import com.kpstv.xclipper.extensions.FirebaseFunction
 
 /**
  * An alternate callback for Firebase event listener.
  */
 class FValueEventListener(
-    private val onDataChange: (DataSnapshot) -> Unit,
+    private val onDataChange: FirebaseFunction,
     private val onError: (DatabaseError) -> Unit
 ) :
     ValueEventListener {

@@ -6,6 +6,9 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
+import com.google.firebase.database.ChildEventListener
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
@@ -25,6 +28,7 @@ import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.Device
 import com.kpstv.xclipper.data.model.User
 import com.kpstv.xclipper.extensions.*
+import com.kpstv.xclipper.extensions.listeners.FChildEventListener
 import com.kpstv.xclipper.extensions.listeners.FValueEventListener
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
 
@@ -97,7 +101,7 @@ class FirebaseProviderImpl(
         workWithData(ValidationContext.ForceInvoke) {
             HVLog.d("Inside WorkWithData...")
             val list =
-                if (user?.Devices != null) ArrayList(user?.Devices!!)
+                if (user?.Devices != null) ArrayList(user?.Devices ?: listOf())
                 else ArrayList<Device>()
 
             checkForUserDetailsAndUpdateLocal()
@@ -133,7 +137,7 @@ class FirebaseProviderImpl(
         workWithData(ValidationContext.ForceInvoke) {
             HVLog.d("Inside WorkWithData...")
             val list =
-                if (user?.Devices != null) ArrayList(user?.Devices!!)
+                if (user?.Devices != null) ArrayList(user?.Devices ?: listOf())
                 else ArrayList<Device>()
 
             if (list.count { it.id == DeviceId } <= 0) {
@@ -230,7 +234,7 @@ class FirebaseProviderImpl(
             saveData(unencryptedNewClip)
         } else {
             val list =
-                ArrayList(user?.Clips!!.filter { it.data?.Decrypt() != unencryptedOldClip.data })
+                ArrayList(user?.Clips?.filter { it.data?.Decrypt() != unencryptedOldClip.data } ?: listOf())
 
             list.add(unencryptedNewClip.encrypt())
 
@@ -265,7 +269,7 @@ class FirebaseProviderImpl(
         val list: ArrayList<Clip> = if (user?.Clips == null)
             ArrayList()
         else
-            ArrayList(user?.Clips?.filter { it.data?.Decrypt() != unencryptedClip.data }!!)
+            ArrayList(user?.Clips?.filter { it.data?.Decrypt() != unencryptedClip.data } ?: listOf())
         val size = APP_MAX_ITEM
 
         if (list.size >= size)
@@ -310,6 +314,12 @@ class FirebaseProviderImpl(
         validationContext: ValidationContext = ValidationContext.Default,
         block: (Boolean) -> Unit
     ) {
+        if (!validateUser()) {
+            HVLog.d("Inconsistent behavior")
+            block.invoke(false)
+            return
+        }
+
         HVLog.d()
         /**
          * Make sure the device is a valid device so that we can make connection
@@ -318,7 +328,7 @@ class FirebaseProviderImpl(
          * This check will make sure that user can only update firebase database
          *  when following criteria satisfies
          */
-        if (validationContext == ValidationContext.Default && !bindToFirebase && !dbConnectionProvider.isValidData()) {
+        if (validationContext == ValidationContext.Default && !bindToFirebase || !dbConnectionProvider.isValidData()) {
             HVLog.d("Returning false - 1")
             block.invoke(false)
             return
@@ -343,6 +353,10 @@ class FirebaseProviderImpl(
                     onDataChange = { snap ->
                         val json = gson.toJson(snap.value)
                         gson.fromJson(json, User::class.java).also { user = it }
+                        if (!validateUser()) {
+                            block.invoke(false)
+                            return@FValueEventListener
+                        }
                         block.invoke(true)
                     },
                     onError = {
@@ -350,18 +364,26 @@ class FirebaseProviderImpl(
                         block.invoke(false)
                     }
                 ))
-        } else
+        } else{
+            if (!validateUser()) {
+                block.invoke(false)
+                return
+            }
             block.invoke(true)
+        }
     }
 
-    override fun isObservingChanges() = ::valueListener.isInitialized
+    override fun isObservingChanges() = ::valueListener.isInitialized && ::childListener.isInitialized
 
     private lateinit var valueListener: FValueEventListener
+    private lateinit var childListener: FChildEventListener
+    private var inconsistentDataListener: SimpleFunction? = null
     override fun observeDataChange(
-        changed: (User?) -> Unit,
-        removed: (List<String>) -> Unit,
+        changed: (Clip?) -> Unit,
+        removed: (String?) -> Unit,
         error: (Exception) -> Unit,
-        deviceValidated: (Boolean) -> Unit
+        deviceValidated: (Boolean) -> Unit,
+        inconsistentData: SimpleFunction
     ) {
         HVLog.d()
         if (!dbConnectionProvider.isValidData()) {
@@ -379,43 +401,34 @@ class FirebaseProviderImpl(
             return
         }
 
+        inconsistentDataListener = inconsistentData
+
         valueListener = FValueEventListener(
             onDataChange = { snap ->
                 HVLog.d("OnDataChanging")
                 val json = gson.toJson(snap.value)
                 val firebaseUser = gson.fromJson(json, User::class.java)
 
+                /** Update the properties */
+                checkForUserDetailsAndUpdateLocal()
+
                 /** Check for device validation */
                 validDevice = (firebaseUser?.Devices ?: mutableListOf()).count {
                     it.id == DeviceID
                 } > 0
-
-                /** Update the properties */
-                checkForUserDetailsAndUpdateLocal()
 
                 /** Device validation is causing problem, so only invoke it when
                  *  device is not adding.*/
                 if (!isDeviceAdding)
                     deviceValidated.invoke(validDevice)
 
-                /** Check for deletes, doing it on IO thread so rest job will be
-                 *  in continuation like normal. Publishing data will be posted on
-                 *  main thread (Reason: to process large number of list up to 1000). */
-                ioThread {
-                    if (bindDelete) {
-                        if (!user?.Clips.isNullOrEmpty()) {
-                            val userClips = user?.Clips?.decrypt()?.map { it.data!! }
-                            val firebaseClips = firebaseUser?.Clips?.decrypt()?.map { it.data!! }
-                            userClips?.minus(firebaseClips!!)
-                                ?.let { if (it.isNotEmpty()) mainThread { removed.invoke(it) } }
-                        }
-                    }
-                }
-
-                if (json != null && validDevice)
-                    changed.invoke(firebaseUser)
-                else
+                if (json == null)
                     error.invoke(Exception("Database is null"))
+
+//                if (json != null && validDevice)
+//                    changed.invoke(firebaseUser)
+//                else
+//                    error.invoke(Exception("Database is null"))
 
                 if (!isDeviceAdding && !validDevice)
                     isInitialized.postValue(false)
@@ -428,6 +441,31 @@ class FirebaseProviderImpl(
             }
         )
 
+        childListener = FChildEventListener(
+            onDataAdded = { snap ->
+                if (validDevice) {
+                    val json = gson.toJson(snap.value)
+                    val clip  = gson.fromJson(json, Clip::class.java)
+
+                    if (clip != null) {
+                        changed.invoke(clip)
+                    }
+                }
+            },
+            onDataRemoved = { snap ->
+                if (bindDelete) {
+                    val json = gson.toJson(snap.value)
+                    val clip = gson.fromJson(json, Clip::class.java)
+
+                    if (clip != null) {
+                        removed.invoke(clip.decrypt().data)
+                    }
+                }
+            }
+        )
+
+        database.getReference(USER_REF).child(UID).child(CLIP_REF)
+            .addChildEventListener(childListener)
         database.getReference(USER_REF).child(UID)
             .addValueEventListener(valueListener)
     }
@@ -438,9 +476,23 @@ class FirebaseProviderImpl(
      */
     private fun checkForUserDetailsAndUpdateLocal() {
         HVLog.d()
+
         APP_MAX_DEVICE = user?.TotalConnection ?: getMaxConnection(isLicensed())
         APP_MAX_ITEM = user?.MaxItemStorage ?: getMaxStorage(isLicensed())
         user?.LicenseStrategy?.let { licenseStrategy.postValue(it) }
+    }
+
+    private fun validateUser(): Boolean {
+        for (clip in user?.Clips ?: listOf()) {
+            // This will be valid if user suppose manually remove a random node
+            // which makes the tree inconsistent.
+            if (clip == null ) {
+                HVLog.d(m = "Inconsistent data detected")
+                mainThread { inconsistentDataListener?.invoke() }
+                return false
+            }
+        }
+        return true
     }
 
     private fun removeUserDetailsAndUpdateLocal() {
@@ -456,6 +508,8 @@ class FirebaseProviderImpl(
         if (::database.isInitialized && ::valueListener.isInitialized) {
             database.getReference(USER_REF).child(UID)
                 .removeEventListener(valueListener)
+            database.getReference(USER_REF).child(UID).child(CLIP_REF)
+                .removeEventListener(childListener)
             removeUserDetailsAndUpdateLocal()
         }
     }

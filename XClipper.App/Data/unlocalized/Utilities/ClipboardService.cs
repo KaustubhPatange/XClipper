@@ -94,7 +94,7 @@ namespace Components
                             binder.GetClipImage.Save(memory, System.Drawing.Imaging.ImageFormat.Png);
                             byte[] bytes = memory.ToArray();
                             fs.Write(bytes, 0, bytes.Length);
-                            //AppSingleton.GetInstance.InsertContent(CreateTable(filePath, ContentTypes.Image)); // TODO: Enable it again
+                            AppSingleton.GetInstance.InsertContent(CreateTable(filePath, ContentTypes.Image));
                         }
                         catch (Exception ex)
                         {

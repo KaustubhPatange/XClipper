@@ -41,6 +41,7 @@ namespace Components
         public static XElement ToNode(User t)
         {
             var node = new XElement(nameof(User));
+            node.Add(new XComment("This data structure will hold the previous state of Firebase User as a cache."));
             node.Add(new XElement(nameof(t.IsLicensed), t.IsLicensed));
             node.Add(new XElement(nameof(t.MaxItemStorage), t.MaxItemStorage));
             node.Add(new XElement(nameof(t.TotalConnection), t.TotalConnection));
@@ -49,7 +50,7 @@ namespace Components
             var deviceList = new XElement(nameof(t.Devices));
             foreach (var device in t.Devices) deviceList.Add(Device.ToNode(device));
 
-            var clipList = new XElement(nameof(Clip));
+            var clipList = new XElement(nameof(t.Clips));
             foreach (var clip in t.Clips) clipList.Add(Clip.ToNode(clip));
 
             node.Add(deviceList);

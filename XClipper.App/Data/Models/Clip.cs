@@ -10,7 +10,7 @@ namespace Components
 
         public static XElement ToNode(Clip t)
         {
-            var node = new XElement(nameof(Device));
+            var node = new XElement(nameof(Clip));
             node.Add(new XElement(nameof(data), t.data));
             node.Add(new XElement(nameof(time), t.time));
             return node;

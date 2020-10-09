@@ -211,6 +211,11 @@
     <Compile Include="Data\helpers\LicenseHelper.cs" />
     <Compile Include="Data\helpers\LogHelper.cs" />
     <Compile Include="Data\helpers\MsgBoxHelper.cs" />
+    <Compile Include="Data\Models\Clip.cs" />
+    <Compile Include="Data\Models\Device.cs" />
+    <Compile Include="Data\Models\FirebaseData.cs" />
+    <Compile Include="Data\Models\OAuth.cs" />
+    <Compile Include="Data\Models\User.cs" />
     <Compile Include="Data\unlocalized\CustomHelpWindow.cs" />
     <Compile Include="Data\unlocalized\Properties\NumericTextBoxProperties.cs" />
     <Compile Include="Data\unlocalized\Utilities\ILicense.cs" />

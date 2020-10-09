@@ -241,7 +241,7 @@ namespace Components
                 if (result == MessageBoxResult.Yes)
                 {
                     // Remove the user from firebase
-                    FirebaseSingleton.GetInstance.RemoveUser().RunAsync();
+                    FirebaseSingleton.GetInstance.ResetUser().RunAsync();
 
                     DatabaseEncryptPassword = FDP;
                 }

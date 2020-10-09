@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import com.ferfalk.simplesearchview.SimpleSearchView
+import com.google.firebase.database.DataSnapshot
 import com.google.gson.annotations.SerializedName
 import com.kpstv.xclipper.App.STANDARD_DATE_FORMAT
 import com.kpstv.xclipper.BuildConfig
@@ -14,6 +15,7 @@ import java.util.*
 
 typealias SimpleFunction = () -> Unit
 typealias ErrorFunction = (Exception?) -> Unit
+typealias FirebaseFunction = (DataSnapshot) -> Unit
 
 fun SimpleSearchView.setOnQueryTextListener(
     onSubmit: ((String) -> Unit)? = null,
