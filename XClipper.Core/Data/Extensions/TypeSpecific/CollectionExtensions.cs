@@ -3,6 +3,8 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text.RegularExpressions;
 
+#nullable enable
+
 namespace Components
 {
     public static class CollectionExtensions
@@ -25,6 +27,11 @@ namespace Components
         public static bool IsEmpty<T>(this List<T> t)
         {
             return t != null && t.Count == 0;
+        }
+
+        public static List<T> ToNotNullList<T>(this IEnumerable<T>? t)
+        {
+            return t.ToList() ?? new List<T>();
         }
     }
 }

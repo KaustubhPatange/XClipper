@@ -440,6 +440,15 @@ class FirebaseProviderImpl(
         )
 
         childListener = FChildEventListener(
+            /**
+             * Do not try to think & add [FChildEventListener.onDataRemoved] listener hoping
+             * that it would solve linear deletion problem. Spoiler alert it doesn't but it
+             * makes things even worse.
+             *
+             * Like if you delete an item in the middle of the list, it will shrink by calling
+             * [FChildEventListener.onDataRemoved] every time a child is changed. Better to keep
+             * the logic to [FValueEventListener.onDataChange] itself.
+             */
             onDataAdded = { snap ->
                 if (validDevice) {
                     val json = gson.toJson(snap.value)
@@ -449,17 +458,7 @@ class FirebaseProviderImpl(
                         changed.invoke(clip)
                     }
                 }
-            }/*,
-            onDataRemoved = { snap ->
-                if (bindDelete) {
-                    val json = gson.toJson(snap.value)
-                    val clip = gson.fromJson(json, Clip::class.java)
-
-                    if (clip != null) {
-                        removed.invoke(clip.decrypt().data)
-                    }
-                }
-            }*/
+            }
         )
 
         database.getReference(USER_REF).child(UID).child(CLIP_REF)

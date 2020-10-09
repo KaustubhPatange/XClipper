@@ -22,6 +22,7 @@ using System.Xml.Linq;
 using System.Data.SqlTypes;
 using System.Diagnostics;
 using System.Drawing.Text;
+using Newtonsoft.Json;
 
 #nullable enable
 
@@ -437,7 +438,6 @@ namespace Components
                 {
                     if (BindDatabase)
                     {
-                        //changedClipList.Add(a.)
                         binder.OnDataChanged(a);
                     }
                 }, removed: (o, a, c) =>
@@ -445,6 +445,10 @@ namespace Components
                     if (BindDatabase)
                         binder.OnDataRemoved(a);
                             
+                }, onDataChange: (o, a, c) => 
+                {
+                    User? firebaseUser = JsonConvert.DeserializeObject<User>(a.Data);
+                    Debug.WriteLine("skdjkwdjd");
                 }).ConfigureAwait(false);
 
                 isBinded = true;

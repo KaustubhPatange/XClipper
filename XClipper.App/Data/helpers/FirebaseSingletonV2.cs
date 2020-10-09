@@ -9,6 +9,9 @@ using System;
 using System.Threading.Tasks;
 using FireSharp.Core.Config;
 using FireSharp.Core;
+using Newtonsoft.Json;
+using System.Linq.Expressions;
+using System.Linq;
 
 #nullable enable
 
@@ -39,7 +42,7 @@ namespace Components
         private User user;
 
         private IFirebaseClient client;
-        private IFirebaseBinder? binder;
+        private IFirebaseBinderV2? binder;
 
         #endregion
 
@@ -94,14 +97,13 @@ namespace Components
                     return;
                 }
             }
-
         }
 
         /// <summary>
         /// This will be used to set binder at the start of the application.
         /// </summary>
         /// <param name="binder"></param>
-        public void BindUI(IFirebaseBinder binder)
+        public void BindUI(IFirebaseBinderV2 binder)
         {
             this.binder = binder;
         }
@@ -179,14 +181,9 @@ namespace Components
             {
                 Log("Credentials are not valid");
                 if (FirebaseCurrent != null)
-                    binder.OnNeedToGenerateToken(FirebaseCurrent.DesktopAuth.ClientId, FirebaseCurrent.DesktopAuth.ClientSecret);
+                    binder?.OnNeedToGenerateToken(FirebaseCurrent.DesktopAuth.ClientId, FirebaseCurrent.DesktopAuth.ClientSecret);
                 else
                     MsgBoxHelper.ShowError(Translation.MSG_FIREBASE_USER_ERROR);
-                return false;
-            }
-            if (FirebaseCurrent == null)
-            {
-                MsgBoxHelper.ShowError(Translation.MSG_FIREBASE_USER_ERROR);
                 return false;
             }
             if (NeedToRefreshToken())
@@ -194,7 +191,7 @@ namespace Components
                 Log("Need to refresh token");
                 if (await FirebaseHelper.RefreshAccessToken(FirebaseCurrent).ConfigureAwait(false))
                 {
-                    await CreateNewClient().ConfigureAwait(false);
+                    CreateNewClient();
                     return true;
                 }
             }
@@ -203,7 +200,7 @@ namespace Components
             return false;
         }
 
-        private async Task CreateNewClient()
+        private void CreateNewClient()
         {
             IFirebaseConfig config;
             if (FirebaseCurrent?.isAuthNeeded == true)
@@ -223,8 +220,131 @@ namespace Components
             }
             if (client != null) client.Dispose();
             client = new FirebaseClient(config);
+
+            SetUserCallback();
         }
 
+        /// <summary>
+        /// This sets call back to the binder events with an attached interface.<br/>
+        /// Must be used after <see cref="FirebaseSingleton.BindUI(IFirebaseBinder)"/>
+        /// </summary>
+        private async void SetUserCallback()
+        {
+            Log();
+            try
+            {
+                await client.OnAsync($"users/{UID}", 
+                    onDataChange: async (o, a, c) =>
+                {
+                    if (!BindDatabase) return;
+
+                    if (!await CheckForAccessTokenValidity().ConfigureAwait(false)) return;
+
+                    User? firebaseUser = JsonConvert.DeserializeObject<User>(a.Data);
+
+                    // Check for inconsistent data...
+                    if (string.IsNullOrWhiteSpace(a.Data))
+                    {
+                        if (user != null)
+                            await PushUser().ConfigureAwait(false);
+                        else await RegisterUser().ConfigureAwait(false);
+                    }
+
+                    // If there is no new data then it's of no use...
+                    if (firebaseUser == null) return;
+
+                    // Perform data addition & removal operation...
+                    if (user != null)
+                    {
+                        // Check for clip data addition...
+                        var newClips = firebaseUser?.Clips?.Select(c => c.data).ToNotNullList();
+                        var oldClips = user?.Clips?.Select(c => c.data).ToNotNullList();
+                        foreach (var item in newClips.Except(oldClips))
+                            binder?.OnClipItemAdded(item.DecryptBase64(DatabaseEncryptPassword));
+
+                        // Check for clip data removal...
+                        foreach (var item in oldClips.Except(newClips))
+                            binder?.OnClipItemRemoved(item.DecryptBase64(DatabaseEncryptPassword));
+
+                        // Check for device addition & removal...
+                        var newDevices = firebaseUser?.Devices.ToList() ?? new List<Device>();
+                        var oldDevices = user?.Devices.ToList() ?? new List<Device>();
+                        foreach (var device in newDevices.Except(oldDevices))
+                            binder?.OnDeviceAdded(device);
+                        foreach (var device in oldDevices.Except(newDevices))
+                            binder?.OnDeviceRemoved(device);
+
+                        user = firebaseUser!;
+                    }
+
+                    user = firebaseUser!;
+
+                }).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains("401 (Unauthorized)"))
+                {
+                    if (await FirebaseHelper.RefreshAccessToken(FirebaseCurrent).ConfigureAwait(false))
+                    {
+                        CreateNewClient();
+                    }
+                    else MsgBoxHelper.ShowError(ex.Message);
+                }
+                LogHelper.Log(this, ex.StackTrace);
+            }
+        }
+
+        /// <summary>
+        /// This will push the current state of the user to the database
+        /// </summary>
+        /// <returns></returns>
+        private async Task PushUser()
+        {
+            Log("Is User null: " + (user != null));
+            if (user != null)
+                await client.SafeSetAsync($"{USER_REF}/{UID}", user).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Add an empty user to the node.
+        /// </summary>
+        /// <returns></returns>
+        private async Task RegisterUser()
+        {
+            Log();
+            var user = await FetchUser().ConfigureAwait(false);
+            if (user == null)
+            {
+                var localUser = new User();
+                await SetCommonUserInfo(localUser).ConfigureAwait(false);
+                this.user = localUser;
+                await PushUser().ConfigureAwait(false);
+            }
+            else this.user = user;
+        }
+
+        private async Task<User?> FetchUser()
+        {
+            Log();
+            var data = await client.SafeGetAsync($"users/{UID}").ConfigureAwait(false);
+            return data.ResultAs<User>();//.Also((user) => { this.user = user; });
+        }
+
+        private async Task SetCommonUserInfo(User user)
+        {
+            Log($"User null? {user == null}");
+            var originallyLicensed = user.IsLicensed;
+
+            // todo: Set some other details for user...
+            user.MaxItemStorage = DatabaseMaxItem;
+            user.TotalConnection = DatabaseMaxConnection;
+            user.IsLicensed = IsPurchaseDone;
+            user.LicenseStrategy = LicenseStrategy;
+
+            if (originallyLicensed != IsPurchaseDone)
+                await PushUser().ConfigureAwait(false);
+        }
         #endregion
     }
 }

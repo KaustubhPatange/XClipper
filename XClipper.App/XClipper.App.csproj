@@ -217,6 +217,7 @@
     <Compile Include="Data\Models\OAuth.cs" />
     <Compile Include="Data\Models\User.cs" />
     <Compile Include="Data\unlocalized\CustomHelpWindow.cs" />
+    <Compile Include="Data\unlocalized\IFirebaseBinderV2.cs" />
     <Compile Include="Data\unlocalized\Properties\NumericTextBoxProperties.cs" />
     <Compile Include="Data\unlocalized\Utilities\ILicense.cs" />
     <Compile Include="Data\unlocalized\Utilities\IUpdater.cs" />
@@ -245,6 +246,7 @@
     <Compile Include="Data\helpers\ExplorerHelper.cs" />
     <Compile Include="Controls\Dialog\FolderSelectDialog.cs" />
     <Compile Include="Data\helpers\FirebaseSingleton.cs" />
+    <Compile Include="Data\helpers\FirebaseSingletonV2.cs" />
     <Compile Include="Data\helpers\KeyPressHelper.cs" />
     <Compile Include="Data\helpers\MenuItemHelper.cs" />
     <Compile Include="Data\helpers\TableHelper.cs" />
