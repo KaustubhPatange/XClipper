@@ -20,6 +20,8 @@ using System.Text.RegularExpressions;
 using System.Security.RightsManagement;
 using System.Xml.Linq;
 using System.Data.SqlTypes;
+using System.Diagnostics;
+using System.Drawing.Text;
 
 #nullable enable
 
@@ -427,18 +429,22 @@ namespace Components
             if (isBinded) return;
             try
             {
-                await client.OnAsync($"users/{UID}", (o, a, c) =>
+                await client.OnAsync($"users/{UID}", added: (o, a, c) =>
                 {
                     if (BindDatabase)
                         binder.OnDataAdded(a);
-                }, (o, a, c) =>
+                }, changed: (o, a, c) =>
                 {
                     if (BindDatabase)
+                    {
+                        //changedClipList.Add(a.)
                         binder.OnDataChanged(a);
-                }, (o, a, c) =>
+                    }
+                }, removed: (o, a, c) =>
                 {
                     if (BindDatabase)
                         binder.OnDataRemoved(a);
+                            
                 }).ConfigureAwait(false);
 
                 isBinded = true;
@@ -456,11 +462,7 @@ namespace Components
                 LogHelper.Log(this, ex.StackTrace);
             }
         }
-
-        private async void SetClipCallbacks()
-        {
-
-        }
+        private List<string> changedClipList = new List<string>();
 
         #endregion
 
@@ -485,7 +487,7 @@ namespace Components
         {
             Log();
             if (!BindDatabase) return new User();
-            var exist = await IsUserExist().ConfigureAwait(false);
+            var exist = await IsUserExist().TimeoutAfter(TimeSpan.FromSeconds(30)).ConfigureAwait(false);
             if (!exist)
             {
                 Log("Registering data for first time");

@@ -374,7 +374,7 @@ class FirebaseProviderImpl(
     private var inconsistentDataListener: SimpleFunction? = null
     override fun observeDataChange(
         changed: (Clip?) -> Unit,
-        removed: (String?) -> Unit,
+        removed: (List<String>?) -> Unit,
         error: (Exception) -> Unit,
         deviceValidated: (Boolean) -> Unit,
         inconsistentData: SimpleFunction
@@ -419,6 +419,15 @@ class FirebaseProviderImpl(
                 if (json == null)
                     error.invoke(Exception("Database is null"))
 
+                if (bindDelete) {
+                    if (!user?.Clips.isNullOrEmpty()) {
+                        val userClips = user?.Clips?.decrypt()?.map { it.data!! }
+                        val firebaseClips = firebaseUser?.Clips?.decrypt()?.map { it.data!! }
+                        userClips?.minus(firebaseClips!!)
+                            ?.let { if (it.isNotEmpty()) mainThread { removed.invoke(it) } }
+                    }
+                }
+
                 if (!isDeviceAdding && !validDevice)
                     isInitialized.postValue(false)
 
@@ -440,7 +449,7 @@ class FirebaseProviderImpl(
                         changed.invoke(clip)
                     }
                 }
-            },
+            }/*,
             onDataRemoved = { snap ->
                 if (bindDelete) {
                     val json = gson.toJson(snap.value)
@@ -450,7 +459,7 @@ class FirebaseProviderImpl(
                         removed.invoke(clip.decrypt().data)
                     }
                 }
-            }
+            }*/
         )
 
         database.getReference(USER_REF).child(UID).child(CLIP_REF)

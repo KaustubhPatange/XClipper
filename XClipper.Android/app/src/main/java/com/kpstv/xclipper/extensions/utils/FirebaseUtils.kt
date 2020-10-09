@@ -36,8 +36,8 @@ class FirebaseUtils(
                     if (App.observeFirebase)
                         repository.updateClip(clip?.decrypt())
                 },
-                removed = { item -> // Unencrypted listOf data
-                    repository.deleteClip(item)
+                removed = { items -> // Unencrypted listOf data
+                    items?.forEach { repository.deleteClip(it) }
                 },
                 error = {
                     HVLog.d()

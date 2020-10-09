@@ -88,6 +88,7 @@ namespace Components
 
         public const string DEVICE_REGEX_PATH_PATTERN = @"\/Devices\/sdk";
         public const string CLIP_REGEX_PATH_PATTERN = @"\/Clips";
+        public const string CLIP_ITEM_REGEX_PATTERN = @"^\/(\d+)$";
         public const string PATH_CLIP_DATA = "/Clips/data";
         public const string PATH_CLIP_IMAGE_DATA = @"^(!\[)(.*?)(])(\((https?:\/\/.*?)\))$";
 

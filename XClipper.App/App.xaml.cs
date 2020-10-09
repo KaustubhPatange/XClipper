@@ -383,9 +383,10 @@ namespace Components
         {
             AppNotificationHelper.ShowBasicToast(
                 dispatcher: Dispatcher,
-                title: Translation.MSG_IMAGE_UPLOAD_TITLE,
-                message: Translation.MSG_IMAGE_UPLOAD_TEXT,
-                silent: !PlayNoticationSound
+                title: title,
+                message: message,
+                silent: !PlayNoticationSound,
+                doOnActivated: onActive
             ).RunAsync();
         }
 
@@ -426,7 +427,7 @@ namespace Components
         public void OnDataChanged(ValueChangedEventArgs e)
         {
             // 1st value from real-time database is your last value in XClipper app.
-            Debug.WriteLine("[Changed] Path: " + e.Path + ", Data: " + e.Data);
+            Debug.WriteLine("[Changed] Path: " + e.Path + ", Data: " + e.Data + ", OldData: " + e.OldData);
             if (e.Path.Contains(PATH_CLIP_DATA))
             {
                 AppSingleton.GetInstance.CheckDataAndUpdate(e.Data, (data, type) =>
@@ -483,7 +484,7 @@ namespace Components
         {
             LogHelper.Log(this, "[Remove] Path: " + e.Path);
             Debug.WriteLine("[Remove] Path: " + e.Path);
-            if (Regex.IsMatch(e.Path, CLIP_REGEX_PATH_PATTERN))
+            if (Regex.IsMatch(e.Path, CLIP_REGEX_PATH_PATTERN) || Regex.IsMatch(e.Path, CLIP_ITEM_REGEX_PATTERN)) // If all clips were removed
             {
                 FirebaseSingleton.GetInstance.SetGlobalUserTask(true).RunAsync();
             }
