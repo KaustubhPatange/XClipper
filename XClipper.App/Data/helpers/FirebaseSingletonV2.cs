@@ -97,6 +97,8 @@ namespace Components
                     return;
                 }
             }
+
+            CreateNewClient();
         }
 
         /// <summary>
@@ -141,6 +143,17 @@ namespace Components
         #endregion
 
         #region Public methods
+
+        /// <summary>
+        /// This is mostly called when license is validated.
+        /// </summary>
+        public void UpdateConfigurations()
+        {
+            Log();
+            if (user != null)
+                SetCommonUserInfo(user);
+            else Log("Oops, user is still null");
+        }
 
         /// <summary>
         /// Determines whether it is necessary to refresh current access token.
@@ -201,6 +214,7 @@ namespace Components
 
         private void CreateNewClient()
         {
+            Log();
             IFirebaseConfig config;
             if (FirebaseCurrent?.isAuthNeeded == true)
             {
@@ -229,12 +243,16 @@ namespace Components
         /// </summary>
         private async void SetUserCallback()
         {
+            // Make sure to set user for first time here..
+            // Check distinct function if called again..
+            // There is an issue when addClip is called second time.. It gets stuck.
             Log();
             try
             {
                 await client.OnAsync($"users/{UID}",
                     onDataChange: async (o, a, c) =>
                 {
+                    Log();
                     if (!BindDatabase) return;
 
                     User? firebaseUser = JsonConvert.DeserializeObject<User>(a.Data);
@@ -246,13 +264,18 @@ namespace Components
                             await PushUser().ConfigureAwait(false);
                         else await RegisterUser().ConfigureAwait(false);
                     }
-
+                    
                     // If there is no new data then it's of no use...
                     if (firebaseUser == null) return;
+
+                    // Always update the license details of new firebase user...
+                    await SetCommonUserInfo(firebaseUser).ConfigureAwait(false);
 
                     // Perform data addition & removal operation...
                     if (user != null)
                     {
+                        MergeUser(firebaseUser, user);
+
                         // Check for clip data addition...
                         var newClips = firebaseUser?.Clips?.Select(c => c.data).ToNotNullList();
                         var oldClips = user?.Clips?.Select(c => c.data).ToNotNullList();
@@ -264,8 +287,8 @@ namespace Components
                             binder?.OnClipItemRemoved(item.DecryptBase64(DatabaseEncryptPassword));
 
                         // Check for device addition & removal...
-                        var newDevices = firebaseUser?.Devices.ToList() ?? new List<Device>();
-                        var oldDevices = user?.Devices.ToList() ?? new List<Device>();
+                        var newDevices = firebaseUser?.Devices ?? new List<Device>();
+                        var oldDevices = user?.Devices ?? new List<Device>();
                         foreach (var device in newDevices.Except(oldDevices))
                             binder?.OnDeviceAdded(device);
                         foreach (var device in oldDevices.Except(newDevices))
@@ -353,6 +376,30 @@ namespace Components
         private async Task<bool> RunCommonTask()
         {
             return await CheckForAccessTokenValidity().ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// This will merge user according to the data of user1
+        /// </summary>
+        /// <param name="user1"></param>
+        /// <param name="user2"></param>
+        private void MergeUser(User user1, User user2)
+        {
+            if (user1.Devices == null)
+                user1.Devices = user2.Devices;
+            else
+            {
+                user1.Devices.AddRange(user2.Devices ?? new List<Device>());
+                user1.Devices = user1.Devices.DistinctBy(c => c.id).ToList();
+            }
+
+            if (user1.Clips == null)
+                user1.Clips = user2.Clips;
+            else
+            {
+                user1.Clips.AddRange(user2.Clips ?? new List<Clip>());
+                user1.Clips = user1.Clips.DistinctBy(c => c.data).ToList();
+            }
         }
 
         #endregion

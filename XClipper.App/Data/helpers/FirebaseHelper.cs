@@ -23,10 +23,10 @@ namespace Components
         /// It will create a new instance after verifying <see cref="BindDatabase"/><br/>
         /// Must be called after <see cref="LoadFirebaseSetting"/><br/>
         /// </summary>
-        public static void InitializeService(IFirebaseBinder? binder = null)
+        public static void InitializeService(IFirebaseBinderV2? binder = null)
         {
             if (binder != null)
-                FirebaseSingleton.GetInstance.BindUI(binder);
+                FirebaseSingletonV2.GetInstance.BindUI(binder);
             if (BindDatabase)
             {
                 if (!PerformSafetyChecks(doOnNoConfigurationFile: () =>
@@ -37,7 +37,7 @@ namespace Components
                     binder?.OnResetFirebaseConfig();
                 })) return;
 
-                FirebaseSingleton.GetInstance.InitConfig(FirebaseCurrent);
+                FirebaseSingletonV2.GetInstance.Initialize();
             }
         }
 
@@ -253,7 +253,6 @@ namespace Components
                     RemoveFirebaseCredentials();
                     MsgBoxHelper.ShowError(Translation.MSG_WRONG_SIGNIN);
                     InitializeService();
-                    //FirebaseSingleton.GetInstance.InitConfig(FirebaseCurrent);
                 });
                 return true;
             }

@@ -136,6 +136,8 @@ namespace Components
         public string SYNC_ID_DEFAULT = rm.GetString("sync_id_default");
         public string SYNC_ID_CUSTOM = rm.GetString("sync_id_custom");
         public string SYNC_CONFIG_ERR = rm.GetString("sync_config_err");
+        public string SYNC_DEVICE_ADDED = rm.GetString("sync_device_added");
+        public string SYNC_DEVICE_REMOVED = rm.GetString("sync_device_removed");
         public string SYNC_ERROR_TITLE = rm.GetString("sync_error_title");
         public string SYNC_UNKNOWN_ERROR = rm.GetString("sync_unknown_error");
         public string UPDATE_TITLE = rm.GetString("update_title");

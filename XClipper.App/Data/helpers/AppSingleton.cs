@@ -191,8 +191,8 @@ namespace Components.viewModels
 
             if (pushToDatabase)
             {
-                FirebaseSingleton.GetInstance.AddClip(model.ContentType == ContentType.Text ? model.RawText : null).RunAsync();
-                FirebaseSingleton.GetInstance.AddImage(model.ContentType == ContentType.Image ? model.ImagePath : null).RunAsync();
+                FirebaseSingletonV2.GetInstance.AddClip(model.ContentType == ContentType.Text ? model.RawText : null).RunAsync();
+                FirebaseSingletonV2.GetInstance.AddImage(model.ContentType == ContentType.Image ? model.ImagePath : null).RunAsync();
             }
         }
 
@@ -203,8 +203,40 @@ namespace Components.viewModels
 
         #endregion
 
+        #region AddData V2 
+
+        /// <summary>
+        /// This will compare the given text data with the local database table items.
+        /// If not exist such item, it will insert the data.
+        /// </summary>
+        /// <param name="unencryptedText">Unencrypted data coming from Firebae OnDataChange event</param>
+        /// <param name="invokeOnInserted">Data will be an unencrypted clip data.</param>
+        public void CheckAndUpdateData(string? unencryptedText, Action<string, ContentType>? invokeOnInserted = null)
+        {
+            if (unencryptedText == null) return;
+
+            if (Regex.IsMatch(unencryptedText, PATH_CLIP_IMAGE_DATA))
+            {
+                UpdateDataForImage(unencryptedText, invokeOnInserted);
+                return;
+            }
+
+            bool dataExist = false;
+            dataExist = dataDB.GetAllData().Exists(c => c.RawText == unencryptedText);
+            if (!dataExist)
+            {
+                // Insert this data without updating online database.
+                Debug.WriteLine("Inserted Data");
+                InsertTextClipNoUpdate(unencryptedText);
+                invokeOnInserted?.Invoke(unencryptedText, ContentType.Text); // Return the unencrypted text
+            }
+        }
+
+        #endregion
+
         #region UpdateData
 
+        [Obsolete("Could be redundant if V2 is finalized")]
         /// <summary>
         /// This will compare the given text data with the local database table items.
         /// If not exist such item, it will insert the data.
@@ -268,7 +300,7 @@ namespace Components.viewModels
         {
             UpdateData(newData);
             if (newData?.ContentType == ContentType.Text)
-                FirebaseSingleton.GetInstance.UpdateData(oldData, newData.RawText).RunAsync();
+                FirebaseSingletonV2.GetInstance.UpdateData(oldData, newData.RawText).RunAsync();
         }
 
         #endregion
@@ -302,10 +334,10 @@ namespace Components.viewModels
                 switch (model?.ContentType)
                 {
                     case ContentType.Text:
-                        FirebaseSingleton.GetInstance.RemoveClip(model.RawText).RunAsync();
+                        FirebaseSingletonV2.GetInstance.RemoveClip(model.RawText).RunAsync();
                         break;
                     case ContentType.Image:
-                        FirebaseSingleton.GetInstance.RemoveImage(Path.GetFileName(model.ImagePath), true).RunAsync();
+                        FirebaseSingletonV2.GetInstance.RemoveImage(Path.GetFileName(model.ImagePath), true).RunAsync();
                         break;
                 }
             }
@@ -322,8 +354,8 @@ namespace Components.viewModels
 
             if (fromFirebase)
             {
-                FirebaseSingleton.GetInstance.RemoveClip(models.Select(c => c.RawText).OfType<string>().ToList()).RunAsync();
-                FirebaseSingleton.GetInstance.RemoveImageList(models.Select(c => c.ImagePath).OfType<string>()
+                FirebaseSingletonV2.GetInstance.RemoveClip(models.Select(c => c.RawText).OfType<string>().ToList()).RunAsync();
+                FirebaseSingletonV2.GetInstance.RemoveImageList(models.Select(c => c.ImagePath).OfType<string>()
                     .Select(c => Path.GetFileName(c)).ToList()).RunAsync();
             }
         }
@@ -337,7 +369,7 @@ namespace Components.viewModels
             dataDB.ClearAll<TableCopy>();
 
             if (fromFirebase)
-                FirebaseSingleton.GetInstance.RemoveAllClip().RunAsync();
+                FirebaseSingletonV2.GetInstance.RemoveAllClip().RunAsync();
         }
 
         #endregion

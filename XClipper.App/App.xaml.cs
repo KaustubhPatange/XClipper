@@ -30,7 +30,7 @@ using System.Drawing;
 
 namespace Components
 {
-    public partial class App : Application, ISettingEventBinder, IFirebaseBinder, IBuyEventBinder, IClipServiceBinder
+    public partial class App : Application, ISettingEventBinder, IFirebaseBinder, IBuyEventBinder, IClipServiceBinder, IFirebaseBinderV2
     {
         #region Variable Declaration
 
@@ -126,7 +126,7 @@ namespace Components
         protected override void OnExit(ExitEventArgs e)
         {
             hookUtility.Unsubscribe();
-            FirebaseSingleton.GetInstance.SaveUserState();
+            FirebaseSingletonV2.GetInstance.SaveUserState();
 
             base.OnExit(e);
         }
@@ -432,50 +432,7 @@ namespace Components
             {
                 AppSingleton.GetInstance.CheckDataAndUpdate(e.Data, (data, type) =>
                 {
-                    switch (type)
-                    {
-                        case ContentType.Text:
-                            AppNotificationHelper.ShowBasicToast(
-                                dispatcher: Dispatcher,
-                                title: Translation.APP_COPY_TITLE,
-                                message: data.Truncate(NOTIFICATION_TRUNCATE_TEXT),
-                                silent: !PlayNoticationSound,
-                                audioType: ToastAudioType.MAIL,
-                                doOnActivated: () =>
-                                {
-                                    var recorder = AppModule.Container.Resolve<IKeyboardRecorder>();
-                                    recorder.Ignore(() =>
-                                    {
-                                        Clipboard.SetText(data); // Set text as current clipboard.
-                                    });
-                                }
-                            ).RunAsync();
-                            break;
-                        case ContentType.Image:
-                            AppNotificationHelper.ShowImageToast(
-                                dispatcher: Dispatcher,
-                                imagePath: data,
-                                title: Translation.APP_COPY_TITLE_IMAGE,
-                                message: data,
-                                silent: !PlayNoticationSound,
-                                audioType: ToastAudioType.MAIL,
-                                doOnActivated: () =>
-                                {
-                                    Process.Start(data); // Show image on default image viewer.
-                                }
-                            ).RunAsync();
-                            break;
-                    }
-
-                    // TODO: Check if above code works and remove below code along with it's implementation.
-                    //DisplayNotifyMessage(Translation.APP_COPY_TITLE, unencryptedData.Truncate(NOTIFICATION_TRUNCATE_TEXT), () =>
-                    //{
-                    //    var recorder = AppModule.Container.Resolve<IKeyboardRecorder>();
-                    //    recorder.Ignore(() =>
-                    //    {
-                    //        Clipboard.SetText(unencryptedData);
-                    //    });
-                    //});
+                    ParseUpdateResult(data, type);
                 });
             }
         }
@@ -504,13 +461,88 @@ namespace Components
 
         #endregion
 
+        #region IFirebaseBinderV2 Events
+
+        public void OnClipItemAdded(string unencryptedData)
+        {
+            Debug.WriteLine($"[V2 Added]: {unencryptedData}");
+            AppSingleton.GetInstance.CheckAndUpdateData(unencryptedData, (data, type) =>
+            {
+                ParseUpdateResult(data, type);
+            });
+        }
+
+        public void OnClipItemRemoved(string unencryptedRemovedData)
+        {
+            Debug.WriteLine($"[V2 Removed]: {unencryptedRemovedData}");
+            AppSingleton.GetInstance.DeleteClipData(unencryptedRemovedData);
+        }
+
+        public void OnDeviceAdded(Device device)
+        {
+            AppNotificationHelper.ShowBasicToast(
+                dispatcher: Dispatcher,
+                title: $"{device?.model} {Translation.SYNC_DEVICE_ADDED}",
+                silent: !PlayNoticationSound
+            ).RunAsync();
+        }
+
+        public void OnDeviceRemoved(Device device)
+        {
+            AppNotificationHelper.ShowBasicToast(
+                dispatcher: Dispatcher,
+                title: $"{device?.model} {Translation.SYNC_DEVICE_REMOVED}",
+                silent: !PlayNoticationSound
+            ).RunAsync();
+        }
+
+        private void ParseUpdateResult(string data, ContentType type)
+        {
+            switch (type)
+            {
+                case ContentType.Text:
+                    AppNotificationHelper.ShowBasicToast(
+                        dispatcher: Dispatcher,
+                        title: Translation.APP_COPY_TITLE,
+                        message: data.Truncate(NOTIFICATION_TRUNCATE_TEXT),
+                        silent: !PlayNoticationSound,
+                        audioType: ToastAudioType.MAIL,
+                        doOnActivated: () =>
+                        {
+                            var recorder = AppModule.Container.Resolve<IKeyboardRecorder>();
+                            recorder.Ignore(() =>
+                            {
+                                Clipboard.SetText(data); // Set text as current clipboard.
+                            });
+                        }
+                    ).RunAsync();
+                    break;
+                case ContentType.Image:
+                    AppNotificationHelper.ShowImageToast(
+                        dispatcher: Dispatcher,
+                        imagePath: data,
+                        title: Translation.APP_COPY_TITLE_IMAGE,
+                        message: data,
+                        silent: !PlayNoticationSound,
+                        audioType: ToastAudioType.MAIL,
+                        doOnActivated: () =>
+                        {
+                            Process.Start(data); // Show image on default image viewer.
+                        }
+                    ).RunAsync();
+                    break;
+            }
+        }
+
+        #endregion
+
         #region Method Events
 
         private void ActivateLicense()
         {
             CheckForUpdates();
             UpdateSettingItem.Visible = true;
-            FirebaseSingleton.GetInstance.UpdateConfigurations();
+            FirebaseSingletonV2.GetInstance.UpdateConfigurations();
             if (IsPurchaseDone) UpdateSettingItem.Visible = true;
         }
 
@@ -661,7 +693,7 @@ namespace Components
             authWindow = new OAuthWindow(Id, secret);
             if (authWindow.ShowDialog() == true)
             {
-                FirebaseSingleton.GetInstance.InitConfig(FirebaseCurrent);
+                FirebaseSingletonV2.GetInstance.Initialize();
             }
         }
 

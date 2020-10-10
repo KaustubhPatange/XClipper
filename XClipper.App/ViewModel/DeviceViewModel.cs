@@ -46,7 +46,7 @@ namespace Components
 
             Task.Run(async () =>
             {
-                var devices = await FirebaseSingleton.GetInstance.GetDeviceListAsync().ConfigureAwait(false);
+                var devices = await FirebaseSingletonV2.GetInstance.GetDeviceListAsync().ConfigureAwait(false);
 
                 RunOnMainThread(() =>
                 {
@@ -73,7 +73,7 @@ namespace Components
 
             Task.Run(async () => 
             { 
-                Devices = await FirebaseSingleton.GetInstance.RemoveDevice(Devices[SelectedIndex].id).ConfigureAwait(false);
+                Devices = await FirebaseSingletonV2.GetInstance.RemoveDevice(Devices[SelectedIndex].id).ConfigureAwait(false);
                 ShowProgress = false;
                 ButtonEnabled = true;
             });

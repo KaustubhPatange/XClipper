@@ -1,5 +1,7 @@
 ﻿using System;
 
+#nullable enable
+
 namespace Components
 {
     public interface IFirebaseBinderV2
@@ -16,8 +18,18 @@ namespace Components
         /// </summary>
         void SendNotification(string title, string message, Action? onActive = null);
 
+        /// <summary>
+        /// <inheritdoc cref="IFirebaseBinder.OnNoConfigurationFound"/>
+        /// </summary>
+        void OnNoConfigurationFound();
+
+        /// <summary>
+        /// <inheritdoc cref="IFirebaseBinder.OnResetFirebaseConfig"/>
+        /// </summary>
+        void OnResetFirebaseConfig();
+
         void OnClipItemAdded(string unencryptedData);
-        void OnClipItemRemoved(string path);
+        void OnClipItemRemoved(string unencryptedRemovedData);
 
         void OnDeviceAdded(Device device);
         void OnDeviceRemoved(Device device);
