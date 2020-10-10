@@ -10,8 +10,8 @@ using System.Threading.Tasks;
 using FireSharp.Core.Config;
 using FireSharp.Core;
 using Newtonsoft.Json;
-using System.Linq.Expressions;
 using System.Linq;
+using Firebase.Storage;
 
 #nullable enable
 
@@ -21,7 +21,7 @@ using System.Linq;
  */
 namespace Components
 {
-    public sealed class FirebaseSingletonV2
+    public sealed class FirebaseSingletonV2 : IDisposable
     {
 
         #region Variable declarations
@@ -109,7 +109,6 @@ namespace Components
         }
 
         #endregion
-
 
         #region State persistence 
 
@@ -233,12 +232,10 @@ namespace Components
             Log();
             try
             {
-                await client.OnAsync($"users/{UID}", 
+                await client.OnAsync($"users/{UID}",
                     onDataChange: async (o, a, c) =>
                 {
                     if (!BindDatabase) return;
-
-                    if (!await CheckForAccessTokenValidity().ConfigureAwait(false)) return;
 
                     User? firebaseUser = JsonConvert.DeserializeObject<User>(a.Data);
 
@@ -279,6 +276,8 @@ namespace Components
 
                     user = firebaseUser!;
 
+                    if (!await RunCommonTask().ConfigureAwait(false)) return;
+
                 }).ConfigureAwait(false);
             }
             catch (Exception ex)
@@ -303,7 +302,7 @@ namespace Components
         {
             Log("Is User null: " + (user != null));
             if (user != null)
-                await client.SafeSetAsync($"{USER_REF}/{UID}", user).ConfigureAwait(false);
+                await client.SafeUpdateAsync($"{USER_REF}/{UID}", user).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -345,6 +344,326 @@ namespace Components
             if (originallyLicensed != IsPurchaseDone)
                 await PushUser().ConfigureAwait(false);
         }
+
+        /// <summary>
+        /// This will run some common configuration if needed so. If returned "True"
+        /// then you should continue next consecutive operation otherwise stop.
+        /// </summary>
+        /// <returns></returns>
+        private async Task<bool> RunCommonTask()
+        {
+            return await CheckForAccessTokenValidity().ConfigureAwait(false);
+        }
+
         #endregion
+
+        #region User handling methods
+
+        /// <summary>
+        /// Removes all data associated with the UID.
+        /// </summary>
+        /// <returns></returns>
+        public async Task ResetUser()
+        {
+            Log();
+            if (!BindDatabase) return;
+            await client.SafeDeleteAsync($"users/{UID}").ConfigureAwait(false);
+            await RegisterUser().ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// This will provide the list of devices associated with the UID.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<Device>?> GetDeviceListAsync()
+        {
+            Log();
+            if (!BindDatabase) return new List<Device>();
+
+            if (!await RunCommonTask().ConfigureAwait(false)) return new List<Device>();
+
+            if (user != null) return user.Devices; else return new List<Device>();
+        }
+
+        /// <summary>
+        /// Removes a device from database.
+        /// </summary>
+        /// <param name="DeviceId"></param>
+        /// <returns></returns>
+        public async Task<List<Device>> RemoveDevice(string DeviceId)
+        {
+            Log($"Device Id: {DeviceId}");
+            if (!BindDatabase) return new List<Device>();
+
+            if (await RunCommonTask().ConfigureAwait(false))
+            {
+                user.Devices = user.Devices.Where(d => d.id != DeviceId).ToList();
+                await PushUser().ConfigureAwait(false);
+                return user.Devices;
+            }
+
+            return new List<Device>();
+        }
+
+        /// <summary>
+        /// Add a clip data to the server instance. Also support multiple calls which
+        /// is maintained through stack.
+        /// </summary>
+        /// <param name="Text"></param>
+        /// <returns></returns>
+        public async Task AddClip(string? Text)
+        {
+            if (Text == null) return;
+            Log();
+            // If some add operation is going, we will add it to stack.
+            if (isPreviousAddRemaining)
+            {
+                addStack.Add(Text);
+                Log($"Adding to addStack: {addStack.Count}");
+                return;
+            }
+            isPreviousAddRemaining = true;
+            if (await RunCommonTask().ConfigureAwait(false))
+            {
+                if (Text == null) return;
+                if (Text.Length > DatabaseMaxItemLength) return;
+                if (user.Clips == null)
+                    user.Clips = new List<Clip>();
+                // Remove clip if greater than item
+                if (user.Clips.Count > DatabaseMaxItem)
+                    user.Clips.RemoveAt(0);
+
+                // Add data from current [Text]
+                user.Clips.Add(new Clip { data = Text.EncryptBase64(DatabaseEncryptPassword), time = DateTime.Now.ToFormattedDateTime(false) });
+
+                // Also add data from stack
+                foreach (var stackText in addStack)
+                    user.Clips.Add(new Clip { data = stackText.EncryptBase64(DatabaseEncryptPassword), time = DateTime.Now.ToFormattedDateTime(false) });
+
+                // Clear the stack after adding them all.
+                addStack.Clear();
+
+                await PushUser().ConfigureAwait(false);
+
+                Log("Completed");
+            }
+            isPreviousAddRemaining = false;
+        }
+
+        /// <summary>
+        /// Removes the clip data of user. Synchronization is possible.
+        /// </summary>
+        /// <param name="Text"></param>
+        /// <returns></returns>
+        public async Task RemoveClip(string? Text)
+        {
+            if (Text == null) return;
+            Log();
+            // If some remove operation is going, we will add it to stack.
+            if (isPreviousRemoveRemaining)
+            {
+                removeStack.Add(Text);
+                Log($"Adding to removeStack: {removeStack.Count}");
+                return;
+            }
+
+            isPreviousRemoveRemaining = true;
+
+            if (await RunCommonTask().ConfigureAwait(false))
+            {
+                if (Text == null) return;
+                if (user.Clips == null)
+                    return;
+
+                var originalListCount = user.Clips.Count;
+                // Add current one to stack as well to perform LINQ 
+                removeStack.Add(Text);
+
+                user.Clips.RemoveAll(c => removeStack.Exists(d => d == c.data.DecryptBase64(DatabaseEncryptPassword)));
+
+                if (originalListCount != user.Clips.Count)
+                    await client.SafeUpdateAsync($"users/{UID}", user).ConfigureAwait(false);
+
+                removeStack.Clear();
+
+                Log("Completed");
+            }
+            isPreviousRemoveRemaining = false;
+        }
+
+        /// <summary>
+        /// Removes list of Clip item that matches input list of string items.
+        /// </summary>
+        /// <param name="items"></param>
+        /// <returns></returns>
+        public async Task RemoveClip(List<string> items)
+        {
+            Log();
+
+            if (await RunCommonTask().ConfigureAwait(false))
+            {
+                if (items.IsEmpty()) return;
+                if (user.Clips == null) return;
+
+                var originalCount = items.Count;
+
+                foreach (var item in items)
+                    user.Clips.RemoveAll(c => c.data.DecryptBase64(DatabaseEncryptPassword) == item);
+
+                if (originalCount != user.Clips.Count)
+                    await client.SafeUpdateAsync($"users/{UID}", user).ConfigureAwait(false);
+
+                Log("Completed");
+            }
+        }
+
+
+        /// <summary>
+        /// Remove all clip data of user.
+        /// </summary>
+        /// <returns></returns>
+        public async Task RemoveAllClip()
+        {
+            Log();
+            if (await RunCommonTask().ConfigureAwait(false))
+            {
+                if (user.Clips == null)
+                    return;
+                user.Clips.Clear();
+                await client.SafeUpdateAsync($"users/{UID}", user).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Updates an existing data with the new data. Both this data should not be in
+        /// any encrypted format.
+        /// </summary>
+        /// <param name="oldUnencryptedData"></param>
+        /// <param name="newUnencryptedData"></param>
+        /// <returns></returns>
+        public async Task UpdateData(string oldUnencryptedData, string newUnencryptedData)
+        {
+            Log();
+            // Adding new data to stack to save network calls.
+            if (isPreviousUpdateRemaining)
+            {
+                updateStack.Add(oldUnencryptedData, newUnencryptedData);
+                Log($"Adding to updateStack: {updateStack.Count}");
+                return;
+            }
+            isPreviousUpdateRemaining = true;
+
+            if (await RunCommonTask().ConfigureAwait(false))
+            {
+                if (user.Clips == null)
+                    return;
+
+                // Add current item to existing stack.
+                updateStack.Add(oldUnencryptedData, newUnencryptedData);
+                foreach (var clip in user.Clips)
+                {
+                    var decryptedData = clip.data.DecryptBase64(DatabaseEncryptPassword);
+                    var item = updateStack.FirstOrDefault(c => c.Key == decryptedData);
+                    if (item.Key != null && item.Value != null)
+                    {
+                        clip.data = item.Value.EncryptBase64(DatabaseEncryptPassword);
+                    }
+                }
+
+                updateStack.Clear();
+
+                await client.SafeUpdateAsync($"users/{UID}", user).ConfigureAwait(false);
+
+                Log("Completed");
+            }
+
+            isPreviousUpdateRemaining = false;
+        }
+
+        /// <summary>
+        /// Add image related data to firebase, well not whole image but it's uploaded on
+        /// Firebase Storage & then the url is shared in the database.
+        /// </summary>
+        /// <param name="imagePath"></param>
+        /// <returns></returns>
+        public async Task AddImage(string? imagePath)
+        {
+            if (imagePath == null) return;
+            Log();
+            if (FirebaseCurrent?.Storage == null) return;
+
+            var stream = File.Open(imagePath, FileMode.Open);
+            var fileName = Path.GetFileName(imagePath);
+
+            var pathRef = new FirebaseStorage(FirebaseCurrent.Storage)
+               .Child("XClipper")
+               .Child("images")
+               .Child(fileName);
+
+            await pathRef.PutAsync(stream); // Push to storage
+
+            binder?.SendNotification(Translation.MSG_IMAGE_UPLOAD_TITLE, Translation.MSG_IMAGE_UPLOAD_TEXT);
+
+            stream.Close();
+            var downloadUrl = await pathRef.GetDownloadUrlAsync().ConfigureAwait(false); // Retrieve download url
+
+            AddClip($"![{fileName}]({downloadUrl})");
+        }
+
+        /// <summary>
+        /// Removes an image from Firebase Storage as well as routes to call remove clip method.
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public async Task RemoveImage(string fileName, bool onlyFromStorage = false)
+        {
+            Log();
+            if (FirebaseCurrent?.Storage == null) return;
+
+            var pathRef = new FirebaseStorage(FirebaseCurrent.Storage)
+                .Child("XClipper")
+                .Child("images")
+                .Child(fileName);
+
+            try
+            {
+                var downloadUrl = await pathRef.GetDownloadUrlAsync().ConfigureAwait(false);
+                await new FirebaseStorage(FirebaseCurrent.Storage)
+                .Child("XClipper")
+                .Child("images")
+                .Child(fileName)
+                .DeleteAsync().ConfigureAwait(false);
+
+                if (!onlyFromStorage)
+                    RemoveClip($"![{fileName}]({downloadUrl})"); // PS I don't care what happens next!
+            }
+            finally
+            { }
+        }
+
+        /// <summary>
+        /// This will remove list of images from storage & route to remove it from firebase database.
+        /// </summary>
+        /// <param name="fileNames"></param>
+        /// <returns></returns>
+        public async Task RemoveImageList(List<string> fileNames)
+        {
+            Log();
+            if (FirebaseCurrent?.Storage == null) return;
+
+            foreach (var fileName in fileNames)
+            {
+                await RemoveImage(fileName).ConfigureAwait(false);
+            }
+
+
+        }
+
+        #endregion
+
+        public void Dispose()
+        {
+            client.Dispose();
+        }
     }
 }
