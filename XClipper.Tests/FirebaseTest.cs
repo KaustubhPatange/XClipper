@@ -5,6 +5,8 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Threading;
+using FireSharp.Core;
+using FireSharp.Core.Config;
 
 namespace XClipper.Tests
 {
@@ -32,14 +34,16 @@ namespace XClipper.Tests
             Debug.WriteLine("Done");
         }
 
-
-        public void method()
+        [TestMethod]
+        public async Task UserFetchCheck()
         {
-            //var t = Task.Run(async () =>
-            //{
-            //    await FirebaseHelper.GetInstance.RegisterUser();
-            //});
+            var client = new FirebaseClient(new FirebaseConfig
+            {
+                BasePath = "https://quickstart-1550501068702.firebaseio.com/"
+            });
+            var user = await client.SafeGetAsync($"users/i2e289ejdidjiwieuiejkdj").ConfigureAwait(false);
 
+            Assert.IsTrue(user.Body == "null");
         }
     }
 }

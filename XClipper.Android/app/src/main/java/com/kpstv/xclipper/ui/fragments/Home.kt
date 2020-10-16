@@ -126,11 +126,13 @@ class Home : Fragment(R.layout.fragment_home), KodeinAware {
         mainViewModel.stateManager.toolbarState.observe(viewLifecycleOwner, Observer { state ->
             when (state) {
                 ToolbarState.NormalViewState -> {
+                    fab_addItem.show()
                     setNormalToolbar()
                     mainViewModel.stateManager.clearSelectedList()
                 }
                 ToolbarState.MultiSelectionState -> {
                     setSelectedToolbar()
+                    fab_addItem.hide()
                 }
                 else -> {
                     // TODO: When exhaustive

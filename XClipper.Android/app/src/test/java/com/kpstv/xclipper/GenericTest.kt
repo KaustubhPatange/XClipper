@@ -20,6 +20,25 @@ class GenericTest {
     }
 
     @Test
+    fun crossInlineTest() {
+        println("Working now")
+        preMethod {
+            println("Executing")
+            return@preMethod
+        }
+        println("Completed")
+    }
+
+    private fun preMethod(block: () -> Unit) {
+        method { block.invoke() }
+    }
+
+    private inline fun method(crossinline block: () -> Unit) {
+        block.invoke()
+        println("Below code")
+    }
+
+    @Test
     fun assertRegexMatchTest() {
 
         val seconds= measureTimeMillis {

@@ -12,6 +12,9 @@ using FireSharp.Core;
 using Newtonsoft.Json;
 using System.Linq;
 using Firebase.Storage;
+using System.Drawing;
+using System.Windows.Documents;
+using System.Data;
 
 #nullable enable
 
@@ -26,12 +29,12 @@ namespace Components
 
         #region Variable declarations
 
-        private bool isPreviousAddRemaining, isPreviousRemoveRemaining, isPreviousUpdateRemaining, isGlobalUserExecuting = false;
+        private bool isPreviousAddRemaining, isPreviousRemoveRemaining, isPreviousUpdateRemaining = false;
 
         private readonly List<string> addStack = new List<string>();
         private readonly List<string> removeStack = new List<string>();
         private readonly Dictionary<string, string> updateStack = new Dictionary<string, string>();
-        private readonly List<object> globalUserStack = new List<object>();
+        private readonly List<FirebaseInvoke> firebaseInvokeStack = new List<FirebaseInvoke>();
 
         private const string USER_REF = "users";
         private const string CLIP_REF = "Clips";
@@ -43,6 +46,21 @@ namespace Components
 
         private IFirebaseClient client;
         private IFirebaseBinderV2? binder;
+
+        #endregion
+
+        #region Observables 
+
+        private bool _isClientInitialized = false;
+        private bool isClientInitialized
+        {
+            get { return _isClientInitialized; }
+            set
+            {
+                _isClientInitialized = value;
+                OnClientInitialized();
+            }
+        }
 
         #endregion
 
@@ -112,36 +130,6 @@ namespace Components
 
         #endregion
 
-        #region State persistence 
-
-        public void SaveUserState()
-        {
-            if (user != null)
-            {
-                Log("Saved current user state");
-                File.WriteAllText(UserStateFile, User.ToNode(user).ToString());
-            }
-        }
-
-        public void LoadUserState()
-        {
-            if (File.Exists(UserStateFile))
-            {
-                try
-                {
-                    var xml = File.ReadAllText(UserStateFile);
-                    user = User.FromNode(XElement.Parse(xml));
-                    Log("Previous user state is restored");
-                }
-                catch
-                {
-                    Log("Invalid previous user state");
-                }
-            }
-        }
-
-        #endregion
-
         #region Public methods
 
         /// <summary>
@@ -165,17 +153,55 @@ namespace Components
         #endregion
 
         #region Private methods
+
         private void Log(string? message = null)
         {
             LogHelper.Log(nameof(FirebaseSingletonV2), message);
+        }
+
+        /// <summary>
+        /// If the code checks are true stop the execution.
+        /// </summary>
+        private bool AssertUnifiedChecks(FirebaseInvoke invoke, object? data = null)
+        {
+            if (!isClientInitialized)
+            {
+                Log($"Asserting: {invoke}");
+                // Some invokes are not supported yet.
+                switch(invoke)
+                {
+                    case FirebaseInvoke.ADD_CLIP:
+                        addStack.Add((string)data);
+                        break;
+                    case FirebaseInvoke.REMOVE_CLIP:
+                        removeStack.Add((string)data);
+                        break;
+                    case FirebaseInvoke.UPDATE_CLIP:
+                        var pair = (KeyValuePair<string, string>)data;
+                        updateStack.Add(pair.Key, pair.Value);
+                        break;
+                    case FirebaseInvoke.RESET:
+                        firebaseInvokeStack.Add(FirebaseInvoke.RESET);
+                        firebaseInvokeStack.Distinct();
+                        break;
+                    case FirebaseInvoke.REMOVE_CLIP_ALL:
+                        firebaseInvokeStack.Add(FirebaseInvoke.REMOVE_CLIP_ALL);
+                        firebaseInvokeStack.Distinct();
+                        break;
+                    default:
+                        binder?.SendNotification(Translation.SYNC_ERROR_TITLE, Translation.MSG_FIREBASE_CLIENT_ERR);
+                        break;
+                }
+            }
+            return !BindDatabase || !isClientInitialized;
         }
 
         private void ClearAllStack()
         {
             addStack.Clear(); isPreviousAddRemaining = false;
             removeStack.Clear(); isPreviousRemoveRemaining = false;
-            globalUserStack.Clear(); isGlobalUserExecuting = false;
             updateStack.Clear(); isPreviousUpdateRemaining = false;
+            firebaseInvokeStack.Clear();
         }
 
         /// <summary>
@@ -243,9 +269,13 @@ namespace Components
         /// </summary>
         private async void SetUserCallback()
         {
+            isClientInitialized = false;
+
+            // Set user for first time..
+            if (user == null) user = await FetchUser().ConfigureAwait(false);
             // Make sure to set user for first time here..
             // Check distinct function if called again..
-            // There is an issue when addClip is called second time.. It gets stuck.
+            // There is an issue when addClip is called second time. It gets stuck.
             Log();
             try
             {
@@ -315,6 +345,8 @@ namespace Components
                 }
                 LogHelper.Log(this, ex.StackTrace);
             }
+
+            isClientInitialized = true;
         }
 
         /// <summary>
@@ -350,7 +382,8 @@ namespace Components
         {
             Log();
             var data = await client.SafeGetAsync($"users/{UID}").ConfigureAwait(false);
-            return data.ResultAs<User>();//.Also((user) => { this.user = user; });
+            if (data != null && data.Body == "null") return null; // A safety check to make sure user is null.
+            return data.ResultAs<User>();
         }
 
         private async Task SetCommonUserInfo(User user)
@@ -402,6 +435,29 @@ namespace Components
             }
         }
 
+        /// <summary>
+        /// This will trigger when our Firebase client is initialized.
+        /// </summary>
+        private async void OnClientInitialized()
+        {
+            Log();
+            if (addStack.Count > 0) await AddClip(addStack.Pop()).ConfigureAwait(false);
+            if (removeStack.Count > 0) await RemoveClip(removeStack.Pop()).ConfigureAwait(false);
+            if (updateStack.Count > 0)
+            {
+                var pair = updateStack.Pop();
+                await UpdateData(pair.Key, pair.Value).ConfigureAwait(false);
+            }
+            foreach(var item in firebaseInvokeStack)
+            {
+                switch(item)
+                {
+                    case FirebaseInvoke.RESET: await ResetUser().ConfigureAwait(false); break;
+                    case FirebaseInvoke.REMOVE_CLIP_ALL: await RemoveAllClip().ConfigureAwait(false); break;
+                }
+            }
+        }
+
         #endregion
 
         #region User handling methods
@@ -413,7 +469,7 @@ namespace Components
         public async Task ResetUser()
         {
             Log();
-            if (!BindDatabase) return;
+            if (AssertUnifiedChecks(FirebaseInvoke.RESET)) return;
             await client.SafeDeleteAsync($"users/{UID}").ConfigureAwait(false);
             await RegisterUser().ConfigureAwait(false);
         }
@@ -425,7 +481,7 @@ namespace Components
         public async Task<List<Device>?> GetDeviceListAsync()
         {
             Log();
-            if (!BindDatabase) return new List<Device>();
+            if (AssertUnifiedChecks(FirebaseInvoke.LIST_DEVICES)) return new List<Device>();
 
             if (!await RunCommonTask().ConfigureAwait(false)) return new List<Device>();
 
@@ -440,7 +496,7 @@ namespace Components
         public async Task<List<Device>> RemoveDevice(string DeviceId)
         {
             Log($"Device Id: {DeviceId}");
-            if (!BindDatabase) return new List<Device>();
+            if (AssertUnifiedChecks(FirebaseInvoke.REMOVE_DEVICE)) return new List<Device>();
 
             if (await RunCommonTask().ConfigureAwait(false))
             {
@@ -460,7 +516,7 @@ namespace Components
         /// <returns></returns>
         public async Task AddClip(string? Text)
         {
-            if (Text == null) return;
+            if (Text == null || AssertUnifiedChecks(FirebaseInvoke.ADD_CLIP, Text)) return;
             Log();
             // If some add operation is going, we will add it to stack.
             if (isPreviousAddRemaining)
@@ -504,7 +560,7 @@ namespace Components
         /// <returns></returns>
         public async Task RemoveClip(string? Text)
         {
-            if (Text == null) return;
+            if (Text == null || AssertUnifiedChecks(FirebaseInvoke.REMOVE_CLIP, Text)) return;
             Log();
             // If some remove operation is going, we will add it to stack.
             if (isPreviousRemoveRemaining)
@@ -546,7 +602,7 @@ namespace Components
         public async Task RemoveClip(List<string> items)
         {
             Log();
-
+            if (AssertUnifiedChecks(FirebaseInvoke.NONE)) return;
             if (await RunCommonTask().ConfigureAwait(false))
             {
                 if (items.IsEmpty()) return;
@@ -572,6 +628,7 @@ namespace Components
         public async Task RemoveAllClip()
         {
             Log();
+            if (AssertUnifiedChecks(FirebaseInvoke.REMOVE_CLIP_ALL))
             if (await RunCommonTask().ConfigureAwait(false))
             {
                 if (user.Clips == null)
@@ -591,6 +648,8 @@ namespace Components
         public async Task UpdateData(string oldUnencryptedData, string newUnencryptedData)
         {
             Log();
+            if (AssertUnifiedChecks(FirebaseInvoke.UPDATE_CLIP, new KeyValuePair<string, string>(oldUnencryptedData, newUnencryptedData))) return;
+
             // Adding new data to stack to save network calls.
             if (isPreviousUpdateRemaining)
             {
@@ -636,6 +695,7 @@ namespace Components
         public async Task AddImage(string? imagePath)
         {
             if (imagePath == null) return;
+            if (AssertUnifiedChecks(FirebaseInvoke.ADD_IMAGE_CLIP, imagePath)) return;
             Log();
             if (FirebaseCurrent?.Storage == null) return;
 
@@ -664,6 +724,7 @@ namespace Components
         /// <returns></returns>
         public async Task RemoveImage(string fileName, bool onlyFromStorage = false)
         {
+            if (AssertUnifiedChecks(FirebaseInvoke.REMOVE_IMAGE_CLIP, fileName)) return;
             Log();
             if (FirebaseCurrent?.Storage == null) return;
 
@@ -695,6 +756,7 @@ namespace Components
         /// <returns></returns>
         public async Task RemoveImageList(List<string> fileNames)
         {
+            if (AssertUnifiedChecks(FirebaseInvoke.NONE)) return;
             Log();
             if (FirebaseCurrent?.Storage == null) return;
 
@@ -702,8 +764,36 @@ namespace Components
             {
                 await RemoveImage(fileName).ConfigureAwait(false);
             }
+        }
 
+        #endregion
 
+        #region State persistence 
+
+        public void SaveUserState()
+        {
+            if (user != null)
+            {
+                Log("Saved current user state");
+                File.WriteAllText(UserStateFile, User.ToNode(user).ToString());
+            }
+        }
+
+        public void LoadUserState()
+        {
+            if (File.Exists(UserStateFile))
+            {
+                try
+                {
+                    var xml = File.ReadAllText(UserStateFile);
+                    user = User.FromNode(XElement.Parse(xml));
+                    Log("Previous user state is restored");
+                }
+                catch
+                {
+                    Log("Invalid previous user state");
+                }
+            }
         }
 
         #endregion

@@ -35,6 +35,20 @@ namespace Components
             return t.ToList() ?? new List<T>();
         }
 
+        public static T Pop<T>(this List<T> t)
+        {
+            T item = t[t.Count - 1];
+            t.RemoveAt(t.Count - 1);
+            return item;
+        }
+
+        public static KeyValuePair<T, R> Pop<T, R>(this Dictionary<T, R> t)
+        {
+            var item = t.LastOrDefault();
+            t.Remove(item.Key);
+            return item;
+        }
+
         public static IEnumerable<TSource> DistinctBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
         {
             HashSet<TKey> seenKeys = new HashSet<TKey>();

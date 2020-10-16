@@ -38,7 +38,7 @@ namespace Components
         void OnResetFirebaseConfig();
 
         /// <summary>
-        /// This will allow us to send notification from firebase.
+        /// This will allow us to send notification directly to the application.
         /// </summary>
         void SendNotification(string title, string message, Action? onActive = null);
     }

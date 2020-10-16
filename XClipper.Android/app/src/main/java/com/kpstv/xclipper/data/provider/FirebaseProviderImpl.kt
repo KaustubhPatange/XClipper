@@ -310,9 +310,9 @@ class FirebaseProviderImpl(
      *
      * @param validationContext Specify the context for invoking methods
      */
-    private fun workWithData(
+    private inline fun workWithData(
         validationContext: ValidationContext = ValidationContext.Default,
-        block: (Boolean) -> Unit
+        crossinline block: (Boolean) -> Unit
     ) {
         HVLog.d()
         /**
