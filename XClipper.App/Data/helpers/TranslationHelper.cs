@@ -100,6 +100,8 @@ namespace Components
         public string MSG_LICENSE_UPDATE = rm.GetString("msg_license_update");
         public string MSG_IMAGE_UPLOAD_TITLE = rm.GetString("msg_image_upload_title");
         public string MSG_IMAGE_UPLOAD_TEXT = rm.GetString("msg_image_upload_text");
+        public string MSG_CLIPS_ADDED_TEXT = rm.GetString("msg_clips_added_text");
+        public string MSG_CLIPS_REMOVED_TEXT = rm.GetString("msg_clips_removed_text");
         public string MSG_IMAGE_SAVE_FAILED_TITLE = rm.GetString("msg_image_save_failed_title");
         public string MSG_IMAGE_SAVE_FAILED_TEXT = rm.GetString("msg_image_save_failed_text");
         public string POPUP_ADDED = rm.GetString("popup_added");
@@ -139,6 +141,7 @@ namespace Components
         public string SYNC_DEVICE_ADDED = rm.GetString("sync_device_added");
         public string SYNC_DEVICE_REMOVED = rm.GetString("sync_device_removed");
         public string SYNC_ERROR_TITLE = rm.GetString("sync_error_title");
+        public string SYNC_REMOVE_TITLE = rm.GetString("sync_remove_title");
         public string SYNC_UNKNOWN_ERROR = rm.GetString("sync_unknown_error");
         public string UPDATE_TITLE = rm.GetString("update_title");
         public string UPDATE_DOWNLOAD_COMPLETE = rm.GetString("update_download_complete");

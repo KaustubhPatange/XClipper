@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Autofac.Core.Activators.Reflection;
+using System;
 using System.Configuration;
 using System.IO;
 using System.Reflection;
@@ -91,6 +92,11 @@ namespace Components
         public const string CLIP_ITEM_REGEX_PATTERN = @"^\/(\d+)$";
         public const string PATH_CLIP_DATA = "/Clips/data";
         public const string PATH_CLIP_IMAGE_DATA = @"^(!\[)(.*?)(])(\((https?:\/\/.*?)\))$";
+
+        public const string PATH_CLIP_REGEX_PATTERN = @"\/Clips\/(\d+)";
+        public const string PATH_DEVICE_REGEX_PATTERN = @"\/Devices\/(\d+)";
+        public const string PATH_DEVICES = @"/Devices";
+        public const string PATH_CLIPS = @"/Clips";
 
         #endregion
 

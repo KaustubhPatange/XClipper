@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Windows.Documents;
 
 #nullable enable
 
@@ -28,8 +30,8 @@ namespace Components
         /// </summary>
         void OnResetFirebaseConfig();
 
-        void OnClipItemAdded(string unencryptedData);
-        void OnClipItemRemoved(string unencryptedRemovedData);
+        void OnClipItemAdded(List<string> unencryptedDataList);
+        void OnClipItemRemoved(List<string> unencryptedDataList);
 
         void OnDeviceAdded(Device device);
         void OnDeviceRemoved(Device device);

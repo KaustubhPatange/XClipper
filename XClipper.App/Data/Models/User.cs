@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 using static Components.DefaultSettings;
 
@@ -65,7 +68,7 @@ namespace Components
             model.IsLicensed = t.Element(nameof(model.IsLicensed)).Value.ToBool();
             model.MaxItemStorage = t.Element(nameof(model.MaxItemStorage)).Value.ToInt();
             model.TotalConnection = t.Element(nameof(model.TotalConnection)).Value.ToInt();
-            model.LicenseStrategy = (LicenseType) t.Element(nameof(model.LicenseStrategy)).Value.ToInt();
+            model.LicenseStrategy = (LicenseType)t.Element(nameof(model.LicenseStrategy)).Value.ToInt();
 
             var deviceList = new List<Device>();
             var xDeviceList = t.Element(nameof(model.Devices));
@@ -80,4 +83,17 @@ namespace Components
             return model;
         }
     }
+
+    #region Extension methods
+    public static class UserExtensions
+    {
+        public static User DeepCopy(this User t)
+        {
+            var json = JsonConvert.SerializeObject(t);
+            return JsonConvert.DeserializeObject<User>(json);
+        }
+
+    }
+
+    #endregion
 }

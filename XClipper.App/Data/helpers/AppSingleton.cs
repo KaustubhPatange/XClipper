@@ -262,7 +262,7 @@ namespace Components.viewModels
                 // Insert this data without updating online database.
                 Debug.WriteLine("Inserted Data");
                 InsertTextClipNoUpdate(decryptedText);
-                invokeOnInserted?.Invoke(decryptedText, ContentType.Text); // Return the unencrypted text
+                invokeOnInserted?.Invoke(decryptedText, ContentType.Image); // Return the unencrypted text
             }
         }
 

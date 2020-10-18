@@ -120,6 +120,8 @@
     <system:String x:Key="msg_license_update" xml:space="preserve">Automatic updates are disabled (Upgrade to remove it).&#10;&#10;You need to manually install the update from website.</system:String>
     <system:String x:Key="msg_image_upload_title">Firebase storage</system:String>
     <system:String x:Key="msg_image_upload_text">1 image uploaded.</system:String>
+    <system:String x:Key="msg_clips_added_text">clips are added.</system:String>
+    <system:String x:Key="msg_clips_removed_text">clips are removed.</system:String>
     <system:String x:Key="msg_image_save_failed_title">Couldn't save the image.</system:String>
     <system:String x:Key="msg_image_save_failed_text">Check log for more details.</system:String>
     <system:String x:Key="popup_added">Added:</system:String>
@@ -180,6 +182,7 @@
     <system:String x:Key="sync_device_added">device is added</system:String>
     <system:String x:Key="sync_device_removed">device is removed</system:String>
     <system:String x:Key="sync_error_title">Oops...</system:String>
+    <system:String x:Key="sync_remove_title">Removed</system:String>
     <system:String x:Key="sync_unknown_error">Unknown error occurred, check logs for more details</system:String>
     <system:String x:Key="update_title">Update Checker</system:String>
     <system:String x:Key="update_download_complete">Download completed. Click &quot;OK&quot; to install the update.&#10;&#10;Tip: Current process will killed during this update.</system:String>

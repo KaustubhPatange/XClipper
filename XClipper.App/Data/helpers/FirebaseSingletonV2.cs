@@ -15,6 +15,9 @@ using Firebase.Storage;
 using System.Drawing;
 using System.Windows.Documents;
 using System.Data;
+using System.Diagnostics;
+using System.Text.RegularExpressions;
+using RestSharp;
 
 #nullable enable
 
@@ -156,6 +159,7 @@ namespace Components
 
         private void Log(string? message = null)
         {
+            Debug.WriteLine($"FirebaseSingletonV2: {message}");
             LogHelper.Log(nameof(FirebaseSingletonV2), message);
         }
 
@@ -273,6 +277,7 @@ namespace Components
 
             // Set user for first time..
             if (user == null) user = await FetchUser().ConfigureAwait(false);
+            if (user == null) await RegisterUser().ConfigureAwait(false);
             // Make sure to set user for first time here..
             // Check distinct function if called again..
             // There is an issue when addClip is called second time. It gets stuck.
@@ -285,15 +290,60 @@ namespace Components
                     Log();
                     if (!BindDatabase) return;
 
-                    User? firebaseUser = JsonConvert.DeserializeObject<User>(a.Data);
+                    User? firebaseUser = null;
+
+                    try
+                    {
+                        firebaseUser = JsonConvert.DeserializeObject<User>(a.Data);
+                    } catch(Exception e)
+                    {
+                        firebaseUser = null;
+                    }
+
+                    // If first device or clip is added it will come here...
+                    if (user != null)
+                    {
+                        if (a.Path == PATH_DEVICES)
+                        {
+                            var devices = JsonConvert.DeserializeObject<List<Device>>(a.Data);
+                            firebaseUser = user.DeepCopy();
+                            firebaseUser.Devices = devices;
+                        }
+                        else if (a.Path == PATH_CLIPS)
+                        {
+                            var clips = JsonConvert.DeserializeObject<List<Clip>>(a.Data);
+                            firebaseUser = user.DeepCopy();
+                            firebaseUser.Clips = clips;
+                        }
+                        else if (string.IsNullOrWhiteSpace(a.Data) && !string.IsNullOrWhiteSpace(a.Path)) // Detecting Remove changes & apply to shallow variable...
+                        {
+                            // Deep copying variable to firebase user...
+                            firebaseUser = user.DeepCopy();
+
+                            // Remove from /Clips
+                            if (Regex.IsMatch(a.Path, PATH_CLIP_REGEX_PATTERN))
+                            {
+                                var index = Regex.Match(a.Path, PATH_CLIP_REGEX_PATTERN).Groups[1].Value;
+                                firebaseUser.Clips?.RemoveAt(index.ToInt());
+                            }
+
+                            // Remove from /Devices
+                            if (Regex.IsMatch(a.Path, PATH_DEVICE_REGEX_PATTERN))
+                            {
+                                var index = Regex.Match(a.Path, PATH_DEVICE_REGEX_PATTERN).Groups[1].Value;
+                                firebaseUser.Clips?.RemoveAt(index.ToInt());
+                            }
+                        }
+                    }
 
                     // Check for inconsistent data...
-                    if (string.IsNullOrWhiteSpace(a.Data))
-                    {
-                        if (user != null)
-                            await PushUser().ConfigureAwait(false);
-                        else await RegisterUser().ConfigureAwait(false);
-                    }
+                    // Need to implement inconsistent data...
+                    //if (string.IsNullOrWhiteSpace(a.Data))
+                    //{
+                    //    if (user != null)
+                    //        await PushUser().ConfigureAwait(false);
+                    //    else await RegisterUser().ConfigureAwait(false);
+                    //}
                     
                     // If there is no new data then it's of no use...
                     if (firebaseUser == null) return;
@@ -304,25 +354,31 @@ namespace Components
                     // Perform data addition & removal operation...
                     if (user != null)
                     {
-                        MergeUser(firebaseUser, user);
+                       // MergeUser(firebaseUser, user);
 
                         // Check for clip data addition...
                         var newClips = firebaseUser?.Clips?.Select(c => c.data).ToNotNullList();
                         var oldClips = user?.Clips?.Select(c => c.data).ToNotNullList();
-                        foreach (var item in newClips.Except(oldClips))
-                            binder?.OnClipItemAdded(item.DecryptBase64(DatabaseEncryptPassword));
+                        var addedClips = newClips.Except(oldClips).ToList();
+                        if (addedClips.Count > 0)
+                            binder?.OnClipItemAdded(addedClips.Select(c => c.DecryptBase64(DatabaseEncryptPassword)).ToList());
 
                         // Check for clip data removal...
-                        foreach (var item in oldClips.Except(newClips))
-                            binder?.OnClipItemRemoved(item.DecryptBase64(DatabaseEncryptPassword));
+                        var removedClips = oldClips.Except(newClips).ToList();
+                        if (removedClips.Count > 0)
+                            binder?.OnClipItemRemoved(removedClips.Select(c => c.DecryptBase64(DatabaseEncryptPassword)).ToList());
 
                         // Check for device addition & removal...
                         var newDevices = firebaseUser?.Devices ?? new List<Device>();
                         var oldDevices = user?.Devices ?? new List<Device>();
                         foreach (var device in newDevices.Except(oldDevices))
+                        {
                             binder?.OnDeviceAdded(device);
+                        }
                         foreach (var device in oldDevices.Except(newDevices))
+                        {
                             binder?.OnDeviceRemoved(device);
+                        }
 
                         user = firebaseUser!;
                     }

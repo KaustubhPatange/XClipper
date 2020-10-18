@@ -325,7 +325,7 @@ namespace Components
         #endregion
 
         #region IClipServiceBinder Events
-        
+
         public void OnImageSaveFailed()
         {
             AppNotificationHelper.ShowBasicToast(
@@ -379,7 +379,7 @@ namespace Components
 
         #region IFirebaseBinder Events 
 
-        public void SendNotification(string title, string message, Action? onActive)
+        public void SendNotification(string title, string message, Action? onActive = null)
         {
             AppNotificationHelper.ShowBasicToast(
                 dispatcher: Dispatcher,
@@ -404,7 +404,7 @@ namespace Components
                 dispatcher: Dispatcher,
                 Translation.SYNC_DISABLED_TITLE,
                 message: Translation.SYNC_DISABLED_TEXT,
-                silent: !PlayNoticationSound 
+                silent: !PlayNoticationSound
             ).RunAsync();
         }
 
@@ -463,19 +463,38 @@ namespace Components
 
         #region IFirebaseBinderV2 Events
 
-        public void OnClipItemAdded(string unencryptedData)
+        public void OnClipItemAdded(List<string> unencryptedDataList)
         {
-            Debug.WriteLine($"[V2 Added]: {unencryptedData}");
-            AppSingleton.GetInstance.CheckAndUpdateData(unencryptedData, (data, type) =>
+            Debug.WriteLine($"[V2 Added]: {unencryptedDataList}");
+            if (unencryptedDataList.Count > 1)
             {
-                ParseUpdateResult(data, type);
-            });
+                foreach (string item in unencryptedDataList)
+                    AppSingleton.GetInstance.CheckAndUpdateData(item);
+                SendNotification(Translation.APP_NAME, $"{unencryptedDataList.Count} {Translation.MSG_CLIPS_ADDED_TEXT}");
+            }
+            else
+            {
+                AppSingleton.GetInstance.CheckAndUpdateData(unencryptedDataList[0], (data, type) =>
+                {
+                    ParseUpdateResult(data, type);
+                });
+            }
         }
 
-        public void OnClipItemRemoved(string unencryptedRemovedData)
+        public void OnClipItemRemoved(List<string> unencryptedDataList)
         {
-            Debug.WriteLine($"[V2 Removed]: {unencryptedRemovedData}");
-            AppSingleton.GetInstance.DeleteClipData(unencryptedRemovedData);
+            Debug.WriteLine($"[V2 Removed]: {unencryptedDataList}");
+            if (unencryptedDataList.Count > 1)
+            {
+                foreach (string item in unencryptedDataList)
+                    AppSingleton.GetInstance.DeleteClipData(item);
+                SendNotification(Translation.APP_NAME, $"{unencryptedDataList.Count} {Translation.MSG_CLIPS_REMOVED_TEXT}");
+            }
+            else
+            {
+                AppSingleton.GetInstance.DeleteClipData(unencryptedDataList[0]);
+                SendNotification(Translation.SYNC_REMOVE_TITLE, $"{unencryptedDataList[0]}");
+            }
         }
 
         public void OnDeviceAdded(Device device)

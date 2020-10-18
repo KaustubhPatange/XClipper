@@ -36,9 +36,15 @@ namespace Components
 
             using (StreamWriter writer = new StreamWriter(LOG_FILE, true))
             {
-                writer.Write($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.SSS}] [{c}] [{currentMethodName}] - " + message + "\n");
-                writer.Flush();
-                writer.Close();
+                try
+                {
+                    writer.Write($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.SSS}] [{c}] [{currentMethodName}] - " + message + "\n");
+                    writer.Flush();
+                    writer.Close();
+                }catch(IOException e)
+                {
+                    writer.Close();
+                }
             }
         }
 
