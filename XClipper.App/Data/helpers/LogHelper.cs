@@ -34,18 +34,16 @@ namespace Components
             if (!Directory.Exists(ApplicationLogDirectory)) Directory.CreateDirectory(ApplicationLogDirectory);
             if (!File.Exists(LOG_FILE)) File.Create(LOG_FILE).Close();
 
-            using (StreamWriter writer = new StreamWriter(LOG_FILE, true))
+            try
             {
-                try
+                using (StreamWriter writer = new StreamWriter(LOG_FILE, true))
                 {
                     writer.Write($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.SSS}] [{c}] [{currentMethodName}] - " + message + "\n");
                     writer.Flush();
                     writer.Close();
-                }catch(IOException e)
-                {
-                    writer.Close();
                 }
             }
+            catch (IOException e) { Debug.WriteLine($"{e.Message}"); }
         }
 
         /// <summary>

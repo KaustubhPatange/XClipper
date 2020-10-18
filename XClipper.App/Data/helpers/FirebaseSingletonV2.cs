@@ -37,7 +37,7 @@ namespace Components
         private readonly List<string> addStack = new List<string>();
         private readonly List<string> removeStack = new List<string>();
         private readonly Dictionary<string, string> updateStack = new Dictionary<string, string>();
-        private readonly List<FirebaseInvoke> firebaseInvokeStack = new List<FirebaseInvoke>();
+        private List<FirebaseInvoke> firebaseInvokeStack = new List<FirebaseInvoke>();
 
         private const string USER_REF = "users";
         private const string CLIP_REF = "Clips";
@@ -172,7 +172,7 @@ namespace Components
             {
                 Log($"Asserting: {invoke}");
                 // Some invokes are not supported yet.
-                switch(invoke)
+                switch (invoke)
                 {
                     case FirebaseInvoke.ADD_CLIP:
                         addStack.Add((string)data);
@@ -186,11 +186,11 @@ namespace Components
                         break;
                     case FirebaseInvoke.RESET:
                         firebaseInvokeStack.Add(FirebaseInvoke.RESET);
-                        firebaseInvokeStack.Distinct();
+                        firebaseInvokeStack = firebaseInvokeStack.Distinct().ToList();
                         break;
                     case FirebaseInvoke.REMOVE_CLIP_ALL:
                         firebaseInvokeStack.Add(FirebaseInvoke.REMOVE_CLIP_ALL);
-                        firebaseInvokeStack.Distinct();
+                        firebaseInvokeStack = firebaseInvokeStack.Distinct().ToList();
                         break;
                     default:
                         binder?.SendNotification(Translation.SYNC_ERROR_TITLE, Translation.MSG_FIREBASE_CLIENT_ERR);
@@ -278,9 +278,13 @@ namespace Components
             // Set user for first time..
             if (user == null) user = await FetchUser().ConfigureAwait(false);
             if (user == null) await RegisterUser().ConfigureAwait(false);
-            // Make sure to set user for first time here..
-            // Check distinct function if called again..
-            // There is an issue when addClip is called second time. It gets stuck.
+
+            // Apply an auto-fix if needed
+            await FixInconsistentData().ConfigureAwait(false); 
+
+            // todo: Methods to check if data is updated...
+            // todo: Add inconsistency data check...
+
             Log();
             try
             {
@@ -290,12 +294,12 @@ namespace Components
                     Log();
                     if (!BindDatabase) return;
 
-                    User? firebaseUser = null;
+                    User? firebaseUser;
 
                     try
                     {
                         firebaseUser = JsonConvert.DeserializeObject<User>(a.Data);
-                    } catch(Exception e)
+                    } catch (Exception e)
                     {
                         firebaseUser = null;
                     }
@@ -323,15 +327,26 @@ namespace Components
                             // Remove from /Clips
                             if (Regex.IsMatch(a.Path, PATH_CLIP_REGEX_PATTERN))
                             {
-                                var index = Regex.Match(a.Path, PATH_CLIP_REGEX_PATTERN).Groups[1].Value;
-                                firebaseUser.Clips?.RemoveAt(index.ToInt());
+                                var index = Regex.Match(a.Path, PATH_CLIP_REGEX_PATTERN).Groups[1].Value.ToInt();
+                                if (index + 1 < firebaseUser.Clips?.Count)
+                                {
+                                    await FixInconsistentData().ConfigureAwait(false);
+                                    return;
+                                }
+                                else
+                                    firebaseUser.Clips?.RemoveAt(index);
                             }
 
                             // Remove from /Devices
                             if (Regex.IsMatch(a.Path, PATH_DEVICE_REGEX_PATTERN))
                             {
-                                var index = Regex.Match(a.Path, PATH_DEVICE_REGEX_PATTERN).Groups[1].Value;
-                                firebaseUser.Clips?.RemoveAt(index.ToInt());
+                                var index = Regex.Match(a.Path, PATH_DEVICE_REGEX_PATTERN).Groups[1].Value.ToInt();
+                                if (index + 1 < firebaseUser.Clips?.Count)
+                                {
+                                    await FixInconsistentData().ConfigureAwait(false);
+                                    return;
+                                }else
+                                    firebaseUser.Clips?.RemoveAt(index);
                             }
                         }
                     }
@@ -344,7 +359,7 @@ namespace Components
                     //        await PushUser().ConfigureAwait(false);
                     //    else await RegisterUser().ConfigureAwait(false);
                     //}
-                    
+
                     // If there is no new data then it's of no use...
                     if (firebaseUser == null) return;
 
@@ -354,11 +369,11 @@ namespace Components
                     // Perform data addition & removal operation...
                     if (user != null)
                     {
-                       // MergeUser(firebaseUser, user);
+                        // MergeUser(firebaseUser, user);
 
                         // Check for clip data addition...
-                        var newClips = firebaseUser?.Clips?.Select(c => c.data).ToNotNullList();
-                        var oldClips = user?.Clips?.Select(c => c.data).ToNotNullList();
+                        var newClips = firebaseUser?.Clips?.Select(c => c?.data).ToNotNullList();
+                        var oldClips = user?.Clips?.Select(c => c?.data).ToNotNullList();
                         var addedClips = newClips.Except(oldClips).ToList();
                         if (addedClips.Count > 0)
                             binder?.OnClipItemAdded(addedClips.Select(c => c.DecryptBase64(DatabaseEncryptPassword)).ToList());
@@ -403,6 +418,22 @@ namespace Components
             }
 
             isClientInitialized = true;
+        }
+
+        /// <summary>
+        /// This will fix the inconsistent data by pushing previous data.
+        /// </summary>
+        /// <returns></returns>
+        private async Task FixInconsistentData()
+        {
+            if (user != null)
+            {
+                user.Clips = user.Clips?.Where(c => c != null).ToList();
+                user.Devices = user.Devices?.Where(c => c != null).ToList();
+                await PushUser().ConfigureAwait(false);
+            }
+            else
+                await RegisterUser().ConfigureAwait(false);
         }
 
         /// <summary>
