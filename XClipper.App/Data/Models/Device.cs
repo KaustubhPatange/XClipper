@@ -26,5 +26,16 @@ namespace Components
             model.sdk = t.Element(nameof(sdk)).Value.ToInt();
             return model;
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is Device)
+            {
+                var other = (Device)obj;
+                if (this == other) return true;
+                return (this.id == other.id && this.model == other.model && this.sdk == other.sdk);
+            }
+            return false;
+        }
     }
 }

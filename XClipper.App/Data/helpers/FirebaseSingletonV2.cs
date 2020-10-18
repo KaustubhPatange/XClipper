@@ -371,11 +371,11 @@ namespace Components
                         // Check for device addition & removal...
                         var newDevices = firebaseUser?.Devices ?? new List<Device>();
                         var oldDevices = user?.Devices ?? new List<Device>();
-                        foreach (var device in newDevices.Except(oldDevices))
+                        foreach (var device in newDevices.ExceptEquals(oldDevices))
                         {
                             binder?.OnDeviceAdded(device);
                         }
-                        foreach (var device in oldDevices.Except(newDevices))
+                        foreach (var device in oldDevices.ExceptEquals(newDevices))
                         {
                             binder?.OnDeviceRemoved(device);
                         }
@@ -410,6 +410,17 @@ namespace Components
         /// </summary>
         /// <returns></returns>
         private async Task PushUser()
+        {
+            Log("Is User null: " + (user != null));
+            if (user != null)
+                await client.SafeUpdateAsync($"{USER_REF}/{UID}", user).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// <inheritdoc cref="PushUser()"/>
+        /// </summary>
+        /// <returns></returns>
+        private async Task PushUser(User user)
         {
             Log("Is User null: " + (user != null));
             if (user != null)
@@ -586,23 +597,24 @@ namespace Components
             {
                 if (Text == null) return;
                 if (Text.Length > DatabaseMaxItemLength) return;
-                if (user.Clips == null)
-                    user.Clips = new List<Clip>();
+
+                List<Clip> clips = user.Clips == null ? new List<Clip>() : new List<Clip>(user.Clips);
                 // Remove clip if greater than item
-                if (user.Clips.Count > DatabaseMaxItem)
-                    user.Clips.RemoveAt(0);
+                if (clips.Count > DatabaseMaxItem)
+                    clips.RemoveAt(0);
 
                 // Add data from current [Text]
-                user.Clips.Add(new Clip { data = Text.EncryptBase64(DatabaseEncryptPassword), time = DateTime.Now.ToFormattedDateTime(false) });
+                clips.Add(new Clip { data = Text.EncryptBase64(DatabaseEncryptPassword), time = DateTime.Now.ToFormattedDateTime(false) });
 
                 // Also add data from stack
                 foreach (var stackText in addStack)
-                    user.Clips.Add(new Clip { data = stackText.EncryptBase64(DatabaseEncryptPassword), time = DateTime.Now.ToFormattedDateTime(false) });
+                    clips.Add(new Clip { data = stackText.EncryptBase64(DatabaseEncryptPassword), time = DateTime.Now.ToFormattedDateTime(false) });
 
                 // Clear the stack after adding them all.
                 addStack.Clear();
 
-                await PushUser().ConfigureAwait(false);
+                await client.SafeSetAsync($"{USER_REF}/{UID}/{CLIP_REF}", clips).ConfigureAwait(false);
+                //await PushUser().ConfigureAwait(false);
 
                 Log("Completed");
             }

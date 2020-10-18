@@ -60,5 +60,28 @@ namespace Components
                 }
             }
         }
+
+        /// <summary>
+        /// This will check if items are equal by using Equals() which can then 
+        /// be used for checking content equality
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="first"></param>
+        /// <param name="second"></param>
+        /// <returns></returns>
+        public static IEnumerable<T> ExceptEquals<T>(this IEnumerable<T> first, IEnumerable<T> second)
+        {
+            foreach (var item in first)
+            {
+                bool isExist = false;
+                foreach (var item2 in second)
+                {
+                    if (item.Equals(item2))
+                        isExist = true;
+                }
+                if (!isExist)
+                    yield return item;
+            }
+        }
     }
 }

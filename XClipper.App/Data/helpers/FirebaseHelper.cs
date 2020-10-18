@@ -121,7 +121,7 @@ namespace Components
         /// <param name="path"></param>
         /// <param name="data"></param>
         /// <returns></returns>
-        public static async Task<FirebaseResponse> SafeUpdateAsync(this IFirebaseClient client, string path, User data)
+        public static async Task<FirebaseResponse> SafeUpdateAsync<T>(this IFirebaseClient client, string path, T data)
         {
             try
             {
@@ -153,7 +153,7 @@ namespace Components
         /// <param name="path"></param>
         /// <param name="data"></param>
         /// <returns></returns>
-        public static async Task<SetResponse> SafeSetAsync(this IFirebaseClient client, string path, User data)
+        public static async Task<SetResponse> SafeSetAsync<T>(this IFirebaseClient client, string path, T data)
         {
             try
             {
