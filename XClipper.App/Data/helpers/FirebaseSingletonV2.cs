@@ -283,7 +283,6 @@ namespace Components
             await FixInconsistentData().ConfigureAwait(false); 
 
             // todo: Methods to check if data is updated...
-            // todo: Add inconsistency data check...
 
             Log();
             try
@@ -351,15 +350,6 @@ namespace Components
                         }
                     }
 
-                    // Check for inconsistent data...
-                    // Need to implement inconsistent data...
-                    //if (string.IsNullOrWhiteSpace(a.Data))
-                    //{
-                    //    if (user != null)
-                    //        await PushUser().ConfigureAwait(false);
-                    //    else await RegisterUser().ConfigureAwait(false);
-                    //}
-
                     // If there is no new data then it's of no use...
                     if (firebaseUser == null) return;
 
@@ -369,18 +359,21 @@ namespace Components
                     // Perform data addition & removal operation...
                     if (user != null)
                     {
-                        // MergeUser(firebaseUser, user);
-
                         // Check for clip data addition...
                         var newClips = firebaseUser?.Clips?.Select(c => c?.data).ToNotNullList();
                         var oldClips = user?.Clips?.Select(c => c?.data).ToNotNullList();
                         var addedClips = newClips.Except(oldClips).ToList();
-                        if (addedClips.Count > 0)
-                            binder?.OnClipItemAdded(addedClips.Select(c => c.DecryptBase64(DatabaseEncryptPassword)).ToList());
-
-                        // Check for clip data removal...
                         var removedClips = oldClips.Except(newClips).ToList();
-                        if (removedClips.Count > 0)
+
+                        // Check if clip is updated using following hack
+                        if ((addedClips.Count & removedClips.Count) == 1)
+                            binder?.OnClipItemUpdated(
+                                previousUnEncryptedData: removedClips.FirstOrDefault().DecryptBase64(DatabaseEncryptPassword),
+                                newUnEncryptedData: addedClips.FirstOrDefault().DecryptBase64(DatabaseEncryptPassword)
+                            );
+                        else if (addedClips.Count > 0) // On clip updated
+                            binder?.OnClipItemAdded(addedClips.Select(c => c.DecryptBase64(DatabaseEncryptPassword)).ToList());
+                        else if (removedClips.Count > 0) // On clip removed
                             binder?.OnClipItemRemoved(removedClips.Select(c => c.DecryptBase64(DatabaseEncryptPassword)).ToList());
 
                         // Check for device addition & removal...

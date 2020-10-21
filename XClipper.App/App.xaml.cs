@@ -497,6 +497,12 @@ namespace Components
             }
         }
 
+        public void OnClipItemUpdated(string previousUnEncryptedData, string newUnEncryptedData)
+        {
+            Debug.WriteLine($"[V2 Updated]: Old: {previousUnEncryptedData}, New: {newUnEncryptedData}");
+            AppSingleton.GetInstance.UpdateClipItem(previousUnEncryptedData, newUnEncryptedData, () => SendNotification(Translation.SYNC_UPDATE_TITLE, newUnEncryptedData));
+        }
+
         public void OnDeviceAdded(Device device)
         {
             AppNotificationHelper.ShowBasicToast(

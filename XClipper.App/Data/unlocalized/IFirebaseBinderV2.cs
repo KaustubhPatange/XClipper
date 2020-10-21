@@ -32,6 +32,7 @@ namespace Components
 
         void OnClipItemAdded(List<string> unencryptedDataList);
         void OnClipItemRemoved(List<string> unencryptedDataList);
+        void OnClipItemUpdated(string previousUnEncryptedData, string newUnEncryptedData);
 
         void OnDeviceAdded(Device device);
         void OnDeviceRemoved(Device device);

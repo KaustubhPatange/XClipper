@@ -183,6 +183,7 @@
     <system:String x:Key="sync_device_removed">device is removed</system:String>
     <system:String x:Key="sync_error_title">Oops...</system:String>
     <system:String x:Key="sync_remove_title">Removed</system:String>
+    <system:String x:Key="sync_update_title">Updated</system:String>
     <system:String x:Key="sync_unknown_error">Unknown error occurred, check logs for more details</system:String>
     <system:String x:Key="update_title">Update Checker</system:String>
     <system:String x:Key="update_download_complete">Download completed. Click &quot;OK&quot; to install the update.&#10;&#10;Tip: Current process will killed during this update.</system:String>

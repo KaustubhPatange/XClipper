@@ -142,6 +142,7 @@ namespace Components
         public string SYNC_DEVICE_REMOVED = rm.GetString("sync_device_removed");
         public string SYNC_ERROR_TITLE = rm.GetString("sync_error_title");
         public string SYNC_REMOVE_TITLE = rm.GetString("sync_remove_title");
+        public string SYNC_UPDATE_TITLE = rm.GetString("sync_update_title");
         public string SYNC_UNKNOWN_ERROR = rm.GetString("sync_unknown_error");
         public string UPDATE_TITLE = rm.GetString("update_title");
         public string UPDATE_DOWNLOAD_COMPLETE = rm.GetString("update_download_complete");

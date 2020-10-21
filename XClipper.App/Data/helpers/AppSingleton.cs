@@ -294,6 +294,19 @@ namespace Components.viewModels
         }
 
         /// <summary>
+        /// This will update the clip item based the input params.
+        /// </summary>
+        /// <param name="oldUnEncryptedText"></param>
+        /// <param name="newUnEncryptedText"></param>
+        public void UpdateClipItem(string oldUnEncryptedText, string newUnEncryptedText, Action? OnUpdated = null)
+        {
+            DeleteClipData(oldUnEncryptedText);
+            CheckAndUpdateData(newUnEncryptedText);
+            if (oldUnEncryptedText.isCloselyResemble(newUnEncryptedText))
+                OnUpdated?.Invoke();
+        }
+
+        /// <summary>
         /// Method will modify existing data locally as well as from Firebase.
         /// </summary>
         public void ModifyData(string oldData, TableCopy newData)
