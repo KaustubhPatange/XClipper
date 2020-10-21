@@ -180,6 +180,7 @@ DEL ""%~f0""";
             return FileVersionInfo.GetVersionInfo(exeFile).ProductVersion;
         }
 
+        // todo: Pass databaseEncryptPassword based on isEncrypted or not.
         /// <summary>
         /// Set current QR data which will be used by SettingsWindow to generate QR code details.
         /// </summary>
@@ -187,7 +188,7 @@ DEL ""%~f0""";
         public static bool CreateCurrentQRData()
         {
             if (FirebaseCurrent == null) return false;
-            string mobileAuthDetails = FirebaseCurrent.isAuthNeeded ? $"true;{FirebaseCurrent.MobileAuth.ClientId}" : "false";
+            string mobileAuthDetails = FirebaseCurrent.IsAuthNeeded ? $"true;{FirebaseCurrent.MobileAuth.ClientId}" : "false";
             QRData = new QRCodeData
             {
                 UID = UniqueID,

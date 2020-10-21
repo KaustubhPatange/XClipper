@@ -21,7 +21,7 @@
         <ProgressBar
             Height="3"
             BorderThickness="0"
-            IsIndeterminate="{Binding Path=(local:DefaultSettings.IsCheckingForLicense)}" />
+            IsIndeterminate="{c:Binding 'ProgressiveWork or local:DefaultSettings.IsCheckingForLicense'}" />
         <Grid Margin="5">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
@@ -46,9 +46,14 @@
                             <TextBlock Text="Firebase API Key:" />
                             <TextBox Margin="0,5,0,0" Text="{Binding FBAK, UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>
-                        <control:GroupSeparator Margin="0,10,0,0" Header="{DynamicResource settings_other}" />
 
-                        <DockPanel Margin="0,10,0,0" ToolTip="{Binding MAX_ITEM, Converter={x:Static local:CustomSyncTooltipConverter.Instance}}">
+                        <control:GroupSeparator Margin="0,10,0,0" Header="{DynamicResource settings_other}" />
+                        <CheckBox
+                            Margin="0,5,0,0"
+                            Command="{Binding EncryptCommand}"
+                            Content="{DynamicResource sync_encrypt_clip}"
+                            IsChecked="{Binding EFD}" />
+                        <DockPanel Margin="0,5,0,0" ToolTip="{Binding MAX_ITEM, Converter={x:Static local:CustomSyncTooltipConverter.Instance}}">
                             <TextBlock Text="{DynamicResource sync_max_item}" />
                             <local:NumericTextBox
                                 Width="70"
@@ -86,6 +91,7 @@
                             TextAlignment="Center"
                             Visibility="{c:Binding 'local:DefaultSettings.IsPurchaseDone',
                                                    FalseToVisibility=Collapsed}" />
+                        <!--  todo: Show not secure database when !EFD below & also update the guide  -->
                         <StackPanel
                             Margin="0,5,0,0"
                             HorizontalAlignment="Center"
@@ -153,6 +159,20 @@
                         <control:UpgradeTipItem Margin="0,10,0,10" />
                     </StackPanel>
                 </TabItem>
+
+                <!--<TabItem Header="{DynamicResource settings_notify}">
+                    <StackPanel MinHeight="250" Orientation="Vertical">
+                        <GroupBox Padding="10" Header="{DynamicResource settings_common}">
+                            <StackPanel Orientation="Vertical">
+                                <CheckBox Content="Show when clip is added" />
+                                <CheckBox Margin="0,5,0,0" Content="Show when clip is removed" />
+                                <CheckBox Margin="0,5,0,0" Content="Show when clip is updated" />
+                                <CheckBox Margin="0,5,0,0" Content="Show when device is added" />
+                                <CheckBox Margin="0,5,0,0" Content="Show when device is removed" />
+                            </StackPanel>
+                        </GroupBox>
+                    </StackPanel>
+                </TabItem>-->
             </TabControl>
 
             <StackPanel
@@ -163,7 +183,7 @@
                     <Button
                         Width="22"
                         Height="22"
-                        Margin="5,0,0,0"
+                        Margin="0,0,0,0"
                         Padding="3"
                         HorizontalAlignment="Left"
                         Command="{Binding ExportCommand}"

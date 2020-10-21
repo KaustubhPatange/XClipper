@@ -1,17 +1,13 @@
 ﻿using static Components.DefaultSettings;
-using static Components.Core;
 using static Components.TranslationHelper;
 using static Components.Constants;
-using static Components.LicenseHandler;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
 using System.Windows;
 using System.IO;
-using System.Threading.Tasks;
 using Microsoft.Win32;
 using System.Xml.Linq;
 using Components.Controls.Dialog;
-using System.Text;
 using Components.UI;
 
 namespace Components
@@ -28,6 +24,7 @@ namespace Components
             SaveCommand = new RelayCommand(SaveButtonClicked);
             ImportCommand = new RelayCommand(ImportButtonClicked);
             ExportCommand = new RelayCommand(ExportButtonClicked);
+            EncryptCommand = new RelayCommand(ChangeDatabaseEncryption);
 
             CheckExportEnabled();
         }
@@ -37,7 +34,9 @@ namespace Components
         public ICommand SaveCommand { get; set; }
         public ICommand ImportCommand { get; set; }
         public ICommand ExportCommand { get; set; }
+        public ICommand EncryptCommand { get; set; }
 
+        public bool ProgressiveWork { get; set; } = false;
         public string FBE { get; set; }
         public string FMCI { get; set; }
         public string FDCI { get; set; }
@@ -53,10 +52,41 @@ namespace Components
         public int MAX_DEVICE { get; set; } = IsPurchaseDone ? SYNC_MAX_CONNECTION : SYNC_MIN_CONNECTION;
         public bool IAN { get; set; }
         public bool EE { get; set; } // Export enabled
+        public bool EFD { get; set; } = FirebaseCurrent.IsEncrypted; // To encrypt firebase database?
 
         #endregion
 
         #region Methods
+
+        private void ChangeDatabaseEncryption()
+        {
+            if (EFD != FirebaseCurrent.IsEncrypted)
+            {
+                var result = MessageBox.Show(Translation.MSG_ENCRYPT_DATABASE, Translation.MSG_INFORMATION, MessageBoxButton.YesNoCancel, MessageBoxImage.Information);
+                if (result == MessageBoxResult.Yes)
+                {
+                    ProgressiveWork = true;
+
+                    FirebaseSingletonV2.GetInstance.MigrateClipData(
+                        action: EFD ? MigrateAction.Encrypt : MigrateAction.Decrypt,
+                        onSuccess: () =>
+                        {
+                            ProgressiveWork = false;
+                            FirebaseCurrent.IsEncrypted = EFD;
+                            WriteFirebaseSetting();
+                            MsgBoxHelper.ShowInfo(Translation.MSG_ENCRYPT_DATABASE_SUCCESS);
+                        },
+                        onError: () =>
+                        {
+                            EFD = FirebaseCurrent.IsEncrypted;
+                            MsgBoxHelper.ShowError(Translation.MSG_ENCRYPT_DATABASE_FAILED);
+                        }
+                    ).RunAsync();
+                }
+                else EFD = FirebaseCurrent.IsEncrypted;
+            }
+        }
+
         private void ExportButtonClicked()
         {
             var sfd = new SaveFileDialog();
@@ -131,12 +161,13 @@ namespace Components
                 return;
             }
 
-            FirebaseCurrent = new FirebaseData
+            var newData = new FirebaseData
             {
                 Endpoint = FBE,
                 AppId = FBAI,
                 ApiKey = FBAK,
-                isAuthNeeded = IAN,
+                IsAuthNeeded = IAN,
+                IsEncrypted = EFD,
                 DesktopAuth = new OAuth
                 {
                     ClientId = FDCI,
@@ -147,6 +178,10 @@ namespace Components
                     ClientId = FMCI
                 }
             };
+
+            // If both data contents are same then no need to update
+            if (newData.Equals(FirebaseCurrent))
+                return;
 
             DatabaseMaxItem = DMI;
             DatabaseMaxItemLength = DMIL;
@@ -175,7 +210,7 @@ namespace Components
                 FBAI = FirebaseCurrent.AppId;
                 FBAK = FirebaseCurrent.ApiKey;
 
-                IAN = FirebaseCurrent.isAuthNeeded;
+                IAN = FirebaseCurrent.IsAuthNeeded;
 
                 FDCI = FirebaseCurrent.DesktopAuth.ClientId;
                 FDCS = FirebaseCurrent.DesktopAuth.ClientSecret;

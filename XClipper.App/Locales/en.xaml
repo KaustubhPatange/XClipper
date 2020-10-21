@@ -25,6 +25,8 @@
     <system:String x:Key="settings_tab_main">Main</system:String>
     <system:String x:Key="settings_tab_connect">Connect</system:String>
     <system:String x:Key="settings_auth">Authentication</system:String>
+    <system:String x:Key="settings_notify">Notification</system:String>
+    <system:String x:Key="settings_common">Common</system:String>
     <system:String x:Key="settings_relate">Relations</system:String>
     <system:String x:Key="settings_other">Other</system:String>
     <system:String x:Key="settings_general">General</system:String>
@@ -124,6 +126,9 @@
     <system:String x:Key="msg_clips_removed_text">clips are removed.</system:String>
     <system:String x:Key="msg_image_save_failed_title">Couldn't save the image.</system:String>
     <system:String x:Key="msg_image_save_failed_text">Check log for more details.</system:String>
+    <system:String x:Key="msg_encrypt_database">This will migrate your existing database data which could take a while.</system:String>
+    <system:String x:Key="msg_encrypt_database_failed">Migration fails due to Firebase not being initialized or some internal error. Check logs!</system:String>
+    <system:String x:Key="msg_encrypt_database_success">Database migration complete</system:String>
     <system:String x:Key="popup_added">Added:</system:String>
     <system:String x:Key="popup_space_focus">...Press (Space) to Focus...</system:String>
     <system:String x:Key="popup_edit_err">Editing is not supported for this format</system:String>
@@ -185,6 +190,13 @@
     <system:String x:Key="sync_remove_title">Removed</system:String>
     <system:String x:Key="sync_update_title">Updated</system:String>
     <system:String x:Key="sync_unknown_error">Unknown error occurred, check logs for more details</system:String>
+    <system:String x:Key="sync_notify_clip_add">Show when clip is added</system:String>
+    <system:String x:Key="sync_notify_clip_remove">Show when clip is removed</system:String>
+    <system:String x:Key="sync_notify_clip_update">Show when clip is updated</system:String>
+    <system:String x:Key="sync_notify_device_add">Show when device is added</system:String>
+    <system:String x:Key="sync_notify_device_remove">Show when device is removed</system:String>
+    <system:String x:Key="sync_encrypt_clip">Encrypt clips in the database</system:String>
+    <system:String x:Key="sync_encrypt_database_error">Invalid database encrypt setting. Proceed to apply an autofix.</system:String>
     <system:String x:Key="update_title">Update Checker</system:String>
     <system:String x:Key="update_download_complete">Download completed. Click &quot;OK&quot; to install the update.&#10;&#10;Tip: Current process will killed during this update.</system:String>
     <system:String x:Key="connect_title">Connect</system:String>

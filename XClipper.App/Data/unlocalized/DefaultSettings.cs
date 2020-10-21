@@ -434,7 +434,8 @@ namespace Components
                     new XElement(nameof(FirebaseCurrent.Endpoint), FirebaseCurrent.Endpoint.ToString()),
                     new XElement(nameof(FirebaseCurrent.ApiKey), FirebaseCurrent.ApiKey.ToString()),
                     new XElement(nameof(FirebaseCurrent.AppId), FirebaseCurrent.AppId.ToString()),
-                    new XElement(nameof(FirebaseCurrent.isAuthNeeded), FirebaseCurrent.isAuthNeeded.ToString())
+                    new XElement(nameof(FirebaseCurrent.IsAuthNeeded), FirebaseCurrent.IsAuthNeeded.ToString()),
+                    new XElement(nameof(FirebaseCurrent.IsEncrypted), FirebaseCurrent.IsEncrypted.ToString())
                 );
 
             var desktopOAuth = new XElement(DESKTOP_AUTH);
@@ -559,7 +560,8 @@ namespace Components
                 FirebaseCurrent.Endpoint = firebaseDoc.Element(nameof(FirebaseCurrent.Endpoint)).Value;
                 FirebaseCurrent.ApiKey = firebaseDoc.Element(nameof(FirebaseCurrent.ApiKey)).Value;
                 FirebaseCurrent.AppId = firebaseDoc.Element(nameof(FirebaseCurrent.AppId)).Value;
-                FirebaseCurrent.isAuthNeeded = firebaseDoc.Element(nameof(FirebaseCurrent.isAuthNeeded)).Value.ToBool();
+                FirebaseCurrent.IsAuthNeeded = firebaseDoc.Element(nameof(FirebaseCurrent.IsAuthNeeded)).Value.ToBool();
+                FirebaseCurrent.IsEncrypted = firebaseDoc.Element(nameof(FirebaseCurrent.IsEncrypted)).Value.ToBool();
 
                 var DesktopAuth = new OAuth();
                 DesktopAuth.ClientId = desktopDoc.Element(nameof(FirebaseCurrent.DesktopAuth.ClientId)).Value;

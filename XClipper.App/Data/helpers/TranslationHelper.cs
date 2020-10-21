@@ -104,6 +104,9 @@ namespace Components
         public string MSG_CLIPS_REMOVED_TEXT = rm.GetString("msg_clips_removed_text");
         public string MSG_IMAGE_SAVE_FAILED_TITLE = rm.GetString("msg_image_save_failed_title");
         public string MSG_IMAGE_SAVE_FAILED_TEXT = rm.GetString("msg_image_save_failed_text");
+        public string MSG_ENCRYPT_DATABASE = rm.GetString("msg_encrypt_database");
+        public string MSG_ENCRYPT_DATABASE_FAILED = rm.GetString("msg_encrypt_database_failed");
+        public string MSG_ENCRYPT_DATABASE_SUCCESS = rm.GetString("msg_encrypt_database_success");
         public string POPUP_ADDED = rm.GetString("popup_added");
         public string POPUP_SPACE_FOCUS = rm.GetString("popup_space_focus");
         public string POPUP_EDIT_ERR = rm.GetString("popup_edit_err");
@@ -144,6 +147,7 @@ namespace Components
         public string SYNC_REMOVE_TITLE = rm.GetString("sync_remove_title");
         public string SYNC_UPDATE_TITLE = rm.GetString("sync_update_title");
         public string SYNC_UNKNOWN_ERROR = rm.GetString("sync_unknown_error");
+        public string SYNC_ENCRYPT_DATABASE_ERROR = rm.GetString("sync_encrypt_database_error");
         public string UPDATE_TITLE = rm.GetString("update_title");
         public string UPDATE_DOWNLOAD_COMPLETE = rm.GetString("update_download_complete");
     }

@@ -18,6 +18,8 @@ using System.Data;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using RestSharp;
+using System.Windows.Threading;
+using System.Web.UI.Design.WebControls;
 
 #nullable enable
 
@@ -103,7 +105,7 @@ namespace Components
 
             MainHelper.CreateCurrentQRData();
 
-            if (FirebaseCurrent.isAuthNeeded)
+            if (FirebaseCurrent.IsAuthNeeded)
             {
                 if (!IsValidCredential())
                 {
@@ -146,6 +148,48 @@ namespace Components
             else Log("Oops, user is still null");
         }
 
+        /// <summary>
+        /// This can be used to migrate clip data if <see cref="FirebaseData.IsEncrypted"/> setting has changed.
+        /// </summary>
+        public async Task MigrateClipData(MigrateAction action, Action? onSuccess = null, Action? onError = null)
+        {
+            Log();
+            if (user == null || user.Clips == null)
+            {
+                Log("Migration failed: User is null");
+                if (onError != null)
+                    Dispatcher.CurrentDispatcher.Invoke(onError);
+                return;
+            }
+
+            var isDataAlreadyEncrypted = FirebaseCurrent.IsEncrypted;
+            if (user.Clips.Count > 0)
+            {
+                isDataAlreadyEncrypted = user.Clips.FirstOrDefault().data.IsBase64Encrypted(DatabaseEncryptPassword);
+            }
+
+            var clips = user.Clips.Select(s =>
+               new Clip
+               {
+                   time = s.time,
+                   data = action == MigrateAction.Encrypt ?
+                            isDataAlreadyEncrypted ? s.data : Core.EncryptBase64(s.data, DatabaseEncryptPassword)
+                          : 
+                            !isDataAlreadyEncrypted ? s.data : Core.DecryptBase64(s.data, DatabaseEncryptPassword)
+               }
+          ).ToList();
+
+            user.Clips = clips;
+            user.Devices = null;
+
+            await PushUser().ConfigureAwait(false);
+
+            Log("Completed Migration");
+
+            if (onSuccess != null)
+                Dispatcher.CurrentDispatcher.Invoke(onSuccess);
+        }
+             
         /// <summary>
         /// Determines whether it is necessary to refresh current access token.
         /// </summary>
@@ -216,8 +260,8 @@ namespace Components
         private async Task<bool> CheckForAccessTokenValidity()
         {
             // When we don't need Auth for desktop client, we can return true.
-            Log($"Checking for token : {FirebaseCurrent?.isAuthNeeded}");
-            if (FirebaseCurrent?.isAuthNeeded == false) return true;
+            Log($"Checking for token : {FirebaseCurrent?.IsAuthNeeded}");
+            if (FirebaseCurrent?.IsAuthNeeded == false) return true;
 
             if (!IsValidCredential())
             {
@@ -246,7 +290,7 @@ namespace Components
         {
             Log();
             IFirebaseConfig config;
-            if (FirebaseCurrent?.isAuthNeeded == true)
+            if (FirebaseCurrent?.IsAuthNeeded == true)
             {
                 config = new FirebaseConfig
                 {
@@ -279,10 +323,9 @@ namespace Components
             if (user == null) user = await FetchUser().ConfigureAwait(false);
             if (user == null) await RegisterUser().ConfigureAwait(false);
 
-            // Apply an auto-fix if needed
-            await FixInconsistentData().ConfigureAwait(false); 
-
-            // todo: Methods to check if data is updated...
+            // Apply an auto-fixes if needed
+            await FixInconsistentData().ConfigureAwait(false);
+            await FixEncryptedDatabase().ConfigureAwait(false);
 
             Log();
             try
@@ -427,6 +470,22 @@ namespace Components
             }
             else
                 await RegisterUser().ConfigureAwait(false);
+        }
+
+        private async Task FixEncryptedDatabase()
+        {
+            if (user != null)
+            {
+                var isAlreadyEncrypted = user.Clips.FirstOrDefault().data.IsBase64Encrypted(DatabaseEncryptPassword);
+                if (isAlreadyEncrypted != FirebaseCurrent.IsEncrypted)
+                {
+                    MsgBoxHelper.ShowError(Translation.SYNC_ENCRYPT_DATABASE_ERROR);
+                    if (FirebaseCurrent.IsEncrypted)
+                        await MigrateClipData(MigrateAction.Encrypt).ConfigureAwait(false);
+                    else
+                        await MigrateClipData(MigrateAction.Decrypt).ConfigureAwait(false);
+                }
+            }
         }
 
         /// <summary>
@@ -894,5 +953,11 @@ namespace Components
         {
             client.Dispose();
         }
+    }
+
+    public enum MigrateAction
+    {
+        Encrypt,
+        Decrypt
     }
 }

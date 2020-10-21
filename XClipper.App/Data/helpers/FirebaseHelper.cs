@@ -265,5 +265,15 @@ namespace Components
         }
 
         #endregion
+
+        /**
+         * Encryption logic for firebase data.
+         */
+        #region Encryption Extension
+
+        public static string EncryptBase64(this string t, string password) => FirebaseCurrent?.IsEncrypted ?? true ? Core.EncryptBase64(t, password) : t;
+        public static string DecryptBase64(this string t, string password) => FirebaseCurrent?.IsEncrypted ?? true ? Core.DecryptBase64(t, password) : t;
+
+        #endregion
     }
 }

@@ -108,8 +108,8 @@ namespace Components
         private async Task<bool> CheckForAccessTokenValidity()
         {
             // When we don't need Auth for desktop client, we can return true.
-            Log($"Checking for token : {FirebaseCurrent?.isAuthNeeded}");
-            if (FirebaseCurrent?.isAuthNeeded == false) return true;
+            Log($"Checking for token : {FirebaseCurrent?.IsAuthNeeded}");
+            if (FirebaseCurrent?.IsAuthNeeded == false) return true;
 
             if (!IsValidCredential())
             {
@@ -221,7 +221,7 @@ namespace Components
             // We will set isBinded to false since we are creating a new client.
             isBinded = false;
             IFirebaseConfig config;
-            if (FirebaseCurrent?.isAuthNeeded == true)
+            if (FirebaseCurrent?.IsAuthNeeded == true)
             {
                 config = new FirebaseConfig
                 {
@@ -282,7 +282,7 @@ namespace Components
             if (FirebaseCurrent != null)
             {
                 CreateCurrentQRData(); // Create QR data for settings window.
-                if (FirebaseCurrent.isAuthNeeded)
+                if (FirebaseCurrent.IsAuthNeeded)
                 {
                     if (!IsValidCredential())
                     {

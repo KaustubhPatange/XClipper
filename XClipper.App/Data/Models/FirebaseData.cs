@@ -17,6 +17,21 @@
         public string AppId { get; set; }
         public string ApiKey { get; set; }
         public string Storage { get; set; }
-        public bool isAuthNeeded { get; set; }
+        public bool IsAuthNeeded { get; set; } = false;
+        public bool IsEncrypted { get; set; } = false;
+
+        public override bool Equals(object obj)
+        {
+            if (obj != null)
+                if (obj is FirebaseData)
+                {
+                    var other = (FirebaseData)obj;
+                    if (this == other) return true;
+                    return (ApiKey == other.ApiKey && AppId == other.AppId && Storage == other.Storage && IsAuthNeeded == other.IsAuthNeeded && Endpoint == other.Endpoint
+                            && DesktopAuth.Equals(other.DesktopAuth) && MobileAuth.Equals(other.MobileAuth)
+                        );
+                }
+            return false;
+        }
     }
 }
