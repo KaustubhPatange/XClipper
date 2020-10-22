@@ -541,7 +541,7 @@ namespace Components
             Log($"User null? {user == null}");
             var originallyLicensed = user.IsLicensed;
 
-            // todo: Set some other details for user...
+            // TODO: Set some other details for user...
             user.MaxItemStorage = DatabaseMaxItem;
             user.TotalConnection = DatabaseMaxConnection;
             user.IsLicensed = IsPurchaseDone;

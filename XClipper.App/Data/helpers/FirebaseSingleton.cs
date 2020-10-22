@@ -26,7 +26,7 @@ using Newtonsoft.Json;
 
 #nullable enable
 
-// todo: Write what this class does.
+// TODO; Write what this class does.
 
 namespace Components
 {
@@ -159,7 +159,7 @@ namespace Components
             Log($"User null? {user == null}");
             var originallyLicensed = user.IsLicensed;
 
-            // todo: Set some other details for user...
+            // TODO; Set some other details for user...
             user.MaxItemStorage = DatabaseMaxItem;
             user.TotalConnection = DatabaseMaxConnection;
             user.IsLicensed = IsPurchaseDone;
@@ -356,7 +356,7 @@ namespace Components
                 MsgBoxHelper.ShowError(Translation.MSG_FIREBASE_CLIENT_ERR);
                 //clearAwaitedGlobalUserTask();
 
-                // todo: Do something when client isn't initialized (I guess this check would be of use).
+                // TODO; Do something when client isn't initialized (I guess this check would be of use).
                 /* 
                  * We can implement a call stack to this, all you need to do is to make
                  * a stack that accepts data & operation name. Once this client is
@@ -605,7 +605,7 @@ namespace Components
             isPreviousAddRemaining = false;
         }
 
-        [Obsolete("Currently of no use")] // todo: Remove if not needed.
+        [Obsolete("Currently of no use")] // TODO; Remove if not needed.
         public async Task RemoveClip(int position)
         {
             if (await SetGlobalUserTask().ConfigureAwait(false))

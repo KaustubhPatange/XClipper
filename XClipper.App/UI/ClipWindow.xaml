@@ -207,7 +207,7 @@
                                         Width="100"
                                         Height="55"
                                         Margin="0,0,0,0"
-                                        Source="{Binding ImagePath}" />
+                                        Source="{Binding ImagePath, Converter={x:Static local:NullToImageConverter.Instance}}" />
                                 </Canvas>
 
                                 <StackPanel Margin="10,10,10,10" Orientation="Vertical">

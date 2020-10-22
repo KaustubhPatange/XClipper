@@ -13,7 +13,7 @@ namespace Components
 
         /// <summary>
         /// This will launch the website for manually downloading update.
-        /// // todo: Create a dedicated webpage for showing updates (if possible).
+        /// // TODO; Create a dedicated webpage for showing updates (if possible).
         /// </summary>
         void Launch();
     }

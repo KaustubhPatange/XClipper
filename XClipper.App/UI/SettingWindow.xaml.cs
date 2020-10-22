@@ -7,7 +7,7 @@ namespace Components
     /// </summary>
     public partial class SettingWindow : Window
     {
-        // todo: Think if you want to add help button here.
+        // TODO; Think if you want to add help button here.
         public SettingWindow(ISettingEventBinder binder = null)
         {
             InitializeComponent();

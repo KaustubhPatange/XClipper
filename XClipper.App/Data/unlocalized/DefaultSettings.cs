@@ -353,7 +353,7 @@ namespace Components
         /// 3. Data observation and device changes.<br/>
         /// </summary>
         public static bool BindDatabase { get; set; } = false;
-        //    todo: 3. Data added to online database externally, respond to such changes locally.
+        //    TODO; 3. Data added to online database externally, respond to such changes locally.
 
         /// <summary>
         /// When set to true, App will respond to delete request coming from database.

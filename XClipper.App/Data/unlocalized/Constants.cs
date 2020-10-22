@@ -41,7 +41,7 @@ namespace Components
 
         public static string ApplicationVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
         public static string ApplicationWebsite = "https://kaustubhpatange.github.io/XClipper";
-        public const string UPDATE_URI = "https://pastebin.com/raw/FRS7n7Fc"; // todo: Change update uri https://raw.githubusercontent.com/KaustubhPatange/XClipper/master/UPDATE
+        public const string UPDATE_URI = "https://pastebin.com/raw/FRS7n7Fc"; // TODO; Change update uri https://raw.githubusercontent.com/KaustubhPatange/XClipper/master/UPDATE
         public const string OAUTH_TOKEN_URI = "https://oauth2.googleapis.com/token";
         public const string SETTINGS = "Settings";
         public const string CREDENTIAL = "Credential";
@@ -102,7 +102,7 @@ namespace Components
 
         #region Help links
 
-        public const string MOBILE_APP = "https://github.com/KaustubhPatange/XClipper"; // todo: change it with playstore url or github XClipper.Android url
+        public const string MOBILE_APP = "https://github.com/KaustubhPatange/XClipper"; // TODO; change it with playstore url or github XClipper.Android url
 
         public const string DATA_SYNCHRONIZATION = "https://github.com/KaustubhPatange/XClipper/wiki/Data-Synchronization";
         public const string MANUAL_ACTIVATION = "https://github.com/KaustubhPatange/XClipper/wiki/Manual-License-Activation";
@@ -110,7 +110,7 @@ namespace Components
         public const string SECURE_DB = "https://github.com/KaustubhPatange/XClipper/wiki/Using-secure-database";
         public const string SECURE_FIREBASE = "https://github.com/KaustubhPatange/XClipper/wiki/Securing-Database";
 
-        public const string UPGRADE_LICENSE = "https://kaustubhpatange.github.io/XClipper"; // todo: change this which is used in UpgradeTipItem
+        public const string UPGRADE_LICENSE = "https://kaustubhpatange.github.io/XClipper"; // TODO; change this which is used in UpgradeTipItem
 
         #endregion
     }

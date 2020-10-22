@@ -22,7 +22,7 @@ namespace Components
     public static class MainHelper
     {
         /** Return the DependencyObject if it is a ScrollViewer */
-        // todo: Categorization required. Put things into their respective places.
+        // TODO; Categorization required. Put things into their respective places.
         public static DependencyObject GetScrollViewer(DependencyObject o)
         {
             if (o is ScrollViewer)
@@ -180,7 +180,7 @@ DEL ""%~f0""";
             return FileVersionInfo.GetVersionInfo(exeFile).ProductVersion;
         }
 
-        // todo: Pass databaseEncryptPassword based on isEncrypted or not.
+        // TODO; Pass databaseEncryptPassword based on isEncrypted or not.
         /// <summary>
         /// Set current QR data which will be used by SettingsWindow to generate QR code details.
         /// </summary>
@@ -189,11 +189,12 @@ DEL ""%~f0""";
         {
             if (FirebaseCurrent == null) return false;
             string mobileAuthDetails = FirebaseCurrent.IsAuthNeeded ? $"true;{FirebaseCurrent.MobileAuth.ClientId}" : "false";
+            string encryptedPassword = FirebaseCurrent.IsEncrypted ? DatabaseEncryptPassword : ""; // If not encrypted set no password.
             QRData = new QRCodeData
             {
                 UID = UniqueID,
                 EncryptedData = ($"{FirebaseCurrent.AppId};{FirebaseCurrent.ApiKey};{FirebaseCurrent.Endpoint}" +
-                $";{DatabaseEncryptPassword};{mobileAuthDetails};{BindDatabase}")
+                $";{encryptedPassword};{mobileAuthDetails};{BindDatabase}")
                 .EncryptBase64Common()
             };
             return true;
