@@ -20,6 +20,7 @@ using System.Text.RegularExpressions;
 using RestSharp;
 using System.Windows.Threading;
 using System.Web.UI.Design.WebControls;
+using FireSharp.Core.Response;
 
 #nullable enable
 
@@ -40,6 +41,8 @@ namespace Components
         private readonly List<string> removeStack = new List<string>();
         private readonly Dictionary<string, string> updateStack = new Dictionary<string, string>();
         private List<FirebaseInvoke> firebaseInvokeStack = new List<FirebaseInvoke>();
+
+        private EventStreamResponse? onAsyncStream = null;
 
         private const string USER_REF = "users";
         private const string CLIP_REF = "Clips";
@@ -91,6 +94,9 @@ namespace Components
         public void Initialize()
         {
             UID = UniqueID;
+
+            if (onAsyncStream != null) onAsyncStream.Cancel();
+
             if (FirebaseCurrent == null) return;
 
             /* Load the previous state of user or if user is not null it means some configuration
@@ -267,9 +273,13 @@ namespace Components
             {
                 Log("Credentials are not valid");
                 if (FirebaseCurrent != null)
-                    binder?.OnNeedToGenerateToken(FirebaseCurrent.DesktopAuth.ClientId, FirebaseCurrent.DesktopAuth.ClientSecret);
+                    Dispatcher.CurrentDispatcher.Invoke(() =>
+                        binder?.OnNeedToGenerateToken(FirebaseCurrent.DesktopAuth.ClientId, FirebaseCurrent.DesktopAuth.ClientSecret)
+                    );
                 else
-                    MsgBoxHelper.ShowError(Translation.MSG_FIREBASE_USER_ERROR);
+                    Dispatcher.CurrentDispatcher.Invoke(() =>
+                        MsgBoxHelper.ShowError(Translation.MSG_FIREBASE_USER_ERROR)
+                    );
                 return false;
             }
             if (NeedToRefreshToken())
@@ -321,16 +331,16 @@ namespace Components
 
             // Set user for first time..
             if (user == null) user = await FetchUser().ConfigureAwait(false);
-            if (user == null) await RegisterUser().ConfigureAwait(false);
+            if (user == null) await RegisterUser().ConfigureAwait(false); else await SetCommonUserInfo(user).ConfigureAwait(false);
 
             // Apply an auto-fixes if needed
             await FixInconsistentData().ConfigureAwait(false);
             await FixEncryptedDatabase().ConfigureAwait(false);
-
+            
             Log();
             try
             {
-                await client.OnAsync($"users/{UID}",
+                onAsyncStream = await client.OnAsync($"users/{UID}",
                     onDataChange: async (o, a, c) =>
                 {
                     Log();
@@ -547,7 +557,7 @@ namespace Components
             user.IsLicensed = IsPurchaseDone;
             user.LicenseStrategy = LicenseStrategy;
 
-            if (originallyLicensed != IsPurchaseDone)
+            if (originallyLicensed != IsPurchaseDone || user.MaxItemStorage != DatabaseMaxItemLength || user.TotalConnection != DatabaseMaxConnection)
                 await PushUser().ConfigureAwait(false);
         }
 

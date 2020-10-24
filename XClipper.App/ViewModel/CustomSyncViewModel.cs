@@ -181,7 +181,10 @@ namespace Components
 
             // If both data contents are same then no need to update
             if (newData.Equals(FirebaseCurrent))
-                return;
+            {
+                if (DMI == DatabaseMaxItem && DatabaseMaxConnection == DMC && DatabaseMaxItemLength == DMIL)
+                    return;
+            }
 
             DatabaseMaxItem = DMI;
             DatabaseMaxItemLength = DMIL;

@@ -7,36 +7,40 @@
 
  <h1 style="color:red">⚠️ Underconstruction ⚠️</h1>
 
-**XClipper** is a clipboard manager 🔗 for Windows 💻 which helps to track clipboard activities and makes it easier to interact with them ❤️
+**XClipper** is a clipboard manager for Windows & Android which helps to track clipboard activities and makes it easier to interact with them ❤️
 
 <!-- [![XClipper Website](https://img.shields.io/badge/XClipper-Site-blue.svg?style=for-the-badge&logo=windows)](https://kaustubhpatange.github.io/xclipper) -->
 
 <a href="https://kaustubhpatange.github.io/XClipper"><img width="120px" src="XClipper.Web/images/icon.png"/></a>
 
-**_To download desktop application click the above icon_** 👆. **_For Android application [visit here](/XClipper.Android)_**.
+|             |                                                    |
+| ----------- | -------------------------------------------------- |
+| **Windows** | [here](https://kaustubhpatange.github.io/XClipper) |
+| **Android** | [here](/XClipper.Android)                          |
 
 <!-- - Reference for [Android application](/XClipper.Android). -->
 
 ## Features
 
-Originally inspired from [Ditto](https://ditto-cp.sourceforge.io/) which offers great features out of the box. No doubt it is the best application but sometimes it makes it even more confusing when using an application with more features. (_Just my thinking, no offense_)
+Originally inspired from [Ditto](https://ditto-cp.sourceforge.io/) but with **synchronization** support for Android.
 
 - Clean & **beautiful** UI.
 - **Easier** to use and manage.
 - Password Protection for Database, [learn more](https://github.com/KaustubhPatange/XClipper/wiki/Password-Protect-Database).
 - Database syncing between devices, [learn more](https://github.com/KaustubhPatange/XClipper/wiki/Data-Synchronization).
-- Similar features like ditto & Lot more... _but just leaving it here_.
+- Lot more... _but just leaving it here_.
 
 ## Compilation Guide
 
-Since this project involves **license** system 📃 some of the source files has been ignored. [Read this guide]() in order to compile 🗃 the project.
+Since this project involves **license** system 📃 some of the source files has been ignored. [Read this guide](https://github.com/KaustubhPatange/XClipper/wiki/Compilation-guide) in order to compile 🗃 the project.
 
 ## Tutorials
 
-All of the individual documentation topics can be found in this repo's [wiki](https://github.com/KaustubhPatange/XClipper/wiki), following are some general topics which you might should take a look at!
+All of the individual documentation topics can be found in the repo's [wiki](https://github.com/KaustubhPatange/XClipper/wiki), following are some general topics you should take a look at!
 
 - [Introduction to XClipper - Basic usage](https://github.com/KaustubhPatange/XClipper/wiki/Introduction)
 - [Start synchronizing clipboard activity](https://github.com/KaustubhPatange/XClipper/wiki/Data-Synchronization)
+- [FAQs](https://github.com/KaustubhPatange/XClipper/wiki/FAQs)
 
 ## Built with 🛠
 

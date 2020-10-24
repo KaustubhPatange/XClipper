@@ -18,7 +18,7 @@
         public string ApiKey { get; set; }
         public string Storage { get; set; }
         public bool IsAuthNeeded { get; set; } = false;
-        public bool IsEncrypted { get; set; } = false;
+        public bool IsEncrypted { get; set; } = true;
 
         public override bool Equals(object obj)
         {

@@ -81,9 +81,5 @@ abstract class MainDatabase : RoomDatabase() {
                 }
             }
         }
-
-
-        /* End of companion object */
     }
-
 }
