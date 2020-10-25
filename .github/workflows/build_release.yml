@@ -9,6 +9,8 @@ jobs:
   testJob:
     
     runs-on: windows-latest
+    env: 
+      HelloWord: 'Nice catch'
     steps:
       - uses: actions/checkout@v2
       - name: Dir
@@ -21,10 +23,20 @@ jobs:
         run: |
           echo "${{ env.windows_out }}"
           echo $fire
+          echo Hello world
+          echo $HelloWord
+          echo "${{ env.HelloWord }}"
       - name: Set env
         run: echo "GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-6)" >> $GITHUB_ENV
       - name: Test
         run: echo $GITHUB_SHA_SHORT
+      - name: Set outputs
+        id: vars
+        shell: pwsh
+        run: echo "::set-output name=production::true"
+      - name: Check outputs
+        shell: pwsh
+        run: echo ${{ steps.vars.outputs.production }}
 #   windows:
 #     runs-on: windows-latest
 #     steps:
