@@ -1,0 +1,51 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [ master, action_test ] # Remove this second branch after test
+  pull_request:
+    branches: [ master, action_test ] # Remove this second branch after test
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - name: Setting up nuget
+        uses: warrenbuckley/Setup-Nuget@v1
+      - name: Setting up msbuild
+        uses: warrenbuckley/Setup-MSBuild@v1
+      - name: Setting up dependencies
+        id: csproj_protect
+        uses: timheuer/base64-to-file@v1
+        with: 
+          fileName: 'protect.tar.gz'
+          encodedString: ${{ secrets.SLN_PROTECT }}
+      - name: Restoring dependencies & building project
+        run: |
+          tar -xvzf ${{ steps.csproj_protect.filePath }}
+          tar -xvzf scripts\inno.tar.gz
+          nuget restore XClipper.sln
+          msbuild XClipper.sln /t:Rebuild /p:WarningLevel=0 /p:Configuration=Release
+      - name: Building Installer
+        run: |
+          md XClipper.App\bin\Release\locales
+          copy XClipper.App\Locales\*.xaml XClipper.App\bin\Release\locales
+          del XClipper.App\bin\Release\*.xml
+          del XClipper.App\bin\Release\*.pdb
+          del XClipper.App\bin\Release\*.config
+          packager.exe -i iss
+          packager.exe -i exe
+          packager.exe -r
+          scripts\inno\iscc.exe scripts\installer.iss
+#       - name: Run a one-line script
+#         run: echo Hello, world!
+#       - name: Run a multi-line script
+#         run: |
+#           echo Add other actions to build,
+#           echo test, and deploy your project.
