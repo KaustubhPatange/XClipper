@@ -29,13 +29,10 @@ jobs:
       - name: Set env
         id: uio
         run: echo "GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-6)" >> $GITHUB_ENV
-      - name: Test
-        shell: pwsh
-        run: echo ${{ steps.env.uio.GITHUB_SHA_SHORT }}
       - name: Set outputs
         id: vars
         shell: pwsh
-        run: echo "::set-output name=production::true"
+        run: echo "::set-output name=production::$((Get-ChildItem -Path "scripts" | sort | Select-Object -First 1).Name)"
       - name: Check outputs
         shell: pwsh
         run: echo ${{ steps.vars.outputs.production }}
