@@ -27,9 +27,11 @@ jobs:
           echo $HelloWord
           echo "${{ env.HelloWord }}"
       - name: Set env
+        id: uio
         run: echo "GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-6)" >> $GITHUB_ENV
       - name: Test
-        run: echo $GITHUB_SHA_SHORT
+        shell: pwsh
+        run: echo ${{ steps.env.uio.GITHUB_SHA_SHORT }}
       - name: Set outputs
         id: vars
         shell: pwsh
