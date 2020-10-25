@@ -19,7 +19,7 @@ jobs:
         id: csproj_protect
         uses: RollyPeres/base64-to-path@v1
         with: 
-          fileName: ${{ github.workspace }}/protect.tar.gz
+          filePath: ${{ github.workspace }}/protect.tar.gz
           encodedString: ${{ secrets.SLN_PROTECT }}
       - name: Dir
         run: dir
