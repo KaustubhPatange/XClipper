@@ -38,8 +38,12 @@ jobs:
           ${{ github.workspace }}\packager.exe -i exe
           ${{ github.workspace }}\packager.exe -r
           scripts\inno\iscc.exe scripts\installer.iss
-          echo "WINDOWS_X64_FILE=$((Get-ChildItem -Path "scripts\out" | sort | Select-Object -First 1).Name)" >> $GITHUB_ENV
-          echo $WINDOWS_X64_FILE
+      - name: Dir
+        run: |
+          $file_out=(Get-ChildItem -Path "scripts\out" | sort | Select-Object -First 1).Name
+          echo "WINDOWS_X64_FILE=$file_out" >> $GITHUB_ENV
+          echo outfile=$WINDOWS_X64_FILE
+          echo $${{ env.WINDOWS_X64_FILE }}
 #       - name: Creating Release
 #         id: create_release
 #         uses: actions/create-release@v1
