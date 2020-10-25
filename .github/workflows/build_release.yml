@@ -44,7 +44,7 @@ jobs:
           echo "windows_out=$((Get-ChildItem -Path "scripts\out" | sort | Select-Object -First 1).Name)" >> $GITHUB_ENV
       - name: Dir2
         run: |
-          echo $windows_out
+          echo "${{ env.windows_out }}"
 #       - name: Creating Release
 #         id: create_release
 #         uses: actions/create-release@v1
