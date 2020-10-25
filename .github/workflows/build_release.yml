@@ -6,35 +6,6 @@ on:
     branches: [ master, action_test ] # Remove this second branch after test
 
 jobs:
-#   testJob:
-#     runs-on: windows-latest
-#     env: 
-#       HelloWord: 'Nice catch'
-#     steps:
-#       - uses: actions/checkout@v2
-#       - name: Dir
-#         id: steps_dd
-#         run: |
-#           (Get-ChildItem -Path "scripts" | sort | Select-Object -First 1).Name;
-#           echo "windows_out=$((Get-ChildItem -Path "scripts" | sort | Select-Object -First 1).Name)" >> $GITHUB_ENV
-#           echo "fire=yellow" >> $GITHUB_ENV
-#       - name: Dir2
-#         run: |
-#           echo "${{ env.windows_out }}"
-#           echo $fire
-#           echo Hello world
-#           echo $HelloWord
-#           echo "${{ env.HelloWord }}"
-#       - name: Set env
-#         id: uio
-#         run: echo "GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-6)" >> $GITHUB_ENV
-#       - name: Set outputs
-#         id: vars
-#         shell: pwsh
-#         run: echo "::set-output name=production::$((Get-ChildItem -Path "scripts" | sort | Select-Object -First 1).Name)"
-#       - name: Check outputs
-#         shell: pwsh
-#         run: echo ${{ steps.vars.outputs.production }}
   windows:
     runs-on: windows-latest
     steps:
@@ -66,11 +37,14 @@ jobs:
           ${{ github.workspace }}\packager.exe -i iss
           ${{ github.workspace }}\packager.exe -i exe
           ${{ github.workspace }}\packager.exe -r
-          scripts\inno\iscc.exe scripts\installer.iss
+          scripts\inno\iscc.exe scripts\installer.iss 
       - name: Setting output file
         id: vars
         shell: pwsh
-        run: echo "::set-output name=production::$((Get-ChildItem -Path "scripts\out" | sort | Select-Object -First 1).Name)"
+        run: |
+          echo "::set-output name=production::$((Get-ChildItem -Path "scripts\out" | sort | Select-Object -First 1).Name)"
+          echo "::set-output name=tar_name::$(echo ${{ steps.vars.outputs.production }} | cut -c -24).tar.gz"
+          cd XClipper.App\bin\Release && tar -cvzf "${{ github.workspace }}\scripts\out\${{ steps.vars.outputs.tar_name }}" *
       - name: Creating Release
         id: create_release
         uses: actions/create-release@v1
@@ -90,6 +64,16 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./scripts/out/${{ steps.vars.outputs.production }}
           asset_name: ${{ steps.vars.outputs.production }}
+          asset_content_type: application/octet-stream
+      - name: Upload Release Asset
+        id: upload-release-asset2 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./scripts/out/${{ steps.vars.outputs.tar_name }}
+          asset_name: ${{ steps.vars.outputs.tar_name }}
           asset_content_type: application/octet-stream
 #       - name: Run a one-line script
 #         run: echo Hello, world!
