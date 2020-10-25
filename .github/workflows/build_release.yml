@@ -42,10 +42,12 @@ jobs:
         run: |
           $psversiontable
           Get-Process;
+          (Get-ChildItem -Path "scripts\out" | sort | Select-Object -First 1).Name;
+          echo "::set-env name=tag::$((Get-ChildItem -Path "scripts\out" | sort | Select-Object -First 1).Name)"
           $file_out=(Get-ChildItem -Path "scripts\out" | sort | Select-Object -First 1).Name;
           echo "WINDOWS_X64_FILE=$file_out" >> $GITHUB_ENV
           echo outfile=$WINDOWS_X64_FILE
-          echo $${{ env.WINDOWS_X64_FILE }}
+          echo out file = ${{ env.WINDOWS_X64_FILE }}
 #       - name: Creating Release
 #         id: create_release
 #         uses: actions/create-release@v1
