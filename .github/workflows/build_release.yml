@@ -21,6 +21,8 @@ jobs:
         with: 
           fileName: 'protect.tar.gz'
           encodedString: ${{ secrets.SLN_PROTECT }}
+      - name: Dir
+        run: echo ${{ steps.csproj_protect.filePath }}
       - name: Setting up project
         run: tar -xvzf ${{ steps.csproj_protect.filePath }}
       - name: Restoring dependencies & building project
