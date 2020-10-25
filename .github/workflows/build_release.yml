@@ -21,8 +21,6 @@ jobs:
         with: 
           filePath: ${{ github.workspace }}/protect.tar.gz
           encodedString: ${{ secrets.SLN_PROTECT }}
-      - name: Dir
-        run: dir
       - name: Restoring dependencies & building project
         run: |
           tar -xvzf protect.tar.gz
@@ -36,9 +34,9 @@ jobs:
           del XClipper.App\bin\Release\*.xml
           del XClipper.App\bin\Release\*.pdb
           del XClipper.App\bin\Release\*.config
-          packager.exe -i iss
-          packager.exe -i exe
-          packager.exe -r
+          ${{ github.workspace }}\packager.exe -i iss
+          ${{ github.workspace }}\packager.exe -i exe
+          ${{ github.workspace }}\packager.exe -r
           scripts\inno\iscc.exe scripts\installer.iss
 #       - name: Run a one-line script
 #         run: echo Hello, world!
