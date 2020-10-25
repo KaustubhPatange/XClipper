@@ -6,93 +6,91 @@ on:
     branches: [ master, action_test ] # Remove this second branch after test
 
 jobs:
-  testJob:
-    
-    runs-on: windows-latest
-    env: 
-      HelloWord: 'Nice catch'
-    steps:
-      - uses: actions/checkout@v2
-      - name: Dir
-        id: steps_dd
-        run: |
-          (Get-ChildItem -Path "scripts" | sort | Select-Object -First 1).Name;
-          echo "windows_out=$((Get-ChildItem -Path "scripts" | sort | Select-Object -First 1).Name)" >> $GITHUB_ENV
-          echo "fire=yellow" >> $GITHUB_ENV
-      - name: Dir2
-        run: |
-          echo "${{ env.windows_out }}"
-          echo $fire
-          echo Hello world
-          echo $HelloWord
-          echo "${{ env.HelloWord }}"
-      - name: Set env
-        id: uio
-        run: echo "GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-6)" >> $GITHUB_ENV
-      - name: Set outputs
-        id: vars
-        shell: pwsh
-        run: echo "::set-output name=production::$((Get-ChildItem -Path "scripts" | sort | Select-Object -First 1).Name)"
-      - name: Check outputs
-        shell: pwsh
-        run: echo ${{ steps.vars.outputs.production }}
-#   windows:
+#   testJob:
 #     runs-on: windows-latest
+#     env: 
+#       HelloWord: 'Nice catch'
 #     steps:
-#       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
 #       - uses: actions/checkout@v2
-#       - name: Setting up nuget
-#         uses: warrenbuckley/Setup-Nuget@v1
-#       - name: Setting up msbuild
-#         uses: warrenbuckley/Setup-MSBuild@v1
-#       - name: Setting up dependencies
-#         id: csproj_protect
-#         uses: RollyPeres/base64-to-path@v1
-#         with: 
-#           filePath: ${{ github.workspace }}/protect.tar.gz
-#           encodedString: ${{ secrets.SLN_PROTECT }}
-#       - name: Restoring dependencies & building project
-#         run: |
-#           tar -xvzf protect.tar.gz
-#           tar -xvzf scripts\inno.tar.gz
-#           nuget restore XClipper.sln
-#           msbuild XClipper.sln /t:Rebuild /p:WarningLevel=0 /p:Configuration=Release
-#       - name: Building Installer
-#         run: |
-#           md XClipper.App\bin\Release\locales
-#           copy XClipper.App\Locales\*.xaml XClipper.App\bin\Release\locales
-#           del XClipper.App\bin\Release\*.xml
-#           del XClipper.App\bin\Release\*.pdb
-#           del XClipper.App\bin\Release\*.config
-#           ${{ github.workspace }}\packager.exe -i iss
-#           ${{ github.workspace }}\packager.exe -i exe
-#           ${{ github.workspace }}\packager.exe -r
-#           scripts\inno\iscc.exe scripts\installer.iss
 #       - name: Dir
+#         id: steps_dd
 #         run: |
-#           (Get-ChildItem -Path "scripts\out" | sort | Select-Object -First 1).Name;
-#           echo "windows_out=$((Get-ChildItem -Path "scripts\out" | sort | Select-Object -First 1).Name)" >> $GITHUB_ENV
+#           (Get-ChildItem -Path "scripts" | sort | Select-Object -First 1).Name;
+#           echo "windows_out=$((Get-ChildItem -Path "scripts" | sort | Select-Object -First 1).Name)" >> $GITHUB_ENV
+#           echo "fire=yellow" >> $GITHUB_ENV
 #       - name: Dir2
 #         run: |
 #           echo "${{ env.windows_out }}"
-#       - name: Creating Release
-#         id: create_release
-#         uses: actions/create-release@v1
-#         env:
-#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#         with:
-#           tag_name: ${{ github.ref }}
-#           release_name: Release ${{ github.ref }}
-#           body_path: ${{ github.workspace }}\scripts\changes.txt
-#           draft: true
-#       - name: Upload Release Asset
-#         id: upload-release-asset 
-#         uses: actions/upload-release-asset@v1
-#         env:
-#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#         with:
-#           upload_url: ${{ steps.create_release.outputs.upload_url }}
-#           asset_path: ./scripts/out/
+#           echo $fire
+#           echo Hello world
+#           echo $HelloWord
+#           echo "${{ env.HelloWord }}"
+#       - name: Set env
+#         id: uio
+#         run: echo "GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-6)" >> $GITHUB_ENV
+#       - name: Set outputs
+#         id: vars
+#         shell: pwsh
+#         run: echo "::set-output name=production::$((Get-ChildItem -Path "scripts" | sort | Select-Object -First 1).Name)"
+#       - name: Check outputs
+#         shell: pwsh
+#         run: echo ${{ steps.vars.outputs.production }}
+  windows:
+    runs-on: windows-latest
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - name: Setting up nuget
+        uses: warrenbuckley/Setup-Nuget@v1
+      - name: Setting up msbuild
+        uses: warrenbuckley/Setup-MSBuild@v1
+      - name: Setting up dependencies
+        id: csproj_protect
+        uses: RollyPeres/base64-to-path@v1
+        with: 
+          filePath: ${{ github.workspace }}/protect.tar.gz
+          encodedString: ${{ secrets.SLN_PROTECT }}
+      - name: Restoring dependencies & building project
+        run: |
+          tar -xvzf protect.tar.gz
+          tar -xvzf scripts\inno.tar.gz
+          nuget restore XClipper.sln
+          msbuild XClipper.sln /t:Rebuild /p:WarningLevel=0 /p:Configuration=Release
+      - name: Building Installer
+        run: |
+          md XClipper.App\bin\Release\locales
+          copy XClipper.App\Locales\*.xaml XClipper.App\bin\Release\locales
+          del XClipper.App\bin\Release\*.xml
+          del XClipper.App\bin\Release\*.pdb
+          del XClipper.App\bin\Release\*.config
+          ${{ github.workspace }}\packager.exe -i iss
+          ${{ github.workspace }}\packager.exe -i exe
+          ${{ github.workspace }}\packager.exe -r
+          scripts\inno\iscc.exe scripts\installer.iss
+      - name: Setting output file
+        id: vars
+        shell: pwsh
+        run: echo "::set-output name=production::$((Get-ChildItem -Path "scripts\out" | sort | Select-Object -First 1).Name)"
+      - name: Creating Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body_path: ${{ github.workspace }}\scripts\changes.txt
+          draft: true
+      - name: Upload Release Asset
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./scripts/out/${{ steps.vars.outputs.production }}
+          asset_name: ${{ steps.vars.outputs.production }}
+          asset_content_type: application/octet-stream
 #       - name: Run a one-line script
 #         run: echo Hello, world!
 #       - name: Run a multi-line script
