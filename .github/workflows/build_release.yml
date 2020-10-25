@@ -38,6 +38,26 @@ jobs:
           ${{ github.workspace }}\packager.exe -i exe
           ${{ github.workspace }}\packager.exe -r
           scripts\inno\iscc.exe scripts\installer.iss
+          echo "WINDOWS_X64_FILE=$((Get-ChildItem -Path "scripts\out" | sort | Select-Object -First 1).Name)" >> $GITHUB_ENV
+          echo $WINDOWS_X64_FILE
+#       - name: Creating Release
+#         id: create_release
+#         uses: actions/create-release@v1
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#         with:
+#           tag_name: ${{ github.ref }}
+#           release_name: Release ${{ github.ref }}
+#           body_path: ${{ github.workspace }}\scripts\changes.txt
+#           draft: true
+#       - name: Upload Release Asset
+#         id: upload-release-asset 
+#         uses: actions/upload-release-asset@v1
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#         with:
+#           upload_url: ${{ steps.create_release.outputs.upload_url }}
+#           asset_path: ./scripts/out/
 #       - name: Run a one-line script
 #         run: echo Hello, world!
 #       - name: Run a multi-line script
