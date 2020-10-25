@@ -41,7 +41,7 @@ jobs:
         id: vars
         shell: pwsh
         run: |
-          echo "::set-output name=production::$(echo (Get-ChildItem -Path "scripts\out" | sort | Select-Object -First 1).Name | cut -c -24)"
+          echo "::set-output name=production::$(echo (Get-ChildItem -Path "scripts\out" | sort | Select-Object -First 1).Name | cut -c -25)"
       - name: Creating portable tar.gz
         run: |
           cd XClipper.App\bin\Release && tar -cvzf "${{ github.workspace }}\scripts\out\${{ steps.vars.outputs.production }}.tar.gz" *
