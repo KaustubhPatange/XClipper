@@ -17,16 +17,15 @@ jobs:
         uses: warrenbuckley/Setup-MSBuild@v1
       - name: Setting up dependencies
         id: csproj_protect
-        uses: timheuer/base64-to-file@v1
+        uses: RollyPeres/base64-to-path@v1
         with: 
-          fileName: 'protect.tar.gz'
+          fileName: ${{ github.workspace }}/protect.tar.gz
           encodedString: ${{ secrets.SLN_PROTECT }}
       - name: Dir
-        run: echo ${{ steps.csproj_protect.filePath }}
-      - name: Setting up project
-        run: tar -xvzf ${{ steps.csproj_protect.filePath }}
+        run: dir
       - name: Restoring dependencies & building project
         run: |
+          tar -xvzf protect.tar.gz
           tar -xvzf scripts\inno.tar.gz
           nuget restore XClipper.sln
           msbuild XClipper.sln /t:Rebuild /p:WarningLevel=0 /p:Configuration=Release
