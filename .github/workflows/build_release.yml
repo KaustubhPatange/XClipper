@@ -12,12 +12,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Dir
+        id: steps_dd
         run: |
           (Get-ChildItem -Path "scripts" | sort | Select-Object -First 1).Name;
           echo "windows_out=$((Get-ChildItem -Path "scripts" | sort | Select-Object -First 1).Name)" >> $GITHUB_ENV
       - name: Dir2
         run: |
-          echo "${ env.windows_out }"
+          echo "${{ env.steps_dd.windows_out }}"
 #   windows:
 #     runs-on: windows-latest
 #     steps:
