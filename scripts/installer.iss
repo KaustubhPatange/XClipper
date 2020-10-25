@@ -60,8 +60,8 @@ Name: "ukrainian"; MessagesFile: "compiler:Languages\Ukrainian.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "D:\VisualStudioProjects\XClipper\XClipper.App\bin\Debug\XClipper.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\VisualStudioProjects\XClipper\XClipper.App\bin\Debug\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "D:\VisualStudioProjects\XClipper\XClipper.App\bin\Release\XClipper.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\VisualStudioProjects\XClipper\XClipper.App\bin\Release\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
