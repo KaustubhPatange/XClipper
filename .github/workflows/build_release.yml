@@ -8,8 +8,8 @@ on:
 jobs:
   windows:
     runs-on: windows-latest
+    if: "contains(github.event.head_commit.message, '[Released]')"
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       - name: Setting up nuget
         uses: warrenbuckley/Setup-Nuget@v1
@@ -34,8 +34,7 @@ jobs:
           del XClipper.App\bin\Release\*.xml
           del XClipper.App\bin\Release\*.pdb
           del XClipper.App\bin\Release\*.config
-          ${{ github.workspace }}\packager.exe -i iss
-          ${{ github.workspace }}\packager.exe -i exe
+          echo "::set-output name=production_version::$(${{ github.workspace }}\packager.exe -i exe)"
           ${{ github.workspace }}\packager.exe -r
           scripts\inno\iscc.exe scripts\installer.iss 
       - name: Setting output file
@@ -74,11 +73,5 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./scripts/out/${{ steps.vars.outputs.production }}.tar.gz
-          asset_name: ${{ steps.vars.outputs.production }}.tar.gz
+          asset_name: XClipper-Portable-x64-${{ steps.vars.outputs.production_version }}.tar.gz
           asset_content_type: application/octet-stream
-#       - name: Run a one-line script
-#         run: echo Hello, world!
-#       - name: Run a multi-line script
-#         run: |
-#           echo Add other actions to build,
-#           echo test, and deploy your project.
