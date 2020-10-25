@@ -42,10 +42,11 @@ jobs:
         id: vars
         shell: pwsh
         run: |
-          echo "::set-output name=production::$((Get-ChildItem -Path "scripts\out" | sort | Select-Object -First 1).Name)"
-          echo "::set-output name=tar_name::$(echo ${{ steps.vars.outputs.production }} | cut -c -24).tar.gz"
-          cd XClipper.App\bin\Release && tar -cvzf "${{ github.workspace }}\scripts\out\${{ steps.vars.outputs.tar_name }}" *
-      - name: Creating Release
+          echo "::set-output name=production::$(echo (Get-ChildItem -Path "scripts\out" | sort | Select-Object -First 1).Name | cut -c -24)"
+      - name: Creating portable tar.gz
+        run: |
+          cd XClipper.App\bin\Release && tar -cvzf "${{ github.workspace }}\scripts\out\${{ steps.vars.outputs.production }}.tar.gz" *
+      - name: Creating release
         id: create_release
         uses: actions/create-release@v1
         env:
@@ -62,8 +63,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./scripts/out/${{ steps.vars.outputs.production }}
-          asset_name: ${{ steps.vars.outputs.production }}
+          asset_path: ./scripts/out/${{ steps.vars.outputs.production }}.exe
+          asset_name: ${{ steps.vars.outputs.production }}.exe
           asset_content_type: application/octet-stream
       - name: Upload Release Asset
         id: upload-release-asset2 
@@ -72,8 +73,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./scripts/out/${{ steps.vars.outputs.tar_name }}
-          asset_name: ${{ steps.vars.outputs.tar_name }}
+          asset_path: ./scripts/out/${{ steps.vars.outputs.tar_name }}.tar.gz
+          asset_name: ${{ steps.vars.outputs.tar_name }}.tar.gz
           asset_content_type: application/octet-stream
 #       - name: Run a one-line script
 #         run: echo Hello, world!
