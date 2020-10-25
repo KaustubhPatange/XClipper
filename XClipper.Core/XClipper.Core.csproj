@@ -38,7 +38,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="FireSharp.Core">
-      <HintPath>..\..\FireSharp\FireSharp.Core\bin\Debug\netstandard1.1\FireSharp.Core.dll</HintPath>
+	 <HintPath>..\libraries\FireSharp.custom\FireSharp.Core.dll</HintPath>
+      <!-- <HintPath>..\..\FireSharp\FireSharp.Core\bin\Debug\netstandard1.1\FireSharp.Core.dll</HintPath> -->
     </Reference>
     <Reference Include="Microsoft.Threading.Tasks, Version=1.0.12.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.dll</HintPath>
