@@ -41,7 +41,7 @@ jobs:
       - name: Dir
         run: |
           (Get-ChildItem -Path "scripts\out" | sort | Select-Object -First 1).Name;
-          echo "windows_out=$((Get-ChildItem -Path "scripts\out" | sort | Select-Object -First 1).Name) >> $GITHUB_ENV"
+          echo "windows_out=$((Get-ChildItem -Path "scripts\out" | sort | Select-Object -First 1).Name)" >> $GITHUB_ENV
       - name: Dir2
         run: |
           echo $windows_out
