@@ -522,7 +522,7 @@
   <PropertyGroup>
     <PostBuildEvent>md "$(SolutionDir)libraries\FireSharp.custom"
 md "$(SolutionDir)libraries\DesktopToast.custom"
-copy "$(SolutionDir)\$(ProjectName)\Locales\en.xaml" "$(TargetDir)\locales\en.xaml"
+copy "$(SolutionDir)\$(ProjectName)\Locales\*.xaml" "$(TargetDir)\locales\"
 copy "$(TargetDir)FireSharp.Core.dll" "$(SolutionDir)libraries\FireSharp.custom\FireSharp.Core.dll"
 copy "$(TargetDir)DesktopToast.dll" "$(SolutionDir)libraries\DesktopToast.custom\DesktopToast.dll"</PostBuildEvent>
   </PropertyGroup>

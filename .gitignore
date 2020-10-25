@@ -10,6 +10,9 @@ XClipper.Android/buildSrc/build/
 XClipper.Android/app/release/
 XClipper.Web/js/purchase.js
 
+scripts/out
+scripts/Work
+
 # User-specific files
 *.apk
 *.suo

@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "XClipper"
-#define MyAppVersion "1.0"
+#define MyAppVersion "0.15.0"
 #define MyAppPublisher "KP'S TV, Inc."
 #define MyAppURL "https://kaustubhpatange.github.io/XClipper"
 #define MyAppExeName "XClipper.exe"
@@ -20,12 +20,12 @@ AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultDirName={autopf}\{#MyAppName}
 DisableProgramGroupPage=yes
-LicenseFile=C:\Users\devel\Documents\license.txt
+LicenseFile=license.txt
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
 PrivilegesRequiredOverridesAllowed=dialog
-OutputDir=C:\Users\devel\Desktop
-OutputBaseFilename=setup
+OutputDir=out
+OutputBaseFilename=XClipperSetup-x64-{#MyAppVersion}
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
