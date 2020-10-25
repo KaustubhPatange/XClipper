@@ -73,8 +73,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./scripts/out/${{ steps.vars.outputs.tar_name }}.tar.gz
-          asset_name: ${{ steps.vars.outputs.tar_name }}.tar.gz
+          asset_path: ./scripts/out/${{ steps.vars.outputs.production }}.tar.gz
+          asset_name: ${{ steps.vars.outputs.production }}.tar.gz
           asset_content_type: application/octet-stream
 #       - name: Run a one-line script
 #         run: echo Hello, world!
