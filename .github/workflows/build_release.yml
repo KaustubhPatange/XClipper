@@ -16,9 +16,11 @@ jobs:
         run: |
           (Get-ChildItem -Path "scripts" | sort | Select-Object -First 1).Name;
           echo "windows_out=$((Get-ChildItem -Path "scripts" | sort | Select-Object -First 1).Name)" >> $GITHUB_ENV
+          echo "fire=yellow" >> $GITHUB_ENV
       - name: Dir2
         run: |
-          echo "${{ env.steps_dd.windows_out }}"
+          echo "${{ env.windows_out }}"
+          echo "${{ env.fire }}"
 #   windows:
 #     runs-on: windows-latest
 #     steps:
