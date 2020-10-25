@@ -20,7 +20,7 @@ jobs:
       - name: Dir2
         run: |
           echo "${{ env.windows_out }}"
-          echo "${{ env.fire }}"
+          echo $fire
 #   windows:
 #     runs-on: windows-latest
 #     steps:
