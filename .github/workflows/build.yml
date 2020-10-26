@@ -9,8 +9,10 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
-      - run: chmod +x gradlew
-      - run: chmod -R 777 ./
+      - run: |
+          tar -xvzf scripts\gradle.tar.gz
+          chmod +x gradlew
+          chmod -R 777 ./
       - name: Building project
         run: ./gradlew assembleDebug
       
