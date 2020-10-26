@@ -13,6 +13,8 @@ XClipper.Web/js/purchase.js
 scripts/out
 scripts/Work
 
+.gradle/
+
 # User-specific files
 *.apk
 *.suo

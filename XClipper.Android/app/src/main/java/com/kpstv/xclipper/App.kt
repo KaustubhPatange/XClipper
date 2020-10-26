@@ -21,9 +21,6 @@ object App {
     private const val FB_MIN_DEVICE_CONNECTION = 1
     private const val FB_MAX_DEVICE_CONNECTION = 5
 
-    const val APP_UPDATE_URI = "https://pastebin.com/raw/FRS7n7Fc" // TODO: Change this update uri
-    const val APP_DOWNLOAD_URI = "https://play.google.com/store/apps/details?id=com.kpstv.xclipper"
-
     var APP_MAX_DEVICE = FB_MIN_DEVICE_CONNECTION
     var APP_MAX_ITEM = FB_MIN_ITEM_STORAGE
 

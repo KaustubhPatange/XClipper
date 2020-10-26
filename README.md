@@ -9,16 +9,16 @@
 
 **XClipper** is a clipboard manager for Windows & Android which helps to track clipboard activities and makes it easier to interact with them ❤️
 
-<!-- [![XClipper Website](https://img.shields.io/badge/XClipper-Site-blue.svg?style=for-the-badge&logo=windows)](https://kaustubhpatange.github.io/xclipper) -->
-
 <a href="https://kaustubhpatange.github.io/XClipper"><img width="120px" src="XClipper.Web/images/icon.png"/></a>
+
+## Download
+
+XClipper is currently available on the following platforms only.
 
 |             |                                                    |
 | ----------- | -------------------------------------------------- |
 | **Windows** | [here](https://kaustubhpatange.github.io/XClipper) |
 | **Android** | [here](/XClipper.Android)                          |
-
-<!-- - Reference for [Android application](/XClipper.Android). -->
 
 ## Features
 
