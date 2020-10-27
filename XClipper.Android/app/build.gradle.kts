@@ -4,6 +4,7 @@ plugins {
     kotlin(GradlePluginId.ANDROID_EXTENSIONS_KTX)
     kotlin(GradlePluginId.KAPT)
     id(GradlePluginId.SAFE_ARGS)
+    id("kotlin-android")
 }
 
 android {
@@ -67,7 +68,7 @@ dependencies {
     implementation(LibraryDependency.WORK_MANAGER)
     implementation(LibraryDependency.GSON)
     implementation(LibraryDependency.ROOM_RUNTIME)
-    kapt(LibraryDependency.ROOM_COMPILER_KAPT)
+    implementation(LibraryDependency.OKHTTP)
 
     implementation(LibraryDependency.FIREBASE_REALTIME_DATABASE)
     implementation(LibraryDependency.FIREBASE_AUTH)
@@ -97,10 +98,10 @@ dependencies {
     implementation(LibraryDependency.FLOATING_BUBBLE)
     implementation(LibraryDependency.GIF_DRAWABLE)
     implementation(LibraryDependency.HVLOG)
-  //  implementation(LibraryDependency.COIL) // TODO: Remove this dependency
     implementation(LibraryDependency.GLIDE)
 
     kapt(LibraryDependency.GLIDE_COMPILER)
+    kapt(LibraryDependency.ROOM_COMPILER_KAPT)
 
     debugImplementation(TestLibraryDependency.ANDROID_DEBUG_DB)
     testImplementation(TestLibraryDependency.JUNIT)

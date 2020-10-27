@@ -1,5 +1,6 @@
 package com.kpstv.xclipper
 
+import android.text.Html
 import org.junit.Test
 import kotlin.system.measureTimeMillis
 
@@ -42,12 +43,135 @@ class GenericTest {
     fun assertRegexMatchTest() {
 
         val seconds= measureTimeMillis {
-            val regex = "^(!\\[)(.*?)(])(\\((https?://.*?)\\))$".toRegex()
+            val string1 = """
+            <!DOCTYPE html>
+            <html>
+            	<body>
+            		<script type="text/javascript">
+            		function unescapeHtml(escaped_str) {
+            		    var div = document.createElement('div');
+            		    div.innerHTML = escaped_str;
+            		    var child = div.childNodes[0];
+            		    return child ? child.nodeValue : null;
+            		}
+            		
+            		function validateProtocol(url) {
+            			var parser = document.createElement('a');
+            		    parser.href = url;
+            		    var protocol = parser.protocol.toLowerCase();
+            			if ([ 'javascript:',  'vbscript:',  'data:', 'ftp:',':' , ' '].indexOf(protocol) < 0) {
+            				return url;
+            			}
+            			return null;
+            		}
+            		
+            		function validate(url) {
+            			var unescaped_value = unescapeHtml(url);
+            			if (unescaped_value && validateProtocol(unescaped_value)) {
+            				return unescaped_value;
+            			}
+            			return '/';
+            		}			var hasURI = false;
+            			var intervalExecuted = false;
+            			window.onload = function() {
+            					document.getElementById("l").src = validate("p/1549acfc3f4b?link_click_id=849539774561987418");
 
-            val text = "![Hello.png](https://google.com)"
+            					window.setTimeout(function() {
+            						if (!hasURI) {
+            							window.top.location = validate("https://medium.com/@ashisjena.talk2u/take-your-skills-to-the-next-level-with-kotlin-1549acfc3f4b?_branch_match_id=849539774561987418");
+            						}
+            						intervalExecuted = true;
+            					}, 300);
+            			};
 
-            println(regex.matches(text))
+            			window.onblur = function() {
+            				hasURI = true;
+            			};
+
+            					window.onfocus = function() {
+            						if (hasURI) {
+            							window.top.location = validate("https://medium.com/@ashisjena.talk2u/take-your-skills-to-the-next-level-with-kotlin-1549acfc3f4b?_branch_match_id=849539774561987418");
+            						} else if (intervalExecuted) {
+            							window.top.location = validate("https://medium.com/@ashisjena.talk2u/take-your-skills-to-the-next-level-with-kotlin-1549acfc3f4b?_branch_match_id=849539774561987418");
+            						}
+            					};
+
+            		</script>
+            		<iframe id="l" width="1" height="1" style="visibility:hidden"></iframe>
+            	</body>
+            </html>
+        """.trimIndent()
+
+            val URL_PATTERN_REGEX =
+                "https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)"
+            val string = "https://medium.com/@ashisjena.talk2u/take-your-skills-to-the-next-level-with-kotlin-1549acfc3f4b?_branch_match_id=849539774561987418"
+
+            println(URL_PATTERN_REGEX
+                .toRegex().find(string1)?.value)
         }
         println("Time took: $seconds")
+    }
+
+    @Test
+    fun regexTest() {
+        val string = """
+            <!DOCTYPE html>
+            <html>
+            	<body>
+            		<script type="text/javascript">
+            		function unescapeHtml(escaped_str) {
+            		    var div = document.createElement('div');
+            		    div.innerHTML = escaped_str;
+            		    var child = div.childNodes[0];
+            		    return child ? child.nodeValue : null;
+            		}
+            		
+            		function validateProtocol(url) {
+            			var parser = document.createElement('a');
+            		    parser.href = url;
+            		    var protocol = parser.protocol.toLowerCase();
+            			if ([ 'javascript:',  'vbscript:',  'data:', 'ftp:',':' , ' '].indexOf(protocol) < 0) {
+            				return url;
+            			}
+            			return null;
+            		}
+            		
+            		function validate(url) {
+            			var unescaped_value = unescapeHtml(url);
+            			if (unescaped_value && validateProtocol(unescaped_value)) {
+            				return unescaped_value;
+            			}
+            			return '/';
+            		}			var hasURI = false;
+            			var intervalExecuted = false;
+            			window.onload = function() {
+            					document.getElementById("l").src = validate("p/1549acfc3f4b?link_click_id=849539774561987418");
+
+            					window.setTimeout(function() {
+            						if (!hasURI) {
+            							window.top.location = validate("https://medium.com/@ashisjena.talk2u/take-your-skills-to-the-next-level-with-kotlin-1549acfc3f4b?_branch_match_id=849539774561987418");
+            						}
+            						intervalExecuted = true;
+            					}, 300);
+            			};
+
+            			window.onblur = function() {
+            				hasURI = true;
+            			};
+
+            					window.onfocus = function() {
+            						if (hasURI) {
+            							window.top.location = validate("https://medium.com/@ashisjena.talk2u/take-your-skills-to-the-next-level-with-kotlin-1549acfc3f4b?_branch_match_id=849539774561987418");
+            						} else if (intervalExecuted) {
+            							window.top.location = validate("https://medium.com/@ashisjena.talk2u/take-your-skills-to-the-next-level-with-kotlin-1549acfc3f4b?_branch_match_id=849539774561987418");
+            						}
+            					};
+
+            		</script>
+            		<iframe id="l" width="1" height="1" style="visibility:hidden"></iframe>
+            	</body>
+            </html>
+        """
+        println("https?://(www\\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)".toRegex().matchEntire(string)?.value)
     }
 }

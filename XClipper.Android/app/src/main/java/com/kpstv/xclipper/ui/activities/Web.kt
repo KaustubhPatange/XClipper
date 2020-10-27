@@ -16,6 +16,7 @@ import com.kpstv.xclipper.extensions.Coroutines
 import com.kpstv.xclipper.extensions.await
 import com.kpstv.xclipper.extensions.utils.ThemeUtils
 import com.kpstv.xclipper.extensions.viewBinding
+import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_web.*
 import okhttp3.CacheControl
 import okhttp3.OkHttpClient
@@ -81,7 +82,10 @@ class Web : AppCompatActivity() {
                 view: WebView?,
                 request: WebResourceRequest?
             ): Boolean {
-                /** A dirty way to prevent redirect as well as open enables private browsing */
+                /**
+                 * A dirty way to prevent redirect as well as open enables private browsing
+                 * If anyone can improve the logic kindly let me know.
+                 * */
                 if (Build.VERSION.SDK_INT >= 24 && request?.isRedirect == true && !forceLoad) {
                     Coroutines.io {
                         val responseBody = OkHttpClient.Builder().build()
@@ -162,16 +166,9 @@ class Web : AppCompatActivity() {
                         data = Uri.parse(contentUrl)
                     })
                 }
-               /* R.id.action_desktop_site -> {
-                    binding.webView.settings.apply {
-                        userAgentString =
-                            if (item.isChecked) DESKTOP_AGENT else WebSettings.getDefaultUserAgent(
-                                this@Web
-                            )
-                        loadWithOverviewMode = item.isChecked
-                        useWideViewPort = item.isChecked
-                    }
-                }*/
+                R.id.action_incognito -> {
+                    Toasty.info(this, getString(R.string.private_browse1)).show()
+                }
                 R.id.action_force_dark -> {
                     if (Build.VERSION.SDK_INT >= 29) {
                         binding.webView.settings.forceDark = if (item.isChecked) 2 else 0

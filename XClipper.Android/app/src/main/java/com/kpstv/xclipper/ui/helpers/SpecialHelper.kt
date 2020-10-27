@@ -25,6 +25,7 @@ import com.kpstv.xclipper.extensions.listeners.ResponseListener
 import com.kpstv.xclipper.extensions.show
 import com.kpstv.xclipper.extensions.small
 import com.kpstv.xclipper.extensions.utils.Utils
+import com.kpstv.xclipper.ui.activities.Web
 import com.kpstv.xclipper.ui.adapters.MenuAdapter
 import com.kpstv.xclipper.ui.dialogs.AllPurposeDialog
 import es.dmoral.toasty.Toasty
@@ -120,7 +121,7 @@ class SpecialHelper(
                 image = R.drawable.ic_calender
             ) {
                 /** Parse the date now */
-                val dateValues = dateString.split("/",".","-", " ")
+                val dateValues = dateString.split("/", ".", "-", " ")
 
                 val year = if (dateValues[0].length == 4) dateValues[0] else dateValues[2]
                 val month = dateValues[1]
@@ -273,6 +274,20 @@ class SpecialHelper(
 
             )
 
+            /** Add method for "Open link privately" */
+            specialList.add(
+                SpecialMenu(
+                    image = R.drawable.ic_incognito,
+                    title = context.getString(R.string.private_browse)
+                ) {
+                    val intent = Intent(this@SpecialHelper.context, Web::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        putExtra(Web.ARG_URL, data)
+                    }
+                    runAction(intent)
+                }
+            )
+
             /** Add method for "Shorten link" */
             specialList.add(
                 SpecialMenu(
@@ -295,7 +310,7 @@ class SpecialHelper(
                                 .setShowPositiveButton(true)
                                 .setToolbarMenu(R.menu.url_menu)
                                 .setToolbarMenuItemListener { item ->
-                                    when(item.itemId) {
+                                    when (item.itemId) {
                                         R.id.action_copy -> {
                                             /** Set shorten url to clipboard */
                                             val clipboardManager =
@@ -307,7 +322,10 @@ class SpecialHelper(
                                                 )
                                             )
 
-                                            Toasty.info(context, context.getString(R.string.ctc)).show()
+                                            Toasty.info(
+                                                context,
+                                                context.getString(R.string.ctc)
+                                            ).show()
 
                                             /** Close the dialog box */
                                             dialog.dismiss()

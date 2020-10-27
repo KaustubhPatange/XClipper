@@ -3,14 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.kpstv.xclipper">
 
+    <uses-sdk tools:overrideLibrary="com.google.zxing.client.android" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-
-    <uses-sdk tools:overrideLibrary="com.google.zxing.client.android" />
 
     <application
         android:name=".XClipperApplication"
@@ -21,6 +21,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".ui.activities.Web"
+            android:theme="@style/WebScreenTheme"/>
         <activity
             android:name=".ui.activities.Settings"
             android:label="@string/title_activity_settings" />
@@ -55,12 +58,10 @@
             android:excludeFromRecents="true"
             android:launchMode="singleInstance"
             android:theme="@style/Theme.AppCompat.Translucent" />
-
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="portrait"
             tools:replace="screenOrientation" />
-
         <activity
             android:name=".service.TextSelectionActivity"
             android:excludeFromRecents="true"
@@ -69,11 +70,12 @@
             android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.PROCESS_TEXT" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".service.TestActivity"
             android:excludeFromRecents="true"
@@ -82,6 +84,7 @@
             android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.PASTE" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -99,7 +102,6 @@
                 android:name="android.accessibilityservice"
                 android:resource="@xml/clip_service" />
         </service>
-
         <service
             android:name=".service.TileService"
             android:icon="@drawable/ic_clip"
@@ -109,7 +111,6 @@
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
         </service>
-
         <service android:name=".service.BubbleService" />
 
         <receiver android:name=".service.AppBroadcastReceiver" />

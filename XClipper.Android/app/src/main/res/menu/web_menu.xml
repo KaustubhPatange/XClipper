@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item android:id="@+id/action_incognito"
-        android:title="Private browsing"
+        android:title="@string/private_browse1"
         app:showAsAction="always"
         android:icon="@drawable/ic_incognito"/>
 
@@ -11,12 +11,6 @@
         android:id="@+id/action_force_dark"
         android:checkable="true"
         android:title="@string/force_dark" />
-
-    <!-- We might not need desktop mode -->
-   <!-- <item
-        android:id="@+id/action_desktop_site"
-        android:checkable="true"
-        android:title="@string/desktop_site" />-->
 
     <item
         android:id="@+id/action_open"
