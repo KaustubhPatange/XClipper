@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/action_incognito"
+        android:title="Private browsing"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_incognito"/>
+
+    <item
+        android:id="@+id/action_force_dark"
+        android:checkable="true"
+        android:title="@string/force_dark" />
+
+    <!-- We might not need desktop mode -->
+   <!-- <item
+        android:id="@+id/action_desktop_site"
+        android:checkable="true"
+        android:title="@string/desktop_site" />-->
+
+    <item
+        android:id="@+id/action_open"
+        android:title="@string/open_browser" />
+</menu>
