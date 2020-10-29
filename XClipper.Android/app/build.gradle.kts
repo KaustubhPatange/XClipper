@@ -99,6 +99,7 @@ dependencies {
     implementation(LibraryDependency.GIF_DRAWABLE)
     implementation(LibraryDependency.HVLOG)
     implementation(LibraryDependency.GLIDE)
+    implementation(LibraryDependency.CWT)
 
     kapt(LibraryDependency.GLIDE_COMPILER)
     kapt(LibraryDependency.ROOM_COMPILER_KAPT)

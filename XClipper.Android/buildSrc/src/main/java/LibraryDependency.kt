@@ -1,6 +1,6 @@
 private object LibraryVersion {
     const val CORE_KTX = "1.3.0"
-    const val APP_COMPAT = "1.1.0"
+    const val APP_COMPAT = "1.2.0"
     const val COLLECTIONS_KTX = "1.1.0"
     const val CONSTRAINT_LAYOUT = "1.1.3"
     const val MATERIAL = "1.2.0-beta01"
@@ -34,6 +34,7 @@ private object LibraryVersion {
     const val COIL = "1.0.0-rc3"
     const val GLIDE = "4.11.0"
     const val RECYCLERVIEW = "1.1.0"
+    const val CWT = "0.1.3"
 }
 
 object LibraryDependency {
@@ -84,4 +85,5 @@ object LibraryDependency {
     const val GLIDE = "com.github.bumptech.glide:glide:${LibraryVersion.GLIDE}"
     const val GLIDE_COMPILER = "com.github.bumptech.glide:compiler:${LibraryVersion.GLIDE}"
     const val RECYCLERVIEW = "androidx.recyclerview:recyclerview:${LibraryVersion.RECYCLERVIEW}"
+    const val CWT = "io.github.kaustubhpatange:cwt:${LibraryVersion.CWT}"
 }

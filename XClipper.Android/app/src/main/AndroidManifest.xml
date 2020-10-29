@@ -22,9 +22,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ui.activities.Web"
-            android:theme="@style/WebScreenTheme"/>
-        <activity
             android:name=".ui.activities.Settings"
             android:label="@string/title_activity_settings" />
         <activity android:name=".ui.activities.Splash" />

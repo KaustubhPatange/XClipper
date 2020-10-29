@@ -15,6 +15,7 @@ import android.view.View
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.kpstv.cwt.CWT
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.Clip
@@ -25,7 +26,6 @@ import com.kpstv.xclipper.extensions.listeners.ResponseListener
 import com.kpstv.xclipper.extensions.show
 import com.kpstv.xclipper.extensions.small
 import com.kpstv.xclipper.extensions.utils.Utils
-import com.kpstv.xclipper.ui.activities.Web
 import com.kpstv.xclipper.ui.adapters.MenuAdapter
 import com.kpstv.xclipper.ui.dialogs.AllPurposeDialog
 import es.dmoral.toasty.Toasty
@@ -280,11 +280,10 @@ class SpecialHelper(
                     image = R.drawable.ic_incognito,
                     title = context.getString(R.string.private_browse)
                 ) {
-                    val intent = Intent(this@SpecialHelper.context, Web::class.java).apply {
-                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                        putExtra(Web.ARG_URL, data)
-                    }
-                    runAction(intent)
+                    CWT.Builder(context).launch(data!!)
+
+                    /** Dismiss the dialog */
+                    onItemClick.invoke()
                 }
             )
 
@@ -374,7 +373,7 @@ class SpecialHelper(
             Toasty.error(context, context.getString(R.string.err_action)).show()
         }
 
-        /** Dismiss the dialog from this callback hell */
+        /** Dismiss the dialog */
         onItemClick.invoke()
     }
 

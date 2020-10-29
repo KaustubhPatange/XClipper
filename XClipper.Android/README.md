@@ -1,6 +1,6 @@
 # XClipper for Android
 
-![build](https://github.com/KaustubhPatange/XClipper/workflows/Build%20Android/badge.svg)
+![build](https://github.com/KaustubhPatange/XClipper/workflows/Android/badge.svg)
 
 > An android XClipper client to communicate with the desktop application to simulate the sharing of clipboard activity.
 
