@@ -280,7 +280,9 @@ class SpecialHelper(
                     image = R.drawable.ic_incognito,
                     title = context.getString(R.string.private_browse)
                 ) {
-                    CWT.Builder(context).launch(data!!)
+                    CWT.Builder(context)
+                        .apply { options.privateMode = true }
+                        .launch(data!!)
 
                     /** Dismiss the dialog */
                     onItemClick.invoke()

@@ -1,6 +1,6 @@
 # XClipper
 
-![build](https://github.com/KaustubhPatange/XClipper/workflows/Build%20Windows/badge.svg)
+![build](https://github.com/KaustubhPatange/XClipper/workflows/Windows%20CI/badge.svg)
 ![GitHub issues](https://img.shields.io/github/issues/KaustubhPatange/XClipper)
 ![GitHub](https://img.shields.io/github/license/KaustubhPatange/XClipper)
 ![GitHub repo size](https://img.shields.io/github/repo-size/KaustubhPatange/XClipper)

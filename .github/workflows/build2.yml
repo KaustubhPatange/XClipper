@@ -1,4 +1,4 @@
-name: Build Windows
+name: Windows CI
 on: [push, pull_request]
 
 jobs:
