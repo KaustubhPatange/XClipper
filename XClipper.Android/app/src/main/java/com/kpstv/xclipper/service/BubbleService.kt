@@ -74,17 +74,16 @@ class BubbleService : FloatingBubbleService(), KodeinAware {
             IntentFilter(ACTION_VIEW_CLOSE)
         )
 
-        return FloatingBubbleConfig.Builder() // Set the drawable for the bubblec
+        return FloatingBubbleConfig.Builder()
             .bubbleIcon(ContextCompat.getDrawable(applicationContext, R.drawable.bubble_icon))
             .expandableView(binding.root)
             .build()
     }
 
 
-    private val pageObserver =
-        Observer<PagedList<Clip>?> {
-            adapter.submitList(it)
-        }
+    private val pageObserver = Observer<PagedList<Clip>?> {
+        adapter.submitList(it)
+    }
 
     override fun onGetIntent(intent: Intent): Boolean {
         return true
@@ -95,9 +94,8 @@ class BubbleService : FloatingBubbleService(), KodeinAware {
         super.onDestroy()
     }
 
-    class PageClipAdapter(
-        val onClick: (String) -> Unit
-    ) : PagedListAdapter<Clip, PageClipAdapter.PageClipHolder>(DiffUtils) {
+    class PageClipAdapter(val onClick: (String) -> Unit)
+        : PagedListAdapter<Clip, PageClipAdapter.PageClipHolder>(DiffUtils) {
 
         companion object {
             private val DiffUtils = object : DiffUtil.ItemCallback<Clip>() {
@@ -135,5 +133,4 @@ class BubbleService : FloatingBubbleService(), KodeinAware {
             }
         }
     }
-
 }

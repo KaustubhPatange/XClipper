@@ -35,21 +35,21 @@ function makeToActOnCard(cardElement, cardElementHr) {
 }
 
 function scrollToVideo() {
-  scrollToSection("videoSection", "videoHr");
+  scrollToSection("videoSection", "videoHr", 10);
 }
 
 function scrollToPricing() {
-  scrollToSection("purchaseSection", "purchaseHr");
+  scrollToSection("purchaseSection", "purchaseHr", 6);
 }
 
-function scrollToSection(elementId, secondElementId) {
+function scrollToSection(elementId, secondElementId, offset) {
   var screenWidth = document.documentElement.clientWidth;
   if (screenWidth >= 992) {
     var element = document.getElementById(elementId);
 
     const elementRect = element.getBoundingClientRect();
     const absoluteElementTop = elementRect.top + window.pageYOffset;
-    const middle = absoluteElementTop - window.innerHeight / 5;
+    const middle = absoluteElementTop - window.innerHeight / offset;
     window.scrollTo(0, middle);
   } else {
     document.getElementById(secondElementId).scrollIntoView();

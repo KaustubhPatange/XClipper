@@ -1,21 +1,48 @@
 ﻿using SHDocVw;
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Windows.Threading;
+
+#nullable enable
 
 namespace Components
 {
     public static class ExplorerHelper
     {
-        public static string GetActiveExplorerPath()
+
+        #region Public methods
+
+        private static DispatcherTimer? dtimer;
+        static IntPtr lastCurrentHandle = IntPtr.Zero;
+
+        public static void Register(IntPtr handle)
         {
-            IntPtr handle = GetForegroundWindow();
-
-            var shell = new Shell32.Shell();
-
-            foreach (InternetExplorer window in shell.Windows())
+            dtimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(250) };
+            dtimer.Tick += delegate
             {
-                if (window.HWND == (int)handle)
+                IntPtr temp = GetForegroundWindow();
+                Debug.WriteLine($"Handle: ${handle}, Temp: {temp}, Last: ${lastCurrentHandle}");
+                if ((int)handle != (int)temp)
+                    lastCurrentHandle = temp;
+            };
+            dtimer.Start();
+        }
+
+        public static void Unregister()
+        {
+            dtimer?.Stop();
+        }
+
+        public static string GetLastActiveExplorerPath()
+        {
+            ShellWindows shellWindows = new ShellWindows();
+
+            foreach (InternetExplorer window in shellWindows)
+            {
+                //     Debug.Write("WindowFName: " + window.FullName + $", ({window.HWND} == {(int)handle}), ({(window.Document as Shell32.IShellFolderViewDual2).Folder.Items().Item().Path})\n");
+                if (window.HWND == (int)lastCurrentHandle)
                 {
                     var shellWindow = window.Document as Shell32.IShellFolderViewDual2;
 
@@ -27,7 +54,7 @@ namespace Components
                         {
                             const int nChars = 256;
                             StringBuilder Buff = new StringBuilder(nChars);
-                            if (GetWindowText(handle, Buff, nChars) > 0)
+                            if (GetWindowText(lastCurrentHandle, Buff, nChars) > 0)
                             {
                                 return Buff.ToString();
                             }
@@ -37,19 +64,30 @@ namespace Components
                             return currentFolder.Path;
                         }
                     }
-
                     break;
                 }
             }
-
             return null;
         }
 
+        #endregion
 
-        [DllImport("user32.dll")]
-        private static extern IntPtr GetForegroundWindow();
+
+        #region PInvokes
 
         [DllImport("user32.dll")]
         static extern int GetWindowText(IntPtr hWnd, StringBuilder text, int count);
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool IsWindowVisible(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        static extern IntPtr GetLastActivePopup(IntPtr hWnd);
+
+        [DllImport("user32.dll", ExactSpelling = true)]
+        static extern IntPtr GetForegroundWindow();
+
+        #endregion
     }
 }

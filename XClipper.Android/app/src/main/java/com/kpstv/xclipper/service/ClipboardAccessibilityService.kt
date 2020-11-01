@@ -6,6 +6,7 @@ import android.content.*
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.os.Build
 import android.os.PowerManager
+import android.util.SparseArray
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.EditText
@@ -51,7 +52,7 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
     private lateinit var powerManager: PowerManager
 
     private var nodeInfo: AccessibilityNodeInfo? = null
-    private val eventList: StripArrayList<Int> = StripArrayList(3) // TODO: Try to fix it by stripping 4 to 3
+    private val eventList: StripArrayList<Int> = StripArrayList(4) // TODO: Try to fix it by stripping 4 to 3
 
     /**
      * TODO: Remove this unused parameter
@@ -94,7 +95,6 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
                     || event.contentDescription == "Copy")
         ) {
             HVLog.d("Copy captured - 2")
-            eventList.clear()
             return true
         }
 
@@ -115,8 +115,7 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
              *  This should prevent it.
              */
             if (eventList.any { it == AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED }) return false
-            HVLog.d("Copy captured - 1")
-            eventList.clear()
+            HVLog.d("Copy captured - 1, EventList: $eventList")
             return true
         }
         return false
@@ -125,7 +124,8 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         currentPackage = event?.packageName
 
-       // logger(TAG, "SourceText: ${event?.source}; Text is null: ${event?.text.isNullOrEmpty()}; $event")
+//        logger(TAG, "$event")
+//        logger(TAG, "SourceText: ${event?.source}; Text is null: ${event?.text.isNullOrEmpty()}; $event")
 
         if (event?.eventType != null)
             eventList.add(event.eventType)

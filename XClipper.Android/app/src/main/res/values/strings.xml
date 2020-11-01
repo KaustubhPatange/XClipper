@@ -23,7 +23,7 @@
     <string name="sync">Sync</string>
     <string name="sync_complete">Data synchronization complete</string>
     <string name="error_sync">Couldn\'t validate data</string>
-    <string name="error_sync_uninitialized">Device is not connected to a server</string>
+    <string name="error_sync_uninitialized">Device is not connected to a database</string>
     <string name="help">Help</string>
     <string name="faqs">FAQs</string>
     <string name="more">More</string>

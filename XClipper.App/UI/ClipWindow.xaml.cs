@@ -23,6 +23,7 @@ using static Components.TranslationHelper;
 using System.Windows.Media.Imaging;
 using Autofac;
 using System.Windows.Media;
+using System.Windows.Interop;
 
 namespace Components
 {
@@ -77,6 +78,20 @@ namespace Components
              *  ListView.Items.CurrentChange event.
              */
             ((INotifyCollectionChanged)_lvClip.Items).CollectionChanged += ClipWindow_CollectionChanged;
+        }
+
+        protected override void OnSourceInitialized(EventArgs e)
+        {
+            base.OnSourceInitialized(e);
+
+            // todo:
+            /** We must pass this (Window) handle to the helper to distinguish the lastForegroundWindow.
+             * 
+             *  Current issue:- If the explorer is focused & then this window is opened for the first time
+             *  It will register this window as lastForegroundWindow. To overcome we can always show this
+             *  from Application class whenever app is launched first.
+             */
+            ExplorerHelper.Register(new WindowInteropHelper(this).Handle);
         }
 
         #endregion
@@ -592,8 +607,8 @@ namespace Components
         /// <param name="files"></param>
         private void UpdateFilesWindow(List<string> files)
         {
-            // This function will get active path in the explorer.exe...
-            var pasteLocation = ExplorerHelper.GetActiveExplorerPath();
+            // This function will provide the last active path in the explorer.exe...
+            var pasteLocation = ExplorerHelper.GetLastActiveExplorerPath();
 
             // If location null then open dialog to save file explicitly...
             if (pasteLocation == null)
@@ -604,7 +619,7 @@ namespace Components
                 };
                 if (fd.Show())
                 {
-                    files.ForEach((file) => FileSystem.CopyFile(file, Path.Combine(fd.FileName, Path.GetFileName(file)), UIOption.AllDialogs));
+                    files.ForEach((file) => CopyFileOrDirectory(fd.FileName, file));
 
                     // Finally Close the window...
                     CloseWindow();
@@ -612,14 +627,25 @@ namespace Components
             }
             else
             {
-                // We will minimize the window to get focus to previous window...
-                WindowState = WindowState.Minimized;
-
                 // Copy all the files to the location...
-                files.ForEach((file) => FileSystem.CopyFile(file, Path.Combine(pasteLocation, Path.GetFileName(file)), UIOption.AllDialogs));
+                files.ForEach((file) => CopyFileOrDirectory(pasteLocation, file));
 
-                // Finally Close the window...
                 CloseWindow();
+            }
+        }
+
+        private void CopyFileOrDirectory(string folderPath, string file)
+        {
+            try
+            {
+                if (File.Exists(file))
+                    FileSystem.CopyFile(file, Path.Combine(folderPath, Path.GetFileName(file)), UIOption.AllDialogs);
+                else if (Directory.Exists(file))
+                    FileSystem.CopyDirectory(file, Path.Combine(folderPath, PathHelper.GetName(file)), UIOption.AllDialogs);
+            }
+            catch (Exception e)
+            {
+                MsgBoxHelper.ShowError(e.Message);
             }
         }
 
@@ -630,7 +656,7 @@ namespace Components
         private void UpdateImageWindow(string imgPath)
         {
             // This function will get active path in the explorer.exe...
-            var pasteLocation = ExplorerHelper.GetActiveExplorerPath();
+            var pasteLocation = ExplorerHelper.GetLastActiveExplorerPath();
 
             // If location null then open dialog to save file explicitly...
 

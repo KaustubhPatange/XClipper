@@ -12,7 +12,7 @@
 
 ## Compilation Guide
 
-Todo: Not yet implemented
+Since this project involves **license** system 📃 some of the source files has been ignored. [Read this guide](https://github.com/KaustubhPatange/XClipper/wiki/Compilation-guide) in order to compile 🗃 the project.
 
 ## Built with 🛠
 

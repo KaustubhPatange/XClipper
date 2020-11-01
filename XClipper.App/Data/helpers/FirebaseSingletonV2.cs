@@ -218,7 +218,7 @@ namespace Components
         /// </summary>
         private bool AssertUnifiedChecks(FirebaseInvoke invoke, object? data = null)
         {
-            if (!isClientInitialized)
+            if (!isClientInitialized && BindDatabase)
             {
                 Log($"Asserting: {invoke}");
                 // Some invokes are not supported yet.

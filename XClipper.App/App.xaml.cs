@@ -25,6 +25,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Threading;
 using System.Globalization;
 using System.Drawing;
+using System.Windows.Interop;
 
 #nullable enable
 
@@ -127,6 +128,7 @@ namespace Components
         {
             hookUtility.Unsubscribe();
             FirebaseSingletonV2.GetInstance.SaveUserState();
+            ExplorerHelper.Unregister();
 
             base.OnExit(e);
         }
@@ -652,31 +654,6 @@ namespace Components
                 ).RunAsync();
             }
         }
-
-        // TODO: Remove this code after testing notifications
-        //private object notifyLock = new object();
-        //private Action? savedClick;
-        //private void DisplayNotifyMessage(string title, string message, Action? Click = null)
-        //{
-        //    lock (notifyLock) // synchronized
-        //    {
-        //        notifyIcon.BalloonTipTitle = title;
-        //        notifyIcon.BalloonTipText = message;
-        //        notifyIcon.ShowBalloonTip(3000);
-
-        //        savedClick = Click;
-
-        //        notifyIcon.BalloonTipClicked -= NotifyIcon_BalloonTipClicked;
-        //        notifyIcon.BalloonTipClicked -= UpdateAction_BalloonTipClicked;
-        //        notifyIcon.BalloonTipClicked += NotifyIcon_BalloonTipClicked;
-        //    }
-        //}
-
-        //private void NotifyIcon_BalloonTipClicked(object sender, EventArgs e)
-        //{
-        //    savedClick?.Invoke();
-        //    savedClick = null;
-        //}
 
         private void LaunchCodeUI()
         {
