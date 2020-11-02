@@ -23,7 +23,6 @@ namespace Components
             dtimer.Tick += delegate
             {
                 IntPtr temp = GetForegroundWindow();
-                Debug.WriteLine($"Handle: ${handle}, Temp: {temp}, Last: ${lastCurrentHandle}");
                 if ((int)handle != (int)temp)
                     lastCurrentHandle = temp;
             };

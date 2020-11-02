@@ -95,11 +95,6 @@ namespace Components
             if ((e.Key == Key.Return || e.Key == Key.Enter) && model.ContentType == ContentType.Image)
             {
                 Process.Start(model.ImagePath);
-
-                /** We are also gonna shutdown the application here coz the main focus
-                 *  moves to the foreground image application window. 
-                 */
-                Application.Current.Shutdown();
             } 
 
             if (e.Key == Key.Down)

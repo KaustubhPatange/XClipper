@@ -39,7 +39,7 @@ Since this project involves **license** system 📃 some of the source files has
 
 All of the individual documentation topics can be found in the repo's [wiki](https://github.com/KaustubhPatange/XClipper/wiki), following are some general topics you should take a look at!
 
-- [Introduction to XClipper - Basic usage](https://github.com/KaustubhPatange/XClipper/wiki/Introduction)
+- [Getting started with XClipper](https://github.com/KaustubhPatange/XClipper/wiki/Introduction)
 - [Start synchronizing clipboard activity](https://github.com/KaustubhPatange/XClipper/wiki/Data-Synchronization)
 - [FAQs](https://github.com/KaustubhPatange/XClipper/wiki/FAQs)
 
