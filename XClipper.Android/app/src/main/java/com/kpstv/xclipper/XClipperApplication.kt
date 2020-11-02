@@ -3,6 +3,7 @@ package com.kpstv.xclipper
 import android.annotation.SuppressLint
 import android.app.Application
 import android.provider.Settings
+import androidx.preference.PreferenceManager
 import com.kpstv.hvlog.HVLog
 import com.kpstv.xclipper.App.AUTO_SYNC_PREF
 import com.kpstv.xclipper.App.BIND_PREF
@@ -15,6 +16,7 @@ import com.kpstv.xclipper.App.LANG_PREF
 import com.kpstv.xclipper.App.SUGGESTION_PREF
 import com.kpstv.xclipper.App.SWIPE_DELETE_PREF
 import com.kpstv.xclipper.App.UID
+import com.kpstv.xclipper.App.blackListedApps
 import com.kpstv.xclipper.App.runAutoSync
 import com.kpstv.xclipper.App.showSuggestion
 import com.kpstv.xclipper.App.swipeToDelete
@@ -136,6 +138,7 @@ class XClipperApplication : Application(), KodeinAware {
         showSuggestion = preferenceProvider.getBooleanKey(SUGGESTION_PREF, false)
         runAutoSync = preferenceProvider.getBooleanKey(AUTO_SYNC_PREF, false)
         swipeToDelete = preferenceProvider.getBooleanKey(SWIPE_DELETE_PREF, true)
+        blackListedApps = preferenceProvider.getStringSet(App.BLACKLIST_PREF, mutableSetOf())
         bindToFirebase = if (UID.isBlank()) false
         else
             preferenceProvider.getBooleanKey(BIND_PREF, false)

@@ -15,6 +15,8 @@ interface PreferenceProvider {
     fun putLongKey(key: String, value: Long)
     fun getLongKey(key: String, default: Long): Long
 
+    fun getStringSet(key: String, default: Set<String>): Set<String>
+
     fun removeKey(key: String)
 
     fun observePreference(block: (SharedPreferences, String) -> Unit)

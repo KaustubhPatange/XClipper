@@ -6,7 +6,6 @@ import android.content.*
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.os.Build
 import android.os.PowerManager
-import android.util.SparseArray
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.EditText
@@ -24,7 +23,6 @@ import com.kpstv.xclipper.extensions.logger
 import com.kpstv.xclipper.extensions.utils.FirebaseUtils
 import com.kpstv.xclipper.extensions.utils.KeyboardUtils.Companion.getKeyboardHeight
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.isSystemOverlayEnabled
-import com.kpstv.xclipper.extensions.utils.Utils.Companion.retrievePackageList
 import es.dmoral.toasty.Toasty
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.kodein
@@ -52,7 +50,8 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
     private lateinit var powerManager: PowerManager
 
     private var nodeInfo: AccessibilityNodeInfo? = null
-    private val eventList: StripArrayList<Int> = StripArrayList(4) // TODO: Try to fix it by stripping 4 to 3
+    private val eventList: StripArrayList<Int> =
+        StripArrayList(4) // TODO: Try to fix it by stripping 4 to 3
 
     /**
      * TODO: Remove this unused parameter
@@ -88,9 +87,9 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
          */
         if (event?.eventType == AccessibilityEvent.TYPE_VIEW_CLICKED && event.text != null &&
             (event.contentDescription?.toString()?.toLowerCase(Locale.ROOT)
-                ?.contains("copy") == true
+                ?.equals("copy") == true
                     || event.text?.toString()?.toLowerCase(Locale.ROOT)
-                ?.contains("copy") == true
+                ?.equals("copy") == true
                     || event.contentDescription == "Cut"
                     || event.contentDescription == "Copy")
         ) {
@@ -124,7 +123,7 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         currentPackage = event?.packageName
 
-//        logger(TAG, "$event")
+        logger(TAG, "$event")
 //        logger(TAG, "SourceText: ${event?.source}; Text is null: ${event?.text.isNullOrEmpty()}; $event")
 
         if (event?.eventType != null)
@@ -182,8 +181,6 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
 
         firebaseUtils.observeDatabaseChangeEvents()
         clipboardProvider.observeClipboardChange()
-
-        retrievePackageList(applicationContext)
 
         keyboardHeight.observeForever { value ->
             logger(TAG, "Value: $value")

@@ -63,6 +63,10 @@ class PreferenceProviderImpl(
         }.apply()
     }
 
+    override fun getStringSet(key: String, default: Set<String>): Set<String> {
+        return preference.getStringSet(key, default) ?: default
+    }
+
     override fun observePreference(block: (SharedPreferences, String) -> Unit) {
         _keyLiveData.observeForever {
             block.invoke(preference, it)

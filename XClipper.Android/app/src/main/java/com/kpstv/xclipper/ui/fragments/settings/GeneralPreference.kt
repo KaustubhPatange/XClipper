@@ -16,6 +16,8 @@ import com.kpstv.xclipper.App.SWIPE_DELETE_PREF
 import com.kpstv.xclipper.App.showSuggestion
 import com.kpstv.xclipper.App.swipeToDelete
 import com.kpstv.xclipper.R
+import com.kpstv.xclipper.extensions.Coroutines
+import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.isClipboardAccessibilityServiceRunning
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.isSystemOverlayEnabled
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.openAccessibility
@@ -40,22 +42,23 @@ class GeneralPreference : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.general_pref, rootKey)
 
-        /** Load app list */
-        retrievePackageList(requireContext())
-
         /** Black list app preference */
         val blacklistPreference = findPreference<MultiSelectListPreference>(BLACKLIST_PREF)
 
-        blacklistPreference?.entries = App.appList.mapNotNull { it.label }.toTypedArray()
-        blacklistPreference?.entryValues = App.appList.mapNotNull { it.packageName }.toTypedArray()
+        Coroutines.main {
+            /** Load installed app list */
+            App.appList = retrievePackageList(requireContext())
+        }
 
         blacklistPreference?.setOnPreferenceChangeListener { _, newValue ->
+            Coroutines.io {
+
+            }
             if (newValue is Set<*>) {
                 App.blackListedApps = newValue as Set<String>
             }
             true
         }
-
 
         /** Show suggestion preference */
         overlayPreference = findPreference(SUGGESTION_PREF)
@@ -98,7 +101,6 @@ class GeneralPreference : PreferenceFragmentCompat() {
             true
         }
     }
-
 
     override fun onResume() {
         checkForService()

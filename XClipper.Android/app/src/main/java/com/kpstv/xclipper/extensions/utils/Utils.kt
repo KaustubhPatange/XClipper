@@ -4,6 +4,7 @@ import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityServiceInfo
 import android.app.Activity
 import android.app.ActivityManager
+import android.app.ProgressDialog
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -19,6 +20,7 @@ import android.telephony.TelephonyManager
 import android.util.TypedValue
 import android.view.accessibility.AccessibilityManager
 import androidx.annotation.AttrRes
+import androidx.annotation.MainThread
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ShareCompat
@@ -44,8 +46,11 @@ import com.kpstv.xclipper.extensions.SimpleFunction
 import com.kpstv.xclipper.extensions.layoutInflater
 import com.kpstv.xclipper.service.ClipboardAccessibilityService
 import com.kpstv.xclipper.ui.helpers.AuthenticationHelper
+import kotlinx.coroutines.suspendCancellableCoroutine
 import java.io.InputStream
 import java.util.*
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 
 class Utils {
@@ -181,7 +186,10 @@ class Utils {
 
         fun openAccessibility(context: Context) = with(context) {
             val bundle = Bundle()
-            val componentName = ComponentName(BuildConfig.APPLICATION_ID, ClipboardAccessibilityService::class.java.name).flattenToString()
+            val componentName = ComponentName(
+                BuildConfig.APPLICATION_ID,
+                ClipboardAccessibilityService::class.java.name
+            ).flattenToString()
             bundle.putString(App.EXTRA_FRAGMENT_ARG_KEY, componentName)
             val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS).apply {
                 flags = FLAG_ACTIVITY_NEW_TASK
@@ -215,7 +223,10 @@ class Utils {
         @RequiresApi(Build.VERSION_CODES.M)
         fun openSystemOverlay(context: Context) = with(context) {
             val myIntent =
-                Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName")).apply {
+                Intent(
+                    Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:$packageName")
+                ).apply {
                     flags = FLAG_ACTIVITY_NEW_TASK
                 }
             startActivity(myIntent)
@@ -224,31 +235,23 @@ class Utils {
         /**
          * Call this function whenever you want to work with installed apps.
          */
-        fun retrievePackageList(context: Context): Unit = with(context) {
-
-            if (App.appList.isNotEmpty()) return@with
-
-            packageManager.getInstalledApplications(PackageManager.GET_META_DATA).filter {
-                it.flags != ApplicationInfo.FLAG_SYSTEM
+        suspend fun retrievePackageList(context: Context): List<AppPkg> = with(context) {
+            suspendCoroutine { r ->
+                val result = packageManager.getInstalledApplications(PackageManager.GET_META_DATA).asSequence()
+                    .filter {
+                        it.flags != ApplicationInfo.FLAG_SYSTEM
+                    }
+                    .mapNotNull {
+                        AppPkg(
+                            it.loadLabel(packageManager),
+                            it.packageName
+                        )
+                    }
+                    .filter { it.label != null && !it.label.contains(".") && it.packageName != null }
+                    .sortedBy { it.label.toString() }
+                    .distinctBy { it.label.toString() }.toList()
+                r.resume(result)
             }
-                .mapNotNull {
-                    AppPkg(
-                        it.loadLabel(packageManager),
-                        it.packageName
-                    )
-                }
-                .filter { it.label != null && !it.label.contains(".") && it.packageName != null }
-                .sortedBy { it.label.toString() }
-                .distinctBy { it.label.toString() }
-                .also {
-                    App.appList.clear()
-                    App.appList.addAll(it)
-                }
-
-
-            App.blackListedApps =
-                PreferenceManager.getDefaultSharedPreferences(this)
-                    .getStringSet(BLACKLIST_PREF, mutableSetOf())
         }
 
         /**

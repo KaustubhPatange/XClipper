@@ -92,11 +92,6 @@ class Home : Fragment(R.layout.fragment_home), KodeinAware {
 
         checkClipboardData()
 
-        /** Load app list in GlobalScope */
-        GlobalScope.launch {
-            Utils.retrievePackageList(requireContext())
-        }
-
         autoValidateOnStartup()
 
         super.onViewCreated(view, savedInstanceState)

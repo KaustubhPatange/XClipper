@@ -27,7 +27,7 @@ object App {
     var CLIP_DATA: String? = null
     var LOCAL_MAX_ITEM_STORAGE = 80
 
-    var appList = ArrayList<AppPkg>()
+    var appList: List<AppPkg> = listOf()
     var blackListedApps: Set<String>? = null
 
     var UNDO_DELETE_SPAN: Long = 2500
