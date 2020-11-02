@@ -262,7 +262,14 @@ namespace Components
         private void DeleteDataClicked(object sender, EventArgs e)
         {
             var msg = MessageBox.Show(Translation.MSG_DELETE_ALL, Translation.MSG_WARNING, MessageBoxButton.YesNo, MessageBoxImage.Warning);
-            if (msg == MessageBoxResult.Yes) AppSingleton.GetInstance.DeleteAllData();
+            if (msg == MessageBoxResult.Yes)
+            {
+                if (BindDatabase)
+                {
+                    msg = MessageBox.Show(Translation.MSG_DELETE_ALL_ONLINE, Translation.MSG_INFORMATION, MessageBoxButton.YesNo, MessageBoxImage.Information);
+                }
+                AppSingleton.GetInstance.DeleteAllData(msg == MessageBoxResult.Yes);
+            }
         }
 
         private void RestoreClicked(object sender, EventArgs e)

@@ -636,16 +636,12 @@ namespace Components
 
         private void CopyFileOrDirectory(string folderPath, string file)
         {
-            try
+            if (!file.Contains(folderPath)) // Skip files whose source & destination intersects.
             {
                 if (File.Exists(file))
                     FileSystem.CopyFile(file, Path.Combine(folderPath, Path.GetFileName(file)), UIOption.AllDialogs);
                 else if (Directory.Exists(file))
                     FileSystem.CopyDirectory(file, Path.Combine(folderPath, PathHelper.GetName(file)), UIOption.AllDialogs);
-            }
-            catch (Exception e)
-            {
-                MsgBoxHelper.ShowError(e.Message);
             }
         }
 

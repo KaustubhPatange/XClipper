@@ -130,6 +130,7 @@ namespace Components
             }
             catch (Exception ex)
             {
+                CheckForTimedOutException(ex);
                 if (ex.Message.Contains("401 (Unauthorized)"))
                 {
                     if (await RefreshAccessToken(FirebaseCurrent).ConfigureAwait(false))
@@ -162,6 +163,7 @@ namespace Components
             }
             catch (Exception ex)
             {
+                CheckForTimedOutException(ex);
                 if (ex.Message.Contains("401 (Unauthorized)"))
                 {
                     if (await RefreshAccessToken(FirebaseCurrent).ConfigureAwait(false))
@@ -193,6 +195,7 @@ namespace Components
             }
             catch (Exception ex)
             {
+                CheckForTimedOutException(ex);
                 if (ex.Message.Contains("401 (Unauthorized)"))
                 {
                     if (await RefreshAccessToken(FirebaseCurrent).ConfigureAwait(false))
@@ -224,6 +227,7 @@ namespace Components
             }
             catch (Exception ex)
             {
+                CheckForTimedOutException(ex);
                 if (ex.Message.Contains("401 (Unauthorized)"))
                 {
                     if (await RefreshAccessToken(FirebaseCurrent).ConfigureAwait(false))
@@ -257,6 +261,25 @@ namespace Components
                 return true;
             }
             return false;
+        }
+
+        /// <summary>
+        /// If there is a timeout out exception we will shutdown the firebase client.
+        /// 
+        /// Appropriate measures must be taken to let the users know that there is either
+        /// problem with their Internet connection or with XClipper.
+        /// </summary>
+        /// <param name="ex"></param>
+        private static void CheckForTimedOutException(Exception ex)
+        {
+            if (ex.StackTrace.Contains("<TimeoutAfter>"))
+            {
+                if (!FirebaseSingletonV2.GetInstance.IsDeinitialized)
+                {
+                    MessageBox.Show(Translation.SYNC_TIMEOUT_ERROR_TEXT, Translation.SYNC_TIMEOUT_ERROR_TITLE, MessageBoxButton.OK, MessageBoxImage.Error);
+                    FirebaseSingletonV2.GetInstance.Deinitialize();
+                }
+            }
         }
 
         private static FirebaseResponse CreateUnAuthorizedException()

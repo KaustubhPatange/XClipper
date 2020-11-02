@@ -36,6 +36,8 @@ namespace Components
         #region Variable declarations
 
         private bool isPreviousAddRemaining, isPreviousRemoveRemaining, isPreviousUpdateRemaining = false;
+        private bool _isDeinitialized = false;
+        public bool IsDeinitialized { get => _isDeinitialized; }
 
         private readonly List<string> addStack = new List<string>();
         private readonly List<string> removeStack = new List<string>();
@@ -95,6 +97,8 @@ namespace Components
         {
             UID = UniqueID;
 
+            _isDeinitialized = false;
+
             if (onAsyncStream != null) onAsyncStream.Cancel();
 
             if (FirebaseCurrent == null) return;
@@ -128,6 +132,14 @@ namespace Components
             }
 
             CreateNewClient();
+        }
+
+        public void Deinitialize()
+        {
+            _isDeinitialized = true;
+            onAsyncStream?.Cancel();
+            client = null;
+            isClientInitialized = false;
         }
 
         /// <summary>
@@ -413,8 +425,8 @@ namespace Components
                     if (user != null)
                     {
                         // Check for clip data addition...
-                        var newClips = firebaseUser?.Clips?.Select(c => c?.data).ToNotNullList();
-                        var oldClips = user?.Clips?.Select(c => c?.data).ToNotNullList();
+                        var newClips = firebaseUser?.Clips?.Select(c => c?.data).ToList() ?? new List<string?>();
+                        var oldClips = user?.Clips?.Select(c => c?.data).ToList() ?? new List<string?>();
                         var addedClips = newClips.Except(oldClips).ToList();
                         var removedClips = oldClips.Except(newClips).ToList();
 
@@ -484,7 +496,7 @@ namespace Components
 
         private async Task FixEncryptedDatabase()
         {
-            if (user != null)
+            if (user != null && user.Clips != null)
             {
                 var isAlreadyEncrypted = user.Clips.FirstOrDefault().data.IsBase64Encrypted(DatabaseEncryptPassword);
                 if (isAlreadyEncrypted != FirebaseCurrent.IsEncrypted)
@@ -542,8 +554,8 @@ namespace Components
         {
             Log();
             var data = await client.SafeGetAsync($"users/{UID}").ConfigureAwait(false);
-            if (data != null && data.Body == "null") return null; // A safety check to make sure user is null.
-            return data.ResultAs<User>();
+            if (data == null || data?.Body == "null") return null; // A safety check to make sure user is null.
+            return data?.ResultAs<User>();
         }
 
         private async Task SetCommonUserInfo(User user)
@@ -706,8 +718,15 @@ namespace Components
                 // Clear the stack after adding them all.
                 addStack.Clear();
 
-                await client.SafeSetAsync($"{USER_REF}/{UID}/{CLIP_REF}", clips).ConfigureAwait(false);
-                //await PushUser().ConfigureAwait(false);
+                if (user.Clips == null)
+                {
+                    // Fake push to the database
+                    user.Clips = clips;
+                    await PushUser().ConfigureAwait(false);
+                    
+                    user.Clips = null;
+                } else
+                    await client.SafeSetAsync($"{USER_REF}/{UID}/{CLIP_REF}", clips).ConfigureAwait(false);
 
                 Log("Completed");
             }
@@ -789,7 +808,7 @@ namespace Components
         public async Task RemoveAllClip()
         {
             Log();
-            if (AssertUnifiedChecks(FirebaseInvoke.REMOVE_CLIP_ALL))
+            if (AssertUnifiedChecks(FirebaseInvoke.REMOVE_CLIP_ALL)) return;
             if (await RunCommonTask().ConfigureAwait(false))
             {
                 if (user.Clips == null)

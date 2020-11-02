@@ -82,6 +82,7 @@ namespace Components
         public string MSG_CLIP_IMPORT = rm.GetString("msg_clip_import");
         public string MSG_MERGE_ENCRYPT = rm.GetString("msg_merge_encrypt");
         public string MSG_DELETE_ALL = rm.GetString("msg_delete_all");
+        public string MSG_DELETE_ALL_ONLINE = rm.GetString("msg_delete_all_online");
         public string MSG_DELETE_DB = rm.GetString("msg_delete_db");
         public string MSG_RESET_DATA = rm.GetString("msg_reset_data");
         public string MSG_RESET_DATA_SUCCESS = rm.GetString("msg_reset_data_success");
@@ -148,6 +149,8 @@ namespace Components
         public string SYNC_UPDATE_TITLE = rm.GetString("sync_update_title");
         public string SYNC_UNKNOWN_ERROR = rm.GetString("sync_unknown_error");
         public string SYNC_ENCRYPT_DATABASE_ERROR = rm.GetString("sync_encrypt_database_error");
+        public string SYNC_TIMEOUT_ERROR_TITLE = rm.GetString("sync_timeout_error_title");
+        public string SYNC_TIMEOUT_ERROR_TEXT = rm.GetString("sync_timeout_error_text");
         public string UPDATE_TITLE = rm.GetString("update_title");
         public string UPDATE_DOWNLOAD_COMPLETE = rm.GetString("update_download_complete");
     }

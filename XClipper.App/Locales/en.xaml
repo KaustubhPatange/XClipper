@@ -106,6 +106,7 @@
     <system:String x:Key="msg_reset_data_success">Data reset completed!</system:String>
     <system:String x:Key="msg_merge_encrypt">The database file might be an encrypted one, if so kindly enter the password in the next dialog.</system:String>
     <system:String x:Key="msg_delete_all">This will remove all clips stored in database. Are you sure?</system:String>
+    <system:String x:Key="msg_delete_all_online">Should we remove all the clips from online database as well?</system:String>
     <system:String x:Key="msg_delete_db">This will migrate the existing SQlite database to sqlite3 database.</system:String>
     <system:String x:Key="msg_field_empty">One or more field is empty or wrong.</system:String>
     <system:String x:Key="msg_config_save">Configuration saved successfully.</system:String>
@@ -197,6 +198,8 @@
     <system:String x:Key="sync_notify_device_remove">Show when device is removed</system:String>
     <system:String x:Key="sync_encrypt_clip">Encrypt clips in the database</system:String>
     <system:String x:Key="sync_encrypt_database_error">Invalid database encrypt setting. Proceed to apply an autofix.</system:String>
+    <system:String x:Key="sync_timeout_error_title">Timed out error occurred</system:String>
+    <system:String x:Key="sync_timeout_error_text" xml:space="preserve">Seems like the problem is likely with your Internet connection.&#10;&#10;Firebase client will now shutdown to enable it again restart the application!</system:String>
     <system:String x:Key="update_title">Update Checker</system:String>
     <system:String x:Key="update_download_complete">Download completed. Click &quot;OK&quot; to install the update.&#10;&#10;Tip: Current process will killed during this update.</system:String>
     <system:String x:Key="connect_title">Connect</system:String>
