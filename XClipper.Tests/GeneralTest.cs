@@ -54,10 +54,14 @@ namespace XClipper.Tests
         [TestMethod]
         public void RandomTest()
         {
-            var key = "d3s2mt7gAPNyqYDU0L1ySt6WSmN7ElkUbHWz+kp7YWfzDOQ3xsHRj9ldRyxE48iyyzjNvHBCHsn8TkWS1H0NHcmv+JKhD0yDc+S2KhTWF7vU5SCmn3huoEH458clRUUA".Decrypt();
-            var value = "7u0wHXG8dCfNuJwM0nEuCwIMHFJgU0jxz4ikNZcODmUJKb8vDdoRVDC/LWdm6+y5BaTNTSc1des0bt5cD85iS+GN1/bcHc+0298HoeTIMgI=".DecryptBase64(key);
-            Debug.WriteLine(value);
+            string test = "{\r\n  \"Clips\": [\r\n    {\r\n      \"data\": \"AccessViolationException\",\r\n      \"time\": \"20201103173108\"\r\n    }\r\n  ]\r\n}";
+            Debug.WriteLine(test.Contains(Quotes(nameof(User.Clips))));
+            //var key = "d3s2mt7gAPNyqYDU0L1ySt6WSmN7ElkUbHWz+kp7YWfzDOQ3xsHRj9ldRyxE48iyyzjNvHBCHsn8TkWS1H0NHcmv+JKhD0yDc+S2KhTWF7vU5SCmn3huoEH458clRUUA".Decrypt();
+            //var value = "7u0wHXG8dCfNuJwM0nEuCwIMHFJgU0jxz4ikNZcODmUJKb8vDdoRVDC/LWdm6+y5BaTNTSc1des0bt5cD85iS+GN1/bcHc+0298HoeTIMgI=".DecryptBase64(key);
+            //Debug.WriteLine(value);
         }
+
+        private string Quotes(string t) => $@"""{t}"":";
 
         [TestMethod]
         public void FindTest()

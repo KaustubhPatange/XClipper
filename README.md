@@ -2,9 +2,6 @@
 
 ![build](https://github.com/KaustubhPatange/XClipper/workflows/Windows%20CI/badge.svg)
 ![GitHub issues](https://img.shields.io/github/issues/KaustubhPatange/XClipper)
-![GitHub](https://img.shields.io/github/license/KaustubhPatange/XClipper)
-![GitHub repo size](https://img.shields.io/github/repo-size/KaustubhPatange/XClipper)
-![GitHub stars](https://img.shields.io/github/stars/KaustubhPatange/XClipper?style=social)
 
  <h1 style="color:red">⚠️ Underconstruction ⚠️</h1>
 

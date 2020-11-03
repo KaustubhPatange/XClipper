@@ -57,6 +57,8 @@ namespace Components
         private IFirebaseClient client;
         private IFirebaseBinderV2? binder;
 
+        private FirebaseParser fparser;
+
         #endregion
 
         #region Observables 
@@ -98,6 +100,7 @@ namespace Components
             UID = UniqueID;
 
             _isDeinitialized = false;
+            fparser = new FirebaseParser();
 
             if (onAsyncStream != null) onAsyncStream.Cancel();
 
@@ -348,6 +351,8 @@ namespace Components
             // Apply an auto-fixes if needed
             await FixInconsistentData().ConfigureAwait(false);
             await FixEncryptedDatabase().ConfigureAwait(false);
+
+            if (user != null) fparser.SetUser(user);
             
             Log();
             try
@@ -362,8 +367,10 @@ namespace Components
 
                     try
                     {
-                        firebaseUser = JsonConvert.DeserializeObject<User>(a.Data);
-                    } catch (Exception e)
+                        firebaseUser = fparser.Parse(a.Event, a.Path, a.Data);
+                        //firebaseUser = JsonConvert.DeserializeObject<User>(a.Data);
+                    }
+                    catch (Exception e)
                     {
                         firebaseUser = null;
                     }
@@ -371,19 +378,9 @@ namespace Components
                     // If first device or clip is added it will come here...
                     if (user != null)
                     {
-                        if (a.Path == PATH_DEVICES)
-                        {
-                            var devices = JsonConvert.DeserializeObject<List<Device>>(a.Data);
-                            firebaseUser = user.DeepCopy();
-                            firebaseUser.Devices = devices;
-                        }
-                        else if (a.Path == PATH_CLIPS)
-                        {
-                            var clips = JsonConvert.DeserializeObject<List<Clip>>(a.Data);
-                            firebaseUser = user.DeepCopy();
-                            firebaseUser.Clips = clips;
-                        }
-                        else if (string.IsNullOrWhiteSpace(a.Data) && !string.IsNullOrWhiteSpace(a.Path)) // Detecting Remove changes & apply to shallow variable...
+                        // Handles path like /Clips/2 or /Devices/1 which if since the data is empty it means they
+                        // have removed.
+                        if (string.IsNullOrWhiteSpace(a.Data) && !string.IsNullOrWhiteSpace(a.Path))
                         {
                             // Deep copying variable to firebase user...
                             firebaseUser = user.DeepCopy();
@@ -417,9 +414,6 @@ namespace Components
 
                     // If there is no new data then it's of no use...
                     if (firebaseUser == null) return;
-
-                    // Always update the license details of new firebase user...
-                    await SetCommonUserInfo(firebaseUser).ConfigureAwait(false);
 
                     // Perform data addition & removal operation...
                     if (user != null)
@@ -457,6 +451,9 @@ namespace Components
                     }
 
                     user = firebaseUser!;
+
+                    // Always update the license details of new user...
+                    await SetCommonUserInfo(user).ConfigureAwait(false);
 
                     if (!await RunCommonTask().ConfigureAwait(false)) return;
 
@@ -721,10 +718,9 @@ namespace Components
                 if (user.Clips == null)
                 {
                     // Fake push to the database
-                    user.Clips = clips;
-                    await PushUser().ConfigureAwait(false);
-                    
-                    user.Clips = null;
+                    var userClone = user.DeepCopy();
+                    userClone.Clips = clips;
+                    await PushUser(userClone).ConfigureAwait(false);
                 } else
                     await client.SafeSetAsync($"{USER_REF}/{UID}/{CLIP_REF}", clips).ConfigureAwait(false);
 

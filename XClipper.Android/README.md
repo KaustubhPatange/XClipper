@@ -2,7 +2,7 @@
 
 ![build](https://github.com/KaustubhPatange/XClipper/workflows/Android%20CI/badge.svg)
 
-> An android XClipper client to communicate with the desktop application to simulate the sharing of clipboard activity.
+> An Android XClipper client to communicate with the desktop application to simulate the sharing of clipboard activity.
 
 <img width="120px" src="../XClipper.Web/images/icon-mobile.png"/>
 
@@ -13,6 +13,10 @@
 ## Compilation Guide
 
 Since this project involves **license** system 📃 some of the source files has been ignored. [Read this guide](https://github.com/KaustubhPatange/XClipper/wiki/Compilation-guide) in order to compile 🗃 the project.
+
+## Project Libraries
+
+- [CustomWebviewTabs](https://github.com/KaustubhPatange/CustomWebviewTabs) - An alternative for CustomTabs in Android, works without the need for a service provider.
 
 ## Built with 🛠
 

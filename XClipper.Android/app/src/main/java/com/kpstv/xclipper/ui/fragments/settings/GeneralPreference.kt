@@ -51,9 +51,6 @@ class GeneralPreference : PreferenceFragmentCompat() {
         }
 
         blacklistPreference?.setOnPreferenceChangeListener { _, newValue ->
-            Coroutines.io {
-
-            }
             if (newValue is Set<*>) {
                 App.blackListedApps = newValue as Set<String>
             }

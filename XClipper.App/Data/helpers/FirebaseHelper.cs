@@ -276,8 +276,8 @@ namespace Components
             {
                 if (!FirebaseSingletonV2.GetInstance.IsDeinitialized)
                 {
-                    MessageBox.Show(Translation.SYNC_TIMEOUT_ERROR_TEXT, Translation.SYNC_TIMEOUT_ERROR_TITLE, MessageBoxButton.OK, MessageBoxImage.Error);
-                    FirebaseSingletonV2.GetInstance.Deinitialize();
+                    //MessageBox.Show(Translation.SYNC_TIMEOUT_ERROR_TEXT, Translation.SYNC_TIMEOUT_ERROR_TITLE, MessageBoxButton.OK, MessageBoxImage.Error);
+                    //FirebaseSingletonV2.GetInstance.Deinitialize();
                 }
             }
         }
