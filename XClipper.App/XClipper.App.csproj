@@ -525,6 +525,7 @@
   <PropertyGroup>
     <PostBuildEvent>md "$(SolutionDir)libraries\FireSharp.custom"
 md "$(SolutionDir)libraries\DesktopToast.custom"
+md "$(TargetDir)\locales"
 copy "$(SolutionDir)\$(ProjectName)\Locales\*.xaml" "$(TargetDir)\locales\"</PostBuildEvent>
   </PropertyGroup>
 </Project>

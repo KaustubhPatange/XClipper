@@ -2,19 +2,6 @@ name: Android CI
 on: [push, pull_request]
 
 jobs:
-  windows:
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Setting up nuget
-        uses: warrenbuckley/Setup-Nuget@v1
-      - name: Setting up msbuild
-        uses: warrenbuckley/Setup-MSBuild@v1
-      - name: Restoring dependencies & building project
-        run: |
-          tar -xvzf scripts\csproj.tar.gz
-          nuget restore XClipper.sln
-          msbuild XClipper.sln /t:Rebuild /p:WarningLevel=0 /p:Configuration=Release
   android:
     needs: [windows]
     runs-on: windows-latest
@@ -40,7 +27,7 @@ jobs:
       - name: Sending commit notification
         if: (!startsWith(github.event.pusher, '')) && (!startsWith(github.event.pusher.name, 'KaustubhPatange'))
         env:
-          DISCORD_WEBHOOK: ${{ secrets.WEBHOOK_PC }}
+          DISCORD_WEBHOOK: ${{ secrets.WEBHOOK_ANDROID }}
         uses: Ilshidur/action-discord@master
         with:
           args: "A new pull request is made by ${{ github.event.pull_request.user.login }} at ${{ github.event.pull_request.html_url }}"
