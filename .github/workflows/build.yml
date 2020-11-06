@@ -3,7 +3,6 @@ on: [push, pull_request]
 
 jobs:
   android:
-    needs: [windows]
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
@@ -25,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Sending commit notification
-        if: (!startsWith(github.event.pusher, '')) && (!startsWith(github.event.pusher.name, 'KaustubhPatange'))
+        if: (!startsWith(github.event.pusher, '')) && startsWith(github.event.pusher.name, 'KaustubhPatange')
         env:
           DISCORD_WEBHOOK: ${{ secrets.WEBHOOK_ANDROID }}
         uses: Ilshidur/action-discord@master
