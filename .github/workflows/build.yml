@@ -38,8 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Sending commit notification
-        if: (!startsWith(github.event.pusher, ''))
-        if: (!startsWith(github.event.pusher.name, 'KaustubhPatange'))
+        if: (!startsWith(github.event.pusher, '')) && (!startsWith(github.event.pusher.name, 'KaustubhPatange'))
         env:
           DISCORD_WEBHOOK: ${{ secrets.WEBHOOK_PC }}
         uses: Ilshidur/action-discord@master
