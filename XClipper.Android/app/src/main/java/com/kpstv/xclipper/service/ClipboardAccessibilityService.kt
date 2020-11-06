@@ -114,7 +114,7 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
              *  This should prevent it.
              */
             if (eventList.any { it == AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED }) return false
-            HVLog.d("Copy captured - 1, EventList: $eventList")
+            HVLog.d("Copy captured - 1, ToCaptureEvent: ${AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED}, EventList: $eventList")
             return true
         }
         return false

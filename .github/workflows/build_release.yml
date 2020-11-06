@@ -1,9 +1,7 @@
 name: Build & Release
 on:
   push:
-    branches: [ master, action_test ] # Remove this second branch after test
-  pull_request:
-    branches: [ master, action_test ] # Remove this second branch after test
+    branches: [master, action_test] # Remove this second branch after test
 
 jobs:
   windows:
@@ -18,7 +16,7 @@ jobs:
       - name: Setting up dependencies
         id: csproj_protect
         uses: RollyPeres/base64-to-path@v1
-        with: 
+        with:
           filePath: ${{ github.workspace }}/protect.tar.gz
           encodedString: ${{ secrets.SLN_PROTECT }}
       - name: Restoring dependencies & building project
@@ -36,7 +34,7 @@ jobs:
           del XClipper.App\bin\Release\*.config
           echo "::set-output name=production_version::$(${{ github.workspace }}\packager.exe -i exe)"
           ${{ github.workspace }}\packager.exe -r
-          scripts\inno\iscc.exe scripts\installer.iss 
+          scripts\inno\iscc.exe scripts\installer.iss
       - name: Setting output file
         id: vars
         shell: pwsh
@@ -56,7 +54,7 @@ jobs:
           body_path: ${{ github.workspace }}\scripts\changes.txt
           draft: true
       - name: Upload Release Asset
-        id: upload-release-asset 
+        id: upload-release-asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -66,7 +64,7 @@ jobs:
           asset_name: ${{ steps.vars.outputs.production }}.exe
           asset_content_type: application/octet-stream
       - name: Upload Release Asset
-        id: upload-release-asset2 
+        id: upload-release-asset2
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -75,3 +73,15 @@ jobs:
           asset_path: ./scripts/out/${{ steps.vars.outputs.production }}.tar.gz
           asset_name: XClipper-Portable-x64.tar.gz
           asset_content_type: application/octet-stream
+
+  discord_notify_pr:
+    if: "contains(github.event.head_commit.message, '[Released]')"
+    needs: [windows]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sending notifications
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.WEBHOOK_PC }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: "A new release has been created review it here https://github.com/KaustubhPatange/XClipper/releases"

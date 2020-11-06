@@ -45,9 +45,11 @@ class GeneralPreference : PreferenceFragmentCompat() {
         /** Black list app preference */
         val blacklistPreference = findPreference<MultiSelectListPreference>(BLACKLIST_PREF)
 
-        Coroutines.main {
+        Coroutines.io {
             /** Load installed app list */
             App.appList = retrievePackageList(requireContext())
+            blacklistPreference?.entries = App.appList.mapNotNull { it.label }.toTypedArray()
+            blacklistPreference?.entryValues = App.appList.mapNotNull { it.packageName }.toTypedArray()
         }
 
         blacklistPreference?.setOnPreferenceChangeListener { _, newValue ->

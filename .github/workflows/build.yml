@@ -2,7 +2,21 @@ name: Android CI
 on: [push, pull_request]
 
 jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setting up nuget
+        uses: warrenbuckley/Setup-Nuget@v1
+      - name: Setting up msbuild
+        uses: warrenbuckley/Setup-MSBuild@v1
+      - name: Restoring dependencies & building project
+        run: |
+          tar -xvzf scripts\csproj.tar.gz
+          nuget restore XClipper.sln
+          msbuild XClipper.sln /t:Rebuild /p:WarningLevel=0 /p:Configuration=Release
   android:
+    needs: [windows]
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
@@ -16,3 +30,26 @@ jobs:
           cd XClipper.Android
           chmod +x gradlew
           ./gradlew app:assembleDebug --stacktrace
+
+  # Common action to notify on discord
+
+  discord_notify:
+    needs: [android]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sending commit notification
+        if: (!startsWith(github.event.pusher, ''))
+        if: (!startsWith(github.event.pusher.name, 'KaustubhPatange'))
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.WEBHOOK_PC }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: "A new pull request is made by ${{ github.event.pull_request.user.login }} at ${{ github.event.pull_request.html_url }}"
+
+      - name: Sending PR notification
+        if: (!startsWith(github.event.pull_request, ''))
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.WEBHOOK_PC }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: "A new pull request is made by ${{ github.event.pull_request.user.login }} at ${{ github.event.pull_request.html_url }}"
