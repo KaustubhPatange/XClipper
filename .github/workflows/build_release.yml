@@ -84,4 +84,4 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.WEBHOOK_PC }}
         uses: Ilshidur/action-discord@master
         with:
-          args: "A new release has been created review it here https://github.com/KaustubhPatange/XClipper/releases"
+          args: "A new release has been created review it [here](https://github.com/KaustubhPatange/XClipper/releases)."

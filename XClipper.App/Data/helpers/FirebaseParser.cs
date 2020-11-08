@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using static Components.Constants;
 
@@ -25,6 +26,11 @@ namespace Components
                 if (path == "/")
                     user = JsonConvert.DeserializeObject<User>(json);
                 else ManagePaths(path, json);
+            }
+            // Will be used to remove last data...
+            if (eventName == "put" && string.IsNullOrWhiteSpace(json))
+            {
+                ManageEmptyStructure(path);
             }
 
             // Make sure user is not null at this stage.
@@ -116,6 +122,19 @@ namespace Components
                 }
             }
         }
+
+        private void ManageEmptyStructure(string path)
+        {
+            if (path == PATH_DEVICES)
+            {
+                user.Devices = null;
+            }
+            else if (path == PATH_CLIPS)
+            {
+                user.Clips = null;
+            }
+        }
+
         private string Quotes(string t) => $@"""{t}"":";
     }
 }

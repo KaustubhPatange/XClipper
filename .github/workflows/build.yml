@@ -23,13 +23,16 @@ jobs:
     needs: [android]
     runs-on: ubuntu-latest
     steps:
+      - name: Set outputs
+        id: vars
+        run: echo "::set-output name=sha_short::$(echo ${{ github.sha }} | cut -c -7)"
       - name: Sending commit notification
         if: (!startsWith(github.event.pusher, '')) && startsWith(github.event.pusher.name, 'KaustubhPatange')
         env:
           DISCORD_WEBHOOK: ${{ secrets.WEBHOOK_ANDROID }}
         uses: Ilshidur/action-discord@master
         with:
-          args: "A new pull request is made by ${{ github.event.pull_request.user.login }} at ${{ github.event.pull_request.html_url }}"
+          args: Commit [${{ steps.vars.outputs.sha_short }}](${{github.event.repository.html_url}}/commit/${{ github.sha }}) had a successful build!
 
       - name: Sending PR notification
         if: (!startsWith(github.event.pull_request, ''))
@@ -37,4 +40,4 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.WEBHOOK_PC }}
         uses: Ilshidur/action-discord@master
         with:
-          args: "A new pull request is made by ${{ github.event.pull_request.user.login }} at ${{ github.event.pull_request.html_url }}"
+          args: "A new pull request is made by ${{ github.event.pull_request.user.login }}. Review it [here](${{ github.event.pull_request.html_url }})!"

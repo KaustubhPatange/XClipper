@@ -383,7 +383,8 @@ namespace Components
                         if (string.IsNullOrWhiteSpace(a.Data) && !string.IsNullOrWhiteSpace(a.Path))
                         {
                             // Deep copying variable to firebase user...
-                            firebaseUser = user.DeepCopy();
+                            if (firebaseUser == null)
+                                firebaseUser = user.DeepCopy();
 
                             // Remove from /Clips
                             if (Regex.IsMatch(a.Path, PATH_CLIP_REGEX_PATTERN))
@@ -566,7 +567,7 @@ namespace Components
             user.IsLicensed = IsPurchaseDone;
             user.LicenseStrategy = LicenseStrategy;
 
-            if (originallyLicensed != IsPurchaseDone || user.MaxItemStorage != DatabaseMaxItemLength || user.TotalConnection != DatabaseMaxConnection)
+            if (originallyLicensed != IsPurchaseDone || user.MaxItemStorage != DatabaseMaxItem || user.TotalConnection != DatabaseMaxConnection)
                 await PushUser().ConfigureAwait(false);
         }
 
@@ -669,9 +670,9 @@ namespace Components
 
             if (await RunCommonTask().ConfigureAwait(false))
             {
-                user.Devices = user.Devices.Where(d => d.id != DeviceId).ToList();
-                await PushUser().ConfigureAwait(false);
-                return user.Devices;
+                var devices = user.Devices.Where(d => d.id != DeviceId).ToList();
+                await client.SafeUpdateAsync($"{USER_REF}/{DEVICE_REF}", user.Devices).ConfigureAwait(false);
+                return devices;
             }
 
             return new List<Device>();
