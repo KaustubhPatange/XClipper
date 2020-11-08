@@ -132,6 +132,16 @@ namespace Components.viewModels
 
         #region Data Obtaining Methods
 
+        public TableCopy? GetDataAt(int value)
+        {
+            var clipData = ClipData;
+            if (value < clipData.Count)
+            {
+                return clipData[value];
+            }
+            return null;
+        }
+
         public List<TableCopy> GetAllData() => dataDB.GetAllData();
 
         public List<TableCopy> ClipData

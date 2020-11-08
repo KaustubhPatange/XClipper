@@ -696,13 +696,13 @@ namespace Components
             CloseWindow();
 
             // Saving clipboard...
-            string clipboardText = Clipboard.GetText();
+            ClipboardHelper.Preserve();
 
             // Send text to screen...
             Clipboard.Clear();  // Always clear the clipboard first
             Clipboard.SetText(text);
             System.Windows.Forms.SendKeys.SendWait("^v");
-            Clipboard.SetText(clipboardText);
+            ClipboardHelper.Consume();
         }
 
         /// <summary>

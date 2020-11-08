@@ -157,10 +157,6 @@ DEL ""%~f0""";
             var partText = Regex.Replace(text, @"^\s+$[\r\n]*", " ", RegexOptions.Multiline);
             return Regex.Replace(partText, @"[\s]{2,}", " ");
         }
-        public static int ParseNumericKey(Key e)
-        {
-            return Regex.Replace(e.ToString(), "[^0-9.]", "").ToInt();
-        }
 
         [DllImport("Shlwapi.dll", CharSet = CharSet.Auto)]
       //  public static extern Int32 StrFormatByteSize(long fileSize, [MarshalAs(UnmanagedType.LPTStr)] StringBuilder buffer, int bufferSize);

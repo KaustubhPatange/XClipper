@@ -48,7 +48,7 @@ namespace Components
         public void Ignore(Action block)
         {
             StopRecording();
-            block.Invoke();
+            block?.Invoke();
             StartRecording();
         }
 

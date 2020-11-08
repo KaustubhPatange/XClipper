@@ -38,7 +38,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="FireSharp.Core">
-	 <HintPath>..\libraries\FireSharp.custom\FireSharp.Core.dll</HintPath>
+      <HintPath>..\libraries\FireSharp.custom\FireSharp.Core.dll</HintPath>
       <!-- <HintPath>..\..\FireSharp\FireSharp.Core\bin\Debug\netstandard1.1\FireSharp.Core.dll</HintPath> -->
     </Reference>
     <Reference Include="Microsoft.Threading.Tasks, Version=1.0.12.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -129,6 +129,7 @@
     <Compile Include="Data\unlocalized\ISettingEventBinder.cs" />
     <Compile Include="Data\unlocalized\MessageType.cs" />
     <Compile Include="Data\Utils\ImageCompare.cs" />
+    <Compile Include="Helpers\ClipboardHelper.cs" />
     <Compile Include="Helpers\PathHelper.cs" />
     <Compile Include="Helpers\RegistryHelper.cs" />
     <Compile Include="Helpers\ApplicationHelper.cs" />

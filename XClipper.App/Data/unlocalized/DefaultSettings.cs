@@ -365,6 +365,11 @@ namespace Components
         /// </summary>
         public static bool BindImage { get; set; } = false;
 
+        /// <summary>
+        /// A setting that can use to decide whether to respond for quick paste.
+        /// </summary>
+        public static bool GlobalQuickPaste { get; set; } = true;
+
         #endregion
 
         #region Notify Static PropertyChange

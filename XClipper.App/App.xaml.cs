@@ -72,7 +72,8 @@ namespace Components
             recorder.SetAppBinder(this);
             recorder.StartRecording();
 
-            hookUtility.Subscribe(LaunchCodeUI);
+            hookUtility.SubscribeHotKeyEvents(LaunchCodeUI);
+            hookUtility.SubscribeQuickPasteEvent(QuickPasteHook);
 
             SetAppStartupEntry();
         }
@@ -126,7 +127,7 @@ namespace Components
 
         protected override void OnExit(ExitEventArgs e)
         {
-            hookUtility.Unsubscribe();
+            hookUtility.UnsubscribeAll();
             FirebaseSingletonV2.GetInstance.SaveUserState();
             ExplorerHelper.Unregister();
 
@@ -660,6 +661,11 @@ namespace Components
                     silent: !PlayNoticationSound
                 ).RunAsync();
             }
+        }
+
+        private void QuickPasteHook(int number)
+        {
+            Debug.WriteLine("Pressed: " + number);
         }
 
         private void LaunchCodeUI()
