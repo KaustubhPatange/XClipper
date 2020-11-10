@@ -14,7 +14,7 @@ import kotlin.collections.HashMap
  *
  * See [testing documentation](http://d.android.com/tools/testing).
  */
-class ExampleUnitTest {
+class RandomTests {
     private val TAG = javaClass.simpleName
 
 

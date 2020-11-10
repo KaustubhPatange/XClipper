@@ -1,8 +1,12 @@
 ﻿using ClipboardManager.models;
 using Components.viewModels;
 using System;
+using System.Drawing;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Media.Imaging;
+using WK.Libraries.SharpClipboardNS;
 
 #nullable enable
 
@@ -43,7 +47,15 @@ namespace Components
                             });
                             break;
                         case ContentType.Image:
-                            // todo: 
+                            recorder?.Ignore(() =>
+                            {
+                                if (File.Exists(model.ImagePath))
+                                {
+                                    ClipboardHelper.Preserve();
+                                    Clipboard.SetImage(new BitmapImage(new Uri(model.ImagePath)));
+                                    ClipboardHelper.Consume();
+                                }
+                            });
                             break;
 
                         case ContentType.Files:

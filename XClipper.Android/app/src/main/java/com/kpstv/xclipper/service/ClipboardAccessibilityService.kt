@@ -6,6 +6,7 @@ import android.content.*
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.os.Build
 import android.os.PowerManager
+import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.EditText
@@ -18,17 +19,15 @@ import com.kpstv.xclipper.App.ACTION_VIEW_CLOSE
 import com.kpstv.xclipper.App.EXTRA_SERVICE_TEXT
 import com.kpstv.xclipper.App.showSuggestion
 import com.kpstv.xclipper.data.provider.ClipboardProvider
-import com.kpstv.xclipper.extensions.StripArrayList
 import com.kpstv.xclipper.extensions.logger
 import com.kpstv.xclipper.extensions.utils.FirebaseUtils
 import com.kpstv.xclipper.extensions.utils.KeyboardUtils.Companion.getKeyboardHeight
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.isSystemOverlayEnabled
+import com.kpstv.xclipper.service.helper.ClipboardDetection
 import es.dmoral.toasty.Toasty
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.kodein
 import org.kodein.di.generic.instance
-import java.util.*
-
 
 class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
 
@@ -50,8 +49,6 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
     private lateinit var powerManager: PowerManager
 
     private var nodeInfo: AccessibilityNodeInfo? = null
-    private val eventList: StripArrayList<Int> =
-        StripArrayList(4) // TODO: Try to fix it by stripping 4 to 3
 
     /**
      * TODO: Remove this unused parameter
@@ -75,51 +72,6 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
         HVLog.d()
     }
 
-    /** Some hacks I figured out which would trigger copy/cut for Android 10 */
-    private fun supportedEventTypes(event: AccessibilityEvent?): Boolean {
-        /**
-         * This second condition is a hack whenever someone clicks copy or cut context button,
-         * it detects this behaviour as copy.
-         *
-         * Disadvantages: Event TYPE_VIEW_CLICKED is fired whenever you touch on the screen,
-         * this means if there is a text which contains "copy" it's gonna consider that as a
-         * copy behaviour.
-         */
-        if (event?.eventType == AccessibilityEvent.TYPE_VIEW_CLICKED && event.text != null &&
-            (event.contentDescription?.toString()?.toLowerCase(Locale.ROOT)
-                ?.equals("copy") == true
-                    || event.text?.toString()?.toLowerCase(Locale.ROOT)
-                ?.equals("copy") == true
-                    || event.contentDescription == "Cut"
-                    || event.contentDescription == "Copy")
-        ) {
-            HVLog.d("Copy captured - 2")
-            return true
-        }
-
-        /**
-         * This first condition will allow to capture text from an text selection,
-         * whether on chrome or somewhere else.
-         *
-         * eg: Press and hold a text > a pop comes with different options like
-         * copy, paste, select all, etc.
-         */
-        if ((event?.eventType == AccessibilityEvent.TYPE_VIEW_TEXT_SELECTION_CHANGED
-                    && event.fromIndex == event.toIndex
-                    && event.currentItemIndex != -1)
-        ) {
-            if (event.className == EditText::class.java.name && event.scrollX != -1) return false
-            /** I don't know what Gmail is doing, but it cast the EditText class as TextView
-             *  when someone is writing, due to which above event fails to exclude it.
-             *  This should prevent it.
-             */
-            if (eventList.any { it == AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED }) return false
-            HVLog.d("Copy captured - 1, ToCaptureEvent: ${AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED}, EventList: $eventList")
-            return true
-        }
-        return false
-    }
-
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         currentPackage = event?.packageName
 
@@ -127,7 +79,18 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
 //        logger(TAG, "SourceText: ${event?.source}; Text is null: ${event?.text.isNullOrEmpty()}; $event")
 
         if (event?.eventType != null)
-            eventList.add(event.eventType)
+            ClipboardDetection.addEvent(event.eventType)
+
+//       try {
+//           val builder = StringBuilder()
+//           val d = event?.source?.childCount ?: 0
+//           for (i in 0 until d) {
+//               builder.append(event?.source?.getChild(i)?.text ?: "" + ", ")
+//           }
+//           Log.e(TAG, "Message: " + builder.toString())
+//       }catch (e: Exception) {
+//           e.printStackTrace()
+//       }
 
         postKeyboardValue(getKeyboardHeight(applicationContext))
 
@@ -146,9 +109,9 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
             LocalBroadcastManager.getInstance(applicationContext)
                 .sendBroadcast(Intent(ACTION_VIEW_CLOSE))
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && supportedEventTypes(event) && !isPackageBlacklisted(
-                event?.packageName
-            )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+            && ClipboardDetection.getSupportedEventTypes(event)
+            && !isPackageBlacklisted(event?.packageName)
         ) {
             runForNextEventAlso = true
             logger(TAG, "Running for first time")

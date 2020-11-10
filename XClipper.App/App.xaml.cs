@@ -38,6 +38,7 @@ namespace Components
         public static List<string> LanguageCollection = new List<string>();
         public static ResourceDictionary rm = new ResourceDictionary();
         private KeyHookUtility hookUtility = new KeyHookUtility();
+        private QuickPasteHelper quickPasteHelper = new QuickPasteHelper();
         private ClipWindow clipWindow;
         private WinForm.NotifyIcon notifyIcon;
         private OAuthWindow authWindow;
@@ -74,6 +75,8 @@ namespace Components
 
             hookUtility.SubscribeHotKeyEvents(LaunchCodeUI);
             hookUtility.SubscribeQuickPasteEvent(QuickPasteHook);
+
+            quickPasteHelper.Init(recorder);
 
             SetAppStartupEntry();
         }
@@ -628,6 +631,7 @@ namespace Components
             if (msg == MessageBoxResult.Yes)
                 RestartApplication();
         }
+
         private void CheckForOtherInstance()
         {
             bool IsNewInstance;
@@ -665,7 +669,7 @@ namespace Components
 
         private void QuickPasteHook(int number)
         {
-            Debug.WriteLine("Pressed: " + number);
+            quickPasteHelper.DoPasteAction(number);
         }
 
         private void LaunchCodeUI()

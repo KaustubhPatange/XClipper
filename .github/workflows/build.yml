@@ -16,6 +16,7 @@ jobs:
           cd XClipper.Android
           chmod +x gradlew
           ./gradlew app:assembleDebug --stacktrace
+          ./gradlew app:test
 
   # Common action to notify on discord
 

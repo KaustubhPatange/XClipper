@@ -65,12 +65,22 @@ namespace Components
             }
         }
 
-        private enum DataType
+        /// <summary>
+        /// Returns the preserved clipboard type.
+        /// </summary>
+        /// <returns></returns>
+        public static DataType GetPreservedClipboardType()
+        {
+            return type ?? DataType.NONE;
+        }
+
+        public enum DataType
         {
             TEXT,
             IMAGE,
             FILE_DROP,
-            AUDIO
+            AUDIO,
+            NONE
         }
     }
 }

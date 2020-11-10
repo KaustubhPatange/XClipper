@@ -4,7 +4,7 @@ import android.text.Html
 import org.junit.Test
 import kotlin.system.measureTimeMillis
 
-class GenericTest {
+class GeneralTests {
 
     data class Person(private val name: String)
 
