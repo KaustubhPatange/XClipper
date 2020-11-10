@@ -38,7 +38,9 @@ namespace Components
 
         public static string ApplicationVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
         public static string ApplicationWebsite = "https://kaustubhpatange.github.io/XClipper";
+        [Obsolete("Use GITHUB_RELEASE_URI", true)]
         public const string UPDATE_URI = "https://pastebin.com/raw/FRS7n7Fc"; // TODO; Change update uri https://raw.githubusercontent.com/KaustubhPatange/XClipper/master/UPDATE
+        public const string GITHUB_RELEASE_URI = "https://api.github.com/repos/adb-over-wifi/demo-release/releases"; // TODO: Change update uri https://api.github.com/repos/KaustubhPatange/XClipper/releases
         public const string OAUTH_TOKEN_URI = "https://oauth2.googleapis.com/token";
         public const string SETTINGS = "Settings";
         public const string CREDENTIAL = "Credential";

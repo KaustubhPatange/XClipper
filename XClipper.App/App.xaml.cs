@@ -26,6 +26,7 @@ using System.Windows.Threading;
 using System.Globalization;
 using System.Drawing;
 using System.Windows.Interop;
+using System.Net;
 
 #nullable enable
 
@@ -51,7 +52,7 @@ namespace Components
         private ILicense licenseService;
         private Mutex appMutex;
         private WinForm.MenuItem ConfigSettingItem, UpdateSettingItem;
-        private Update? updateModel = null;
+        private ReleaseItem? updateModel = null;
 
         // Some settings
         private bool ToRecord = true;
@@ -88,6 +89,8 @@ namespace Components
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
             LoadLanguageResource();
 
@@ -612,7 +615,7 @@ namespace Components
         {
             if (IsPurchaseDone)
             {
-                CallUpdateWindow(updateModel?.Desktop);
+                CallUpdateWindow(updateModel);
                 updateModel = null;
             }
             else
@@ -686,7 +689,7 @@ namespace Components
                 clipWindow.CloseWindow();
         }
 
-        private void CallUpdateWindow(Update.Windows? model)
+        private void CallUpdateWindow(ReleaseItem? model)
         {
             if (model == null) return;
             if (updateWindow != null)

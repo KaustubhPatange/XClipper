@@ -1,8 +1,11 @@
 ﻿using Newtonsoft.Json;
 using RestSharp;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net.Http;
 using System.Reflection;
+using System.Threading.Tasks;
 using static Components.Constants;
 
 #nullable enable
@@ -11,21 +14,18 @@ namespace Components
 {
     public class UpdaterService : IUpdater
     {
-        public void Check(Action<bool, Update?>? block)
+        public void Check(Action<bool, ReleaseItem?>? block)
         {
-            var client = new RestClient(UPDATE_URI);
-            var request = new RestRequest();
+            var client = new RestClient();
+            var request = new RestRequest(GITHUB_RELEASE_URI, Method.GET);
             client.ExecuteAsync(request, (response) =>
             {
-                Update? updateInfo = JsonConvert.DeserializeObject<Update>(response.Content);
-
-                int version = updateInfo?.Desktop.Version.Replace(".", "").ToInt() ?? 0; // eg: 1001
                 int appVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString().Replace(".", "").ToInt(); // eg: 1000
 
-                if (version > appVersion)
-                    block?.Invoke(true, updateInfo);
-                else
-                    block?.Invoke(false, null);
+                List<ReleaseItem>? releases = JsonConvert.DeserializeObject<List<ReleaseItem>>(response.Content);
+
+                ReleaseItem? newRelease = releases?.FirstOrNull(c => c.GetVersion() > appVersion).Value;
+                block?.Invoke(newRelease != null, newRelease);
             });
         }
 

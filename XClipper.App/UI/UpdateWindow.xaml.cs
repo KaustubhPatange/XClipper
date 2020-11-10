@@ -8,7 +8,7 @@ namespace Components.UI
     public partial class UpdateWindow : Window
     {
         private UpdateViewModel updateViewModel;
-        public UpdateWindow(Update.Windows updateModel)
+        public UpdateWindow(ReleaseItem updateModel)
         {
             InitializeComponent();
 

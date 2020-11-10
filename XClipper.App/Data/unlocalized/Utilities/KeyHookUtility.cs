@@ -1,6 +1,7 @@
 ﻿using Gma.System.MouseKeyHook;
 using Loamen.KeyMouseHook;
 using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 using static Components.DefaultSettings;
 using static Components.KeyPressHelper;
@@ -17,6 +18,7 @@ namespace Components
         private KeyboardWatcher keyboardWatcher;
         private Action? hotKeyEvent;
         private Action<int>? quickPasteEvent;
+        private bool quickPasteChord = false;
 
         public KeyHookUtility()
         {
@@ -65,12 +67,24 @@ namespace Components
             {
                 var key = keyEvent.KeyCode;
 
-                // Process other keystrokes...
-                if (IsCtrlPressed() && IsShitPressed() && IsNumericKeyPressed(key))
+                Debug.WriteLine($"Key Event: {key}");
+
+                if (quickPasteChord && IsNumericKeyPressed(key))
                 {
-                    quickPasteEvent?.Invoke(ParseNumericKey(key));
+                    Debug.WriteLine("Quick Paste: Done");
+                    DoQuickPaste(ParseNumericKey(key));
                 }
 
+                if (!IsCtrlPressed() && !IsAltPressed() && !IsShitPressed())
+                    quickPasteChord = false;
+
+                // Process other keystrokes...
+                if (IsCtrlPressed() && key == Keys.Oem5)
+                {
+                    Debug.WriteLine("QuickPaste chord activated");
+                    quickPasteChord = true;
+                }
+                
                 if (IsCtrl && !IsCtrlPressed()) return;
 
                 if (IsAlt && !IsAltPressed()) return;
@@ -84,6 +98,14 @@ namespace Components
         }
 
         #endregion
+
+        private void DoQuickPaste(int index)
+        {
+            SendKeys.SendWait("{BKSP}");
+            if (index == 0)
+                quickPasteEvent?.Invoke(9);
+            else quickPasteEvent?.Invoke(index - 1);
+        }
 
         public void Dispose()
         {

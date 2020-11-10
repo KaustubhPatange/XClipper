@@ -84,7 +84,7 @@ namespace Components
         {
             base.OnSourceInitialized(e);
 
-            // todo:
+            // TODO:
             /** We must pass this (Window) handle to the helper to distinguish the lastForegroundWindow.
              * 
              *  Current issue:- If the explorer is focused & then this window is opened for the first time

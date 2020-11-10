@@ -59,7 +59,7 @@ namespace Components
                             break;
 
                         case ContentType.Files:
-                            // todo:
+                            // TODO: Add quick paste option for files (if you find any solution)
                             break;
                     }
                 }catch (ExternalException)

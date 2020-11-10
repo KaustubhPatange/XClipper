@@ -9,20 +9,25 @@ using System.Windows;
 using System.Diagnostics;
 using System.IO;
 using static Components.MainHelper;
+using System.Linq;
+
+#nullable enable
 
 namespace Components
 {
     public class UpdateViewModel : BaseViewModel
     {
         private WebClient client = new WebClient();
-        private Update.Windows updateModel;
-        public UpdateViewModel(Update.Windows updateModel)
+        private ReleaseAsset? release;
+        public UpdateViewModel(ReleaseItem updateModel)
         {
-            this.updateModel = updateModel;
+         //   this.updateModel = updateModel;
             MainButton = new RelayCommand(MainButtonClicked);
 
-            TotalBytes = $"{updateModel.FileSize} B";
-            InfoText = $"version: {updateModel.Version} ({updateModel.PostDate})\n\n{updateModel.Changelog}\n\nSize: {updateModel.FileSize.ToFileSizeApi()}";
+            release = updateModel.assets.FirstOrDefault(c => c.name.EndsWith(".exe", StringComparison.OrdinalIgnoreCase));
+
+            TotalBytes = $"{release?.size} B";
+            InfoText = $"{updateModel.tag_name} ({updateModel.GetDatePretty()})\n\n{updateModel.GetFormattedBody()}\n\nSize: {release?.size.ToFileSizeApi()}";
         }
 
         #region Actual Bindings
@@ -51,11 +56,8 @@ namespace Components
                 if (File.Exists(UpdatePackageFile))
                 {
                     var fileInfo = new FileInfo(UpdatePackageFile);
-                    if (fileInfo.Length == updateModel.FileSize  // Check if size are similar.
-                        &&
-                        GetProductVersion(UpdatePackageFile) == updateModel.Version)  // Check if versions are similar.
+                    if (fileInfo.Length == release?.size)
                     {
-                        // Alright it's safe to install.
                         CallPostUpdate();
                         return;
                     }
@@ -77,7 +79,7 @@ namespace Components
                     Define = Status.Completed;
                     CallPostUpdate();
                 };
-                client.DownloadFileAsync(new Uri(updateModel.DownloadUri), UpdatePackageFile);
+                client.DownloadFileAsync(new Uri(release?.browser_download_url), UpdatePackageFile);
 
                 // Change the status to downloading.
                 Define = Status.Downloading;
@@ -96,7 +98,7 @@ namespace Components
             // Make progress to zero
             Progress = 0;
 
-            if (updateModel.FileSize != new FileInfo(UpdatePackageFile).Length)
+            if (release?.size != new FileInfo(UpdatePackageFile).Length)
             {
                 TotalBytes = "0 B";
                 RecievedBytes = "0 B";

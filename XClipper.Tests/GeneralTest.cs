@@ -31,10 +31,18 @@ namespace XClipper.Tests
         [TestMethod]
         public void LinqTest()
         {
+            var s = DateTime.Parse("2020-11-08T05:32:08Z");
+            Debug.WriteLine(s);
             var list = new List<int> { 1, 2, 3, 4, 5, 6, 7 };
+            var list1 = new List<string> { "1","2","3","4" };
 
-            var m = list.Select(c => c > 8).ToList();
-            Debug.WriteLine(m.Count);
+            var item = list.FirstOrNull(c => c == 24);
+            var item1 = list1.FirstOrNull(c => c == "5");
+            Debug.WriteLine(item1.Value);
+            Debug.WriteLine(item1.IsNull() ? "Item is null" : "We found him");
+
+            //var m = list.Select(c => c > 8).ToList();
+            //Debug.WriteLine(m.Count);
 
             //var dictionary = new Dictionary<string, string>();
             //dictionary.Add("1", "one");
@@ -66,10 +74,11 @@ namespace XClipper.Tests
         [TestMethod]
         public void FindTest()
         {
-            var d = userClips().ConvertAll(c => c.data);
-            var e = firebaseClips().ConvertAll(c => c.data);
-            foreach (var clip in d.Except(e))
-                Debug.WriteLine("Data: " + clip + Environment.NewLine);
+            var w = "Hello";
+            Debug.WriteLine(w.Substring(1));
+            var item = new ReleaseItem { body = "### Added\r\n\r\n- This is a test added.\r\n\r\n### Update\r\n\r\n- A test update.\r\n\r\n### Bug (Fixed)\r\n\r\n- Some issue has fixed\r\n- Wow, let's see this `code` comment".Replace(Environment.NewLine, string.Empty) };
+            var b = item.GetFormattedBody();
+            Debug.WriteLine(b);
         }
 
         private List<Clip> userClips()

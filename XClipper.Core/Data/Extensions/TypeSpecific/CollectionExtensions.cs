@@ -83,5 +83,29 @@ namespace Components
                     yield return item;
             }
         }
+
+        /// <summary>
+        /// Note: For non null types like int, bool IsNull will return false if the value is null.
+        /// As the default(T) would make int type to 0 and bool as false.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="t"></param>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        public static Result<T> FirstOrNull<T>(this IEnumerable<T> t, Func<T, bool> predicate)
+        {
+            foreach(var item in t)
+            {
+                if (predicate.Invoke(item))
+                    return new Result<T> { Value = item};
+            }
+            return new Result<T>();
+        }
+    }
+
+    public struct Result<T>
+    {
+        public T Value { get; set; }
+        public bool IsNull() => Value == null;
     }
 }

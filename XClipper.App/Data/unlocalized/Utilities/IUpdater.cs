@@ -9,7 +9,7 @@ namespace Components
         /// This method will check for update and will run the method.
         /// </summary>
         /// <param name="block"></param>
-        void Check(Action<bool, Update?>? block);
+        void Check(Action<bool, ReleaseItem?>? block);
 
         /// <summary>
         /// This will launch the website for manually downloading update.
