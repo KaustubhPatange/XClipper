@@ -11,6 +11,7 @@ import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -24,6 +25,7 @@ import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.ToolbarState
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.data.provider.ClipboardProvider
+import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.extensions.enumerations.FirebaseState
 import com.kpstv.xclipper.extensions.listeners.StatusListener
@@ -39,35 +41,25 @@ import com.kpstv.xclipper.ui.dialogs.EditDialog
 import com.kpstv.xclipper.ui.dialogs.TagDialog
 import com.kpstv.xclipper.ui.helpers.ReviewHelper
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
-import com.kpstv.xclipper.ui.viewmodels.MainViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.layout_empty.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.x.kodein
-import org.kodein.di.generic.instance
 import java.util.*
+import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.concurrent.schedule
 
-class Home : Fragment(R.layout.fragment_home), KodeinAware {
+@AndroidEntryPoint
+class Home : Fragment(R.layout.fragment_home) {
 
-    override val kodein by kodein()
-    private val viewModelFactory by instance<MainViewModelFactory>()
-    private val clipboardProvider by instance<ClipboardProvider>()
-    private val firebaseUtils by instance<FirebaseUtils>()
+    @Inject lateinit var clipboardProvider: ClipboardProvider
+    @Inject lateinit var firebaseUtils: FirebaseUtils
+    @Inject lateinit var preferenceProvider: PreferenceProvider
 
     private lateinit var adapter: CIAdapter
 
-    private lateinit var mainViewModel: MainViewModel
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        mainViewModel = ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
-        super.onCreate(savedInstanceState)
-    }
+    private val mainViewModel: MainViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
@@ -138,7 +130,7 @@ class Home : Fragment(R.layout.fragment_home), KodeinAware {
 
     private fun setRecyclerView() {
         adapter = CIAdapter(
-            context = requireContext(),
+            lifecycleOwner = viewLifecycleOwner,
             selectedClips = mainViewModel.stateManager.selectedItemClips,
             selectedItem = mainViewModel.stateManager.selectedItem,
             currentClip = mainViewModel.currentClip,
@@ -423,6 +415,7 @@ class Home : Fragment(R.layout.fragment_home), KodeinAware {
     private fun registerReviewHelper(view: View) {
         ReviewHelper(
             activity = requireActivity(),
+            preferenceProvider = preferenceProvider,
             onNeedToShowReview = { helper ->
                 Snackbar.make(view, getString(R.string.review_text), Snackbar.LENGTH_LONG)
                     .setAction(getString(R.string.review)) {

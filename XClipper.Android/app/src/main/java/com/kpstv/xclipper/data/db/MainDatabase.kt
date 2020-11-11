@@ -1,25 +1,27 @@
 package com.kpstv.xclipper.data.db
 
-import android.content.Context
+import android.util.Log
 import androidx.room.Database
-import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.kpstv.xclipper.App.DATABASE_NAME
 import com.kpstv.xclipper.data.converters.DateConverter
 import com.kpstv.xclipper.data.converters.TagConverter
-import com.kpstv.xclipper.data.localized.ClipDataDao
-import com.kpstv.xclipper.data.localized.DefineDao
-import com.kpstv.xclipper.data.localized.TagDao
-import com.kpstv.xclipper.data.localized.UrlDao
+import com.kpstv.xclipper.data.localized.dao.ClipDataDao
+import com.kpstv.xclipper.data.localized.dao.DefineDao
+import com.kpstv.xclipper.data.localized.dao.TagDao
+import com.kpstv.xclipper.data.localized.dao.UrlDao
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.ClipTag
 import com.kpstv.xclipper.data.model.Definition
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.extensions.small
 import com.kpstv.xclipper.data.model.UrlInfo
+import com.kpstv.xclipper.extensions.Coroutines
 import java.util.concurrent.Executors
+import javax.inject.Inject
+import javax.inject.Provider
+import javax.inject.Singleton
 
 @Database(
     entities = [
@@ -37,48 +39,26 @@ import java.util.concurrent.Executors
 )
 
 abstract class MainDatabase : RoomDatabase() {
-    abstract fun clipMainDao(): ClipDataDao
+    abstract fun clipDataDao(): ClipDataDao
     abstract fun clipTagDao(): TagDao
     abstract fun clipDefineDao(): DefineDao
     abstract fun clipUrlDao(): UrlDao
 
-    companion object {
-        @Volatile
-        private var instance: MainDatabase? = null
-        private val LOCK = Any()
+    @Singleton
+    class RoomCallback @Inject constructor(
+        private val database: Provider<MainDatabase>
+    ): RoomDatabase.Callback() {
+        override fun onCreate(db: SupportSQLiteDatabase) {
+            super.onCreate(db)
 
-        operator fun invoke(context: Context) = instance
-            ?: synchronized(LOCK) {
-                instance ?: buildDatabase(
-                    context
-                ).also { instance = it }
-            }
+            val clipTagDao = database.get().clipTagDao()
 
-        private fun buildDatabase(context: Context) =
-            Room.databaseBuilder(
-                context,
-                MainDatabase::class.java,
-                DATABASE_NAME
-            )
-                .addCallback(roomCallback)
-                .setJournalMode(JournalMode.TRUNCATE)
-                .fallbackToDestructiveMigration()
-                .fallbackToDestructiveMigrationOnDowngrade()
-                .build()
-
-        private val roomCallback = object : RoomDatabase.Callback() {
-            override fun onCreate(db: SupportSQLiteDatabase) {
-                super.onCreate(db)
-                Executors.newSingleThreadExecutor().execute {
-                    instance?.let { database ->
-                        with(database.clipTagDao()) {
-                            ClipTag.values().forEach {
-                                insert(Tag.from(it.small()))
-                            }
-                            insert(Tag.from("test tag"))
-                        }
-                    }
+            Coroutines.io {
+                ClipTag.values().forEach {
+                    clipTagDao.insert(Tag.from(it.small()))
                 }
+                clipTagDao.insert(Tag.from("sample tag"))
+                Log.e("RoomCallback", "Injecting sample data")
             }
         }
     }

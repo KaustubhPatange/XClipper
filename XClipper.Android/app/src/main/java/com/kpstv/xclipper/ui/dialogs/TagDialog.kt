@@ -5,6 +5,7 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import androidx.lifecycle.Observer
@@ -12,7 +13,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
-import com.kpstv.xclipper.App.DARK_THEME
 import com.kpstv.xclipper.App.DELAY_SPAN
 import com.kpstv.xclipper.App.TAG_DIALOG_RESULT_CODE
 import com.kpstv.xclipper.R
@@ -25,27 +25,20 @@ import com.kpstv.xclipper.extensions.show
 import com.kpstv.xclipper.extensions.utils.ThemeUtils
 import com.kpstv.xclipper.ui.adapters.TagAdapter
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
-import com.kpstv.xclipper.ui.viewmodels.MainViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.dialog_create_tag.*
 import kotlinx.android.synthetic.main.dialog_create_tag.view.*
 import kotlinx.coroutines.delay
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.kodein
-import org.kodein.di.generic.instance
 
+@AndroidEntryPoint
+class TagDialog : AppCompatActivity() {
 
-class TagDialog : AppCompatActivity(), KodeinAware {
+    private val TAG = javaClass.simpleName
 
-    override val kodein by kodein()
-    private val viewModelFactory by instance<MainViewModelFactory>()
-
-    private val mainViewModel: MainViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
-    }
+    private val mainViewModel: MainViewModel by viewModels()
 
     private lateinit var adapter: TagAdapter
-    private val TAG = javaClass.simpleName
     private lateinit var switchCompat: SwitchCompat
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -147,6 +140,7 @@ class TagDialog : AppCompatActivity(), KodeinAware {
         dct_recycler_view.layoutManager = layoutManager
 
         adapter = TagAdapter(
+            lifecycleOwner = this,
             dialogState = mainViewModel.stateManager.dialogState,
             tagFilter = mainViewModel.searchManager.tagFilters,
             onCloseClick = { tag, _ ->
@@ -171,7 +165,4 @@ class TagDialog : AppCompatActivity(), KodeinAware {
         mainViewModel.stateManager.setDialogState(DialogState.Normal)
         super.onDestroy()
     }
-
-   
-
 }

@@ -73,18 +73,6 @@
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".service.TestActivity"
-            android:excludeFromRecents="true"
-            android:exported="true"
-            android:label="Paste from clipboard"
-            android:noHistory="true">
-            <intent-filter>
-                <action android:name="android.intent.action.PASTE" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
 
         <service
             android:name=".service.ClipboardAccessibilityService"

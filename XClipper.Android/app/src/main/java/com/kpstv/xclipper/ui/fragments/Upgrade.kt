@@ -14,15 +14,14 @@ import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.extensions.LicenseType
 import com.kpstv.xclipper.extensions.hide
 import com.kpstv.xclipper.extensions.show
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_upgrade.*
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.x.kodein
-import org.kodein.di.generic.instance
+import javax.inject.Inject
 
-class Upgrade : Fragment(R.layout.fragment_upgrade), KodeinAware {
+@AndroidEntryPoint
+class Upgrade : Fragment(R.layout.fragment_upgrade) {
 
-    override val kodein by kodein()
-    private val firebaseProvider by instance<FirebaseProvider>()
+    @Inject lateinit var firebaseProvider: FirebaseProvider
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

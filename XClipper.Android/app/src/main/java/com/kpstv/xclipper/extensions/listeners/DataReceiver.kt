@@ -1,4 +1,4 @@
-package com.kpstv.xclipper.data.localized
+package com.kpstv.xclipper.extensions.listeners
 
 interface DataReceiver {
     fun<T> onDataReceive(value: T)

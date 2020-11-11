@@ -11,8 +11,9 @@ import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.extensions.SimpleFunction
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.isPackageBlacklisted
 import com.kpstv.xclipper.service.ClipboardAccessibilityService.Companion.currentPackage
+import javax.inject.Inject
 
-class ClipboardProviderImpl(
+class ClipboardProviderImpl @Inject constructor(
     private val context: Context,
     private val repository: MainRepository
 ) : ClipboardProvider {

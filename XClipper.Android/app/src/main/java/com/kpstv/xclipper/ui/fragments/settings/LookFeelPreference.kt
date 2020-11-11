@@ -6,11 +6,6 @@ import androidx.preference.SwitchPreferenceCompat
 import com.kpstv.xclipper.App.DARK_PREF
 import com.kpstv.xclipper.App.DARK_THEME
 import com.kpstv.xclipper.R
-import com.kpstv.xclipper.data.provider.PreferenceProvider
-import org.kodein.di.Kodein
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.x.kodein
-import org.kodein.di.generic.instance
 
 class LookFeelPreference(
     private val onThemeChange : (Boolean) -> Unit

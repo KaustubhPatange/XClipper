@@ -9,14 +9,13 @@ import com.kpstv.xclipper.App.TUTORIAL_PREF
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.extensions.utils.WelcomeUtils.Companion.setUpFragment
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.x.kodein
-import org.kodein.di.generic.instance
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
-class WatchVideo : Fragment(R.layout.fragment_welcome), KodeinAware {
+@AndroidEntryPoint
+class WatchVideo : Fragment(R.layout.fragment_welcome) {
 
-    override val kodein by kodein()
-    private val preferenceProvider by instance<PreferenceProvider>()
+    @Inject lateinit var preferenceProvider: PreferenceProvider
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

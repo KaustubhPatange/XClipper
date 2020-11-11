@@ -4,6 +4,7 @@ plugins {
     kotlin(GradlePluginId.ANDROID_EXTENSIONS_KTX)
     kotlin(GradlePluginId.KAPT)
     id(GradlePluginId.SAFE_ARGS)
+    id(GradlePluginId.DAGGER_HILT)
     id("kotlin-android")
 }
 
@@ -67,6 +68,7 @@ dependencies {
     implementation(LibraryDependency.COROUTINES_ANDROID)
     implementation(LibraryDependency.WORK_MANAGER)
     implementation(LibraryDependency.GSON)
+    implementation(LibraryDependency.ROOM_KTX)
     implementation(LibraryDependency.ROOM_RUNTIME)
     implementation(LibraryDependency.OKHTTP)
 
@@ -79,8 +81,7 @@ dependencies {
     implementation(LibraryDependency.LIFECYCLE_EXTENSIONS)
     implementation(LibraryDependency.LIFECYCLE_VIEWMODEL)
     implementation(LibraryDependency.LIFECYCLE_COMMON)
-    implementation(LibraryDependency.KODEIN_JVM)
-    implementation(LibraryDependency.KODEIN_ANDROID)
+
     implementation(LibraryDependency.RETROFIT) {
         exclude("okhttp")
     }
@@ -100,6 +101,15 @@ dependencies {
     implementation(LibraryDependency.HVLOG)
     implementation(LibraryDependency.GLIDE)
     implementation(LibraryDependency.CWT)
+
+    implementation(LibraryDependency.HILT_ANDROID)
+    implementation(LibraryDependency.HILT_VIEWODEL)
+    implementation(LibraryDependency.HILT_WORK_MANAGER)
+
+    kapt(LibraryDependency.ROOM_COMPILER_KAPT)
+    kapt(LibraryDependency.GLIDE_COMPILER)
+    kapt(LibraryDependency.HILT_COMPILER)
+    kapt(LibraryDependency.HILT_VIEWODEL_COMPILER)
 
     kapt(LibraryDependency.GLIDE_COMPILER)
     kapt(LibraryDependency.ROOM_COMPILER_KAPT)

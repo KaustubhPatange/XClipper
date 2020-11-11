@@ -2,6 +2,7 @@ package com.kpstv.xclipper.ui.dialogs
 
 import android.os.Bundle
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -17,32 +18,26 @@ import com.kpstv.xclipper.extensions.listeners.RepositoryListener
 import com.kpstv.xclipper.extensions.utils.ThemeUtils
 import com.kpstv.xclipper.ui.adapters.EditAdapter
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
-import com.kpstv.xclipper.ui.viewmodels.MainViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.dialog_edit_layout.*
 import kotlinx.coroutines.delay
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.kodein
-import org.kodein.di.generic.instance
 
-class EditDialog : AppCompatActivity(), KodeinAware {
+@AndroidEntryPoint
+class EditDialog : AppCompatActivity() {
 
     companion object {
         const val STATE_DIALOG_TEXT_FIELD = "state_dialog_text_field"
         const val STATE_TAG_RECYCLERVIEW = "state_tag_recyclerview"
     }
 
-    override val kodein by kodein()
-    private val viewModelFactory by instance<MainViewModelFactory>()
+    private val mainViewModel: MainViewModel by viewModels()
 
     private var spanCount = 2
 
     private lateinit var clip: Clip
     private lateinit var adapter: EditAdapter
     private lateinit var edType: EDType
-    private val mainViewModel: MainViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -8,19 +8,10 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface TinyUrlApi {
+    companion object {
+        const val BASE_URL = "https://tinyurl.com"
+    }
+
     @GET("/api-create.php")
     fun shortenAsync(@Query("url") longUrl: String): Deferred<Response<ResponseBody>>
-
-    companion object {
-        private var tinyUrlApi: TinyUrlApi? = null
-        operator fun invoke(retrofitUtils: RetrofitUtils): TinyUrlApi {
-            return tinyUrlApi
-                ?: retrofitUtils.getRetrofitBuilder()
-                    .baseUrl("https://tinyurl.com")
-                    .client(retrofitUtils.getHttpBuilder().build())
-                    .build()
-                    .create(TinyUrlApi::class.java)
-                    .also { tinyUrlApi = it }
-        }
-    }
 }

@@ -3,6 +3,7 @@ private object GradlePluginVersion {
     const val ANDROID_GRADLE = "3.6.3"
     const val GOOGLE_SERVICE = "4.3.3"
     const val SAFE_ARGS = CoreVersion.JETPACK_NAVIGATION
+    const val HILT = "2.28-alpha"
 }
 
 object GradlePluginId {
@@ -13,6 +14,7 @@ object GradlePluginId {
     const val KAPT = "kapt"
     const val GOOGLE_SERVICE = "com.google.gms.google-services"
     const val SAFE_ARGS = "androidx.navigation.safeargs.kotlin"
+    const val DAGGER_HILT = "dagger.hilt.android.plugin"
 }
 
 object GradleDependency {
@@ -20,4 +22,5 @@ object GradleDependency {
     const val KOTLIN_PLUGIN = "org.jetbrains.kotlin:kotlin-gradle-plugin:${GradlePluginVersion.KOTLIN}"
     const val GOOGLE_SERVICE = "com.google.gms:google-services:${GradlePluginVersion.GOOGLE_SERVICE}"
     const val SAFE_ARGS = "androidx.navigation:navigation-safe-args-gradle-plugin:${GradlePluginVersion.SAFE_ARGS}"
+    const val DAGGER_HILT = "com.google.dagger:hilt-android-gradle-plugin:${GradlePluginVersion.HILT}"
 }

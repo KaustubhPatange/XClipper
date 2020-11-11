@@ -11,6 +11,7 @@ buildscript {
         classpath(GradleDependency.GRADLE_BUILD_TOOLS)
         classpath(GradleDependency.KOTLIN_PLUGIN)
         classpath(GradleDependency.SAFE_ARGS)
+        classpath(GradleDependency.DAGGER_HILT)
         "classpath"("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
     }
 }

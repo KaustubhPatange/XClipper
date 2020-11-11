@@ -27,14 +27,14 @@ import com.kpstv.xclipper.databinding.ItemBubbleServiceBinding
 import com.kpstv.xclipper.extensions.hide
 import com.kpstv.xclipper.extensions.layoutInflater
 import com.kpstv.xclipper.extensions.show
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.kodein
-import org.kodein.di.generic.instance
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
+class BubbleService : FloatingBubbleService() {
 
-class BubbleService : FloatingBubbleService(), KodeinAware {
-    override val kodein by kodein()
-    private val repository by instance<MainRepository>()
+    @Inject lateinit var repository: MainRepository
+
     private val TAG = javaClass.simpleName
     private lateinit var adapter: PageClipAdapter
 
@@ -94,18 +94,16 @@ class BubbleService : FloatingBubbleService(), KodeinAware {
         super.onDestroy()
     }
 
-    class PageClipAdapter(val onClick: (String) -> Unit)
-        : PagedListAdapter<Clip, PageClipAdapter.PageClipHolder>(DiffUtils) {
+    class PageClipAdapter(val onClick: (String) -> Unit) :
+        PagedListAdapter<Clip, PageClipAdapter.PageClipHolder>(DiffUtils) {
 
         companion object {
             private val DiffUtils = object : DiffUtil.ItemCallback<Clip>() {
                 override fun areItemsTheSame(oldItem: Clip, newItem: Clip) =
                     oldItem.id == newItem.id
 
-
                 override fun areContentsTheSame(oldItem: Clip, newItem: Clip) =
                     oldItem == newItem
-
             }
         }
 

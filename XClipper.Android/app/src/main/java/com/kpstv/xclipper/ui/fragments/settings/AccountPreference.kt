@@ -1,10 +1,8 @@
 package com.kpstv.xclipper.ui.fragments.settings
 
 import android.app.AlertDialog
-import android.content.Intent
 import android.os.Bundle
-import androidx.activity.result.ActivityResultLauncher
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
@@ -24,21 +22,17 @@ import com.kpstv.xclipper.extensions.utils.Utils.Companion.logoutFromDatabase
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showConnectDialog
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showConnectionDialog
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
-import com.kpstv.xclipper.ui.viewmodels.MainViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.x.kodein
-import org.kodein.di.generic.instance
+import javax.inject.Inject
 
-class AccountPreference : PreferenceFragmentCompat(), KodeinAware {
+@AndroidEntryPoint
+class AccountPreference : PreferenceFragmentCompat() {
 
-    override val kodein by kodein()
-    private val preferenceProvider by instance<PreferenceProvider>()
-    private val dbConnectionProvider by instance<DBConnectionProvider>()
-    private val viewModelFactory by instance<MainViewModelFactory>()
-    private val mainViewModel: MainViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
-    }
+    @Inject lateinit var preferenceProvider: PreferenceProvider
+    @Inject lateinit var dbConnectionProvider: DBConnectionProvider
+
+    private val mainViewModel: MainViewModel by viewModels()
 
     private var autoSyncPreference: SwitchPreferenceCompat? = null
     private var bindPreference: SwitchPreferenceCompat? = null

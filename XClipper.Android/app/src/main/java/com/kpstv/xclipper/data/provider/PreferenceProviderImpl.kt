@@ -7,8 +7,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
 import com.kpstv.license.Encryption.DecryptPref
 import com.kpstv.license.Encryption.EncryptPref
+import javax.inject.Inject
 
-class PreferenceProviderImpl(
+class PreferenceProviderImpl @Inject constructor(
     context: Context
 ) : PreferenceProvider {
     private val preference = PreferenceManager.getDefaultSharedPreferences(context)

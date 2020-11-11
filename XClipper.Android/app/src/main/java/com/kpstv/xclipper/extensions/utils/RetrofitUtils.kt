@@ -9,6 +9,8 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * A class made for my project "Moviesy" https://github.com/KaustubhPatange/Moviesy
@@ -16,7 +18,8 @@ import java.util.concurrent.TimeUnit
  * Now serves as a general purpose for managing retrofit builder and
  * http logging utils.
  */
-class RetrofitUtils(
+@Singleton
+class RetrofitUtils @Inject constructor(
     private val interceptor: NetworkConnectionInterceptor
 ) {
     private var retrofitBuilder: Retrofit.Builder? = null

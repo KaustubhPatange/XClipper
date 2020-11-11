@@ -24,12 +24,15 @@ import com.kpstv.xclipper.extensions.utils.FirebaseUtils
 import com.kpstv.xclipper.extensions.utils.KeyboardUtils.Companion.getKeyboardHeight
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.isSystemOverlayEnabled
 import com.kpstv.xclipper.service.helper.ClipboardDetection
+import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.kodein
-import org.kodein.di.generic.instance
+import javax.inject.Inject
 
-class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
+@AndroidEntryPoint
+class ClipboardAccessibilityService : AccessibilityService() {
+
+    @Inject lateinit var firebaseUtils: FirebaseUtils
+    @Inject lateinit var clipboardProvider: ClipboardProvider
 
     /** We will save the package name to this variable from the event. */
     companion object {
@@ -43,9 +46,6 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
         if (keyboardHeight.value != value) keyboardHeight.postValue(value)
     }
 
-    override val kodein by kodein()
-    private val firebaseUtils by instance<FirebaseUtils>()
-    private val clipboardProvider by instance<ClipboardProvider>()
     private lateinit var powerManager: PowerManager
 
     private var nodeInfo: AccessibilityNodeInfo? = null
@@ -80,17 +80,6 @@ class ClipboardAccessibilityService : AccessibilityService(), KodeinAware {
 
         if (event?.eventType != null)
             ClipboardDetection.addEvent(event.eventType)
-
-//       try {
-//           val builder = StringBuilder()
-//           val d = event?.source?.childCount ?: 0
-//           for (i in 0 until d) {
-//               builder.append(event?.source?.getChild(i)?.text ?: "" + ", ")
-//           }
-//           Log.e(TAG, "Message: " + builder.toString())
-//       }catch (e: Exception) {
-//           e.printStackTrace()
-//       }
 
         postKeyboardValue(getKeyboardHeight(applicationContext))
 

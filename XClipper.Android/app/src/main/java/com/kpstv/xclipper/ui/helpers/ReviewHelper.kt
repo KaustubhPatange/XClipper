@@ -4,23 +4,16 @@ import androidx.fragment.app.FragmentActivity
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.kpstv.hvlog.HVLog
 import com.kpstv.xclipper.data.provider.PreferenceProvider
-import com.kpstv.xclipper.extensions.SimpleFunction
 import com.kpstv.xclipper.ui.fragments.Home
-import org.kodein.di.Kodein
-import org.kodein.di.KodeinAware
-import org.kodein.di.generic.instance
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 class ReviewHelper(
     private val activity: FragmentActivity,
+    private val preferenceProvider: PreferenceProvider,
     private val onNeedToShowReview: (ReviewHelper) -> Unit
-) : AbstractFragmentHelper<Home>(activity, Home::class), KodeinAware {
+) : AbstractFragmentHelper<Home>(activity, Home::class) {
 
-    override val kodein: Kodein = (activity.applicationContext as KodeinAware).kodein
     private val manager = ReviewManagerFactory.create(activity)
-
-    private val preferenceProvider by instance<PreferenceProvider>()
 
     override fun onFragmentViewCreated() {
         attach()
@@ -61,7 +54,7 @@ class ReviewHelper(
 
     private fun setATriggerDate() {
         val setTriggerDate = Calendar.getInstance()
-            .apply {add(Calendar.DAY_OF_MONTH ,2)}.time.time
+            .apply { add(Calendar.DAY_OF_MONTH, 2) }.time.time
         preferenceProvider.putLongKey(SHOW_REVIEW_FLOW_PREF, setTriggerDate)
     }
 

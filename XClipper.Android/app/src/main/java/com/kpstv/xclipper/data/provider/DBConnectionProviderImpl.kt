@@ -6,8 +6,9 @@ import com.kpstv.xclipper.App
 import com.kpstv.xclipper.App.EMPTY_STRING
 import com.kpstv.xclipper.data.localized.FBOptions
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
+import javax.inject.Inject
 
-class DBConnectionProviderImpl(
+class DBConnectionProviderImpl @Inject constructor(
     private val preferenceProvider: PreferenceProvider
 ) : DBConnectionProvider {
     /**

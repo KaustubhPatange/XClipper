@@ -2,9 +2,11 @@ package com.kpstv.xclipper.ui.viewmodels
 
 import android.app.Application
 import android.content.Context
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.data.localized.FBOptions
+import com.kpstv.xclipper.data.localized.dao.TagDao
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.data.provider.ClipboardProvider
@@ -12,7 +14,6 @@ import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.data.repository.MainRepository
-import com.kpstv.xclipper.data.repository.TagRepository
 import com.kpstv.xclipper.extensions.Coroutines
 import com.kpstv.xclipper.extensions.enumerations.FilterType
 import com.kpstv.xclipper.extensions.listeners.RepositoryListener
@@ -27,13 +28,14 @@ import com.kpstv.xclipper.ui.helpers.TinyUrlApiHelper
 import com.kpstv.xclipper.ui.viewmodels.managers.MainEditManager
 import com.kpstv.xclipper.ui.viewmodels.managers.MainSearchManager
 import com.kpstv.xclipper.ui.viewmodels.managers.MainStateManager
+import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.ArrayList
 
-class MainViewModel(
+class MainViewModel @ViewModelInject constructor(
     application: Application,
     private val mainRepository: MainRepository,
-    private val tagRepository: TagRepository,
+    private val tagRepository: TagDao,
     private val preferenceProvider: PreferenceProvider,
     private val firebaseProvider: FirebaseProvider,
     private val clipboardProvider: ClipboardProvider,
@@ -129,7 +131,7 @@ class MainViewModel(
     }
 
     fun postToTagRepository(tag: Tag) {
-        tagRepository.insertTag(tag)
+        viewModelScope.launch { tagRepository.insertTag(tag) }
     }
 
     fun deleteFromTagRepository(tag: Tag, statusListener: StatusListener) {
@@ -140,7 +142,7 @@ class MainViewModel(
                 },
                 notFound = {
                     statusListener.onComplete()
-                    tagRepository.deleteTag(tag)
+                    viewModelScope.launch { tagRepository.delete(tag) }
                 }
             ))
     }

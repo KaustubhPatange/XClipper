@@ -4,14 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.kpstv.xclipper.App.EMPTY_STRING
 import com.kpstv.xclipper.App.STAGGERED_SPAN_COUNT
+import com.kpstv.xclipper.data.localized.dao.TagDao
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.ClipTag
 import com.kpstv.xclipper.data.model.Tag
-import com.kpstv.xclipper.data.repository.TagRepository
 import kotlin.collections.HashMap
 
 class MainEditManager(
-    tagRepository: TagRepository
+    tagRepository: TagDao
 ) {
     private val _spanCount = MutableLiveData(STAGGERED_SPAN_COUNT)
     private val _clip = MutableLiveData<Clip>()

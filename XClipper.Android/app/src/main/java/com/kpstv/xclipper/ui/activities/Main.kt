@@ -1,8 +1,8 @@
 package com.kpstv.xclipper.ui.activities
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import com.kpstv.xclipper.App.DARK_THEME
@@ -13,24 +13,20 @@ import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.extensions.utils.ThemeUtils
 import com.kpstv.xclipper.ui.helpers.UpdateHelper
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
-import com.kpstv.xclipper.ui.viewmodels.MainViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_home.*
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.kodein
-import org.kodein.di.generic.instance
+import javax.inject.Inject
 
-
-class Main : AppCompatActivity(), KodeinAware {
+@AndroidEntryPoint
+class Main : AppCompatActivity() {
 
     private val TAG = javaClass.simpleName
 
-    override val kodein by kodein()
-    private val viewModelFactory by instance<MainViewModelFactory>()
-    private val preferenceProvider by instance<PreferenceProvider>()
+    @Inject lateinit var preferenceProvider: PreferenceProvider
+
+    private val mainViewModel: MainViewModel by viewModels()
 
     private var isDarkTheme = true
-
-    private lateinit var mainViewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,8 +34,6 @@ class Main : AppCompatActivity(), KodeinAware {
         isDarkTheme = DARK_THEME
 
         ThemeUtils.setTheme(this)
-
-        mainViewModel = ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
 
         setContentView(R.layout.activity_main)
 

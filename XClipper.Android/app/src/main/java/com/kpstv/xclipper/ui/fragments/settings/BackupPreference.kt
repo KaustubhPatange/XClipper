@@ -1,17 +1,13 @@
 package com.kpstv.xclipper.ui.fragments.settings
 
 import android.Manifest
-import android.content.ContentResolver
 import android.content.Intent
 import android.content.Intent.*
 import android.content.pm.PackageManager.PERMISSION_GRANTED
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.OpenableColumns
-import android.util.Log
 import androidx.core.net.toUri
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.kpstv.xclipper.App.DATABASE_MIME_TYPE
@@ -24,25 +20,19 @@ import com.kpstv.xclipper.extensions.SimpleFunction
 import com.kpstv.xclipper.extensions.getFormattedDate
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.isValidSQLite
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
-import com.kpstv.xclipper.ui.viewmodels.MainViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.x.kodein
-import org.kodein.di.generic.instance
 import java.util.*
 
-class BackupPreference : PreferenceFragmentCompat(), KodeinAware {
+@AndroidEntryPoint
+class BackupPreference : PreferenceFragmentCompat() {
 
     companion object {
         private const val EXPORT_RESULT_CODE = 110
         private const val IMPORT_RESULT_CODE = 111
     }
 
-    override val kodein by kodein()
-    private val viewModelFactory by instance<MainViewModelFactory>()
-    private val mainViewModel: MainViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
-    }
+    private val mainViewModel: MainViewModel by viewModels()
 
     private var internalBlock: SimpleFunction? = null
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {

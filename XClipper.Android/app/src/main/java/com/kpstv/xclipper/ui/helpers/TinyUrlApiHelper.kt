@@ -1,20 +1,23 @@
 package com.kpstv.xclipper.ui.helpers
 
 import com.kpstv.xclipper.data.api.TinyUrlApi
+import com.kpstv.xclipper.data.localized.dao.UrlDao
 import com.kpstv.xclipper.data.model.UrlInfo
-import com.kpstv.xclipper.data.repository.UrlRepository
 import com.kpstv.xclipper.extensions.ioThread
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
 import com.kpstv.xclipper.extensions.mainThread
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class TinyUrlApiHelper(
+@Singleton
+class TinyUrlApiHelper @Inject constructor(
     private val tinyUrlApi: TinyUrlApi,
-    private val urlRepository: UrlRepository
+    private val urlRepository: UrlDao
 ) {
     fun createShortenUrl(longUrl: String, responseListener: ResponseListener<UrlInfo>) {
         ioThread {
             try {
-                val data = urlRepository.getData(longUrl)
+                val data = urlRepository.getUrlInfo(longUrl)
                 if (data == null) {
                     val response = tinyUrlApi.shortenAsync(longUrl).await()
                     if (response.isSuccessful) {

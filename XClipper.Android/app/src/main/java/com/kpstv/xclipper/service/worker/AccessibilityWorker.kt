@@ -1,24 +1,24 @@
 package com.kpstv.xclipper.service.worker
 
 import android.content.Context
+import androidx.hilt.Assisted
+import androidx.hilt.work.WorkerInject
 import androidx.work.*
 import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.ui.helpers.NotificationHelper
-import org.kodein.di.Kodein
-import org.kodein.di.KodeinAware
-import org.kodein.di.generic.instance
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
-class AccessibilityWorker(
-    private val context: Context,
-    params: WorkerParameters
-) : Worker(context, params), KodeinAware {
-    override var kodein: Kodein = (context.applicationContext as KodeinAware).kodein
-    private val notificationHelper by instance<NotificationHelper>()
+class AccessibilityWorker @WorkerInject constructor(
+    @Assisted private val appContext: Context,
+    @Assisted workerParams: WorkerParameters
+) : Worker(appContext, workerParams) {
+
+    @Inject lateinit var notificationHelper: NotificationHelper
 
     override fun doWork(): Result {
-        if (!Utils.isClipboardAccessibilityServiceRunning(context)) {
-            notificationHelper.sendAccessibilityDisabledNotification(context)
+        if (!Utils.isClipboardAccessibilityServiceRunning(appContext)) {
+            notificationHelper.sendAccessibilityDisabledNotification(appContext)
         }
         return Result.success()
     }

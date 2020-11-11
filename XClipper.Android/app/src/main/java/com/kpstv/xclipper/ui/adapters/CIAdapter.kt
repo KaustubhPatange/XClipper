@@ -1,6 +1,5 @@
 package com.kpstv.xclipper.ui.adapters
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,7 +28,7 @@ import kotlinx.android.synthetic.main.item_clip.view.*
 import java.util.*
 
 class CIAdapter(
-    private val context: Context,
+    private val lifecycleOwner: LifecycleOwner,
     private val multiSelectionState: LiveData<Boolean>,
     private val selectedItem: LiveData<Clip>,
     private val currentClip: LiveData<String>,
@@ -104,17 +103,17 @@ class CIAdapter(
             )
         }
 
-        currentClip.observe(context as LifecycleOwner, Observer {
+        currentClip.observe(lifecycleOwner, Observer {
             if (holder.itemView.ci_textView.text == it)
                 holder.itemView.ci_textView.setTextColor(
-                    getColorFromAttr(context, R.attr.colorCurrentClip)
+                    getColorFromAttr(holder.itemView.context, R.attr.colorCurrentClip)
                 )
             else holder.itemView.ci_textView.setTextColor(
-                getColorFromAttr(context, R.attr.colorTextPrimary)
+                getColorFromAttr(holder.itemView.context, R.attr.colorTextPrimary)
             )
         })
 
-        selectedItem.observe(context as LifecycleOwner, Observer {
+        selectedItem.observe(lifecycleOwner, Observer {
 
             /** Will figure out where to place this */
             setPinMovements(clip, holder)
@@ -128,7 +127,7 @@ class CIAdapter(
             }
         })
 
-        multiSelectionState.observe(context as LifecycleOwner, Observer {
+        multiSelectionState.observe(lifecycleOwner, Observer {
             if (it) {
                 holder.itemView.ci_copyButton.hide()
                 holder.itemView.ci_timeText.hide()
@@ -140,7 +139,7 @@ class CIAdapter(
             }
         })
 
-        selectedClips.observe(context as LifecycleOwner, Observer {
+        selectedClips.observe(lifecycleOwner, Observer {
             when {
                 it.contains(clip) -> {
                     holder.itemView.mainCard.setCardBackgroundColor(CARD_SELECTED_COLOR)
@@ -204,14 +203,14 @@ class CIAdapter(
                 holder.itemView,
                 R.drawable.ic_unpin
             )
-            holder.itemView.ci_btn_pin.text = context.getString(R.string.unpin)
+            holder.itemView.ci_btn_pin.text = holder.itemView.context.getString(R.string.unpin)
             holder.itemView.ci_pinImage.show()
         } else {
             setButtonDrawable(
                 holder.itemView,
                 R.drawable.ic_pin
             )
-            holder.itemView.ci_btn_pin.text = context.getString(R.string.pin)
+            holder.itemView.ci_btn_pin.text = holder.itemView.context.getString(R.string.pin)
             holder.itemView.ci_pinImage.collapse()
         }
     }
@@ -219,7 +218,7 @@ class CIAdapter(
     private fun setButtonDrawable(view: View, @DrawableRes imageId: Int) {
         view.ci_btn_pin.setCompoundDrawablesWithIntrinsicBounds(
             null,
-            ContextCompat.getDrawable(context, imageId),
+            ContextCompat.getDrawable(view.ci_btn_pin.context, imageId),
             null, null
         )
     }
@@ -228,7 +227,7 @@ class CIAdapter(
         view.ci_tagLayout.removeAllViews()
         clip.tags?.forEach mainLoop@{ entry ->
             if (entry.key.isNotBlank()) {
-                val textView = LayoutInflater.from(context)
+                val textView = LayoutInflater.from(view.ci_btn_pin.context)
                     .inflate(R.layout.item_tag, null) as TextView
                 val layoutParams = FlexboxLayout.LayoutParams(
                     FlexboxLayout.LayoutParams.WRAP_CONTENT,

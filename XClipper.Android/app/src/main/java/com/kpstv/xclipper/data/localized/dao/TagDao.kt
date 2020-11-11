@@ -1,4 +1,4 @@
-package com.kpstv.xclipper.data.localized
+package com.kpstv.xclipper.data.localized.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
@@ -9,11 +9,19 @@ interface TagDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(tag: Tag)
 
+    @Transaction
+    suspend fun insertTag(tag: Tag) {
+        val allData = getAllData()
+
+        if (allData.count { it.name == tag.name } <= 0)
+            insert(tag)
+    }
+
     @Delete
     fun delete(tag: Tag)
 
     @Query("select * from table_tag")
-    fun getAllData(): List<Tag>
+    suspend fun getAllData(): List<Tag>
 
     @Query("select * from table_tag order by name")
     fun getAllLiveData(): LiveData<List<Tag>>

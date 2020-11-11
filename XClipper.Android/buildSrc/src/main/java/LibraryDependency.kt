@@ -35,6 +35,7 @@ private object LibraryVersion {
     const val GLIDE = "4.11.0"
     const val RECYCLERVIEW = "1.1.0"
     const val CWT = "0.1.3"
+    const val HILT_COMPILER = "1.0.0-alpha01"
 }
 
 object LibraryDependency {
@@ -52,6 +53,7 @@ object LibraryDependency {
     const val COROUTINES_CORE = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${CoreVersion.ANDROID_COROUTINES}"
     const val COROUTINES_ANDROID = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${CoreVersion.ANDROID_COROUTINES}"
     const val GSON = "com.google.code.gson:gson:${LibraryVersion.GSON}"
+    const val ROOM_KTX = "androidx.room:room-ktx:${LibraryVersion.ROOM}"
     const val ROOM_RUNTIME = "androidx.room:room-runtime:${LibraryVersion.ROOM}"
     const val ROOM_COMPILER_KAPT = "androidx.room:room-compiler:${LibraryVersion.ROOM}"
     const val NAVIGATION_FRAGMENT = "androidx.navigation:navigation-fragment-ktx:${CoreVersion.JETPACK_NAVIGATION}"
@@ -70,6 +72,12 @@ object LibraryDependency {
     const val FIREBASE_REALTIME_DATABASE = "com.google.firebase:firebase-database-ktx:${LibraryVersion.REALTIME_DATABASE}"
     const val FIREBASE_AUTH = "com.google.firebase:firebase-auth-ktx:${LibraryVersion.FIREBASE_AUTH}"
     const val PLAY_SERVICE_AUTH = "com.google.android.gms:play-services-auth:${LibraryVersion.PLAY_SERVICE_AUTH}"
+
+    const val HILT_WORK_MANAGER = "androidx.hilt:hilt-work:${LibraryVersion.HILT_COMPILER}"
+    const val HILT_VIEWODEL_COMPILER = "androidx.hilt:hilt-compiler:${LibraryVersion.HILT_COMPILER}"
+    const val HILT_VIEWODEL = "androidx.hilt:hilt-lifecycle-viewmodel:${LibraryVersion.HILT_COMPILER}"
+    const val HILT_ANDROID = "com.google.dagger:hilt-android:${CoreVersion.HILT}"
+    const val HILT_COMPILER = "com.google.dagger:hilt-android-compiler:${CoreVersion.HILT}"
 
     const val SIMPLE_SEARCH_VIEW = "com.github.Ferfalk:SimpleSearchView:${LibraryVersion.SIMPLE_SEARCH_VIEW}"
     const val ANDROIDX_PREFERENCES = "androidx.preference:preference:${LibraryVersion.PREFERENCES}"

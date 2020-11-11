@@ -16,10 +16,14 @@ import com.kpstv.xclipper.App.ACTION_SMART_OPTIONS
 import com.kpstv.xclipper.App.APP_CLIP_DATA
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.service.AppBroadcastReceiver
+import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.*
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class NotificationHelper(
-    private val context: Context
+@Singleton
+class NotificationHelper @Inject constructor(
+    @ApplicationContext private val context: Context
 ) {
     companion object {
         const val CHANNEL_ID = "my_channel_01"

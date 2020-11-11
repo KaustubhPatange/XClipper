@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -24,16 +25,14 @@ import com.kpstv.xclipper.ui.fragments.Upgrade
 import com.kpstv.xclipper.ui.fragments.settings.*
 import com.kpstv.xclipper.ui.helpers.AuthenticationHelper
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
-import com.kpstv.xclipper.ui.viewmodels.MainViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_settings.*
 import kotlinx.android.synthetic.main.recycler_view.view.*
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.kodein
-import org.kodein.di.generic.instance
+import javax.inject.Inject
 
-
-class Settings : AppCompatActivity(), KodeinAware {
+@AndroidEntryPoint
+class Settings : AppCompatActivity() {
 
     companion object {
         const val GENERAL_PREF = "com.kpstv.xclipper.general_pref"
@@ -44,12 +43,8 @@ class Settings : AppCompatActivity(), KodeinAware {
         const val ABOUT_PREF = "com.kpstv.xclipper.about_pref"
     }
 
-    override val kodein by kodein()
-    private val viewModelFactory by instance<MainViewModelFactory>()
-    private val dbConnectionProvider by instance<DBConnectionProvider>()
-    private val mainViewModel: MainViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
-    }
+    @Inject lateinit var dbConnectionProvider: DBConnectionProvider
+    private val mainViewModel: MainViewModel by viewModels()
 
     private val settingsFragment = SettingsFragment()
     override fun onCreate(savedInstanceState: Bundle?) {

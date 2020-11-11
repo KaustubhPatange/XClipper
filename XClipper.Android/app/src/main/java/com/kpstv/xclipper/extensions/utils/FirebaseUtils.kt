@@ -12,10 +12,14 @@ import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.extensions.decrypt
 import com.kpstv.xclipper.extensions.enumerations.FirebaseState
+import dagger.hilt.android.qualifiers.ApplicationContext
 import es.dmoral.toasty.Toasty
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class FirebaseUtils(
-    private val context: Context,
+@Singleton
+class FirebaseUtils @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val repository: MainRepository,
     private val firebaseProvider: FirebaseProvider,
     private val preferenceProvider: PreferenceProvider,

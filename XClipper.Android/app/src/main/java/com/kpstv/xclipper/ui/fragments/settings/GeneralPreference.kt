@@ -26,7 +26,6 @@ import com.kpstv.xclipper.extensions.utils.Utils.Companion.showAccessibilityDial
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showOverlayDialog
 import es.dmoral.toasty.Toasty
 
-
 class GeneralPreference : PreferenceFragmentCompat() {
     private val TAG = javaClass.simpleName
     private var checkPreference: SwitchPreferenceCompat? = null
@@ -111,6 +110,7 @@ class GeneralPreference : PreferenceFragmentCompat() {
         if (rememberToCheckOverlaySwitch) {
             overlayPreference?.isChecked = isSystemOverlayEnabled(requireContext())
             rememberToCheckOverlaySwitch = false
+            showSuggestion = true
         }
     }
 }

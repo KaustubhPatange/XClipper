@@ -1,4 +1,4 @@
-package com.kpstv.xclipper.data.localized
+package com.kpstv.xclipper.data.localized.dao
 
 import androidx.lifecycle.LiveData
 import androidx.paging.DataSource

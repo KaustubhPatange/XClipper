@@ -10,22 +10,17 @@ import androidx.lifecycle.lifecycleScope
 import com.kpstv.xclipper.App.CLIP_DATA
 import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.data.repository.MainRepository
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.kodein
-import org.kodein.di.generic.instance
+import javax.inject.Inject
 
-class ChangeClipboardActivity : FragmentActivity(), KodeinAware {
+@AndroidEntryPoint
+class ChangeClipboardActivity : FragmentActivity() {
 
-    override val kodein by kodein()
-    private val clipProvider by instance<ClipboardProvider>()
-    private val repository by instance<MainRepository>()
+    @Inject lateinit var clipProvider: ClipboardProvider
+    @Inject lateinit var repository: MainRepository
 
     private val TAG = javaClass.simpleName
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
@@ -62,8 +57,6 @@ class ChangeClipboardActivity : FragmentActivity(), KodeinAware {
             repository.updateRepository(CLIP_DATA)
         }
     }
-
-
 
     override fun onDestroy() {
         super.onDestroy()

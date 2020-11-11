@@ -17,6 +17,7 @@ import kotlinx.android.synthetic.main.item_tag_chip.view.*
 import kotlin.collections.ArrayList
 
 class TagAdapter(
+    private val lifecycleOwner: LifecycleOwner,
     private val dialogState: LiveData<DialogState>,
     private val tagFilter: LiveData<ArrayList<Tag>>,
     private val onCloseClick: (Tag, Int) -> Unit,
@@ -49,7 +50,7 @@ class TagAdapter(
     private fun TagHolder.bind(tag: Tag) = with(itemView) {
         chip.text = tag.name
 
-        dialogState.observe(context as LifecycleOwner, Observer {
+        dialogState.observe(lifecycleOwner, Observer {
             if (it == DialogState.Edit) {
                 chip.isCloseIconVisible = ClipTag.fromValue(tag.name) == null
             }
@@ -57,7 +58,7 @@ class TagAdapter(
                 chip.isCloseIconVisible = false
         })
 
-        tagFilter.observe(context as LifecycleOwner, Observer {
+        tagFilter.observe(lifecycleOwner, Observer {
             chip.isChipIconVisible = it.contains(tag)
         })
 

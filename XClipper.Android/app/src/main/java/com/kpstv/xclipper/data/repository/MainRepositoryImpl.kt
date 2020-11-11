@@ -6,7 +6,7 @@ import androidx.paging.PagedList
 import androidx.paging.toLiveData
 import com.kpstv.xclipper.App.LOCAL_MAX_ITEM_STORAGE
 import com.kpstv.xclipper.App.MAX_CHARACTER_TO_STORE
-import com.kpstv.xclipper.data.localized.ClipDataDao
+import com.kpstv.xclipper.data.localized.dao.ClipDataDao
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.extensions.Coroutines
@@ -18,8 +18,9 @@ import com.kpstv.xclipper.extensions.mainThread
 import com.kpstv.xclipper.ui.helpers.NotificationHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class MainRepositoryImpl(
+class MainRepositoryImpl @Inject constructor(
     private val clipDao: ClipDataDao,
     private val firebaseProvider: FirebaseProvider,
     private val notificationHelper: NotificationHelper

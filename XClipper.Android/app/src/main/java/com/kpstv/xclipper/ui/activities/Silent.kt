@@ -1,7 +1,7 @@
 package com.kpstv.xclipper.ui.activities
 
 import android.content.Intent
-import androidx.fragment.app.FragmentActivity
+import androidx.appcompat.app.AppCompatActivity
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.extensions.ioThread
@@ -9,15 +9,17 @@ import com.kpstv.xclipper.extensions.mainThread
 import com.kpstv.xclipper.ui.fragments.MoreBottomSheet
 import com.kpstv.xclipper.ui.helpers.DictionaryApiHelper
 import com.kpstv.xclipper.ui.helpers.TinyUrlApiHelper
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.kodein
-import org.kodein.di.generic.instance
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
-class Silent : FragmentActivity(), KodeinAware {
-    override val kodein by kodein()
-    private val repository by instance<MainRepository>()
-    private val tinyUrlApiHelper by instance<TinyUrlApiHelper>()
-    private val dictionaryApiHelper by instance<DictionaryApiHelper>()
+// TODO: Seems like an unused Activity, was initial FragmentActivity
+
+@AndroidEntryPoint
+class Silent : AppCompatActivity() {
+
+    @Inject lateinit var repository: MainRepository
+    @Inject lateinit var tinyUrlApiHelper: TinyUrlApiHelper
+    @Inject lateinit var dictionaryApiHelper: DictionaryApiHelper
 
     private var isShown = false
 

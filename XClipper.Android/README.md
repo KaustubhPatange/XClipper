@@ -30,7 +30,9 @@ Since this project involves **license** system 📃 some of the source files has
   - [Workmanager](https://developer.android.com/topic/libraries/architecture/workmanager) - An API that makes it easy to schedule deferrable, asynchronous tasks that are expected to run even if the app exits or the device restarts.
 - [Navigation Component](https://developer.android.com/guide/navigation) - Jetpack's recommended way to implement navigation aiming to improve user experience.
 - [Dependency Injection](https://developer.android.com/training/dependency-injection) -
-  - [Kodein](https://kodein.org/Kodein-DI/) - A simple Kotlin dependency retrieval container.
+  - [Hilt-Dagger](https://dagger.dev/hilt/) - Standard library to incorporate Dagger dependency injection into an Android application.
+  - [Hilt-ViewModel](https://developer.android.com/training/dependency-injection/hilt-jetpack) - DI for injecting ViewModel.
+  - [Kodein](https://kodein.org/Kodein-DI/) - A simple Kotlin dependency retrieval container (last commit [here](https://github.com/KaustubhPatange/XClipper/tree/6dff71eece38ae1b3384f96a7c169ebabe007a86)).
 - [Retrofit](https://square.github.io/retrofit/) - A type-safe HTTP client for Android and Java.
 - [Material Components for Android](https://github.com/material-components/material-components-android) - Modular and customizable Material Design UI components for Android.
 - [Firebase](https://firebase.google.com) - A suite of tools that helps you quickly develop high-quality apps.

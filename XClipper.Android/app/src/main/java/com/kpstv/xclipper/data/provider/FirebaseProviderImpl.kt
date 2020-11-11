@@ -31,9 +31,10 @@ import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.extensions.listeners.FChildEventListener
 import com.kpstv.xclipper.extensions.listeners.FValueEventListener
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
+import javax.inject.Inject
 
 @ExperimentalStdlibApi
-class FirebaseProviderImpl(
+class FirebaseProviderImpl @Inject constructor(
     private val context: Context,
     private val dbConnectionProvider: DBConnectionProvider
 ) : FirebaseProvider {
