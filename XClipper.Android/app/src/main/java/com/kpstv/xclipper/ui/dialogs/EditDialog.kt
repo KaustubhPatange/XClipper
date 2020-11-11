@@ -26,6 +26,12 @@ import org.kodein.di.android.kodein
 import org.kodein.di.generic.instance
 
 class EditDialog : AppCompatActivity(), KodeinAware {
+
+    companion object {
+        const val STATE_DIALOG_TEXT_FIELD = "state_dialog_text_field"
+        const val STATE_TAG_RECYCLERVIEW = "state_tag_recyclerview"
+    }
+
     override val kodein by kodein()
     private val viewModelFactory by instance<MainViewModelFactory>()
 
@@ -65,6 +71,8 @@ class EditDialog : AppCompatActivity(), KodeinAware {
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
+
+        restoreData(savedInstanceState)
 
         /** A Timeout on binding creates a cool effect */
 
@@ -140,7 +148,6 @@ class EditDialog : AppCompatActivity(), KodeinAware {
     }
 
     private fun bindUI() {
-
         mainViewModel.editManager.spanCount.observe(this, Observer {
             refreshRecyclerView(it)
         })
@@ -159,6 +166,22 @@ class EditDialog : AppCompatActivity(), KodeinAware {
             StaggeredGridLayoutManager(span, StaggeredGridLayoutManager.HORIZONTAL)
     }
 
+    private fun restoreData(savedInstanceState: Bundle?) {
+        val previousData = savedInstanceState?.getString(STATE_DIALOG_TEXT_FIELD)
+
+        if (previousData?.isNotEmpty() == true)
+            de_editText.setText(previousData)
+    }
+
+    override fun onStop() {
+        val bundle = Bundle().apply {
+            if (de_editText.text.length < 1000)
+                putString(STATE_DIALOG_TEXT_FIELD, de_editText.text.toString())
+            putParcelable(STATE_TAG_RECYCLERVIEW, del_recyclerView.layoutManager?.onSaveInstanceState())
+        }
+        onSaveInstanceState(bundle)
+        super.onStop()
+    }
 
     override fun onDestroy() {
         super.onDestroy()
@@ -170,6 +193,4 @@ class EditDialog : AppCompatActivity(), KodeinAware {
         Create,
         Edit
     }
-
-
 }
