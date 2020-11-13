@@ -3,24 +3,48 @@ package com.kpstv.xclipper
 import android.view.accessibility.AccessibilityEvent
 import com.kpstv.xclipper.service.helper.ClipboardDetection
 import okhttp3.internal.toHexString
-import org.junit.Test
 import org.junit.Assert.assertEquals
+import org.junit.Test
+import kotlin.system.measureTimeMillis
 
 class AccessibilityEventTests {
 
     // TODO: Add more tests
 
-
+    @Test
     fun test() {
         val r = "^\\[(.*)]\$".toRegex()
         val s = "[Copy link address,ssw]"
         println(r.find(s)?.groupValues?.get(1)?.split(","))
+
+        val totalTime = measureTimeMillis {
+            for (i in 1 until 10) {
+                val string =
+                    "EventType: TYPE_VIEW_LONG_CLICKED; EventTime: 50454360; PackageName: com.medium.reader; MovementGranularity: 0; Action: 0; ContentChangeTypes: []; WindowChangeTypes: [] [ ClassName: android.widget.TextView; Text: [Some reference which helped me to learn more about actions are as follows.]; ContentDescription: null; ItemCount: -1; CurrentItemIndex: -1; Enabled: true; Password: false; Checked: false; FullScreen: false; Scrollable: false; BeforeText: null; FromIndex: -1; ToIndex: -1; ScrollX: -1; ScrollY: -1; MaxScrollX: -1; MaxScrollY: -1; AddedCount: -1; RemovedCount: -1; ParcelableData: null ]; recordCount: 0"
+                val event = EventsHelper.parse(string)
+            }
+        }
+
+        println("Total time: $totalTime")
 
 
         println(0x00000800.toHexString().toLong(16))
         val sf = EventsHelper.getEventType("TYPE_WINDOW_CONTENT_CHANGED")
         //ClipboardDetection.addEvent(AccessibilityEvent.TYPE_VIEW_LONG_CLICKED)
 //        ClipboardDetection.addEvent()
+    }
+
+    @Test
+    fun `Medium long click & Copy`() {
+        val string = """
+EventType: TYPE_VIEW_LONG_CLICKED; EventTime: 50454360; PackageName: com.medium.reader; MovementGranularity: 0; Action: 0; ContentChangeTypes: []; WindowChangeTypes: [] [ ClassName: android.widget.TextView; Text: [Some reference which helped me to learn more about actions are as follows.]; ContentDescription: null; ItemCount: -1; CurrentItemIndex: -1; Enabled: true; Password: false; Checked: false; FullScreen: false; Scrollable: false; BeforeText: null; FromIndex: -1; ToIndex: -1; ScrollX: -1; ScrollY: -1; MaxScrollX: -1; MaxScrollY: -1; AddedCount: -1; RemovedCount: -1; ParcelableData: null ]; recordCount: 0
+EventType: TYPE_VIEW_FOCUSED; EventTime: 50454368; PackageName: com.medium.reader; MovementGranularity: 0; Action: 0; ContentChangeTypes: []; WindowChangeTypes: [] [ ClassName: android.widget.TextView; Text: [Some reference which helped me to learn more about actions are as follows.]; ContentDescription: null; ItemCount: 22; CurrentItemIndex: 7; Enabled: true; Password: false; Checked: false; FullScreen: false; Scrollable: false; BeforeText: null; FromIndex: -1; ToIndex: -1; ScrollX: -1; ScrollY: -1; MaxScrollX: -1; MaxScrollY: -1; AddedCount: -1; RemovedCount: -1; ParcelableData: null ]; recordCount: 0
+EventType: TYPE_VIEW_TEXT_SELECTION_CHANGED; EventTime: 50454371; PackageName: com.medium.reader; MovementGranularity: 0; Action: 0; ContentChangeTypes: []; WindowChangeTypes: [] [ ClassName: android.widget.TextView; Text: [Some reference which helped me to learn more about actions are as follows.]; ContentDescription: null; ItemCount: 74; CurrentItemIndex: -1; Enabled: true; Password: false; Checked: false; FullScreen: false; Scrollable: false; BeforeText: null; FromIndex: 15; ToIndex: 20; ScrollX: -1; ScrollY: -1; MaxScrollX: -1; MaxScrollY: -1; AddedCount: -1; RemovedCount: -1; ParcelableData: null ]; recordCount: 0
+EventType: TYPE_WINDOW_STATE_CHANGED; EventTime: 50454906; PackageName: com.medium.reader; MovementGranularity: 0; Action: 0; ContentChangeTypes: []; WindowChangeTypes: [] [ ClassName: android.widget.FrameLayout; Text: [More options, Highlight, Respond, Edit, Tweet]; ContentDescription: null; ItemCount: -1; CurrentItemIndex: -1; Enabled: true; Password: false; Checked: false; FullScreen: false; Scrollable: false; BeforeText: null; FromIndex: -1; ToIndex: -1; ScrollX: -1; ScrollY: -1; MaxScrollX: -1; MaxScrollY: -1; AddedCount: -1; RemovedCount: -1; ParcelableData: null ]; recordCount: 0
+EventType: TYPE_VIEW_TEXT_SELECTION_CHANGED; EventTime: 50458480; PackageName: com.medium.reader; MovementGranularity: 0; Action: 0; ContentChangeTypes: []; WindowChangeTypes: [] [ ClassName: android.widget.TextView; Text: [Some reference which helped me to learn more about actions are as follows.]; ContentDescription: null; ItemCount: 74; CurrentItemIndex: -1; Enabled: true; Password: false; Checked: false; FullScreen: false; Scrollable: false; BeforeText: null; FromIndex: 20; ToIndex: 20; ScrollX: -1; ScrollY: -1; MaxScrollX: -1; MaxScrollY: -1; AddedCount: -1; RemovedCount: -1; ParcelableData: null ]; recordCount: 0
+        """.trimIndent()
+
+        assertEquals(true, runEventTest(string))
     }
 
     @Test
@@ -69,17 +93,7 @@ EventType: TYPE_VIEW_CLICKED; EventTime: 245578516; PackageName: com.android.chr
     private fun runEventTest(string: String): Boolean {
         return EventsHelper.parse(string).map {
             ClipboardDetection.addEvent(it.EventType ?: -1)
-            ClipboardDetection.detectAppropriateEvents(
-                eventType = it.EventType,
-                eventText = it.Text?.toMutableList(),
-                eventContentDescription = it.ContentDescription,
-                eventClassName = it.ClassName,
-                fromIndex = it.FromIndex,
-                toIndex = it.ToIndex,
-                currentIndex = it.CurrentItemIndex,
-                scrollX = it.ScrollX,
-                enableLogging = false
-            )
+            ClipboardDetection.detectAppropriateEvents(event = it, enableLogging = false)
         }.any { it }
     }
 
@@ -94,34 +108,37 @@ object EventsHelper {
     /**
      * Multiline string can be accepting
      */
-    fun parse(string: String): List<Event> {
+    fun parse(string: String): List<ClipboardDetection.AEvent> {
         return string.split("[\n|\r]".toRegex()).map { lineParser(it) }
     }
 
     // eg: EventType: TYPE_VIEW_CLICKED; EventTime: 245578516; PackageName: com.android.chrome; MovementGranularity: 0; Action: 0; ContentChangeTypes: []; WindowChangeTypes: [] [ ClassName: android.widget.TextView; Text: [Copy link address]; ContentDescription: null; ItemCount: -1; CurrentItemIndex: -1; Enabled: true; Password: false; Checked: false; FullScreen: false; Scrollable: false; BeforeText: null; FromIndex: -1; ToIndex: -1; ScrollX: -1; ScrollY: -1; MaxScrollX: -1; MaxScrollY: -1; AddedCount: -1; RemovedCount: -1; ParcelableData: null ]; recordCount: 1
-    private fun lineParser(string: String): Event {
+    private fun lineParser(string: String): ClipboardDetection.AEvent {
         val split = string.split(";")
-        val e = Event()
+        val e = ClipboardDetection.AEvent()
         for (l in split) {
             when (PropertyRegexPattern.find(l)?.groupValues?.get(1)) {
-                Event::EventType.name -> e.EventType = getEventType(l)
-                Event::EventTime.name -> e.EventTime = getValue(l)?.toLong()
-                Event::PackageName.name -> e.PackageName = getValue(l)
-                Event::MovementGranularity.name -> e.MovementGranularity = getValue(l)?.toInt()
-                Event::Action.name -> e.Action = getValue(l)?.toInt()
-                Event::ClassName.name -> e.ClassName = getValue(l)
+                ClipboardDetection.AEvent::EventType.name -> e.EventType = getEventType(l)
+                ClipboardDetection.AEvent::EventTime.name -> e.EventTime = getValue(l)?.toLong()
+                ClipboardDetection.AEvent::PackageName.name -> e.PackageName = getValue(l)
+                ClipboardDetection.AEvent::MovementGranularity.name -> e.MovementGranularity =
+                    getValue(l)?.toInt()
+                ClipboardDetection.AEvent::Action.name -> e.Action = getValue(l)?.toInt()
+                ClipboardDetection.AEvent::ClassName.name -> e.ClassName = getValue(l)
                 "WindowChangeTypes" -> {
                     val middleware = l.split(" [ ")
                     e.ClassName = getValue(middleware[1])
                 }
-                Event::Text.name -> e.Text = ArrayRegexPattern.find(
+                ClipboardDetection.AEvent::Text.name -> e.Text = ArrayRegexPattern.find(
                     ValueArrayRegexPattern.find(l)?.groupValues?.get(1) ?: ""
                 )?.groupValues?.get(1)?.split(",")
-                Event::ContentDescription.name -> e.ContentDescription = getValue(l)
-                Event::CurrentItemIndex.name -> e.CurrentItemIndex = getValue(l)?.toInt()
-                Event::FromIndex.name -> e.FromIndex = getValue(l)?.toInt()
-                Event::ToIndex.name -> e.ToIndex = getValue(l)?.toInt()
-                Event::ScrollX.name -> e.ScrollX = getValue(l)?.toInt()
+                ClipboardDetection.AEvent::ContentDescription.name -> e.ContentDescription =
+                    getValue(l)
+                ClipboardDetection.AEvent::CurrentItemIndex.name -> e.CurrentItemIndex =
+                    getValue(l)?.toInt()
+                ClipboardDetection.AEvent::FromIndex.name -> e.FromIndex = getValue(l)?.toInt()
+                ClipboardDetection.AEvent::ToIndex.name -> e.ToIndex = getValue(l)?.toInt()
+                ClipboardDetection.AEvent::ScrollX.name -> e.ScrollX = getValue(l)?.toInt()
             }
         }
         return e
@@ -138,18 +155,4 @@ object EventsHelper {
         return field?.getInt(null)
     }
 
-    data class Event(
-        var EventType: Int? = null,
-        var EventTime: Long? = null,
-        var PackageName: CharSequence? = null,
-        var MovementGranularity: Int? = null,
-        var Action: Int? = null,
-        var ClassName: CharSequence? = null,
-        var Text: List<CharSequence?>? = null,
-        var ContentDescription: CharSequence? = null,
-        var CurrentItemIndex: Int? = null,
-        var FromIndex: Int? = null,
-        var ToIndex: Int? = null,
-        var ScrollX: Int? = null
-    )
 }
