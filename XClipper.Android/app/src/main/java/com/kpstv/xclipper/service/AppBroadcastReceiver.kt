@@ -10,6 +10,7 @@ import com.kpstv.xclipper.App.ACTION_OPEN_APP
 import com.kpstv.xclipper.App.ACTION_SMART_OPTIONS
 import com.kpstv.xclipper.App.APP_CLIP_DATA
 import com.kpstv.xclipper.data.repository.MainRepository
+import com.kpstv.xclipper.extensions.AbstractBroadcastReceiver
 import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.ui.activities.Main
 import com.kpstv.xclipper.ui.dialogs.SpecialDialog
@@ -17,7 +18,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class AppBroadcastReceiver : BroadcastReceiver() {
+class AppBroadcastReceiver : AbstractBroadcastReceiver() {
 
     @Inject lateinit var repository: MainRepository
 
@@ -27,42 +28,41 @@ class AppBroadcastReceiver : BroadcastReceiver() {
         const val ACTION_OPEN_ACCESSIBILITY = "com.kpstv.action_open_accessibility"
     }
 
-    override fun onReceive(context: Context?, intent: Intent?) {
-        if (intent != null && context != null) {
+    override fun onReceive(context: Context, intent: Intent) {
+        super.onReceive(context, intent)
 
-            val data = intent.getStringExtra(APP_CLIP_DATA)
-            val data1 = intent.data
+        val data = intent.getStringExtra(APP_CLIP_DATA)
+        val data1 = intent.data
 
-            when (intent.action) {
-                ACTION_OPEN_APP -> {
-                    context.startActivity(
-                        Intent(context, Main::class.java).apply {
-                            flags = FLAG_ACTIVITY_BROUGHT_TO_FRONT or FLAG_ACTIVITY_NEW_TASK
-                        }
-                    )
-                    dismissNotification(context)
-                }
-                ACTION_DELETE -> {
-                    repository.deleteClip(data)
-
-                    dismissNotification(context)
-                    collapseStatusBar(context)
-                }
-                ACTION_SMART_OPTIONS -> {
-
-                    val newIntent = Intent(context, SpecialDialog::class.java).apply {
-                        flags = FLAG_ACTIVITY_NEW_TASK
-                        setData(data1)
-                        putExtra(APP_CLIP_DATA, data)
+        when (intent.action) {
+            ACTION_OPEN_APP -> {
+                context.startActivity(
+                    Intent(context, Main::class.java).apply {
+                        flags = FLAG_ACTIVITY_BROUGHT_TO_FRONT or FLAG_ACTIVITY_NEW_TASK
                     }
-                    context.startActivity(newIntent)
+                )
+                dismissNotification(context)
+            }
+            ACTION_DELETE -> {
+                repository.deleteClip(data)
 
-                    collapseStatusBar(context)
+                dismissNotification(context)
+                collapseStatusBar(context)
+            }
+            ACTION_SMART_OPTIONS -> {
+
+                val newIntent = Intent(context, SpecialDialog::class.java).apply {
+                    flags = FLAG_ACTIVITY_NEW_TASK
+                    setData(data1)
+                    putExtra(APP_CLIP_DATA, data)
                 }
-                ACTION_OPEN_ACCESSIBILITY -> {
-                    Utils.openAccessibility(context)
-                    Toast.makeText(context, "Opening accessibility", Toast.LENGTH_SHORT).show()
-                }
+                context.startActivity(newIntent)
+
+                collapseStatusBar(context)
+            }
+            ACTION_OPEN_ACCESSIBILITY -> {
+                Utils.openAccessibility(context)
+                Toast.makeText(context, "Opening accessibility", Toast.LENGTH_SHORT).show()
             }
         }
     }

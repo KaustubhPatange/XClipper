@@ -42,6 +42,7 @@ namespace Components
         public const string UPDATE_URI = "https://pastebin.com/raw/FRS7n7Fc"; // TODO; Change update uri https://raw.githubusercontent.com/KaustubhPatange/XClipper/master/UPDATE
         public const string GITHUB_RELEASE_URI = "https://api.github.com/repos/adb-over-wifi/demo-release/releases"; // TODO: Change update uri https://api.github.com/repos/KaustubhPatange/XClipper/releases
         public const string OAUTH_TOKEN_URI = "https://oauth2.googleapis.com/token";
+        public const string ACTION_NOT_COMPLETE_WIKI = "https://github.com/KaustubhPatange/XClipper/wiki/FAQs#q-last-x-actions-didnt-complete-what-to-do";
         public const string SETTINGS = "Settings";
         public const string CREDENTIAL = "Credential";
         public const string FIREBASE = "Firebase";

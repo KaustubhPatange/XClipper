@@ -198,6 +198,8 @@
     <system:String x:Key="sync_notify_device_remove">Show when device is removed</system:String>
     <system:String x:Key="sync_encrypt_clip">Encrypt clips in the database</system:String>
     <system:String x:Key="sync_encrypt_database_error">Invalid database encrypt setting. Proceed to apply an autofix.</system:String>
+    <system:String x:Key="sync_timeout_action_title">Last {0} actions didn't complete</system:String>
+    <system:String x:Key="sync_timeout_action_text">Click here to take necessary measures.</system:String>
     <system:String x:Key="sync_timeout_error_title">Timed out error occurred</system:String>
     <system:String x:Key="sync_timeout_error_text" xml:space="preserve">Seems like the problem is likely with your Internet connection.&#10;&#10;Firebase client will now shutdown to enable it again restart the application!</system:String>
     <system:String x:Key="update_title">Update Checker</system:String>

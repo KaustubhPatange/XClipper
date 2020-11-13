@@ -14,6 +14,7 @@ using System.Net.NetworkInformation;
 using Components.UI;
 using System.Windows.Navigation;
 using System.Data;
+using System.Windows.Threading;
 
 namespace XClipper.Tests
 {
@@ -163,7 +164,7 @@ namespace XClipper.Tests
         [TestMethod]
         public void CheckInternet()
         {
-
+            Debug.WriteLine(string.Format("{0} World", "Hello"));
             //Stopwatch s = new Stopwatch();
             //s.Start();
             ////    if (new Ping().Send("www.google.com.mx").Status == IPStatus.Success)
@@ -178,6 +179,11 @@ namespace XClipper.Tests
         [TestMethod]
         public void CountMethod()
         {
+            DispatcherTimer timer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(5),
+                IsEnabled = true,
+            };
             int DatabaseMaxItem = 3;
             var user = new List<int>
             {

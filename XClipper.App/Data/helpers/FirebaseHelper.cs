@@ -5,9 +5,10 @@ using Newtonsoft.Json;
 using RestSharp;
 using System;
 using System.Collections.Generic;
-using System.Security.RightsManagement;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
+using static Components.Constants;
 using static Components.DefaultSettings;
 using static Components.TranslationHelper;
 
@@ -241,6 +242,15 @@ namespace Components
                     return CreateUnAuthorizedException();
             }
             return null;
+        }
+
+        /// <summary>
+        /// If last actions didn't complete on time we should notify users & do 
+        /// the following.
+        /// </summary>
+        public static void ShowSurpassMessage()
+        {
+            Process.Start(ACTION_NOT_COMPLETE_WIKI);
         }
 
         /// <summary>

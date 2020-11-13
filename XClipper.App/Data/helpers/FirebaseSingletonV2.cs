@@ -50,6 +50,11 @@ namespace Components
         private const string CLIP_REF = "Clips";
         private const string DEVICE_REF = "Devices";
 
+        private DispatcherTimer dTimer = new DispatcherTimer
+        {
+            Interval = TimeSpan.FromSeconds(10)
+        };
+
         private string UID;
 
         private User user;
@@ -89,7 +94,9 @@ namespace Components
             }
         }
         private FirebaseSingletonV2()
-        { }
+        {
+            dTimer.Tick += SurpassEvent;
+        }
 
         #endregion
 
@@ -235,6 +242,7 @@ namespace Components
         {
             if (!isClientInitialized && BindDatabase)
             {
+                dTimer.Start();
                 Log($"Asserting: {invoke}");
                 // Some invokes are not supported yet.
                 switch (invoke)
@@ -625,6 +633,32 @@ namespace Components
                     case FirebaseInvoke.RESET: await ResetUser().ConfigureAwait(false); break;
                     case FirebaseInvoke.REMOVE_CLIP_ALL: await RemoveAllClip().ConfigureAwait(false); break;
                 }
+            }
+        }
+
+        bool dispatcherEventPass = false;
+        private void SurpassEvent(object o, EventArgs e)
+        {
+            if (addStack.Count > 0 || removeStack.Count > 0 || updateStack.Count > 0 || firebaseInvokeStack.Count > 0)
+            {
+                if (dispatcherEventPass)
+                {
+                    dTimer.Stop();
+                    dispatcherEventPass = false;
+                    var eventsCount = addStack.Count + removeStack.Count + updateStack.Count + firebaseInvokeStack.Count;
+                    binder?.SendNotification(string.Format(Translation.SYNC_TIMEOUT_ACTION_TITLE, eventsCount), Translation.SYNC_TIMEOUT_ACTION_TEXT, () => {
+                        FirebaseHelper.ShowSurpassMessage();
+                    });
+                }
+                else
+                {
+                    dispatcherEventPass = true;
+                }
+            }
+            else
+            {
+                dispatcherEventPass = false;
+                dTimer.Stop();
             }
         }
 

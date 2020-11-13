@@ -11,7 +11,7 @@
 
 ## Download
 
-XClipper is currently available on the following platforms only.
+XClipper is currently available for the following platforms only.
 
 |             |                                                    |
 | ----------- | -------------------------------------------------- |
@@ -50,7 +50,7 @@ All of the individual documentation topics can be found in the repo's [wiki](htt
   - [MVVM Light Toolkit](http://www.mvvmlight.net/) - Makes the process for writing MVVM apps super easy.
   - [PropertyChanged.Fody](https://github.com/Fody/PropertyChanged) - Injects code which raises the PropertyChanged event, into property setters of classes which implement INotifyPropertyChanged.
 - [Data Binding](https://docs.microsoft.com/en-us/dotnet/desktop-wpf/data/data-binding-overview)
-  - [CalcBinding](https://github.com/Alex141/CalcBinding) - Aan advanced Binding markup extension that allows you to write calculated binding expressions in xaml, without custom converters
+  - [CalcBinding](https://github.com/Alex141/CalcBinding) - Aan advanced Binding markup extension that allows you to write calculated binding expressions in xaml, without custom converters.
 - [SQLite-Net-Extension](https://bitbucket.org/twincoders/sqlite-net-extensions) - An extension to sqlite-net library.
 
 ## Contributing

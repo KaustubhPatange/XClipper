@@ -67,8 +67,6 @@ namespace Components
             {
                 var key = keyEvent.KeyCode;
 
-                Debug.WriteLine($"Key Event: {key}");
-
                 if (quickPasteChord && IsNumericKeyPressed(key))
                 {
                     Debug.WriteLine("Quick Paste: Done");

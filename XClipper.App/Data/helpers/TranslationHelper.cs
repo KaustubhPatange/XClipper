@@ -149,6 +149,8 @@ namespace Components
         public string SYNC_UPDATE_TITLE = rm.GetString("sync_update_title");
         public string SYNC_UNKNOWN_ERROR = rm.GetString("sync_unknown_error");
         public string SYNC_ENCRYPT_DATABASE_ERROR = rm.GetString("sync_encrypt_database_error");
+        public string SYNC_TIMEOUT_ACTION_TITLE = rm.GetString("sync_timeout_action_title");
+        public string SYNC_TIMEOUT_ACTION_TEXT = rm.GetString("sync_timeout_action_text");
         public string SYNC_TIMEOUT_ERROR_TITLE = rm.GetString("sync_timeout_error_title");
         public string SYNC_TIMEOUT_ERROR_TEXT = rm.GetString("sync_timeout_error_text");
         public string UPDATE_TITLE = rm.GetString("update_title");
