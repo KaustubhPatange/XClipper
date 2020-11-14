@@ -4,8 +4,11 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
+import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -33,7 +36,8 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class BubbleService : FloatingBubbleService() {
 
-    @Inject lateinit var repository: MainRepository
+    @Inject
+    lateinit var repository: MainRepository
 
     private val TAG = javaClass.simpleName
     private lateinit var adapter: PageClipAdapter
@@ -77,9 +81,9 @@ class BubbleService : FloatingBubbleService() {
         return FloatingBubbleConfig.Builder()
             .bubbleIcon(ContextCompat.getDrawable(applicationContext, R.drawable.bubble_icon))
             .expandableView(binding.root)
+            .physicsEnabled(true)
             .build()
     }
-
 
     private val pageObserver = Observer<PagedList<Clip>?> {
         adapter.submitList(it)
