@@ -101,6 +101,10 @@ class Card @JvmOverloads constructor(
         typedArray.recycle()
     }
 
+    fun setPurchaseAmount(amount: String) {
+        purchase_amount.text = amount
+    }
+
     fun setButtonClickListener(block: OnClickListener?) = purchase_button.setOnClickListener(block)
 
     fun setButtonClickListener(block: (View?) -> Unit) = purchase_button.setOnClickListener(block)

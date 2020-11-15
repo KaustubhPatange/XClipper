@@ -1,5 +1,13 @@
 name: Windows CI
-on: [push, pull_request]
+on:
+  push:
+    paths:
+      - "XClipper.App/**"
+      - "XClipper.Core/**"
+  pull_request:
+    paths:
+      - "XClipper.App/**"
+      - "XClipper.Core/**"
 
 jobs:
   windows:

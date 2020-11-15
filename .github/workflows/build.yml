@@ -1,5 +1,11 @@
 name: Android CI
-on: [push, pull_request]
+on:
+  push:
+    paths:
+      - "XClipper.Android/**"
+  pull_request:
+    paths:
+      - "XClipper.Android/**"
 
 jobs:
   android:

@@ -8,45 +8,77 @@ import android.os.Bundle
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.provider.FirebaseProvider
+import com.kpstv.xclipper.databinding.FragmentUpgradeBinding
 import com.kpstv.xclipper.extensions.LicenseType
 import com.kpstv.xclipper.extensions.hide
 import com.kpstv.xclipper.extensions.show
+import com.kpstv.xclipper.extensions.viewBinding
+import com.kpstv.xclipper.ui.viewmodels.UpgradeModel
 import dagger.hilt.android.AndroidEntryPoint
+import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_upgrade.*
+import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class Upgrade : Fragment(R.layout.fragment_upgrade) {
 
-    @Inject lateinit var firebaseProvider: FirebaseProvider
+    @Inject
+    lateinit var firebaseProvider: FirebaseProvider
+
+    private val viewModel by viewModels<UpgradeModel>()
+    private val binding by viewBinding(FragmentUpgradeBinding::bind)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        firebaseProvider.getLicenseStrategy().observe(viewLifecycleOwner, Observer { licenseType ->
+        binding.root.isEnabled = false
+
+        firebaseProvider.getLicenseStrategy().observe(viewLifecycleOwner) { licenseType ->
             when (licenseType) {
                 LicenseType.Standard -> {
-                    supportLayout.hide()
+                    binding.supportLayout.hide()
+                    loadLatestPriceFetch()
                 }
                 LicenseType.Invalid -> {
-                    supportLayout.hide()
+                    binding.supportLayout.hide()
+                    loadLatestPriceFetch()
                 }
                 else -> {
-                    premiumCard.hide()
-                    supportLayout.show()
+                    binding.premiumCard.hide()
+                    binding.supportLayout.show()
 
-                    supportLayout_text.startAnimation(
+                    binding.supportLayoutText.startAnimation(
                         AnimationUtils.loadAnimation(requireContext(), R.anim.fade_in)
                     )
                 }
             }
-        })
+        }
 
-        premiumCard.setButtonClickListener {
+        binding.premiumCard.setButtonClickListener {
             launch(getString(R.string.app_website))
+        }
+    }
+
+    private fun loadLatestPriceFetch() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            binding.root.isRefreshing = true
+            viewModel.fetchLatestPrice().collect { result ->
+                result.fold(
+                    onSuccess = {
+                        binding.premiumCard.setPurchaseAmount("$$it")
+                    },
+                    onFailure = {
+                        Toasty.error(requireContext(), "Error: ${it.message}").show()
+                    }
+                )
+                binding.root.isRefreshing = false
+            }
         }
     }
 

@@ -158,4 +158,5 @@
     <string name="force_dark">Force Dark</string>
     <string name="private_browse">Open in private</string>
     <string name="private_browse1">Privately browsing :)</string>
+    <string name="premium_latest">Couldn\'t fetch the latest data</string>
 </resources>

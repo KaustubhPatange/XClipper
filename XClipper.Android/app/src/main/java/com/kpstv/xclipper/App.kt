@@ -101,7 +101,10 @@ object App {
         "(\\d){1,2}[/\\.\\s-](\\d){1,2}[/\\.\\s-](\\d){4}"
     const val DATE_PATTERN_REGEX1 =
         "(\\d){4}[/\\.\\s-](\\d){1,2}[/\\.\\s-](\\d){1,2}"
+
     const val MARKDOWN_IMAGE_ONLY_REGEX = "^(!\\[)(.*?)(])(\\((https?://.*?)\\))$"
+
+    const val PREMIUM_PRICE_REGEX = "<span\\s?id=\\\"premium-card-amount\\\">(.*?)<"
 
     const val APP_CLIP_DATA = "com.kpstv.xclipper.clip_data"
 

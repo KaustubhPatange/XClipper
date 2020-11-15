@@ -3,8 +3,11 @@ package com.kpstv.xclipper.extensions.utils
 import com.google.gson.GsonBuilder
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.kpstv.xclipper.App.gson
+import com.kpstv.xclipper.extensions.await
 import com.kpstv.xclipper.extensions.utils.interceptors.NetworkConnectionInterceptor
 import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -50,4 +53,6 @@ class RetrofitUtils @Inject constructor(
 
     fun getHttpClient() = getHttpBuilder().build()
 
+    suspend fun fetch(url: String): Response =
+        getHttpClient().newCall(Request.Builder().url(url).build()).await()
 }
