@@ -9,6 +9,7 @@ import com.kpstv.xclipper.data.localized.FBOptions
 import com.kpstv.xclipper.data.localized.dao.TagDao
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.Tag
+import com.kpstv.xclipper.data.model.TagMap
 import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.FirebaseProvider
@@ -42,46 +43,31 @@ class MainViewModel @ViewModelInject constructor(
     private val dbConnectionProvider: DBConnectionProvider,
     private val firebaseUtils: FirebaseUtils,
     val dictionaryApiHelper: DictionaryApiHelper,
-    val tinyUrlApiHelper: TinyUrlApiHelper
+    val tinyUrlApiHelper: TinyUrlApiHelper,
+    val editManager: MainEditManager,
+    val searchManager: MainSearchManager,
+    val stateManager: MainStateManager
 ) : AndroidViewModel(application) {
     val context: Context = application.applicationContext
 
     private val TAG = javaClass.simpleName
-    private var _tag: Tag? = null
-    private val _stateManager =
-        MainStateManager()
-    private val _searchManager =
-        MainSearchManager()
-    private val _editManager =
-        MainEditManager(tagRepository)
+
     private val _clipLiveData = MutableLiveData<List<Clip>>()
+
+    private val _tagMapLiveData = MutableLiveData<List<TagMap>>()
 
     private val _tagLiveData = MutableLiveData<List<Tag>>()
 
     val currentClip: LiveData<String>
         get() = clipboardProvider.getCurrentClip()
 
-    fun setTag(tag: Tag) {
-        _tag = tag
-    }
-
-    fun getTag(): Tag? {
-        return _tag
-    }
-
-    val stateManager: MainStateManager
-        get() = _stateManager
-
-    val searchManager: MainSearchManager
-        get() = _searchManager
-
-    val editManager: MainEditManager
-        get() = _editManager
-
     private val mediatorLiveData = MediatorLiveData<List<Clip>>()
 
     val clipLiveData: LiveData<List<Clip>>
         get() = mediatorLiveData
+
+    val tagCountData: LiveData<List<TagMap>>
+        get() = _tagMapLiveData
 
     val tagLiveData: LiveData<List<Tag>>
         get() = _tagLiveData
@@ -187,8 +173,21 @@ class MainViewModel @ViewModelInject constructor(
     }
 
     init {
-        mainRepository.getAllLiveClip().observeForever {
-            _clipLiveData.postValue(it)
+        mainRepository.getAllLiveClip().observeForever { clips ->
+            _clipLiveData.postValue(clips)
+
+            val list = ArrayList<TagMap>()
+            clips.forEach {  clip ->
+                clip.tags?.forEach { e ->
+                    val find = list.find { it.name == e.key }
+                    if (find != null) {
+                        find.count++
+                    }else {
+                        list.add(TagMap(e.key, 1))
+                    }
+                }
+            }
+            _tagMapLiveData.value = list
         }
 
         tagRepository.getAllLiveData().observeForever {

@@ -3,8 +3,11 @@ package com.kpstv.xclipper.ui.viewmodels.managers
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.kpstv.xclipper.data.model.Tag
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class MainSearchManager {
+@Singleton
+class MainSearchManager @Inject constructor() {
 
     private var _searchString = MutableLiveData("")
     private var _searchArray = ArrayList<String>()
@@ -31,15 +34,19 @@ class MainSearchManager {
         _searchArrayFilter.postValue(_searchArray)
     }
 
+    fun existTagFilter(tag: Tag): Boolean {
+        return _tagArray.any { it.name == tag.name }
+    }
+
     fun addTagFilter(tag: Tag) {
-        if (!_tagArray.contains(tag)) {
+        if (!_tagArray.any { it.name == tag.name }) {
             _tagArray.add(tag)
             _tagArrayFilter.postValue(_tagArray)
         }
     }
 
     fun removeTagFilter(tag: Tag) {
-        _tagArray.remove(tag)
+        _tagArray.removeAll { it.name == tag.name }
         _tagArrayFilter.postValue(_tagArray)
     }
 

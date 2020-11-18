@@ -6,8 +6,11 @@ import androidx.lifecycle.MutableLiveData
 import com.kpstv.xclipper.data.localized.DialogState
 import com.kpstv.xclipper.data.localized.ToolbarState
 import com.kpstv.xclipper.data.model.Clip
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class MainStateManager {
+@Singleton
+class MainStateManager @Inject constructor() {
 
     private val TAG = javaClass.simpleName
 

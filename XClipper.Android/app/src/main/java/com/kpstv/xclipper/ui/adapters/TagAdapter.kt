@@ -1,5 +1,6 @@
 package com.kpstv.xclipper.ui.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,8 @@ import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.DialogState
 import com.kpstv.xclipper.data.model.ClipTag
 import com.kpstv.xclipper.data.model.Tag
+import com.kpstv.xclipper.data.model.TagMap
+import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import kotlinx.android.synthetic.main.item_tag_chip.view.*
 import kotlin.collections.ArrayList
 
@@ -20,6 +23,7 @@ class TagAdapter(
     private val lifecycleOwner: LifecycleOwner,
     private val dialogState: LiveData<DialogState>,
     private val tagFilter: LiveData<ArrayList<Tag>>,
+    private val tagMapData: LiveData<List<TagMap>>,
     private val onCloseClick: (Tag, Int) -> Unit,
     private val onClick: (Tag, Int) -> Unit
 ) : ListAdapter<Tag, TagAdapter.TagHolder>(DiffCallback()) {
@@ -50,17 +54,23 @@ class TagAdapter(
     private fun TagHolder.bind(tag: Tag) = with(itemView) {
         chip.text = tag.name
 
-        dialogState.observe(lifecycleOwner, Observer {
+        dialogState.observe(lifecycleOwner) {
             if (it == DialogState.Edit) {
                 chip.isCloseIconVisible = ClipTag.fromValue(tag.name) == null
             }
             else if (it == DialogState.Normal)
                 chip.isCloseIconVisible = false
-        })
+        }
 
-        tagFilter.observe(lifecycleOwner, Observer {
-            chip.isChipIconVisible = it.contains(tag)
-        })
+        tagMapData.observe(lifecycleOwner) { list ->
+            val find = list.find { it.name == tag.name }
+            if (find?.count != null)
+                chip.text = "${tag.name} (${find?.count})"
+        }
+
+        tagFilter.observe(lifecycleOwner) { list ->
+            chip.isChipIconVisible = list.any { it.name == tag.name }
+        }
 
         chip.setOnCloseIconClickListener {
             onCloseClick.invoke(tag, layoutPosition)

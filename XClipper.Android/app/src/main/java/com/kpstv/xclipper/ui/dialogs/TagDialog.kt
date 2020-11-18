@@ -1,5 +1,6 @@
 package com.kpstv.xclipper.ui.dialogs
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -9,12 +10,10 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import com.kpstv.xclipper.App.DELAY_SPAN
-import com.kpstv.xclipper.App.TAG_DIALOG_RESULT_CODE
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.DialogState
 import com.kpstv.xclipper.data.model.Tag
@@ -41,6 +40,11 @@ class TagDialog : AppCompatActivity() {
     private lateinit var adapter: TagAdapter
     private lateinit var switchCompat: SwitchCompat
 
+    companion object {
+        const val RESULT_CODE = 1
+        const val TAG_DATA = "tag_data"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -52,11 +56,11 @@ class TagDialog : AppCompatActivity() {
 
         setRecyclerView()
 
-        dct_editText.setOnEditorActionListener(object: TextView.OnEditorActionListener {
+        dct_editText.setOnEditorActionListener(object : TextView.OnEditorActionListener {
             override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
                 if (actionId == EditorInfo.IME_ACTION_SEND) {
                     sendButton()
-                    return true;
+                    return true
                 }
                 return false
             }
@@ -76,7 +80,7 @@ class TagDialog : AppCompatActivity() {
         Coroutines.main {
             delay(DELAY_SPAN)
             bindUI()
-            linearLayout1.minimumHeight =  resources.getDimension(R.dimen.dimen170).toInt()
+            linearLayout1.minimumHeight = resources.getDimension(R.dimen.dimen170).toInt()
         }
     }
 
@@ -133,7 +137,7 @@ class TagDialog : AppCompatActivity() {
         toolbar.menu.findItem(R.id.action_edit).actionView = switchCompat
     }
 
-    private fun setRecyclerView()  {
+    private fun setRecyclerView() {
         val layoutManager = FlexboxLayoutManager(this)
         layoutManager.flexDirection = FlexDirection.ROW
         layoutManager.justifyContent = JustifyContent.FLEX_START
@@ -143,18 +147,24 @@ class TagDialog : AppCompatActivity() {
             lifecycleOwner = this,
             dialogState = mainViewModel.stateManager.dialogState,
             tagFilter = mainViewModel.searchManager.tagFilters,
+            tagMapData = mainViewModel.tagCountData,
             onCloseClick = { tag, _ ->
-                mainViewModel.deleteFromTagRepository(tag, StatusListener(
-                    onComplete = { },
-                    onError = Toasty.error(this, getString(R.string.error_tag_dependent))::show
-                ))
+                mainViewModel.deleteFromTagRepository(
+                    tag, StatusListener(
+                        onComplete = { },
+                        onError = Toasty.error(this, getString(R.string.error_tag_dependent))::show
+                    )
+                )
             },
             onClick = { tag, _ ->
                 if (mainViewModel.stateManager.isEditDialogStateActive()) return@TagAdapter
 
-                mainViewModel.setTag(tag)
-                mainViewModel.searchManager.addTagFilter(tag)
-                setResult(TAG_DIALOG_RESULT_CODE)
+                if (mainViewModel.searchManager.existTagFilter(tag)) {
+                    mainViewModel.searchManager.removeTagFilter(tag)
+                }else {
+                    mainViewModel.searchManager.addTagFilter(tag)
+                }
+
                 finish()
             }
         )

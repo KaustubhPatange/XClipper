@@ -107,5 +107,3 @@ enum class LicenseType {
 inline fun <reified T : Enum<T>> enumValueOrNull(name: String): T? {
     return enumValues<T>().find { it.name == name }
 }
-
-fun Context.layoutInflater(): LayoutInflater = LayoutInflater.from(this)

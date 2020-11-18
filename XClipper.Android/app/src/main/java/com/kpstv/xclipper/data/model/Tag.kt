@@ -24,3 +24,5 @@ data class Tag(
             Tag(name = text)
     }
 }
+
+data class TagMap(val name: String, var count: Int)

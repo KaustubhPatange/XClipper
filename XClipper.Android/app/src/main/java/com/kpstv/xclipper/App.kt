@@ -79,8 +79,6 @@ object App {
     const val DATABASE_MIME_TYPE = "application/vnd.sqlite3"
 
     const val QR_SCAN_REQUEST_CODE = 153
-    const val TAG_DIALOG_REQUEST_CODE = 100
-    const val TAG_DIALOG_RESULT_CODE = 1
     const val UPDATE_REQUEST_CODE = 555
 
     const val TAG_FILTER_CHIP = "com.kpstv.xclipper.tag"

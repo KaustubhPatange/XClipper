@@ -12,8 +12,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.Chip
@@ -53,9 +51,12 @@ import kotlin.concurrent.schedule
 @AndroidEntryPoint
 class Home : Fragment(R.layout.fragment_home) {
 
-    @Inject lateinit var clipboardProvider: ClipboardProvider
-    @Inject lateinit var firebaseUtils: FirebaseUtils
-    @Inject lateinit var preferenceProvider: PreferenceProvider
+    @Inject
+    lateinit var clipboardProvider: ClipboardProvider
+    @Inject
+    lateinit var firebaseUtils: FirebaseUtils
+    @Inject
+    lateinit var preferenceProvider: PreferenceProvider
 
     private lateinit var adapter: CIAdapter
 
@@ -94,23 +95,16 @@ class Home : Fragment(R.layout.fragment_home) {
         startActivity(intent)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == App.TAG_DIALOG_REQUEST_CODE && resultCode == App.TAG_DIALOG_RESULT_CODE) {
-            tagDialogItemClickListener(mainViewModel.getTag()!!)
-        }
-    }
-
     private fun bindUI() {
-        mainViewModel.clipLiveData.observe(viewLifecycleOwner, Observer {
+        mainViewModel.clipLiveData.observe(viewLifecycleOwner) {
             if (it.isEmpty() && !mainViewModel.searchManager.anyFilterApplied())
                 layout_empty_parent.show()
             else
                 layout_empty_parent.collapse()
             adapter.submitList(ArrayList(it?.cloneForAdapter()?.reversed()!!))
             mainViewModel.stateManager.clearSelectedItem()
-        })
-        mainViewModel.stateManager.toolbarState.observe(viewLifecycleOwner, Observer { state ->
+        }
+        mainViewModel.stateManager.toolbarState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 ToolbarState.NormalViewState -> {
                     fab_addItem.show()
@@ -125,7 +119,11 @@ class Home : Fragment(R.layout.fragment_home) {
                     // TODO: When exhaustive
                 }
             }
-        })
+        }
+        mainViewModel.searchManager.tagFilters.observe(viewLifecycleOwner) {
+            if (it == null) return@observe
+            updateTagFilters(it)
+        }
     }
 
     private fun setRecyclerView() {
@@ -216,18 +214,18 @@ class Home : Fragment(R.layout.fragment_home) {
                 }
                 R.id.action_tag -> {
                     val intent = Intent(requireContext(), TagDialog::class.java)
-                    startActivityForResult(intent, App.TAG_DIALOG_REQUEST_CODE)
+                    startActivity(intent)
                 }
             }
             true
         }
 
-        mainViewModel.stateManager.selectedItemClips.observe(viewLifecycleOwner, Observer {
+        mainViewModel.stateManager.selectedItemClips.observe(viewLifecycleOwner) {
             if (it.size > 0)
                 toolbar.subtitle = "${it.size} ${getString(R.string.selected)}"
             else
                 toolbar.subtitle = App.BLANK_STRING
-        })
+        }
     }
 
     private fun deleteAllWithUndo() {
@@ -286,12 +284,30 @@ class Home : Fragment(R.layout.fragment_home) {
         }
     }
 
+    private fun updateTagFilters(tags: List<Tag>) {
+        ci_chip_group.removeAllViews()
+        for (tag in tags) {
+            ci_chip_group.addView(
+                Chip(requireContext()).apply {
+                    text = tag.name
+                    setTag(App.TAG_FILTER_CHIP)
+                    chipIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_tag)
+                    isCloseIconVisible = true
+                    setOnCloseIconClickListener {
+                        mainViewModel.searchManager.removeTagFilter(tag)
+                    }
+                }
+            )
+        }
+    }
+
     /**
      * This must be invoke when item on filter dialog is clicked.
      *
      * Right now it is captured through onActivityResult of TipDialog.
      */
-    private fun tagDialogItemClickListener(tag: Tag) {
+    private fun tagDialogItemClickListener(tag: Tag?) {
+        if (tag == null) return
         if (ci_chip_group.children.count { view ->
                 if (view is Chip)
                     view.tag == App.TAG_FILTER_CHIP && view.text == tag.name

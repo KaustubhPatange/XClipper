@@ -31,6 +31,7 @@
 
         <com.kpstv.xclipper.extensions.elements.CustomRecyclerView
             android:id="@+id/dct_recycler_view"
+            android:overScrollMode="never"
             android:orientation="horizontal"
             app:maxHeight="380dp"
             android:scrollbars="vertical"

@@ -8,9 +8,12 @@ import com.kpstv.xclipper.data.localized.dao.TagDao
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.ClipTag
 import com.kpstv.xclipper.data.model.Tag
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlin.collections.HashMap
 
-class MainEditManager(
+@Singleton
+class MainEditManager @Inject constructor(
     tagRepository: TagDao
 ) {
     private val _spanCount = MutableLiveData(STAGGERED_SPAN_COUNT)
