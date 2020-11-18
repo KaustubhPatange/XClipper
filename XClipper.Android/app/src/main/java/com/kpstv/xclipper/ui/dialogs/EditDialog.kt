@@ -14,6 +14,7 @@ import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.extensions.Coroutines
 import com.kpstv.xclipper.extensions.clone
+import com.kpstv.xclipper.extensions.drawableFrom
 import com.kpstv.xclipper.extensions.listeners.RepositoryListener
 import com.kpstv.xclipper.extensions.utils.ThemeUtils
 import com.kpstv.xclipper.ui.adapters.EditAdapter
@@ -46,7 +47,7 @@ class EditDialog : AppCompatActivity() {
 
         setContentView(R.layout.dialog_edit_layout)
 
-        toolbar.navigationIcon = getDrawable(R.drawable.ic_close)
+        toolbar.navigationIcon = drawableFrom(R.drawable.ic_close)
         toolbar.setNavigationOnClickListener {
             finish()
         }

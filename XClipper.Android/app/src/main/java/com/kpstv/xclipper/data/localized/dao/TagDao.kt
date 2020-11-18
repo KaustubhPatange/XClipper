@@ -7,7 +7,7 @@ import com.kpstv.xclipper.data.model.Tag
 @Dao
 interface TagDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(tag: Tag)
+    suspend fun insert(tag: Tag)
 
     @Transaction
     suspend fun insertTag(tag: Tag) {
@@ -18,7 +18,7 @@ interface TagDao {
     }
 
     @Delete
-    fun delete(tag: Tag)
+    suspend fun delete(tag: Tag)
 
     @Query("select * from table_tag")
     suspend fun getAllData(): List<Tag>

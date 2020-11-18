@@ -6,7 +6,7 @@ import com.kpstv.xclipper.data.model.Definition
 @Dao
 interface DefineDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(definition: Definition)
+    suspend fun insert(definition: Definition)
 
     @Transaction
     suspend fun insertDefinition(definition: Definition) {
