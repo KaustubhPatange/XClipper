@@ -36,6 +36,7 @@ namespace Components
         public string APP_UPDATE = rm.GetString("app_update");
         public string APP_HELP = rm.GetString("app_help");
         public string APP_EXIT = rm.GetString("app_exit");
+        public string APP_CRASH = rm.GetString("app_crash");
         public string SETTINGS_GENERAL = rm.GetString("settings_general");
         public string SETTINGS_OTHER = rm.GetString("settings_other");
         public string SETTINGS_HOTKEY = rm.GetString("settings_hotkey");
@@ -108,6 +109,7 @@ namespace Components
         public string MSG_ENCRYPT_DATABASE = rm.GetString("msg_encrypt_database");
         public string MSG_ENCRYPT_DATABASE_FAILED = rm.GetString("msg_encrypt_database_failed");
         public string MSG_ENCRYPT_DATABASE_SUCCESS = rm.GetString("msg_encrypt_database_success");
+        public string MSG_CRASH_DETAILS = rm.GetString("msg_crash_details");
         public string POPUP_ADDED = rm.GetString("popup_added");
         public string POPUP_SPACE_FOCUS = rm.GetString("popup_space_focus");
         public string POPUP_EDIT_ERR = rm.GetString("popup_edit_err");

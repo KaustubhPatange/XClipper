@@ -63,6 +63,7 @@ namespace Components
 
         public App()
         {
+            AppException.Init();
             AppModule.Configure();
             recorder = AppModule.Container.Resolve<IKeyboardRecorder>();
             licenseService = AppModule.Container.Resolve<ILicense>();

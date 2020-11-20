@@ -22,6 +22,7 @@
     <system:String x:Key="app_update">Check for update</system:String>
     <system:String x:Key="app_help">Help</system:String>
     <system:String x:Key="app_exit">Exit</system:String>
+    <system:String x:Key="app_crash">App crashed!</system:String>
     <system:String x:Key="settings_tab_main">Main</system:String>
     <system:String x:Key="settings_tab_connect">Connect</system:String>
     <system:String x:Key="settings_auth">Authentication</system:String>
@@ -130,6 +131,7 @@
     <system:String x:Key="msg_encrypt_database">This will migrate your existing database data which could take a while.</system:String>
     <system:String x:Key="msg_encrypt_database_failed">Migration fails due to Firebase not being initialized or some internal error. Check logs!</system:String>
     <system:String x:Key="msg_encrypt_database_success">Database migration complete</system:String>
+    <system:String x:Key="msg_crash_details">Click to view detail reports of crash</system:String>
     <system:String x:Key="popup_added">Added:</system:String>
     <system:String x:Key="popup_space_focus">...Press (Space) to Focus...</system:String>
     <system:String x:Key="popup_edit_err">Editing is not supported for this format</system:String>

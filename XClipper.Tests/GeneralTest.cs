@@ -15,6 +15,8 @@ using Components.UI;
 using System.Windows.Navigation;
 using System.Data;
 using System.Windows.Threading;
+using System.Management;
+using System.Dynamic;
 
 namespace XClipper.Tests
 {
@@ -63,11 +65,40 @@ namespace XClipper.Tests
         [TestMethod]
         public void RandomTest()
         {
-            string test = "{\r\n  \"Clips\": [\r\n    {\r\n      \"data\": \"AccessViolationException\",\r\n      \"time\": \"20201103173108\"\r\n    }\r\n  ]\r\n}";
-            Debug.WriteLine(test.Contains(Quotes(nameof(User.Clips))));
+                try
+                {
+                Debug.WriteLine($"OS: {Environment.OSVersion} {(Environment.Is64BitOperatingSystem ? "x64" : "x86")} {Environment.UserName}\n");
+                    foreach (dynamic obj in GetAllObjects("Win32_VideoController")) 
+                    {
+                        Debug.WriteLine($"VideoController: {obj.Name}, {((long)obj.AdapterRAM).ToFileSizeApi()}, {obj.VideoProcessor}\n");
+                    }
+                }
+                catch { }
+            //string test = "{\r\n  \"Clips\": [\r\n    {\r\n      \"data\": \"AccessViolationException\",\r\n      \"time\": \"20201103173108\"\r\n    }\r\n  ]\r\n}";
+            //Debug.WriteLine(test.Contains(Quotes(nameof(User.Clips))));
             //var key = "d3s2mt7gAPNyqYDU0L1ySt6WSmN7ElkUbHWz+kp7YWfzDOQ3xsHRj9ldRyxE48iyyzjNvHBCHsn8TkWS1H0NHcmv+JKhD0yDc+S2KhTWF7vU5SCmn3huoEH458clRUUA".Decrypt();
             //var value = "7u0wHXG8dCfNuJwM0nEuCwIMHFJgU0jxz4ikNZcODmUJKb8vDdoRVDC/LWdm6+y5BaTNTSc1des0bt5cD85iS+GN1/bcHc+0298HoeTIMgI=".DecryptBase64(key);
             //Debug.WriteLine(value);
+        }
+
+        public static List<dynamic> GetAllObjects(string className)
+        {
+            ManagementObjectCollection col = new ManagementObjectSearcher("SELECT * FROM " + className).Get();
+            List<dynamic> objects = new List<dynamic>();
+
+            foreach (ManagementObject obj in col)
+            {
+                var currentObject = new ExpandoObject() as IDictionary<string, Object>;
+
+                foreach (PropertyData prop in obj.Properties)
+                {
+                    currentObject.Add(prop.Name, prop.Value);
+                }
+
+                objects.Add(currentObject);
+            }
+
+            return objects;
         }
 
         private string Quotes(string t) => $@"""{t}"":";

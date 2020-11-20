@@ -19,6 +19,7 @@ namespace Components
         public static string ApplicationDirectory = Path.Combine(RoamingDirectory, "XClipper");
         public static string ApplicationTempDirectory = Path.Combine(ApplicationDirectory, ".cache");
         public static string ApplicationLogDirectory = Path.Combine(ApplicationDirectory, "logs");
+        public static string ApplicationExceptionDirectory = Path.Combine(ApplicationLogDirectory, "crash-reports");
         public static string SettingsPath = Path.Combine(ApplicationDirectory, "config.xml");
         public static string LicenseFilePath = Path.Combine(ApplicationDirectory, "key.lic");
         public static string BackupFolder = Path.Combine(ApplicationDirectory, "Backup");
