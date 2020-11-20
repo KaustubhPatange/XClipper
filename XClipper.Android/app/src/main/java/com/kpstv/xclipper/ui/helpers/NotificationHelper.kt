@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.Intent.ACTION_DELETE
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
@@ -34,6 +35,7 @@ class NotificationHelper @Inject constructor(
     private lateinit var manager: NotificationManager
 
     fun createChannel() = with(context) {
+        Log.e("NotificationHelper", "Creating channel")
         manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             manager.createNotificationChannel(NotificationChannel(
@@ -83,6 +85,7 @@ class NotificationHelper @Inject constructor(
                 PendingIntent.getBroadcast(context, 0, specialIntent, 0)
             ).build()
 
+        if (!::manager.isInitialized) createChannel()
         manager.notify(NOTIFICATION_ID, notification)
     }
 
@@ -97,14 +100,15 @@ class NotificationHelper @Inject constructor(
         )
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_clip)
-            .setContentTitle("Clipboard monitoring is disabled")
-            .setContentText("Accessibility service is not started, click to enable it.")
+            .setContentTitle(getString(R.string.clipboard_disabled_text))
+            .setContentText(getString(R.string.clipboard_disabled_content))
             .setAutoCancel(true)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
             .setContentIntent(openIntent)
             .build()
 
+        if (!::manager.isInitialized) createChannel()
         manager.notify(ACCESSIBILITY_NOTIFICATION_ID, notification)
     }
 

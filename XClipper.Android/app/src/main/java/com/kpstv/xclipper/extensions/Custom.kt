@@ -107,3 +107,7 @@ enum class LicenseType {
 inline fun <reified T : Enum<T>> enumValueOrNull(name: String): T? {
     return enumValues<T>().find { it.name == name }
 }
+
+fun String.toLines(): List<String> {
+    return this.split("[\n|\r]".toRegex())
+}

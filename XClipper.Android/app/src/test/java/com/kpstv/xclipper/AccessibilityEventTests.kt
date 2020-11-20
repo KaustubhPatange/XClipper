@@ -1,6 +1,7 @@
 package com.kpstv.xclipper
 
 import android.view.accessibility.AccessibilityEvent
+import com.kpstv.xclipper.extensions.toLines
 import com.kpstv.xclipper.service.helper.ClipboardDetection
 import okhttp3.internal.toHexString
 import org.junit.Assert.assertEquals
@@ -109,7 +110,7 @@ object EventsHelper {
      * Multiline string can be accepting
      */
     fun parse(string: String): List<ClipboardDetection.AEvent> {
-        return string.split("[\n|\r]".toRegex()).map { lineParser(it) }
+        return string.toLines().map { lineParser(it) }
     }
 
     // eg: EventType: TYPE_VIEW_CLICKED; EventTime: 245578516; PackageName: com.android.chrome; MovementGranularity: 0; Action: 0; ContentChangeTypes: []; WindowChangeTypes: [] [ ClassName: android.widget.TextView; Text: [Copy link address]; ContentDescription: null; ItemCount: -1; CurrentItemIndex: -1; Enabled: true; Password: false; Checked: false; FullScreen: false; Scrollable: false; BeforeText: null; FromIndex: -1; ToIndex: -1; ScrollX: -1; ScrollY: -1; MaxScrollX: -1; MaxScrollY: -1; AddedCount: -1; RemovedCount: -1; ParcelableData: null ]; recordCount: 1

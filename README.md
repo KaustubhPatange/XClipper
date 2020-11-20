@@ -20,12 +20,10 @@ XClipper is currently available for the following platforms only.
 
 ## Features
 
-Originally inspired from [Ditto](https://ditto-cp.sourceforge.io/) but with **synchronization** support for Android.
-
 - Clean & **beautiful** UI.
 - **Easier** to use and manage.
 - Password Protection for Database, [learn more](https://github.com/KaustubhPatange/XClipper/wiki/Password-Protect-Database).
-- Database syncing between devices, [learn more](https://github.com/KaustubhPatange/XClipper/wiki/Data-Synchronization).
+- Clipboard syncing between devices, [learn more](https://github.com/KaustubhPatange/XClipper/wiki/Data-Synchronization).
 - Lot more... _but just leaving it here_.
 
 ## Compilation Guide

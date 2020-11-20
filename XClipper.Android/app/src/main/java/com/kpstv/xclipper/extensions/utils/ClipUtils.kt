@@ -1,7 +1,6 @@
 package com.kpstv.xclipper.extensions.utils
 
 import com.kpstv.xclipper.App.DATE_PATTERN_REGEX
-import com.kpstv.xclipper.App.DATE_PATTERN_REGEX1
 import com.kpstv.xclipper.App.EMAIL_PATTERN_REGEX
 import com.kpstv.xclipper.App.MAP_PATTERN_REGEX
 import com.kpstv.xclipper.App.PHONE_PATTERN_REGEX
@@ -25,8 +24,7 @@ class ClipUtils {
             }
 
             /** Date pattern matcher */
-            if (!patternAdder(DATE_PATTERN_REGEX, data, ClipTag.DATE, map))
-                patternAdder(DATE_PATTERN_REGEX1, data, ClipTag.DATE, map)
+            patternAdder(DATE_PATTERN_REGEX, data, ClipTag.DATE, map)
 
             /** Email pattern matcher */
             patternAdder(EMAIL_PATTERN_REGEX, data, ClipTag.EMAIL, map)

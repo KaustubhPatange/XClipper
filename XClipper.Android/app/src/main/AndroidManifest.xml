@@ -74,6 +74,11 @@
             </intent-filter>
         </activity>
 
+        <provider
+            android:name="androidx.work.impl.WorkManagerInitializer"
+            android:authorities="com.kpstv.xclipper.workmanager-init"
+            tools:node="remove" />
+
         <service
             android:name=".service.ClipboardAccessibilityService"
             android:enabled="true"

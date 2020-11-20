@@ -2,13 +2,17 @@ name: Windows CI
 on:
   push:
     paths:
+      - ".github/**"
       - "XClipper.App/**"
       - "XClipper.Core/**"
   pull_request:
     paths:
+      - ".github/**"
       - "XClipper.App/**"
       - "XClipper.Core/**"
-
+env:
+  ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+  
 jobs:
   windows:
     runs-on: windows-latest

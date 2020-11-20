@@ -1,6 +1,7 @@
 package com.kpstv.xclipper.service.worker
 
 import android.content.Context
+import android.util.Log
 import androidx.hilt.Assisted
 import androidx.hilt.work.WorkerInject
 import androidx.work.*
@@ -11,10 +12,9 @@ import javax.inject.Inject
 
 class AccessibilityWorker @WorkerInject constructor(
     @Assisted private val appContext: Context,
-    @Assisted workerParams: WorkerParameters
+    @Assisted workerParams: WorkerParameters,
+    private val notificationHelper: NotificationHelper
 ) : Worker(appContext, workerParams) {
-
-    @Inject lateinit var notificationHelper: NotificationHelper
 
     override fun doWork(): Result {
         if (!Utils.isClipboardAccessibilityServiceRunning(appContext)) {
