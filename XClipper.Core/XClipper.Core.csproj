@@ -131,6 +131,7 @@
     <Compile Include="Data\Utils\ImageCompare.cs" />
     <Compile Include="Helpers\ClipboardHelper.cs" />
     <Compile Include="Helpers\PathHelper.cs" />
+    <Compile Include="Helpers\EnumHelper.cs" />
     <Compile Include="Helpers\RegistryHelper.cs" />
     <Compile Include="Helpers\ApplicationHelper.cs" />
     <Compile Include="models\FilterModel.cs" />

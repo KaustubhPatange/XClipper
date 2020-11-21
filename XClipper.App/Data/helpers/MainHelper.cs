@@ -176,7 +176,6 @@ DEL ""%~f0""";
             return FileVersionInfo.GetVersionInfo(exeFile).ProductVersion;
         }
 
-        // TODO; Pass databaseEncryptPassword based on isEncrypted or not.
         /// <summary>
         /// Set current QR data which will be used by SettingsWindow to generate QR code details.
         /// </summary>

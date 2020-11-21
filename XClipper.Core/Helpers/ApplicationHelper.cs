@@ -26,7 +26,7 @@ namespace Components
 
         private static DispatcherTimer dtimer;
         private static bool isExecuted;
-        /// <summary>
+        /// <summary>s
         /// This will provide a callback whenever the application process is not foreground.
         /// </summary>
         /// <param name="block"></param>

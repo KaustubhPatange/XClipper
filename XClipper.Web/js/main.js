@@ -136,13 +136,15 @@ function downloadFocusOut() {
 
 async function loadInformation() {
   const options = {
-    url:
-      "https://raw.githubusercontent.com/androdevkit/Random/master/XClipper_update.json", // TODO: Change to real update url
+    url: "https://api.github.com/repos/adb-over-wifi/demo-release/releases", // TODO: Change to real github api release uri
     method: "GET",
   };
 
   const response = await promisifiedRequest(options);
   const jObject = JSON.parse(response);
-
-  document.getElementById("btn-window").href = jObject.Desktop.DownloadUri;
+  jObject[0].assets.map((e) => {
+    if (String(e.name).endsWith(".exe")) {
+      document.getElementById("btn-window").href = e.browser_download_url;
+    }
+  });
 }

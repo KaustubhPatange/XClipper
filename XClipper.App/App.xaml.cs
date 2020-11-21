@@ -115,7 +115,7 @@ namespace Components
             {
                 clipWindow.CloseWindow();
             });
-
+            
             FirebaseHelper.InitializeService(this);
 
             licenseService.Initiate(err =>
@@ -648,7 +648,7 @@ namespace Components
 
         private void LoadLanguageResource()
         {
-            foreach (var file in Directory.GetFiles("locales", "*.xaml"))
+            foreach (var file in Directory.GetFiles(Path.Combine(BaseDirectory, "locales"), "*.xaml"))
             {
                 LanguageCollection.Add(file);
             }

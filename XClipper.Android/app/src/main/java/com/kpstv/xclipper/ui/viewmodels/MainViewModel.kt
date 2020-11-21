@@ -3,7 +3,10 @@ package com.kpstv.xclipper.ui.viewmodels
 import android.app.Application
 import android.content.Context
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.data.localized.FBOptions
 import com.kpstv.xclipper.data.localized.dao.TagDao
@@ -29,7 +32,6 @@ import com.kpstv.xclipper.ui.helpers.TinyUrlApiHelper
 import com.kpstv.xclipper.ui.viewmodels.managers.MainEditManager
 import com.kpstv.xclipper.ui.viewmodels.managers.MainSearchManager
 import com.kpstv.xclipper.ui.viewmodels.managers.MainStateManager
-import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -117,7 +119,7 @@ class MainViewModel @ViewModelInject constructor(
     }
 
     fun postToTagRepository(tag: Tag) {
-        viewModelScope.launch { tagRepository.insertTag(tag) }
+        Coroutines.io { tagRepository.insertTag(tag) }
     }
 
     fun deleteFromTagRepository(tag: Tag, statusListener: StatusListener) {
@@ -128,7 +130,7 @@ class MainViewModel @ViewModelInject constructor(
                 },
                 notFound = {
                     statusListener.onComplete()
-                    viewModelScope.launch { tagRepository.delete(tag) }
+                    Coroutines.io { tagRepository.delete(tag) }
                 }
             ))
     }
@@ -177,12 +179,12 @@ class MainViewModel @ViewModelInject constructor(
             _clipLiveData.postValue(clips)
 
             val list = ArrayList<TagMap>()
-            clips.forEach {  clip ->
+            clips.forEach { clip ->
                 clip.tags?.forEach { e ->
                     val find = list.find { it.name == e.key }
                     if (find != null) {
                         find.count++
-                    }else {
+                    } else {
                         list.add(TagMap(e.key, 1))
                     }
                 }

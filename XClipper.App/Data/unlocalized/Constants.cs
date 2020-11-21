@@ -39,12 +39,11 @@ namespace Components
 
         public static string ApplicationVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
         public static string ApplicationWebsite = "https://kaustubhpatange.github.io/XClipper";
-        [Obsolete("Use GITHUB_RELEASE_URI", true)]
-        public const string UPDATE_URI = "https://pastebin.com/raw/FRS7n7Fc"; // TODO; Change update uri https://raw.githubusercontent.com/KaustubhPatange/XClipper/master/UPDATE
         public const string GITHUB_RELEASE_URI = "https://api.github.com/repos/adb-over-wifi/demo-release/releases"; // TODO: Change update uri https://api.github.com/repos/KaustubhPatange/XClipper/releases
         public const string OAUTH_TOKEN_URI = "https://oauth2.googleapis.com/token";
         public const string ACTION_NOT_COMPLETE_WIKI = "https://github.com/KaustubhPatange/XClipper/wiki/FAQs#q-last-x-actions-didnt-complete-what-to-do";
         public const string SETTINGS = "Settings";
+        public const string ENVIRONMENT = "Environment";
         public const string CREDENTIAL = "Credential";
         public const string FIREBASE = "Firebase";
         public const string DESKTOP_AUTH = "DesktopAuth";
@@ -103,7 +102,7 @@ namespace Components
 
         #region Help links
 
-        public const string MOBILE_APP = "https://github.com/KaustubhPatange/XClipper"; // TODO; change it with playstore url or github XClipper.Android url
+        public const string MOBILE_APP = "https://github.com/KaustubhPatange/XClipper/XClipper.Android";
 
         public const string DATA_SYNCHRONIZATION = "https://github.com/KaustubhPatange/XClipper/wiki/Data-Synchronization";
         public const string MANUAL_ACTIVATION = "https://github.com/KaustubhPatange/XClipper/wiki/Manual-License-Activation";
@@ -111,7 +110,7 @@ namespace Components
         public const string SECURE_DB = "https://github.com/KaustubhPatange/XClipper/wiki/Using-secure-database";
         public const string SECURE_FIREBASE = "https://github.com/KaustubhPatange/XClipper/wiki/Securing-Database";
 
-        public const string UPGRADE_LICENSE = "https://kaustubhpatange.github.io/XClipper"; // TODO; change this which is used in UpgradeTipItem
+        public const string UPGRADE_LICENSE = "https://kaustubhpatange.github.io/XClipper"; // TODO; Edit: No need yet! change this which is used in UpgradeTipItem
 
         #endregion
     }

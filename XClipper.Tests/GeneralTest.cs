@@ -17,6 +17,7 @@ using System.Data;
 using System.Windows.Threading;
 using System.Management;
 using System.Dynamic;
+using System.Xml.Linq;
 
 namespace XClipper.Tests
 {
@@ -34,6 +35,8 @@ namespace XClipper.Tests
         [TestMethod]
         public void LinqTest()
         {
+            var e = new XElement("Value");
+            var f = e.Element("D").Value;
             var s = DateTime.Parse("2020-11-08T05:32:08Z");
             Debug.WriteLine(s);
             var list = new List<int> { 1, 2, 3, 4, 5, 6, 7 };
@@ -65,6 +68,7 @@ namespace XClipper.Tests
         [TestMethod]
         public void RandomTest()
         {
+            Debug.WriteLine(AppDomain.CurrentDomain.BaseDirectory);
                 try
                 {
                 Debug.WriteLine($"OS: {Environment.OSVersion} {(Environment.Is64BitOperatingSystem ? "x64" : "x86")} {Environment.UserName}\n");

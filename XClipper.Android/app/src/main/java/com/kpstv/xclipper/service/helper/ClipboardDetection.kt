@@ -7,25 +7,28 @@ import com.kpstv.hvlog.HVLog
 import com.kpstv.xclipper.extensions.StripArrayList
 import java.util.*
 
+typealias Predicate = (ClipboardDetection.AEvent) -> Boolean
+
 object ClipboardDetection {
 
     private val typeViewSelectionChangeEvent: StripArrayList<AEvent> = StripArrayList(2)
     private val eventList: StripArrayList<Int> =
         StripArrayList(4) // TODO: Try to fix it by stripping 4 to 3
 
-    /** Some hacks I figured out which would trigger copy/cut for Android 10 */
-    fun getSupportedEventTypes(event: AccessibilityEvent?): Boolean {
-        if (event == null) return false
-
-        val clipEvent = AEvent.from(event)
-        return detectAppropriateEvents(event = clipEvent)
-    }
-
     /**
      * Add an [AccessibilityEvent] to the striping array list.
      */
     fun addEvent(c: Int) {
         eventList.add(c)
+    }
+
+    /** Some hacks I figured out which would trigger copy/cut for Android 10 */
+    fun getSupportedEventTypes(event: AccessibilityEvent?, predicate: Predicate? = null): Boolean {
+        if (event == null) return false
+
+        val clipEvent = AEvent.from(event)
+        if (predicate?.invoke(clipEvent) == true) return false
+        return detectAppropriateEvents(event = clipEvent)
     }
 
     /**

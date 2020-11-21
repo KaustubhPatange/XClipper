@@ -10,8 +10,6 @@ import com.kpstv.xclipper.data.repository.MainRepository
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-// TODO: This was extending Activity
-
 @AndroidEntryPoint
 class TextSelectionActivity : ComponentActivity() {
 

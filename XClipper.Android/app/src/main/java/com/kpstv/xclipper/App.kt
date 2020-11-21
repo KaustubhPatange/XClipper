@@ -100,7 +100,7 @@ object App {
 
     const val MARKDOWN_IMAGE_ONLY_REGEX = "^(!\\[)(.*?)(])(\\((https?://.*?)\\))$"
 
-    const val PREMIUM_PRICE_REGEX = "<span\\s?id=\\\"premium-card-amount\\\">(.*?)<"
+    const val PREMIUM_PRICE_REGEX = "id=\\\"premium-card-amount\\\">(.*?)<"
 
     const val APP_CLIP_DATA = "com.kpstv.xclipper.clip_data"
 

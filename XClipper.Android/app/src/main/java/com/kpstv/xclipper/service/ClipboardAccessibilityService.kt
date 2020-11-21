@@ -22,6 +22,7 @@ import com.kpstv.xclipper.App.showSuggestion
 import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.extensions.logger
 import com.kpstv.xclipper.extensions.utils.FirebaseUtils
+import com.kpstv.xclipper.extensions.utils.KeyboardUtils
 import com.kpstv.xclipper.extensions.utils.KeyboardUtils.Companion.getKeyboardHeight
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.isSystemOverlayEnabled
 import com.kpstv.xclipper.service.helper.ClipboardDetection
@@ -101,6 +102,7 @@ class ClipboardAccessibilityService : AccessibilityService() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
             && ClipboardDetection.getSupportedEventTypes(event)
+            { e -> e.PackageName == "com.google.android.gm" && keyboardHeight.value ?: 0 > 100 } // This events will fail the capture...
             && !isPackageBlacklisted(event?.packageName)
         ) {
             runForNextEventAlso = true

@@ -33,6 +33,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -252,7 +254,6 @@
     <Compile Include="Data\Converters\ForegroundTextBlockConverter.cs" />
     <Compile Include="Data\Converters\IndexConverter.cs" />
     <Compile Include="Data\Converters\VisibilityConverter.cs" />
-    <Compile Include="Data\helpers\EnumHelper.cs" />
     <Compile Include="Data\helpers\ExplorerHelper.cs" />
     <Compile Include="Controls\Dialog\FolderSelectDialog.cs" />
     <Compile Include="Data\helpers\FirebaseSingleton.cs" />

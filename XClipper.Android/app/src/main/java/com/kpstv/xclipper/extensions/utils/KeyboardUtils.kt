@@ -30,7 +30,11 @@ class KeyboardUtils {
             val windowHeightMethod = InputMethodManager::class.java.getMethod("getInputMethodWindowVisibleHeight")
 
             /** I assume the keyboard size is at least greater than 100px */
-            return windowHeightMethod.invoke(imm) as Int
+            return try {
+                windowHeightMethod.invoke(imm) as Int
+            } catch (e: Exception) {
+                0
+            }
         }
     }
 }

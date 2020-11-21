@@ -341,19 +341,13 @@ namespace Components
         public static FirebaseData? FirebaseCurrent { get; set; }
 
         /// <summary>
-        /// Holds all the firebase configuration or any custom configuration as well.
-        /// </summary>
-        [Obsolete("Should not be used", true)] // TODO: Remove this setting
-        public static List<FirebaseData> FirebaseConfigurations { get; private set; } = new List<FirebaseData>();
-
-        /// <summary>
         /// When set to true it will allow syncing of local database with online database.<br/> A valid binding can be,<br/><br/> 
         /// 1. Data added locally then pushed to online database.<br/> 
         /// 2. Data removed locally and changes submitted to online database.<br/>
         /// 3. Data observation and device changes.<br/>
+        /// 4. Data added to online database externally, respond to such changes locally.<br/>
         /// </summary>
         public static bool BindDatabase { get; set; } = false;
-        //    TODO; 3. Data added to online database externally, respond to such changes locally.
 
         /// <summary>
         /// When set to true, App will respond to delete request coming from database.
@@ -369,6 +363,11 @@ namespace Components
         /// A setting that can use to decide whether to respond for quick paste.
         /// </summary>
         public static bool GlobalQuickPaste { get; set; } = true;
+
+        /// <summary>
+        /// This will let application exit when any crash occurs.
+        /// </summary>
+        public static bool ExitOnCrash { get; set; } = true;
 
         #endregion
 
@@ -389,9 +388,16 @@ namespace Components
         public static void WriteSettings()
         {
             var document = new XDocument();
+
+            var environment = new XElement(ENVIRONMENT);
+            environment
+                  .Add(
+                     new XElement(nameof(ExitOnCrash), ExitOnCrash.ToString())
+                     );
             var settings = new XElement(SETTINGS);
             settings
                 .Add(
+                    environment,
                     new XElement(nameof(AppDisplayLocation), AppDisplayLocation.ToString()),
                     new XElement(nameof(WhatToStore), WhatToStore.ToString()),
                     new XElement(nameof(TotalClipLength), TotalClipLength.ToString()),
@@ -514,8 +520,12 @@ namespace Components
         /// </summary>
         public static void LoadApplicationSetting()
         {
-            if (!File.Exists(SettingsPath)) return;  // Return if settings does not exist, so it will use defaults
-            var settings = XDocument.Load(SettingsPath).Element(SETTINGS);
+            if (!File.Exists(SettingsPath)) // If settings does not exist, write defaults
+            {
+                WriteSettings();
+                return;
+            }  
+            var settings = XDocument.Load(SettingsPath).Element(SETTINGS);           
 
             AppDisplayLocation = settings.Element(nameof(AppDisplayLocation)).Value.ToEnum<XClipperLocation>();
             WhatToStore = settings.Element(nameof(WhatToStore)).Value.ToEnum<XClipperStore>();
@@ -537,6 +547,9 @@ namespace Components
             BindDatabase = settings.Element(nameof(BindDatabase)).Value.ToBool();
             BindDelete = settings.Element(nameof(BindDelete)).Value.ToBool();
             BindImage = settings.Element(nameof(BindImage)).Value.ToBool();
+
+            var environment = settings.Element(ENVIRONMENT);
+            ExitOnCrash = environment.Element(nameof(ExitOnCrash)).Value.ToBool();
         }
 
         /// <summary>

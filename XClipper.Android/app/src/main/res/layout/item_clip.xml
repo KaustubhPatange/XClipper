@@ -176,8 +176,6 @@
                     app:layout_constraintTop_toTopOf="parent"
                     grid:layout_columnWeight="1" />
 
-                <!-- TODO: Find a good icon for Special/More button -->
-
                 <Button
                     android:id="@+id/ci_btn_special"
                     style="@style/ButtonStyle"

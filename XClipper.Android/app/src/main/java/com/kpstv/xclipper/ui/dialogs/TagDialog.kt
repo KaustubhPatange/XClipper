@@ -111,7 +111,7 @@ class TagDialog : AppCompatActivity() {
                     dct_editText.requestFocus()
                 }
                 else -> {
-                    // TODO: When exhaustive
+                    // When exhaustive
                 }
             }
         })

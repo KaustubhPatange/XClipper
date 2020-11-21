@@ -50,20 +50,22 @@ namespace Components
         private void Current_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
             WriteCrashDetails("app_report_", $"{e.Exception.Message}\n{e.Exception.StackTrace}");
-            AppNotificationHelper.ShowBasicToast(
-                dispatcher: e.Dispatcher, 
-                title: Translation.APP_CRASH, 
-                message: Translation.MSG_CRASH_DETAILS,
-                doOnActivated: () =>
-                {
-                    Process.Start(ApplicationExceptionDirectory);
-                }
-            ).RunAsync();
+            //AppNotificationHelper.ShowBasicToast(
+            //    dispatcher: e.Dispatcher, 
+            //    title: Translation.APP_CRASH, 
+            //    message: Translation.MSG_CRASH_DETAILS,
+            //    doOnActivated: () =>
+            //    {
+            //        Process.Start(ApplicationExceptionDirectory);
+            //    }
+            //).RunAsync();
+            e.Handled = true;
         }
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             WriteCrashDetails("domain_report_", e.ExceptionObject.ToString());
+            
         }
 
         private void WriteCrashDetails(string prefix, string contents)
@@ -110,9 +112,18 @@ namespace Components
 
             if (!Directory.Exists(ApplicationExceptionDirectory)) Directory.CreateDirectory(ApplicationExceptionDirectory);
 
-            File.WriteAllText(Path.Combine(ApplicationExceptionDirectory, prefix + CreateCrashSuffix() + ".txt"), dib.ToString());
+            string crashFilePath = Path.Combine(ApplicationExceptionDirectory, prefix + CreateCrashSuffix() + ".txt");
+
+            File.WriteAllText(crashFilePath, dib.ToString());
 
             SendReport(Environment.UserName, dib.ToString()).RunAsync();
+
+            AppNotificationHelper.ShowBasicToast(
+               dispatcher: Application.Current.Dispatcher,
+               title: Translation.APP_CRASH
+           ).RunAsync();
+
+            Environment.Exit(1);
         }
 
         private async Task SendReport(string sender, string content)

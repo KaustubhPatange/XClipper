@@ -91,12 +91,11 @@
                             TextAlignment="Center"
                             Visibility="{c:Binding 'local:DefaultSettings.IsPurchaseDone',
                                                    FalseToVisibility=Collapsed}" />
-                        <!--  TODO; Show not secure database when !EFD below & also update the guide  -->
                         <StackPanel
                             Margin="0,5,0,0"
                             HorizontalAlignment="Center"
                             Orientation="Horizontal"
-                            Visibility="{c:Binding '!IAN or !local:DefaultSettings.IsPurchaseDone',
+                            Visibility="{c:Binding '!IAN or !EFD or !local:DefaultSettings.IsPurchaseDone',
                                                    FalseToVisibility=Collapsed}">
                             <TextBlock
                                 Margin="0,0,5,0"

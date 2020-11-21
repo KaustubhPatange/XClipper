@@ -22,7 +22,7 @@
     <system:String x:Key="app_update">Check for update</system:String>
     <system:String x:Key="app_help">Help</system:String>
     <system:String x:Key="app_exit">Exit</system:String>
-    <system:String x:Key="app_crash">App crashed!</system:String>
+    <system:String x:Key="app_crash">XClipper app crashed!</system:String>
     <system:String x:Key="settings_tab_main">Main</system:String>
     <system:String x:Key="settings_tab_connect">Connect</system:String>
     <system:String x:Key="settings_auth">Authentication</system:String>
