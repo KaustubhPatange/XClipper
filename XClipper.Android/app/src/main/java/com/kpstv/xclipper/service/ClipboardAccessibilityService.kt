@@ -213,6 +213,7 @@ class ClipboardAccessibilityService : AccessibilityService() {
 
         /** Ensures that we remove database initialization observation. */
         firebaseUtils.removeDatabaseInitializationObservation()
+        clipboardProvider.removeClipboardObserver()
         super.onDestroy()
     }
 

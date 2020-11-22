@@ -21,6 +21,7 @@ using RestSharp;
 using System.Windows.Threading;
 using System.Web.UI.Design.WebControls;
 using FireSharp.Core.Response;
+using System.Windows.Media.Imaging;
 
 #nullable enable
 
@@ -846,6 +847,15 @@ namespace Components
                     return;
                 user.Clips.Clear();
                 await client.SafeUpdateAsync($"users/{UID}", user).ConfigureAwait(false);
+
+                if (FirebaseCurrent?.Storage != null)
+                {
+                    await new FirebaseStorage(FirebaseCurrent.Storage)
+                        .Child("XClipper")
+                        .Child("images")
+                        .DeleteAsync().ConfigureAwait(false);
+                    
+                }
             }
         }
 
@@ -910,7 +920,6 @@ namespace Components
             Log();
             if (FirebaseCurrent?.Storage == null) return;
 
-            var stream = File.Open(imagePath, FileMode.Open);
             var fileName = Path.GetFileName(imagePath);
 
             var pathRef = new FirebaseStorage(FirebaseCurrent.Storage)
@@ -918,11 +927,22 @@ namespace Components
                .Child("images")
                .Child(fileName);
 
-            await pathRef.PutAsync(stream); // Push to storage
+            /** Somethings wrong here, File.Open is exiting the function. Only succeeds
+             *  when a copy is made. Maybe permission issues but there are not crashes just 
+             *  returns to the caller.
+             */
+            var tmp = Path.GetTempFileName();
+            File.Copy(imagePath, tmp, true);
+
+            byte[] buff = File.ReadAllBytes(tmp);
+            using (var stream = new MemoryStream(buff))
+            {
+                await pathRef.PutAsync(stream); // Push to storage
+                File.Delete(tmp);
+            }
 
             binder?.SendNotification(Translation.MSG_IMAGE_UPLOAD_TITLE, Translation.MSG_IMAGE_UPLOAD_TEXT);
 
-            stream.Close();
             var downloadUrl = await pathRef.GetDownloadUrlAsync().ConfigureAwait(false); // Retrieve download url
 
             AddClip($"![{fileName}]({downloadUrl})");

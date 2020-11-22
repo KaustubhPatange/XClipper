@@ -5,8 +5,10 @@ import androidx.lifecycle.LiveData
 import com.kpstv.xclipper.extensions.SimpleFunction
 
 interface ClipboardProvider {
+    fun isObserving(): Boolean
     fun startObserving()
     fun observeClipboardChange()
+    fun removeClipboardObserver()
     fun setClipboard(item: ClipData?)
     fun getClipboard(): ClipData?
     fun stopObserving()

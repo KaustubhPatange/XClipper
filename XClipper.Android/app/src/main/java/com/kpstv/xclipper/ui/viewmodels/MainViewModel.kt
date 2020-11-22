@@ -232,11 +232,9 @@ class MainViewModel @ViewModelInject constructor(
             )
         }
 
-        /** This is to observe the device validation when accessibility service is off. */
-        if (!isClipboardAccessibilityServiceRunning(application.applicationContext)) {
-            firebaseUtils.observeDatabaseInitialization()
-            clipboardProvider.observeClipboardChange()
-        }
+        /** Methods optimized to invoke only once regardless of calling from multiple sites. */
+        firebaseUtils.observeDatabaseInitialization()
+        clipboardProvider.observeClipboardChange()
     }
 
     private fun makeMySource(

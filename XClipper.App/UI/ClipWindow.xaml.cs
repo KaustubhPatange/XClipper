@@ -699,9 +699,10 @@ namespace Components
             ClipboardHelper.Preserve();
 
             // Send text to screen...
-            Clipboard.Clear();  // Always clear the clipboard first
-            Clipboard.SetText(text);
+            ClipboardHelper.Clear();  // Always clear the clipboard first
+            ClipboardHelper.SetText(text);
             System.Windows.Forms.SendKeys.SendWait("^v");
+            Thread.Sleep(100);
             ClipboardHelper.Consume();
         }
 
@@ -729,13 +730,13 @@ namespace Components
                 switch (clip.ContentType)
                 {
                     case ContentType.Text:
-                        Clipboard.SetText(clip.RawText);
+                        ClipboardHelper.SetText(clip.RawText);
                         break;
                     case ContentType.Image:
-                        Clipboard.SetImage(new BitmapImage(new Uri(clip.ImagePath)));
+                        ClipboardHelper.SetImage(new BitmapImage(new Uri(clip.ImagePath)));
                         break;
                     case ContentType.Files:
-                        Clipboard.SetFileDropList(clip.LongText.Split(',').ToCollection());
+                        ClipboardHelper.SetFileDropList(clip.LongText.Split(',').ToCollection());
                         break;
                 }
             });

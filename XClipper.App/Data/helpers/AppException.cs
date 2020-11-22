@@ -50,16 +50,6 @@ namespace Components
         private void Current_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
             WriteCrashDetails("app_report_", $"{e.Exception.Message}\n{e.Exception.StackTrace}");
-            //AppNotificationHelper.ShowBasicToast(
-            //    dispatcher: e.Dispatcher, 
-            //    title: Translation.APP_CRASH, 
-            //    message: Translation.MSG_CRASH_DETAILS,
-            //    doOnActivated: () =>
-            //    {
-            //        Process.Start(ApplicationExceptionDirectory);
-            //    }
-            //).RunAsync();
-            e.Handled = true;
         }
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -122,8 +112,6 @@ namespace Components
                dispatcher: Application.Current.Dispatcher,
                title: Translation.APP_CRASH
            ).RunAsync();
-
-            Environment.Exit(1);
         }
 
         private async Task SendReport(string sender, string content)
@@ -135,6 +123,8 @@ namespace Components
             var request = new RestRequest(queryBuilder.ToString(), Method.POST);
             request.AddParameter("text/plain", content, ParameterType.RequestBody);
             await client.ExecuteTaskAsync(request).ConfigureAwait(false);
+
+            Environment.Exit(1);
         }
 
         private string CreateCrashSuffix()

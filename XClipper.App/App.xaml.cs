@@ -554,7 +554,7 @@ namespace Components
                             var recorder = AppModule.Container.Resolve<IKeyboardRecorder>();
                             recorder.Ignore(() =>
                             {
-                                Clipboard.SetText(data); // Set text as current clipboard.
+                                ClipboardHelper.SetText(data); // Set text as current clipboard.
                             });
                         }
                     ).RunAsync();
@@ -648,7 +648,7 @@ namespace Components
 
         private void LoadLanguageResource()
         {
-            foreach (var file in Directory.GetFiles(Path.Combine(BaseDirectory, "locales"), "*.xaml"))
+            foreach (var file in Directory.GetFiles("locales", "*.xaml"))
             {
                 LanguageCollection.Add(file);
             }

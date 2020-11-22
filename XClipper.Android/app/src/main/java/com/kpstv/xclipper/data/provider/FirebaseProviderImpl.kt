@@ -6,9 +6,6 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
-import com.google.firebase.database.ChildEventListener
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
@@ -235,7 +232,8 @@ class FirebaseProviderImpl @Inject constructor(
             saveData(unencryptedNewClip)
         } else {
             val list =
-                ArrayList(user?.Clips?.filter { it.data?.Decrypt() != unencryptedOldClip.data } ?: listOf())
+                ArrayList(user?.Clips?.filter { it.data?.Decrypt() != unencryptedOldClip.data }
+                    ?: listOf())
 
             list.add(unencryptedNewClip.encrypt())
 
@@ -270,7 +268,8 @@ class FirebaseProviderImpl @Inject constructor(
         val list: ArrayList<Clip> = if (user?.Clips == null)
             ArrayList()
         else
-            ArrayList(user?.Clips?.filter { it.data?.Decrypt() != unencryptedClip.data } ?: listOf())
+            ArrayList(user?.Clips?.filter { it.data?.Decrypt() != unencryptedClip.data }
+                ?: listOf())
         val size = APP_MAX_ITEM
 
         if (list.size >= size)
@@ -359,7 +358,7 @@ class FirebaseProviderImpl @Inject constructor(
                         block.invoke(false)
                     }
                 ))
-        } else{
+        } else {
             if (!validateUser()) {
                 block.invoke(false)
                 return
@@ -368,10 +367,10 @@ class FirebaseProviderImpl @Inject constructor(
         }
     }
 
-    override fun isObservingChanges() = ::valueListener.isInitialized && ::childListener.isInitialized
+    override fun isObservingChanges() = valueListener != null && childListener != null
 
-    private lateinit var valueListener: FValueEventListener
-    private lateinit var childListener: FChildEventListener
+    private var valueListener: FValueEventListener? = null
+    private var childListener: FChildEventListener? = null
     private var inconsistentDataListener: SimpleFunction? = null
     override fun observeDataChange(
         changed: (Clip?) -> Unit,
@@ -398,7 +397,7 @@ class FirebaseProviderImpl @Inject constructor(
 
         inconsistentDataListener = inconsistentData
 
-        valueListener = FValueEventListener(
+        val valueListener = FValueEventListener(
             onDataChange = { snap ->
                 HVLog.d("OnDataChanging")
                 val json = gson.toJson(snap.value)
@@ -424,8 +423,10 @@ class FirebaseProviderImpl @Inject constructor(
                     if (!user?.Clips.isNullOrEmpty()) {
                         val userClips = user?.Clips?.decrypt()?.map { it.data!! }
                         val firebaseClips = firebaseUser?.Clips?.decrypt()?.map { it.data!! }
-                        userClips?.minus(firebaseClips!!)
-                            ?.let { if (it.isNotEmpty()) mainThread { removed.invoke(it) } }
+                        if (userClips != null && firebaseClips != null) {
+                            userClips.minus(firebaseClips)
+                                .let { if (it.isNotEmpty()) mainThread { removed.invoke(it) } }
+                        }
                     }
                 }
 
@@ -440,7 +441,7 @@ class FirebaseProviderImpl @Inject constructor(
             }
         )
 
-        childListener = FChildEventListener(
+        val childListener = FChildEventListener(
             /**
              * Do not try to think & add [FChildEventListener.onDataRemoved] listener hoping
              * that it would solve linear deletion problem. Spoiler alert it doesn't but it
@@ -453,7 +454,7 @@ class FirebaseProviderImpl @Inject constructor(
             onDataAdded = { snap ->
                 if (validDevice) {
                     val json = gson.toJson(snap.value)
-                    val clip  = gson.fromJson(json, Clip::class.java)
+                    val clip = gson.fromJson(json, Clip::class.java)
 
                     if (clip != null) {
                         changed.invoke(clip)
@@ -466,6 +467,9 @@ class FirebaseProviderImpl @Inject constructor(
             .addChildEventListener(childListener)
         database.getReference(USER_REF).child(UID)
             .addValueEventListener(valueListener)
+
+        this.valueListener = valueListener
+        this.childListener = childListener
     }
 
     /**
@@ -484,7 +488,7 @@ class FirebaseProviderImpl @Inject constructor(
         for (clip in user?.Clips ?: listOf()) {
             // This will be valid if user suppose manually remove a random node
             // which makes the tree inconsistent.
-            if (clip == null ) {
+            if (clip == null) {
                 HVLog.d(m = "Inconsistent data detected")
                 mainThread { inconsistentDataListener?.invoke() }
                 return false
@@ -503,13 +507,15 @@ class FirebaseProviderImpl @Inject constructor(
 
     override fun removeDataObservation() {
         HVLog.d()
-        if (::database.isInitialized && ::valueListener.isInitialized) {
+        if (isObservingChanges()) {
             database.getReference(USER_REF).child(UID)
-                .removeEventListener(valueListener)
+                .removeEventListener(valueListener!!)
             database.getReference(USER_REF).child(UID).child(CLIP_REF)
-                .removeEventListener(childListener)
+                .removeEventListener(childListener!!)
             removeUserDetailsAndUpdateLocal()
         }
+        valueListener = null
+        childListener = null
     }
 
     private enum class ValidationContext {

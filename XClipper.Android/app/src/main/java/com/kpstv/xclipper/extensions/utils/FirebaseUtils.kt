@@ -86,7 +86,8 @@ class FirebaseUtils @Inject constructor(
 
     fun observeDatabaseInitialization() {
         HVLog.d()
-        firebaseProvider.isInitialized().observeForever(databaseInitializationObserver)
+        if (!firebaseProvider.isInitialized().hasObservers())
+            firebaseProvider.isInitialized().observeForever(databaseInitializationObserver)
     }
 
     fun removeDatabaseInitializationObservation() {

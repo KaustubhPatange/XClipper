@@ -1,7 +1,8 @@
 ﻿using System.Collections.Specialized;
 using System.IO;
-using System.Windows;
 using System.Windows.Media.Imaging;
+using System.Windows.Forms;
+using System.Drawing;
 
 #nullable enable
 
@@ -11,6 +12,31 @@ namespace Components
     {
         private static DataType? type;
         private static object? data;
+
+        public static void Clear()
+        {
+            Clipboard.Clear();
+        }
+
+        public static void SetText(string data)
+        {
+            Clipboard.SetDataObject(data);
+        }
+
+        public static void SetImage(BitmapSource source)
+        {
+            System.Windows.Clipboard.SetImage(source);
+        }
+
+        public static void SetAudio(Stream stream)
+        {
+            System.Windows.Clipboard.SetAudio(stream);
+        }
+
+        public static void SetFileDropList(StringCollection collection)
+        {
+            Clipboard.SetFileDropList(collection);
+        }
 
         /// <summary>
         /// This will return the contents of clipboard.
@@ -45,19 +71,20 @@ namespace Components
         {
             if (data != null && type != null)
             {
+                Clipboard.Clear();
                 switch(type)
-                {
+                { 
                     case DataType.IMAGE:
-                        Clipboard.SetImage((BitmapSource)data);
+                        SetImage((BitmapSource)data);
                         break;
                     case DataType.FILE_DROP:
-                        Clipboard.SetFileDropList((StringCollection)data);
+                        SetFileDropList((StringCollection)data);
                         break;
                     case DataType.TEXT:
-                        Clipboard.SetText((string)data);
+                        SetText((string)data);
                         break;
                     case DataType.AUDIO:
-                        Clipboard.SetAudio((Stream)data);
+                        SetAudio((Stream)data);
                         break;
                 }
                 data = null;

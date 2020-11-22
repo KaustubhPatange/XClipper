@@ -11,14 +11,16 @@ import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.extensions.SimpleFunction
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.isPackageBlacklisted
 import com.kpstv.xclipper.service.ClipboardAccessibilityService.Companion.currentPackage
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 class ClipboardProviderImpl @Inject constructor(
-    private val context: Context,
+    @ApplicationContext private val context: Context,
     private val repository: MainRepository
 ) : ClipboardProvider {
 
     private val _currentClip = MutableLiveData<String>()
+    private var isObserving = false
     private var isRecording = true
 
     private val TAG = javaClass.simpleName
@@ -52,20 +54,31 @@ class ClipboardProviderImpl @Inject constructor(
     }
 
     override fun observeClipboardChange() {
-        with(context) {
-            clipboardManager.addPrimaryClipChangedListener {
-                if (!isRecording) return@addPrimaryClipChangedListener
-                if (isPackageBlacklisted(currentPackage)) return@addPrimaryClipChangedListener
+        if (!isObserving)
+            clipboardManager.addPrimaryClipChangedListener(clipboardListener)
+        isObserving = true
+    }
 
-                val data = clipboardManager.primaryClip?.getItemAt(0)?.coerceToText(this)?.toString()
-                if (data != null && App.CLIP_DATA != data) {
-                    App.CLIP_DATA = data
-                    setCurrentClip(data)
+    override fun removeClipboardObserver() {
+        clipboardManager.removePrimaryClipChangedListener(clipboardListener)
+        isObserving = false
+    }
 
-                    repository.updateRepository(App.CLIP_DATA)
-                }
-                Log.e(TAG, "Data: ${clipboardManager.primaryClip?.getItemAt(0)?.text}")
+    override fun isObserving(): Boolean = isObserving
+
+    private val clipboardListener = object : ClipboardManager.OnPrimaryClipChangedListener {
+        override fun onPrimaryClipChanged() {
+            if (!isRecording) return
+            if (isPackageBlacklisted(currentPackage)) return
+
+            val data = clipboardManager.primaryClip?.getItemAt(0)?.coerceToText(context)?.toString()
+            if (data != null && App.CLIP_DATA != data) {
+                App.CLIP_DATA = data
+                setCurrentClip(data)
+
+                repository.updateRepository(App.CLIP_DATA)
             }
+            Log.e(TAG, "Data: ${clipboardManager.primaryClip?.getItemAt(0)?.text}")
         }
     }
 }

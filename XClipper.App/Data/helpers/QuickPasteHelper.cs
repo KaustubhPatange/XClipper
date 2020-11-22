@@ -41,7 +41,7 @@ namespace Components
                             recorder?.Ignore(() =>
                             {
                                 ClipboardHelper.Preserve();
-                                Clipboard.SetText(model.RawText);
+                                ClipboardHelper.SetText(model.RawText);
                                 System.Windows.Forms.SendKeys.SendWait("^v");
                                 ClipboardHelper.Consume();
                             });
@@ -52,7 +52,7 @@ namespace Components
                                 if (File.Exists(model.ImagePath))
                                 {
                                     ClipboardHelper.Preserve();
-                                    Clipboard.SetImage(new BitmapImage(new Uri(model.ImagePath)));
+                                    ClipboardHelper.SetImage(new BitmapImage(new Uri(model.ImagePath)));
                                     ClipboardHelper.Consume();
                                 }
                             });
