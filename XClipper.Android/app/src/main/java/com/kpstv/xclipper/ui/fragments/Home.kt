@@ -120,6 +120,10 @@ class Home : Fragment(R.layout.fragment_home) {
                 }
             }
         }
+        mainViewModel.stateManager.selectedItemClips.observeForever {
+            if (mainViewModel.stateManager.isMultiSelectionStateActive() && it.isEmpty())
+                mainViewModel.stateManager.setToolbarState(ToolbarState.NormalViewState)
+        }
         mainViewModel.searchManager.tagFilters.observe(viewLifecycleOwner) {
             if (it == null) return@observe
             updateTagFilters(it)

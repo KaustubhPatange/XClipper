@@ -94,6 +94,8 @@ namespace Components
                             binder.GetClipImage.Save(memory, System.Drawing.Imaging.ImageFormat.Png);
                             byte[] bytes = memory.ToArray();
                             fs.Write(bytes, 0, bytes.Length);
+                            fs.Flush();
+                            fs.Close();
                             AppSingleton.GetInstance.InsertContent(CreateTable(filePath, ContentTypes.Image));
                         }
                         catch (Exception ex)
@@ -108,7 +110,6 @@ namespace Components
             }
             else if (binder.ClipType == ContentType.Files && ToStoreFilesClips())
             {
-
                 AppSingleton.GetInstance.InsertContent(CreateTable(binder.ClipFiles));
 
                 binder.ClipFiles.Clear();

@@ -387,8 +387,8 @@ namespace Components
                     // If first device or clip is added it will come here...
                     if (user != null)
                     {
-                        // Handles path like /Clips/2 or /Devices/1 which if since the data is empty it means they
-                        // have removed.
+                        // Handles path like /Clips/2 or /Devices/1 only if the data is empty it means they
+                        // have been removed.
                         if (string.IsNullOrWhiteSpace(a.Data) && !string.IsNullOrWhiteSpace(a.Path))
                         {
                             // Deep copying variable to firebase user...
@@ -927,18 +927,9 @@ namespace Components
                .Child("images")
                .Child(fileName);
 
-            /** Somethings wrong here, File.Open is exiting the function. Only succeeds
-             *  when a copy is made. Maybe permission issues but there are not crashes just 
-             *  returns to the caller.
-             */
-            var tmp = Path.GetTempFileName();
-            File.Copy(imagePath, tmp, true);
-
-            byte[] buff = File.ReadAllBytes(tmp);
-            using (var stream = new MemoryStream(buff))
+            using (var stream = new FileStream(imagePath, FileMode.Open))
             {
                 await pathRef.PutAsync(stream); // Push to storage
-                File.Delete(tmp);
             }
 
             binder?.SendNotification(Translation.MSG_IMAGE_UPLOAD_TITLE, Translation.MSG_IMAGE_UPLOAD_TEXT);

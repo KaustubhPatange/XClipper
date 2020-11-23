@@ -7,6 +7,9 @@ using System.Windows;
 using System.Threading;
 using FireSharp.Core;
 using FireSharp.Core.Config;
+using Firebase.Storage;
+using System.IO;
+using System.Windows.Controls;
 
 namespace XClipper.Tests
 {
@@ -44,6 +47,24 @@ namespace XClipper.Tests
             var user = await client.SafeGetAsync($"users/i2e289ejdidjiwieuiejkdj").ConfigureAwait(false);
 
             Assert.IsTrue(user.Body == "null");
+        }
+
+        [TestMethod]
+        public async Task StorageTest()
+        {
+            var imagePath = @"C:\Users\devel\AppData\Roaming\XClipper\Image\2020-11-23 12-42-17.png";
+            var pathRef = new FirebaseStorage("kps-tv.appspot.com")
+                .Child("XClipper")
+                .Child("images")<
+                .Child("small-image-test.png");
+
+            var tmp = Path.GetTempFileName();
+            File.Copy(imagePath, tmp, true);
+            using (var stream = new FileStream(tmp, FileMode.Open))
+            {
+                await pathRef.PutAsync(stream); // Push to storage
+                File.Delete(tmp);
+            }
         }
     }
 }
