@@ -218,6 +218,7 @@
     <Compile Include="Data\helpers\AppNotificationHelper.cs" />
     <Compile Include="Data\helpers\DatabaseHelper.cs" />
     <Compile Include="Data\helpers\FirebaseParser.cs" />
+    <Compile Include="Data\helpers\IgnoreHelper.cs" />
     <Compile Include="Data\helpers\LicenseHelper.cs" />
     <Compile Include="Data\helpers\LogHelper.cs" />
     <Compile Include="Data\helpers\MsgBoxHelper.cs" />

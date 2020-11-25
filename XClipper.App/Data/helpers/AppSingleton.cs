@@ -201,7 +201,7 @@ namespace Components.viewModels
 
             if (pushToDatabase)
             {
-                FirebaseSingletonV2.GetInstance.AddClip(model.ContentType == ContentType.Text ? model.RawText : null).RunAsync();
+                if (model.ContentType == ContentType.Text && model.RawText != null) FirebaseHelper.AddContent(model.RawText);
                 FirebaseSingletonV2.GetInstance.AddImage(model.ContentType == ContentType.Image ? model.ImagePath : null).RunAsync();
             }
         }
@@ -323,7 +323,9 @@ namespace Components.viewModels
         {
             UpdateData(newData);
             if (newData?.ContentType == ContentType.Text)
-                FirebaseSingletonV2.GetInstance.UpdateData(oldData, newData.RawText).RunAsync();
+            {
+                FirebaseHelper.UpdateContent(oldData, newData.RawText);
+            }
         }
 
         #endregion

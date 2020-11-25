@@ -18,6 +18,7 @@ using System.Windows.Threading;
 using System.Management;
 using System.Dynamic;
 using System.Xml.Linq;
+using System.Text.RegularExpressions;
 
 namespace XClipper.Tests
 {
@@ -34,8 +35,7 @@ namespace XClipper.Tests
 
         [TestMethod]
         public void LinqTest()
-        {
-
+        {            
             var e = new XElement("Value");
             var f = e.Element("D").Value;
             var s = DateTime.Parse("2020-11-08T05:32:08Z");
@@ -111,11 +111,17 @@ namespace XClipper.Tests
         [TestMethod]
         public void FindTest()
         {
-            var w = "Hello";
-            Debug.WriteLine(w.Substring(1));
-            var item = new ReleaseItem { body = "### Added\r\n\r\n- This is a test added.\r\n\r\n### Update\r\n\r\n- A test update.\r\n\r\n### Bug (Fixed)\r\n\r\n- Some issue has fixed\r\n- Wow, let's see this `code` comment".Replace(Environment.NewLine, string.Empty) };
-            var b = item.GetFormattedBody();
-            Debug.WriteLine(b);
+            string data = "device";
+            Assert.IsTrue(new Regex("[^\\s]", RegexOptions.None).IsMatch(data));
+            if (!IgnoreHelper.IsMatch(data))
+                Assert.IsTrue(true);
+            else 
+                Assert.Fail();
+            //var w = "Hello";
+            //Debug.WriteLine(w.Substring(1));
+            //var item = new ReleaseItem { body = "### Added\r\n\r\n- This is a test added.\r\n\r\n### Update\r\n\r\n- A test update.\r\n\r\n### Bug (Fixed)\r\n\r\n- Some issue has fixed\r\n- Wow, let's see this `code` comment".Replace(Environment.NewLine, string.Empty) };
+            //var b = item.GetFormattedBody();
+            //Debug.WriteLine(b);
         }
 
         private List<Clip> userClips()

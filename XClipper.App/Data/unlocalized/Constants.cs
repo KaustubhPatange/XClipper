@@ -31,6 +31,7 @@ namespace Components
         public static string LogFilePath = Path.Combine(ApplicationLogDirectory, "xclipper");
         public static string UpdatePackageFile = Path.Combine(ApplicationTempDirectory, "package-update.exe");
         public static string UserStateFile = Path.Combine(ApplicationDirectory, "user.xml");
+        public static string IgnoreFilePath = Path.Combine(ApplicationDirectory, ".ignore");
 
         #endregion
 
@@ -79,7 +80,7 @@ namespace Components
         public const int SYNC_MIN_LENGTH = 2000;
         public const int SYNC_MIN_CONNECTION = 5;
 
-        public const int SYNC_MAX_ITEM = 200;
+        public const int SYNC_MAX_ITEM = 120;
         public const int SYNC_MAX_LENGTH = 10000;
         public const int SYNC_MAX_CONNECTION = 10;
 

@@ -101,6 +101,16 @@ namespace Components
             }
             return new Result<T>();
         }
+
+        public static bool IsEmpty<T>(this IEnumerable<T> t)
+        {
+            return !t.Any();
+        }
+
+        public static bool IsNotEmpty<T>(this IEnumerable<T> t)
+        {
+            return !t.IsEmpty();
+        }
     }
 
     public struct Result<T>

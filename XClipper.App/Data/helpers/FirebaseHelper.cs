@@ -107,6 +107,18 @@ namespace Components
             WriteFirebaseCredentialSetting();
         }
 
+        public static void AddContent(string data)
+        {
+            if (!IgnoreHelper.IsMatch(data))
+                FirebaseSingletonV2.GetInstance.AddClip(data).RunAsync();
+        }
+
+        public static void UpdateContent(string oldData, string newData)
+        {
+            if (!IgnoreHelper.IsMatch(newData))
+                FirebaseSingletonV2.GetInstance.UpdateData(oldData, newData).RunAsync();
+        }
+
         /**
          * There might be some case where some user manually try to change the access token from
          * credentials file or any other thing. In such case these safe methods are created to 

@@ -210,6 +210,11 @@ namespace Components
                 {
                     _IsPurchaseDone = value;
                     NotifyStaticPropertyChanged(nameof(IsPurchaseDone));
+
+                    // Notify other property that depends on this value
+                    NotifyStaticPropertyChanged(nameof(FirebaseMaxItem));
+                    NotifyStaticPropertyChanged(nameof(FirebaseMaxItemLength));
+                    NotifyStaticPropertyChanged(nameof(FirebaseMaxDevice));
                 }
             }
         }

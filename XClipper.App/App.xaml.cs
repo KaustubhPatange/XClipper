@@ -483,7 +483,7 @@ namespace Components
         public void OnClipItemAdded(List<string> unencryptedDataList)
         {
             Debug.WriteLine($"[V2 Added]: {unencryptedDataList}");
-            if (unencryptedDataList.Count > 1)
+            if (unencryptedDataList.IsNotEmpty())
             {
                 foreach (string item in unencryptedDataList)
                     AppSingleton.GetInstance.CheckAndUpdateData(item);
@@ -501,7 +501,7 @@ namespace Components
         public void OnClipItemRemoved(List<string> unencryptedDataList)
         {
             Debug.WriteLine($"[V2 Removed]: {unencryptedDataList}");
-            if (unencryptedDataList.Count > 1)
+            if (unencryptedDataList.IsNotEmpty())
             {
                 foreach (string item in unencryptedDataList)
                     AppSingleton.GetInstance.DeleteClipData(item);

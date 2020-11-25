@@ -53,7 +53,7 @@
                             Command="{Binding EncryptCommand}"
                             Content="{DynamicResource sync_encrypt_clip}"
                             IsChecked="{Binding EFD}" />
-                        <DockPanel Margin="0,5,0,0" ToolTip="{Binding MAX_ITEM, Converter={x:Static local:CustomSyncTooltipConverter.Instance}}">
+                        <DockPanel Margin="0,5,0,0" ToolTip="{Binding Path=(local:DefaultSettings.FirebaseMaxItem), Converter={x:Static local:CustomSyncTooltipConverter.Instance}}">
                             <TextBlock Text="{DynamicResource sync_max_item}" />
                             <local:NumericTextBox
                                 Width="70"
@@ -63,7 +63,7 @@
                                 TextAlignment="Center" />
                         </DockPanel>
 
-                        <DockPanel Margin="0,5,0,0" ToolTip="{Binding MAX_CONTENT, Converter={x:Static local:CustomSyncTooltipConverter.Instance}}">
+                        <DockPanel Margin="0,5,0,0" ToolTip="{Binding Path=(local:DefaultSettings.FirebaseMaxItemLength), Converter={x:Static local:CustomSyncTooltipConverter.Instance}}">
                             <TextBlock Text="{DynamicResource sync_max_item_length}" />
                             <local:NumericTextBox
                                 Width="70"
@@ -73,7 +73,7 @@
                                 TextAlignment="Center" />
                         </DockPanel>
 
-                        <DockPanel Margin="0,5,0,0" ToolTip="{Binding MAX_DEVICE, Converter={x:Static local:CustomSyncTooltipConverter.Instance}}">
+                        <DockPanel Margin="0,5,0,0" ToolTip="{Binding Path=(local:DefaultSettings.FirebaseMaxDevice), Converter={x:Static local:CustomSyncTooltipConverter.Instance}}">
                             <TextBlock Text="{DynamicResource sync_max_device}" />
                             <local:NumericTextBox
                                 Width="50"
