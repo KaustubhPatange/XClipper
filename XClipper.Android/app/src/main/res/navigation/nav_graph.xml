@@ -43,7 +43,7 @@
         tools:layout="@layout/fragment_welcome">
         <action
             android:id="@+id/action_watchVideo_to_fragment_home"
-            app:destination="@id/fragment_home"/>
+            app:destination="@id/fragment_home" />
     </fragment>
     <fragment
         android:id="@+id/fragment_android10"
@@ -71,6 +71,9 @@
         android:name="com.kpstv.xclipper.ui.fragments.welcome.WindowApp"
         android:label="WindowApp"
         tools:layout="@layout/fragment_welcome">
+        <action
+            android:id="@+id/action_watchVideo_to_fragment_home"
+            app:destination="@id/fragment_home" />
         <action
             android:id="@+id/action_windowApp_to_watchVideo"
             app:destination="@id/fragment_watchVideo" />

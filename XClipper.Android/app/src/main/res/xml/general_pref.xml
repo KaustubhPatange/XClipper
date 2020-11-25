@@ -41,4 +41,14 @@
             app:title="@string/lang_title" />
 
     </PreferenceCategory>
+
+    <PreferenceCategory app:title="Experimental">
+
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            app:key="image_markdown_pref"
+            app:summary="@string/image_render_summary"
+            app:title="@string/image_render_title" />
+
+    </PreferenceCategory>
 </PreferenceScreen>

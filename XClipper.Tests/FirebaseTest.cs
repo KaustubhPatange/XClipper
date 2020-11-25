@@ -55,7 +55,7 @@ namespace XClipper.Tests
             var imagePath = @"C:\Users\devel\AppData\Roaming\XClipper\Image\2020-11-23 12-42-17.png";
             var pathRef = new FirebaseStorage("kps-tv.appspot.com")
                 .Child("XClipper")
-                .Child("images")<
+                .Child("images")
                 .Child("small-image-test.png");
 
             var tmp = Path.GetTempFileName();

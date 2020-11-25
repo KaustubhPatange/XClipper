@@ -47,9 +47,6 @@ namespace Components
         public int DMI { get; set; }
         public int DMIL { get; set; }
         public int DMC { get; set; }
-        public int MAX_ITEM { get; set; } = IsPurchaseDone ? SYNC_MAX_ITEM : SYNC_MIN_ITEM;
-        public int MAX_CONTENT { get; set; } = IsPurchaseDone ? SYNC_MAX_LENGTH : SYNC_MIN_LENGTH;
-        public int MAX_DEVICE { get; set; } = IsPurchaseDone ? SYNC_MAX_CONNECTION : SYNC_MIN_CONNECTION;
         public bool IAN { get; set; }
         public bool EE { get; set; } // Export enabled
         public bool EFD { get; set; } = FirebaseCurrent.IsEncrypted; // To encrypt firebase database?

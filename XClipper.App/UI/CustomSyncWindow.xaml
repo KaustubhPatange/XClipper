@@ -58,7 +58,7 @@
                             <local:NumericTextBox
                                 Width="70"
                                 HorizontalAlignment="Right"
-                                local:NumericTextBoxProperties.MaxNumber="{Binding MAX_ITEM}"
+                                local:NumericTextBoxProperties.MaxNumber="{Binding Path=(local:DefaultSettings.FirebaseMaxItem)}"
                                 Text="{Binding DMI, UpdateSourceTrigger=PropertyChanged}"
                                 TextAlignment="Center" />
                         </DockPanel>
@@ -68,7 +68,7 @@
                             <local:NumericTextBox
                                 Width="70"
                                 HorizontalAlignment="Right"
-                                local:NumericTextBoxProperties.MaxNumber="{Binding MAX_CONTENT}"
+                                local:NumericTextBoxProperties.MaxNumber="{Binding Path=(local:DefaultSettings.FirebaseMaxItemLength)}"
                                 Text="{Binding DMIL, UpdateSourceTrigger=PropertyChanged}"
                                 TextAlignment="Center" />
                         </DockPanel>
@@ -78,7 +78,7 @@
                             <local:NumericTextBox
                                 Width="50"
                                 HorizontalAlignment="Right"
-                                local:NumericTextBoxProperties.MaxNumber="{Binding MAX_DEVICE}"
+                                local:NumericTextBoxProperties.MaxNumber="{Binding Path=(local:DefaultSettings.FirebaseMaxDevice)}"
                                 Text="{Binding DMC, UpdateSourceTrigger=PropertyChanged}"
                                 TextAlignment="Center" />
                         </DockPanel>

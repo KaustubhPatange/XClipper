@@ -36,6 +36,8 @@ object App {
 
     var DARK_THEME = true
 
+    var LoadImageMarkdownText = true
+
     const val STAGGERED_SPAN_COUNT = 2
     const val STAGGERED_SPAN_COUNT_MIN = 1
 
@@ -136,4 +138,5 @@ object App {
     const val DARK_PREF = "dark_pref"
     const val IMPORT_PREF = "import_pref"
     const val EXPORT_PREF = "export_pref"
+    const val IMAGE_MARKDOWN_PREF = "image_markdown_pref"
 }

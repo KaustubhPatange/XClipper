@@ -1,5 +1,6 @@
 package com.kpstv.xclipper.ui.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -60,7 +61,8 @@ class CIAdapter(
 
         holder.itemView.ci_textView.text = clip.data
 
-        renderImageMarkdown(holder, clip.data)
+        if (App.LoadImageMarkdownText)
+            renderImageMarkdown(holder, clip.data, position)
 
         holder.itemView.ci_timeText.text = clip.timeString
 
@@ -156,40 +158,25 @@ class CIAdapter(
         })
     }
 
-    private fun renderImageMarkdown(holder: MainHolder, data: String?) {
+    private fun renderImageMarkdown(holder: MainHolder, data: String?, position: Int) {
         val result = App.MARKDOWN_IMAGE_ONLY_REGEX.toRegex().matchEntire(data ?: "")
         if (result != null) {
             val imageUrl = result.groups[5]?.value
 
             holder.itemView.ci_imageView.show()
-            //holder.itemView.ci_imageView.load(imageUrl)
 
             holder.itemView.ci_imageView.load(
                 uri = imageUrl,
                 onSuccess = {
-                   // holder.itemView.ci_textView.hide()
+                    holder.itemView.ci_textView.hide()
                 },
                 onError = {
                     holder.itemView.ci_imageView.collapse()
-                   // holder.itemView.ci_textView.show()
+                    holder.itemView.ci_textView.show()
                 }
             )
-
-//            val request = ImageRequest.Builder(context)
-//                .data(imageUrl)
-//                .target(holder.itemView.ci_imageView)
-//                .listener(
-//                    onSuccess = { _, _ ->
-//                        holder.itemView.ci_textView.hide()
-//                    },
-//                    onError = { _, _ ->
-//                        holder.itemView.ci_imageView.collapse()
-//                        holder.itemView.ci_textView.show()
-//                    }
-//                ).build()
-//            Coil.enqueue(request)
         } else {
-          //  holder.itemView.ci_textView.show()
+            holder.itemView.ci_textView.show()
             holder.itemView.ci_imageView.collapse()
         }
     }

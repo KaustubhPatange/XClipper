@@ -309,6 +309,30 @@ namespace Components
             }
         }
 
+        /// <summary>
+        /// Max storage item that are allowed.
+        /// </summary>
+        public static int FirebaseMaxItem
+        {
+            get { return IsPurchaseDone ? SYNC_MAX_ITEM : SYNC_MIN_ITEM; }
+        }
+
+        /// <summary>
+        /// Max storage for item length that are allowed.
+        /// </summary>
+        public static int FirebaseMaxItemLength
+        {
+            get { return IsPurchaseDone ? SYNC_MAX_LENGTH : SYNC_MIN_LENGTH; }
+        }
+
+        /// <summary>
+        /// Max storage for devices that are allowed.
+        /// </summary>
+        public static int FirebaseMaxDevice
+        {
+            get { return IsPurchaseDone ? SYNC_MAX_CONNECTION : SYNC_MIN_CONNECTION; }
+        }
+
         /// <summary> 
         /// <inheritdoc cref="_qrData"/> 
         /// </summary>

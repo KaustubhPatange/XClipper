@@ -9,6 +9,7 @@ import androidx.preference.SwitchPreferenceCompat
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.App.BLACKLIST_PREF
 import com.kpstv.xclipper.App.DICTIONARY_LANGUAGE
+import com.kpstv.xclipper.App.IMAGE_MARKDOWN_PREF
 import com.kpstv.xclipper.App.LANG_PREF
 import com.kpstv.xclipper.App.SERVICE_PREF
 import com.kpstv.xclipper.App.SUGGESTION_PREF
@@ -17,7 +18,6 @@ import com.kpstv.xclipper.App.showSuggestion
 import com.kpstv.xclipper.App.swipeToDelete
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.extensions.Coroutines
-import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.isClipboardAccessibilityServiceRunning
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.isSystemOverlayEnabled
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.openAccessibility
@@ -96,6 +96,12 @@ class GeneralPreference : PreferenceFragmentCompat() {
         /** Language code preference */
         findPreference<ListPreference>(LANG_PREF)?.setOnPreferenceChangeListener { _, newValue ->
             DICTIONARY_LANGUAGE = newValue as String
+            true
+        }
+
+        /** Experimental Image loading */
+        findPreference<SwitchPreferenceCompat>(IMAGE_MARKDOWN_PREF)?.setOnPreferenceChangeListener { _, newValue ->
+            App.LoadImageMarkdownText = newValue as Boolean
             true
         }
     }

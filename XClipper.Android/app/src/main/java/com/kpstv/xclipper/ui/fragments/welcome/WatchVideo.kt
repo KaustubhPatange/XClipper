@@ -12,6 +12,12 @@ import com.kpstv.xclipper.extensions.utils.WelcomeUtils.Companion.setUpFragment
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+/**
+ * Was initially made to let user know that there is get started video for
+ * the app. But the welcome screens are more than enough to let them
+ * understand on the app works.
+ */
+@Deprecated("Should be removed") // TODO:
 @AndroidEntryPoint
 class WatchVideo : Fragment(R.layout.fragment_welcome) {
 

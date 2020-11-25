@@ -217,21 +217,21 @@
                                 <control:FirebaseListItem
                                     Title="{DynamicResource settings_mi}"
                                     Margin="0,10,0,0"
-                                    ItemMaxValue="{Binding Source={x:Static local:Constants.FB_MAX_ITEM}}"
+                                    ItemMaxValue="{Binding Path=(local:DefaultSettings.FirebaseMaxItem)}"
                                     ItemValue="{Binding Path=(local:DefaultSettings.DatabaseMaxItem)}"
                                     ToolTip="{DynamicResource settings_mit}" />
 
                                 <control:FirebaseListItem
                                     Title="{DynamicResource settings_mil}"
                                     Margin="0,3,0,0"
-                                    ItemMaxValue="{Binding Source={x:Static local:Constants.FB_MAX_LENGTH}}"
+                                    ItemMaxValue="{Binding Path=(local:DefaultSettings.FirebaseMaxItemLength)}"
                                     ItemValue="{Binding Path=(local:DefaultSettings.DatabaseMaxItemLength)}"
                                     ToolTip="{DynamicResource settings_milt}" />
 
                                 <control:FirebaseListItem
                                     Title="{DynamicResource settings_mcd}"
                                     Margin="0,3,0,0"
-                                    ItemMaxValue="{Binding Source={x:Static local:Constants.FB_MAX_CONNECTION}}"
+                                    ItemMaxValue="{Binding Path=(local:DefaultSettings.FirebaseMaxDevice)}"
                                     ItemValue="{Binding Path=(local:DefaultSettings.DatabaseMaxConnection)}"
                                     ToolTip="{DynamicResource settings_mcdt}" />
 
