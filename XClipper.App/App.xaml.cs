@@ -168,7 +168,7 @@ namespace Components
 
             var HelpMenuItem = CreateNewItem(Translation.APP_HELP, (o, e) =>
             {
-                Process.Start(new ProcessStartInfo("https://github.com/KaustubhPatange/XClipper"));
+                Process.Start(new ProcessStartInfo(DOCUMENTATION));
             });
 
             var items = new List<WinForm.MenuItem>() { ShowMenuItem, RestartMenuItem, CreateSeparator(), BackupMenuItem, RestoreMenutItem, ImportDataItem, CreateSeparator(), HelpMenuItem, CreateSeparator(), RecordMenuItem, DeleteMenuItem, CreateSeparator(), BuyWindowItem, ConfigSettingItem, UpdateSettingItem, SettingMenuItem, CreateSeparator(), AppExitMenuItem };

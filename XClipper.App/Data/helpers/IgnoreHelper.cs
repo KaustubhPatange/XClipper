@@ -6,13 +6,35 @@ using static Components.Constants;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Runtime.CompilerServices;
+using System;
 
 namespace Components
 {
     public static class IgnoreHelper
     {
+        private const string TAG = "IgnoreHelper";
         private static Dictionary<string, RegexOptions> lazyPairs;
 
+        /// <summary>
+        /// If the returned value is true proceed for addition or update.
+        /// </summary>
+        /// <param name="rawText"></param>
+        /// <returns></returns>
+        public static bool ToExecute(string rawText)
+        {
+            try
+            {
+                return !IsMatch(rawText);
+            }catch (ArgumentException e)
+            {
+                LogHelper.Log(TAG, "Couldn't parse expression: " + e.StackTrace);
+                MessageBox.Show("Couldn't parse expression: " + e.StackTrace, TAG);
+            }catch (Exception e)
+            {
+                LogHelper.Log(TAG, "Unknown error: " + e.StackTrace);
+            }
+            return true;
+        }
         public static bool IsMatch(string rawText)
         {
             if (lazyPairs == null)

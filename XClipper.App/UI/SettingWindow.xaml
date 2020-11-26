@@ -303,6 +303,7 @@
                 <Grid Margin="0,12,0,5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="auto" />
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="auto" />
                     </Grid.ColumnDefinitions>
@@ -313,7 +314,17 @@
                         Command="{Binding ResetCommand}"
                         Content="{DynamicResource settings_reset_btn}" />
                     <Button
-                        Grid.Column="2"
+                        Grid.Column="1"
+                        Width="22"
+                        Height="22"
+                        Margin="7,0,0,0"
+                        Padding="3"
+                        Command="{Binding IgnoreCommand}"
+                        ToolTip="{DynamicResource settings_ignore_tooltip}">
+                        <Image Source="pack://application:,,,/Resources/hide.png" />
+                    </Button>
+                    <Button
+                        Grid.Column="3"
                         MinWidth="80"
                         MinHeight="22"
                         Command="{Binding SaveCommand}"

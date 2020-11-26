@@ -109,14 +109,12 @@ namespace Components
 
         public static void AddContent(string data)
         {
-            if (!IgnoreHelper.IsMatch(data))
-                FirebaseSingletonV2.GetInstance.AddClip(data).RunAsync();
+            FirebaseSingletonV2.GetInstance.AddClip(data).RunAsync();
         }
 
         public static void UpdateContent(string oldData, string newData)
         {
-            if (!IgnoreHelper.IsMatch(newData))
-                FirebaseSingletonV2.GetInstance.UpdateData(oldData, newData).RunAsync();
+            FirebaseSingletonV2.GetInstance.UpdateData(oldData, newData).RunAsync();
         }
 
         /**

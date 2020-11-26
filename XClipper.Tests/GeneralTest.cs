@@ -111,8 +111,9 @@ namespace XClipper.Tests
         [TestMethod]
         public void FindTest()
         {
+            string regex = "[^\\s";
             string data = "device";
-            Assert.IsTrue(new Regex("[^\\s]", RegexOptions.None).IsMatch(data));
+            Assert.IsTrue(new Regex(regex, RegexOptions.None).IsMatch(data));
             if (!IgnoreHelper.IsMatch(data))
                 Assert.IsTrue(true);
             else 

@@ -37,6 +37,7 @@ namespace Components
             KeyDownCommand = new RelayCommand<KeyEventArgs>(OnKeyDown, null);
             SaveCommand = new RelayCommand(SaveButtonClicked);
             ResetCommand = new RelayCommand(ResetButtonClicked);
+            IgnoreCommand = new RelayCommand(IgnoreClicked);
             ConnectedCommand = new RelayCommand(ConnectedButtonClicked);
             ResetDataCommand = new RelayCommand(ResetDataButtonClicked);
             QRImageCommand = new RelayCommand<ImageSource>(QRImageDoubleClicked);
@@ -54,6 +55,7 @@ namespace Components
         public ICommand QRImageCommand { get; set; }
         public ICommand SaveCommand { get; set; }
         public ICommand ResetCommand { get; set; }
+        public ICommand IgnoreCommand { get; set; }
         public ICommand ConnectedCommand { get; set; }
         public ICommand ResetDataCommand { get; set; }
         public RelayCommand<KeyEventArgs> KeyDownCommand { get; set; }
@@ -103,6 +105,11 @@ namespace Components
 
         #region Method Events
 
+        public void IgnoreClicked()
+        {
+            Process.Start("notepad.exe", IgnoreFilePath);
+        }
+        
         public void SetSettingBinder(ISettingEventBinder binder)
         {
             _settingbinder = binder;

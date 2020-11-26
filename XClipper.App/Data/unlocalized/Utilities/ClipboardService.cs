@@ -74,7 +74,8 @@ namespace Components
             {
                 if (!string.IsNullOrWhiteSpace(binder.GetClipText.Trim()))
                 {
-                    AppSingleton.GetInstance.InsertContent(CreateTable(binder.GetClipText, ContentTypes.Text));
+                    if (IgnoreHelper.ToExecute(binder.GetClipText))
+                        AppSingleton.GetInstance.InsertContent(CreateTable(binder.GetClipText, ContentTypes.Text));
                 }
             }
             else if (binder.ClipType == ContentType.Image && ToStoreImageClips())

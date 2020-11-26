@@ -112,6 +112,7 @@ namespace Components
         public const string SECURE_FIREBASE = "https://github.com/KaustubhPatange/XClipper/wiki/Securing-Database";
 
         public const string UPGRADE_LICENSE = "https://kaustubhpatange.github.io/XClipper"; // TODO; Edit: No need yet! change this which is used in UpgradeTipItem
+        public const string DOCUMENTATION = "https://kaustubhpatange.github.io/XClipper/wiki";
 
         #endregion
     }
