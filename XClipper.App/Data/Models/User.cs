@@ -41,15 +41,10 @@ namespace Components
         /// </summary>
         public List<Clip>? Clips { get; set; }
 
-        /// <summary>
-        /// For safety purpose an endpoint attribute will be stored to prevent
-        /// running restoration on any other remote connected database.
-        /// </summary>
-        /// <param name="t"></param>
-        /// <param name="endpoint"></param>
-        /// <returns></returns>
         public static XElement ToNode(User t, string endpoint)
         {
+            // For safety purpose an endpoint attribute will be stored to prevent
+            // running restoration on any other remote connected database.
             var node = new XElement(nameof(User));
             node.SetAttributeValue(nameof(FirebaseCurrent.Endpoint), endpoint);
             node.Add(new XComment("This data structure will hold the previous state of Firebase User as a cache."));

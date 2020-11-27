@@ -22,6 +22,7 @@ using System.Windows.Threading;
 using System.Web.UI.Design.WebControls;
 using FireSharp.Core.Response;
 using System.Windows.Media.Imaging;
+using System.Windows.Forms.VisualStyles;
 
 #nullable enable
 
@@ -595,6 +596,9 @@ namespace Components
         {
             Log($"User null? {user == null}");
             var originallyLicensed = user.IsLicensed;
+            var originalTotalConnection = user.TotalConnection;
+            var originalMaxItemStorage = user.MaxItemStorage;
+            var originalLicenseStrategy = user.LicenseStrategy;
 
             // TODO: Set some other details for user...
             user.MaxItemStorage = DatabaseMaxItem;
@@ -602,7 +606,7 @@ namespace Components
             user.IsLicensed = IsPurchaseDone;
             user.LicenseStrategy = LicenseStrategy;
 
-            if (originallyLicensed != IsPurchaseDone || user.MaxItemStorage != DatabaseMaxItem || user.TotalConnection != DatabaseMaxConnection)
+            if (originallyLicensed != IsPurchaseDone || originalMaxItemStorage != DatabaseMaxItem || originalTotalConnection != DatabaseMaxConnection || originalLicenseStrategy != user.LicenseStrategy)
                 await PushUser().ConfigureAwait(false);
         }
 

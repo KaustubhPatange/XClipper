@@ -70,57 +70,80 @@ namespace Components
 
         private void ManagePaths(string path, string json)
         {
-            if (json == null)
-                return;
-            else if (path == PATH_DEVICES)
+            try
             {
-                var devices = JsonConvert.DeserializeObject<List<Device>>(json);
-                user.Devices = devices;
-            }
-            else if (path == PATH_CLIPS)
-            {
-                var clips = JsonConvert.DeserializeObject<List<Clip>>(json);
-                user.Clips = clips;
-            }
-            else if (Regex.IsMatch(path, PATH_CLIP_REGEX_PATTERN))
-            {
-                int index = Regex.Match(path, PATH_CLIP_REGEX_PATTERN).Groups[1].Value.ToInt();
-                var subPath = Regex.Replace(path, PATH_CLIP_REGEX_PATTERN, "");
-                switch(subPath)
+                if (json == null)
+                    return;
+                else if (path == PATH_DEVICES)
                 {
-                    case nameof(Clip.data):
-                        user.Clips[index].data = json;
-                        break;
-                    case nameof(Clip.time):
-                        user.Clips[index].time = json;
-                        break;
-                    default:
-                        var clip = JsonConvert.DeserializeObject<Clip>(json);
-                        user.Clips[index] = clip;
-                        break;
+                    var devices = JsonConvert.DeserializeObject<List<Device>>(json);
+                    user.Devices = devices;
+                }
+                else if (path == PATH_CLIPS)
+                {
+                    var clips = JsonConvert.DeserializeObject<List<Clip>>(json);
+                    user.Clips = clips;
+                }
+                else if (Regex.IsMatch(path, PATH_CLIP_REGEX_PATTERN))
+                {
+                    int index = Regex.Match(path, PATH_CLIP_REGEX_PATTERN).Groups[1].Value.ToInt();
+                    var subPath = Regex.Replace(path, PATH_CLIP_REGEX_PATTERN, "");
+                    switch (subPath)
+                    {
+                        case nameof(Clip.data):
+                            user.Clips[index].data = json;
+                            break;
+                        case nameof(Clip.time):
+                            user.Clips[index].time = json;
+                            break;
+                        default:
+                            var clip = JsonConvert.DeserializeObject<Clip>(json);
+                            user.Clips[index] = clip;
+                            break;
+                    }
+                }
+                else if (Regex.IsMatch(path, PATH_DEVICE_REGEX_PATTERN))
+                {
+                    int index = Regex.Match(path, PATH_DEVICE_REGEX_PATTERN).Groups[1].Value.ToInt();
+                    var subPath = Regex.Replace(path, PATH_DEVICE_REGEX_PATTERN, "");
+                    switch (subPath)
+                    {
+                        case nameof(Device.id):
+                            user.Devices[index].id = json;
+                            break;
+                        case nameof(Device.model):
+                            user.Devices[index].model = json;
+                            break;
+                        case nameof(Device.sdk):
+                            user.Devices[index].sdk = json.Trim().ToInt();
+                            break;
+                        default:
+                            var device = JsonConvert.DeserializeObject<Device>(json);
+                            user.Devices[index] = device;
+                            break;
+                    }
+                }
+                else if (path == $"/{nameof(User.IsLicensed)}")
+                {
+                    user.IsLicensed = json.ToBool();
+                }
+                else if (path == $"/{nameof(User.LicenseStrategy)}")
+                {
+                    user.LicenseStrategy = json.ToEnum<LicenseType>();
+                }
+                else if (path == $"/{nameof(User.MaxItemStorage)}")
+                {
+                    user.MaxItemStorage = json.ToInt();
+                }
+                else if (path == $"/{nameof(User.TotalConnection)}")
+                {
+                    user.TotalConnection = json.ToInt();
                 }
             }
-            else if (Regex.IsMatch(path, PATH_DEVICE_REGEX_PATTERN))
+            catch (FormatException e) 
             {
-                int index = Regex.Match(path, PATH_DEVICE_REGEX_PATTERN).Groups[1].Value.ToInt();
-                var subPath = Regex.Replace(path, PATH_DEVICE_REGEX_PATTERN, "");
-                switch(subPath)
-                {
-                    case nameof(Device.id):
-                        user.Devices[index].id = json;
-                        break;
-                    case nameof(Device.model):
-                        user.Devices[index].model = json;
-                        break;
-                    case nameof(Device.sdk):
-                        user.Devices[index].sdk = json.Trim().ToInt();
-                        break;
-                    default:
-                        var device = JsonConvert.DeserializeObject<Device>(json);
-                        user.Devices[index] = device;
-                        break;
-                }
-            }
+                LogHelper.Log("FirebaseParser", e.Message + e.StackTrace); 
+            }  
         }
 
         private void ManageEmptyStructure(string path)

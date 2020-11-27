@@ -111,6 +111,7 @@ namespace XClipper.Tests
         [TestMethod]
         public void FindTest()
         {
+            var nice = "5".ToBool();
             var node = new XElement("User");
             node.SetAttributeValue("Endpoint", "Test");
             Debug.WriteLine("Xml:" + node.ToString());
