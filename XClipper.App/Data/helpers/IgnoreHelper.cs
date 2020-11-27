@@ -117,7 +117,7 @@ namespace Components
 
 # Note: Anything which begins which # is a comment.
 
-# It helps to ignore certain text pattern that should be uploaded to database.
+# It helps to ignore certain text pattern that should not be stored to the database.
 
 # - All the pattern must be written one after another
 # - All patterns are treated as regular expressions. (follow javascript like approach)

@@ -41,9 +41,17 @@ namespace Components
         /// </summary>
         public List<Clip>? Clips { get; set; }
 
-        public static XElement ToNode(User t)
+        /// <summary>
+        /// For safety purpose an endpoint attribute will be stored to prevent
+        /// running restoration on any other remote connected database.
+        /// </summary>
+        /// <param name="t"></param>
+        /// <param name="endpoint"></param>
+        /// <returns></returns>
+        public static XElement ToNode(User t, string endpoint)
         {
             var node = new XElement(nameof(User));
+            node.SetAttributeValue(nameof(FirebaseCurrent.Endpoint), endpoint);
             node.Add(new XComment("This data structure will hold the previous state of Firebase User as a cache."));
             node.Add(new XElement(nameof(t.IsLicensed), t.IsLicensed));
             node.Add(new XElement(nameof(t.MaxItemStorage), t.MaxItemStorage));
@@ -62,9 +70,10 @@ namespace Components
             return node;
         }
 
-        public static User FromNode(XElement t)
+        public static KeyValuePair<User, string> FromNode(XElement t)
         {
             var model = new User();
+            var endPoint = t.Attribute(nameof(FirebaseCurrent.Endpoint)).Value;
             model.IsLicensed = t.Element(nameof(model.IsLicensed)).Value.ToBool();
             model.MaxItemStorage = t.Element(nameof(model.MaxItemStorage)).Value.ToInt();
             model.TotalConnection = t.Element(nameof(model.TotalConnection)).Value.ToInt();
@@ -80,7 +89,7 @@ namespace Components
             foreach (var xClip in xClipList.Elements()) clipList.Add(Clip.FromNode(xClip));
             model.Clips = clipList;
 
-            return model;
+            return new KeyValuePair<User, string>(model, endPoint);
         }
     }
 

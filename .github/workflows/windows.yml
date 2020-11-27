@@ -2,34 +2,31 @@ name: Windows CI
 on:
   push:
     paths:
-      - ".github/**"
+      - ".github/workflows/windows.yml"
       - "XClipper.App/**"
       - "XClipper.Core/**"
   pull_request:
     paths:
-      - ".github/**"
+      - ".github/workflows/windows.yml"
       - "XClipper.App/**"
       - "XClipper.Core/**"
-env:
-  ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-  
+
 jobs:
   windows:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
       - name: Setting up nuget
-        uses: warrenbuckley/Setup-Nuget@v1
+        uses: nuget/setup-nuget@v1
       - name: Setting up msbuild
-        uses: warrenbuckley/Setup-MSBuild@v1
+        uses: microsoft/setup-msbuild@v1.0.2
       - name: Restoring dependencies & building project
+        shell: cmd
         run: |
           tar -xvzf scripts\csproj.tar.gz
           nuget restore XClipper.sln
           msbuild XClipper.sln /t:Rebuild /p:WarningLevel=0 /p:Configuration=Release
-
   # Common action to notify on discord
-
   discord_notify:
     needs: [windows]
     runs-on: ubuntu-latest

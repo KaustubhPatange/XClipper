@@ -2,11 +2,11 @@ name: Android CI
 on:
   push:
     paths:
-      - ".github/**"
+      - ".github/workflows/android.yml"
       - "XClipper.Android/**"
   pull_request:
     paths:
-      - ".github/**"
+      - ".github/workflows/android.yml"
       - "XClipper.Android/**"
 
 jobs:

@@ -71,14 +71,14 @@ namespace Components
 
         #region Database Constants
 
-        public const int FB_MAX_ITEM = 15;
+        public const int FB_MAX_ITEM = 10;
         public const int FB_MAX_LENGTH = 1000;
-        public const int FB_MAX_CONNECTION = 5;
+        public const int FB_MAX_CONNECTION = 2;
         public const string FB_DEFAULT_PASS = "JfbY+e0iD/RMVJDOF5MWphCDGB45G/0kLtF4Vv+sbF7SL3VdbP3GyMgvPVz3e56e1pmrJct0LRMHH2Sz+hLASpqz/1YTvV3GF6e7pHBcuWVpuzkMDHEDJG3IXRj9VIFA";
 
-        public const int SYNC_MIN_ITEM = 15;
-        public const int SYNC_MIN_LENGTH = 2000;
-        public const int SYNC_MIN_CONNECTION = 5;
+        public const int SYNC_MIN_ITEM = 10;
+        public const int SYNC_MIN_LENGTH = 1500;
+        public const int SYNC_MIN_CONNECTION = 2;
 
         public const int SYNC_MAX_ITEM = 120;
         public const int SYNC_MAX_LENGTH = 10000;

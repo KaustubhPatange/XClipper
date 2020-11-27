@@ -26,10 +26,6 @@ XClipper is currently available for the following platforms only.
 - Clipboard syncing between devices, [learn more](https://github.com/KaustubhPatange/XClipper/wiki/Data-Synchronization).
 - Lot more... _but just leaving it here_.
 
-## Compilation Guide
-
-Since this project involves **license** system 📃 some of the source files has been ignored. [Read this guide](https://github.com/KaustubhPatange/XClipper/wiki/Compilation-guide) in order to compile 🗃 the project.
-
 ## Tutorials
 
 All of the individual documentation topics can be found in the repo's [wiki](https://github.com/KaustubhPatange/XClipper/wiki), following are some general topics you should take a look at!
@@ -37,6 +33,10 @@ All of the individual documentation topics can be found in the repo's [wiki](htt
 - [Getting started with XClipper](https://github.com/KaustubhPatange/XClipper/wiki/Introduction)
 - [Start synchronizing clipboard activity](https://github.com/KaustubhPatange/XClipper/wiki/Data-Synchronization)
 - [FAQs](https://github.com/KaustubhPatange/XClipper/wiki/FAQs)
+
+## Compilation Guide
+
+Since this project involves **license** system 📃 some of the source files has been ignored. [Read this guide](https://github.com/KaustubhPatange/XClipper/wiki/Compilation-guide) in order to compile 🗃 the project.
 
 ## Built with 🛠
 

@@ -111,13 +111,16 @@ namespace XClipper.Tests
         [TestMethod]
         public void FindTest()
         {
-            string regex = "[^\\s";
-            string data = "device";
-            Assert.IsTrue(new Regex(regex, RegexOptions.None).IsMatch(data));
-            if (!IgnoreHelper.IsMatch(data))
-                Assert.IsTrue(true);
-            else 
-                Assert.Fail();
+            var node = new XElement("User");
+            node.SetAttributeValue("Endpoint", "Test");
+            Debug.WriteLine("Xml:" + node.ToString());
+            //string regex = "[^\\s";
+            //string data = "device";
+            //Assert.IsTrue(new Regex(regex, RegexOptions.None).IsMatch(data));
+            //if (!IgnoreHelper.IsMatch(data))
+            //    Assert.IsTrue(true);
+            //else 
+            //    Assert.Fail();
             //var w = "Hello";
             //Debug.WriteLine(w.Substring(1));
             //var item = new ReleaseItem { body = "### Added\r\n\r\n- This is a test added.\r\n\r\n### Update\r\n\r\n- A test update.\r\n\r\n### Bug (Fixed)\r\n\r\n- Some issue has fixed\r\n- Wow, let's see this `code` comment".Replace(Environment.NewLine, string.Empty) };

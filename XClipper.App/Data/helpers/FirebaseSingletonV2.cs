@@ -114,14 +114,6 @@ namespace Components
 
             if (FirebaseCurrent == null) return;
 
-            /* Load the previous state of user or if user is not null it means some configuration
-             *  has changed and we should delete the previous state file to avoid any further errors.
-             */
-            if (user == null)
-                LoadUserState();
-            else
-                File.Delete(UserStateFile);
-
             ClearAllStack();
 
             MainHelper.CreateCurrentQRData();
@@ -320,6 +312,26 @@ namespace Components
             return false;
         }
 
+        /// <summary>
+        /// If state is restored then we should find which clips are added & removed
+        /// along with some other tasks to make local database in sync with remote.
+        /// </summary>
+        /// <returns></returns>
+        private async Task StatePersistenceTask()
+        {
+            if (user == null && LoadUserState())
+            {
+                var currentUser = await FetchUser().ConfigureAwait(false);
+                if (user != null && currentUser != null)
+                {
+                    DiffUserClips(user, currentUser);
+                    await SetCommonUserInfo(user).ConfigureAwait(false);
+                }
+            }
+            else
+                File.Delete(UserStateFile);
+        }
+
         private void CreateNewClient()
         {
             Log();
@@ -352,6 +364,11 @@ namespace Components
         private async void SetUserCallback()
         {
             isClientInitialized = false;
+
+            /* Load the previous state of user or if user is not null it means some configuration
+             *  has changed and we should delete the previous state file to avoid any further errors.
+             */
+            await StatePersistenceTask().ConfigureAwait(false);
 
             // Set user for first time..
             if (user == null) user = await FetchUser().ConfigureAwait(false);
@@ -428,36 +445,7 @@ namespace Components
                     // Perform data addition & removal operation...
                     if (user != null)
                     {
-                        // Check for clip data addition...
-                        var newClips = firebaseUser?.Clips?.Select(c => c?.data).ToList() ?? new List<string?>();
-                        var oldClips = user?.Clips?.Select(c => c?.data).ToList() ?? new List<string?>();
-                        var addedClips = newClips.Except(oldClips).ToList();
-                        var removedClips = oldClips.Except(newClips).ToList();
-
-                        // Check if clip is updated using following hack
-                        if ((addedClips.Count & removedClips.Count) == 1)
-                            binder?.OnClipItemUpdated(
-                                previousUnEncryptedData: removedClips.FirstOrDefault().DecryptBase64(DatabaseEncryptPassword),
-                                newUnEncryptedData: addedClips.FirstOrDefault().DecryptBase64(DatabaseEncryptPassword)
-                            );
-                        else if (addedClips.Count > 0) // On clip updated
-                            binder?.OnClipItemAdded(addedClips.Select(c => c.DecryptBase64(DatabaseEncryptPassword)).ToList());
-                        else if (removedClips.Count > 0) // On clip removed
-                            binder?.OnClipItemRemoved(removedClips.Select(c => c.DecryptBase64(DatabaseEncryptPassword)).ToList());
-
-                        // Check for device addition & removal...
-                        var newDevices = firebaseUser?.Devices ?? new List<Device>();
-                        var oldDevices = user?.Devices ?? new List<Device>();
-                        foreach (var device in newDevices.ExceptEquals(oldDevices))
-                        {
-                            binder?.OnDeviceAdded(device);
-                        }
-                        foreach (var device in oldDevices.ExceptEquals(newDevices))
-                        {
-                            binder?.OnDeviceRemoved(device);
-                        }
-
-                        user = firebaseUser!;
+                        DiffUserClips(user, firebaseUser);
                     }
 
                     user = firebaseUser!;
@@ -483,6 +471,44 @@ namespace Components
             }
 
             isClientInitialized = true;
+        }
+
+        /// <summary>
+        /// A common function to perform diffs on user's clips & invoke necessary calls.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="firebaseUser"></param>
+        private void DiffUserClips(User user, User firebaseUser)
+        {
+            var newClips = firebaseUser?.Clips?.Select(c => c?.data).ToList() ?? new List<string?>();
+            var oldClips = user?.Clips?.Select(c => c?.data).ToList() ?? new List<string?>();
+            var addedClips = newClips.Except(oldClips).ToList();
+            var removedClips = oldClips.Except(newClips).ToList();
+
+            // Check if clip is updated using following hack
+            if ((addedClips.Count & removedClips.Count) == 1)
+                binder?.OnClipItemUpdated(
+                    previousUnEncryptedData: removedClips.FirstOrDefault().DecryptBase64(DatabaseEncryptPassword),
+                    newUnEncryptedData: addedClips.FirstOrDefault().DecryptBase64(DatabaseEncryptPassword)
+                );
+            else if (addedClips.IsNotEmpty()) // On clip updated
+                binder?.OnClipItemAdded(addedClips.Select(c => c.DecryptBase64(DatabaseEncryptPassword)).ToList());
+            else if (removedClips.IsNotEmpty()) // On clip removed
+                binder?.OnClipItemRemoved(removedClips.Select(c => c.DecryptBase64(DatabaseEncryptPassword)).ToList());
+
+            // Check for device addition & removal...
+            var newDevices = firebaseUser?.Devices ?? new List<Device>();
+            var oldDevices = user?.Devices ?? new List<Device>();
+            foreach (var device in newDevices.ExceptEquals(oldDevices))
+            {
+                binder?.OnDeviceAdded(device);
+            }
+            foreach (var device in oldDevices.ExceptEquals(newDevices))
+            {
+                binder?.OnDeviceRemoved(device);
+            }
+
+            this.user = firebaseUser!;
         }
 
         /// <summary>
@@ -997,25 +1023,32 @@ namespace Components
             if (user != null)
             {
                 Log("Saved current user state");
-                File.WriteAllText(UserStateFile, User.ToNode(user).ToString());
+                File.WriteAllText(UserStateFile, User.ToNode(user, FirebaseCurrent.Endpoint).ToString());
             }
         }
 
-        public void LoadUserState()
+        public bool LoadUserState()
         {
             if (File.Exists(UserStateFile))
             {
                 try
                 {
                     var xml = File.ReadAllText(UserStateFile);
-                    user = User.FromNode(XElement.Parse(xml));
-                    Log("Previous user state is restored");
+                    File.Delete(UserStateFile);
+                    var pair = User.FromNode(XElement.Parse(xml));
+                    if (pair.Value == FirebaseCurrent.Endpoint)
+                    {
+                        user = pair.Key;
+                        Log("Previous user state is restored");
+                        return true;
+                    }
                 }
                 catch
                 {
                     Log("Invalid previous user state");
                 }
             }
+            return false;
         }
 
         #endregion

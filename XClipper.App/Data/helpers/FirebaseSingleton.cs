@@ -831,7 +831,7 @@ namespace Components
             if (user != null)
             {
                 Log("Saved current user state");
-                File.WriteAllText(UserStateFile, User.ToNode(user).ToString());
+                File.WriteAllText(UserStateFile, User.ToNode(user, FirebaseCurrent.Endpoint).ToString());
             }
         }
 
@@ -842,7 +842,7 @@ namespace Components
                 try
                 {
                     var xml = File.ReadAllText(UserStateFile);
-                    user = User.FromNode(XElement.Parse(xml));
+                  //  user = User.FromNode(XElement.Parse(xml));
                     Log("Previous user state is restored");
                 }
                 catch
