@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, minimum-scale=1.0, shrink-to-fit=no, viewport-fit=cover">
+    <meta name="description" content="docsify-tabs - A docsify.js plugin for rendering tabbed content from markdown.">
+    <meta name="google-site-verification" content="_EWJaM8G6xwMtEqemO4yN8WqSU2CaKVi3jTj0gLg48E">
+    <title>docsify-tabs - A docsify.js plugin for rendering tabbed content from markdown</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple.css"
+        title="Simple">
+    <link rel="stylesheet" href="assets/css/main.css">
+    <style>
+        img {
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+    </style>
+    <!-- Test Stylesheets -->
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@4/themes/vue.css"> -->
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@4/themes/buble.css"> -->
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@4/themes/dark.css"> -->
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@4/themes/pure.css"> -->
+</head>
+
+<body>
+    <div id="app"></div>
+
+    <!-- JavaScript -->
+    <script>
+        // Docsify
+        window.$docsify = {
+            // GENERAL
+            // -----------------------------------------------------------------
+            name: 'XClipper',
+            repo: 'https://github.com/KaustubhPatange/XClipper',
+            homepage: 'index.md',
+            loadSidebar: 'sidebar.md',
+
+            // NAVIGATION
+            // -----------------------------------------------------------------
+            alias: {
+                '.*?/compile': 'https://raw.githubusercontent.com/wiki/KaustubhPatange/XClipper/Compilation-guide.md',
+                '.*?/introduction': 'https://raw.githubusercontent.com/wiki/KaustubhPatange/XClipper/Introduction.md',
+                '.*?/sync': 'https://raw.githubusercontent.com/wiki/KaustubhPatange/XClipper/Data-Synchronization.md',
+                '.*?/sync-image': 'https://raw.githubusercontent.com/wiki/KaustubhPatange/XClipper/Enable-Image-synchronization.md',
+                '.*?/protect': 'https://raw.githubusercontent.com/wiki/KaustubhPatange/XClipper/Using-secure-database.md',
+                '.*?/activation': 'https://raw.githubusercontent.com/wiki/KaustubhPatange/XClipper/Manual-License-Activation.md',
+                '.*?/migrating': 'https://raw.githubusercontent.com/wiki/KaustubhPatange/XClipper/Migrating-License.md',
+                '.*?/uid': 'https://raw.githubusercontent.com/wiki/KaustubhPatange/XClipper/Finding-your-Unique-Id.md',
+                '.*?/faq': 'https://raw.githubusercontent.com/wiki/KaustubhPatange/XClipper/FAQs.md'
+            },
+            auto2top: true,
+            maxLevel: 3,
+            subMaxLevel: 3,
+
+            // PLUGINS
+            // -----------------------------------------------------------------
+            executeScript: true,
+            ga: 'UA-100100910-4',
+            search: {
+                depth: 3,
+                noData: 'No results!',
+                placeholder: 'Search...'
+            },
+            tabs: {
+                // persist    : false,
+                // sync       : false,
+                // theme      : 'material',
+                // tabComments: false,
+                // tabHeadings: false
+            },
+            plugins: [
+                function (hook, vm) {
+                    const links = [
+                        "FAQs:faq",
+                        "Data-Synchronization:sync",
+                        "Manual-License-Activation:activation",
+                        "Migrating-License:migrating",
+                        "Enable-Image-synchronization:sync-image",
+                        "Using-secure-database:protect",
+                        "Finding-your-Unique-Id:uid",
+                        "Introduction:introduction",
+                        "Compilation-guide:compile"
+                    ];
+                    const wikiPage = "https://github.com/KaustubhPatange/XClipper/wiki/";
+
+                    hook.afterEach(function (html, next) {
+                        let content = html;
+                        let url = window.location.href.substring(0, window.location.href.lastIndexOf("/") + 1)
+                        links.forEach(e => {
+                            let begin = e.split(":")[0];
+                            let end = e.split(":")[1];
+                            try {
+                                content = content.replace(`${wikiPage}${begin}`, `${url}${end}`);
+                            } catch { }
+                        });
+                        next(content);
+                    });
+                }
+            ]
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/docsify@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docsify-themeable@0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docsify-copy-code@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docsify-tabs@1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/external-script.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/ga.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/zoom-image.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/class-change@1"></script>
+    <script>
+        // Initialize the default attribute listener
+        classChange.attrs();
+    </script>
+</body>
+
+</html>

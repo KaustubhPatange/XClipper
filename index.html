@@ -72,9 +72,10 @@
                             <a href="#" id="download-button" class="btn-custom" data-aos="fade-up" data-aos-delay="400">
                                 <span>Download</span></a>
                             <div class="popover__content">
-                                <a target="_blank" href="https://github.com/KaustubhPatange/XClipper/releases"
-                                    id="btn-window"><button type="button" class="btn btn-windows"><i
-                                            class="fa fa-windows" aria-hidden="true"></i>
+                                <a target="_blank" href="https://github.com/KaustubhPatange/XClipper/releases/latest"
+                                    id="btn-window" data-toggle="tooltip"
+                                    title="Portable version can be found at Github releases"><button type="button"
+                                        class="btn btn-windows"><i class="fa fa-windows" aria-hidden="true"></i>
                                         Windows</button></a>
                                 <a target="_blank"
                                     href="https://play.google.com/store/apps/details?id=com.kpstv.xclipper">
@@ -193,7 +194,11 @@
                                             style="color: #fa8050;">read
                                             FAQs</span></a></span>
                             </div>
-                            <div id="modal-progress" style="display: none; margin-bottom: 10px" class="loader"></div>
+                            <div id="modal-progress">
+                                <div style="display:block; margin-bottom: 10px" class="loader"></div>
+                                <span style="font-size: 13px; margin-top: 20px; color: #f0ecec;">This could take a
+                                    while...</span>
+                            </div>
                             <div style="margin-bottom: 10px; display: none;" id="modal-content-success">
                                 <span style="font-size: 20px; color: #15c90b;">Payment
                                     Completed<br></span>
