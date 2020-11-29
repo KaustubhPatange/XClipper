@@ -3,6 +3,7 @@ package com.kpstv.xclipper.ui.activities
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import com.kpstv.xclipper.App
+import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.extensions.ioThread
 import com.kpstv.xclipper.extensions.mainThread
@@ -20,6 +21,7 @@ class Silent : AppCompatActivity() {
     @Inject lateinit var repository: MainRepository
     @Inject lateinit var tinyUrlApiHelper: TinyUrlApiHelper
     @Inject lateinit var dictionaryApiHelper: DictionaryApiHelper
+    @Inject lateinit var clipboardProvider: ClipboardProvider
 
     private var isShown = false
 
@@ -48,6 +50,7 @@ class Silent : AppCompatActivity() {
                             MoreBottomSheet(
                                 tinyUrlApiHelper = tinyUrlApiHelper,
                                 dictionaryApiHelper = dictionaryApiHelper,
+                                clipboardProvider = clipboardProvider,
                                 clip = it,
                                 supportFragmentManager = supportFragmentManager
                             ).show(supportFragmentManager, "blank")

@@ -171,6 +171,7 @@ class Home : Fragment(R.layout.fragment_home) {
                     MoreBottomSheet(
                         tinyUrlApiHelper = mainViewModel.tinyUrlApiHelper,
                         dictionaryApiHelper = mainViewModel.dictionaryApiHelper,
+                        clipboardProvider = clipboardProvider,
                         supportFragmentManager = requireActivity().supportFragmentManager,
                         clip = clip
                     ).show(

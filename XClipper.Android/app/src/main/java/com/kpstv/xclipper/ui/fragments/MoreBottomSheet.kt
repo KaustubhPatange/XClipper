@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.Clip
+import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.ui.helpers.DictionaryApiHelper
 import com.kpstv.xclipper.ui.helpers.SpecialHelper
 import com.kpstv.xclipper.ui.helpers.TinyUrlApiHelper
@@ -16,6 +17,7 @@ class MoreBottomSheet(
     private val tinyUrlApiHelper: TinyUrlApiHelper,
     private val dictionaryApiHelper: DictionaryApiHelper,
     private val supportFragmentManager: FragmentManager,
+    private val clipboardProvider: ClipboardProvider,
     private val clip: Clip
 ) : RoundedBottomSheetDialogFragment() {
 
@@ -30,6 +32,7 @@ class MoreBottomSheet(
                 context = context,
                 dictionaryApiHelper = dictionaryApiHelper,
                 tinyUrlApiHelper = tinyUrlApiHelper,
+                clipboardProvider = clipboardProvider,
                 supportFragmentManager = supportFragmentManager,
                 clip = clip
             ).setActions(this) {

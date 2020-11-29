@@ -111,7 +111,11 @@ namespace XClipper.Tests
         [TestMethod]
         public void FindTest()
         {
-            var nice = "5".ToBool();
+            var str = "RegExr was created by gskinner.com, and is proudly hosted by Media Temple.";
+
+            Debug.WriteLine(Regex.IsMatch(str, @"[\s\S]{60}", RegexOptions.Multiline));
+
+          //  var nice = "5".ToBool();
             var node = new XElement("User");
             node.SetAttributeValue("Endpoint", "Test");
             Debug.WriteLine("Xml:" + node.ToString());

@@ -9,6 +9,7 @@
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/bsm_notch"
         android:layout_marginTop="5dp"
         android:orientation="vertical"
         android:layout_width="match_parent"

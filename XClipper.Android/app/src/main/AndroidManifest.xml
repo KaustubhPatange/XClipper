@@ -39,7 +39,7 @@
         <activity
             android:name=".ui.dialogs.SpecialDialog"
             android:excludeFromRecents="true"
-            android:launchMode="singleTask"
+            android:launchMode="singleInstance"
             android:theme="@style/CustomDialogStyle.Dark" />
         <activity
             android:name=".ui.dialogs.EditDialog"

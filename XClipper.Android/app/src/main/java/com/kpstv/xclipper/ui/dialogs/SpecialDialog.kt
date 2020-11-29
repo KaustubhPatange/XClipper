@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.kpstv.xclipper.App.APP_CLIP_DATA
 import com.kpstv.xclipper.R
+import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.extensions.ioThread
 import com.kpstv.xclipper.extensions.mainThread
@@ -22,6 +23,7 @@ class SpecialDialog : AppCompatActivity() {
     @Inject lateinit var repository: MainRepository
     @Inject lateinit var tinyUrlApiHelper: TinyUrlApiHelper
     @Inject lateinit var dictionaryApiHelper: DictionaryApiHelper
+    @Inject lateinit var clipboardProvider: ClipboardProvider
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,6 +59,7 @@ class SpecialDialog : AppCompatActivity() {
                         context = this@SpecialDialog,
                         dictionaryApiHelper = dictionaryApiHelper,
                         tinyUrlApiHelper = tinyUrlApiHelper,
+                        clipboardProvider = clipboardProvider,
                         supportFragmentManager = supportFragmentManager,
                         clip = clip,
                         isDialog = true

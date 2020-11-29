@@ -21,10 +21,9 @@ import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.ClipTag
 import com.kpstv.xclipper.data.model.SpecialMenu
-import com.kpstv.xclipper.extensions.SimpleFunction
+import com.kpstv.xclipper.data.provider.ClipboardProvider
+import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
-import com.kpstv.xclipper.extensions.show
-import com.kpstv.xclipper.extensions.small
 import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.ui.adapters.MenuAdapter
 import com.kpstv.xclipper.ui.dialogs.AllPurposeDialog
@@ -39,6 +38,7 @@ class SpecialHelper(
     private val tinyUrlApiHelper: TinyUrlApiHelper,
     private val dictionaryApiHelper: DictionaryApiHelper,
     private val supportFragmentManager: FragmentManager,
+    private val clipboardProvider: ClipboardProvider,
     private val clip: Clip,
     private val isDialog: Boolean = false
 ) {
@@ -51,6 +51,10 @@ class SpecialHelper(
     private val data = clip.data
     fun setActions(view: View, onItemClick: SimpleFunction) = with(view) {
         this@SpecialHelper.onItemClick = onItemClick
+
+        if (isDialog) {
+            setForDialog(this)
+        }
 
         setDefineTag(this)
 
@@ -67,6 +71,27 @@ class SpecialHelper(
         setDateSpecials(this)
 
         setRecyclerView(this)
+    }
+
+    private fun setForDialog(view: View): Unit = with(view) {
+        bsm_notch.hide()
+
+        val currentClip = clipboardProvider.getClipboard()?.getItemAt(0)?.coerceToText(context)?.toString()
+        if (currentClip != data) {
+            specialList.add(
+                SpecialMenu(
+                    image = R.drawable.ic_copy_white,
+                    title = context.getString(R.string.set_current_clip)
+                ) {
+                    clipboardProvider.ignoreChange{
+                        clipboardProvider.setClipboard(ClipData.newPlainText(data, data))
+                    }
+
+                    /** Dismiss the dialog */
+                    onItemClick.invoke()
+                }
+            )
+        }
     }
 
     /** A common set of options that would appear in these section */

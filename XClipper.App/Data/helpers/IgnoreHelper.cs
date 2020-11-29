@@ -117,7 +117,8 @@ namespace Components
 
 # Note: Anything which begins which # is a comment.
 
-# It helps to ignore certain text pattern that should not be stored to the database.
+# It helps to ignore certain text pattern that should be stored in database,
+# i.e whatever pattern matches that data is ignored.
 
 # - All the pattern must be written one after another
 # - All patterns are treated as regular expressions. (follow javascript like approach)
@@ -125,6 +126,9 @@ namespace Components
 # For optimization purpose keep total expressions less than 50;
 
 # Examples (Uncomment the expression to see in actions)
+
+# Eg: Any text exceeding than 100 chars are not allowed
+# /^[\s\S]{100,}$/gm
 
 # Eg: Single word/letters are not allowed
 # /^[\w]+/g

@@ -163,4 +163,6 @@
     <string name="clipboard_disabled_content">Accessibility service is not started, click to enable it.</string>
     <string name="image_render_summary">[BETA] This will render image in the list. Note that it can have some side effects!</string>
     <string name="image_render_title">Render Image</string>
+    <string name="copy">Copy</string>
+    <string name="set_current_clip">Set at current clipboard</string>
 </resources>

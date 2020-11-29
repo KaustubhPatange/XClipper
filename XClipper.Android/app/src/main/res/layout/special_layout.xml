@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <include layout="@layout/bottom_sheet_more"/>
+    <include layout="@layout/bottom_sheet_more" />
 
     <LinearLayout
         android:background="?colorForeground"
