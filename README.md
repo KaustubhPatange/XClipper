@@ -22,21 +22,21 @@ XClipper is currently available for the following platforms only.
 
 - Clean & **beautiful** UI.
 - **Easier** to use and manage.
-- Password Protection for Database, [learn more](https://github.com/KaustubhPatange/XClipper/wiki/Password-Protect-Database).
-- Clipboard syncing between devices, [learn more](https://github.com/KaustubhPatange/XClipper/wiki/Data-Synchronization).
+- Password Protection for Database, [learn more](https://kaustubhpatange.github.io/XClipper/docs/#/protect).
+- Clipboard syncing between devices, [learn more](https://kaustubhpatange.github.io/XClipper/docs/#/sync).
 - Lot more... _but just leaving it here_.
 
 ## Tutorials
 
-All of the individual documentation topics can be found in the repo's [wiki](https://github.com/KaustubhPatange/XClipper/wiki), following are some general topics you should take a look at!
+All of the individual documentation topics can be found in the [docs](https://kaustubhpatange.github.io/XClipper/docs), following are some general topics you should take a look at!
 
-- [Getting started with XClipper](https://github.com/KaustubhPatange/XClipper/wiki/Introduction)
-- [Start synchronizing clipboard activity](https://github.com/KaustubhPatange/XClipper/wiki/Data-Synchronization)
-- [FAQs](https://github.com/KaustubhPatange/XClipper/wiki/FAQs)
+- [Getting started with XClipper](https://kaustubhpatange.github.io/XClipper/docs/#/introduction)
+- [Start synchronizing clipboard activity](https://kaustubhpatange.github.io/XClipper/docs/#/sync)
+- [FAQs](https://kaustubhpatange.github.io/XClipper/docs/#/faqs)
 
 ## Compilation Guide
 
-Since this project involves **license** system 📃 some of the source files has been ignored. [Read this guide](https://github.com/KaustubhPatange/XClipper/wiki/Compilation-guide) in order to compile 🗃 the project.
+Since this project involves **license** system 📃 some of the source files has been ignored. [Read this guide](https://kaustubhpatange.github.io/XClipper/docs/#/compile) in order to compile 🗃 the project.
 
 ## Built with 🛠
 
@@ -50,6 +50,7 @@ Since this project involves **license** system 📃 some of the source files has
 - [Data Binding](https://docs.microsoft.com/en-us/dotnet/desktop-wpf/data/data-binding-overview)
   - [CalcBinding](https://github.com/Alex141/CalcBinding) - Aan advanced Binding markup extension that allows you to write calculated binding expressions in xaml, without custom converters.
 - [SQLite-Net-Extension](https://bitbucket.org/twincoders/sqlite-net-extensions) - An extension to sqlite-net library.
+- [Docsify](https://docsify.js.org/) - A magical documentation site generator.
 
 ## Contributing
 

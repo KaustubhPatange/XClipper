@@ -9,19 +9,18 @@
 - [Manual license activation](activation)
 - [Migrating License](migrating)
 - [FAQs](faqs)
-
-**Developers**
-
+  **Developers**
 - [Compilation guide](compile)
 
-**Test**
+**Test Pages (will be removed)**
 
-- [Introduction](page1.md)
-- [Finding your UID](finding-uid.md)
-- [Data synchronization](page2.md)
-- [Image synchronization](image-dodo.md)
-- [Securing database](page3.md)
-- [Manual license activation](page4.md)
-- [Migrating License](page5.md)
-- [FAQs](common-question.md)
-- [Compilation guide](compile-guide.md)
+- [Introduction](test-pages/introduction-page.md)
+- [Finding your UID](test-pages/finding-uid.md)
+- [Data synchronization](test-pages/page2.md)
+- [Image synchronization](test-pages/image-dodo.md)
+- [Securing database](test-pages/page3.md)
+- [Manual license activation](test-pages/page4.md)
+- [Migrating License](test-pages/page5.md)
+- [FAQs](test-pages/common-question.md)
+  **Developers**
+- [Compilation guide](test-pages/compile-guide.md)

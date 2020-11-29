@@ -82,7 +82,7 @@ end;
 
 procedure WatchButtonOnClick(Sender: TObject);
 begin
-  OpenBrowser('https://github.com/KaustubhPatange/XClipper/wiki/Introduction'); 
+  OpenBrowser('https://kaustubhpatange.github.io/XClipper/docs/#/introduction'); 
 end;
 
 var

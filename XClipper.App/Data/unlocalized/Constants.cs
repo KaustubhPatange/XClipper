@@ -42,7 +42,7 @@ namespace Components
         public static string ApplicationWebsite = "https://kaustubhpatange.github.io/XClipper";
         public const string GITHUB_RELEASE_URI = "https://api.github.com/repos/adb-over-wifi/demo-release/releases"; // TODO: Change update uri https://api.github.com/repos/KaustubhPatange/XClipper/releases
         public const string OAUTH_TOKEN_URI = "https://oauth2.googleapis.com/token";
-        public const string ACTION_NOT_COMPLETE_WIKI = "https://github.com/KaustubhPatange/XClipper/wiki/FAQs#q-last-x-actions-didnt-complete-what-to-do";
+        public const string ACTION_NOT_COMPLETE_WIKI = "https://kaustubhpatange.github.io/XClipper/docs/#/faqs#q-last-x-actions-didnt-complete-what-to-do";
         public const string SETTINGS = "Settings";
         public const string ENVIRONMENT = "Environment";
         public const string CREDENTIAL = "Credential";
@@ -105,14 +105,14 @@ namespace Components
 
         public const string MOBILE_APP = "https://github.com/KaustubhPatange/XClipper/XClipper.Android";
 
-        public const string DATA_SYNCHRONIZATION = "https://github.com/KaustubhPatange/XClipper/wiki/Data-Synchronization";
-        public const string MANUAL_ACTIVATION = "https://github.com/KaustubhPatange/XClipper/wiki/Manual-License-Activation";
-        public const string MIGRATION_GUIDE = "https://github.com/KaustubhPatange/XClipper/wiki/Migrating-License";
-        public const string SECURE_DB = "https://github.com/KaustubhPatange/XClipper/wiki/Using-secure-database";
-        public const string SECURE_FIREBASE = "https://github.com/KaustubhPatange/XClipper/wiki/Securing-Database";
+        public const string DATA_SYNCHRONIZATION = "https://kaustubhpatange.github.io/XClipper/docs/#/sync";
+        public const string MANUAL_ACTIVATION = "https://kaustubhpatange.github.io/XClipper/docs/#/activation";
+        public const string MIGRATION_GUIDE = "https://kaustubhpatange.github.io/XClipper/docs/#/migrating";
+        public const string SECURE_DB = "https://kaustubhpatange.github.io/XClipper/docs/#/protect#local-database";
+        public const string SECURE_FIREBASE = "https://kaustubhpatange.github.io/XClipper/docs/#/protect#remote-database";
 
         public const string UPGRADE_LICENSE = "https://kaustubhpatange.github.io/XClipper"; // TODO; Edit: No need yet! change this which is used in UpgradeTipItem
-        public const string DOCUMENTATION = "https://kaustubhpatange.github.io/XClipper/wiki";
+        public const string DOCUMENTATION = "https://kaustubhpatange.github.io/XClipper/docs";
 
         #endregion
     }
