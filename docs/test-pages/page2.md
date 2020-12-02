@@ -16,6 +16,7 @@ These are the steps we are going to follow, if you have any questions check the 
 - [Setting up the credential in the desktop app](#setting-up-the-in-the-desktop-app).
 - [Enabling required settings for sync](#enabling-required-settings-for-sync).
 - [Connecting mobile device to the storage](#connecting-mobile-device-to-the-storage).
+- [Sharing data with another PC](#sharing-data-with-another-PC).
 - [Testing if clipboard data is syncing](#testing-if-clipboard-data-is-syncing).
 - [Synchronization between multiple Android devices.](https://github.com/KaustubhPatange/XClipper/wiki/FAQs#q-can-we-sync-data-between-multiple-android-devices)
 
@@ -108,6 +109,23 @@ You first need to download the XClipper application on a mobile device.
 ](https://play.google.com/store/apps/details?id=com.kpstv.xclipper)
 
 - In the app go to "**Settings**" > "**Account**" > "**Connect to database**" & scan the QR code shown in the _Settings_ window of XClipper desktop application.
+
+?> Using this above approach you can connect as many device you want.
+
+## Sharing data with another PC
+
+!> This can have some side effects, if you find them kindly report to me.
+
+With this approach you can share the same database between multiple XClipper desktop application. This is useful if you want to share clipboard with your personal PC & work PC.
+
+?> You need to purchase license for both system inorder for this to work.
+
+- In **Right click** > **Firebase Configurations**, there are two buttons at the bottom which can export & import the current Firebase configuration.
+
+<img src="https://androdevkit.files.wordpress.com/2020/12/sync-multiple.png" height="400px">
+
+- From one PC you've to export the configuration (which will save it in a file) & from other PC you just 've to import it.
+- Make sure you enter the database password which it will ask while importing. Your current password can be found in **Settings**.
 
 ## Testing if clipboard data is syncing?
 

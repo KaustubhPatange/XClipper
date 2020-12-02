@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Runtime.CompilerServices;
 using WK.Libraries.SharpClipboardNS;
 
 namespace Components
@@ -60,28 +61,35 @@ namespace Components
                     ClipType = (ContentType)(int)e.ContentType;
                     if (e.ContentType == SharpClipboard.ContentTypes.Image)
                     {
-                        try
-                        {
-                            var bmp = new Bitmap(GetClipImage);
-                            if (lastImageSaved != null)
-                            {
-                                bool areSame = imageCompare.IsMatch(bmp, lastImageSaved);
-                                if (areSame)
-                                {
-                                    lastImageSaved = new Bitmap(bmp);
-                                    bmp.Dispose();
-                                    return;
-                                }
-                            }
-                            lastImageSaved = new Bitmap(bmp);
-                            bmp.Dispose();
-                        }
-                        catch (Exception ex)
-                        { }
+                        if (ProcessImage()) return;
                     }
                     binder.OnChanged();
                 }
             };
+        }
+
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        private bool ProcessImage()
+        {
+            try
+            {
+                var bmp = new Bitmap(GetClipImage);
+                if (lastImageSaved != null)
+                {
+                    bool areSame = imageCompare.IsMatch(bmp, lastImageSaved);
+                    if (areSame)
+                    {
+                        lastImageSaved = new Bitmap(bmp);
+                        bmp.Dispose();
+                        return true;
+                    }
+                }
+                lastImageSaved = new Bitmap(bmp);
+                bmp.Dispose();
+            }
+            catch (Exception)
+            { }
+            return false;
         }
 
         public void Dispose()

@@ -22,10 +22,8 @@ namespace Components
             {
                 int appVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString().Replace(".", "").ToInt(); // eg: 1000
 
-                List<ReleaseItem>? releases = JsonConvert.DeserializeObject<List<ReleaseItem>>(response.Content);
-
-                ReleaseItem? newRelease = releases?.FirstOrNull(c => c.GetVersion() > appVersion).Value;
-                block?.Invoke(newRelease != null, newRelease);
+                ReleaseItem? release = JsonConvert.DeserializeObject<ReleaseItem>(response.Content);
+                block?.Invoke(release != null, release);
             });
         }
 
