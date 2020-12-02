@@ -60,6 +60,10 @@ function openGithub() {
   window.open("https://github.com/KaustubhPatange/XClipper");
 }
 
+function openDocs() {
+  window.open("/docs");
+}
+
 function showContactForm() {
   document.getElementById("contact-button").disabled = false;
   document.getElementById("emailInput").value = "";

@@ -101,12 +101,17 @@ body {
   height: 30px;
   font-size: 12px;
   font-weight: 700;
+  margin-left: 15px;
+  margin-top: 15px;
   color: whitesmoke;
   font-family: sans-serif;
   background: -webkit-linear-gradient(top, #515670, #393d4f 70%);
 }
 .github-btn:hover {
   background: -webkit-linear-gradient(top, #383b4d, #2e3141 70%);
+}
+.spare {
+  margin-top: 10px;
 }
 
 .subtitle {

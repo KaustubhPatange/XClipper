@@ -8,6 +8,7 @@
 - [Securing database](protect)
 - [Manual license activation](activation)
 - [Migrating License](migrating)
+- [Hidden Settings](hidden)
 - [FAQs](faqs)
   **Developers**
 - [Compilation guide](compile)
@@ -21,6 +22,7 @@
 - [Securing database](test-pages/page3.md)
 - [Manual license activation](test-pages/page4.md)
 - [Migrating License](test-pages/page5.md)
+- [Hidden Settings](test-pages/hidden-settings.md)
 - [FAQs](test-pages/common-question.md)
   **Developers**
 - [Compilation guide](test-pages/compile-guide.md)

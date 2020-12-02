@@ -1,5 +1,7 @@
 # Securing database
 
+!> This is a paid feature read more about it [here]().
+
 ?>This will allow you to encrypt your clipboard data locally as well as on remote database.
 
 ## Table of contents <!-- {docsify-ignore} -->
@@ -37,8 +39,6 @@ XClipper saves all the clipboard data locally in `%appdata%/XClipper/data.db` wh
 - Once done, proceed to click the "**Apply**" button. XClipper will then migrate your current database with a secure one.
 
 ## Remote database
-
-!> This is a paid feature read more about it [here]().
 
 ?> By default the database we created to enable sync is not secure enough. Anyone with the url can easily read or having all credentials can also perform write operations.
 

@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using RestSharp;
 using System.Runtime.Remoting.Channels;
 using static Components.Core;
+using static Components.DefaultSettings;
 
 #nullable enable
 
@@ -124,7 +125,8 @@ namespace Components
             request.AddParameter("text/plain", content, ParameterType.RequestBody);
             await client.ExecuteTaskAsync(request).ConfigureAwait(false);
 
-            Environment.Exit(1);
+            if (ExitOnCrash)
+                Environment.Exit(1);
         }
 
         private string CreateCrashSuffix()

@@ -398,6 +398,11 @@ namespace Components
         /// </summary>
         public static bool ExitOnCrash { get; set; } = true;
 
+        /// <summary>
+        /// If set to true XClipper will not show notification about any changes occurs to database.
+        /// </summary>
+        public static bool NoNotifyChanges { get; set; } = false;
+
         #endregion
 
         #region Notify Static PropertyChange
@@ -421,7 +426,8 @@ namespace Components
             var environment = new XElement(ENVIRONMENT);
             environment
                   .Add(
-                     new XElement(nameof(ExitOnCrash), ExitOnCrash.ToString())
+                     new XElement(nameof(ExitOnCrash), ExitOnCrash.ToString()),
+                     new XElement(nameof(NoNotifyChanges), NoNotifyChanges.ToString())
                      );
             var settings = new XElement(SETTINGS);
             settings
@@ -579,6 +585,7 @@ namespace Components
 
             var environment = settings.Element(ENVIRONMENT);
             ExitOnCrash = environment.Element(nameof(ExitOnCrash)).Value.ToBool();
+            NoNotifyChanges = environment.Element(nameof(NoNotifyChanges)).Value.ToBool();
         }
 
         /// <summary>

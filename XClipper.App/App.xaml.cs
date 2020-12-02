@@ -398,6 +398,8 @@ namespace Components
 
         public void SendNotification(string title, string message, Action? onActive = null)
         {
+            if (NoNotifyChanges) return;
+
             AppNotificationHelper.ShowBasicToast(
                 dispatcher: Dispatcher,
                 title: title,
