@@ -403,6 +403,11 @@ namespace Components
         /// </summary>
         public static bool NoNotifyChanges { get; set; } = false;
 
+        /// <summary>
+        /// A time to denote if it is necessary to show sync toast.
+        /// </summary>
+        public static string? SyncDialogDate { get; set; } = "";
+
         #endregion
 
         #region Notify Static PropertyChange
@@ -429,10 +434,17 @@ namespace Components
                      new XElement(nameof(ExitOnCrash), ExitOnCrash.ToString()),
                      new XElement(nameof(NoNotifyChanges), NoNotifyChanges.ToString())
                      );
+
+            var timestamps = new XElement(TIMESTAMPS);
+            timestamps
+                 .Add(
+                    new XElement(nameof(SyncDialogDate), SyncDialogDate)
+                    );
             var settings = new XElement(SETTINGS);
             settings
                 .Add(
                     environment,
+                    timestamps,
                     new XElement(nameof(AppDisplayLocation), AppDisplayLocation.ToString()),
                     new XElement(nameof(WhatToStore), WhatToStore.ToString()),
                     new XElement(nameof(TotalClipLength), TotalClipLength.ToString()),
@@ -586,6 +598,12 @@ namespace Components
             var environment = settings.Element(ENVIRONMENT);
             ExitOnCrash = environment.Element(nameof(ExitOnCrash)).Value.ToBool();
             NoNotifyChanges = environment.Element(nameof(NoNotifyChanges)).Value.ToBool();
+
+            var timestamps = settings.Element(TIMESTAMPS);
+            if (timestamps != null)
+            {
+                SyncDialogDate = timestamps.Element(nameof(SyncDialogDate)).Value;
+            }
         }
 
         /// <summary>

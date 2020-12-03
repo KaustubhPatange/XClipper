@@ -169,6 +169,8 @@
     <system:String x:Key="device_title">Connected Device</system:String>
     <system:String x:Key="device_disconnect">Disconnect</system:String>
 
+    <system:String x:Key="sync_dialog_title">Clipboard Synchronization</system:String>
+    <system:String x:Key="sync_dialog_message">You can also synchronize clipboard data to Android devices. Click on &quot;Learn more&quot; to know about it.</system:String>
     <system:String x:Key="sync_disabled_title">Synchronization disabled</system:String>
     <system:String x:Key="sync_disabled_text">To enable it go to Settings &gt; Connect.</system:String>
     <system:String x:Key="sync_config_title">Firebase Configuration</system:String>

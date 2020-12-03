@@ -4,7 +4,6 @@ import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityServiceInfo
 import android.app.Activity
 import android.app.ActivityManager
-import android.app.ProgressDialog
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -20,11 +19,9 @@ import android.telephony.TelephonyManager
 import android.util.TypedValue
 import android.view.accessibility.AccessibilityManager
 import androidx.annotation.AttrRes
-import androidx.annotation.MainThread
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ShareCompat
-import androidx.preference.PreferenceManager
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.zxing.integration.android.IntentIntegrator
@@ -32,7 +29,6 @@ import com.kpstv.xclipper.App
 import com.kpstv.xclipper.App.AUTO_SYNC_PREF
 import com.kpstv.xclipper.App.BIND_DELETE_PREF
 import com.kpstv.xclipper.App.BIND_PREF
-import com.kpstv.xclipper.App.BLACKLIST_PREF
 import com.kpstv.xclipper.BuildConfig
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.FBOptions
@@ -46,7 +42,6 @@ import com.kpstv.xclipper.extensions.SimpleFunction
 import com.kpstv.xclipper.extensions.layoutInflater
 import com.kpstv.xclipper.service.ClipboardAccessibilityService
 import com.kpstv.xclipper.ui.helpers.AuthenticationHelper
-import kotlinx.coroutines.suspendCancellableCoroutine
 import java.io.InputStream
 import java.util.*
 import kotlin.coroutines.resume
@@ -237,7 +232,8 @@ class Utils {
          */
         suspend fun retrievePackageList(context: Context): List<AppPkg> = with(context) {
             suspendCoroutine { r ->
-                val result = packageManager.getInstalledApplications(PackageManager.GET_META_DATA).asSequence()
+                val result = packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
+                    .asSequence()
                     .filter {
                         it.flags != ApplicationInfo.FLAG_SYSTEM
                     }

@@ -1,6 +1,7 @@
 private object LibraryVersion {
     const val CORE_KTX = "1.3.0"
     const val APP_COMPAT = "1.2.0"
+    const val BROWSER = "1.3.0"
     const val COLLECTIONS_KTX = "1.1.0"
     const val CONSTRAINT_LAYOUT = "1.1.3"
     const val MATERIAL = "1.2.0-beta01"
@@ -34,7 +35,7 @@ private object LibraryVersion {
     const val COIL = "1.0.0-rc3"
     const val GLIDE = "4.11.0"
     const val RECYCLERVIEW = "1.1.0"
-    const val CWT = "0.1.3"
+    const val CWT = "0.1.5"
     const val HILT_COMPILER = "1.0.0-alpha01"
 }
 
@@ -43,6 +44,7 @@ object LibraryDependency {
     const val CORE_KTX = "androidx.core:core-ktx:${LibraryVersion.CORE_KTX}"
     const val COLLECTIONS_KTX = "androidx.collection:collection-ktx:${LibraryVersion.COLLECTIONS_KTX}"
     const val APP_COMPAT = "androidx.appcompat:appcompat:${LibraryVersion.APP_COMPAT}"
+    const val BROWSER = "androidx.browser:browser:${LibraryVersion.BROWSER}"
     const val ACTIVITY_KTX = "androidx.activity:activity-ktx:${LibraryVersion.ACTIVITY}"
     const val FRAGMENT_KTX = "androidx.fragment:fragment-ktx:${LibraryVersion.FRAGMENT}"
     const val WORK_MANAGER = "androidx.work:work-runtime-ktx:${LibraryVersion.WORK_MANAGER}"

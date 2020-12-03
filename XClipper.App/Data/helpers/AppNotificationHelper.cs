@@ -6,22 +6,14 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Windows.Threading;
+using System.Collections.Generic;
+using static Components.TranslationHelper;
 
 #nullable enable
 
 namespace Components
 {
 	// TODO: Add a custom logo for ToastVisual.
-
-	public enum ToastAudioType
-	{
-		[Description("ms-winsoundevent:Notification.Default")]
-		DEFAULT,
-		[Description("ms-winsoundevent:Notification.Mail")]
-		MAIL,
-		[Description("ms-winsoundevent:Notification.Reminder")]
-		REMINDER,
-	}
 	public static class AppNotificationHelper
 	{
 
@@ -98,12 +90,33 @@ namespace Components
 				}
 			}
 		}
-		
-		private static ToastRequest CreateRequest(ToastVisual visual, ToastAudioType audioType, ToastDuration duration = ToastDuration.Short, bool Silent = false)
+
+		/// <summary>
+		/// A particular dialog for only one use case i.e to inform users about synchronization feature.
+		/// </summary>
+		/// <param name="dispatcher"></param>
+		/// <param name="onLearnMoreClick"></param>
+		/// <returns></returns>
+        public static void ShowSyncDialog(Dispatcher dispatcher, Action? onLearnMoreClick = null)
+        {
+			var builder = new UWPToast.Builder(dispatcher);
+			builder
+				.AddImage(Properties.Resources.connectivity)
+				.AddText(Translation.SYNC_DIALOG_TITLE)
+				.AddText(Translation.SYNC_DIALOG_MESSAGE)
+				.AddButton(Translation.MSG_CANCEL_SMALL)
+				.AddButton(Translation.MSG_LEARN, onLearnMoreClick)
+				.SetDuration(ToastDuration.Long)
+				.SetAudioType(ToastAudioType.REMINDER)
+				.build().ShowAsync();
+		}
+
+        private static ToastRequest CreateRequest(ToastVisual visual, ToastAudioType audioType, IToastActions? actions = null, ToastDuration duration = ToastDuration.Short, bool Silent = false)
 		{
 			var toastContent = new ToastContent
 			{
 				Visual = visual,
+				Actions = actions,
 				Duration = duration,
 				Audio = new NotificationsExtensions.Toasts.ToastAudio
 				{

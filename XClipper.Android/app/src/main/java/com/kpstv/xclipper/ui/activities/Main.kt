@@ -9,8 +9,10 @@ import com.kpstv.xclipper.App.DARK_THEME
 import com.kpstv.xclipper.App.TUTORIAL_PREF
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.ToolbarState
+import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.extensions.utils.ThemeUtils
+import com.kpstv.xclipper.ui.helpers.SyncDialogHelper
 import com.kpstv.xclipper.ui.helpers.UpdateHelper
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,6 +25,7 @@ class Main : AppCompatActivity() {
     private val TAG = javaClass.simpleName
 
     @Inject lateinit var preferenceProvider: PreferenceProvider
+    @Inject lateinit var dbConnectionProvider: DBConnectionProvider
 
     private val mainViewModel: MainViewModel by viewModels()
 
@@ -47,6 +50,7 @@ class Main : AppCompatActivity() {
         }
 
         UpdateHelper(this).register()
+        SyncDialogHelper(this, preferenceProvider, dbConnectionProvider).register()
     }
 
     /**

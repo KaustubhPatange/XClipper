@@ -45,6 +45,7 @@ namespace Components
         public const string ACTION_NOT_COMPLETE_WIKI = "https://kaustubhpatange.github.io/XClipper/docs/#/faqs#q-last-x-actions-didnt-complete-what-to-do";
         public const string SETTINGS = "Settings";
         public const string ENVIRONMENT = "Environment";
+        public const string TIMESTAMPS = "Timestamps";
         public const string CREDENTIAL = "Credential";
         public const string FIREBASE = "Firebase";
         public const string DESKTOP_AUTH = "DesktopAuth";

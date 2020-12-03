@@ -130,6 +130,8 @@ namespace Components
             });
 
             NotificationActivator.register();
+
+            ShowSyncDialogIfNecessary();
         }
 
         protected override void OnExit(ExitEventArgs e)
@@ -581,6 +583,32 @@ namespace Components
         #endregion
 
         #region Method Events
+
+        private void ShowSyncDialogIfNecessary()
+        {
+            if (FirebaseCurrent != null) return;
+            if (string.IsNullOrWhiteSpace(SyncDialogDate))
+            {
+                SyncDialogDate = DateTime.Now.AddDays(2).ToFormattedDateTime(false);
+                WriteSettings();
+                return;
+            }
+            long old = SyncDialogDate.ToLong();
+            long current = DateTime.Now.ToFormattedDateTime(false).ToLong();
+            if (current >= old)
+            {
+                SyncDialogDate = DateTime.Now.AddDays(2).ToFormattedDateTime(false);
+                WriteSettings();
+
+                AppNotificationHelper.ShowSyncDialog(
+                    dispatcher: Dispatcher,
+                    onLearnMoreClick: () =>
+                    {
+                        Process.Start(DOCUMENTATION);
+                    }
+                );
+            }
+        }
 
         private void ActivateLicense()
         {

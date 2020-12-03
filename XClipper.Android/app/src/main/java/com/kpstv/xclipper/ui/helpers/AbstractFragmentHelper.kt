@@ -59,10 +59,10 @@ abstract class AbstractFragmentHelper<T: Fragment>(
                     onFragmentResumed()
             }
 
-            override fun onFragmentDestroyed(fm: FragmentManager, f: Fragment) {
+            override fun onFragmentViewDestroyed(fm: FragmentManager, f: Fragment) {
                 if (f.matches(clazz))
                     onFragmentDestroyed()
-                super.onFragmentDestroyed(fm, f)
+                super.onFragmentViewDestroyed(fm, f)
             }
         }
 }

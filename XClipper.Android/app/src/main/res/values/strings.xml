@@ -73,11 +73,13 @@
     <string name="alert">Alert</string>
     <string name="logout_msg">Are you sure you want to log out?</string>
     <string name="yes">Yes</string>
+    <string name="close">Close</string>
     <string name="logout_success">Logged out successfully!</string>
     <string name="err_uid">Not a valid UID</string>
     <string name="connect_success">Connected successfully!</string>
     <string name="accessibility_capture">In order to capture clipboard clips you need to enable service from accessibility settings.\n\n1. Click OK to open accessibility settings.\n2. Search for XClipper.\n3. Click and enable the service.</string>
     <string name="suggestion_capture">You need to enable System overlay permission.\n\n1. Click OK to open Display Overlay settings\n2. Enable \"Allow display over other apps\".</string>
+    <string name="synchronize_text">You can synchronize your clipboard data between this device &#38; a desktop companion app. Click on \"Learn more\" to know about it.</string>
     <string name="scan_code">Scan the app code</string>
     <string name="connect_request">Attempting to make a connection with database…</string>
     <string name="dark_title">Dark Theme</string>
@@ -165,4 +167,7 @@
     <string name="image_render_title">Render Image</string>
     <string name="copy">Copy</string>
     <string name="set_current_clip">Set at current clipboard</string>
+    <string name="synchronize">Synchronization</string>
+    <string name="learn_more">Learn more</string>
+    <string name="later">Later</string>
 </resources>

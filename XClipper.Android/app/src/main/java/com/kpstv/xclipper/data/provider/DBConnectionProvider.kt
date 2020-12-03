@@ -4,6 +4,10 @@ import com.kpstv.xclipper.data.localized.FBOptions
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
 
 interface DBConnectionProvider {
+    /**
+     * Can be used to know if there is an existing connected database
+     * based on preference values.
+     */
     fun isValidData(): Boolean
     fun processResult(data: String?, responseListener: ResponseListener<FBOptions>)
 

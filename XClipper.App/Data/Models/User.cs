@@ -54,10 +54,10 @@ namespace Components
             node.Add(new XElement(nameof(t.LicenseStrategy), (int)t.LicenseStrategy));
 
             var deviceList = new XElement(nameof(t.Devices));
-            foreach (var device in t.Devices) deviceList.Add(Device.ToNode(device));
+            foreach (var device in t?.Devices ?? new List<Device>()) deviceList.Add(Device.ToNode(device));
 
             var clipList = new XElement(nameof(t.Clips));
-            foreach (var clip in t.Clips) clipList.Add(Clip.ToNode(clip));
+            foreach (var clip in t?.Clips ?? new List<Clip>()) clipList.Add(Clip.ToNode(clip));
 
             node.Add(deviceList);
             node.Add(clipList);

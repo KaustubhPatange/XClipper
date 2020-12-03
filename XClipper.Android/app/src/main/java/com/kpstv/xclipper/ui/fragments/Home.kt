@@ -51,12 +51,9 @@ import kotlin.concurrent.schedule
 @AndroidEntryPoint
 class Home : Fragment(R.layout.fragment_home) {
 
-    @Inject
-    lateinit var clipboardProvider: ClipboardProvider
-    @Inject
-    lateinit var firebaseUtils: FirebaseUtils
-    @Inject
-    lateinit var preferenceProvider: PreferenceProvider
+    @Inject lateinit var clipboardProvider: ClipboardProvider
+    @Inject lateinit var firebaseUtils: FirebaseUtils
+    @Inject lateinit var preferenceProvider: PreferenceProvider
 
     private lateinit var adapter: CIAdapter
 

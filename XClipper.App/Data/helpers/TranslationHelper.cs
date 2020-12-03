@@ -131,6 +131,8 @@ namespace Components
         public string BUY_NOT_ACTIVATE = rm.GetString("buy_not_activate");
         public string BUY_LICENSE_SUCCESS = rm.GetString("buy_license_success");
         public string BUY_LICENSE_EXIST = rm.GetString("buy_license_exist");
+        public string SYNC_DIALOG_TITLE = rm.GetString("sync_dialog_title");
+        public string SYNC_DIALOG_MESSAGE = rm.GetString("sync_dialog_message");
         public string SYNC_GREATER_TEXT = rm.GetString("sync_greater_text");
         public string SYNC_DISABLED_TITLE = rm.GetString("sync_disabled_title");
         public string SYNC_DISABLED_TEXT = rm.GetString("sync_disabled_text");

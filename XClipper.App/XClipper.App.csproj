@@ -223,6 +223,7 @@
     <Compile Include="Data\helpers\LogHelper.cs" />
     <Compile Include="Data\helpers\MsgBoxHelper.cs" />
     <Compile Include="Data\helpers\QuickPasteHelper.cs" />
+    <Compile Include="Data\helpers\UWPToast.cs" />
     <Compile Include="Data\Models\Clip.cs" />
     <Compile Include="Data\Models\Device.cs" />
     <Compile Include="Data\Models\FirebaseData.cs" />
@@ -505,6 +506,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\hide.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\connectivity.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlite3.linux.1.1.13\build\net35\SQLitePCLRaw.lib.e_sqlite3.linux.targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.linux.1.1.13\build\net35\SQLitePCLRaw.lib.e_sqlite3.linux.targets')" />

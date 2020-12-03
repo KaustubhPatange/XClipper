@@ -69,16 +69,17 @@ namespace XClipper.Tests
         [TestMethod]
         public void RandomTest()
         {
-            Debug.WriteLine(AppDomain.CurrentDomain.BaseDirectory);
-                try
-                {
-                Debug.WriteLine($"OS: {Environment.OSVersion} {(Environment.Is64BitOperatingSystem ? "x64" : "x86")} {Environment.UserName}\n");
-                    foreach (dynamic obj in GetAllObjects("Win32_VideoController")) 
-                    {
-                        Debug.WriteLine($"VideoController: {obj.Name}, {((long)obj.AdapterRAM).ToFileSizeApi()}, {obj.VideoProcessor}\n");
-                    }
-                }
-                catch { }
+            //UWPToast.Builder()
+            //Debug.WriteLine(AppDomain.CurrentDomain.BaseDirectory);
+            //    try
+            //    {
+            //    Debug.WriteLine($"OS: {Environment.OSVersion} {(Environment.Is64BitOperatingSystem ? "x64" : "x86")} {Environment.UserName}\n");
+            //        foreach (dynamic obj in GetAllObjects("Win32_VideoController")) 
+            //        {
+            //            Debug.WriteLine($"VideoController: {obj.Name}, {((long)obj.AdapterRAM).ToFileSizeApi()}, {obj.VideoProcessor}\n");
+            //        }
+            //    }
+            //    catch { }
             //string test = "{\r\n  \"Clips\": [\r\n    {\r\n      \"data\": \"AccessViolationException\",\r\n      \"time\": \"20201103173108\"\r\n    }\r\n  ]\r\n}";
             //Debug.WriteLine(test.Contains(Quotes(nameof(User.Clips))));
             //var key = "d3s2mt7gAPNyqYDU0L1ySt6WSmN7ElkUbHWz+kp7YWfzDOQ3xsHRj9ldRyxE48iyyzjNvHBCHsn8TkWS1H0NHcmv+JKhD0yDc+S2KhTWF7vU5SCmn3huoEH458clRUUA".Decrypt();
