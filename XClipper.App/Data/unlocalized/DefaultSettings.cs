@@ -648,6 +648,31 @@ namespace Components
         }
 
         /// <summary>
+        /// This will be use to validate firebase settings to protect it from any external change
+        /// </summary>
+        public static void ValidateFirebaseSetting()
+        {
+            if (FirebaseCurrent == null) return;
+            bool write = false;
+            if (DatabaseMaxConnection > FirebaseMaxDevice)
+            {
+                DatabaseMaxConnection = FirebaseMaxDevice;
+                write |= true;
+            }
+            if (DatabaseMaxItem > FirebaseMaxItem)
+            {
+                DatabaseMaxItem = FirebaseMaxItem;
+                write |= true;
+            }
+            if (DatabaseMaxItemLength > FirebaseMaxItemLength)
+            {
+                DatabaseMaxItemLength = FirebaseMaxItemLength;
+                write |= true;
+            }
+            if (write) WriteFirebaseSetting();
+        }
+
+        /// <summary>
         /// This will load Firebase credentials that to be used by <see cref="FirebaseSingleton"/>
         /// </summary>
         public static void LoadFirebaseCredentials()

@@ -6,10 +6,6 @@ namespace Components
 {
     public static class Constants
     {
-        public static bool isFileExist()
-        {
-            return true;
-        }
 
         #region Directory Constants
 
@@ -74,12 +70,12 @@ namespace Components
 
         public const int FB_MAX_ITEM = 10;
         public const int FB_MAX_LENGTH = 1000;
-        public const int FB_MAX_CONNECTION = 2;
+        public const int FB_MAX_CONNECTION = 1;
         public const string FB_DEFAULT_PASS = "JfbY+e0iD/RMVJDOF5MWphCDGB45G/0kLtF4Vv+sbF7SL3VdbP3GyMgvPVz3e56e1pmrJct0LRMHH2Sz+hLASpqz/1YTvV3GF6e7pHBcuWVpuzkMDHEDJG3IXRj9VIFA";
 
         public const int SYNC_MIN_ITEM = 10;
         public const int SYNC_MIN_LENGTH = 1500;
-        public const int SYNC_MIN_CONNECTION = 2;
+        public const int SYNC_MIN_CONNECTION = 1;
 
         public const int SYNC_MAX_ITEM = 120;
         public const int SYNC_MAX_LENGTH = 10000;
@@ -104,7 +100,7 @@ namespace Components
 
         #region Help links
 
-        public const string MOBILE_APP = "https://github.com/KaustubhPatange/XClipper/XClipper.Android";
+        public const string MOBILE_APP = "https://github.com/KaustubhPatange/XClipper/tree/master/XClipper.Android";
 
         public const string DATA_SYNCHRONIZATION = "https://kaustubhpatange.github.io/XClipper/docs/#/sync";
         public const string MANUAL_ACTIVATION = "https://kaustubhpatange.github.io/XClipper/docs/#/activation";

@@ -118,6 +118,7 @@ namespace Components
             ClearAllStack();
 
             MainHelper.CreateCurrentQRData();
+            DefaultSettings.ValidateFirebaseSetting();
 
             if (FirebaseCurrent.IsAuthNeeded)
             {
@@ -606,8 +607,27 @@ namespace Components
             user.IsLicensed = IsPurchaseDone;
             user.LicenseStrategy = LicenseStrategy;
 
+            bool shouldPush = false;
             if (originallyLicensed != IsPurchaseDone || originalMaxItemStorage != DatabaseMaxItem || originalTotalConnection != DatabaseMaxConnection || originalLicenseStrategy != user.LicenseStrategy)
+                shouldPush |= true;
+            if (user.MaxItemStorage > FirebaseMaxItem)
+            {
+                user.MaxItemStorage = FirebaseMaxItem;
+                shouldPush |= true;
+            }
+            if (user.TotalConnection > FirebaseMaxDevice)
+            {
+                user.TotalConnection = FirebaseMaxDevice;
+                shouldPush |= true;
+            }
+
+            if (shouldPush)
+            {
+                DatabaseMaxItem = user.MaxItemStorage;
+                DatabaseMaxConnection = user.TotalConnection;
+                WriteFirebaseSetting();
                 await PushUser().ConfigureAwait(false);
+            }
         }
 
         /// <summary>
