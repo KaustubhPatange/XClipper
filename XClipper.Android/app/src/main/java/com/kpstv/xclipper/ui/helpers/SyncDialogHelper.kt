@@ -1,12 +1,11 @@
 package com.kpstv.xclipper.ui.helpers
 
-import android.net.Uri
-import androidx.browser.customtabs.CustomTabsIntent
 import androidx.fragment.app.FragmentActivity
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.extensions.getFormattedDate
+import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.ui.dialogs.CustomLottieDialog
 import com.kpstv.xclipper.ui.fragments.Home
 import java.util.*
@@ -46,8 +45,7 @@ class SyncDialogHelper(
             .setMessage(R.string.synchronize_text)
             .setNeutralButton(R.string.later)
             .setPositiveButton(R.string.learn_more) {
-                CustomTabsIntent.Builder().build()
-                    .launchUrl(this, Uri.parse(getString(R.string.app_docs_sync)))
+                Utils.commonUrlLaunch(this, getString(R.string.app_docs_sync))
             }
             .show()
     }

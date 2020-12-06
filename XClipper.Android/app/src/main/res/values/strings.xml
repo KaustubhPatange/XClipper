@@ -170,4 +170,6 @@
     <string name="synchronize">Synchronization</string>
     <string name="learn_more">Learn more</string>
     <string name="later">Later</string>
+    <string name="rate_title">Enjoying the app?</string>
+    <string name="rate_text">Kindly review the app on Google play which will help us reach more audience.</string>
 </resources>

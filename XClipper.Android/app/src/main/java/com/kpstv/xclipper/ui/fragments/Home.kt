@@ -76,8 +76,6 @@ class Home : Fragment(R.layout.fragment_home) {
 
         bindUI()
 
-        registerReviewHelper(view)
-
         checkForAccessibilityService()
 
         checkClipboardData()
@@ -425,23 +423,6 @@ class Home : Fragment(R.layout.fragment_home) {
                     openAccessibility(requireContext())
                 }.show()
         }
-    }
-
-    /**
-     * Register a review helper to automatically manage and show review dialog
-     */
-    private fun registerReviewHelper(view: View) {
-        ReviewHelper(
-            activity = requireActivity(),
-            preferenceProvider = preferenceProvider,
-            onNeedToShowReview = { helper ->
-                Snackbar.make(view, getString(R.string.review_text), Snackbar.LENGTH_LONG)
-                    .setAction(getString(R.string.review)) {
-                        helper.requestForReview()
-                    }
-                    .show()
-            }
-        ).register()
     }
 
     /**

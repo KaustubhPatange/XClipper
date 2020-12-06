@@ -12,6 +12,7 @@ import com.kpstv.xclipper.data.localized.ToolbarState
 import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.extensions.utils.ThemeUtils
+import com.kpstv.xclipper.ui.helpers.ReviewHelper
 import com.kpstv.xclipper.ui.helpers.SyncDialogHelper
 import com.kpstv.xclipper.ui.helpers.UpdateHelper
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
@@ -50,7 +51,18 @@ class Main : AppCompatActivity() {
         }
 
         UpdateHelper(this).register()
-        SyncDialogHelper(this, preferenceProvider, dbConnectionProvider).register()
+        SyncDialogHelper(
+            activity = this,
+            preferenceProvider = preferenceProvider,
+            dbConnectionProvider = dbConnectionProvider
+        ).register()
+        ReviewHelper(
+            activity = this,
+            preferenceProvider = preferenceProvider,
+            onNeedToShowReview = { helper: ReviewHelper ->
+                helper.showReviewDialog { helper.requestForReview() }
+            }
+        ).register()
     }
 
     /**

@@ -116,13 +116,4 @@
         <item name="android:colorBackgroundCacheHint">@null</item>
     </style>
 
-    <style name="WebScreenTheme" parent="Theme.MaterialComponents.NoActionBar">
-        <item name="colorPrimary">@color/palette6</item>
-        <item name="colorPrimaryDark">@color/palette6</item>
-        <item name="colorAccent">@color/palette6</item>
-        <item name="fontFamily">@font/google_sans_medium</item>
-        <item name="background">@color/colorBackground</item>
-        <item name="colorTextPrimary">@color/colorTextPrimary</item>
-    </style>
-
 </resources>

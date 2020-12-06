@@ -9,18 +9,19 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.kpstv.xclipper.BuildConfig
 import com.kpstv.xclipper.R
+import com.kpstv.xclipper.extensions.utils.Utils
 
 class AboutPreference : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.about_pref, rootKey)
 
         findPreference<Preference>("author_pref")?.setOnPreferenceClickListener {
-            commonIntentLaunch(getString(R.string.author_link))
+            Utils.commonUrlLaunch(requireContext(), getString(R.string.author_link))
             true
         }
 
         findPreference<Preference>("mail_pref")?.setOnPreferenceClickListener {
-            commonIntentLaunch("mailto:${getString(R.string.author_mail)}")
+            Utils.commonUrlLaunch(requireContext(), "mailto:${getString(R.string.author_mail)}")
             true
         }
 
@@ -31,22 +32,14 @@ class AboutPreference : PreferenceFragmentCompat() {
         findPreference<Preference>("website_pref")?.apply {
             summary = getString(R.string.app_website)
             setOnPreferenceClickListener {
-                commonIntentLaunch(getString(R.string.app_website))
+                Utils.commonUrlLaunch(requireContext(), getString(R.string.app_website))
                 true
             }
         }
 
         findPreference<Preference>("report_pref")?.setOnPreferenceClickListener {
-            commonIntentLaunch(getString(R.string.app_github_issues))
+            Utils.commonUrlLaunch(requireContext(), getString(R.string.app_github_issues))
             true
         }
-    }
-
-    private fun commonIntentLaunch(value: String) {
-        val intent = Intent(ACTION_VIEW).apply {
-            data = Uri.parse(value)
-            flags = FLAG_ACTIVITY_NEW_TASK
-        }
-        startActivity(intent)
     }
 }

@@ -326,5 +326,13 @@ class Utils {
             val str = String(buffer)
             return str == "SQLite format 3\u0000"
         }
+
+        fun commonUrlLaunch(context: Context, url: String) = with(context) {
+            val intent = Intent(Intent.ACTION_VIEW).apply {
+                data = Uri.parse(url)
+                flags = FLAG_ACTIVITY_NEW_TASK
+            }
+            startActivity(intent)
+        }
     }
 }

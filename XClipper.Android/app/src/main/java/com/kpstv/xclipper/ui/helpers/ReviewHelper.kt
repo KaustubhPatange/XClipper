@@ -3,7 +3,10 @@ package com.kpstv.xclipper.ui.helpers
 import androidx.fragment.app.FragmentActivity
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.kpstv.hvlog.HVLog
+import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.provider.PreferenceProvider
+import com.kpstv.xclipper.extensions.SimpleFunction
+import com.kpstv.xclipper.ui.dialogs.CustomLottieDialog
 import com.kpstv.xclipper.ui.fragments.Home
 import java.util.*
 
@@ -36,6 +39,22 @@ class ReviewHelper(
                 }
             }
         }
+    }
+
+    /**
+     * The class provides a default dialog that can be shown instead of custom one.
+     */
+    fun showReviewDialog(block: SimpleFunction) = with(activity) {
+        CustomLottieDialog(this)
+            .setLottieView(R.raw.star)
+            .setLoop(false)
+            .setTitle(R.string.rate_title)
+            .setMessage(R.string.rate_text)
+            .setNeutralButton(R.string.later)
+            .setPositiveButton(R.string.review) {
+                block.invoke()
+            }
+            .show()
     }
 
     private fun attach(): Unit = with(activity) {

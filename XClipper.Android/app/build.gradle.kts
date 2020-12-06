@@ -55,7 +55,6 @@ dependencies {
         implementation(project(moduleId))
     implementation(LibraryDependency.KOTLIN_STDLIB)
     implementation(LibraryDependency.APP_COMPAT)
-    implementation(LibraryDependency.BROWSER)
     implementation(LibraryDependency.ACTIVITY_KTX)
     implementation(LibraryDependency.FRAGMENT_KTX)
     implementation(LibraryDependency.CORE_KTX)
