@@ -25,10 +25,18 @@ jobs:
         with:
           filePath: ${{ github.workspace }}/protect.tar.gz
           encodedString: ${{ secrets.SLN_PROTECT }}
+      - name: Setting up dependencies
+        uses: RollyPeres/base64-to-path@v1
+        with:
+          filePath: ${{ github.workspace }}/app.tar.gz
+          encodedString: ${{ secrets.SLN_APP }}
       - name: Restoring dependencies & building project
         run: |
           tar -xvzf protect.tar.gz
+          tar -xvzf app.tar.gz
           tar -xvzf scripts\inno.tar.gz
+          del protect.tar.gz
+          del app.tar.gz
           nuget restore XClipper.sln
           msbuild XClipper.sln /t:Rebuild /p:WarningLevel=0 /p:Configuration=Release
       - name: Building Installer
