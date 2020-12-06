@@ -20,12 +20,83 @@ jobs:
         uses: nuget/setup-nuget@v1
       - name: Setting up msbuild
         uses: microsoft/setup-msbuild@v1.0.2
+      - name: Setting up dependencies
+        uses: RollyPeres/base64-to-path@v1
+        with:
+          filePath: ${{ github.workspace }}/protect.tar.gz
+          encodedString: ${{ secrets.SLN_PROTECT }}
       - name: Restoring dependencies & building project
-        shell: cmd
         run: |
-          tar -xvzf scripts\csproj.tar.gz
+          tar -xvzf protect.tar.gz
+          tar -xvzf scripts\inno.tar.gz
           nuget restore XClipper.sln
           msbuild XClipper.sln /t:Rebuild /p:WarningLevel=0 /p:Configuration=Release
+      - name: Building Installer
+        id: installer
+        run: |
+          copy XClipper.App\Locales\*.xaml XClipper.App\bin\Release\locales
+          del XClipper.App\bin\Release\*.xml
+          del XClipper.App\bin\Release\*.pdb
+          del XClipper.App\bin\Release\*.config
+          echo "::set-output name=production_version::$(${{ github.workspace }}\packager.exe -i exe)"
+          ${{ github.workspace }}\packager.exe -r
+          scripts\inno\iscc.exe scripts\installer.iss
+      - name: Setting output file
+        id: vars
+        shell: pwsh
+        run: |
+          echo "::set-output name=production::$(echo (Get-ChildItem -Path "scripts\out" | sort | Select-Object -First 1).Name | cut -c -25)"
+      - name: Creating portable tar.gz
+        run: |
+          cd XClipper.App\bin\Release && tar -cvzf "${{ github.workspace }}\scripts\out\${{ steps.vars.outputs.production }}.tar.gz" *
+
+      - name: Drafing a release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.installer.outputs.production_version }}
+          release_name: v${{ steps.installer.outputs.production_version }}
+          body_path: ${{ github.workspace }}\scripts\changes.txt
+          draft: true
+
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./scripts/out/${{ steps.vars.outputs.production }}.exe
+          asset_name: ${{ steps.vars.outputs.production }}.exe
+          asset_content_type: application/octet-stream
+
+      - name: Upload Release Asset
+        id: upload-release-asset2
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./scripts/out/${{ steps.vars.outputs.production }}.tar.gz
+          asset_name: XClipper-Portable-x64.tar.gz
+          asset_content_type: application/octet-stream
+
+  draft_remove:
+    runs-on: ubuntu-latest
+    steps:
+      # Remove old release drafts by using the curl request for the available releases with draft flag
+      - name: Remove Old Release Drafts
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl -H "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/repos/$GITHUB_REPOSITORY/releases \
+            | tr '\r\n' ' ' \
+            | jq '.[] | select(.draft == true) | .id' \
+            | xargs -I '{}' \
+          curl -X DELETE -H "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/repos/$GITHUB_REPOSITORY/releases/{}
+
   # Common action to notify on discord
   discord_notify:
     needs: [windows]

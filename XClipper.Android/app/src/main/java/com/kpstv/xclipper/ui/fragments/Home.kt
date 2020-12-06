@@ -38,6 +38,7 @@ import com.kpstv.xclipper.ui.adapters.CIAdapter
 import com.kpstv.xclipper.ui.dialogs.EditDialog
 import com.kpstv.xclipper.ui.dialogs.TagDialog
 import com.kpstv.xclipper.ui.helpers.ReviewHelper
+import com.kpstv.xclipper.ui.helpers.SyncDialogHelper
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
@@ -376,6 +377,7 @@ class Home : Fragment(R.layout.fragment_home) {
                     onError = {
                         val message = when (firebaseUtils.retrieveFirebaseStatus()) {
                             FirebaseState.NOT_INITIALIZED -> {
+                                SyncDialogHelper.showDialog(requireContext())
                                 getString(R.string.error_sync_uninitialized)
                             }
                             else -> {

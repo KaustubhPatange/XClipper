@@ -1,5 +1,6 @@
 package com.kpstv.xclipper.ui.helpers
 
+import android.content.Context
 import androidx.fragment.app.FragmentActivity
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.provider.DBConnectionProvider
@@ -32,22 +33,8 @@ class SyncDialogHelper(
         val newDate = Calendar.getInstance().time.getFormattedDate().toLong()
         if (newDate >= oldDate) {
             updateDate()
-            showDialog()
+            showDialog(activity)
         }
-    }
-
-    private fun showDialog() = with(activity) {
-        CustomLottieDialog(this)
-            .setLottieView(R.raw.connection)
-            .setLoop(false)
-            .setSpeed(3.5f)
-            .setTitle(R.string.synchronize)
-            .setMessage(R.string.synchronize_text)
-            .setNeutralButton(R.string.later)
-            .setPositiveButton(R.string.learn_more) {
-                Utils.commonUrlLaunch(this, getString(R.string.app_docs_sync))
-            }
-            .show()
     }
 
     private fun updateDate() {
@@ -60,5 +47,19 @@ class SyncDialogHelper(
     companion object {
         private const val SYNC_DO_NOT_SHOW = "sync_do_not_show"
         private const val SYNC_DATE_STRING = "sync_date_string"
+
+        fun showDialog(context: Context) = with(context) {
+            CustomLottieDialog(this)
+                .setLottieView(R.raw.connection)
+                .setLoop(false)
+                .setSpeed(3.5f)
+                .setTitle(R.string.synchronize)
+                .setMessage(R.string.synchronize_text)
+                .setNeutralButton(R.string.later)
+                .setPositiveButton(R.string.learn_more) {
+                    Utils.commonUrlLaunch(this, getString(R.string.app_docs_sync))
+                }
+                .show()
+        }
     }
 }
