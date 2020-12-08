@@ -41,6 +41,7 @@ interface FirebaseProvider {
     fun observeDataChange(
         changed: (Clip?) -> Unit,
         removed: (List<String>?) -> Unit,
+        removedAll: SimpleFunction,
         error: (Exception) -> Unit,
         deviceValidated: (Boolean) -> Unit,
         inconsistentData: SimpleFunction

@@ -221,14 +221,14 @@ namespace Components.viewModels
         /// </summary>
         /// <param name="unencryptedText">Unencrypted data coming from Firebae OnDataChange event</param>
         /// <param name="invokeOnInserted">Data will be an unencrypted clip data.</param>
-        public void CheckAndUpdateData(string? unencryptedText, Action<string, ContentType>? invokeOnInserted = null)
+        public bool CheckAndUpdateData(string? unencryptedText, Action<string, ContentType>? invokeOnInserted = null)
         {
-            if (unencryptedText == null) return;
+            if (unencryptedText == null) return false;
 
             if (Regex.IsMatch(unencryptedText, PATH_CLIP_IMAGE_DATA))
             {
                 UpdateDataForImage(unencryptedText, invokeOnInserted);
-                return;
+                return false;
             }
 
             bool dataExist = false;
@@ -239,42 +239,14 @@ namespace Components.viewModels
                 Debug.WriteLine("Inserted Data");
                 InsertTextClipNoUpdate(unencryptedText);
                 invokeOnInserted?.Invoke(unencryptedText, ContentType.Text); // Return the unencrypted text
+                return true;
             }
+            return false;
         }
 
         #endregion
 
         #region UpdateData
-
-        [Obsolete("Could be redundant if V2 is finalized")]
-        /// <summary>
-        /// This will compare the given text data with the local database table items.
-        /// If not exist such item, it will insert the data.
-        /// </summary>
-        /// <param name="EncryptedText">Encrypted Text Data coming straight away from online database.</param>
-        /// <param name="invokeOnInserted">Data will be an unencrypted clip data.</param>
-        public void CheckDataAndUpdate(string? EncryptedText, Action<string, ContentType>? invokeOnInserted = null)
-        {
-            if (EncryptedText == null) return;
-
-            var decryptedText = EncryptedText.DecryptBase64(DatabaseEncryptPassword);
-
-            if (Regex.IsMatch(decryptedText, PATH_CLIP_IMAGE_DATA))
-            {
-                UpdateDataForImage(decryptedText, invokeOnInserted);
-                return;
-            }
-
-            bool dataExist = false;
-            dataExist = dataDB.GetAllData().Exists(c => c.RawText == decryptedText);
-            if (!dataExist)
-            {
-                // Insert this data without updating online database.
-                Debug.WriteLine("Inserted Data");
-                InsertTextClipNoUpdate(decryptedText);
-                invokeOnInserted?.Invoke(decryptedText, ContentType.Image); // Return the unencrypted text
-            }
-        }
 
         /// <summary>
         /// This will add Image related queries to the local database coming from server.<br/><br/>

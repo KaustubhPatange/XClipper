@@ -13,5 +13,11 @@ namespace Components
         public static bool ToBool(this string s) => Convert.ToBoolean(s);
 
         #endregion
+
+        #region Boolean
+
+        public static int ToInt(this bool t) => Convert.ToInt32(t);
+
+        #endregion
     }
 }

@@ -13,7 +13,7 @@ class CipDeserializer: JsonDeserializer<Clip> {
         json: JsonElement?,
         typeOfT: Type?,
         context: JsonDeserializationContext?
-    ): Clip {
+    ): Clip? {
         return Clip.parse(json!!)
     }
 }

@@ -5,8 +5,13 @@ namespace Components
     public class Device
     {
         public string id { get; set; }
-        public int sdk { get; set; }
+        public int sdk { get; set; } = 0;
         public string model { get; set; }
+
+        public bool IsValid()
+        {
+            return (id != null && model != null);
+        }
 
         public static XElement ToNode(Device t)
         {

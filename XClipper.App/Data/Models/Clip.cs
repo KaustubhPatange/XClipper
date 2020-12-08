@@ -1,4 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Xml.Linq;
 
 namespace Components
@@ -7,6 +8,11 @@ namespace Components
     {
         public string data { get; set; }
         public string time { get; set; }
+
+        public bool IsValid()
+        {
+            return (data != null && time != null);
+        }
 
         public static XElement ToNode(Clip t)
         {

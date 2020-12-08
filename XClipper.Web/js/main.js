@@ -61,7 +61,7 @@ function openGithub() {
 }
 
 function openDocs() {
-  window.open("/docs");
+  window.open(window.location.href + "docs");
 }
 
 function showContactForm() {

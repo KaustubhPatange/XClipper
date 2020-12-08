@@ -12,6 +12,7 @@ import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.extensions.decrypt
 import com.kpstv.xclipper.extensions.enumerations.FirebaseState
+import com.kpstv.xclipper.ui.helpers.NotificationHelper
 import dagger.hilt.android.qualifiers.ApplicationContext
 import es.dmoral.toasty.Toasty
 import javax.inject.Inject
@@ -23,7 +24,8 @@ class FirebaseUtils @Inject constructor(
     private val repository: MainRepository,
     private val firebaseProvider: FirebaseProvider,
     private val preferenceProvider: PreferenceProvider,
-    private val dbConnectionProvider: DBConnectionProvider
+    private val dbConnectionProvider: DBConnectionProvider,
+    private val notificationHelper: NotificationHelper
 ) {
     private val TAG = FirebaseUtils::class.simpleName
 
@@ -42,6 +44,12 @@ class FirebaseUtils @Inject constructor(
                 },
                 removed = { items -> // Unencrypted listOf data
                     items?.forEach { repository.deleteClip(it) }
+                },
+                removedAll = {
+                    notificationHelper.sendNotification(
+                        title = getString(R.string.app_name),
+                        message = getString(R.string.data_removed_all)
+                    )
                 },
                 error = {
                     HVLog.d()

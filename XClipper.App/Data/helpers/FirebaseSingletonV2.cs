@@ -375,12 +375,13 @@ namespace Components
             // Set user for first time..
             if (user == null) user = await FetchUser().ConfigureAwait(false);
             if (user == null) await RegisterUser().ConfigureAwait(false); else await SetCommonUserInfo(user).ConfigureAwait(false);
-
+            // TODO: Show notification about purchasing license.
             // Apply an auto-fixes if needed
             await FixInconsistentData().ConfigureAwait(false);
             await FixEncryptedDatabase().ConfigureAwait(false);
 
             if (user != null) fparser.SetUser(user);
+            if (user?.Clips != null) binder?.OnClipItemAdded(user.Clips.Select(c => c.data).ToList());
             
             Log();
             try
@@ -398,7 +399,7 @@ namespace Components
                         firebaseUser = fparser.Parse(a.Event, a.Path, a.Data);
                         //firebaseUser = JsonConvert.DeserializeObject<User>(a.Data);
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
                         firebaseUser = null;
                     }
@@ -521,8 +522,8 @@ namespace Components
         {
             if (user != null)
             {
-                user.Clips = user.Clips?.Where(c => c != null).ToList();
-                user.Devices = user.Devices?.Where(c => c != null).ToList();
+                user.Clips = user.Clips?.Where(c => c != null && c.IsValid()).ToList();
+                user.Devices = user.Devices?.Where(c => c != null && c.IsValid()).ToList();
                 await PushUser().ConfigureAwait(false);
             }
             else
@@ -903,8 +904,7 @@ namespace Components
                     await new FirebaseStorage(FirebaseCurrent.Storage)
                         .Child("XClipper")
                         .Child("images")
-                        .DeleteAsync().ConfigureAwait(false);
-                    
+                        .DeleteAsync().ConfigureAwait(false);  
                 }
             }
         }

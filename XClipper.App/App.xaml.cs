@@ -120,8 +120,8 @@ namespace Components
 
             licenseService.Initiate(err =>
             {
-                if (err is InvalidLicenseException) return;
-                if (err != null)
+               // if (err is InvalidLicenseException) return;
+                if (err != null && err is not InvalidLicenseException)
                 {
                     MsgBoxHelper.ShowError(err.Message);
                     return;
@@ -448,14 +448,14 @@ namespace Components
         public void OnDataChanged(ValueChangedEventArgs e)
         {
             // 1st value from real-time database is your last value in XClipper app.
-            Debug.WriteLine("[Changed] Path: " + e.Path + ", Data: " + e.Data + ", OldData: " + e.OldData);
-            if (e.Path.Contains(PATH_CLIP_DATA))
-            {
-                AppSingleton.GetInstance.CheckDataAndUpdate(e.Data, (data, type) =>
-                {
-                    ParseUpdateResult(data, type);
-                });
-            }
+            //Debug.WriteLine("[Changed] Path: " + e.Path + ", Data: " + e.Data + ", OldData: " + e.OldData);
+            //if (e.Path.Contains(PATH_CLIP_DATA))
+            //{
+            //    AppSingleton.GetInstance.CheckDataAndUpdate(e.Data, (data, type) =>
+            //    {
+            //        ParseUpdateResult(data, type);
+            //    });
+            //}
         }
 
         public void OnDataRemoved(ValueRemovedEventArgs e)
@@ -489,9 +489,13 @@ namespace Components
             Debug.WriteLine($"[V2 Added]: {unencryptedDataList}");
             if (unencryptedDataList.Count > 1)
             {
+                int count = 0;
                 foreach (string item in unencryptedDataList)
-                    AppSingleton.GetInstance.CheckAndUpdateData(item);
-                SendNotification(Translation.APP_NAME, $"{unencryptedDataList.Count} {Translation.MSG_CLIPS_ADDED_TEXT}");
+                    count += AppSingleton.GetInstance.CheckAndUpdateData(item).ToInt();
+                if (count > 0)
+                {
+                    SendNotification(Translation.APP_NAME, $"{count} {Translation.MSG_CLIPS_ADDED_TEXT}");
+                }
             }
             else
             {
@@ -614,13 +618,13 @@ namespace Components
         {
             CheckForUpdates();
             UpdateSettingItem.Visible = true;
-            FirebaseSingletonV2.GetInstance.UpdateConfigurations();
-            if (IsPurchaseDone) UpdateSettingItem.Visible = true;
+            if (IsPurchaseDone)
+                FirebaseSingletonV2.GetInstance.UpdateConfigurations();
         }
 
         private void CheckForUpdates()
         {
-            if (!IsPurchaseDone || !CheckApplicationUpdates) return;
+            if (!CheckApplicationUpdates) return;
             var updater = AppModule.Container.Resolve<IUpdater>();
             updater.Check((isAvailable, model) =>
             {

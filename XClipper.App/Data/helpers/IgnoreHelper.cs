@@ -125,9 +125,9 @@ namespace Components
 
 # For optimization purpose keep total expressions less than 50;
 
-# Examples (Uncomment the expression to see in actions)
+# Examples (Uncomment the expression to see them in action)
 
-# Eg: Any text exceeding than 100 chars are not allowed
+# Eg: Any text exceeding 100 chars are not allowed
 # /^[\s\S]{100,}$/gm
 
 # Eg: Single word/letters are not allowed

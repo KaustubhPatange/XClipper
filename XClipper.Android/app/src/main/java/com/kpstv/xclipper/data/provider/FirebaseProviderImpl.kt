@@ -21,9 +21,7 @@ import com.kpstv.xclipper.App.getMaxConnection
 import com.kpstv.xclipper.App.getMaxStorage
 import com.kpstv.xclipper.App.gson
 import com.kpstv.xclipper.data.localized.FBOptions
-import com.kpstv.xclipper.data.model.Clip
-import com.kpstv.xclipper.data.model.Device
-import com.kpstv.xclipper.data.model.User
+import com.kpstv.xclipper.data.model.*
 import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.extensions.listeners.FChildEventListener
 import com.kpstv.xclipper.extensions.listeners.FValueEventListener
@@ -346,7 +344,7 @@ class FirebaseProviderImpl @Inject constructor(
                 .addListenerForSingleValueEvent(FValueEventListener(
                     onDataChange = { snap ->
                         val json = gson.toJson(snap.value)
-                        gson.fromJson(json, User::class.java).also { user = it }
+                        user = User.from(json)
                         if (!validateUser()) {
                             block.invoke(false)
                             return@FValueEventListener
@@ -375,6 +373,7 @@ class FirebaseProviderImpl @Inject constructor(
     override fun observeDataChange(
         changed: (Clip?) -> Unit,
         removed: (List<String>?) -> Unit,
+        removedAll: SimpleFunction,
         error: (Exception) -> Unit,
         deviceValidated: (Boolean) -> Unit,
         inconsistentData: SimpleFunction
@@ -401,7 +400,7 @@ class FirebaseProviderImpl @Inject constructor(
             onDataChange = { snap ->
                 HVLog.d("OnDataChanging")
                 val json = gson.toJson(snap.value)
-                val firebaseUser = gson.fromJson(json, User::class.java)
+                val firebaseUser = User.from(json)
 
                 /** Update the properties */
                 checkForUserDetailsAndUpdateLocal()
@@ -420,13 +419,12 @@ class FirebaseProviderImpl @Inject constructor(
                     error.invoke(Exception("Database is null"))
 
                 if (bindDelete) {
-                    if (!user?.Clips.isNullOrEmpty()) {
-                        val userClips = user?.Clips?.decrypt()?.map { it.data!! }
-                        val firebaseClips = firebaseUser?.Clips?.decrypt()?.map { it.data!! }
-                        if (userClips != null && firebaseClips != null) {
-                            userClips.minus(firebaseClips)
-                                .let { if (it.isNotEmpty()) mainThread { removed.invoke(it) } }
-                        }
+                    val userClips = user?.Clips?.decrypt()?.map { it.data ?: "" } ?: emptyList()
+                    val firebaseClips = firebaseUser?.Clips?.decrypt()?.map { it.data ?: "" } ?: emptyList()
+                    userClips.minus(firebaseClips).let { if (it.isNotEmpty()) mainThread { removed.invoke(it) } }
+
+                    if (firebaseClips.isEmpty() && userClips.isNotEmpty()) {
+                        removedAll.invoke()
                     }
                 }
 
@@ -445,14 +443,14 @@ class FirebaseProviderImpl @Inject constructor(
             /**
              * Do not try to think & add [FChildEventListener.onDataRemoved] listener hoping
              * that it would solve linear deletion problem. Spoiler alert it doesn't but it
-             * makes things even worse.
+             * makes it even worse.
              *
              * Like if you delete an item in the middle of the list, it will shrink by calling
              * [FChildEventListener.onDataRemoved] every time a child is changed. Better to keep
              * the logic to [FValueEventListener.onDataChange] itself.
              */
             onDataAdded = { snap ->
-                if (validDevice) {
+                if (validDevice && bindToFirebase) {
                     val json = gson.toJson(snap.value)
                     val clip = gson.fromJson(json, Clip::class.java)
 

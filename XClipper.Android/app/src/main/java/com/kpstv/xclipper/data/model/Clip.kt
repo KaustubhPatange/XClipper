@@ -29,9 +29,10 @@ data class Clip(
         /**
          * Generates Clip data along with the properties "data", "time"
          */
-        fun parse(json: String): Clip = with(JSONObject(json)) {
+        fun parse(json: String): Clip? = with(JSONObject(json)) {
+            if (!has("data")) return null
             Clip(
-                data = this["data"].toString(),
+                data = if (has("data")) this["data"].toString() else "[UNKNOWN_ERROR]" ,
                 time = DateConverter.toDateFromString(this["time"].toString())
             )
         }
@@ -68,7 +69,7 @@ data class Clip(
         /**
          * Generates Clip data along with the properties "data", "time"
          */
-        fun parse(json: JsonElement): Clip = parse(json.toString())
+        fun parse(json: JsonElement): Clip? = parse(json.toString())
 
         /**
          * A function which generates "timeString" property from "time"

@@ -28,7 +28,6 @@ class NotificationHelper @Inject constructor(
 ) {
     companion object {
         const val CHANNEL_ID = "my_channel_01"
-        const val NOTIFICATION_ID = 23
         private const val ACCESSIBILITY_NOTIFICATION_ID = 34
     }
 
@@ -44,6 +43,28 @@ class NotificationHelper @Inject constructor(
                 NotificationManager.IMPORTANCE_HIGH
             ))
         }
+    }
+
+    fun sendNotification(title: String, message: String): Unit = with(context) {
+        val openIntent = PendingIntent.getBroadcast(
+            context,
+            0,
+            Intent(context, AppBroadcastReceiver::class.java).apply { action = ACTION_OPEN_APP },
+            0
+        )
+
+        val notification = NotificationCompat.Builder(this, CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_clip)
+            .setContentTitle(title)
+            .setContentText(message)
+            .setAutoCancel(true)
+            .setContentIntent(openIntent)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
+            .build()
+
+        if (!::manager.isInitialized) createChannel()
+        manager.notify(getRandomNumberCode(), notification)
     }
 
     fun pushNotification(text: String): Unit = with(context) {
@@ -86,7 +107,7 @@ class NotificationHelper @Inject constructor(
             ).build()
 
         if (!::manager.isInitialized) createChannel()
-        manager.notify(NOTIFICATION_ID, notification)
+        manager.notify(getRandomNumberCode(), notification)
     }
 
     fun sendAccessibilityDisabledNotification(context: Context): Unit = with(context) {
