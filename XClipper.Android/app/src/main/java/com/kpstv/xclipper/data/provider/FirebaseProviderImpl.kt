@@ -230,7 +230,7 @@ class FirebaseProviderImpl @Inject constructor(
             saveData(unencryptedNewClip)
         } else {
             val list =
-                ArrayList(user?.Clips?.filter { it.data?.Decrypt() != unencryptedOldClip.data }
+                ArrayList(user?.Clips?.filter { it.data.Decrypt() != unencryptedOldClip.data }
                     ?: listOf())
 
             list.add(unencryptedNewClip.encrypt())
@@ -252,7 +252,7 @@ class FirebaseProviderImpl @Inject constructor(
         val dataList = unencryptedClips.map { it.data }
 
         list.removeAll {
-            it.data?.Decrypt() in dataList
+            it.data.Decrypt() in dataList
         }
 
         pushDataToFirebase(list)
@@ -266,7 +266,7 @@ class FirebaseProviderImpl @Inject constructor(
         val list: ArrayList<Clip> = if (user?.Clips == null)
             ArrayList()
         else
-            ArrayList(user?.Clips?.filter { it.data?.Decrypt() != unencryptedClip.data }
+            ArrayList(user?.Clips?.filter { it.data.Decrypt() != unencryptedClip.data }
                 ?: listOf())
         val size = APP_MAX_ITEM
 
@@ -406,7 +406,7 @@ class FirebaseProviderImpl @Inject constructor(
                 checkForUserDetailsAndUpdateLocal()
 
                 /** Check for device validation */
-                validDevice = (firebaseUser?.Devices ?: mutableListOf()).count {
+                validDevice = (firebaseUser.Devices ?: mutableListOf()).count {
                     it.id == DeviceID
                 } > 0
 
@@ -419,8 +419,8 @@ class FirebaseProviderImpl @Inject constructor(
                     error.invoke(Exception("Database is null"))
 
                 if (bindDelete) {
-                    val userClips = user?.Clips?.decrypt()?.map { it.data ?: "" } ?: emptyList()
-                    val firebaseClips = firebaseUser?.Clips?.decrypt()?.map { it.data ?: "" } ?: emptyList()
+                    val userClips = user?.Clips?.decrypt()?.map { it.data } ?: emptyList()
+                    val firebaseClips = firebaseUser.Clips?.decrypt()?.map { it.data } ?: emptyList()
                     userClips.minus(firebaseClips).let { if (it.isNotEmpty()) mainThread { removed.invoke(it) } }
 
                     if (firebaseClips.isEmpty() && userClips.isNotEmpty()) {
@@ -482,6 +482,7 @@ class FirebaseProviderImpl @Inject constructor(
         user?.LicenseStrategy?.let { licenseStrategy.postValue(it) }
     }
 
+    @Suppress("SENSELESS_COMPARISON")
     private fun validateUser(): Boolean {
         for (clip in user?.Clips ?: listOf()) {
             // This will be valid if user suppose manually remove a random node

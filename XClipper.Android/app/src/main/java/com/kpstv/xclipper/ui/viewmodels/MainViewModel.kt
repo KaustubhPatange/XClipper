@@ -36,13 +36,13 @@ import kotlin.collections.ArrayList
 
 class MainViewModel @ViewModelInject constructor(
     application: Application,
+    firebaseUtils: FirebaseUtils,
     private val mainRepository: MainRepository,
     private val tagRepository: TagDao,
     private val preferenceProvider: PreferenceProvider,
     private val firebaseProvider: FirebaseProvider,
     private val clipboardProvider: ClipboardProvider,
     private val dbConnectionProvider: DBConnectionProvider,
-    private val firebaseUtils: FirebaseUtils,
     val dictionaryApiHelper: DictionaryApiHelper,
     val tinyUrlApiHelper: TinyUrlApiHelper,
     val editManager: MainEditManager,
@@ -247,9 +247,7 @@ class MainViewModel @ViewModelInject constructor(
 
             mainList.forEach { clip ->
                 searchFilter?.forEach inner@{ filter ->
-                    if (!clip.data?.toLowerCase(Locale.getDefault())
-                            ?.contains(filter)!!
-                    ) {
+                    if (!clip.data.toLowerCase(Locale.getDefault()).contains(filter)) {
                         list.remove(clip)
                         return@inner
                     }
@@ -265,8 +263,7 @@ class MainViewModel @ViewModelInject constructor(
             if (!searchText.isNullOrBlank()) {
                 mediatorLiveData.postValue(
                     list.filter { clip ->
-                        clip.data?.toLowerCase(Locale.getDefault())?.contains(searchText)
-                            ?: false
+                        clip.data.toLowerCase(Locale.getDefault()).contains(searchText)
                     }
                 )
 

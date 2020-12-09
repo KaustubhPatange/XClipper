@@ -7,13 +7,11 @@ import androidx.paging.toLiveData
 import com.kpstv.xclipper.App.LOCAL_MAX_ITEM_STORAGE
 import com.kpstv.xclipper.App.MAX_CHARACTER_TO_STORE
 import com.kpstv.xclipper.data.localized.dao.ClipDataDao
-import com.kpstv.xclipper.data.localized.dao.TagDao
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.extensions.Coroutines
 import com.kpstv.xclipper.extensions.clone
 import com.kpstv.xclipper.extensions.enumerations.FilterType
-import com.kpstv.xclipper.extensions.ioThread
 import com.kpstv.xclipper.extensions.listeners.RepositoryListener
 import com.kpstv.xclipper.extensions.listeners.StatusListener
 import com.kpstv.xclipper.extensions.mainThread
@@ -46,7 +44,7 @@ class MainRepositoryImpl @Inject constructor(
         clipDao.getDataSource().toLiveData(10)
 
     override fun saveClip(clip: Clip?) {
-        if (clip == null) return;
+        if (clip == null) return
         Coroutines.io {
             /**
              *  Synchronization is needed since, sometimes accessibility services automatically
@@ -69,7 +67,7 @@ class MainRepositoryImpl @Inject constructor(
                 clipDao.insert(clip)
 
                 /** Send a notification */
-                mainThread { notificationHelper.pushNotification(clip.data!!) }
+                mainThread { notificationHelper.pushNotification(clip.data) }
 
                 Log.e(TAG, "Data Saved: ${clip.data}")
             }

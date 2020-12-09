@@ -3,7 +3,6 @@ package com.kpstv.xclipper.data.provider
 import androidx.lifecycle.LiveData
 import com.kpstv.xclipper.data.localized.FBOptions
 import com.kpstv.xclipper.data.model.Clip
-import com.kpstv.xclipper.data.model.User
 import com.kpstv.xclipper.extensions.LicenseType
 import com.kpstv.xclipper.extensions.SimpleFunction
 import com.kpstv.xclipper.extensions.listeners.ResponseListener

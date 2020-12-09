@@ -1,13 +1,8 @@
 package com.kpstv.xclipper
 
-import android.util.Log
-import com.kpstv.xclipper.data.converters.TagConverter
-import com.kpstv.xclipper.data.model.ClipTag
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 /**
  * Example local unit test, which will execute on the development machine (host).

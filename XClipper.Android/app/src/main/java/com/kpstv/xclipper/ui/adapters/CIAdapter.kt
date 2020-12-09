@@ -1,6 +1,5 @@
 package com.kpstv.xclipper.ui.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -105,7 +104,7 @@ class CIAdapter(
             )
         }
 
-        currentClip.observe(lifecycleOwner, Observer {
+        currentClip.observe(lifecycleOwner, {
             if (holder.itemView.ci_textView.text == it)
                 holder.itemView.ci_textView.setTextColor(
                     getColorFromAttr(holder.itemView.context, R.attr.colorCurrentClip)
@@ -234,11 +233,11 @@ class CIAdapter(
     }
 
     fun setCopyClick(block: (Clip, Int) -> Unit) {
-        this.copyClick = block;
+        this.copyClick = block
     }
 
     fun setMenuItemClick(block: (Clip, Int, MENU_TYPE) -> Unit) {
-        this.menuClick = block;
+        this.menuClick = block
     }
 
     fun getItemAt(pos: Int): Clip =

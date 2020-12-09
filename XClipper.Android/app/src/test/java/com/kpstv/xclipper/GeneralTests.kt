@@ -1,6 +1,5 @@
 package com.kpstv.xclipper
 
-import android.text.Html
 import org.junit.Test
 import kotlin.system.measureTimeMillis
 

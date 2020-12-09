@@ -1,15 +1,12 @@
 package com.kpstv.xclipper.extensions
 
-import android.content.Context
 import android.util.Log
-import android.view.LayoutInflater
 import com.ferfalk.simplesearchview.SimpleSearchView
 import com.google.firebase.database.DataSnapshot
 import com.google.gson.annotations.SerializedName
 import com.kpstv.xclipper.App.STANDARD_DATE_FORMAT
 import com.kpstv.xclipper.BuildConfig
 import kotlinx.coroutines.*
-import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 

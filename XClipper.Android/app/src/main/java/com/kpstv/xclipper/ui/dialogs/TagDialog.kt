@@ -1,6 +1,5 @@
 package com.kpstv.xclipper.ui.dialogs
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -9,7 +8,6 @@ import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
-import androidx.lifecycle.Observer
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
@@ -92,12 +90,12 @@ class TagDialog : AppCompatActivity() {
     }
 
     private fun bindUI() {
-        mainViewModel.tagLiveData.observe(this, Observer {
+        mainViewModel.tagLiveData.observe(this, {
             if (it.isEmpty()) mainViewModel.stateManager.setDialogState(DialogState.Edit)
             adapter.submitList(it)
         })
 
-        mainViewModel.stateManager.dialogState.observe(this, Observer { state ->
+        mainViewModel.stateManager.dialogState.observe(this, { state ->
             when (state) {
                 DialogState.Normal -> {
                     dct_editLayout.dct_editText.text.clear()

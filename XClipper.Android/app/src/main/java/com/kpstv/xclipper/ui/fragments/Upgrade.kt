@@ -9,7 +9,6 @@ import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.provider.FirebaseProvider
@@ -21,7 +20,6 @@ import com.kpstv.xclipper.extensions.viewBinding
 import com.kpstv.xclipper.ui.viewmodels.UpgradeModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
-import kotlinx.android.synthetic.main.fragment_upgrade.*
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 

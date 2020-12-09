@@ -8,7 +8,6 @@ import androidx.navigation.fragment.findNavController
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.provider.PreferenceProvider
-import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.extensions.utils.WelcomeUtils.Companion.setUpFragment
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject

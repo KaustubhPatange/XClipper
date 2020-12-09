@@ -1,14 +1,12 @@
 package com.kpstv.xclipper.service.worker
 
 import android.content.Context
-import android.util.Log
 import androidx.hilt.Assisted
 import androidx.hilt.work.WorkerInject
 import androidx.work.*
 import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.ui.helpers.NotificationHelper
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
 class AccessibilityWorker @WorkerInject constructor(
     @Assisted private val appContext: Context,

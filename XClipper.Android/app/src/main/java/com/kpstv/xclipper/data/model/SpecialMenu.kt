@@ -1,9 +1,7 @@
 package com.kpstv.xclipper.data.model
 
-import androidx.annotation.AttrRes
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
-import com.kpstv.xclipper.R
 import com.kpstv.xclipper.extensions.SimpleFunction
 
 data class SpecialMenu (

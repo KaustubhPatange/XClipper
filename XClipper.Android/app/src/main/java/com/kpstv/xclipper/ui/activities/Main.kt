@@ -73,7 +73,7 @@ class Main : AppCompatActivity() {
         if (DARK_THEME != isDarkTheme) {
             val previousIntent = intent
             finish()
-            startActivity(previousIntent);
+            startActivity(previousIntent)
         }
     }
 

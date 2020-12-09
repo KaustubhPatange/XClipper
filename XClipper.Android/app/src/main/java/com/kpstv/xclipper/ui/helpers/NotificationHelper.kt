@@ -10,7 +10,6 @@ import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.kpstv.xclipper.App.ACTION_OPEN_APP
 import com.kpstv.xclipper.App.ACTION_SMART_OPTIONS

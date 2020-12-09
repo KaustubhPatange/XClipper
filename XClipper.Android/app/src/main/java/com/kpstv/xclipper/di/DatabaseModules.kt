@@ -16,13 +16,12 @@ import com.kpstv.xclipper.ui.helpers.NotificationHelper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.components.SingletonComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
 import javax.inject.Singleton
 
 @Module
-@InstallIn(ApplicationComponent::class)
+@InstallIn(SingletonComponent::class)
 object DatabaseModules {
 
     @Singleton
@@ -37,8 +36,7 @@ object DatabaseModules {
             App.DATABASE_NAME
         )
             .setJournalMode(RoomDatabase.JournalMode.TRUNCATE)
-            .fallbackToDestructiveMigration()
-            .fallbackToDestructiveMigrationOnDowngrade()
+            .fallbackToDestructiveMigrationFrom(1) // provide db version to destruct it
             .addCallback(callback)
             .build()
 
@@ -60,7 +58,7 @@ object DatabaseModules {
 }
 
 @Module
-@InstallIn(ApplicationComponent::class)
+@InstallIn(SingletonComponent::class)
 object RepositoryModule {
 
     @Singleton

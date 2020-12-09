@@ -1,12 +1,11 @@
 package com.kpstv.xclipper.ui.adapters
 
-import android.util.Log
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -15,9 +14,7 @@ import com.kpstv.xclipper.data.localized.DialogState
 import com.kpstv.xclipper.data.model.ClipTag
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.data.model.TagMap
-import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import kotlinx.android.synthetic.main.item_tag_chip.view.*
-import kotlin.collections.ArrayList
 
 class TagAdapter(
     private val lifecycleOwner: LifecycleOwner,
@@ -51,6 +48,7 @@ class TagAdapter(
         return position
     }
 
+    @SuppressLint("SetTextI18n")
     private fun TagHolder.bind(tag: Tag) = with(itemView) {
         chip.text = tag.name
 
@@ -65,7 +63,7 @@ class TagAdapter(
         tagMapData.observe(lifecycleOwner) { list ->
             val find = list.find { it.name == tag.name }
             if (find?.count != null)
-                chip.text = "${tag.name} (${find?.count})"
+                chip.text = "${tag.name} (${find.count})"
         }
 
         tagFilter.observe(lifecycleOwner) { list ->

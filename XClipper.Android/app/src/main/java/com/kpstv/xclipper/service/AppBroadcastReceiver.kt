@@ -1,7 +1,6 @@
 package com.kpstv.xclipper.service
 
 import android.app.NotificationManager
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.*

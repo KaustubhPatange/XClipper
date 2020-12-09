@@ -37,7 +37,6 @@ import com.kpstv.xclipper.ui.activities.Settings
 import com.kpstv.xclipper.ui.adapters.CIAdapter
 import com.kpstv.xclipper.ui.dialogs.EditDialog
 import com.kpstv.xclipper.ui.dialogs.TagDialog
-import com.kpstv.xclipper.ui.helpers.ReviewHelper
 import com.kpstv.xclipper.ui.helpers.SyncDialogHelper
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint

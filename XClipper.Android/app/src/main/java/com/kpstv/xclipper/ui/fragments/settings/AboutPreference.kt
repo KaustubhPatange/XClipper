@@ -1,9 +1,5 @@
 package com.kpstv.xclipper.ui.fragments.settings
 
-import android.content.Intent
-import android.content.Intent.ACTION_VIEW
-import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
-import android.net.Uri
 import android.os.Bundle
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat

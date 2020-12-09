@@ -1,6 +1,5 @@
 package com.kpstv.xclipper.ui.viewmodels.managers
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.kpstv.xclipper.data.localized.DialogState
@@ -23,7 +22,7 @@ class MainStateManager @Inject constructor() {
     private val _selectedItemClips = MutableLiveData<ArrayList<Clip>>()
     private val _isMultiSelectionEnabled = MutableLiveData<Boolean>()
 
-    private val _selectedItem = MutableLiveData<Clip>();
+    private val _selectedItem = MutableLiveData<Clip>()
 
     val selectedItemClips: LiveData<ArrayList<Clip>>
         get() = _selectedItemClips

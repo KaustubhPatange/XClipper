@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.App.STAGGERED_SPAN_COUNT
@@ -144,11 +142,11 @@ class EditDialog : AppCompatActivity() {
     }
 
     private fun bindUI() {
-        mainViewModel.editManager.spanCount.observe(this, Observer {
+        mainViewModel.editManager.spanCount.observe(this, {
             refreshRecyclerView(it)
         })
 
-        mainViewModel.editManager.tagFixedLiveData.observe(this, Observer {
+        mainViewModel.editManager.tagFixedLiveData.observe(this, {
             if (it.size > 3)
                 mainViewModel.editManager.postSpanCount(STAGGERED_SPAN_COUNT)
             else

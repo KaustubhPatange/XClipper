@@ -8,7 +8,7 @@ import com.kpstv.xclipper.data.model.ClipTag
 import java.util.*
 import kotlin.collections.ArrayList
 
-fun Clip.clone(data: String?): Clip {
+fun Clip.clone(data: String): Clip {
     return copy(data = data)
 }
 
@@ -51,7 +51,7 @@ fun List<Clip>.cloneForAdapter(): List<Clip> {
 fun List<Clip>.decrypt(): List<Clip> {
     val list = ArrayList<Clip>()
     this.forEach {
-        list.add(it.copy(data = it.data?.Decrypt()))
+        list.add(it.copy(data = it.data.Decrypt()))
     }
     return list
 }
@@ -63,7 +63,7 @@ fun List<Clip>.decrypt(): List<Clip> {
  * Caution: Must be used for firebase data only.
  */
 fun Clip.decrypt(): Clip {
-    return copy(data = data?.Decrypt())
+    return copy(data = data.Decrypt())
 }
 
 /**
@@ -73,7 +73,7 @@ fun Clip.decrypt(): Clip {
  * Caution: Must be used for firebase data only.
  */
 fun Clip.encrypt(): Clip {
-    return copy(data = data?.Encrypt())
+    return copy(data = data.Encrypt())
 }
 
 /** Converts name to lowercase name */

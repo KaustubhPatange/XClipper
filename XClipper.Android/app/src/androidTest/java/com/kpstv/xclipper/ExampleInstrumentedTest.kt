@@ -1,13 +1,8 @@
 package com.kpstv.xclipper
 
-import android.content.Intent
-import android.content.pm.ResolveInfo
 import android.os.Build
-import android.util.Log
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.kpstv.xclipper.data.model.AppPkg
-import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 

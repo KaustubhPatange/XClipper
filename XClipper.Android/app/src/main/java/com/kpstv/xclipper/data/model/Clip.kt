@@ -3,12 +3,10 @@ package com.kpstv.xclipper.data.model
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.JsonElement
-import com.kpstv.license.Encryption.Decrypt
-import com.kpstv.license.Encryption.Encrypt
 import com.kpstv.xclipper.data.converters.DateConverter
 import com.kpstv.xclipper.data.converters.DateFormatConverter
-import com.kpstv.xclipper.extensions.utils.ClipUtils
 import com.kpstv.xclipper.extensions.enumValueOrNull
+import com.kpstv.xclipper.extensions.utils.ClipUtils
 import org.json.JSONObject
 import java.util.*
 import kotlin.collections.HashMap
@@ -16,9 +14,9 @@ import kotlin.collections.HashMap
 @Entity(tableName = "table_clip")
 data class Clip(
     @PrimaryKey(autoGenerate = true)
-    val id: Int? = null,
-    val data: String?,
-    val time: Date?,
+    var id: Int? = null,
+    val data: String,
+    val time: Date,
     var isPinned: Boolean = false,
     var tags: Map<String, String>? = null
 ) {
@@ -31,9 +29,10 @@ data class Clip(
          */
         fun parse(json: String): Clip? = with(JSONObject(json)) {
             if (!has("data")) return null
+            if (!has("time")) return null
             Clip(
-                data = if (has("data")) this["data"].toString() else "[UNKNOWN_ERROR]" ,
-                time = DateConverter.toDateFromString(this["time"].toString())
+                data = this["data"].toString() ,
+                time = DateConverter.toDateFromString(this["time"].toString())!!
             )
         }
 

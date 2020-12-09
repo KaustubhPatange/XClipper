@@ -11,14 +11,9 @@ import com.kpstv.xclipper.data.localized.dao.ClipDataDao
 import com.kpstv.xclipper.data.localized.dao.DefineDao
 import com.kpstv.xclipper.data.localized.dao.TagDao
 import com.kpstv.xclipper.data.localized.dao.UrlDao
-import com.kpstv.xclipper.data.model.Clip
-import com.kpstv.xclipper.data.model.ClipTag
-import com.kpstv.xclipper.data.model.Definition
-import com.kpstv.xclipper.data.model.Tag
-import com.kpstv.xclipper.extensions.small
-import com.kpstv.xclipper.data.model.UrlInfo
+import com.kpstv.xclipper.data.model.*
 import com.kpstv.xclipper.extensions.Coroutines
-import java.util.concurrent.Executors
+import com.kpstv.xclipper.extensions.small
 import javax.inject.Inject
 import javax.inject.Provider
 import javax.inject.Singleton
@@ -30,7 +25,7 @@ import javax.inject.Singleton
         Definition::class,
         UrlInfo::class
     ],
-    version = 1
+    version = 2
 )
 
 @TypeConverters(

@@ -1,6 +1,5 @@
 package com.kpstv.xclipper.extensions.listeners
 
-import com.kpstv.xclipper.extensions.ErrorFunction
 import com.kpstv.xclipper.extensions.SimpleFunction
 
 /**

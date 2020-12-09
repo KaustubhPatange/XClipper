@@ -1,6 +1,5 @@
 package com.kpstv.xclipper.data.api
 
-import com.kpstv.xclipper.extensions.utils.RetrofitUtils
 import kotlinx.coroutines.Deferred
 import okhttp3.ResponseBody
 import retrofit2.Response

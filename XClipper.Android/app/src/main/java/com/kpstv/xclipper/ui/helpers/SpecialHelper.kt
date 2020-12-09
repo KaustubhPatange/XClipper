@@ -410,7 +410,7 @@ class SpecialHelper(
      */
     private fun setDefineTag(view: View) = with(view) {
         App.SINGLE_WORD_PATTERN_REGEX.toRegex().let {
-            if (it.containsMatchIn(data!!))
+            if (it.containsMatchIn(data))
                 dictionaryApiHelper.define(
                     it.find(data)?.value!!, ResponseListener(
                         complete = { definition ->

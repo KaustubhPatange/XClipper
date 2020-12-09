@@ -1,6 +1,5 @@
 package com.kpstv.xclipper.extensions.utils
 
-import com.google.gson.GsonBuilder
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.kpstv.xclipper.App.gson
 import com.kpstv.xclipper.extensions.await

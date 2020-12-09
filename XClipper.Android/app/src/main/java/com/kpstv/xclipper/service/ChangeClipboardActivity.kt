@@ -3,7 +3,6 @@ package com.kpstv.xclipper.service
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
