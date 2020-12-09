@@ -3,8 +3,6 @@
     public class FirebaseData
     {
         private string _storage = null;
-        public OAuth DesktopAuth { get; set; }
-        public OAuth MobileAuth { get; set; }
         public string Endpoint { get; set; }
         public string AppId { get; set; }
         public string ApiKey { get; set; }
@@ -29,9 +27,7 @@
                 {
                     var other = (FirebaseData)obj;
                     if (this == other) return true;
-                    return (ApiKey == other.ApiKey && AppId == other.AppId && Storage == other.Storage && IsAuthNeeded == other.IsAuthNeeded && Endpoint == other.Endpoint
-                            && DesktopAuth.Equals(other.DesktopAuth) && MobileAuth.Equals(other.MobileAuth)
-                        );
+                    return (ApiKey == other.ApiKey && AppId == other.AppId && Storage == other.Storage && IsAuthNeeded == other.IsAuthNeeded && Endpoint == other.Endpoint);
                 }
             return false;
         }

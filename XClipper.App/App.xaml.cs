@@ -115,8 +115,6 @@ namespace Components
             {
                 clipWindow.CloseWindow();
             });
-            
-            FirebaseHelper.InitializeService(this);
 
             licenseService.Initiate(err =>
             {
@@ -130,6 +128,8 @@ namespace Components
             });
 
             NotificationActivator.register();
+            
+            FirebaseHelper.InitializeService(this);
 
             TimeStampHelper.ShowRequiredNotifications();
         }

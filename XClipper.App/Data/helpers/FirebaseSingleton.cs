@@ -115,7 +115,7 @@ namespace Components
             {
                 Log("Credentials are not valid");
                 if (FirebaseCurrent != null)
-                    binder.OnNeedToGenerateToken(FirebaseCurrent.DesktopAuth.ClientId, FirebaseCurrent.DesktopAuth.ClientSecret);
+                    binder.OnNeedToGenerateToken(DesktopAuth.ClientId, DesktopAuth.ClientSecret);
                 else
                     MsgBoxHelper.ShowError(Translation.MSG_FIREBASE_USER_ERROR);
                 return false;
@@ -287,7 +287,7 @@ namespace Components
                     if (!IsValidCredential())
                     {
                         Log("Token not valid");
-                        binder.OnNeedToGenerateToken(FirebaseCurrent.DesktopAuth.ClientId, FirebaseCurrent.DesktopAuth.ClientSecret);
+                        binder.OnNeedToGenerateToken(DesktopAuth.ClientId, DesktopAuth.ClientSecret);
                         return;
                     }
                     else if (NeedToRefreshToken())

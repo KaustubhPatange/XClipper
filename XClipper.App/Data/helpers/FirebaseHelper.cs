@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
@@ -16,8 +17,16 @@ using static Components.TranslationHelper;
 
 namespace Components
 {
+    /// <summary>
+    /// An interface to listen any changes made to Firebase Data. Typically used for real-time updates.
+    /// </summary>
+    public interface IFirebaseDataListener
+    {
+        void OnFirebaseDataChange();
+    }
     public static class FirebaseHelper
     {
+
         private const int TIMEOUT = 40;
         /// <summary>
         /// This will initialize the client safely. It will report to the user in case of any issue.<br/><br/>
@@ -63,7 +72,7 @@ namespace Components
         public static async Task<bool> RefreshAccessToken(FirebaseData? user)
         {
             if (user == null) return false;
-            var client = new RestClient($"https://oauth2.googleapis.com/token?client_id={user.DesktopAuth.ClientId}&client_secret={user.DesktopAuth.ClientSecret}&refresh_token={FirebaseCredential.RefreshToken}&grant_type=refresh_token");
+            var client = new RestClient($"https://oauth2.googleapis.com/token?client_id={DesktopAuth.ClientId}&client_secret={DesktopAuth.ClientSecret}&refresh_token={FirebaseCredential.RefreshToken}&grant_type=refresh_token");
             client.Timeout = 30 * 1000;
             var request = new RestRequest(Method.POST);
             request.AddHeader("Content-Type", "application/x-www-form-urlencoded");

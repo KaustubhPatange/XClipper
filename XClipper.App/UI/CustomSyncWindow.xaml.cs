@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.ComponentModel;
+using System.Diagnostics;
 using static Components.Constants;
 
 namespace Components.UI
@@ -10,6 +11,12 @@ namespace Components.UI
             InitializeComponent();
 
             DataContext = new CustomSyncViewModel(this);
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            ((CustomSyncViewModel)DataContext).UnSubscribe();
+            base.OnClosing(e);
         }
 
         public void OnCloseWindow()

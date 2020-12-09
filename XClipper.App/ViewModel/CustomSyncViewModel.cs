@@ -14,7 +14,7 @@ using Components.UI;
 
 namespace Components
 {
-    public class CustomSyncViewModel : BaseViewModel
+    public class CustomSyncViewModel : BaseViewModel, IFirebaseDataListener
     {
         private ICustomSyncBinder binder;
         public CustomSyncViewModel(ICustomSyncBinder binder)
@@ -22,6 +22,9 @@ namespace Components
             this.binder = binder;
 
             LoadDefaultConfigurations();
+            FirebaseDataListeners.Add(this);
+
+            Subscribe();
 
             SaveCommand = new RelayCommand(SaveButtonClicked);
             ImportCommand = new RelayCommand(ImportButtonClicked);
@@ -30,6 +33,10 @@ namespace Components
 
             CheckExportEnabled();
         }
+
+        public void Subscribe() => FirebaseDataListeners.Add(this);
+        public void UnSubscribe() => FirebaseDataListeners.Remove(this);
+
 
         #region Actual Bindings
 
@@ -51,7 +58,16 @@ namespace Components
         public int DMC { get; set; }
         public bool IAN { get; set; }
         public bool EE { get; set; } // Export enabled
-        public bool EFD { get; set; } = FirebaseCurrent?.IsEncrypted ?? false; // To encrypt firebase database?
+        public bool EFD { get; set; } // To encrypt firebase database?
+
+        #endregion
+
+        #region IFirebaseDataListener
+
+        public void OnFirebaseDataChange()
+        {
+            LoadDefaultConfigurations();
+        }
 
         #endregion
 
@@ -167,19 +183,27 @@ namespace Components
                 ApiKey = FBAK,
                 IsAuthNeeded = IAN,
                 IsEncrypted = EFD,
-                DesktopAuth = new OAuth
-                {
-                    ClientId = FDCI,
-                    ClientSecret = FDCS
-                },
-                MobileAuth = new OAuth
-                {
-                    ClientId = FMCI
-                }
+            };
+
+
+            var desktopAuth = new OAuth
+            {
+                ClientId = FDCI,
+                ClientSecret = FDCS
+            };
+
+            var mobileAuth = new OAuth
+            {
+                ClientId = FMCI
             };
 
             // If both data contents are same then no need to update
-            if (newData.Equals(FirebaseCurrent))
+            bool toUpdate = false;
+            toUpdate |= !newData.Equals(FirebaseCurrent);
+            toUpdate |= !desktopAuth.Equals(DesktopAuth);
+            toUpdate |= !mobileAuth.Equals(MobileAuth);
+
+            if (!toUpdate)
             {
                 if (DMI == DatabaseMaxItem && DatabaseMaxConnection == DMC && DatabaseMaxItemLength == DMIL)
                     return;
@@ -215,11 +239,13 @@ namespace Components
                 FBAK = FirebaseCurrent.ApiKey;
 
                 IAN = FirebaseCurrent.IsAuthNeeded;
-
-                FDCI = FirebaseCurrent.DesktopAuth.ClientId;
-                FDCS = FirebaseCurrent.DesktopAuth.ClientSecret;
-                FMCI = FirebaseCurrent.MobileAuth.ClientId;
+                EFD = FirebaseCurrent?.IsEncrypted ?? false;
             }
+
+            FDCI = DesktopAuth?.ClientId;
+            FDCS = DesktopAuth?.ClientSecret;
+            FMCI = MobileAuth?.ClientId;
+
             DMI = DatabaseMaxItem;
             DMC = DatabaseMaxConnection;
             DMIL = DatabaseMaxItemLength;

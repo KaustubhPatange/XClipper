@@ -30,7 +30,10 @@
 
             <TabControl Grid.Row="0">
                 <TabItem Header="{DynamicResource settings_general}">
-                    <StackPanel Margin="10" Orientation="Vertical">
+                    <StackPanel
+                        Margin="10"
+                        IsEnabled="{c:Binding '!local:DefaultSettings.IsCheckingForLicense'}"
+                        Orientation="Vertical">
 
                         <StackPanel Margin="0,0,0,0" Orientation="Vertical">
                             <TextBlock Text="Firebase Endpoint:" />

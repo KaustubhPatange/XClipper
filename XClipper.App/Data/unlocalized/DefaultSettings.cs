@@ -119,6 +119,10 @@ namespace Components
         /// </summary>
         private static bool _IsPurchaseDone = false;
 
+        private static FirebaseData? _FirebaseCurrent = null;
+        private static OAuth? _DesktopAuth = null;
+        private static OAuth? _MobileAuth = null;
+
         #endregion
 
         #region Actual Settings
@@ -364,10 +368,40 @@ namespace Components
         /// </summary>
         public static Credential FirebaseCredential { get; set; } = new Credential();
 
+        public static readonly List<IFirebaseDataListener> FirebaseDataListeners = new List<IFirebaseDataListener>();
+        
         /// <summary>
         /// Stores the current configuration that is being used by Firebase Singleton and helper class.
         /// </summary>
-        public static FirebaseData? FirebaseCurrent { get; set; }
+        public static FirebaseData? FirebaseCurrent
+        {
+            get => _FirebaseCurrent;
+            set
+            {
+                _FirebaseCurrent = value;
+                UpdateFirebaseListeners();
+            }
+        }
+
+        public static OAuth? DesktopAuth
+        {
+            get => _DesktopAuth;
+            set
+            {
+                _DesktopAuth = value;
+                UpdateFirebaseListeners();
+            }
+        }
+
+        public static OAuth? MobileAuth
+        {
+            get => _MobileAuth;
+            set
+            {
+                _MobileAuth = value;
+                UpdateFirebaseListeners();
+            }
+        }
 
         /// <summary>
         /// When set to true it will allow syncing of local database with online database.<br/> A valid binding can be,<br/><br/> 
@@ -426,6 +460,11 @@ namespace Components
         #endregion
 
         #region Methods
+
+        private static void UpdateFirebaseListeners()
+        {
+            FirebaseDataListeners.ForEach(c => c.OnFirebaseDataChange());
+        }
 
         #region Write
 
@@ -515,13 +554,13 @@ namespace Components
             var desktopOAuth = new XElement(DESKTOP_AUTH);
             desktopOAuth
                 .Add(
-                    new XElement(nameof(FirebaseCurrent.DesktopAuth.ClientId), FirebaseCurrent?.DesktopAuth?.ClientId?.ToString()),
-                    new XElement(nameof(FirebaseCurrent.DesktopAuth.ClientSecret), FirebaseCurrent?.DesktopAuth?.ClientSecret?.ToString())
+                    new XElement(nameof(DesktopAuth.ClientId), DesktopAuth.ClientId.ToString()),
+                    new XElement(nameof(DesktopAuth.ClientSecret), DesktopAuth.ClientSecret?.ToString())
                 );
             var mobileOAuth = new XElement(MOBILE_AUTH); // Mobile auth doesn't need ClientSecret
             mobileOAuth
                 .Add(
-                    new XElement(nameof(FirebaseCurrent.MobileAuth.ClientId), FirebaseCurrent?.MobileAuth?.ClientId?.ToString())
+                    new XElement(nameof(MobileAuth.ClientId), MobileAuth.ClientId.ToString())
                 );
 
             firebaseConfig.Add(mobileOAuth);
@@ -663,14 +702,14 @@ namespace Components
                 FirebaseCurrent.IsEncrypted = firebaseDoc.Element(nameof(FirebaseCurrent.IsEncrypted)).Value.ToBool();
 
                 var DesktopAuth = new OAuth();
-                DesktopAuth.ClientId = desktopDoc.Element(nameof(FirebaseCurrent.DesktopAuth.ClientId)).Value;
-                DesktopAuth.ClientSecret = desktopDoc.Element(nameof(FirebaseCurrent.DesktopAuth.ClientSecret)).Value;
+                DesktopAuth.ClientId = desktopDoc.Element(nameof(DesktopAuth.ClientId)).Value;
+                DesktopAuth.ClientSecret = desktopDoc.Element(nameof(DesktopAuth.ClientSecret)).Value;
 
                 var MobileAuth = new OAuth();
-                MobileAuth.ClientId = mobileDoc.Element(nameof(FirebaseCurrent.MobileAuth.ClientId)).Value;
+                MobileAuth.ClientId = mobileDoc.Element(nameof(MobileAuth.ClientId)).Value;
 
-                FirebaseCurrent.DesktopAuth = DesktopAuth;
-                FirebaseCurrent.MobileAuth = MobileAuth;
+                DefaultSettings.DesktopAuth = DesktopAuth;
+                DefaultSettings.MobileAuth = MobileAuth;
             }
         }
 
