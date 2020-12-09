@@ -5,11 +5,13 @@ on:
       - ".github/workflows/windows.yml"
       - "XClipper.App/**"
       - "XClipper.Core/**"
+      - "scripts/**"
   pull_request:
     paths:
       - ".github/workflows/windows.yml"
       - "XClipper.App/**"
       - "XClipper.Core/**"
+      - "scripts/**"
 
 jobs:
   windows:

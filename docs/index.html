@@ -95,7 +95,7 @@
                             let begin = e.split(":")[0];
                             let end = e.split(":")[1];
                             try {
-                                content = content.replace(`${wikiPage}${begin}`, `${url}${end}`);
+                                content = content.replaceAll(`${wikiPage}${begin}`, `${url}${end}`);
                             } catch { }
                         });
                         next(content);

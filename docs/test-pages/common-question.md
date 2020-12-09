@@ -11,6 +11,7 @@
   - [Why does XClipper does not synchronize files to the device?](#q-why-does-xclipper-does-not-synchronize-files-to-the-device)
   - [Last x actions didn't complete. What to do?](#q-last-x-actions-didnt-complete-what-to-do)
   - [Can we sync data between multiple Android devices?](#q-can-we-sync-data-between-multiple-android-devices)
+  - [Why features are not unlimited for premium users?](#q-why-features-are-not-unlimited-for-premium-users)
 - **Payments**
   - [Payment completed but premium does not unlock?](#q-payment-completed-but-premium-does-not-unlock)
 
@@ -77,6 +78,14 @@ XClipper keeps the record of this stack & their success time (if the event has s
 If you have this question perhaps you still have a doubt on how XClipper works! As said desktop XClipper application is a [single source of truth](https://github.com/KaustubhPatange/XClipper/wiki/FAQs#q-why-pc-application-is-a-single-source-of-truth) with which you can add multiple Android devices. This means PC application is a hub for all these devices & internally they act as a chain of information transfer.
 
 In short, you can! All you've to do is follow the how-to synchronization guide from [here](https://github.com/KaustubhPatange/XClipper/wiki/Data-Synchronization) & add another device to the database. You are good to go :)
+
+### Q. Why features are not unlimited for premium users?
+
+This is one of the common question everyone must have (it's not wrong to have). Basically if I'm paying for certain software I want unlimited number of x things. But let me tell you the reason, the thing is you don't actually need it! How? it is because you forgot that clipboard is always a temporary storage of data. When I was testing the application using internal testers it came out that no one were pasting clip from 100th index. At max, they were going over 50 (that too in extreme cases) because a human brain cannot remember all of it! Yes it's true we use Ctrl + C shortcut more than any other shortcut, it's obvious we don't remember all of the copied data.
+
+Also XClipper is smart enough to sort the data according to the most used clip (descending) hence as per my research this restrictions are made. If I get enough request to increase it as per your use-case I'll consider improving it.
+
+But why not keep it unlimited? Like I said we don't need that much! Also, keeping it unlimited will cause unnecessary delays for XClipper to process it which will cause the functionality to run slow.
 
 ## Purchase FAQs
 

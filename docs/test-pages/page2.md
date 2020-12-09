@@ -7,6 +7,8 @@
 
 ?> XClipper currently supports text-related data to be synchronized. To enable image synchronization, read this [guide](https://github.com/KaustubhPatange/XClipper/wiki/Enable-Image-synchronization) after completing the below steps.
 
+!> There are some limitation to this feature in free version, [read more](#limitations).
+
 ## Steps <!-- {docsify-ignore} -->
 
 These are the steps we are going to follow, if you have any questions check the [FAQs](https://github.com/KaustubhPatange/XClipper/wiki/FAQs).
@@ -19,6 +21,7 @@ These are the steps we are going to follow, if you have any questions check the 
 - [Sharing data with another PC](#sharing-data-with-another-PC).
 - [Testing if clipboard data is syncing](#testing-if-clipboard-data-is-syncing).
 - [Synchronization between multiple Android devices.](https://github.com/KaustubhPatange/XClipper/wiki/FAQs#q-can-we-sync-data-between-multiple-android-devices)
+- [Limitations (for free users)](#limitations)
 
 ## Creating your own data storage on Firebase
 
@@ -52,20 +55,20 @@ I would recommend writing these information in a notepad file.
 
 <img src="https://androdevkit.files.wordpress.com/2020/09/xclipper-firebase-4.png">
 
-- Click on "**Gear icon**" > "**Project Settings**" & note down the _Web API Key_ as shown below.
-
-<img src="https://androdevkit.files.wordpress.com/2020/09/xclipper-firebase-5.png">
-
-- To get the last credential we need to set up our Android app, this step is a bit complex to explain so you need to watch the video given below. You will get "**App Id**" after completing it.
-
-<iframe class="embed-responsive-item"
-                                src="https://www.youtube.com/embed/Mz0k6C2BIfI?autoplay=0" allowfullscreen></iframe>
+- This one is pretty complex to explain with single image so you need to watch the video given below. You will get "**App Id**" after following it.
 
 **Client ID:**
 
 ```
 323700069140-7hj54ukss3072gbr7in9627ti35o3mhs.apps.googleusercontent.com
 ```
+
+<iframe class="embed-responsive-item"
+                                src="https://www.youtube.com/embed/Mz0k6C2BIfI?autoplay=0" allowfullscreen></iframe>
+
+- Click on "**Gear icon**" > "**Project Settings**" & note down the _Web API Key_ as shown below.
+
+<img src="https://androdevkit.files.wordpress.com/2020/09/xclipper-firebase-5.png">
 
 ## Setting up the credential in the desktop app
 
@@ -76,9 +79,9 @@ I would recommend writing these information in a notepad file.
 ```
 Firebase Endpoint: https://test-project-9e017.firebaseio.com/
 
-Firebase API Key: AIzaSyC05g-9MkJbFhnxE2137MDeTT07wNHncfs
-
 Firebase App Id: 1:1057025207873:android:c7004aea2af70512b220c0
+
+Firebase API Key: AIzaSyC05g-9MkJbFhnxE2137MDeTT07wNHncfs
 ```
 
 - Now in the XClipper application from system tray, right-click > "**Firebase configuration**" & add those value. Click "**Save**" when done.
@@ -99,7 +102,7 @@ Firebase App Id: 1:1057025207873:android:c7004aea2af70512b220c0
 
 ?> You can also enable **Bind Deletion** option which will delete items from your local storage if deleted from an online database.
 
-_Tip: Hover on each item to see what they do._
+?> Tip: Hover on each item to see what they do.
 
 ## Connecting mobile device to the storage
 
@@ -137,3 +140,17 @@ After all, it leads to this [FAQs](https://github.com/KaustubhPatange/XClipper/w
 
 - You can check if the online database receives updates or not by going to firebase.google.com selecting your project which we created & going to the real-time database. It should update automatically when changes are made by **XClipper**. If this is not the case create a GitHub issue.
 - If your application is crashed or reported any issues. There is a log file that **XClipper** creates on every new instance located in `%appdata%\XClipper\logs`. You must upload the proper log file if you are reporting an issue.
+
+## Limitations
+
+?> There are certain limitations imposed for free users. Unlocking premium will remove those as well as will encourage me to work on this project even more.
+
+| Feature                                    | Free  | Premium |
+| ------------------------------------------ | ----- | ------- |
+| Maximum number of clipboard data           | 10    | 120     |
+| Maximum length of text (characters)        | 1,000 | 10,000  |
+| Maximum number of connected Android device | 1     | 10+     |
+| Securing data using encryption             | ❌    | ✔️      |
+| Adding authentication (Google sign-in)     | ❌    | ✔️      |
+
+If you want to know why these features are not unlimited for premium users, [read here](https://github.com/KaustubhPatange/XClipper/wiki/FAQs#q-why-some-features-are-not-unlimited-for-premium-users).

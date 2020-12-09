@@ -19,7 +19,7 @@ namespace Components.UI
 
         public override void OnHelpButtonClicked()
         {
-            Process.Start(DATA_SYNCHRONIZATION);
+            Process.Start(DOC_SYNCHRONIZATION);
         }
     }
 

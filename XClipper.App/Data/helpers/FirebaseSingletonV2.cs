@@ -375,7 +375,7 @@ namespace Components
             // Set user for first time..
             if (user == null) user = await FetchUser().ConfigureAwait(false);
             if (user == null) await RegisterUser().ConfigureAwait(false); else await SetCommonUserInfo(user).ConfigureAwait(false);
-            // TODO: Show notification about purchasing license.
+           
             // Apply an auto-fixes if needed
             await FixInconsistentData().ConfigureAwait(false);
             await FixEncryptedDatabase().ConfigureAwait(false);

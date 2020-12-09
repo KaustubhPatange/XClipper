@@ -89,13 +89,13 @@
                             Foreground="{Binding UID, Converter={x:Static local:SyncIdForegroundConverter.Instance}, UpdateSourceTrigger=PropertyChanged}"
                             Text="{Binding UID, Converter={x:Static local:SyncIdTextConverter.Instance}, UpdateSourceTrigger=PropertyChanged}"
                             TextAlignment="Center"
-                            Visibility="{c:Binding 'local:DefaultSettings.IsPurchaseDone',
+                            Visibility="{c:Binding 'local:DefaultSettings.FirebaseCurrent != null and (local:DefaultSettings.IsPurchaseDone)',
                                                    FalseToVisibility=Collapsed}" />
                         <StackPanel
                             Margin="0,5,0,0"
                             HorizontalAlignment="Center"
                             Orientation="Horizontal"
-                            Visibility="{c:Binding '!IAN or !EFD or !local:DefaultSettings.IsPurchaseDone',
+                            Visibility="{c:Binding 'local:DefaultSettings.FirebaseCurrent != null and (!IAN or !EFD or !local:DefaultSettings.IsPurchaseDone)',
                                                    FalseToVisibility=Collapsed}">
                             <TextBlock
                                 Margin="0,0,5,0"
@@ -104,7 +104,7 @@
                                 Foreground="Red"
                                 Text="{DynamicResource sync_insecure_database}" />
                             <TextBlock>
-                                <Hyperlink local:HyperlinkProperties.IsExternal="True" NavigateUri="{Binding Source={x:Static local:Constants.SECURE_FIREBASE}}">
+                                <Hyperlink local:HyperlinkProperties.IsExternal="True" NavigateUri="{Binding Source={x:Static local:Constants.DOC_SECURE_REMOTE}}">
                                     <TextBlock
                                         VerticalAlignment="Top"
                                         FontSize="11"

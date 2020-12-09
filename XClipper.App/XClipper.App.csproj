@@ -223,6 +223,7 @@
     <Compile Include="Data\helpers\LogHelper.cs" />
     <Compile Include="Data\helpers\MsgBoxHelper.cs" />
     <Compile Include="Data\helpers\QuickPasteHelper.cs" />
+    <Compile Include="Data\helpers\TimeStampHelper.cs" />
     <Compile Include="Data\helpers\UWPToast.cs" />
     <Compile Include="Data\Models\Clip.cs" />
     <Compile Include="Data\Models\Device.cs" />

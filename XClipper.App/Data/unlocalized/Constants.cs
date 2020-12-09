@@ -17,6 +17,7 @@ namespace Components
         public static string ApplicationLogDirectory = Path.Combine(ApplicationDirectory, "logs");
         public static string ApplicationExceptionDirectory = Path.Combine(ApplicationLogDirectory, "crash-reports");
         public static string SettingsPath = Path.Combine(ApplicationDirectory, "config.xml");
+        public static string TimeStampsPath = Path.Combine(ApplicationTempDirectory, "timestamp.xml");
         public static string LicenseFilePath = Path.Combine(ApplicationDirectory, "key.lic");
         public static string BackupFolder = Path.Combine(ApplicationDirectory, "Backup");
         public static string ImageFolder = Path.Combine(ApplicationDirectory, "Image");
@@ -102,14 +103,15 @@ namespace Components
 
         public const string MOBILE_APP = "https://github.com/KaustubhPatange/XClipper/tree/master/XClipper.Android";
 
-        public const string DATA_SYNCHRONIZATION = "https://kaustubhpatange.github.io/XClipper/docs/#/sync";
-        public const string MANUAL_ACTIVATION = "https://kaustubhpatange.github.io/XClipper/docs/#/activation";
-        public const string MIGRATION_GUIDE = "https://kaustubhpatange.github.io/XClipper/docs/#/migrating";
-        public const string SECURE_DB = "https://kaustubhpatange.github.io/XClipper/docs/#/protect#local-database";
-        public const string SECURE_FIREBASE = "https://kaustubhpatange.github.io/XClipper/docs/#/protect#remote-database";
-
         public const string UPGRADE_LICENSE = "https://kaustubhpatange.github.io/XClipper"; // TODO; Edit: No need yet! change this which is used in UpgradeTipItem
+
         public const string DOCUMENTATION = "https://kaustubhpatange.github.io/XClipper/docs";
+        public const string DOC_INTRODUCTION = "https://kaustubhpatange.github.io/XClipper/docs/#/introduction";
+        public const string DOC_SYNCHRONIZATION = "https://kaustubhpatange.github.io/XClipper/docs/#/sync";
+        public const string DOC_SECURE_LOCAL = "https://kaustubhpatange.github.io/XClipper/docs/#/protect#local-database";
+        public const string DOC_SECURE_REMOTE = "https://kaustubhpatange.github.io/XClipper/docs/#/protect#remote-database";
+        public const string DOC_PURCHASE_MIGRATION = "https://kaustubhpatange.github.io/XClipper/docs/#/migrating";
+        public const string DOC_MANUAL_ACTIVATION = "https://kaustubhpatange.github.io/XClipper/docs/#/activation";
 
         #endregion
     }

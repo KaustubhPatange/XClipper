@@ -122,7 +122,7 @@
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Center">
 
-                                    <Hyperlink local:HyperlinkProperties.IsExternal="true" NavigateUri="{Binding Source={x:Static local:Constants.SECURE_DB}}">
+                                    <Hyperlink local:HyperlinkProperties.IsExternal="true" NavigateUri="{Binding Source={x:Static local:Constants.DOC_SECURE_LOCAL}}">
                                         <TextBlock Text="{DynamicResource msg_learn}" />
                                     </Hyperlink>
                                 </TextBlock>

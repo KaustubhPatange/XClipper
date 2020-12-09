@@ -63,7 +63,7 @@
 
                                 <DockPanel Margin="0,15,0,5" HorizontalAlignment="Right">
                                     <TextBlock VerticalAlignment="Center">
-                                        <Hyperlink local:HyperlinkProperties.IsExternal="True" NavigateUri="{Binding Source={x:Static local:Constants.MANUAL_ACTIVATION}}">
+                                        <Hyperlink local:HyperlinkProperties.IsExternal="True" NavigateUri="{Binding Source={x:Static local:Constants.DOC_MANUAL_ACTIVATION}}">
                                             <TextBlock FontSize="11" Text="{DynamicResource buy_help}" />
                                         </Hyperlink>
                                     </TextBlock>
@@ -89,7 +89,7 @@
 
                                 <DockPanel Margin="0,15,0,5" HorizontalAlignment="Right">
                                     <TextBlock VerticalAlignment="Center">
-                                        <Hyperlink local:HyperlinkProperties.IsExternal="True" NavigateUri="{Binding Source={x:Static local:Constants.MIGRATION_GUIDE}}">
+                                        <Hyperlink local:HyperlinkProperties.IsExternal="True" NavigateUri="{Binding Source={x:Static local:Constants.DOC_PURCHASE_MIGRATION}}">
                                             <TextBlock FontSize="11" Text="{DynamicResource buy_help}" />
                                         </Hyperlink>
                                     </TextBlock>

@@ -10,6 +10,8 @@ using System.Xml.Linq;
 using Components.Controls.Dialog;
 using Components.UI;
 
+#nullable enable
+
 namespace Components
 {
     public class CustomSyncViewModel : BaseViewModel
@@ -49,7 +51,7 @@ namespace Components
         public int DMC { get; set; }
         public bool IAN { get; set; }
         public bool EE { get; set; } // Export enabled
-        public bool EFD { get; set; } = FirebaseCurrent.IsEncrypted; // To encrypt firebase database?
+        public bool EFD { get; set; } = FirebaseCurrent?.IsEncrypted ?? false; // To encrypt firebase database?
 
         #endregion
 
@@ -182,6 +184,8 @@ namespace Components
                 if (DMI == DatabaseMaxItem && DatabaseMaxConnection == DMC && DatabaseMaxItemLength == DMIL)
                     return;
             }
+
+            FirebaseCurrent = newData;
 
             DatabaseMaxItem = DMI;
             DatabaseMaxItemLength = DMIL;

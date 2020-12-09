@@ -111,6 +111,11 @@ namespace Components
 				.build().ShowAsync();
 		}
 
+		public static void ShowIntroNotification(Dispatcher dispatcher, Action? onLearnMoreClick = null)
+        {
+
+        }
+
         private static ToastRequest CreateRequest(ToastVisual visual, ToastAudioType audioType, IToastActions? actions = null, ToastDuration duration = ToastDuration.Short, bool Silent = false)
 		{
 			var toastContent = new ToastContent

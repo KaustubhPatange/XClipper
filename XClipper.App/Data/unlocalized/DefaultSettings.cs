@@ -404,9 +404,14 @@ namespace Components
         public static bool NoNotifyChanges { get; set; } = false;
 
         /// <summary>
-        /// A time to denote if it is necessary to show sync toast.
+        /// Set of timestamps that will trigger certain notifications.
         /// </summary>
-        public static string? SyncDialogDate { get; set; } = "";
+        public static class TimeStamps
+        {
+            public static string? EnableSync { get; set; } = string.Empty;
+            public static bool ShownIntroduction { get; set; } = false;
+            public static string? PurchaseInfo { get; set; } = string.Empty;
+        }
 
         #endregion
 
@@ -434,17 +439,11 @@ namespace Components
                      new XElement(nameof(ExitOnCrash), ExitOnCrash.ToString()),
                      new XElement(nameof(NoNotifyChanges), NoNotifyChanges.ToString())
                      );
-
-            var timestamps = new XElement(TIMESTAMPS);
-            timestamps
-                 .Add(
-                    new XElement(nameof(SyncDialogDate), SyncDialogDate)
-                    );
+           
             var settings = new XElement(SETTINGS);
             settings
                 .Add(
                     environment,
-                    timestamps,
                     new XElement(nameof(AppDisplayLocation), AppDisplayLocation.ToString()),
                     new XElement(nameof(WhatToStore), WhatToStore.ToString()),
                     new XElement(nameof(TotalClipLength), TotalClipLength.ToString()),
@@ -468,6 +467,23 @@ namespace Components
                     );
             document.Add(settings);
             document.Save(SettingsPath);
+        }
+
+        /// <summary>
+        /// This will write timestamps setting to a file.
+        /// </summary>
+        public static void WriteTimeStampsSetting()
+        {
+            var document = new XDocument();
+            var timestamps = new XElement(TIMESTAMPS);
+            timestamps
+                 .Add(
+                    new XElement(nameof(TimeStamps.EnableSync), TimeStamps.EnableSync),
+                    new XElement(nameof(TimeStamps.ShownIntroduction), TimeStamps.ShownIntroduction),
+                    new XElement(nameof(TimeStamps.PurchaseInfo), TimeStamps.PurchaseInfo)
+                    );
+            document.Add(timestamps);
+            document.Save(TimeStampsPath);
         }
 
         /// <summary>
@@ -499,13 +515,13 @@ namespace Components
             var desktopOAuth = new XElement(DESKTOP_AUTH);
             desktopOAuth
                 .Add(
-                    new XElement(nameof(FirebaseCurrent.DesktopAuth.ClientId), FirebaseCurrent.DesktopAuth.ClientId.ToString()),
-                    new XElement(nameof(FirebaseCurrent.DesktopAuth.ClientSecret), FirebaseCurrent.DesktopAuth.ClientSecret?.ToString())
+                    new XElement(nameof(FirebaseCurrent.DesktopAuth.ClientId), FirebaseCurrent?.DesktopAuth?.ClientId?.ToString()),
+                    new XElement(nameof(FirebaseCurrent.DesktopAuth.ClientSecret), FirebaseCurrent?.DesktopAuth?.ClientSecret?.ToString())
                 );
             var mobileOAuth = new XElement(MOBILE_AUTH); // Mobile auth doesn't need ClientSecret
             mobileOAuth
                 .Add(
-                    new XElement(nameof(FirebaseCurrent.MobileAuth.ClientId), FirebaseCurrent.MobileAuth.ClientId.ToString())
+                    new XElement(nameof(FirebaseCurrent.MobileAuth.ClientId), FirebaseCurrent?.MobileAuth?.ClientId?.ToString())
                 );
 
             firebaseConfig.Add(mobileOAuth);
@@ -558,6 +574,7 @@ namespace Components
             }
 
             LoadApplicationSetting();
+            LoadTimeStampsSetting();
             LoadFirebaseSetting();
             LoadFirebaseCredentials();
         }
@@ -598,12 +615,22 @@ namespace Components
             var environment = settings.Element(ENVIRONMENT);
             ExitOnCrash = environment.Element(nameof(ExitOnCrash)).Value.ToBool();
             NoNotifyChanges = environment.Element(nameof(NoNotifyChanges)).Value.ToBool();
+        }
 
-            var timestamps = settings.Element(TIMESTAMPS);
-            if (timestamps != null)
+        /// <summary>
+        /// This will load timestamps setting from file if exist.
+        /// </summary>
+        public static void LoadTimeStampsSetting()
+        {
+            if (!File.Exists(TimeStampsPath)) // If settings does not exist, write defaults
             {
-                SyncDialogDate = timestamps.Element(nameof(SyncDialogDate)).Value;
+                WriteTimeStampsSetting();
+                return;
             }
+            var timestamps = XDocument.Load(TimeStampsPath).Element(TIMESTAMPS);
+            TimeStamps.EnableSync = timestamps.Element(nameof(TimeStamps.EnableSync)).Value;
+            TimeStamps.ShownIntroduction = timestamps.Element(nameof(TimeStamps.ShownIntroduction)).Value.ToBool();
+            TimeStamps.PurchaseInfo = timestamps.Element(nameof(TimeStamps.PurchaseInfo)).Value;
         }
 
         /// <summary>
