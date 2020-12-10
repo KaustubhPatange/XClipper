@@ -11,15 +11,39 @@ namespace Components
     {
         public static void ShowRequiredNotifications()
         {
-
+            ShowIntroductionDialog();
             ShowSyncDialogIfNecessary();
+            ShowPurchaseDialogIfNecessary();
         }
 
         private static bool ShowIntroductionDialog()
         {
             if (IsIntroductionNecessary())
             {
+                AppNotificationHelper.ShowIntroNotification(
+                    dispatcher: Application.Current.Dispatcher,
+                    onLearnMoreClick: () =>
+                    {
+                        Process.Start(DOC_INTRODUCTION);
+                    }
+                );
+                return true;
+            }
+            return false;
+        }
 
+        private static bool ShowPurchaseDialogIfNecessary()
+        {
+            if (IsPurchaseNotifyNecessary())
+            {
+                AppNotificationHelper.ShowPurchaseNotification(
+                    dispatcher: Application.Current.Dispatcher,
+                    onLearnMoreClick: () =>
+                    {
+                        Process.Start(ApplicationWebsite);
+                    }
+                );
+                return true;
             }
             return false;
         }
@@ -31,9 +55,8 @@ namespace Components
                 AppNotificationHelper.ShowSyncDialog(
                    dispatcher: Application.Current.Dispatcher,
                    onLearnMoreClick: () =>
-                   {// TODO: If first launch show a dialog for getting started.
-                    // TODO: Show notification about purchasing license after 4-5 days of launch.
-                       Process.Start(DOCUMENTATION);
+                   {
+                       Process.Start(DOC_SYNCHRONIZATION);
                    }
                );
                 return true;
@@ -77,7 +100,7 @@ namespace Components
         {
             if (string.IsNullOrWhiteSpace(TimeStamps.PurchaseInfo))
             {
-                TimeStamps.PurchaseInfo = DateTime.Now.AddDays(4).ToFormattedDateTime(false);
+                TimeStamps.PurchaseInfo = DateTime.Now.AddDays(5).ToFormattedDateTime(false);
                 WriteTimeStampsSetting();
                 return false;
             }
@@ -85,7 +108,7 @@ namespace Components
             long current = DateTime.Now.ToFormattedDateTime(false).ToLong();
             if (current >= old)
             {
-                TimeStamps.PurchaseInfo = DateTime.Now.AddDays(4).ToFormattedDateTime(false);
+                TimeStamps.PurchaseInfo = DateTime.Now.AddDays(5).ToFormattedDateTime(false);
                 WriteTimeStampsSetting();
                 return true;
             }

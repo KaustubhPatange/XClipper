@@ -110,6 +110,10 @@ namespace Components
         public string MSG_ENCRYPT_DATABASE_FAILED = rm.GetString("msg_encrypt_database_failed");
         public string MSG_ENCRYPT_DATABASE_SUCCESS = rm.GetString("msg_encrypt_database_success");
         public string MSG_CRASH_DETAILS = rm.GetString("msg_crash_details");
+        public string MSG_INTRO_TITLE = rm.GetString("msg_intro_title");
+        public string MSG_INTRO_MESSAGE = rm.GetString("msg_intro_message");
+        public string MSG_PURCHASE_TITLE = rm.GetString("msg_purchase_title");
+        public string MSG_PURCHASE_MESSAGE = rm.GetString("msg_purchase_message");
         public string POPUP_ADDED = rm.GetString("popup_added");
         public string POPUP_SPACE_FOCUS = rm.GetString("popup_space_focus");
         public string POPUP_EDIT_ERR = rm.GetString("popup_edit_err");

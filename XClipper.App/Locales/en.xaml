@@ -133,6 +133,10 @@
     <system:String x:Key="msg_encrypt_database_failed">Migration fails due to Firebase not being initialized or some internal error. Check logs!</system:String>
     <system:String x:Key="msg_encrypt_database_success">Database migration complete</system:String>
     <system:String x:Key="msg_crash_details">Click to view detail reports of crash</system:String>
+    <system:String x:Key="msg_intro_title">Getting started</system:String>
+    <system:String x:Key="msg_intro_message">Looks like you are just starting out with XClipper. Check this tutorial to learn more about it's shortcuts.</system:String>
+    <system:String x:Key="msg_purchase_title">Premium</system:String>
+    <system:String x:Key="msg_purchase_message">Purchase premium to unlock all features as well as support me to continue working on this project.</system:String>
     <system:String x:Key="popup_added">Added:</system:String>
     <system:String x:Key="popup_space_focus">...Press (Space) to Focus...</system:String>
     <system:String x:Key="popup_edit_err">Editing is not supported for this format</system:String>

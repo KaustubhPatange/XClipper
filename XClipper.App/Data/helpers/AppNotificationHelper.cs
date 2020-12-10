@@ -106,15 +106,41 @@ namespace Components
 				.AddText(Translation.SYNC_DIALOG_MESSAGE)
 				.AddButton(Translation.MSG_CANCEL_SMALL)
 				.AddButton(Translation.MSG_LEARN, onLearnMoreClick)
+				.SetOnActivatedListener(onLearnMoreClick)
 				.SetDuration(ToastDuration.Long)
 				.SetAudioType(ToastAudioType.REMINDER)
 				.build().ShowAsync();
 		}
 
 		public static void ShowIntroNotification(Dispatcher dispatcher, Action? onLearnMoreClick = null)
-        {
+		{
+			var builder = new UWPToast.Builder(dispatcher);
+			builder
+				.AddImage(Properties.Resources.introduction)
+				.AddText(Translation.MSG_INTRO_TITLE)
+				.AddText(Translation.MSG_INTRO_MESSAGE)
+				.AddButton(Translation.MSG_CANCEL_SMALL)
+				.AddButton(Translation.MSG_LEARN, onLearnMoreClick)
+				.SetOnActivatedListener(onLearnMoreClick)
+				.SetDuration(ToastDuration.Long)
+				.SetAudioType(ToastAudioType.REMINDER)
+				.build().ShowAsync();
+		}
 
-        }
+		public static void ShowPurchaseNotification(Dispatcher dispatcher, Action? onLearnMoreClick = null)
+        {
+			var builder = new UWPToast.Builder(dispatcher);
+			builder
+				.AddImage(Properties.Resources.payment)
+				.AddText(Translation.MSG_PURCHASE_TITLE)
+				.AddText(Translation.MSG_PURCHASE_MESSAGE)
+				.AddButton(Translation.MSG_CANCEL_SMALL)
+				.AddButton(Translation.MSG_LEARN, onLearnMoreClick)
+				.SetOnActivatedListener(onLearnMoreClick)
+				.SetDuration(ToastDuration.Long)
+				.SetAudioType(ToastAudioType.REMINDER)
+				.build().ShowAsync();
+		}
 
         private static ToastRequest CreateRequest(ToastVisual visual, ToastAudioType audioType, IToastActions? actions = null, ToastDuration duration = ToastDuration.Short, bool Silent = false)
 		{

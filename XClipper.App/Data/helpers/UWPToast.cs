@@ -22,6 +22,8 @@ namespace Components
     public class UWPToast
     {
         internal string? ImagePath;
+        internal Action? OnActivatedListener;
+        internal Action? OnCancelledListener;
         internal Dictionary<string, Action?> Listeners = new Dictionary<string, Action?>();
         internal ToastRequest? request;
         internal Dispatcher? dispatcher;
@@ -32,6 +34,15 @@ namespace Components
         {
             NotificationActivator.RegisterComType(typeof(NotificationActivator), OnActivated);
             var result = await ToastManager.ShowAsync(request).ConfigureAwait(false);
+
+            if (result.ToString() == "Activated" && OnActivatedListener != null)
+            {
+                dispatcher?.Invoke(OnActivatedListener);
+            } else if (result.ToString() == "UserCanceled" && OnCancelledListener != null)
+            {
+                dispatcher?.Invoke(OnCancelledListener);
+            }
+
             NotificationActivator.UnregisterComType();
             if (File.Exists(ImagePath)) File.Delete(ImagePath);
         }
@@ -147,6 +158,18 @@ namespace Components
             public Builder SetSilent(bool silent)
             {
                 IsSilent = silent;
+                return this;
+            }
+
+            public Builder SetOnActivatedListener(Action? listener)
+            {
+                uwpToast.OnActivatedListener = listener;
+                return this;
+            }
+
+            public Builder SetOnCancelledListener(Action? listener)
+            {
+                uwpToast.OnCancelledListener = listener;
                 return this;
             }
         }
