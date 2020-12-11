@@ -125,13 +125,12 @@ namespace Components
                     return;
                 }
                 ActivateLicense();
+                TimeStampHelper.ShowRequiredNotifications();
             });
 
             NotificationActivator.register();
             
             FirebaseHelper.InitializeService(this);
-
-            TimeStampHelper.ShowRequiredNotifications();
         }
 
         protected override void OnExit(ExitEventArgs e)

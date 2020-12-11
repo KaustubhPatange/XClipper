@@ -102,18 +102,18 @@ class FirebaseProviderImpl @Inject constructor(
 
             checkForUserDetailsAndUpdateLocal()
 
-            if (list.size >= APP_MAX_DEVICE) {
-                responseListener.onError(Exception("Maximum device connection reached"))
-                HVLog.w("Maximum device reached...")
-                return@workWithData
-            }
-
             /** For some reasons [DeviceID] already exist in the database
              *  we will post success response.
              */
-            if (list.count { it.id == DeviceId } > 0) {
+            if (list.any { it.id == DeviceId }) {
                 responseListener.onComplete(Unit)
                 HVLog.w("DeviceID already present")
+                return@workWithData
+            }
+
+            if (list.size >= APP_MAX_DEVICE) {
+                responseListener.onError(Exception("Maximum device connection reached"))
+                HVLog.w("Maximum device reached...")
                 return@workWithData
             }
 

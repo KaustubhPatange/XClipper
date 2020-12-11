@@ -183,7 +183,7 @@ DEL ""%~f0""";
         public static bool CreateCurrentQRData()
         {
             if (FirebaseCurrent == null) return false;
-            string mobileAuthDetails = FirebaseCurrent.IsAuthNeeded ? $"true;{MobileAuth.ClientId}" : "false";
+            string mobileAuthDetails = FirebaseCurrent.IsAuthNeeded ? $"true;{MobileAuth.ClientId}" : "false;";
             string encryptedPassword = FirebaseCurrent.IsEncrypted ? DatabaseEncryptPassword : ""; // If not encrypted set no password.
             QRData = new QRCodeData
             {

@@ -71,6 +71,8 @@ namespace Components
         {
             if (!TimeStamps.ShownIntroduction)
             {
+                TimeStamps.ShownIntroduction = true;
+                WriteTimeStampsSetting();
                 return true;
             }
             return false;
@@ -98,6 +100,7 @@ namespace Components
 
         private static bool IsPurchaseNotifyNecessary()
         {
+            if (IsPurchaseDone) return false;
             if (string.IsNullOrWhiteSpace(TimeStamps.PurchaseInfo))
             {
                 TimeStamps.PurchaseInfo = DateTime.Now.AddDays(5).ToFormattedDateTime(false);
