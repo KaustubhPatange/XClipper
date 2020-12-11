@@ -56,6 +56,10 @@ Since this project involves **license** system 📃 some of the source files has
 
 If you want to contribute to this project, you're always welcome! [See Contributing Guidelines](/CONTRIBUTING.md).
 
+## Trademark
+
+- All images & icons (except logo) are licensed under [Icons8](https://icons8.com/).
+
 ## License
 
 - [The Apache License Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)

@@ -12,6 +12,7 @@ XClipper.Web/js/purchase.js
 
 scripts/out
 scripts/Work
+scripts/create-tar.bat
 
 .gradle/
 

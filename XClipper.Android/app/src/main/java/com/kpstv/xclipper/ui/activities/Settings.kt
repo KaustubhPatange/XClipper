@@ -171,7 +171,8 @@ class Settings : AppCompatActivity() {
      * This onActivityResult is handling connection details coming from QR capture
      * i.e from AccountPreference fragment
      *
-     * TODO: Violation of Open-Close principle
+     * TODO: You can try to use ActivityResultApi here, but it crashes for
+     *       unknown reason.
      *
      * I tried to register for ActivityResult callback using contract but seems to
      * be not working.

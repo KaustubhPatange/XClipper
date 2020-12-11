@@ -9,20 +9,13 @@ using System;
 using System.Threading.Tasks;
 using FireSharp.Core.Config;
 using FireSharp.Core;
-using Newtonsoft.Json;
 using System.Linq;
 using Firebase.Storage;
-using System.Drawing;
-using System.Windows.Documents;
 using System.Data;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
-using RestSharp;
 using System.Windows.Threading;
-using System.Web.UI.Design.WebControls;
 using FireSharp.Core.Response;
-using System.Windows.Media.Imaging;
-using System.Windows.Forms.VisualStyles;
 
 #nullable enable
 
@@ -117,7 +110,6 @@ namespace Components
 
             ClearAllStack();
 
-            MainHelper.CreateCurrentQRData();
             DefaultSettings.ValidateFirebaseSetting();
 
             if (FirebaseCurrent.IsAuthNeeded)
