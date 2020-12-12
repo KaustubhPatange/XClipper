@@ -107,7 +107,7 @@ namespace Components
                 WriteTimeStampsSetting();
                 return false;
             }
-            long old = TimeStamps.EnableSync.ToLong();
+            long old = TimeStamps.PurchaseInfo.ToLong();
             long current = DateTime.Now.ToFormattedDateTime(false).ToLong();
             if (current >= old)
             {

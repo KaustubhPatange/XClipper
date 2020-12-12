@@ -118,19 +118,19 @@ namespace Components
 
             licenseService.Initiate(err =>
             {
-               // if (err is InvalidLicenseException) return;
+                // if (err is InvalidLicenseException) return;
                 if (err != null && err is not InvalidLicenseException)
                 {
                     MsgBoxHelper.ShowError(err.Message);
                     return;
                 }
                 ActivateLicense();
+                FirebaseHelper.InitializeService(this); // TODO: Test this
                 TimeStampHelper.ShowRequiredNotifications();
             });
 
             NotificationActivator.register();
-            
-            FirebaseHelper.InitializeService(this);
+
         }
 
         protected override void OnExit(ExitEventArgs e)
@@ -591,7 +591,7 @@ namespace Components
         {
             CheckForUpdates();
             UpdateSettingItem.Visible = true;
-            if (IsPurchaseDone)
+            if (IsPurchaseDone) // TODO: Remove this....
                 FirebaseSingletonV2.GetInstance.UpdateConfigurations();
         }
 

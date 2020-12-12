@@ -61,7 +61,9 @@ function openGithub() {
 }
 
 function openDocs() {
-  window.open(window.location.href + "docs");
+  let href = window.location.href;
+  href = href.replace(/#(.*)/g, "").replace("index.html", "");
+  window.open(href + "docs");
 }
 
 function showContactForm() {

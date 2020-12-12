@@ -22,6 +22,43 @@ using FireSharp.Core.Response;
 /**
  * A class which needs to be made for safe handling of Firebase data as
  * original V1 needs a complete refactoring.
+ * 
+ * Why this class exist?
+ * Currently Google doesn't provide any APIs for .Net to work with firebase,
+ * hence there is need to find some third party tools like FireSharp which 
+ * works but there are issues with authentication & also it uses old 
+ * deprecated database secret key instead of access token.
+ * 
+ * Hence I need to built a complete solution by refactoring the abandoned FireSharp
+ * project to make it work with my database, trust me it was not easy. The current 
+ * public APIs provided by the library doesn't fit the case many of them won't invoke
+ * change events at appropriate time, so I updated the lib to make it work my case but
+ * even then it doesn't handle network change, token saving or slow initialization 
+ * (mainly due to refreshing existing token).
+ * 
+ * That's why instead of modeling the API for my use case I made my first-class solution
+ * which will handle all of these also provides some routes to communicate with my app.
+ * 
+ * Currently the class does the following thing.
+ * 1. Detect appropriate changes & fires onChange event which provides "path" & "data"
+ *    which are affected. Using my <see cref="Components.FirebaseParser"/> (which is basically a diff
+ *    util) determines the changes associated with the data.
+ * 2. Handles saved instance. If application is stopped, a current snapshot of data is saved
+ *    locally which is retrieved when the app is started again (for diff).
+ * 3. Detects data addition, deletion, updation (using a quirky hack) & dispatches this information
+ *    to main thread to perform further actions.
+ * 4. Automatically handles OAuth & token refreshing, in case any error it will post the error to
+ *    main threaded application class.
+ * 5. Supports queuing, if for some reasons client takes some time to initialize & during this 
+ *    user forwarded some firebase actions, those will be added to queue & will be executed once
+ *    initialized.
+ * 6. Handle firebase errors like permission denied for R/W. Also capable of handling other
+ *    certain errors. It try to resolve it itself, in case if it fails then it post the error
+ *    to main threaded application class for further handling.
+ * 7. Provides a helper class <see cref="Components.FirebaseHelper"/> for making safe update, push
+ *    calls to firebase. It is mostly a wrapper around this class (it most cases this class is 
+ *    responsible for detecting authorization error, network change error).
+ *    
  */
 namespace Components
 {
@@ -31,7 +68,7 @@ namespace Components
         #region Variable declarations
 
         private bool isPreviousAddRemaining, isPreviousRemoveRemaining, isPreviousUpdateRemaining = false;
-        private bool _isDeinitialized = false;
+        private bool _isDeinitialized = false, invokeStackAfterClientInitialization = false;
         public bool IsDeinitialized { get => _isDeinitialized; }
 
         private readonly List<string> addStack = new List<string>();
@@ -108,7 +145,8 @@ namespace Components
 
             if (FirebaseCurrent == null) return;
 
-            ClearAllStack();
+            if (!invokeStackAfterClientInitialization)
+                ClearAllStack();
 
             DefaultSettings.ValidateFirebaseSetting();
 
@@ -229,6 +267,8 @@ namespace Components
         {
             if (!isClientInitialized && BindDatabase)
             {
+                if (!isClientInitialized) invokeStackAfterClientInitialization = true;
+
                 dTimer.Start();
                 Log($"Asserting: {invoke}");
                 // Some invokes are not supported yet.
@@ -663,6 +703,7 @@ namespace Components
         private async void OnClientInitialized()
         {
             Log();
+            invokeStackAfterClientInitialization = false;
             if (addStack.Count > 0) await AddClip(addStack.Pop()).ConfigureAwait(false);
             if (removeStack.Count > 0) await RemoveClip(removeStack.Pop()).ConfigureAwait(false);
             if (updateStack.Count > 0)

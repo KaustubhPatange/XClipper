@@ -140,7 +140,7 @@
     <string name="force_logout_summary">Sometimes logout doesn\'t succeed as expected. Use this to forcefully remove the credentials</string>
     <string name="force_logout_text">Silently send a logout request</string>
     <string name="standard_pricing">Get a standard pricing model with maximum server storage you can get.</string>
-    <string name="premium_pricing">Store your data on your own server for lifetime which is secure &#38; free.</string>
+    <string name="premium_pricing">Synchronize your clipboard activity with PC securely for lifetime.</string>
     <string name="awesome">You are awesome!</string>
     <string name="update_download_complete">Update downloaded</string>
     <string name="update_downoad_install">Click OK to apply update!</string>

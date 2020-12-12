@@ -19,7 +19,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="?colorForeground"
-                app:purchaseAmount="$30"
+                app:purchaseAmount="$25"
                 app:purchaseButtonColor="@color/palette4"
                 app:purchaseDescription="@string/premium_pricing"
                 app:purchaseType="Premium"
