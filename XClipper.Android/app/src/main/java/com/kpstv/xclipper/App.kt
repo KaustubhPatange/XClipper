@@ -58,7 +58,7 @@ object App {
     lateinit var DeviceID: String
 
     var bindToFirebase = true
-    var bindDelete = true
+    var bindDelete = false
     var runAutoSync = false
     var observeFirebase = true
 

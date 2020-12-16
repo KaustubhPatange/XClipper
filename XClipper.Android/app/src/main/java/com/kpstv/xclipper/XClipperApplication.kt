@@ -7,6 +7,7 @@ import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import com.kpstv.hvlog.HVLog
 import com.kpstv.xclipper.App.AUTO_SYNC_PREF
+import com.kpstv.xclipper.App.BIND_DELETE_PREF
 import com.kpstv.xclipper.App.BIND_PREF
 import com.kpstv.xclipper.App.DARK_PREF
 import com.kpstv.xclipper.App.DARK_THEME
@@ -16,6 +17,7 @@ import com.kpstv.xclipper.App.LANG_PREF
 import com.kpstv.xclipper.App.SUGGESTION_PREF
 import com.kpstv.xclipper.App.SWIPE_DELETE_PREF
 import com.kpstv.xclipper.App.UID
+import com.kpstv.xclipper.App.bindDelete
 import com.kpstv.xclipper.App.bindToFirebase
 import com.kpstv.xclipper.App.blackListedApps
 import com.kpstv.xclipper.App.runAutoSync
@@ -73,9 +75,8 @@ class XClipperApplication : Application(), Configuration.Provider {
         runAutoSync = preferenceProvider.getBooleanKey(AUTO_SYNC_PREF, false)
         swipeToDelete = preferenceProvider.getBooleanKey(SWIPE_DELETE_PREF, true)
         blackListedApps = preferenceProvider.getStringSet(App.BLACKLIST_PREF, mutableSetOf())
-        bindToFirebase = if (UID.isBlank()) false
-        else
-            preferenceProvider.getBooleanKey(BIND_PREF, false)
+        bindDelete = preferenceProvider.getBooleanKey(BIND_DELETE_PREF, false)
+        bindToFirebase = if (UID.isBlank()) false else preferenceProvider.getBooleanKey(BIND_PREF, false)
 
         /** Initialize firebase data */
         firebaseProvider.initialize(dbConnectionProvider.optionsProvider())

@@ -1,7 +1,7 @@
 package com.kpstv.xclipper.ui.fragments.settings
 
-import android.app.AlertDialog
 import android.os.Bundle
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -29,8 +29,11 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class AccountPreference : PreferenceFragmentCompat() {
 
-    @Inject lateinit var preferenceProvider: PreferenceProvider
-    @Inject lateinit var dbConnectionProvider: DBConnectionProvider
+    @Inject
+    lateinit var preferenceProvider: PreferenceProvider
+
+    @Inject
+    lateinit var dbConnectionProvider: DBConnectionProvider
 
     private val mainViewModel: MainViewModel by viewModels()
 
@@ -99,7 +102,19 @@ class AccountPreference : PreferenceFragmentCompat() {
         /** Bind delete preference */
         bindDeletePreference = findPreference(BIND_DELETE_PREF)
         bindDeletePreference?.setOnPreferenceChangeListener { _, newValue ->
-            App.bindDelete = newValue as Boolean
+            if (newValue == true) {
+                AlertDialog.Builder(requireContext())
+                    .setTitle(getString(R.string.warning))
+                    .setCancelable(false)
+                    .setMessage(getString(R.string.bind_delete_warning))
+                    .setPositiveButton(R.string.ok) { _, _ ->
+                        App.bindDelete = newValue as Boolean
+                    }
+                    .setNeutralButton(R.string.cancel) { _, _ ->
+                        bindDeletePreference?.isChecked = false
+                    }
+                    .show()
+            }
             true
         }
 
@@ -129,12 +144,13 @@ class AccountPreference : PreferenceFragmentCompat() {
     }
 
     private fun checkForPreferenceChanged() {
+        // Do not add bindDeletePreference as an auto property
+        // since it will cause issues for non-paid users.
         if (UID.isBlank()) {
             connectPreference?.isEnabled = true
             logPreference?.isEnabled = false
             bindPreference?.isEnabled = false
             autoSyncPreference?.isEnabled = false
-            bindDeletePreference?.isEnabled = false
         } else {
             connectPreference?.isEnabled = false
             logPreference?.isEnabled = true
@@ -144,7 +160,6 @@ class AccountPreference : PreferenceFragmentCompat() {
 
             bindPreference?.isChecked = App.bindToFirebase
             autoSyncPreference?.isChecked = App.runAutoSync
-            bindDeletePreference?.isChecked = App.bindDelete
         }
     }
 }
