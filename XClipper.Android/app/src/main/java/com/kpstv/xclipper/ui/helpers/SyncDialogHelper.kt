@@ -11,6 +11,7 @@ import com.kpstv.xclipper.ui.dialogs.CustomLottieDialog
 import com.kpstv.xclipper.ui.fragments.Home
 import java.util.*
 
+@Deprecated("Sync button will let user know about synchronization feature")
 class SyncDialogHelper(
     private val activity: FragmentActivity,
     private val preferenceProvider: PreferenceProvider,

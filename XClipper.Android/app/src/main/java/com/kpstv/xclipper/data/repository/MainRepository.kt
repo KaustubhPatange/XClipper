@@ -2,6 +2,7 @@ package com.kpstv.xclipper.data.repository
 
 import androidx.lifecycle.LiveData
 import androidx.paging.PagedList
+import com.kpstv.xclipper.ui.helpers.NotificationHelper
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.extensions.enumerations.FilterType
 import com.kpstv.xclipper.extensions.listeners.RepositoryListener
@@ -59,8 +60,8 @@ interface MainRepository {
      * While saving to database it will delete an existing data (if present)
      * and then create new data from the given string and perform insert operation.
      */
-    fun updateRepository(unencryptedData: String?)
-    fun updateRepository(clip: Clip)
+    fun updateRepository(unencryptedData: String?, toFirebase:Boolean = true)
+    fun updateRepository(clip: Clip, toFirebase:Boolean = true)
 
     fun getAllData(): List<Clip>
     suspend fun getData(unencryptedText: String): Clip?
@@ -87,4 +88,14 @@ interface MainRepository {
     fun validateData(statusListener: StatusListener)
 
     fun getAllLiveClip(): LiveData<List<Clip>>
+
+    /**
+     * At this point I realize [NotificationHelper] is tightly coupled to the repository
+     * and I therefore have no control over on how to manage notifications thrown from
+     * inserts them without disturbing existing function calls at various places.
+     *
+     * This functions should help me.
+     */
+    fun enableNotify()
+    fun disableNotify()
 }

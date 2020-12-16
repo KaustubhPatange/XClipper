@@ -1,5 +1,13 @@
 package com.kpstv.xclipper
 
+import com.kpstv.xclipper.data.model.Clip
+import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.receiveAsFlow
+import org.junit.Assert
 import org.junit.Test
 import kotlin.system.measureTimeMillis
 
@@ -172,5 +180,104 @@ class GeneralTests {
             </html>
         """
         println("https?://(www\\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)".toRegex().matchEntire(string)?.value)
+    }
+
+    @Test
+    fun eventStreamTest() {
+        val threshold = 500
+        val channel = Channel<Int>()
+        GlobalScope.launch {
+            channel.send(0)
+            delay(50)
+            channel.send(2)
+            channel.send(3)
+            delay(100)
+            channel.send(4)
+            channel.send(5)
+            channel.send(6)
+            delay(100)
+            channel.send(7)
+            delay(600)
+            channel.send(8)
+            channel.send(9)
+            delay(100)
+            channel.send(10)
+            delay(400)
+            channel.close()
+        }
+        runBlocking {
+            val firstList = ArrayList<Int>()
+            val secondList = ArrayList<Int>()
+            var seconds = System.currentTimeMillis()
+            var currentList = firstList
+            channel.receiveAsFlow().collect {
+                if (System.currentTimeMillis() - seconds <= threshold) {
+                    seconds = System.currentTimeMillis()
+                    println("Adding: $it")
+                    currentList.add(it)
+                }else {
+                    println("Creating a new list... flushing")
+                    currentList = secondList
+                    seconds = System.currentTimeMillis()
+                    println("Adding: $it")
+                    currentList.add(it)
+                }
+            }
+            Assert.assertEquals(firstList, listOf(0,2,3,4,5,6,7))
+            Assert.assertEquals(secondList, listOf(8,9,10))
+        }
+    }
+
+    @Test
+    fun transactionDelayedTest() {
+        val list = ArrayList<Int>()
+        val transactionFlow = MutableSharedFlow<Boolean>()
+        GlobalScope.launch {
+            for(i in 0..10) {
+                delay((80 * i).toLong())
+                transactionFlow.emit(true)
+                addToTransaction(i)
+            }
+        }
+        val handler = CoroutineExceptionHandler {_, e ->
+            println("Cancelled: $e")
+        }
+
+        val job = SupervisorJob()
+        runBlocking(job + handler) {
+            delay(5000)
+//            launch {
+//                transactionFlow.debounce(500).collect {
+//                    if (!it) return@collect
+//                    if (list.size == 1) {
+//                        println("Single Item: $list")
+//                    } else if (list.size > 1) {
+//                        println("Multiple Items: $list")
+//                    }
+//                    list.clear()
+//                    transactionFlow.emit(false)
+//                    job.cancel()
+//                }
+//            }
+        }
+    }
+    private val list = ArrayList<Int>()
+    private val job = SupervisorJob()
+    private val exceptionHandler = CoroutineExceptionHandler {_,_ ->
+        // do nothing
+    }
+    fun addToTransaction(clip: Int) {
+        job.cancel()
+        list.add(clip)
+        CoroutineScope(Dispatchers.IO + job).launch(exceptionHandler) {
+            delay(500)
+            if (list.size == 1) {
+                println("Single Item: $list")
+            } else if (list.size > 1) {
+                println("Multiple Items: $list")
+            }
+            list.clear()
+            job.cancel()
+        }
     }
 }

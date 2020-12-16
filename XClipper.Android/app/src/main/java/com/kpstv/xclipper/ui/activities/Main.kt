@@ -60,7 +60,7 @@ class Main : AppCompatActivity() {
             activity = this,
             preferenceProvider = preferenceProvider,
             onNeedToShowReview = { helper: ReviewHelper ->
-                helper.showReviewDialog { helper.requestForReview() }
+                helper.showReviewDialog()
             }
         ).register()
     }

@@ -30,6 +30,7 @@ class MainRepositoryImpl @Inject constructor(
     private val lock = Any()
     private val lock1 = Any()
     private val lock2 = Any()
+    private var notifyEnable = true
 
     var data: LiveData<PagedList<Clip>>? = null
 
@@ -37,7 +38,6 @@ class MainRepositoryImpl @Inject constructor(
         clipDao.getAllLiveData().observeForever {
             data
         }
-        val map = clipDao.getDataSource().map { clip -> clip }
     }
 
     override fun getDataSource() =
@@ -67,7 +67,8 @@ class MainRepositoryImpl @Inject constructor(
                 clipDao.insert(clip)
 
                 /** Send a notification */
-                mainThread { notificationHelper.pushNotification(clip.data) }
+                if (notifyEnable)
+                    mainThread { notificationHelper.pushNotification(clip.data) }
 
                 Log.e(TAG, "Data Saved: ${clip.data}")
             }
@@ -242,20 +243,29 @@ class MainRepositoryImpl @Inject constructor(
         saveClip(item)
     }
 
-    override fun updateRepository(unencryptedData: String?) {
+    override fun updateRepository(unencryptedData: String?, toFirebase: Boolean) {
         if (unencryptedData != null && unencryptedData.length > MAX_CHARACTER_TO_STORE) return
 
         val clip = Clip.from(unencryptedData!!)
 
         saveClip(clip)
-        firebaseProvider.uploadData(clip)
+        if (toFirebase)
+            firebaseProvider.uploadData(clip)
     }
 
-    override fun updateRepository(clip: Clip) {
+    override fun updateRepository(clip: Clip, toFirebase: Boolean) {
         val finalClip = Clip.from(clip)
 
         saveClip(finalClip)
-        firebaseProvider.uploadData(finalClip)
+        if (toFirebase)
+            firebaseProvider.uploadData(finalClip)
     }
 
+    override fun enableNotify() {
+        notifyEnable = true
+    }
+
+    override fun disableNotify() {
+        notifyEnable = false
+    }
 }

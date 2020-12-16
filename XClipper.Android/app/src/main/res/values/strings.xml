@@ -173,4 +173,5 @@
     <string name="rate_title">Enjoying the app?</string>
     <string name="rate_text">Kindly review the app on Google play which will help us reach more audience.</string>
     <string name="data_removed_all">All data from database are removed</string>
+    <string name="multi_clips_added">new clips are added</string>
 </resources>

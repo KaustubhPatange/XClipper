@@ -74,7 +74,7 @@ class ClipboardAccessibilityService : AccessibilityService() {
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         currentPackage = event?.packageName
 
-        logger(TAG, "$event")
+      //  logger(TAG, "$event")
 //        logger(TAG, "SourceText: ${event?.source}; Text is null: ${event?.text.isNullOrEmpty()}; $event")
 
         if (event?.eventType != null)

@@ -365,10 +365,9 @@ class FirebaseProviderImpl @Inject constructor(
         }
     }
 
-    override fun isObservingChanges() = valueListener != null && childListener != null
+    override fun isObservingChanges() = valueListener != null
 
     private var valueListener: FValueEventListener? = null
-    private var childListener: FChildEventListener? = null
     private var inconsistentDataListener: SimpleFunction? = null
     override fun observeDataChange(
         changed: (Clip?) -> Unit,
@@ -402,10 +401,8 @@ class FirebaseProviderImpl @Inject constructor(
                 val json = gson.toJson(snap.value)
                 val firebaseUser = User.from(json)
 
-                /** Update the properties */
                 checkForUserDetailsAndUpdateLocal()
 
-                /** Check for device validation */
                 validDevice = (firebaseUser.Devices ?: mutableListOf()).count {
                     it.id == DeviceID
                 } > 0
@@ -418,12 +415,16 @@ class FirebaseProviderImpl @Inject constructor(
                 if (json == null)
                     error.invoke(Exception("Database is null"))
 
-                if (bindDelete) {
-                    val userClips = user?.Clips?.decrypt()?.map { it.data } ?: emptyList()
-                    val firebaseClips = firebaseUser.Clips?.decrypt()?.map { it.data } ?: emptyList()
-                    userClips.minus(firebaseClips).let { if (it.isNotEmpty()) mainThread { removed.invoke(it) } }
+                val userClips = user?.Clips?.decrypt() ?: emptyList()
+                val firebaseClips = firebaseUser.Clips?.decrypt() ?: emptyList()
 
-                    if (firebaseClips.isEmpty() && userClips.isNotEmpty()) {
+                firebaseClips.minus(userClips).let { clips -> clips.forEach { changed.invoke(it) } }
+
+                if (bindDelete) {
+                    val userDataClips = userClips.map { it.data }
+                    val firebaseDataClips = firebaseClips.map { it.data }
+                    userDataClips.minus(firebaseDataClips).let { if (it.isNotEmpty()) mainThread { removed.invoke(it) } }
+                    if (firebaseDataClips.isEmpty() && userDataClips.isNotEmpty()) {
                         removedAll.invoke()
                     }
                 }
@@ -439,35 +440,10 @@ class FirebaseProviderImpl @Inject constructor(
             }
         )
 
-        val childListener = FChildEventListener(
-            /**
-             * Do not try to think & add [FChildEventListener.onDataRemoved] listener hoping
-             * that it would solve linear deletion problem. Spoiler alert it doesn't but it
-             * makes it even worse.
-             *
-             * Like if you delete an item in the middle of the list, it will shrink by calling
-             * [FChildEventListener.onDataRemoved] every time a child is changed. Better to keep
-             * the logic to [FValueEventListener.onDataChange] itself.
-             */
-            onDataAdded = { snap ->
-                if (validDevice && bindToFirebase) {
-                    val json = gson.toJson(snap.value)
-                    val clip = gson.fromJson(json, Clip::class.java)
-
-                    if (clip != null) {
-                        changed.invoke(clip)
-                    }
-                }
-            }
-        )
-
-        database.getReference(USER_REF).child(UID).child(CLIP_REF)
-            .addChildEventListener(childListener)
         database.getReference(USER_REF).child(UID)
             .addValueEventListener(valueListener)
 
         this.valueListener = valueListener
-        this.childListener = childListener
     }
 
     /**
@@ -509,12 +485,9 @@ class FirebaseProviderImpl @Inject constructor(
         if (isObservingChanges()) {
             database.getReference(USER_REF).child(UID)
                 .removeEventListener(valueListener!!)
-            database.getReference(USER_REF).child(UID).child(CLIP_REF)
-                .removeEventListener(childListener!!)
             removeUserDetailsAndUpdateLocal()
         }
         valueListener = null
-        childListener = null
     }
 
     private enum class ValidationContext {

@@ -5,7 +5,6 @@ import com.google.android.play.core.review.ReviewManagerFactory
 import com.kpstv.hvlog.HVLog
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.provider.PreferenceProvider
-import com.kpstv.xclipper.extensions.SimpleFunction
 import com.kpstv.xclipper.ui.dialogs.CustomLottieDialog
 import com.kpstv.xclipper.ui.fragments.Home
 import java.util.*
@@ -13,6 +12,7 @@ import java.util.*
 class ReviewHelper(
     private val activity: FragmentActivity,
     private val preferenceProvider: PreferenceProvider,
+    @Deprecated("Helper will automatically handle the request")
     private val onNeedToShowReview: (ReviewHelper) -> Unit
 ) : AbstractFragmentHelper<Home>(activity, Home::class) {
 
@@ -25,9 +25,10 @@ class ReviewHelper(
     /**
      * This will request a review flow from [manager]
      */
-    fun requestForReview(): Unit = with(activity) {
+    private fun requestForReview(): Unit = with(activity) {
         val request = manager.requestReviewFlow()
         request.addOnCompleteListener { info ->
+            //if (info.isComplete)
             if (info.isSuccessful) {
                 val reviewInfo = info.result
                 val flow = manager.launchReviewFlow(this, reviewInfo)
@@ -41,22 +42,6 @@ class ReviewHelper(
         }
     }
 
-    /**
-     * The class provides a default dialog that can be shown instead of custom one.
-     */
-    fun showReviewDialog(block: SimpleFunction) = with(activity) {
-        CustomLottieDialog(this)
-            .setLottieView(R.raw.star)
-            .setLoop(false)
-            .setTitle(R.string.rate_title)
-            .setMessage(R.string.rate_text)
-            .setNeutralButton(R.string.later)
-            .setPositiveButton(R.string.review) {
-                block.invoke()
-            }
-            .show()
-    }
-
     private fun attach(): Unit = with(activity) {
         val triggerDateLong = preferenceProvider.getLongKey(SHOW_REVIEW_FLOW_PREF, -1L)
 
@@ -67,7 +52,8 @@ class ReviewHelper(
 
         val currentDateLong = Calendar.getInstance().time.time
         if (currentDateLong >= triggerDateLong) {
-            onNeedToShowReview.invoke(this@ReviewHelper)
+            requestForReview()
+            // onNeedToShowReview.invoke(this@ReviewHelper)
         }
     }
 
@@ -75,6 +61,23 @@ class ReviewHelper(
         val setTriggerDate = Calendar.getInstance()
             .apply { add(Calendar.DAY_OF_MONTH, 2) }.time.time
         preferenceProvider.putLongKey(SHOW_REVIEW_FLOW_PREF, setTriggerDate)
+    }
+
+    /**
+     * The class provides a default dialog that can be shown instead of custom one.
+     */
+    @Deprecated("Currently there is no way to detect whether a user has reviewed the app. Usage of dialogs or any similar use-cases are prohibited.")
+    fun showReviewDialog() = with(activity) {
+        CustomLottieDialog(this)
+            .setLottieView(R.raw.star)
+            .setLoop(false)
+            .setTitle(R.string.rate_title)
+            .setMessage(R.string.rate_text)
+            .setNeutralButton(R.string.later)
+            .setPositiveButton(R.string.review) {
+                requestForReview()
+            }
+            .show()
     }
 
     companion object {

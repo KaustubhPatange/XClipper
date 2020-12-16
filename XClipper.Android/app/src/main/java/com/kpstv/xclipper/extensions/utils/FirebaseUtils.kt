@@ -6,15 +6,23 @@ import androidx.lifecycle.Observer
 import com.kpstv.hvlog.HVLog
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.R
+import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.data.repository.MainRepository
+import com.kpstv.xclipper.data.repository.Transaction
 import com.kpstv.xclipper.extensions.decrypt
 import com.kpstv.xclipper.extensions.enumerations.FirebaseState
+import com.kpstv.xclipper.extensions.ioThread
 import com.kpstv.xclipper.ui.helpers.NotificationHelper
 import dagger.hilt.android.qualifiers.ApplicationContext
 import es.dmoral.toasty.Toasty
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.debounce
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -30,17 +38,32 @@ class FirebaseUtils @Inject constructor(
     private val TAG = FirebaseUtils::class.simpleName
 
     private var shownToast = false
+    private val clipTransaction = Transaction<Clip> { list ->
+        when {
+            list.size == 1 -> {
+                repository.updateClip(list[0])
+            }
+            list.size  > 5 -> {
+                notificationHelper.pushNotification("${list.size} ${context.getString(R.string.multi_clips_added)}")
+                repository.disableNotify()
+                list.forEach { repository.updateClip(it) }
+                repository.enableNotify()
+            }
+            else -> {
+                list.forEach { repository.updateClip(it) }
+            }
+        }
+    }
 
     fun observeDatabaseChangeEvents(): Unit =
         with(context) {
             if (firebaseProvider.isObservingChanges()) return@with
             if (!App.observeFirebase) return@with
-
             HVLog.d("Attached")
             firebaseProvider.observeDataChange(
                 changed = { clip -> // Unencrypted data
-                    if (App.observeFirebase)
-                        repository.updateClip(clip?.decrypt())
+                    if (App.observeFirebase && clip != null)
+                        clipTransaction.add(clip)
                 },
                 removed = { items -> // Unencrypted listOf data
                     items?.forEach { repository.deleteClip(it) }
