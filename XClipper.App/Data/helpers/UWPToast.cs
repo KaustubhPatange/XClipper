@@ -28,14 +28,17 @@ namespace Components
         internal ToastRequest? request;
         internal Dispatcher? dispatcher;
 
+        private bool OnActionDispatched = false;
         private UWPToast() { }
 
         public async Task Show()
         {
+            
             NotificationActivator.RegisterComType(typeof(NotificationActivator), OnActivated);
+            NotificationHelper.RegisterComServer(typeof(NotificationActivator), Assembly.GetExecutingAssembly().Location);
             var result = await ToastManager.ShowAsync(request).ConfigureAwait(false);
 
-            if (result.ToString() == "Activated" && OnActivatedListener != null)
+            if (result.ToString() == "Activated" && OnActivatedListener != null && !OnActionDispatched)
             {
                 dispatcher?.Invoke(OnActivatedListener);
             } else if (result.ToString() == "UserCanceled" && OnCancelledListener != null)
@@ -44,6 +47,7 @@ namespace Components
             }
 
             NotificationActivator.UnregisterComType();
+            NotificationHelper.UnregisterComServer(typeof(NotificationActivator));
             if (File.Exists(ImagePath)) File.Delete(ImagePath);
         }
 
@@ -51,6 +55,7 @@ namespace Components
         {
             if ((arguments?.StartsWith("action=")).GetValueOrDefault())
             {
+                OnActionDispatched = true;
                 string? result = arguments?.Substring("action=".Length);
                 foreach(var entry in Listeners)
                 {

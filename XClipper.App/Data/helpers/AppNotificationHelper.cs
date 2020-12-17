@@ -24,6 +24,8 @@ namespace Components
 		/// <param name="message"></param>
 		/// <param name="silent"></param>
 		/// <param name="doOnActivated"></param>
+		/// 
+		[Obsolete("Replace with UWPToast")]
 		public static async Task ShowBasicToast(Dispatcher dispatcher, string title, string? message = null, bool silent = false, 
 			ToastAudioType audioType = ToastAudioType.DEFAULT, Action? doOnActivated = null)
 		{
@@ -58,38 +60,41 @@ namespace Components
 		/// This will show notification for image type data.
 		/// </summary>
 		/// <param name="imagePath"></param>
+		///
+
+		[Obsolete("Replace with UWPToast")]
 		public static async Task ShowImageToast(Dispatcher dispatcher, string imagePath, string? title = null, string? message = null,
 			bool silent = false, ToastAudioType audioType = ToastAudioType.DEFAULT, Action? doOnActivated = null)
 		{
-			var visual = new ToastVisual
-			{
-				BindingGeneric = new ToastBindingGeneric
-				{
-					Children =
-					{
-						new AdaptiveImage { Source = imagePath },
-					}
-				}
-			};
+            var visual = new ToastVisual
+            {
+                BindingGeneric = new ToastBindingGeneric
+                {
+                    Children =
+                    {
+                        new AdaptiveImage { Source = imagePath },
+                    }
+                }
+            };
 
-			if (title != null)
-				visual.BindingGeneric.Children.Add(new AdaptiveText { Text = title });
+            if (title != null)
+                visual.BindingGeneric.Children.Add(new AdaptiveText { Text = title });
 
-			if (message != null)
-				visual.BindingGeneric.Children.Add(new AdaptiveText { Text = message });
+            if (message != null)
+                visual.BindingGeneric.Children.Add(new AdaptiveText { Text = message });
 
-			var request = CreateRequest(visual, audioType, Silent: silent);
+            var request = CreateRequest(visual, audioType, Silent: silent);
 
-			var result = await ToastManager.ShowAsync(request).ConfigureAwait(false);
+            var result = await ToastManager.ShowAsync(request).ConfigureAwait(false);
 
-			if (result == ToastResult.Activated)
-			{
-				if (doOnActivated != null)
-				{
-					dispatcher?.Invoke(doOnActivated);
-				}
-			}
-		}
+            if (result == ToastResult.Activated)
+            {
+                if (doOnActivated != null)
+                {
+                    dispatcher?.Invoke(doOnActivated);
+                }
+            }
+        }
 
 		/// <summary>
 		/// A particular dialog for only one use case i.e to inform users about synchronization feature.

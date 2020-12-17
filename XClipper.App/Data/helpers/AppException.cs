@@ -109,10 +109,9 @@ namespace Components
 
             SendReport(Environment.UserName, dib.ToString()).RunAsync();
 
-            AppNotificationHelper.ShowBasicToast(
-               dispatcher: Application.Current.Dispatcher,
-               title: Translation.APP_CRASH
-           ).RunAsync();
+            new UWPToast.Builder(Application.Current.Dispatcher)
+                .AddText(Translation.APP_CRASH)
+                .build().ShowAsync();
         }
 
         private async Task SendReport(string sender, string content)

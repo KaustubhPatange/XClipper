@@ -38,7 +38,7 @@ interface FirebaseProvider {
      */
     fun isObservingChanges(): Boolean
     fun observeDataChange(
-        changed: (Clip?) -> Unit,
+        changed: (List<Clip>) -> Unit,
         removed: (List<String>?) -> Unit,
         removedAll: SimpleFunction,
         error: (Exception) -> Unit,

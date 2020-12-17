@@ -125,11 +125,11 @@ namespace Components
                     return;
                 }
                 ActivateLicense();
-                FirebaseHelper.InitializeService(this); // TODO: Test this
+                FirebaseHelper.InitializeService(this);
                 TimeStampHelper.ShowRequiredNotifications();
             });
 
-            NotificationActivator.register();
+            //  NotificationActivator.register();
 
         }
 
@@ -346,16 +346,12 @@ namespace Components
 
         public void OnImageSaveFailed()
         {
-            AppNotificationHelper.ShowBasicToast(
-                dispatcher: Dispatcher,
-                title: Translation.MSG_IMAGE_SAVE_FAILED_TITLE,
-                message: Translation.MSG_IMAGE_SAVE_FAILED_TEXT,
-                silent: !PlayNoticationSound,
-                doOnActivated: () =>
-                {
-                    Process.Start("explorer.exe", ApplicationLogDirectory);
-                }
-            ).RunAsync();
+            new UWPToast.Builder(Dispatcher)
+                .AddText(Translation.MSG_IMAGE_SAVE_FAILED_TITLE)
+                .AddText(Translation.MSG_IMAGE_SAVE_FAILED_TEXT)
+                .SetSilent(!PlayNoticationSound)
+                .SetOnActivatedListener(() => Process.Start("explorer.exe", ApplicationLogDirectory))
+                .build().ShowAsync();
         }
 
         #endregion
@@ -401,13 +397,12 @@ namespace Components
         {
             if (NoNotifyChanges) return;
 
-            AppNotificationHelper.ShowBasicToast(
-                dispatcher: Dispatcher,
-                title: title,
-                message: message,
-                silent: !PlayNoticationSound,
-                doOnActivated: onActive
-            ).RunAsync();
+            new UWPToast.Builder(Dispatcher)
+                .AddText(Translation.MSG_IMAGE_SAVE_FAILED_TITLE)
+                .AddText(Translation.MSG_IMAGE_SAVE_FAILED_TEXT)
+                .SetSilent(!PlayNoticationSound)
+                .SetOnActivatedListener(onActive)
+                .build().ShowAsync();
         }
 
         public void OnNoConfigurationFound() => CallSyncWindow();
@@ -420,12 +415,11 @@ namespace Components
 
             RemoveFirebaseCredentials();
 
-            AppNotificationHelper.ShowBasicToast(
-                dispatcher: Dispatcher,
-                Translation.SYNC_DISABLED_TITLE,
-                message: Translation.SYNC_DISABLED_TEXT,
-                silent: !PlayNoticationSound
-            ).RunAsync();
+            new UWPToast.Builder(Dispatcher)
+                .AddText(Translation.SYNC_DISABLED_TITLE)
+                .AddText(Translation.SYNC_DISABLED_TEXT)
+                .SetSilent(!PlayNoticationSound)
+                .build().ShowAsync();
         }
 
         public void OnNeedToGenerateToken(string ClientId, string ClientSecret)
@@ -529,20 +523,18 @@ namespace Components
 
         public void OnDeviceAdded(Device device)
         {
-            AppNotificationHelper.ShowBasicToast(
-                dispatcher: Dispatcher,
-                title: $"{device?.model} {Translation.SYNC_DEVICE_ADDED}",
-                silent: !PlayNoticationSound
-            ).RunAsync();
+            new UWPToast.Builder(Dispatcher)
+                .AddText($"{device?.model} {Translation.SYNC_DEVICE_ADDED}")
+                .SetSilent(!PlayNoticationSound)
+                .build().ShowAsync();
         }
 
         public void OnDeviceRemoved(Device device)
         {
-            AppNotificationHelper.ShowBasicToast(
-                dispatcher: Dispatcher,
-                title: $"{device?.model} {Translation.SYNC_DEVICE_REMOVED}",
-                silent: !PlayNoticationSound
-            ).RunAsync();
+            new UWPToast.Builder(Dispatcher)
+               .AddText($"{device?.model} {Translation.SYNC_DEVICE_REMOVED}")
+               .SetSilent(!PlayNoticationSound)
+               .build().ShowAsync();
         }
 
         private void ParseUpdateResult(string data, ContentType type)
@@ -550,35 +542,30 @@ namespace Components
             switch (type)
             {
                 case ContentType.Text:
-                    AppNotificationHelper.ShowBasicToast(
-                        dispatcher: Dispatcher,
-                        title: Translation.APP_COPY_TITLE,
-                        message: data.Truncate(NOTIFICATION_TRUNCATE_TEXT),
-                        silent: !PlayNoticationSound,
-                        audioType: ToastAudioType.MAIL,
-                        doOnActivated: () =>
+                    new UWPToast.Builder(Dispatcher)
+                        .AddText(Translation.APP_COPY_TITLE)
+                        .AddText(data.Truncate(NOTIFICATION_TRUNCATE_TEXT))
+                        .SetSilent(!PlayNoticationSound)
+                        .SetAudioType(ToastAudioType.MAIL)
+                        .SetOnActivatedListener(() => 
                         {
                             var recorder = AppModule.Container.Resolve<IKeyboardRecorder>();
                             recorder.Ignore(() =>
                             {
                                 ClipboardHelper.SetText(data); // Set text as current clipboard.
                             });
-                        }
-                    ).RunAsync();
+                        })
+                        .build().ShowAsync();
                     break;
                 case ContentType.Image:
-                    AppNotificationHelper.ShowImageToast(
-                        dispatcher: Dispatcher,
-                        imagePath: data,
-                        title: Translation.APP_COPY_TITLE_IMAGE,
-                        message: data,
-                        silent: !PlayNoticationSound,
-                        audioType: ToastAudioType.MAIL,
-                        doOnActivated: () =>
-                        {
-                            Process.Start(data); // Show image on default image viewer.
-                        }
-                    ).RunAsync();
+                    new UWPToast.Builder(Dispatcher)
+                        .AddImage(data)
+                        .AddText(Translation.APP_COPY_TITLE_IMAGE)
+                        .AddText(data)
+                        .SetSilent(!PlayNoticationSound)
+                        .SetAudioType(ToastAudioType.MAIL)
+                        .SetOnActivatedListener(() => Process.Start(data))
+                        .build().ShowAsync();
                     break;
             }
         }
@@ -591,8 +578,6 @@ namespace Components
         {
             CheckForUpdates();
             UpdateSettingItem.Visible = true;
-            if (IsPurchaseDone) // TODO: Remove this....
-                FirebaseSingletonV2.GetInstance.UpdateConfigurations();
         }
 
         private void CheckForUpdates()
@@ -604,17 +589,12 @@ namespace Components
                 if (isAvailable)
                 {
                     updateModel = model;
-
-                    AppNotificationHelper.ShowBasicToast(
-                        dispatcher: Dispatcher,
-                        title: Translation.APP_UPDATE_TITLE,
-                        message: Translation.APP_UPDATE_TEXT,
-                        silent: !PlayNoticationSound,
-                        doOnActivated: () =>
-                        {
-                            UpdateAction_BalloonTipClicked(this, EventArgs.Empty);
-                        }
-                    ).RunAsync();
+                    new UWPToast.Builder(Dispatcher)
+                        .AddText(Translation.APP_UPDATE_TITLE)
+                        .AddText(Translation.APP_UPDATE_TEXT)
+                        .SetSilent(!PlayNoticationSound)
+                        .SetOnActivatedListener(() => UpdateAction_BalloonTipClicked(this, EventArgs.Empty))
+                        .build().ShowAsync();
                 }
             });
         }
@@ -670,11 +650,10 @@ namespace Components
         {
             if (DisplayStartNotification)
             {
-                AppNotificationHelper.ShowBasicToast(
-                    dispatcher: Dispatcher,
-                    title: Translation.APP_START_SERVICE,
-                    silent: !PlayNoticationSound
-                ).RunAsync();
+                new UWPToast.Builder(Dispatcher)
+                    .AddText(Translation.APP_START_SERVICE)
+                    .SetSilent(!PlayNoticationSound)
+                    .build().ShowAsync();
             }
         }
 

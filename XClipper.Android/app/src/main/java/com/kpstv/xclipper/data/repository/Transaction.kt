@@ -9,6 +9,9 @@ import kotlinx.coroutines.*
  * It will carry out the operation after threshold limit is reached
  * till that time it will keep on polling the [Job].
  */
+// It's not currently used because of refactoring but it's a nice piece
+// to avoid overhead transactions
+@Suppress("unused")
 class Transaction<T>(
     private val thresholdMilliseconds: Long = 500,
     private val transaction: (List<T>) -> Unit

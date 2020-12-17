@@ -38,22 +38,6 @@ class FirebaseUtils @Inject constructor(
     private val TAG = FirebaseUtils::class.simpleName
 
     private var shownToast = false
-    private val clipTransaction = Transaction<Clip> { list ->
-        when {
-            list.size == 1 -> {
-                repository.updateClip(list[0])
-            }
-            list.size  > 5 -> {
-                notificationHelper.pushNotification("${list.size} ${context.getString(R.string.multi_clips_added)}")
-                repository.disableNotify()
-                list.forEach { repository.updateClip(it) }
-                repository.enableNotify()
-            }
-            else -> {
-                list.forEach { repository.updateClip(it) }
-            }
-        }
-    }
 
     fun observeDatabaseChangeEvents(): Unit =
         with(context) {
@@ -61,9 +45,23 @@ class FirebaseUtils @Inject constructor(
             if (!App.observeFirebase) return@with
             HVLog.d("Attached")
             firebaseProvider.observeDataChange(
-                changed = { clip -> // Unencrypted data
-                    if (App.observeFirebase && clip != null)
-                        clipTransaction.add(clip)
+                changed = { clips -> // Unencrypted data
+                    if (App.observeFirebase) {
+                        when {
+                            clips.size == 1 -> {
+                                repository.updateClip(clips[0])
+                            }
+                            clips.size  > 5 -> {
+                                notificationHelper.pushNotification("${clips.size} ${context.getString(R.string.multi_clips_added)}")
+                                repository.disableNotify()
+                                clips.forEach { repository.updateClip(it) }
+                                repository.enableNotify()
+                            }
+                            else -> {
+                                clips.forEach { repository.updateClip(it) }
+                            }
+                        }
+                    }
                 },
                 removed = { items -> // Unencrypted listOf data
                     items?.forEach { repository.deleteClip(it) }

@@ -370,7 +370,7 @@ class FirebaseProviderImpl @Inject constructor(
     private var valueListener: FValueEventListener? = null
     private var inconsistentDataListener: SimpleFunction? = null
     override fun observeDataChange(
-        changed: (Clip?) -> Unit,
+        changed: (List<Clip>) -> Unit,
         removed: (List<String>?) -> Unit,
         removedAll: SimpleFunction,
         error: (Exception) -> Unit,
@@ -418,7 +418,7 @@ class FirebaseProviderImpl @Inject constructor(
                 val userClips = user?.Clips?.decrypt() ?: emptyList()
                 val firebaseClips = firebaseUser.Clips?.decrypt() ?: emptyList()
 
-                firebaseClips.minus(userClips).let { clips -> clips.forEach { changed.invoke(it) } }
+                firebaseClips.minus(userClips).let { changed.invoke(it) }
 
                 if (bindDelete) {
                     val userDataClips = userClips.map { it.data }
