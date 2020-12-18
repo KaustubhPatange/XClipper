@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using static Components.Constants;
 
@@ -9,7 +10,6 @@ namespace Components.UI
         public CustomSyncWindow()
         {
             InitializeComponent();
-
             DataContext = new CustomSyncViewModel(this);
         }
 

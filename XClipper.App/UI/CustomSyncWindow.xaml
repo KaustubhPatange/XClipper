@@ -6,6 +6,7 @@
     xmlns:control="clr-namespace:Components.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:Components"
+    xmlns:main="clr-namespace:Components.UI"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:media="clr-namespace:System.Windows.Media;assembly=PresentationCore"
     xmlns:system="clr-namespace:System.IO;assembly=System"
@@ -52,10 +53,15 @@
 
                         <control:GroupSeparator Margin="0,10,0,0" Header="{DynamicResource settings_other}" />
                         <CheckBox
+                            x:Name="encrypt_check_box"
                             Margin="0,5,0,0"
                             Command="{Binding EncryptCommand}"
                             Content="{DynamicResource sync_encrypt_clip}"
-                            IsChecked="{Binding EFD}" />
+                            IsChecked="{Binding EFD}">
+                            <CheckBox.ToolTip>
+                                <ToolTip Content="{DynamicResource sync_encrypt_clip_free}" Visibility="{c:Binding '!local:DefaultSettings.IsPurchaseDone', FalseToVisibility=Collapsed}" />
+                            </CheckBox.ToolTip>
+                        </CheckBox>
                         <DockPanel Margin="0,5,0,0" ToolTip="{Binding Path=(local:DefaultSettings.FirebaseMaxItem), Converter={x:Static local:CustomSyncTooltipConverter.Instance}}">
                             <TextBlock Text="{DynamicResource sync_max_item}" />
                             <local:NumericTextBox

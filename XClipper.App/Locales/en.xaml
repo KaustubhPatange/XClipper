@@ -206,6 +206,7 @@
     <system:String x:Key="sync_notify_device_add">Show when device is added</system:String>
     <system:String x:Key="sync_notify_device_remove">Show when device is removed</system:String>
     <system:String x:Key="sync_encrypt_clip">Encrypt clips in the database</system:String>
+    <system:String x:Key="sync_encrypt_clip_free">Changing encryption password is available for premium users.</system:String>
     <system:String x:Key="sync_encrypt_database_error">Invalid database encrypt setting. Proceed to apply an autofix.</system:String>
     <system:String x:Key="sync_timeout_action_title">Last {0} actions didn't complete</system:String>
     <system:String x:Key="sync_timeout_action_text">Click here to take necessary measures.</system:String>
