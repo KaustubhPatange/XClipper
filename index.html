@@ -156,21 +156,27 @@
                     </div>
                     <!-- Modal body -->
                     <div class="modal-body">
-                        <div class="form-group">
-                            <div style="justify-content: center;">
-                                <span style=" color: white;" for="uidInput">Unique ID: </span><a target="_blank"
-                                    class="purchase-dialog-link"
+                        <div class="form-group;">
+                            <div style="text-align: center; display: flex; justify-content: space-between;">
+                                <span style=" color: white;" for="purchase_emailInput">Email: </span>
+                                <img data-toggle="tooltip" title="Will be used for contact purpose, if needed."
+                                    src="XClipper.Web/images/question.svg" style="margin-top: 5px;" width="18px"
+                                    height="18px" />
+                            </div>
+                            <input style="margin-top: 10px; background: #1b1d24; border-color: #515670; color: white;"
+                                type="text" class="form-control" id="purchase_emailInput">
+                        </div>
+                        <div class="form-group;" style=" margin-top: 15px;margin-bottom: 10px;">
+                            <div style="text-align: center; display: flex; justify-content: space-between;">
+                                <span style=" color: white;" for="uidInput">Unique ID: </span>
+                                <a style="margin-top: 5px;" target="_blank" class="purchase-dialog-link"
                                     href="https://kaustubhpatange.github.io/XClipper/docs/#/uid">How
                                     to get
                                     this?</a>
                             </div>
-
                             <input style="margin-top: 10px; background: #1b1d24; border-color: #515670; color: white;"
                                 type="text" class="form-control" id="uidInput">
                         </div>
-                        <span style="font-size: 14px;"><a target="_blank" id="purchaseModal-link">Learn more</a>,
-                            about this pricing
-                            category.</span>
                     </div>
 
                     <!-- Modal footer -->
@@ -192,7 +198,7 @@
                             <div style="margin-bottom: 10px; display: none;" id="modal-content-success">
                                 <span style="font-size: 20px; color: #15c90b;">Payment
                                     Completed<br></span>
-                                <span>Restart XClipper instance on PC</span>
+                                <span style="font-size: 15px;">Restart XClipper app from your PC</span>
                             </div>
                             <div style="display: block;" id="modal-content-failed">
                                 <span style="font-size: 20px; color: #7e0326;">Payment Failed</span><br />

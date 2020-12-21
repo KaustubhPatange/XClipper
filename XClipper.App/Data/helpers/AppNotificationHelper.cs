@@ -106,7 +106,7 @@ namespace Components
         {
 			var builder = new UWPToast.Builder(dispatcher);
 			builder
-				.AddImage(Properties.Resources.connectivity)
+				.SetHeroImage(Properties.Resources.connectivity)
 				.AddText(Translation.SYNC_DIALOG_TITLE)
 				.AddText(Translation.SYNC_DIALOG_MESSAGE)
 				.AddButton(Translation.MSG_CANCEL_SMALL)
@@ -121,7 +121,7 @@ namespace Components
 		{
 			var builder = new UWPToast.Builder(dispatcher);
 			builder
-				.AddImage(Properties.Resources.introduction)
+				.SetHeroImage(Properties.Resources.introduction)
 				.AddText(Translation.MSG_INTRO_TITLE)
 				.AddText(Translation.MSG_INTRO_MESSAGE)
 				.AddButton(Translation.MSG_CANCEL_SMALL)
@@ -136,7 +136,7 @@ namespace Components
         {
 			var builder = new UWPToast.Builder(dispatcher);
 			builder
-				.AddImage(Properties.Resources.payment)
+				.SetHeroImage(Properties.Resources.payment)
 				.AddText(Translation.MSG_PURCHASE_TITLE)
 				.AddText(Translation.MSG_PURCHASE_MESSAGE)
 				.AddButton(Translation.MSG_CANCEL_SMALL)
@@ -147,6 +147,7 @@ namespace Components
 				.build().ShowAsync();
 		}
 
+		[Obsolete("Use UWP toast")]
         private static ToastRequest CreateRequest(ToastVisual visual, ToastAudioType audioType, IToastActions? actions = null, ToastDuration duration = ToastDuration.Short, bool Silent = false)
 		{
 			var toastContent = new ToastContent

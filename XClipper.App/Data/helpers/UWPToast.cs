@@ -21,7 +21,7 @@ namespace Components
     }
     public class UWPToast
     {
-        internal string? ImagePath;
+        internal List<string> ImagePaths = new List<string>();
         internal Action? OnActivatedListener;
         internal Action? OnCancelledListener;
         internal Dictionary<string, Action?> Listeners = new Dictionary<string, Action?>();
@@ -48,7 +48,7 @@ namespace Components
 
             NotificationActivator.UnregisterComType();
             NotificationHelper.UnregisterComServer(typeof(NotificationActivator));
-            if (File.Exists(ImagePath)) File.Delete(ImagePath);
+            foreach(var imagePath in ImagePaths) File.Delete(imagePath);
         }
 
         private void OnActivated(string arguments, Dictionary<string, string> data)
@@ -127,17 +127,37 @@ namespace Components
             /// <returns></returns>
             public Builder AddImage(Bitmap bitmap)
             {
-                uwpToast.ImagePath = Path.GetTempFileName();
-                File.Delete(uwpToast.ImagePath);
-                bitmap.Save(uwpToast.ImagePath);
-                Visual.BindingGeneric.Children.Add(new AdaptiveImage { Source = uwpToast.ImagePath });
-                return this;
+                var path = Path.GetTempFileName();
+                uwpToast.ImagePaths.Add(Path.GetTempFileName());
+                File.Delete(path);
+                bitmap.Save(path);
+                return AddImage(path);
             }
 
             public Builder AddImage(string path)
-            {
+            {                
                 Visual.BindingGeneric.Children.Add(new AdaptiveImage { Source = path });
                 return this;
+            }
+
+            /// <summary>
+            /// Add a top displaying image.
+            /// </summary>
+            /// <param name="imagePath"></param>
+            /// <returns></returns>
+            public Builder SetHeroImage(string path)
+            {
+                Visual.BindingGeneric.HeroImage = new ToastGenericHeroImage { Source = path };
+                return this;
+            }
+
+            public Builder SetHeroImage(Bitmap bitmap)
+            {
+                var path = Path.GetTempFileName();
+                uwpToast.ImagePaths.Add(Path.GetTempFileName());
+                File.Delete(path);
+                bitmap.Save(path);
+                return SetHeroImage(path);
             }
 
             public Builder AddButton(string text, Action? onActivated = null)

@@ -40,6 +40,7 @@ namespace Components
         public ICommand MigrateCommand { get; set; }
         public string UID { get; private set; } = UniqueID;
         public string TI { get; set; }
+        public string EM { get; set; }
         /// <summary>
         /// This Transaction Id is for migration tab.
         /// </summary>
@@ -120,7 +121,7 @@ namespace Components
             }
             IsProgressiveWork = true;
 
-            var client = new RestClient(ACTIVATION_SERVER(UID, TI, LT.GetName()));
+            var client = new RestClient(ACTIVATION_SERVER(UID, EM, TI, LT.GetName()));
             var response = await client.ExecuteTaskAsync(new RestRequest(Method.POST)).ConfigureAwait(true);
             if (response.StatusCode != System.Net.HttpStatusCode.NotFound)
             {
