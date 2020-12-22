@@ -16,15 +16,18 @@ class ThemeUtils {
             if (!DARK_THEME) {
                 setLightColors(activity)
                 activity.setTheme(R.style.AppTheme_Light)
-            } else setDarkColors(activity)
-
+            } else {
+                setDarkColors(activity)
+            }
         }
 
         fun setDialogTheme(activity: Activity) {
             if (!DARK_THEME) {
                 setLightColors(activity)
                 activity.setTheme(R.style.CustomDialogStyle_Light)
-            } else setDarkColors(activity)
+            } else {
+                setDarkColors(activity)
+            }
         }
 
         private fun setDarkColors(activity: Activity) = with(activity) {

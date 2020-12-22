@@ -12,7 +12,6 @@
     android:foreground="?selectableItemBackground"
     app:cardBackgroundColor="@android:color/transparent"
     app:cardCornerRadius="7dp"
-    app:cardElevation="0dp"
     app:cardUseCompatPadding="true">
 
     <LinearLayout

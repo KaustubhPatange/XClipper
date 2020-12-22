@@ -61,9 +61,6 @@ class Home : Fragment(R.layout.fragment_home) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        requireActivity().window.statusBarColor =
-            ContextCompat.getColor(requireContext(), R.color.colorPrimaryDark)
-
         setRecyclerView()
 
         setToolbarCommonStuff()

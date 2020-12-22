@@ -16,6 +16,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.telephony.TelephonyManager
+import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.accessibility.AccessibilityManager
 import androidx.annotation.AttrRes
@@ -333,6 +334,10 @@ class Utils {
                 flags = FLAG_ACTIVITY_NEW_TASK
             }
             startActivity(intent)
+        }
+
+        fun dpToPixel(context: Context, value: Float): Float = with(context) {
+            return value * (resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
         }
     }
 }

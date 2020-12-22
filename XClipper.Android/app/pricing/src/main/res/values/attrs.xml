@@ -2,6 +2,7 @@
 <resources>
     <declare-styleable name="Card">
         <attr name="cardBackgroundColor" format="color"/>
+        <attr name="cardElevation" format="dimension"/>
         <attr name="purchaseType" format="string"/>
         <attr name="purchaseTypeColor" format="color"/>
         <attr name="separatorColor" format="color"/>

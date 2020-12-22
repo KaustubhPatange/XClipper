@@ -23,6 +23,7 @@
                 app:purchaseButtonColor="@color/palette4"
                 app:purchaseDescription="@string/premium_pricing"
                 app:purchaseType="Premium"
+                app:cardElevation="3dp"
                 app:purchaseTypeColor="@color/palette5"
                 app:separatorColor="?background" />
         </LinearLayout>

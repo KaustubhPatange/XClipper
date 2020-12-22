@@ -10,9 +10,11 @@
         android:paddingBottom="25dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <androidx.cardview.widget.CardView
             app:cardCornerRadius="5dp"
             android:id="@+id/mainCard"
+            app:cardUseCompatPadding="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">

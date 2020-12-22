@@ -98,6 +98,10 @@ class Card @JvmOverloads constructor(
                 )
             )
 
+        if (typedArray.hasValue(R.styleable.Card_cardElevation)) {
+            mainCard.cardElevation = typedArray.getDimension(R.styleable.Card_cardElevation, 0f)
+        }
+
         typedArray.recycle()
     }
 

@@ -22,6 +22,7 @@ import com.kpstv.xclipper.extensions.show
 import com.kpstv.xclipper.extensions.utils.ThemeUtils.Companion.CARD_CLICK_COLOR
 import com.kpstv.xclipper.extensions.utils.ThemeUtils.Companion.CARD_COLOR
 import com.kpstv.xclipper.extensions.utils.ThemeUtils.Companion.CARD_SELECTED_COLOR
+import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.getColorFromAttr
 import com.kpstv.yts.extensions.load
 import kotlinx.android.synthetic.main.item_clip.view.*
@@ -114,7 +115,7 @@ class CIAdapter(
             )
         })
 
-        selectedItem.observe(lifecycleOwner, Observer {
+        selectedItem.observe(lifecycleOwner, {
 
             /** Will figure out where to place this */
             setPinMovements(clip, holder)
@@ -122,13 +123,15 @@ class CIAdapter(
             if (it == clip) {
                 holder.itemView.hiddenLayout.show()
                 holder.itemView.mainCard.setCardBackgroundColor(CARD_CLICK_COLOR)
+                holder.itemView.mainCard.cardElevation = Utils.dpToPixel(holder.itemView.context, 3f)
             } else {
                 holder.itemView.mainCard.setCardBackgroundColor(CARD_COLOR)
+                holder.itemView.mainCard.cardElevation = Utils.dpToPixel(holder.itemView.context, 0f)
                 holder.itemView.hiddenLayout.collapse()
             }
         })
 
-        multiSelectionState.observe(lifecycleOwner, Observer {
+        multiSelectionState.observe(lifecycleOwner, {
             if (it) {
                 holder.itemView.ci_copyButton.hide()
                 holder.itemView.ci_timeText.hide()

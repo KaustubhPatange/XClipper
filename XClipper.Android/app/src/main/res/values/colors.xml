@@ -8,7 +8,7 @@
 
     <color name="colorClickCard">#313235</color>
     <color name="colorCard">#121212</color>
-    <color name="colorCard_Light">#ededed</color>
+    <color name="colorCard_Light">#FFFFFF</color>
     <color name="colorClickCard_Light">#cecdca</color>
 
     <color name="colorSelectedClip">#FBFF87</color>

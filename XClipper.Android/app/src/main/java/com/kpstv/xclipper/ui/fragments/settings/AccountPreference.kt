@@ -144,14 +144,15 @@ class AccountPreference : PreferenceFragmentCompat() {
     }
 
     private fun checkForPreferenceChanged() {
-        // Do not add bindDeletePreference as an auto property
-        // since it will cause issues for non-paid users.
         if (UID.isBlank()) {
             connectPreference?.isEnabled = true
             logPreference?.isEnabled = false
             bindPreference?.isEnabled = false
             autoSyncPreference?.isEnabled = false
+            bindDeletePreference?.isEnabled = false
         } else {
+            // Do not add bindDeletePreference as an auto property
+            // since it will cause issues for non-paid users.
             connectPreference?.isEnabled = false
             logPreference?.isEnabled = true
             bindPreference?.isEnabled = true
