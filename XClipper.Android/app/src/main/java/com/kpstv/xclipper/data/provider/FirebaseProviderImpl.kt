@@ -23,7 +23,6 @@ import com.kpstv.xclipper.App.gson
 import com.kpstv.xclipper.data.localized.FBOptions
 import com.kpstv.xclipper.data.model.*
 import com.kpstv.xclipper.extensions.*
-import com.kpstv.xclipper.extensions.listeners.FChildEventListener
 import com.kpstv.xclipper.extensions.listeners.FValueEventListener
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
 import javax.inject.Inject

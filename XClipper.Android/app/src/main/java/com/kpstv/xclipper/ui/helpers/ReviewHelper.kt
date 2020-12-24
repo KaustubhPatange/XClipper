@@ -11,9 +11,7 @@ import java.util.*
 
 class ReviewHelper(
     private val activity: FragmentActivity,
-    private val preferenceProvider: PreferenceProvider,
-    @Deprecated("Helper will automatically handle the request")
-    private val onNeedToShowReview: (ReviewHelper) -> Unit
+    private val preferenceProvider: PreferenceProvider
 ) : AbstractFragmentHelper<Home>(activity, Home::class) {
 
     private val manager = ReviewManagerFactory.create(activity)
@@ -59,7 +57,7 @@ class ReviewHelper(
 
     private fun setATriggerDate() {
         val setTriggerDate = Calendar.getInstance()
-            .apply { add(Calendar.DAY_OF_MONTH, 2) }.time.time
+            .apply { add(Calendar.DAY_OF_MONTH, 3) }.time.time
         preferenceProvider.putLongKey(SHOW_REVIEW_FLOW_PREF, setTriggerDate)
     }
 
