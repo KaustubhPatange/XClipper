@@ -94,7 +94,7 @@ Firebase API Key: AIzaSyC05g-9MkJbFhnxE2137MDeTT07wNHncfs
 
 ?> Here we will turn on the setting that will enable the syncing of the clipboard to the database.
 
-- In XClipper application from system tray, right-click > "**Settings**" & enable **Database binding**.
+- In XClipper application from system tray, right-click > "**Settings**" & enable **Database binding** & **Apply**. If QR code is still not visible then Restart the application.
 
 <img src="https://androdevkit.files.wordpress.com/2020/11/sync-10.png" height="400px">
 

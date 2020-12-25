@@ -65,6 +65,8 @@ namespace Components
         {
             AppException.Init();
             AppModule.Configure();
+            NotificationActivator.register();
+
             recorder = AppModule.Container.Resolve<IKeyboardRecorder>();
             licenseService = AppModule.Container.Resolve<ILicense>();
 
@@ -128,9 +130,6 @@ namespace Components
                 FirebaseHelper.InitializeService(this);
                 TimeStampHelper.ShowRequiredNotifications();
             });
-
-            //  NotificationActivator.register();
-
         }
 
         protected override void OnExit(ExitEventArgs e)

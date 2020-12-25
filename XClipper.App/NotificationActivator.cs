@@ -13,5 +13,10 @@ namespace Components
 	[Guid("2BFEE04A-C059-4D0E-BD35-2C15B61E7A06"), ComVisible(true), ClassInterface(ClassInterfaceType.None)]
 	[ComSourceInterfaces(typeof(INotificationActivationCallback))]
 	public class NotificationActivator : NotificationActivatorBase
-	{ }
+	{ 
+		public static void register()
+        {
+			NotificationActivator.RegisterComType(typeof(NotificationActivator), UWPToast.OnActivated);
+		}
+	}
 }

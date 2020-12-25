@@ -14,6 +14,7 @@
   - [Why features are not unlimited for premium users?](#q-why-features-are-not-unlimited-for-premium-users)
 - **Payments**
   - [Payment completed but premium does not unlock?](#q-payment-completed-but-premium-does-not-unlock)
+  - [Will this license works on all my machines?](#q-will-this-license-works-on-all-my-machines)
 
 ---
 
@@ -92,3 +93,9 @@ But why not keep it unlimited? Like I said we don't need that much! Also, keepin
 ### Q. Payment completed but premium does not unlock?
 
 This could happen when your internet connection is slow or there is a problem with my server. Read this [guide](https://github.com/KaustubhPatange/XClipper/wiki/Manual-License-Activation) for solution!
+
+### Q. Will this license works on all my machines?
+
+Unfortunately no! It will work on only that machine whose Unique Id you've provided. In case, if you changed your CPU or reinstalled Windows which will result in change of Unique Id, you can migrate your previous license by following [these steps](https://github.com/KaustubhPatange/XClipper/wiki/Migrating-License).
+
+Remember, you can buy a license for one PC & can connect multiple Android devices since they don't require any license to work.
