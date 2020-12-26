@@ -2,6 +2,8 @@
 *.apk
 .gradle
 /local.properties
+/keystore.properties
+/key.jks
 /buildSrc
 /.idea/caches
 /.idea/libraries

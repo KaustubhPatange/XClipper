@@ -30,6 +30,11 @@ class ThemeUtils {
             }
         }
 
+        fun restoreStatusAndNavigationColor(activity: Activity) {
+            activity.window.statusBarColor = ContextCompat.getColor(activity, R.color.colorPrimaryDark)
+            activity.window.navigationBarColor = Utils.getColorFromAttr(activity, R.attr.background)
+        }
+
         private fun setDarkColors(activity: Activity) = with(activity) {
             CARD_COLOR = ContextCompat.getColor(this, R.color.colorCard)
             CARD_CLICK_COLOR = ContextCompat.getColor(this, R.color.colorClickCard)

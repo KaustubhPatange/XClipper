@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.konan.properties.Properties
+
 plugins {
     id(GradlePluginId.ANDROID_APPLICATION)
     kotlin(GradlePluginId.ANDROID_KTX)
@@ -25,6 +27,19 @@ android {
         testInstrumentationRunner = AndroidConfig.TEST_INSTRUMENTATION_RUNNER
     }
 
+    signingConfigs {
+        val propertiesFile = rootProject.file("keystore.properties")
+        val properties = Properties()
+        properties.load(propertiesFile.reader())
+
+        create(BuildType.RELEASE) {
+            storeFile = rootProject.file("key.jks")
+            storePassword = properties["storePassword"] as String
+            keyAlias = properties["keyAlias"] as String
+            keyPassword = properties["keyPassword"] as String
+        }
+    }
+
     testOptions {
         unitTests.isIncludeAndroidResources = true
     }
@@ -41,10 +56,15 @@ android {
     buildTypes {
         getByName(BuildType.RELEASE) {
             isMinifyEnabled = BuildTypeRelease.isMinifyEnabled
+            signingConfig = signingConfigs.getByName(BuildType.RELEASE)
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+        getByName(BuildType.DEBUG) {
+            applicationIdSuffix = ".debug"
+            isDebuggable = true
         }
     }
 }

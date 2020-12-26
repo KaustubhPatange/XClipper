@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">XClipper</string>
 
-    <string name="accessibility_service_description">This will let XClipper capture some clipboard clips if system detects any copy/cut action.\n\n\nThis feature is still in BETA for Android 10+ users.</string>
+    <string name="accessibility_service_description">This will let XClipper to monitor clipboard &amp; will able to capture some of known strategies if system detects any copy/cut action.\n\n\nThis feature is still in BETA for Android 10+ users and may not work always.</string>
 
     <string name="testStringSmall">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</string>
     <string name="timeString">2 days ago</string>
@@ -77,7 +77,7 @@
     <string name="logout_success">Logged out successfully!</string>
     <string name="err_uid">Not a valid UID</string>
     <string name="connect_success">Connected successfully!</string>
-    <string name="accessibility_capture">In order to capture clipboard clips you need to enable service from accessibility settings.\n\n1. Click OK to open accessibility settings.\n2. Search for XClipper.\n3. Click and enable the service.</string>
+    <string name="accessibility_capture">In order to monitor clipboard you need to enable the accessibility service from settings.\n\n1. Click OK to open accessibility settings.\n2. Search for XClipper.\n3. Click and enable it.</string>
     <string name="suggestion_capture">You need to enable System overlay permission.\n\n1. Click OK to open Display Overlay settings\n2. Enable \"Allow display over other apps\".</string>
     <string name="synchronize_text">You can synchronize your clipboard data between this device &#38; a desktop companion app. Click on \"Learn more\" to know about it.</string>
     <string name="scan_code">Scan the app code</string>
@@ -97,14 +97,14 @@
     <string name="blacklist_title">Ignored Apps</string>
     <string name="suggest_title">Suggestions</string>
     <string name="suggest_summary">[BETA] Show a small bubble whenever keyboard pops out containing your latest clips</string>
-    <string name="palette1_text">XClipper monitor your clipboard and makes an extensive use of it.\n\n\nIt also provide certain actions related to your clip.\n\n\nMoreover it will provide you suggestions during any paste.</string>
-    <string name="palette2_text">Accessibility,\n\n\nYou need to turn on \"accessibility\" service for this app.\n\n\nThis is due to background service restrictions imposed by Google.\n\n\nThe service will keep running in background capturing your clipboard data.</string>
+    <string name="palette1_text">XClipper monitors your clipboard and makes an extensive use of it.\n\n\nIt also provide certain actions according to the data.\n\n\nWith suggestion overlay, you can easily paste from multiple clipboards.</string>
+    <string name="palette2_text">Accessibility,\n\n\nYou need to turn on \"accessibility\" service for this app.\n\n\nThis is due to a restriction imposed by Google which does not allow long running background tasks.\n\n\nThis service will keep running in background capturing your clipboard data.</string>
     <string name="palette3_text">Suggestions [BETA],\n\n\nGet a small bubble whenever keyboard pops out containing all your clips.\n\n\nEnable it from App Settings > General > Suggestions.</string>
     <string name="palette4_text">Android 10+ user,\n\n\nSometimes standard copy doesn\'t work, in such case use \"XCopy\".</string>
     <string name="palette5_text">Android 10+ user,\n\n\nSometimes copy action is not detected, in such case use quick setting option.</string>
     <string name="palette6_text">Synchronization,\n\n\nThe application works best with it\'s Windows desktop app.\n\n\nIt allows you to synchronize clipboard data across devices.\n\n\nVisit https://kaustubhpatange.github.io/XClipper/docs for more info.</string>
     <string name="palette7_text">Wrapping up,\n\n\nWatch video to understand full feature usage of application.\n\n\nhttps://youtube.com</string>
-    <string name="palette_android_text">Android 10+ user,\n\n\nDue to new privacy change clipboard monitoring has stopped working.\n\n\nFind more info about this issue on issue tracker https://issuetracker.google.com/issues/123461156\n\n\nBut there is a hack (not perfect one) which will enable it through the accessibility service.\n\n\nThe feature is still in BETA!</string>
+    <string name="palette_android_text">Android 10+ user,\n\n\nDue to new introduced privacy changes clipboard monitoring has stopped working from Android 10.\n\n\nFind more info about this issue on issue tracker https://issuetracker.google.com/issues/123461156\n\n\nBut through some hacks (not perfect one) we can enable it using an accessibility service.\n\n\nThis feature is still in BETA!</string>
 
     <string name="next_1">Next 1/7</string>
     <string name="next_2">Next 2/7</string>

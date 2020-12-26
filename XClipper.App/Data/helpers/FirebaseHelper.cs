@@ -48,6 +48,7 @@ namespace Components
                 })) return;
 
                 FirebaseSingletonV2.GetInstance.Initialize();
+                MainHelper.CreateCurrentQRData();
             }
         }
 

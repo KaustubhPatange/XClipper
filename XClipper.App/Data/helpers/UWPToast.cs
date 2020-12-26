@@ -81,7 +81,6 @@ namespace Components
             if (arguments.StartsWith($"{key}_action="))
             {
                 option.IsActionDispatched = true;
-               // ToastOptions = true;
                 string? result = arguments?.Substring($"{key}_action=".Length);
                 foreach (var entry in option.Listeners)
                 {

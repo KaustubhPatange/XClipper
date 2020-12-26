@@ -182,7 +182,11 @@ DEL ""%~f0""";
         /// <returns></returns>
         public static bool CreateCurrentQRData()
         {
-            if (FirebaseCurrent == null) return false;
+            if (FirebaseCurrent == null || !BindDatabase)
+            {
+                QRData = null;
+                return false;
+            }
             string mobileAuthDetails = FirebaseCurrent.IsAuthNeeded ? $"true;{MobileAuth.ClientId}" : "false;";
             string encryptedPassword = FirebaseCurrent.IsEncrypted ? DatabaseEncryptPassword : ""; // If not encrypted set no password.
             QRData = new QRCodeData
@@ -195,7 +199,7 @@ DEL ""%~f0""";
             return true;
         }
 
-        public static async Task DownloadFile(string url, string outImagePath)
+        public static async Task DownloadFile(Uri url, string outImagePath)
         {
             using (HttpClient client = new HttpClient())
             {

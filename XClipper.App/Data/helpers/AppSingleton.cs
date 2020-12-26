@@ -269,7 +269,7 @@ namespace Components.viewModels
             if (!dataExist)
             {
                 var filePath = Path.Combine(ImageFolder, fileName);
-                await DownloadFile(imageUri, filePath).ConfigureAwait(false);
+                await DownloadFile(new Uri(imageUri), filePath).ConfigureAwait(false);
                 InsertContent(CreateTable(filePath, ContentTypes.Image), false);
                 invokeOnInserted?.Invoke(filePath, ContentType.Image); // Return image file path
             }

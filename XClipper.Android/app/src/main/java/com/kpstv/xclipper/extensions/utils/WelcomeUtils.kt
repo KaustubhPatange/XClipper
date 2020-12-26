@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.NavDirections
 import androidx.navigation.findNavController
+import com.kpstv.xclipper.R
 import com.kpstv.xclipper.databinding.FragmentWelcomeBinding
 import com.kpstv.xclipper.extensions.SimpleFunction
 
@@ -25,6 +26,7 @@ class WelcomeUtils {
             @ColorRes nextPaletteId: Int,
             @StringRes textId: Int,
             @StringRes nextTextId: Int,
+            isLastScreen: Boolean = false,
             action: NavDirections
         ) {
             setUpFragment(
@@ -34,6 +36,7 @@ class WelcomeUtils {
                 nextTextId = nextTextId,
                 textId = textId,
                 nextPaletteId = nextPaletteId,
+                isLastScreen = isLastScreen,
                 action = {
                     view.findNavController().navigate(action)
                 }
@@ -48,6 +51,7 @@ class WelcomeUtils {
             @StringRes textId: Int,
             @StringRes nextTextId: Int,
             insertView: View? = null,
+            isLastScreen: Boolean = false,
             action: SimpleFunction
         ) {
             val palette = ContextCompat.getColor(activity, paletteId)
@@ -57,6 +61,7 @@ class WelcomeUtils {
             val text = activity.getString(textId)
 
             activity.window.statusBarColor = palette
+            activity.window.navigationBarColor = palette
 
             val binding = FragmentWelcomeBinding.bind(view)
 
@@ -76,6 +81,11 @@ class WelcomeUtils {
             binding.fwBtnNext.setTextColor(palette)
             binding.fwBtnNext.backgroundTintList = ColorStateList.valueOf(nextPalette)
             binding.fwBtnNext.setOnClickListener {
+                // We are in the last screen of welcome fragment, we should remove the
+                // status bar color overlay and keep it default to theme.
+                if (isLastScreen) {
+                    ThemeUtils.restoreStatusAndNavigationColor(activity)
+                }
                 action.invoke()
             }
         }

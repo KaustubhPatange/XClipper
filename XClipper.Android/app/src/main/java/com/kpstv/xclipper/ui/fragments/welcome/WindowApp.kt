@@ -27,6 +27,7 @@ class WindowApp: Fragment(R.layout.fragment_welcome) {
             nextPaletteId = R.color.palette7,
             textId = R.string.palette6_text,
             nextTextId = R.string.next_8, /*if (Utils.isAndroid10orUp()) R.string.next_7 else R.string.nextd_4*/
+            isLastScreen = true,
             action = {
                 preferenceProvider.putBooleanKey(App.TUTORIAL_PREF, true)
 
