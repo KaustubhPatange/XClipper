@@ -1,6 +1,7 @@
 package com.kpstv.xclipper.di
 
 import android.content.Context
+import com.kpstv.xclipper.data.localized.dao.UserEntityDao
 import com.kpstv.xclipper.data.provider.*
 import com.kpstv.xclipper.data.repository.MainRepository
 import dagger.Module
@@ -29,9 +30,10 @@ object AppModule {
     @Provides
     fun provideFirebase(
         @ApplicationContext context: Context,
-        dbConnectionProvider: DBConnectionProvider
+        dbConnectionProvider: DBConnectionProvider,
+        userEntityDao: UserEntityDao
     ): FirebaseProvider =
-        FirebaseProviderImpl(context, dbConnectionProvider)
+        FirebaseProviderImpl(context, dbConnectionProvider, userEntityDao)
 
     @Singleton
     @Provides

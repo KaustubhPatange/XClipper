@@ -21,16 +21,20 @@ import com.kpstv.xclipper.App.getMaxConnection
 import com.kpstv.xclipper.App.getMaxStorage
 import com.kpstv.xclipper.App.gson
 import com.kpstv.xclipper.data.localized.FBOptions
+import com.kpstv.xclipper.data.localized.dao.UserEntityDao
 import com.kpstv.xclipper.data.model.*
 import com.kpstv.xclipper.extensions.*
-import com.kpstv.xclipper.extensions.listeners.FValueEventListener
-import com.kpstv.xclipper.extensions.listeners.ResponseListener
+import com.kpstv.xclipper.extensions.listeners.*
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 @ExperimentalStdlibApi
+@ExperimentalCoroutinesApi
 class FirebaseProviderImpl @Inject constructor(
     private val context: Context,
-    private val dbConnectionProvider: DBConnectionProvider
+    private val dbConnectionProvider: DBConnectionProvider,
+    private val currentUserRepository: UserEntityDao
 ) : FirebaseProvider {
 
     private val TAG = javaClass.simpleName
@@ -40,12 +44,13 @@ class FirebaseProviderImpl @Inject constructor(
     private val DEVICE_REF = "Devices"
 
     private var isInitialized = MutableLiveData(false)
-    private var user: User? = null
+
     private var validDevice: Boolean = false
     private var licenseStrategy = MutableLiveData(LicenseType.Invalid)
     private lateinit var database: FirebaseDatabase
 
-    /**
+    /** TODO: This might've fixed since everything is now suspendable.
+     *
      * There is drastic problem when device is being added. The thing is lot's of
      * internal calls are made to [FBOptions], so during pushing device data to firebase
      * in [observeDataChange] listener it still returns the cache version of data where the
@@ -60,7 +65,7 @@ class FirebaseProviderImpl @Inject constructor(
 
     override fun isInitialized() = isInitialized
 
-    override fun initialize(options: FBOptions?) {
+    override fun initialize(options: FBOptions?, notifyInitialization: Boolean) {
         if (options == null) {
             isInitialized.postValue(false)
             return
@@ -75,80 +80,78 @@ class FirebaseProviderImpl @Inject constructor(
             FirebaseApp.initializeApp(context, firebaseOptions)
 
         database = Firebase.database(options.endpoint)
-        isInitialized.postValue(true)
+        if (notifyInitialization)
+            isInitialized.postValue(true)
 
         HVLog.d()
         Log.e(TAG, "Firebase Database has been initialized")
     }
 
-    override fun isLicensed(): Boolean = user?.IsLicensed ?: false
+    override suspend fun isLicensed(): Boolean = currentUserRepository.isLicensed() ?: false
 
     override fun isValidDevice(): Boolean = validDevice
 
     override fun getLicenseStrategy() = licenseStrategy
 
-    override fun clearData() {
-        user = null
+    override suspend fun clearData() {
+        currentUserRepository.remove()
     }
 
-    override fun addDevice(DeviceId: String, responseListener: ResponseListener<Unit>) {
+    override suspend fun addDevice(DeviceId: String): ResponseResult<Unit> {
         HVLog.d("Adding Device...")
-        workWithData(ValidationContext.ForceInvoke) {
-            HVLog.d("Inside WorkWithData...")
-            val list =
-                if (user?.Devices != null) ArrayList(user?.Devices ?: listOf())
-                else ArrayList<Device>()
+        workWithData(ValidationContext.ForceInvoke)
+        HVLog.d("Inside WorkWithData...")
+        val user = currentUserRepository.get()
+        val list =
+            if (user?.Devices != null) ArrayList(user.Devices ?: listOf())
+            else ArrayList<Device>()
 
-            checkForUserDetailsAndUpdateLocal()
+        checkForUserDetailsAndUpdateLocal()
 
-            /** For some reasons [DeviceID] already exist in the database
-             *  we will post success response.
-             */
-            if (list.any { it.id == DeviceId }) {
-                responseListener.onComplete(Unit)
-                HVLog.w("DeviceID already present")
-                return@workWithData
-            }
-
-            if (list.size >= APP_MAX_DEVICE) {
-                responseListener.onError(Exception("Maximum device connection reached"))
-                HVLog.w("Maximum device reached...")
-                return@workWithData
-            }
-
-            list.add(Device(DeviceId, Build.VERSION.SDK_INT, Build.MODEL))
-
-            updateDeviceList(
-                list = list,
-                uploadStatus = UploadStatus.Adding,
-                responseListener = responseListener
-            )
+        /** For some reasons [DeviceID] already exist in the database
+         *  we will post success response.
+         */
+        if (list.any { it.id == DeviceId }) {
+            HVLog.w("DeviceID already present")
+            return ResponseResult.complete(Unit)
         }
+
+        if (list.size >= APP_MAX_DEVICE) {
+            HVLog.w("Maximum device reached...")
+            return ResponseResult.error(Exception("Maximum device connection reached"))
+        }
+
+        list.add(Device(DeviceId, Build.VERSION.SDK_INT, Build.MODEL))
+
+        return updateDeviceList(
+            list = list,
+            uploadStatus = UploadStatus.Adding
+        )
     }
 
 
-    override fun removeDevice(DeviceId: String, responseListener: ResponseListener<Unit>) {
+    override suspend fun removeDevice(DeviceId: String): ResponseResult<Unit> {
         HVLog.d("Removing device...")
-        workWithData(ValidationContext.ForceInvoke) {
-            HVLog.d("Inside WorkWithData...")
-            val list =
-                if (user?.Devices != null) ArrayList(user?.Devices ?: listOf())
-                else ArrayList<Device>()
 
-            if (list.count { it.id == DeviceId } <= 0) {
-                responseListener.onError(Exception("No device found with this ID"))
-                HVLog.d("No device ID found...")
-                return@workWithData
-            }
+        workWithData(ValidationContext.ForceInvoke)
 
-            val filterList = list.filter { it.id != DeviceId }
+        HVLog.d("Inside WorkWithData...")
+        val user = currentUserRepository.get()
+        val list =
+            if (user?.Devices != null) ArrayList(user.Devices ?: listOf())
+            else ArrayList<Device>()
 
-            updateDeviceList(
-                list = filterList,
-                uploadStatus = UploadStatus.Removing,
-                responseListener = responseListener
-            )
+        if (list.count { it.id == DeviceId } <= 0) {
+            HVLog.d("No device ID found...")
+            return ResponseResult.error(Exception("No device found with this ID"))
         }
+
+        val filterList = list.filter { it.id != DeviceId }
+
+        return updateDeviceList(
+            list = filterList,
+            uploadStatus = UploadStatus.Removing
+        )
     }
 
     /**
@@ -158,78 +161,75 @@ class FirebaseProviderImpl @Inject constructor(
      * the firebase data change observation through [removeDataObservation]
      * and make [isInitialized] to true.
      */
-    private fun updateDeviceList(
+    private suspend fun updateDeviceList(
         list: List<Device>,
-        uploadStatus: UploadStatus,
-        responseListener: ResponseListener<Unit>
-    ) {
+        uploadStatus: UploadStatus
+    ): ResponseResult<Unit> {
         HVLog.d()
+
+        if (UID.isBlank()) return ResponseResult.error("Error: Invalid UID")
 
         Log.e(TAG, "ListSize: ${list.size}, List: $list")
-        isDeviceAdding = true
 
         /** Must pass toList to firebase otherwise it add list as linear data. */
-        database.getReference(USER_REF).child(UID).child(DEVICE_REF)
-            .setValue(list.toList()) { error, _ ->
-                HVLog.d("Work completed, ${error?.message}")
-                if (error == null) {
-                    responseListener.onComplete(Unit)
-                    isDeviceAdding = false
-                } else
-                    responseListener.onError(Exception(error.message))
+        val result: ResponseResult<Unit> = database.getReference(USER_REF).child(UID).child(DEVICE_REF).awaitSetValue(list.toList())
 
-                if (uploadStatus == UploadStatus.Removing) {
-                    isInitialized.postValue(false)
-                    removeDataObservation()
-                }
+        currentUserRepository.updateDevices(list)
+
+        when(uploadStatus) {
+            UploadStatus.Adding -> {
+                isInitialized.postValue(true)
             }
-    }
-
-    override fun replaceData(unencryptedOldClip: Clip, unencryptedNewClip: Clip) {
-        HVLog.d()
-        workWithData {
-            HVLog.d("To process $it")
-            if (it)
-                replace(unencryptedOldClip, unencryptedNewClip)
+            UploadStatus.Removing -> {
+                isInitialized.postValue(false)
+                removeDataObservation()
+            }
         }
+        return result
     }
 
-    override fun deleteMultipleData(unencryptedClips: List<Clip>) {
+    override suspend fun replaceData(unencryptedOldClip: Clip, unencryptedNewClip: Clip) {
         HVLog.d()
-        workWithData {
-            HVLog.d("To process $it")
-            if (it)
-                removeData(unencryptedClips)
-        }
+        val shouldInvoke = workWithData()
+        HVLog.d("To process $shouldInvoke")
+        if (shouldInvoke)
+            replace(unencryptedOldClip, unencryptedNewClip)
     }
 
-    override fun deleteData(unencryptedClip: Clip) {
+    override suspend fun deleteMultipleData(unencryptedClips: List<Clip>) {
         HVLog.d()
-        workWithData {
-            HVLog.d("To process $it")
-            if (it)
-                removeData(unencryptedClip)
-        }
+        val shouldInvoke = workWithData()
+        HVLog.d("To process $shouldInvoke")
+        if (shouldInvoke)
+            removeData(unencryptedClips)
     }
 
-    override fun uploadData(unencryptedClip: Clip) {
+    override suspend fun deleteData(unencryptedClip: Clip) {
         HVLog.d()
-        workWithData {
-            HVLog.d("To process $it")
-            if (it)
-                saveData(unencryptedClip)
-        }
+        val shouldInvoke = workWithData()
+        HVLog.d("To process $shouldInvoke")
+        if (shouldInvoke)
+            removeData(unencryptedClip)
     }
 
-    private fun replace(unencryptedOldClip: Clip, unencryptedNewClip: Clip) {
+    override suspend fun uploadData(unencryptedClip: Clip) {
+        HVLog.d()
+        val shouldInvoke = workWithData()
+        HVLog.d("To process $shouldInvoke")
+        if (shouldInvoke)
+            saveData(unencryptedClip)
+    }
+
+    private suspend fun replace(unencryptedOldClip: Clip, unencryptedNewClip: Clip) {
         /** Save data when clips are null */
         HVLog.d()
+        val user = currentUserRepository.get()
         if (user?.Clips == null) {
             HVLog.d("Saving first data")
             saveData(unencryptedNewClip)
         } else {
             val list =
-                ArrayList(user?.Clips?.filter { it.data.Decrypt() != unencryptedOldClip.data }
+                ArrayList(user.Clips?.filter { it.data.Decrypt() != unencryptedOldClip.data }
                     ?: listOf())
 
             list.add(unencryptedNewClip.encrypt())
@@ -238,15 +238,16 @@ class FirebaseProviderImpl @Inject constructor(
         }
     }
 
-    private fun removeData(unencryptedClip: Clip) {
+    private suspend fun removeData(unencryptedClip: Clip) {
         HVLog.d()
         removeData(List(1) { unencryptedClip })
     }
 
-    private fun removeData(unencryptedClips: List<Clip>) {
+    private suspend fun removeData(unencryptedClips: List<Clip>) {
+        val user = currentUserRepository.get()
         if (user?.Clips == null) return
 
-        val list = ArrayList(user?.Clips!!)
+        val list = ArrayList(user.Clips!!)
 
         val dataList = unencryptedClips.map { it.data }
 
@@ -257,16 +258,15 @@ class FirebaseProviderImpl @Inject constructor(
         pushDataToFirebase(list)
     }
 
-    private fun saveData(unencryptedClip: Clip) {
+    private suspend fun saveData(unencryptedClip: Clip) {
         HVLog.d()
-
         checkForUserDetailsAndUpdateLocal()
 
+        val user = currentUserRepository.get()
         val list: ArrayList<Clip> = if (user?.Clips == null)
             ArrayList()
         else
-            ArrayList(user?.Clips?.filter { it.data.Decrypt() != unencryptedClip.data }
-                ?: listOf())
+            ArrayList(user.Clips?.filter { it.data.Decrypt() != unencryptedClip.data } ?: listOf())
         val size = APP_MAX_ITEM
 
         if (list.size >= size)
@@ -278,27 +278,28 @@ class FirebaseProviderImpl @Inject constructor(
     /**
      * A common method which will submit the data to firebase.
      */
-    private fun pushDataToFirebase(list: ArrayList<Clip>) {
+    private suspend fun pushDataToFirebase(list: ArrayList<Clip>) {
         HVLog.d()
-        database.getReference(USER_REF).child(UID).child(CLIP_REF)
-            .setValue(list.cloneToEntries()) { error, _ ->
-                HVLog.d("Completed, ${error?.message}")
-                if (error == null) {
-                    user?.Clips = list
-                } else
-                    Log.e(TAG, "Error: ${error.message}")
+        val result = database.getReference(USER_REF).child(UID).child(CLIP_REF).awaitSetValue(list.cloneToEntries())
+        when(result) {
+            is ResponseResult.Complete -> {
+                currentUserRepository.updateClips(list)
             }
+            is ResponseResult.Error -> {
+                Log.e(TAG, "Error: ${result.error.message}")
+            }
+        }
     }
 
-    override fun getAllClipData(block: (List<Clip>?) -> Unit) {
+    override suspend fun getAllClipData(block: (List<Clip>?) -> Unit) {
         HVLog.d()
-        workWithData(ValidationContext.ForceInvoke) {
-            HVLog.d("To process $it")
-            if (it)
-                block.invoke(user?.Clips?.decrypt())
-            else
-                block.invoke(null)
-        }
+        val shouldInvoke =  workWithData(ValidationContext.ForceInvoke)
+        val user = currentUserRepository.get()
+        HVLog.d("To process $shouldInvoke")
+        if (shouldInvoke)
+            block.invoke(user?.Clips?.decrypt())
+        else
+            block.invoke(null)
     }
 
     /**
@@ -307,10 +308,9 @@ class FirebaseProviderImpl @Inject constructor(
      *
      * @param validationContext Specify the context for invoking methods
      */
-    private inline fun workWithData(
+    private suspend inline fun workWithData(
         validationContext: ValidationContext = ValidationContext.Default,
-        crossinline block: (Boolean) -> Unit
-    ) {
+    ): Boolean {
         HVLog.d()
         /**
          * Make sure the device is a valid device so that we can make connection
@@ -321,53 +321,47 @@ class FirebaseProviderImpl @Inject constructor(
          */
         if (validationContext == ValidationContext.Default && !bindToFirebase || !dbConnectionProvider.isValidData()) {
             HVLog.d("Returning false - 1")
-            block.invoke(false)
-            return
+            return false
         }
 
         /** Automated initialization of firebase database */
         if (isInitialized.value == false) {
             val options = dbConnectionProvider.optionsProvider()
             if (options != null)
-                initialize(options)
+                initialize(options, false)
             else {
                 HVLog.d("Returning false - 2")
-                block.invoke(false)
-                return
+                return false
             }
         }
 
-        if (user == null || validationContext == ValidationContext.ForceInvoke) {
-            HVLog.d("Getting user for first time")
-            database.getReference(USER_REF).child(UID)
-                .addListenerForSingleValueEvent(FValueEventListener(
-                    onDataChange = { snap ->
-                        val json = gson.toJson(snap.value)
-                        user = User.from(json)
-                        if (!validateUser()) {
-                            block.invoke(false)
-                            return@FValueEventListener
-                        }
-                        block.invoke(true)
-                    },
-                    onError = {
-                        Log.e(TAG, "Error: ${it.message}")
-                        block.invoke(false)
-                    }
-                ))
+        if (!currentUserRepository.isExist() || validationContext == ValidationContext.ForceInvoke) {
+            HVLog.d("Getting user for first time or a force invoke?")
+            val result = database.getReference(USER_REF).child(UID).awaitSingleValue()
+            return when(result) {
+                is ResponseResult.Complete -> {
+                    val json = gson.toJson(result.data.value)
+                    val userEntity = UserEntity.from(User.from(json))
+                    currentUserRepository.update(userEntity)
+                    validateUser()
+                }
+                is ResponseResult.Error -> {
+                    Log.e(TAG, "Error: ${result.error.message}")
+                    false
+                }
+            }
         } else {
             if (!validateUser()) {
-                block.invoke(false)
-                return
+                return false
             }
-            block.invoke(true)
+            return true
         }
     }
 
-    override fun isObservingChanges() = valueListener != null
+    override fun isObservingChanges() = job?.isActive ?: false
 
-    private var valueListener: FValueEventListener? = null
     private var inconsistentDataListener: SimpleFunction? = null
+    private var job: CompletableJob? = null
     override fun observeDataChange(
         changed: (List<Clip>) -> Unit,
         removed: (List<String>?) -> Unit,
@@ -376,6 +370,8 @@ class FirebaseProviderImpl @Inject constructor(
         deviceValidated: (Boolean) -> Unit,
         inconsistentData: SimpleFunction
     ) {
+        job?.cancel()
+        job = SupervisorJob()
         HVLog.d()
         if (!dbConnectionProvider.isValidData()) {
             HVLog.d("Invalid account preference")
@@ -394,71 +390,73 @@ class FirebaseProviderImpl @Inject constructor(
 
         inconsistentDataListener = inconsistentData
 
-        val valueListener = FValueEventListener(
-            onDataChange = { snap ->
-                HVLog.d("OnDataChanging")
-                val json = gson.toJson(snap.value)
-                val firebaseUser = User.from(json)
+        CoroutineScope(Dispatchers.Main + job!!).launch {
+            database.getReference(USER_REF).child(UID).awaitValueChangeEvent().collect { result ->
+                job?.ensureActive()
+                when(result) {
+                    is ResponseResult.Complete -> {
+                        HVLog.d("OnDataChanging")
+                        val json = gson.toJson(result.data.value)
+                        val firebaseUser = User.from(json)
 
-                checkForUserDetailsAndUpdateLocal()
+                        checkForUserDetailsAndUpdateLocal()
 
-                validDevice = (firebaseUser.Devices ?: mutableListOf()).count {
-                    it.id == DeviceID
-                } > 0
+                        validDevice = (firebaseUser.Devices ?: mutableListOf()).count {
+                            it.id == DeviceID
+                        } > 0
 
-                /** Device validation is causing problem, so only invoke it when
-                 *  device is not adding.*/
-                if (!isDeviceAdding)
-                    deviceValidated.invoke(validDevice)
+                        if (!validDevice)
+                            deviceValidated.invoke(validDevice)
 
-                if (json == null)
-                    error.invoke(Exception("Database is null"))
+                        if (json == null)
+                            error.invoke(Exception("Database is null"))
 
-                val userClips = user?.Clips?.decrypt() ?: emptyList()
-                val firebaseClips = firebaseUser.Clips?.decrypt() ?: emptyList()
+                        val user = currentUserRepository.get()
+                        val userClips = user?.Clips?.decrypt() ?: emptyList()
+                        val firebaseClips = firebaseUser.Clips?.decrypt() ?: emptyList()
 
-                firebaseClips.minus(userClips).let { changed.invoke(it) }
+                        firebaseClips.minus(userClips).let { changed.invoke(it) }
 
-                if (bindDelete) {
-                    val userDataClips = userClips.map { it.data }
-                    val firebaseDataClips = firebaseClips.map { it.data }
-                    userDataClips.minus(firebaseDataClips).let { if (it.isNotEmpty()) mainThread { removed.invoke(it) } }
-                    if (firebaseDataClips.isEmpty() && userDataClips.isNotEmpty()) {
-                        removedAll.invoke()
+                        if (bindDelete) {
+                            val userDataClips = userClips.map { it.data }
+                            val firebaseDataClips = firebaseClips.map { it.data }
+                            userDataClips.minus(firebaseDataClips).let { if (it.isNotEmpty()) mainThread { removed.invoke(it) } }
+                            if (firebaseDataClips.isEmpty() && userDataClips.isNotEmpty()) {
+                                removedAll.invoke()
+                            }
+                        }
+
+                        if (!isDeviceAdding && !validDevice)
+                            isInitialized.postValue(false)
+
+                        currentUserRepository.update(UserEntity.from(firebaseUser))
+                    }
+                    is ResponseResult.Error -> {
+                        error.invoke(result.error)
+                        HVLog.d("onError")
                     }
                 }
-
-                if (!isDeviceAdding && !validDevice)
-                    isInitialized.postValue(false)
-
-                user = firebaseUser
-            },
-            onError = {
-                error.invoke(it.toException())
-                HVLog.d("onError")
             }
-        )
-
-        database.getReference(USER_REF).child(UID)
-            .addValueEventListener(valueListener)
-
-        this.valueListener = valueListener
+        }
     }
 
     /**
      * The method will update the local values needed for
      * later purposes.
      */
-    private fun checkForUserDetailsAndUpdateLocal() {
+    private suspend fun checkForUserDetailsAndUpdateLocal() {
         HVLog.d()
-
+        val user = currentUserRepository.get()
         APP_MAX_DEVICE = user?.TotalConnection ?: getMaxConnection(isLicensed())
         APP_MAX_ITEM = user?.MaxItemStorage ?: getMaxStorage(isLicensed())
         user?.LicenseStrategy?.let { licenseStrategy.postValue(it) }
     }
 
+    // This might be not needed because all clips are not null by default or they
+    // are mapped to not null :P
     @Suppress("SENSELESS_COMPARISON")
-    private fun validateUser(): Boolean {
+    private suspend fun validateUser(): Boolean {
+        val user = currentUserRepository.get()
         for (clip in user?.Clips ?: listOf()) {
             // This will be valid if user suppose manually remove a random node
             // which makes the tree inconsistent.
@@ -471,22 +469,23 @@ class FirebaseProviderImpl @Inject constructor(
         return true
     }
 
-    private fun removeUserDetailsAndUpdateLocal() {
+    private suspend fun removeUserDetailsAndUpdateLocal() {
         HVLog.d()
-        user = null
+        val user = currentUserRepository.get()
+        currentUserRepository.remove()
         licenseStrategy.postValue(LicenseType.Invalid)
         APP_MAX_DEVICE = user?.TotalConnection ?: getMaxConnection(isLicensed())
         APP_MAX_ITEM = user?.MaxItemStorage ?: getMaxStorage(isLicensed())
     }
 
     override fun removeDataObservation() {
-        HVLog.d()
-        if (isObservingChanges()) {
-            database.getReference(USER_REF).child(UID)
-                .removeEventListener(valueListener!!)
-            removeUserDetailsAndUpdateLocal()
-        }
-        valueListener = null
+       Coroutines.io {
+           HVLog.d()
+           if (isObservingChanges()) {
+               job?.cancel()
+               removeUserDetailsAndUpdateLocal()
+           }
+       }
     }
 
     private enum class ValidationContext {

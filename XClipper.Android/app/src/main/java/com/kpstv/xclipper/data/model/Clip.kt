@@ -3,6 +3,8 @@ package com.kpstv.xclipper.data.model
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.JsonElement
+import com.kpstv.bindings.AutoGenerateListConverter
+import com.kpstv.bindings.ConverterType
 import com.kpstv.xclipper.data.converters.DateConverter
 import com.kpstv.xclipper.data.converters.DateFormatConverter
 import com.kpstv.xclipper.extensions.enumValueOrNull
@@ -12,6 +14,7 @@ import java.util.*
 import kotlin.collections.HashMap
 
 @Entity(tableName = "table_clip")
+@AutoGenerateListConverter(using = ConverterType.GSON)
 data class Clip(
     @PrimaryKey(autoGenerate = true)
     var id: Int? = null,

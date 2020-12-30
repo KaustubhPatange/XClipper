@@ -5,22 +5,23 @@ import com.kpstv.xclipper.data.localized.FBOptions
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.extensions.LicenseType
 import com.kpstv.xclipper.extensions.SimpleFunction
+import com.kpstv.xclipper.extensions.listeners.ResponseResult
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
 
 interface FirebaseProvider {
     /** Property will expose database initialization live data */
     fun isInitialized(): LiveData<Boolean>
 
-    fun initialize(options: FBOptions?)
-    fun isLicensed(): Boolean
+    fun initialize(options: FBOptions?, notifyInitialization: Boolean = true)
+    suspend fun isLicensed(): Boolean
     fun isValidDevice(): Boolean
-    fun uploadData(unencryptedClip: Clip)
-    fun addDevice(DeviceId: String, responseListener: ResponseListener<Unit>)
-    fun removeDevice(DeviceId: String, responseListener: ResponseListener<Unit>)
-    fun replaceData(unencryptedOldClip: Clip, unencryptedNewClip: Clip)
-    fun deleteData(unencryptedClip: Clip)
-    fun deleteMultipleData(unencryptedClips: List<Clip>)
-    fun clearData()
+    suspend fun uploadData(unencryptedClip: Clip)
+    suspend fun addDevice(DeviceId: String): ResponseResult<Unit>
+    suspend fun removeDevice(DeviceId: String): ResponseResult<Unit>
+    suspend fun replaceData(unencryptedOldClip: Clip, unencryptedNewClip: Clip)
+    suspend fun deleteData(unencryptedClip: Clip)
+    suspend fun deleteMultipleData(unencryptedClips: List<Clip>)
+    suspend fun clearData()
 
     /**
      * @return [LicenseType] from current firebase configuration.
@@ -30,7 +31,7 @@ interface FirebaseProvider {
     /**
      * @return An unencrypted list of clip model.
      */
-    fun getAllClipData(block: (List<Clip>?) -> Unit)
+    suspend fun getAllClipData(block: (List<Clip>?) -> Unit)
 
     /**
      * Should be called only by one specific class, because this lambdas are stored

@@ -6,6 +6,18 @@ package com.kpstv.xclipper.extensions.listeners
  *
  * Generally made to make retrofit callbacks easier with deferred executions.
  */
+
+sealed class ResponseResult<T> {
+    data class Complete<T>(val data: T): ResponseResult<T>()
+    data class Error<T>(val error: Exception): ResponseResult<T>()
+
+    companion object {
+        fun<T> complete(data: T): ResponseResult<T> = Complete(data)
+        fun<T> error(e: Exception): ResponseResult<T> = Error(e)
+        fun<T> error(message: String): ResponseResult<T> = Error(Exception(message))
+    }
+}
+
 class ResponseListener<T>(
     private val complete: (data: T) -> Unit,
     private val error: (e: Exception) -> Unit

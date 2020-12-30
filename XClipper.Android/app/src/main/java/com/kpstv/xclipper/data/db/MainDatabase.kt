@@ -6,11 +6,9 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.kpstv.xclipper.data.converters.DateConverter
+import com.kpstv.xclipper.data.converters.LicenseTypeConverter
 import com.kpstv.xclipper.data.converters.TagConverter
-import com.kpstv.xclipper.data.localized.dao.ClipDataDao
-import com.kpstv.xclipper.data.localized.dao.DefineDao
-import com.kpstv.xclipper.data.localized.dao.TagDao
-import com.kpstv.xclipper.data.localized.dao.UrlDao
+import com.kpstv.xclipper.data.localized.dao.*
 import com.kpstv.xclipper.data.model.*
 import com.kpstv.xclipper.extensions.Coroutines
 import com.kpstv.xclipper.extensions.small
@@ -23,12 +21,17 @@ import javax.inject.Singleton
         Clip::class,
         Tag::class,
         Definition::class,
-        UrlInfo::class
+        UrlInfo::class,
+        UserEntity::class
     ],
     version = 2
 )
 
 @TypeConverters(
+    com.kpstv.xclipper.data.model.ClipListConverter::class,
+    com.kpstv.xclipper.data.model.DeviceListConverter::class,
+    com.kpstv.xclipper.data.model.UserEntityConverter::class,
+    LicenseTypeConverter::class,
     DateConverter::class,
     TagConverter::class
 )
@@ -38,6 +41,7 @@ abstract class MainDatabase : RoomDatabase() {
     abstract fun clipTagDao(): TagDao
     abstract fun clipDefineDao(): DefineDao
     abstract fun clipUrlDao(): UrlDao
+    abstract fun clipCurrentUserDao(): UserEntityDao
 
     @Singleton
     class RoomCallback @Inject constructor(

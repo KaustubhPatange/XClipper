@@ -5,10 +5,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.data.db.MainDatabase
-import com.kpstv.xclipper.data.localized.dao.ClipDataDao
-import com.kpstv.xclipper.data.localized.dao.DefineDao
-import com.kpstv.xclipper.data.localized.dao.TagDao
-import com.kpstv.xclipper.data.localized.dao.UrlDao
+import com.kpstv.xclipper.data.localized.dao.*
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.data.repository.MainRepositoryImpl
@@ -55,6 +52,10 @@ object DatabaseModules {
     @Singleton
     @Provides
     fun provideClipUrlDao(mainDatabase: MainDatabase): UrlDao = mainDatabase.clipUrlDao()
+
+    @Singleton
+    @Provides
+    fun provideUserEntityDao(mainDatabase: MainDatabase): UserEntityDao = mainDatabase.clipCurrentUserDao()
 }
 
 @Module

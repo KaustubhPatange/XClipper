@@ -37,6 +37,7 @@ private object LibraryVersion {
     const val RECYCLERVIEW = "1.1.0"
     const val CWT = "0.1.5"
     const val HILT_COMPILER = "1.0.0-alpha01"
+    const val AUTO_BINDINGS = "1.1-alpha15"
 }
 
 object LibraryDependency {
@@ -96,4 +97,6 @@ object LibraryDependency {
     const val GLIDE_COMPILER = "com.github.bumptech.glide:compiler:${LibraryVersion.GLIDE}"
     const val RECYCLERVIEW = "androidx.recyclerview:recyclerview:${LibraryVersion.RECYCLERVIEW}"
     const val CWT = "io.github.kaustubhpatange:cwt:${LibraryVersion.CWT}"
+    const val AUTO_BINDINGS = "io.github.kaustubhpatange:autobindings:${LibraryVersion.AUTO_BINDINGS}"
+    const val AUTO_BINDINGS_COMPILER = "io.github.kaustubhpatange:autobindings-compiler:${LibraryVersion.AUTO_BINDINGS}"
 }

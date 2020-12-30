@@ -3,10 +3,7 @@ package com.kpstv.xclipper.ui.viewmodels
 import android.app.Application
 import android.content.Context
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.*
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.data.localized.FBOptions
 import com.kpstv.xclipper.data.localized.dao.TagDao
@@ -22,6 +19,7 @@ import com.kpstv.xclipper.extensions.Coroutines
 import com.kpstv.xclipper.extensions.enumerations.FilterType
 import com.kpstv.xclipper.extensions.listeners.RepositoryListener
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
+import com.kpstv.xclipper.extensions.listeners.ResponseResult
 import com.kpstv.xclipper.extensions.listeners.StatusListener
 import com.kpstv.xclipper.extensions.utils.FirebaseUtils
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.loginToDatabase
@@ -31,6 +29,7 @@ import com.kpstv.xclipper.ui.helpers.TinyUrlApiHelper
 import com.kpstv.xclipper.ui.viewmodels.managers.MainEditManager
 import com.kpstv.xclipper.ui.viewmodels.managers.MainSearchManager
 import com.kpstv.xclipper.ui.viewmodels.managers.MainStateManager
+import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -109,8 +108,11 @@ class MainViewModel @ViewModelInject constructor(
 
     fun postUpdateToRepository(oldClip: Clip, newClip: Clip) {
         mainRepository.updateClip(newClip, FilterType.Id)
-        if (oldClip.data != newClip.data)
-            firebaseProvider.replaceData(oldClip, newClip)
+        if (oldClip.data != newClip.data) {
+            viewModelScope.launch {
+                firebaseProvider.replaceData(oldClip, newClip)
+            }
+        }
     }
 
     fun makeAValidationRequest(statusListener: StatusListener) {
@@ -135,42 +137,48 @@ class MainViewModel @ViewModelInject constructor(
     }
 
     fun updateDeviceConnection(options: FBOptions, responseListener: ResponseListener<Unit>) {
-        dbConnectionProvider.saveOptionsToAll(options)
-        firebaseProvider.addDevice(App.DeviceID, ResponseListener(
-            complete = {
-                loginToDatabase(
-                    preferenceProvider = preferenceProvider,
-                    dbConnectionProvider = dbConnectionProvider,
-                    options = options
-                )
-                responseListener.onComplete(Unit)
-            },
-            error = {
-                dbConnectionProvider.detachDataFromAll()
-                responseListener.onError(it)
+        viewModelScope.launch {
+            dbConnectionProvider.saveOptionsToAll(options)
+            val result = firebaseProvider.addDevice(App.DeviceID)
+            when(result) {
+                is ResponseResult.Complete -> {
+                    loginToDatabase(
+                        preferenceProvider = preferenceProvider,
+                        dbConnectionProvider = dbConnectionProvider,
+                        options = options
+                    )
+                    responseListener.onComplete(Unit)
+                }
+                is ResponseResult.Error -> {
+                    dbConnectionProvider.detachDataFromAll()
+                    responseListener.onError(result.error)
+                }
             }
-        ))
+        }
     }
 
     fun removeDeviceConnection(responseListener: ResponseListener<Unit>) {
-        firebaseProvider.removeDevice(App.DeviceID, ResponseListener(
-            complete = {
-                logoutFromDatabase(
-                    context = context,
-                    preferenceProvider = preferenceProvider,
-                    dbConnectionProvider = dbConnectionProvider
-                )
-                responseListener.onComplete(Unit)
-            },
-            error = {
-                logoutFromDatabase(
-                    context = context,
-                    preferenceProvider = preferenceProvider,
-                    dbConnectionProvider = dbConnectionProvider
-                )
-                responseListener.onError(it)
+        viewModelScope.launch {
+            val result = firebaseProvider.removeDevice(App.DeviceID)
+            when(result) {
+                is ResponseResult.Complete -> {
+                    logoutFromDatabase(
+                        context = context,
+                        preferenceProvider = preferenceProvider,
+                        dbConnectionProvider = dbConnectionProvider
+                    )
+                    responseListener.onComplete(Unit)
+                }
+                is ResponseResult.Error -> {
+                    logoutFromDatabase(
+                        context = context,
+                        preferenceProvider = preferenceProvider,
+                        dbConnectionProvider = dbConnectionProvider
+                    )
+                    responseListener.onError(result.error)
+                }
             }
-        ))
+        }
     }
 
     init {

@@ -121,6 +121,7 @@ dependencies {
     implementation(LibraryDependency.HVLOG)
     implementation(LibraryDependency.GLIDE)
     implementation(LibraryDependency.CWT)
+    implementation(LibraryDependency.AUTO_BINDINGS)
 
     implementation(LibraryDependency.HILT_ANDROID)
     implementation(LibraryDependency.HILT_VIEWODEL)
@@ -130,6 +131,7 @@ dependencies {
     kapt(LibraryDependency.GLIDE_COMPILER)
     kapt(LibraryDependency.HILT_COMPILER)
     kapt(LibraryDependency.HILT_VIEWODEL_COMPILER)
+    kapt(LibraryDependency.AUTO_BINDINGS_COMPILER)
 
     kapt(LibraryDependency.GLIDE_COMPILER)
     kapt(LibraryDependency.ROOM_COMPILER_KAPT)
@@ -138,4 +140,5 @@ dependencies {
     testImplementation(TestLibraryDependency.JUNIT)
     androidTestImplementation(TestLibraryDependency.JUNIT_TEST_EXT)
     androidTestImplementation(TestLibraryDependency.ESPRESSO_CORE)
+    implementation(kotlin("reflect"))
 }

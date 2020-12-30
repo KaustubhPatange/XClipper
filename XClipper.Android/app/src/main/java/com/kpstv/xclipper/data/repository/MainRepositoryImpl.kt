@@ -76,17 +76,19 @@ class MainRepositoryImpl @Inject constructor(
     }
 
     override fun validateData(statusListener: StatusListener) {
-        firebaseProvider.clearData()
-        firebaseProvider.getAllClipData {
-            if (it == null) {
-                statusListener.onError()
-                return@getAllClipData
-            }
+        Coroutines.io {
+            firebaseProvider.clearData()
+            firebaseProvider.getAllClipData {
+                if (it == null) {
+                    mainThread { statusListener.onError() }
+                    return@getAllClipData
+                }
 
-            it.forEach { clip ->
-                firebaseUpdate(clip)
+                it.forEach { clip ->
+                    firebaseUpdate(clip)
+                }
+                mainThread { statusListener.onComplete() }
             }
-            statusListener.onComplete()
         }
     }
 
@@ -249,8 +251,9 @@ class MainRepositoryImpl @Inject constructor(
         val clip = Clip.from(unencryptedData!!)
 
         saveClip(clip)
-        if (toFirebase)
-            firebaseProvider.uploadData(clip)
+        if (toFirebase) {
+            Coroutines.io { firebaseProvider.uploadData(clip) }
+        }
     }
 
     override fun updateRepository(clip: Clip, toFirebase: Boolean) {
@@ -258,7 +261,7 @@ class MainRepositoryImpl @Inject constructor(
 
         saveClip(finalClip)
         if (toFirebase)
-            firebaseProvider.uploadData(finalClip)
+            Coroutines.io { firebaseProvider.uploadData(finalClip)}
     }
 
     override fun enableNotify() {
