@@ -95,6 +95,8 @@ namespace Components
 
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
+            ConnectionHelper.StartMonitoring();
+
             LoadLanguageResource();
 
             CheckForOtherInstance();

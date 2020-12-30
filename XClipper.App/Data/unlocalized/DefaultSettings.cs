@@ -10,6 +10,7 @@ using static Components.MainHelper;
 using System.Windows.Forms;
 using System.Windows.Navigation;
 using System.Security.RightsManagement;
+using System.Data.SqlTypes;
 
 #nullable enable
 
@@ -118,6 +119,11 @@ namespace Components
         /// A string to hold if purchase complete.
         /// </summary>
         private static bool _IsPurchaseDone = false;
+        
+        /// <summary>
+        /// Identifies whether device is connected to a network with internet access.
+        /// </summary>
+        private static bool _IsNetworkConnected = false;
 
         private static FirebaseData? _FirebaseCurrent = null;
         private static OAuth? _DesktopAuth = null;
@@ -438,16 +444,31 @@ namespace Components
         public static bool NoNotifyChanges { get; set; } = false;
 
         /// <summary>
+        /// <inheritdoc cref="_IsNetworkConnected"/>
+        /// </summary>
+        public static bool IsNetworkConnected
+        {
+            get { return _IsNetworkConnected; }
+            set
+            {
+                _IsNetworkConnected = value;
+                NotifyStaticPropertyChanged(nameof(_IsNetworkConnected));
+                NetworkChange?.Invoke();
+            }
+        }
+
+        /// <summary>
         /// Set of timestamps that will trigger certain notifications.
         /// </summary>
+
+        #endregion
+
         public static class TimeStamps
         {
             public static string? EnableSync { get; set; } = string.Empty;
             public static bool ShownIntroduction { get; set; } = false;
             public static string? PurchaseInfo { get; set; } = string.Empty;
         }
-
-        #endregion
 
         #region Notify Static PropertyChange
 
@@ -771,5 +792,15 @@ namespace Components
 
         #endregion
 
+
+        #region Event handlers
+
+        public delegate void NetworkChangeEventHandler();
+
+        private static event NetworkChangeEventHandler? NetworkChange;
+        public static void AddNetworkChangeEvent(NetworkChangeEventHandler e) => NetworkChange += e;
+        public static void RemoveNetworkChangeEvent(NetworkChangeEventHandler e) => NetworkChange -= e;
+
+        #endregion
     }
 }

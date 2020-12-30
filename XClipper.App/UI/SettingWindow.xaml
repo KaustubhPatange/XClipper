@@ -279,7 +279,7 @@
                                         Text="{Binding FDP, UpdateSourceTrigger=PropertyChanged}" />
                                 </Grid>
 
-                                <Grid Margin="0,10,0,0">
+                                <Grid Margin="0,10,0,0" IsEnabled="{c:Binding 'local:DefaultSettings.BindDatabase'}">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="auto" />
                                         <ColumnDefinition Width="auto" />
