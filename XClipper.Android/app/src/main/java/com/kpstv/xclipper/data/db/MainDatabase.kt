@@ -24,14 +24,14 @@ import javax.inject.Singleton
         UrlInfo::class,
         UserEntity::class
     ],
-    version = 2
+    version = 2,
+    exportSchema = false
 )
 
 @TypeConverters(
     com.kpstv.xclipper.data.model.ClipListConverter::class,
     com.kpstv.xclipper.data.model.DeviceListConverter::class,
     com.kpstv.xclipper.data.model.UserEntityConverter::class,
-    LicenseTypeConverter::class,
     DateConverter::class,
     TagConverter::class
 )

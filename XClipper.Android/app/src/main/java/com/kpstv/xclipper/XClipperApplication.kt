@@ -34,7 +34,6 @@ import javax.inject.Inject
 @Suppress("unused")
 @SuppressLint("HardwareIds")
 @HiltAndroidApp
-@ExperimentalStdlibApi
 class XClipperApplication : Application(), Configuration.Provider {
 
     @Inject lateinit var workerFactory: HiltWorkerFactory

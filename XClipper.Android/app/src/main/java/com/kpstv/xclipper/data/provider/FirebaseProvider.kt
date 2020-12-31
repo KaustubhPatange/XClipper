@@ -13,6 +13,7 @@ interface FirebaseProvider {
     fun isInitialized(): LiveData<Boolean>
 
     fun initialize(options: FBOptions?, notifyInitialization: Boolean = true)
+    fun uninitialized()
     suspend fun isLicensed(): Boolean
     fun isValidDevice(): Boolean
     suspend fun uploadData(unencryptedClip: Clip)

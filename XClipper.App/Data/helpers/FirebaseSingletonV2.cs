@@ -790,7 +790,10 @@ namespace Components
             if (await RunCommonTask().ConfigureAwait(false))
             {
                 var devices = user.Devices.Where(d => d.id != DeviceId).ToList();
-                await client.SafeUpdateAsync($"{USER_REF}/{DEVICE_REF}", user.Devices).ConfigureAwait(false);
+                if (devices.IsEmpty())
+                    await client.SafeDeleteAsync($"{USER_REF}/{UID}/{DEVICE_REF}").ConfigureAwait(false);
+                else 
+                    await client.SafeUpdateAsync($"{USER_REF}/{UID}/{DEVICE_REF}", devices).ConfigureAwait(false);
                 return devices;
             }
 

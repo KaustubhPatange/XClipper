@@ -29,19 +29,19 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
-@ExperimentalStdlibApi
-@ExperimentalCoroutinesApi
 class FirebaseProviderImpl @Inject constructor(
     private val context: Context,
     private val dbConnectionProvider: DBConnectionProvider,
     private val currentUserRepository: UserEntityDao
 ) : FirebaseProvider {
 
-    private val TAG = javaClass.simpleName
+    companion object {
+        private const val USER_REF = "users"
+        private const val CLIP_REF = "Clips"
+        private const val DEVICE_REF = "Devices"
+    }
 
-    private val USER_REF = "users"
-    private val CLIP_REF = "Clips"
-    private val DEVICE_REF = "Devices"
+    private val TAG = javaClass.simpleName
 
     private var isInitialized = MutableLiveData(false)
 
@@ -61,7 +61,7 @@ class FirebaseProviderImpl @Inject constructor(
      * The only solution I found is to set [isDeviceAdding] to true to know if device is
      * being added or not. In such case device validation will not be invoked.
      */
-    private var isDeviceAdding = false
+   // private var isDeviceAdding = false
 
     override fun isInitialized() = isInitialized
 
@@ -76,8 +76,9 @@ class FirebaseProviderImpl @Inject constructor(
             .setDatabaseUrl(options.endpoint)
             .build()
 
-        if (FirebaseApp.getApps(context).isEmpty())
+        if (FirebaseApp.getApps(context).isEmpty()) {
             FirebaseApp.initializeApp(context, firebaseOptions)
+        }
 
         database = Firebase.database(options.endpoint)
         if (notifyInitialization)
@@ -85,6 +86,13 @@ class FirebaseProviderImpl @Inject constructor(
 
         HVLog.d()
         Log.e(TAG, "Firebase Database has been initialized")
+    }
+
+    override fun uninitialized() {
+        if (isInitialized.value == true) {
+            FirebaseApp.getInstance(FirebaseApp.DEFAULT_APP_NAME).delete()
+            isInitialized.postValue(false)
+        }
     }
 
     override suspend fun isLicensed(): Boolean = currentUserRepository.isLicensed() ?: false
@@ -181,7 +189,7 @@ class FirebaseProviderImpl @Inject constructor(
                 isInitialized.postValue(true)
             }
             UploadStatus.Removing -> {
-                isInitialized.postValue(false)
+                uninitialized()
                 removeDataObservation()
             }
         }
@@ -405,8 +413,12 @@ class FirebaseProviderImpl @Inject constructor(
                             it.id == DeviceID
                         } > 0
 
-                        if (!validDevice)
+                        if (!validDevice) {
                             deviceValidated.invoke(validDevice)
+                            uninitialized()
+                            removeDataObservation()
+                            return@collect
+                        }
 
                         if (json == null)
                             error.invoke(Exception("Database is null"))
@@ -426,8 +438,8 @@ class FirebaseProviderImpl @Inject constructor(
                             }
                         }
 
-                        if (!isDeviceAdding && !validDevice)
-                            isInitialized.postValue(false)
+//                        if (!isDeviceAdding && !validDevice)
+//                            isInitialized.postValue(false)
 
                         currentUserRepository.update(UserEntity.from(firebaseUser))
                     }

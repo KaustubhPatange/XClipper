@@ -13,7 +13,6 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-@ExperimentalStdlibApi
 object AppModule {
 
     @Singleton

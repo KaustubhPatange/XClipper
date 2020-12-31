@@ -37,7 +37,7 @@ private object LibraryVersion {
     const val RECYCLERVIEW = "1.1.0"
     const val CWT = "0.1.5"
     const val HILT_COMPILER = "1.0.0-alpha01"
-    const val AUTO_BINDINGS = "1.1-alpha15"
+    const val AUTO_BINDINGS = "1.1-alpha16"
 }
 
 object LibraryDependency {
