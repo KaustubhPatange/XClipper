@@ -16,12 +16,8 @@ namespace Components
             RemoveCommand = new RelayCommand(DisconnectDevice);
 
             LoadDeviceData();
-        }
 
-        public DeviceViewModel SetDeviceList(List<Device> devices)
-        {
-            Devices = devices;
-            return this;
+            FirebaseSingletonV2.AddDeviceChangeListener(UpdateDeviceList);
         }
 
         #region Bindings
@@ -50,15 +46,20 @@ namespace Components
 
                 RunOnMainThread(() =>
                 {
-                    Devices = devices;
-                    ShowProgress = false;
-                    if (devices?.Count > 0)
-                    {
-                        SelectedIndex = 0;
-                        ButtonEnabled = true;
-                    }
+                    UpdateDeviceList(devices);
                 });
             });
+        }
+
+        private void UpdateDeviceList(List<Device> devices)
+        {
+            Devices = devices;
+            ShowProgress = false;
+            if (devices?.Count > 0)
+            {
+                SelectedIndex = 0;
+                ButtonEnabled = true;
+            }
         }
 
         /// <summary>

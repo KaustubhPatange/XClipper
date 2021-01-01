@@ -534,6 +534,8 @@ namespace Components
             // Check for device addition & removal...
             var newDevices = firebaseUser?.Devices ?? new List<Device>();
             var oldDevices = user?.Devices ?? new List<Device>();
+            if (newDevices.Count != oldDevices.Count) deviceChanged?.Invoke(newDevices);
+
             foreach (var device in newDevices.ExceptEquals(oldDevices))
             {
                 binder?.OnDeviceAdded(device);
@@ -1110,6 +1112,16 @@ namespace Components
             }
             return false;
         }
+
+        #endregion
+
+
+        #region
+
+        public delegate void OnDeviceListChange(List<Device> devices);
+        private static event OnDeviceListChange? deviceChanged;
+
+        public static void AddDeviceChangeListener(OnDeviceListChange listener) => deviceChanged += listener;
 
         #endregion
 

@@ -12,7 +12,7 @@
 
 ## Compilation Guide
 
-Since this project involves **license** system 📃 some of the source files has been ignored. [Read this guide](https://kaustubhpatange.github.io/XClipper/docs/#/compile) in order to compile 🗃 the project.
+Since this project involves **license** system some of the source files has been ignored. [Read this guide](https://kaustubhpatange.github.io/XClipper/docs/#/compile) in order to compile the project.
 
 ## Project Libraries
 
