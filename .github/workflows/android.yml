@@ -21,7 +21,9 @@ jobs:
       - name: Building project
         run: |
           tar -xvzf scripts/gradle.tar.gz
-          echo demo > XClipper.Android/keystore.properties
+          echo keyAlias=github >> XClipper.Android/keystore.properties
+          echo keyPassword=github >> XClipper.Android/keystore.properties
+          echo storePassword=github >> XClipper.Android/keystore.properties
           cd XClipper.Android
           chmod +x gradlew
           ./gradlew app:assembleDebug --stacktrace
