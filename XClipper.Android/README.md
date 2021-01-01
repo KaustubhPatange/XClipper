@@ -17,6 +17,7 @@ Since this project involves **license** system 📃 some of the source files has
 ## Project Libraries
 
 - [CustomWebviewTabs](https://github.com/KaustubhPatange/CustomWebviewTabs) - An alternative for CustomTabs in Android, works without the need for a service provider.
+- [Realtime Extensions](https://github.com/KaustubhPatange/firebase-realtime-extensions) - A set of Kotlin extensions for realtime database to seamlessly suspend the callback listeners.
 
 ## Built with 🛠
 

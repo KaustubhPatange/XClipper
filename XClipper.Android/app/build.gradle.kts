@@ -122,6 +122,7 @@ dependencies {
     implementation(LibraryDependency.GLIDE)
     implementation(LibraryDependency.CWT)
     implementation(LibraryDependency.AUTO_BINDINGS)
+    implementation(LibraryDependency.REALTIME_EXTENSIONS)
 
     implementation(LibraryDependency.HILT_ANDROID)
     implementation(LibraryDependency.HILT_VIEWODEL)

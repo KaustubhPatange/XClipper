@@ -6,9 +6,15 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.kpstv.firebase.DataResponse
+import com.kpstv.firebase.ValueEventResponse
+import com.kpstv.firebase.extensions.setValueAsync
+import com.kpstv.firebase.extensions.singleValueEvent
+import com.kpstv.firebase.extensions.valueEventFlow
 import com.kpstv.hvlog.HVLog
 import com.kpstv.license.Encryption.Decrypt
 import com.kpstv.xclipper.App.APP_MAX_DEVICE
@@ -48,20 +54,6 @@ class FirebaseProviderImpl @Inject constructor(
     private var validDevice: Boolean = false
     private var licenseStrategy = MutableLiveData(LicenseType.Invalid)
     private lateinit var database: FirebaseDatabase
-
-    /** TODO: This might've fixed since everything is now suspendable.
-     *
-     * There is drastic problem when device is being added. The thing is lot's of
-     * internal calls are made to [FBOptions], so during pushing device data to firebase
-     * in [observeDataChange] listener it still returns the cache version of data where the
-     * device is not added yet. Due to this device validation fails and causing
-     * [DBConnectionProvider] to run [DBConnectionProvider.detachDataFromAll] which is
-     * removing all the preference related to connection
-     *
-     * The only solution I found is to set [isDeviceAdding] to true to know if device is
-     * being added or not. In such case device validation will not be invoked.
-     */
-   // private var isDeviceAdding = false
 
     override fun isInitialized() = isInitialized
 
@@ -180,7 +172,7 @@ class FirebaseProviderImpl @Inject constructor(
         Log.e(TAG, "ListSize: ${list.size}, List: $list")
 
         /** Must pass toList to firebase otherwise it add list as linear data. */
-        val result: ResponseResult<Unit> = database.getReference(USER_REF).child(UID).child(DEVICE_REF).awaitSetValue(list.toList())
+        val result: DataResponse<DatabaseReference> = database.getReference(USER_REF).child(UID).child(DEVICE_REF).setValueAsync(list.toList())
 
         currentUserRepository.updateDevices(list)
 
@@ -193,7 +185,11 @@ class FirebaseProviderImpl @Inject constructor(
                 removeDataObservation()
             }
         }
-        return result
+
+        return when(result) {
+            is DataResponse.Complete -> ResponseResult.complete(Unit)
+            is DataResponse.Error -> ResponseResult.error(result.error)
+        }
     }
 
     override suspend fun replaceData(unencryptedOldClip: Clip, unencryptedNewClip: Clip) {
@@ -288,12 +284,12 @@ class FirebaseProviderImpl @Inject constructor(
      */
     private suspend fun pushDataToFirebase(list: ArrayList<Clip>) {
         HVLog.d()
-        val result = database.getReference(USER_REF).child(UID).child(CLIP_REF).awaitSetValue(list.cloneToEntries())
+        val result = database.getReference(USER_REF).child(UID).child(CLIP_REF).setValueAsync(list.cloneToEntries())
         when(result) {
-            is ResponseResult.Complete -> {
+            is DataResponse.Complete -> {
                 currentUserRepository.updateClips(list)
             }
-            is ResponseResult.Error -> {
+            is DataResponse.Error -> {
                 Log.e(TAG, "Error: ${result.error.message}")
             }
         }
@@ -345,15 +341,15 @@ class FirebaseProviderImpl @Inject constructor(
 
         if (!currentUserRepository.isExist() || validationContext == ValidationContext.ForceInvoke) {
             HVLog.d("Getting user for first time or a force invoke?")
-            val result = database.getReference(USER_REF).child(UID).awaitSingleValue()
+            val result = database.getReference(USER_REF).child(UID).singleValueEvent()
             return when(result) {
-                is ResponseResult.Complete -> {
+                is DataResponse.Complete -> {
                     val json = gson.toJson(result.data.value)
                     val userEntity = UserEntity.from(User.from(json))
                     currentUserRepository.update(userEntity)
                     validateUser()
                 }
-                is ResponseResult.Error -> {
+                is DataResponse.Error -> {
                     Log.e(TAG, "Error: ${result.error.message}")
                     false
                 }
@@ -399,12 +395,12 @@ class FirebaseProviderImpl @Inject constructor(
         inconsistentDataListener = inconsistentData
 
         CoroutineScope(Dispatchers.Main + job!!).launch {
-            database.getReference(USER_REF).child(UID).awaitValueChangeEvent().collect { result ->
+            database.getReference(USER_REF).child(UID).valueEventFlow().collect { result ->
                 job?.ensureActive()
                 when(result) {
-                    is ResponseResult.Complete -> {
+                    is ValueEventResponse.Changed -> {
                         HVLog.d("OnDataChanging")
-                        val json = gson.toJson(result.data.value)
+                        val json = gson.toJson(result.snapshot.value)
                         val firebaseUser = User.from(json)
 
                         checkForUserDetailsAndUpdateLocal()
@@ -438,13 +434,10 @@ class FirebaseProviderImpl @Inject constructor(
                             }
                         }
 
-//                        if (!isDeviceAdding && !validDevice)
-//                            isInitialized.postValue(false)
-
                         currentUserRepository.update(UserEntity.from(firebaseUser))
                     }
-                    is ResponseResult.Error -> {
-                        error.invoke(result.error)
+                    is ValueEventResponse.Cancelled -> {
+                        error.invoke(result.error.toException())
                         HVLog.d("onError")
                     }
                 }
@@ -467,6 +460,7 @@ class FirebaseProviderImpl @Inject constructor(
     // This might be not needed because all clips are not null by default or they
     // are mapped to not null :P
     @Suppress("SENSELESS_COMPARISON")
+    @Deprecated("Must not be used")
     private suspend fun validateUser(): Boolean {
         val user = currentUserRepository.get()
         for (clip in user?.Clips ?: listOf()) {
