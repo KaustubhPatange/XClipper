@@ -14,8 +14,10 @@ import com.kpstv.xclipper.App.LANG_PREF
 import com.kpstv.xclipper.App.SERVICE_PREF
 import com.kpstv.xclipper.App.SUGGESTION_PREF
 import com.kpstv.xclipper.App.SWIPE_DELETE_PREF
+import com.kpstv.xclipper.App.TRIM_CLIP_PREF
 import com.kpstv.xclipper.App.showSuggestion
 import com.kpstv.xclipper.App.swipeToDelete
+import com.kpstv.xclipper.App.trimClipText
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.extensions.Coroutines
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.isClipboardAccessibilityServiceRunning
@@ -89,6 +91,13 @@ class GeneralPreference : PreferenceFragmentCompat() {
         /** Swipe to delete preference */
         findPreference<SwitchPreferenceCompat>(SWIPE_DELETE_PREF)?.setOnPreferenceChangeListener { _, newValue ->
             swipeToDelete = newValue as Boolean
+            Toasty.info(requireContext(), getString(R.string.settings_restart)).show()
+            true
+        }
+
+        /** Text trimming while displaying */
+        findPreference<SwitchPreferenceCompat>(TRIM_CLIP_PREF)?.setOnPreferenceChangeListener { _, newValue ->
+            trimClipText = newValue as Boolean
             Toasty.info(requireContext(), getString(R.string.settings_restart)).show()
             true
         }

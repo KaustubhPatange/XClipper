@@ -73,50 +73,62 @@ class MainViewModel @ViewModelInject constructor(
         get() = _tagLiveData
 
     fun refreshRepository() {
-        Coroutines.io {
-            _clipLiveData.postValue(mainRepository.getAllData())
-        }
+        viewModelScope.launch { _clipLiveData.postValue(mainRepository.getAllData()) }
     }
 
     fun postToRepository(clip: Clip) {
-        mainRepository.updateRepository(clip)
+        viewModelScope.launch { mainRepository.updateRepository(clip) }
     }
 
     fun changeClipPin(clip: Clip?, boolean: Boolean) {
-        mainRepository.updatePin(clip, boolean)
+        viewModelScope.launch { mainRepository.updatePin(clip, boolean) }
     }
 
-    fun checkForDuplicateClip(unencryptedData: String, repositoryListener: RepositoryListener) {
-        mainRepository.checkForDuplicate(unencryptedData, repositoryListener)
+    fun checkForDuplicateClip(data: String, repositoryListener: RepositoryListener) {
+        viewModelScope.launch {
+            if (mainRepository.checkForDuplicate(data)) {
+                repositoryListener.onDataExist()
+            } else {
+                repositoryListener.onDataError()
+            }
+        }
     }
 
-    fun checkForDuplicateClip(
-        unencryptedData: String,
-        id: Int,
-        repositoryListener: RepositoryListener
-    ) {
-        mainRepository.checkForDuplicate(unencryptedData, id, repositoryListener)
+    fun checkForDuplicateClip(data: String, id: Int, repositoryListener: RepositoryListener) {
+        viewModelScope.launch {
+            if (mainRepository.checkForDuplicate(data, id)) {
+                repositoryListener.onDataExist()
+            } else {
+                repositoryListener.onDataError()
+            }
+        }
     }
 
     fun deleteFromRepository(clip: Clip) {
-        mainRepository.deleteClip(clip)
+        viewModelScope.launch { mainRepository.deleteClip(clip) }
     }
 
     fun deleteMultipleFromRepository(clips: List<Clip>) {
-        mainRepository.deleteMultiple(clips)
+        viewModelScope.launch { mainRepository.deleteMultiple(clips) }
     }
 
     fun postUpdateToRepository(oldClip: Clip, newClip: Clip) {
-        mainRepository.updateClip(newClip, FilterType.Id)
-        if (oldClip.data != newClip.data) {
-            viewModelScope.launch {
+        viewModelScope.launch {
+            mainRepository.updateClip(newClip, FilterType.Id)
+            if (oldClip.data != newClip.data) {
                 firebaseProvider.replaceData(oldClip, newClip)
             }
         }
     }
 
     fun makeAValidationRequest(statusListener: StatusListener) {
-        mainRepository.validateData(statusListener)
+        viewModelScope.launch {
+            if (mainRepository.validateData()) {
+                statusListener.onComplete()
+            } else {
+                statusListener.onError()
+            }
+        }
     }
 
     fun postToTagRepository(tag: Tag) {
@@ -124,23 +136,21 @@ class MainViewModel @ViewModelInject constructor(
     }
 
     fun deleteFromTagRepository(tag: Tag, statusListener: StatusListener) {
-        mainRepository.checkForDependent(tag.name,
-            RepositoryListener(
-                dataExist = {
-                    statusListener.onError()
-                },
-                notFound = {
-                    statusListener.onComplete()
-                    Coroutines.io { tagRepository.delete(tag) }
-                }
-            ))
+        viewModelScope.launch {
+            if (mainRepository.checkForDependent(tag.name)) {
+                statusListener.onError()
+            } else {
+                tagRepository.delete(tag)
+                statusListener.onComplete()
+            }
+        }
     }
 
     fun updateDeviceConnection(options: FBOptions, responseListener: ResponseListener<Unit>) {
         viewModelScope.launch {
             dbConnectionProvider.saveOptionsToAll(options)
             val result = firebaseProvider.addDevice(App.DeviceID)
-            when(result) {
+            when (result) {
                 is ResponseResult.Complete -> {
                     loginToDatabase(
                         preferenceProvider = preferenceProvider,
@@ -160,7 +170,7 @@ class MainViewModel @ViewModelInject constructor(
     fun removeDeviceConnection(responseListener: ResponseListener<Unit>) {
         viewModelScope.launch {
             val result = firebaseProvider.removeDevice(App.DeviceID)
-            when(result) {
+            when (result) {
                 is ResponseResult.Complete -> {
                     logoutFromDatabase(
                         context = context,

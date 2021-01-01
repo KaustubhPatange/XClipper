@@ -64,6 +64,7 @@ object App {
 
     var showSuggestion = false
     var swipeToDelete = true
+    var trimClipText = false
 
     fun getMaxConnection(isLicensed: Boolean): Int =
         if (isLicensed) FB_MAX_DEVICE_CONNECTION else FB_MIN_DEVICE_CONNECTION
@@ -139,4 +140,5 @@ object App {
     const val IMPORT_PREF = "import_pref"
     const val EXPORT_PREF = "export_pref"
     const val IMAGE_MARKDOWN_PREF = "image_markdown_pref"
+    const val TRIM_CLIP_PREF = "trim_clip_pref"
 }

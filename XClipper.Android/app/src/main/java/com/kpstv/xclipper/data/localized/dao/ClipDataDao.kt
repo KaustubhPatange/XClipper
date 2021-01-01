@@ -9,13 +9,10 @@ import java.util.*
 @Dao
 interface ClipDataDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(clip: Clip)
+    suspend fun insert(clip: Clip)
 
     @Update
-    fun update(clip: Clip)
-
-    @Delete
-    fun delete(clip: Clip)
+    suspend fun update(clip: Clip)
 
     @Query("update table_clip set data = :encryptedData, time = :time where id = :id")
     fun update(id: Int, encryptedData: String, time: Date)
@@ -23,20 +20,35 @@ interface ClipDataDao {
     @Query("update table_clip set isPinned = :isPinned")
     fun update(isPinned: Boolean)
 
+    @Delete
+    suspend fun delete(clip: Clip)
+
     @Query("delete from table_clip where id = :id")
-    fun delete(id: Int)
+    suspend fun delete(id: Int)
+
+    @Query("delete from table_clip where data = :data")
+    suspend fun delete(data: String): Int
 
     @Query("delete from table_clip where id = (select MIN(id) from table_clip);")
-    fun deleteLast()
+    suspend fun deleteFirst()
 
     @Query("select * from table_clip where id = :id")
-    fun getData(id: Int): Clip
+    suspend fun getData(id: Int): Clip?
 
     @Query("select * from table_clip where data = :data")
-    fun getData(data: String): Clip?
+    suspend fun getData(data: String): Clip?
+
+    @Query("select exists(select data from table_clip where data = :data)")
+    suspend fun isExist(data: String): Boolean
 
     @Query("select * from table_clip")
-    fun getAllData(): List<Clip>
+    suspend fun getAllData(): List<Clip>?
+
+    @Query("select count(*) from table_clip")
+    suspend fun getClipSize(): Long
+
+    @Query("update table_clip set isPinned = :isPinned where id = :id")
+    suspend fun updatePin(id: Int, isPinned: Boolean): Int
 
     /** We are reversing this result in CIAdapter that is why we are taking
      *  list in ascending order */

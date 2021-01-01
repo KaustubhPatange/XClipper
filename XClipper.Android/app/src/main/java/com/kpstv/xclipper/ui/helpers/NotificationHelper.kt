@@ -66,7 +66,7 @@ class NotificationHelper @Inject constructor(
         manager.notify(getRandomNumberCode(), notification)
     }
 
-    fun pushNotification(text: String): Unit = with(context) {
+    fun pushNotification(text: String, withActions: Boolean = true): Unit = with(context) {
         val openIntent = PendingIntent.getBroadcast(
             context,
             0,
@@ -86,7 +86,7 @@ class NotificationHelper @Inject constructor(
             action = ACTION_SMART_OPTIONS
         }
 
-        val notification = NotificationCompat.Builder(this, CHANNEL_ID)
+        val notificationBuilder = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_clip)
             .setContentTitle(getString(R.string.clip_content))
             .setContentText(text)
@@ -94,19 +94,22 @@ class NotificationHelper @Inject constructor(
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
             .setContentIntent(openIntent)
-            .addAction(
+
+		if (withActions) {
+			notificationBuilder.addAction(
                 R.drawable.ic_delete_white,
                 context.getString(R.string.delete),
                 PendingIntent.getBroadcast(context, 0, deleteIntent, 0)
             )
-            .addAction(
+			notificationBuilder.addAction(
                 R.drawable.ic_special,
                 getString(R.string.more_actions),
                 PendingIntent.getBroadcast(context, 0, specialIntent, 0)
-            ).build()
+            )
+		}
 
         if (!::manager.isInitialized) createChannel()
-        manager.notify(getRandomNumberCode(), notification)
+        manager.notify(getRandomNumberCode(), notificationBuilder.build())
     }
 
     fun sendAccessibilityDisabledNotification(context: Context): Unit = with(context) {

@@ -10,6 +10,7 @@ import com.kpstv.xclipper.App.ACTION_SMART_OPTIONS
 import com.kpstv.xclipper.App.APP_CLIP_DATA
 import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.extensions.AbstractBroadcastReceiver
+import com.kpstv.xclipper.extensions.Coroutines
 import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.ui.activities.Main
 import com.kpstv.xclipper.ui.dialogs.SpecialDialog
@@ -43,7 +44,9 @@ class AppBroadcastReceiver : AbstractBroadcastReceiver() {
                 dismissNotification(context)
             }
             ACTION_DELETE -> {
-                repository.deleteClip(data)
+                Coroutines.io {
+                    repository.deleteClip(data)
+                }
 
                 dismissNotification(context)
                 collapseStatusBar(context)

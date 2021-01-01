@@ -43,6 +43,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
+                <!-- TODO: Ellipse size is not working. -->
                 <TextView
                     android:id="@+id/ci_textView"
                     android:layout_width="wrap_content"

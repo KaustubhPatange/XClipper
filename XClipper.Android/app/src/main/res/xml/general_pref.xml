@@ -32,6 +32,12 @@
             app:summary="@string/swipe_summary"
             app:title="@string/swipe_title" />
 
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            app:key="trim_clip_pref"
+            app:title="@string/trim_title"
+            app:summary="@string/trim_summary"/>
+
         <ListPreference
             android:summary="@string/lang_summary"
             app:defaultValue="en"

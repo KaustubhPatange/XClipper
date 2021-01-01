@@ -11,18 +11,13 @@ import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.data.repository.MainRepository
-import com.kpstv.xclipper.data.repository.Transaction
-import com.kpstv.xclipper.extensions.decrypt
+import com.kpstv.xclipper.extensions.Coroutines
 import com.kpstv.xclipper.extensions.enumerations.FirebaseState
-import com.kpstv.xclipper.extensions.ioThread
+import com.kpstv.xclipper.extensions.toInt
 import com.kpstv.xclipper.ui.helpers.NotificationHelper
 import dagger.hilt.android.qualifiers.ApplicationContext
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.debounce
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -39,32 +34,20 @@ class FirebaseUtils @Inject constructor(
 
     private var shownToast = false
 
-    fun observeDatabaseChangeEvents(): Unit =
-        with(context) {
+    fun observeDatabaseChangeEvents(): Unit = with(context) {
             if (firebaseProvider.isObservingChanges()) return@with
             if (!App.observeFirebase) return@with
             HVLog.d("Attached")
             firebaseProvider.observeDataChange(
                 changed = { clips -> // Unencrypted data
                     if (App.observeFirebase) {
-                        when {
-                            clips.size == 1 -> {
-                                repository.updateClip(clips[0])
-                            }
-                            clips.size  > 5 -> {
-                                notificationHelper.pushNotification("${clips.size} ${context.getString(R.string.multi_clips_added)}")
-                                repository.disableNotify()
-                                clips.forEach { repository.updateClip(it) }
-                                repository.enableNotify()
-                            }
-                            else -> {
-                                clips.forEach { repository.updateClip(it) }
-                            }
-                        }
+                        insertAllClips(clips)
                     }
                 },
                 removed = { items -> // Unencrypted listOf data
-                    items?.forEach { repository.deleteClip(it) }
+                    Coroutines.io {
+                        items?.forEach { repository.deleteClip(it) }
+                    }
                 },
                 removedAll = {
                     notificationHelper.sendNotification(
@@ -101,6 +84,32 @@ class FirebaseUtils @Inject constructor(
                 }
             )
         }
+
+    private fun insertAllClips(clips: List<Clip>) {
+        CoroutineScope(SupervisorJob() + Dispatchers.Main).launch {
+            when {
+                // TODO: Refactor the database & make sure to eliminate notification helper from it.
+                clips.size == 1 -> {
+                    repository.updateClip(clips[0])
+                }
+                clips.size > 5 -> {
+                    repository.disableNotify()
+                    var addedClips = 0
+                    clips.forEach { addedClips += repository.updateClip(it).toInt() }
+                    if (addedClips > 0) {
+                        notificationHelper.pushNotification(
+                            text = "$addedClips ${context.getString(R.string.multi_clips_added)}",
+                            withActions = false
+                        )
+                    }
+                    repository.enableNotify()
+                }
+                else -> {
+                    clips.forEach { repository.updateClip(it) }
+                }
+            }
+        }
+    }
 
     /**
      * When the boolean is false it will automatically call [FirebaseProvider.removeDataObservation]

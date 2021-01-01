@@ -87,6 +87,8 @@ fun <T> lazyDeferred(block: suspend CoroutineScope.() -> T): Lazy<Deferred<T>> {
     }
 }
 
+fun Boolean.toInt(): Int = if (this) 1 else 0
+
 fun Date.getFormattedDate(): String =
     SimpleDateFormat(STANDARD_DATE_FORMAT, Locale.US).format(this)
 

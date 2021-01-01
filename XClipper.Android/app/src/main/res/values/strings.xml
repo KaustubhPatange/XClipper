@@ -3,7 +3,7 @@
 
     <string name="accessibility_service_description">This will let XClipper to monitor clipboard &amp; will able to capture some of known strategies if system detects any copy/cut action.\n\n\nThis feature is still in BETA for Android 10+ users and may not work always.</string>
 
-    <string name="testStringSmall">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</string>
+    <string name="testStringSmall">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries.</string>
     <string name="timeString">2 days ago</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
@@ -176,4 +176,6 @@
     <string name="multi_clips_added">new clips are added</string>
     <string name="warning">Warning</string>
     <string name="bind_delete_warning">This may result into unexpected deletion of clips if your remote database has restriction on item limit.</string>
+    <string name="trim_title">Text trimming</string>
+    <string name="trim_summary">This will remove all the whitespaces from the clip data while displaying.</string>
 </resources>

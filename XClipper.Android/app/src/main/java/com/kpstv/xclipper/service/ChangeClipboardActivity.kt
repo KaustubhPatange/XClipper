@@ -9,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import com.kpstv.xclipper.App.CLIP_DATA
 import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.data.repository.MainRepository
+import com.kpstv.xclipper.extensions.Coroutines
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import javax.inject.Inject
@@ -53,7 +54,7 @@ class ChangeClipboardActivity : FragmentActivity() {
             clipProvider.setCurrentClip(data)
 
             // Save data and exit
-            repository.updateRepository(CLIP_DATA)
+            Coroutines.io { repository.updateRepository(CLIP_DATA) }
         }
     }
 

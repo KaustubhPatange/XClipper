@@ -8,6 +8,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.data.repository.MainRepository
+import com.kpstv.xclipper.extensions.Coroutines
 import com.kpstv.xclipper.extensions.SimpleFunction
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.isPackageBlacklisted
 import com.kpstv.xclipper.service.ClipboardAccessibilityService.Companion.currentPackage
@@ -76,7 +77,7 @@ class ClipboardProviderImpl @Inject constructor(
                 App.CLIP_DATA = data
                 setCurrentClip(data)
 
-                repository.updateRepository(App.CLIP_DATA)
+                Coroutines.io { repository.updateRepository(App.CLIP_DATA) }
             }
             Log.e(TAG, "Data: ${clipboardManager.primaryClip?.getItemAt(0)?.text}")
         }

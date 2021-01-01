@@ -9,25 +9,12 @@ import com.kpstv.xclipper.extensions.listeners.RepositoryListener
 import com.kpstv.xclipper.extensions.listeners.StatusListener
 
 interface MainRepository {
-
-    /**
-     * This operation implements a direct save to the database.
-     *
-     * The save method it uses is a safe push. It only inserts the data
-     * when the database doesn't contains it.
-     *
-     * Determination of existing data is done by "Clip.data" property.
-     *
-     * @param clip Incoming clip data to save
-     */
-    fun saveClip(clip: Clip?)
-
     /**
      * This operation will save data to only local database.
      *
      * During processing it will create the data from "clip.data" parameter.
      */
-    fun processClipAndSave(clip: Clip?)
+    suspend fun processClipAndSave(clip: Clip?): Boolean
 
     /**
      * This method will either update the clip or insert the clip.
@@ -40,18 +27,17 @@ interface MainRepository {
      *
      * @param clip A clip which is contains encrypted string data and no [Clip.tags] (usually coming from firebase).
      */
-    fun updateClip(clip: Clip?, filterType: FilterType = FilterType.Text)
+    suspend fun updateClip(clip: Clip?, filterType: FilterType = FilterType.Text): Boolean
 
     /**
      * The function will change [Clip.isPinned] to the incoming value.
      */
-    fun updatePin(clip: Clip?, isPinned: Boolean)
+    suspend fun updatePin(clip: Clip?, isPinned: Boolean)
 
-    fun deleteClip(clip: Clip)
-    fun deleteClip(unencryptedData: String?)
-    fun deleteLast()
+    suspend fun deleteClip(clip: Clip)
+    suspend fun deleteClip(data: String?)
 
-    fun deleteMultiple(clips: List<Clip>)
+    suspend fun deleteMultiple(clips: List<Clip>)
 
     /**
      * Use this function when you are saving data to local as well as firebase
@@ -60,22 +46,24 @@ interface MainRepository {
      * While saving to database it will delete an existing data (if present)
      * and then create new data from the given string and perform insert operation.
      */
-    fun updateRepository(unencryptedData: String?, toFirebase:Boolean = true)
-    fun updateRepository(clip: Clip, toFirebase:Boolean = true)
+    suspend fun updateRepository(data: String?, toFirebase:Boolean = true): Boolean
+    suspend fun updateRepository(clip: Clip, toFirebase:Boolean = true): Boolean
 
-    fun getAllData(): List<Clip>
-    suspend fun getData(unencryptedText: String): Clip?
+    suspend fun getAllData(): List<Clip>?
+    suspend fun getData(data: String): Clip?
 
     /**
      * Checks if the clip exist in the database.
+     *
+     * @return True if clip is found.
      */
-    fun checkForDuplicate(unencryptedData: String?, repositoryListener: RepositoryListener)
-    fun checkForDuplicate(unencryptedData: String?, id: Int, repositoryListener: RepositoryListener)
+    suspend fun checkForDuplicate(data: String?): Boolean
+    suspend fun checkForDuplicate(data: String?, id: Int): Boolean
 
     /**
      * This function will check if there is any data depending on this tag.
      */
-    fun checkForDependent(tagName: String, repositoryListener: RepositoryListener)
+    suspend fun checkForDependent(tagName: String): Boolean
 
     fun getDataSource(): LiveData<PagedList<Clip>>
 
@@ -85,7 +73,7 @@ interface MainRepository {
      *
      * TODO: There is a wrong sequence insertion of data
      */
-    fun validateData(statusListener: StatusListener)
+    suspend fun validateData(): Boolean
 
     fun getAllLiveClip(): LiveData<List<Clip>>
 

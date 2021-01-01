@@ -59,7 +59,7 @@ class CIAdapter(
     override fun onBindViewHolder(holder: MainHolder, position: Int) {
         val clip = getItem(position)
 
-        holder.itemView.ci_textView.text = clip.data
+        holder.itemView.ci_textView.text = if (App.trimClipText) clip.data.trim() else clip.data
 
         if (App.LoadImageMarkdownText)
             renderImageMarkdown(holder, clip.data, position)

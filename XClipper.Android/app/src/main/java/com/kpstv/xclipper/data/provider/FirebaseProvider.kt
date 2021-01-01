@@ -32,7 +32,7 @@ interface FirebaseProvider {
     /**
      * @return An unencrypted list of clip model.
      */
-    suspend fun getAllClipData(block: (List<Clip>?) -> Unit)
+    suspend fun getAllClipData(): List<Clip>?
 
     /**
      * Should be called only by one specific class, because this lambdas are stored

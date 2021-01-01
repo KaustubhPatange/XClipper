@@ -295,15 +295,14 @@ class FirebaseProviderImpl @Inject constructor(
         }
     }
 
-    override suspend fun getAllClipData(block: (List<Clip>?) -> Unit) {
+    override suspend fun getAllClipData(): List<Clip>? {
         HVLog.d()
         val shouldInvoke =  workWithData(ValidationContext.ForceInvoke)
         val user = currentUserRepository.get()
         HVLog.d("To process $shouldInvoke")
-        if (shouldInvoke)
-            block.invoke(user?.Clips?.decrypt())
-        else
-            block.invoke(null)
+        return if (shouldInvoke)
+            user?.Clips?.decrypt()
+        else null
     }
 
     /**

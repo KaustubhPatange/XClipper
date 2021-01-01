@@ -12,12 +12,8 @@ import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.extensions.Coroutines
 import com.kpstv.xclipper.extensions.clone
 import com.kpstv.xclipper.extensions.enumerations.FilterType
-import com.kpstv.xclipper.extensions.listeners.RepositoryListener
-import com.kpstv.xclipper.extensions.listeners.StatusListener
 import com.kpstv.xclipper.extensions.mainThread
 import com.kpstv.xclipper.ui.helpers.NotificationHelper
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class MainRepositoryImpl @Inject constructor(
@@ -27,9 +23,7 @@ class MainRepositoryImpl @Inject constructor(
 ) : MainRepository {
 
     private val TAG = javaClass.simpleName
-    private val lock = Any()
-    private val lock1 = Any()
-    private val lock2 = Any()
+
     private var notifyEnable = true
 
     var data: LiveData<PagedList<Clip>>? = null
@@ -40,228 +34,151 @@ class MainRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getDataSource() =
-        clipDao.getDataSource().toLiveData(10)
+    override fun getDataSource(): LiveData<PagedList<Clip>> = clipDao.getDataSource().toLiveData(10)
 
-    override fun saveClip(clip: Clip?) {
-        if (clip == null) return
-        Coroutines.io {
-            /**
-             *  Synchronization is needed since, sometimes accessibility services automatically
-             *  try to save data twice.
-             */
-            synchronized(lock) {
-                val allClips = clipDao.getAllData()
+    private suspend fun saveClip(clip: Clip?): Boolean {
+        if (clip == null) return false
+        if (clipDao.isExist(clip.data)) return false
 
-                if (allClips.isNotEmpty()) {
-
-                    val innerClip =
-                        allClips.firstOrNull { it.data == clip.data }
-                    if (innerClip != null) return@io
-
-                    /** Let's filter the clip for required items only **/
-                    if (allClips.size > LOCAL_MAX_ITEM_STORAGE) {
-                        clipDao.delete(allClips.first())
-                    }
-                }
-                clipDao.insert(clip)
-
-                /** Send a notification */
-                if (notifyEnable)
-                    mainThread { notificationHelper.pushNotification(clip.data) }
-
-                Log.e(TAG, "Data Saved: ${clip.data}")
-            }
+        if (clipDao.getClipSize() > LOCAL_MAX_ITEM_STORAGE) {
+            clipDao.deleteFirst()
         }
+
+        clipDao.insert(clip)
+
+        /** Send a notification */ // TODO: Remove this after words
+        if (notifyEnable)
+            mainThread { notificationHelper.pushNotification(clip.data) }
+
+        Log.e(TAG, "Data Saved: ${clip.data}")
+
+        return true
     }
 
-    override fun validateData(statusListener: StatusListener) {
-        Coroutines.io {
-            firebaseProvider.clearData()
-            firebaseProvider.getAllClipData {
-                if (it == null) {
-                    mainThread { statusListener.onError() }
-                    return@getAllClipData
-                }
-
-                it.forEach { clip ->
-                    firebaseUpdate(clip)
-                }
-                mainThread { statusListener.onComplete() }
+    override suspend fun validateData(): Boolean {
+        firebaseProvider.clearData()
+        val clips = firebaseProvider.getAllClipData()
+        return if (clips == null)
+            false
+        else {
+            clips.forEach { clip ->
+                firebaseUpdate(clip)
             }
+            true
         }
     }
 
     /**
      * A private function for updating or adding new data while validation
      */
-    private fun firebaseUpdate(clip: Clip) {
-        Coroutines.io {
-            synchronized(lock1) {
-                if (clip.data != null && clipDao.getData(clip.data) == null) {
-                    /** Insert the data */
-                    clipDao.insert(Clip.from(clip))
-                }
-            }
+    private suspend fun firebaseUpdate(clip: Clip): Boolean {
+        return if (!clipDao.isExist(clip.data)) {
+            /** Insert the data */
+            clipDao.insert(Clip.from(clip))
+            true
+        } else false
+    }
+
+    override suspend fun updateClip(clip: Clip?, filterType: FilterType): Boolean {
+        if (clip == null) return false
+
+        val innerClip = if (filterType == FilterType.Text)
+            clipDao.getData(clip.data)
+        else
+            clipDao.getData(clip.id)
+
+        return if (innerClip != null) {
+            val finalClip = Clip.from(clip.clone(innerClip.id))
+
+            /** Merge the existing tags into the clip tags */
+            if (finalClip.tags != null && clip.tags != null)
+                finalClip.tags = (finalClip.tags!! + clip.tags!!)
+
+            clipDao.update(finalClip)
+            true
+        } else {
+            processClipAndSave(clip)
         }
     }
 
-    override fun updateClip(clip: Clip?, filterType: FilterType) {
+    override suspend fun updatePin(clip: Clip?, isPinned: Boolean) {
         if (clip == null) return
-
-        Coroutines.io {
-            /**
-             *  Synchronization is needed since, sometimes accessibility services automatically
-             *  try to update data twice.
-             */
-            synchronized(lock2) {
-                val allData = clipDao.getAllData()
-
-                if (allData.isNotEmpty()) {
-                    val innerClip: Clip? = if (filterType == FilterType.Text)
-                        allData.firstOrNull { it.data == clip.data }
-                    else
-                        allData.firstOrNull { it.id == clip.id }
-                    if (innerClip != null) {
-                        val finalClip = Clip.from(clip.clone(innerClip.id!!))
-
-                        /** Merge the existing tags into the clip tags */
-                        if (finalClip.tags != null && clip.tags != null)
-                            finalClip.tags = (finalClip.tags!! + clip.tags!!)
-
-                        clipDao.update(finalClip)
-                        return@io
-                    }
-                }
-                processClipAndSave(clip)
-            }
-        }
+        clipDao.updatePin(clip.id, isPinned)
     }
 
-    override fun updatePin(clip: Clip?, isPinned: Boolean) {
-        if (clip == null) return
-        Coroutines.io {
-            clipDao.update(clip.apply {
-                this.isPinned = isPinned
-            })
-        }
+    override suspend fun deleteClip(clip: Clip) {
+        clipDao.delete(clip.id)
+        firebaseProvider.deleteData(clip)
     }
 
-    override fun deleteClip(clip: Clip) {
-        Coroutines.io {
-            clipDao.delete(clip.id!!)
-            firebaseProvider.deleteData(clip)
-        }
+    override suspend fun deleteClip(data: String?) {
+        if (data == null) return
+        clipDao.delete(data)
     }
 
-    override fun deleteClip(unencryptedData: String?) {
-        Coroutines.io {
-            val clipToFind =
-                clipDao.getAllData().firstOrNull { it.data == unencryptedData }
-            if (clipToFind != null)
-                deleteClip(clipToFind)
-        }
+    override suspend fun deleteMultiple(clips: List<Clip>) {
+        for (clip in clips)
+            clipDao.delete(clip)
+        firebaseProvider.deleteMultipleData(clips)
     }
 
-    override fun deleteLast() {
-        Coroutines.io {
-            clipDao.deleteLast()
-        }
+    override suspend fun checkForDuplicate(data: String?): Boolean {
+        if (data == null) return false
+        return clipDao.isExist(data)
     }
 
-    override fun deleteMultiple(clips: List<Clip>) {
-        Coroutines.io {
-            for (clip in clips)
-                clipDao.delete(clip)
-            firebaseProvider.deleteMultipleData(clips)
-        }
+    override suspend fun checkForDuplicate(data: String?, id: Int): Boolean {
+        if (data == null) return false
+        val clip = clipDao.getData(data) ?: return false
+        return clip.id != id
+//        Coroutines.io { // TODO: Check by updating tags.
+//            if (clipDao.getAllData()
+//                    .count { it.data == unencryptedData && it.id != id } > 0
+//            ) Coroutines.main {
+//                repositoryListener.onDataExist()
+//            }
+//            else Coroutines.main {
+//                repositoryListener.onDataError()
+//            }
+//        }
     }
 
-    override fun checkForDuplicate(
-        unencryptedData: String?,
-        repositoryListener: RepositoryListener
-    ) {
-        Coroutines.io {
-            if (clipDao.getAllData().count { it.data == unencryptedData } > 0)
-                Coroutines.main {
-                    repositoryListener.onDataExist()
-                }
-            else
-                Coroutines.main {
-                    repositoryListener.onDataError()
-                }
-        }
-    }
-
-    override fun checkForDuplicate(
-        unencryptedData: String?,
-        id: Int,
-        repositoryListener: RepositoryListener
-    ) {
-        Coroutines.io {
-            if (clipDao.getAllData()
-                    .count { it.data == unencryptedData && it.id != id } > 0
-            ) Coroutines.main {
-                repositoryListener.onDataExist()
-            }
-            else Coroutines.main {
-                repositoryListener.onDataError()
-            }
-        }
-    }
-
-    override fun checkForDependent(tagName: String, repositoryListener: RepositoryListener) {
-        Coroutines.io {
-            if (clipDao.getAllData()
-                    .firstOrNull { it.tags?.keys?.contains(tagName) == true } != null
-            ) {
-                Coroutines.main {
-                    repositoryListener.onDataExist()
-                }
-            } else
-                Coroutines.main {
-                    repositoryListener.onDataError()
-                }
-        }
+    override suspend fun checkForDependent(tagName: String): Boolean {
+        return clipDao.getAllData()?.firstOrNull { it.tags?.contains(tagName) == true } != null
     }
 
     override fun getAllLiveClip(): LiveData<List<Clip>> {
         return clipDao.getAllLiveData()
     }
 
-    override fun getAllData(): List<Clip> {
+    override suspend fun getAllData(): List<Clip>? {
         return clipDao.getAllData()
     }
 
-    override suspend fun getData(unencryptedText: String) =
-        withContext(Dispatchers.IO) {
-            clipDao.getAllData().firstOrNull { it.data == unencryptedText }
-        }
+    override suspend fun getData(data: String): Clip? = clipDao.getAllData()?.firstOrNull { it.data == data }
 
-    override fun processClipAndSave(clip: Clip?) {
-        if (clip == null) return
+    override suspend fun processClipAndSave(clip: Clip?): Boolean {
+        if (clip == null) return false
 
         val item = Clip.from(clip)
-        saveClip(item)
+        return saveClip(item)
     }
 
-    override fun updateRepository(unencryptedData: String?, toFirebase: Boolean) {
-        if (unencryptedData != null && unencryptedData.length > MAX_CHARACTER_TO_STORE) return
+    override suspend fun updateRepository(data: String?, toFirebase: Boolean): Boolean {
+        if (data == null || data.length > MAX_CHARACTER_TO_STORE) return false
+        val clip = Clip.from(data)
 
-        val clip = Clip.from(unencryptedData!!)
-
-        saveClip(clip)
-        if (toFirebase) {
-            Coroutines.io { firebaseProvider.uploadData(clip) }
-        }
+        return updateRepository(clip, toFirebase)
     }
 
-    override fun updateRepository(clip: Clip, toFirebase: Boolean) {
+    override suspend fun updateRepository(clip: Clip, toFirebase: Boolean): Boolean {
         val finalClip = Clip.from(clip)
 
-        saveClip(finalClip)
+        val result = saveClip(finalClip)
         if (toFirebase)
-            Coroutines.io { firebaseProvider.uploadData(finalClip)}
+            firebaseProvider.uploadData(finalClip)
+
+        return result
     }
 
     override fun enableNotify() {

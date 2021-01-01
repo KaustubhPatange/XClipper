@@ -90,7 +90,7 @@ class EditDialog : AppCompatActivity() {
     }
 
     private fun performEditTask(text: String) {
-        mainViewModel.checkForDuplicateClip(text, clip.id!!, RepositoryListener(
+        mainViewModel.checkForDuplicateClip(text, clip.id, RepositoryListener(
             dataExist = Toasty.error(
                 this,
                 getString(R.string.error_duplicate_data)

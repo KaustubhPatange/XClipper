@@ -8,16 +8,12 @@ import com.kpstv.xclipper.data.model.ClipTag
 import java.util.*
 import kotlin.collections.ArrayList
 
-fun Clip.clone(data: String): Clip {
-    return copy(data = data)
-}
-
 fun Clip.clone(data: String, tags: Map<String, String>?): Clip {
-    return copy(data = data, tags = tags)
+    return copy(data = data, tags = tags).also { it.id = id }
 }
 
 fun Clip.clone(id: Int) : Clip {
-    return copy(id = id)
+    return copy().also { it.id = id }
 }
 
 /**

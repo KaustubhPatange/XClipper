@@ -16,14 +16,14 @@ import kotlin.collections.HashMap
 @Entity(tableName = "table_clip")
 @AutoGenerateListConverter(using = ConverterType.GSON)
 data class Clip(
-    @PrimaryKey(autoGenerate = true)
-    var id: Int? = null,
     val data: String,
     val time: Date,
-    var isPinned: Boolean = false,
+    var isPinned: Boolean = false, // TODO: If possible make it val?
     var tags: Map<String, String>? = null
 ) {
-    var toDisplay = false
+    @PrimaryKey(autoGenerate = true)
+    var id: Int = 0
+    var toDisplay = false // TODO: Do you need this?
     var timeString = "while ago"
 
     companion object {
@@ -33,21 +33,21 @@ data class Clip(
         fun parse(json: String): Clip? = with(JSONObject(json)) {
             if (!has("data")) return null
             if (!has("time")) return null
-            Clip(
+            return Clip(
                 data = this["data"].toString() ,
                 time = DateConverter.toDateFromString(this["time"].toString())!!
             )
         }
 
+        /**
+         * This will update the clip with new time & tags.
+         */
         fun from(clip: Clip): Clip {
             val tagMap: Map<String, String> = clip.tags ?: HashMap()
-            return Clip(
-                id = clip.id,
-                data = clip.data,
-                isPinned = clip.isPinned,
+            return clip.copy(
                 time = Calendar.getInstance().time,
                 tags = tagMap + ClipUtils.determineTags(clip.data)
-            )
+            ).also { it.id = clip.id }
         }
 
         fun from(unencryptedData: String): Clip {
