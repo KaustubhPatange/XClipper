@@ -76,14 +76,4 @@ interface MainRepository {
     suspend fun validateData(): Boolean
 
     fun getAllLiveClip(): LiveData<List<Clip>>
-
-    /**
-     * At this point I realize [NotificationHelper] is tightly coupled to the repository
-     * and I therefore have no control over on how to manage notifications thrown from
-     * inserts them without disturbing existing function calls at various places.
-     *
-     * This functions should help me.
-     */
-    fun enableNotify()
-    fun disableNotify()
 }

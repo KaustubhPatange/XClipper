@@ -24,8 +24,6 @@ class MainRepositoryImpl @Inject constructor(
 
     private val TAG = javaClass.simpleName
 
-    private var notifyEnable = true
-
     var data: LiveData<PagedList<Clip>>? = null
 
     init {
@@ -45,10 +43,6 @@ class MainRepositoryImpl @Inject constructor(
         }
 
         clipDao.insert(clip)
-
-        /** Send a notification */ // TODO: Remove this after words
-        if (notifyEnable)
-            mainThread { notificationHelper.pushNotification(clip.data) }
 
         Log.e(TAG, "Data Saved: ${clip.data}")
 
@@ -131,16 +125,6 @@ class MainRepositoryImpl @Inject constructor(
         if (data == null) return false
         val clip = clipDao.getData(data) ?: return false
         return clip.id != id
-//        Coroutines.io { // TODO: Check by updating tags.
-//            if (clipDao.getAllData()
-//                    .count { it.data == unencryptedData && it.id != id } > 0
-//            ) Coroutines.main {
-//                repositoryListener.onDataExist()
-//            }
-//            else Coroutines.main {
-//                repositoryListener.onDataError()
-//            }
-//        }
     }
 
     override suspend fun checkForDependent(tagName: String): Boolean {
@@ -179,13 +163,5 @@ class MainRepositoryImpl @Inject constructor(
             firebaseProvider.uploadData(finalClip)
 
         return result
-    }
-
-    override fun enableNotify() {
-        notifyEnable = true
-    }
-
-    override fun disableNotify() {
-        notifyEnable = false
     }
 }

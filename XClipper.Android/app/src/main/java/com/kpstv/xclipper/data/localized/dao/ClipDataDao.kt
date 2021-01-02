@@ -14,12 +14,6 @@ interface ClipDataDao {
     @Update
     suspend fun update(clip: Clip)
 
-    @Query("update table_clip set data = :encryptedData, time = :time where id = :id")
-    fun update(id: Int, encryptedData: String, time: Date)
-
-    @Query("update table_clip set isPinned = :isPinned")
-    fun update(isPinned: Boolean)
-
     @Delete
     suspend fun delete(clip: Clip)
 

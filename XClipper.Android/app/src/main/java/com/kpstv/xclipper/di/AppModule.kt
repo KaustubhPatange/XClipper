@@ -4,6 +4,7 @@ import android.content.Context
 import com.kpstv.xclipper.data.localized.dao.UserEntityDao
 import com.kpstv.xclipper.data.provider.*
 import com.kpstv.xclipper.data.repository.MainRepository
+import com.kpstv.xclipper.ui.helpers.ClipRepositoryHelper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -38,7 +39,7 @@ object AppModule {
     @Provides
     fun provideClipboard(
         @ApplicationContext context: Context,
-        mainRepository: MainRepository
+        clipRepositoryHelper: ClipRepositoryHelper
     ): ClipboardProvider =
-        ClipboardProviderImpl(context, mainRepository)
+        ClipboardProviderImpl(context, clipRepositoryHelper)
 }

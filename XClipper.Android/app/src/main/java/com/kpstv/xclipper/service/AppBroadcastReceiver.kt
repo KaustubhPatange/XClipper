@@ -14,6 +14,7 @@ import com.kpstv.xclipper.extensions.Coroutines
 import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.ui.activities.Main
 import com.kpstv.xclipper.ui.dialogs.SpecialDialog
+import com.kpstv.xclipper.ui.helpers.ClipRepositoryHelper
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

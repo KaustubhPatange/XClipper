@@ -8,14 +8,15 @@ import androidx.activity.ComponentActivity
 import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.extensions.Coroutines
+import com.kpstv.xclipper.ui.helpers.ClipRepositoryHelper
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class TextSelectionActivity : ComponentActivity() {
 
-    @Inject lateinit var repository: MainRepository
     @Inject lateinit var clipboardProvider: ClipboardProvider
+    @Inject lateinit var clipRepositoryHelper: ClipRepositoryHelper
 
     override fun onResume() {
         super.onResume()
@@ -29,7 +30,8 @@ class TextSelectionActivity : ComponentActivity() {
                  * the other from Accessibility service when we set this data as current clipboard.
                  */
                 clipboardProvider.setClipboard(ClipData.newPlainText(null, textData))
-                Coroutines.io { repository.updateRepository(textData) }
+                if (textData != null)
+                    clipRepositoryHelper.insertOrUpdateClip(textData)
             }
         }
         finish()

@@ -422,7 +422,7 @@ class FirebaseProviderImpl @Inject constructor(
                         val userClips = user?.Clips?.decrypt() ?: emptyList()
                         val firebaseClips = firebaseUser.Clips?.decrypt() ?: emptyList()
 
-                        firebaseClips.minus(userClips).let { changed.invoke(it) }
+                        firebaseClips.minus(userClips).let { if (it.isNotEmpty()) changed.invoke(it) }
 
                         if (bindDelete) {
                             val userDataClips = userClips.map { it.data }

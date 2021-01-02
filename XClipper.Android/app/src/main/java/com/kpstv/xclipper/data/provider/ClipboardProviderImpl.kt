@@ -12,12 +12,13 @@ import com.kpstv.xclipper.extensions.Coroutines
 import com.kpstv.xclipper.extensions.SimpleFunction
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.isPackageBlacklisted
 import com.kpstv.xclipper.service.ClipboardAccessibilityService.Companion.currentPackage
+import com.kpstv.xclipper.ui.helpers.ClipRepositoryHelper
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 class ClipboardProviderImpl @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val repository: MainRepository
+    private val clipRepositoryHelper: ClipRepositoryHelper
 ) : ClipboardProvider {
 
     private val _currentClip = MutableLiveData<String>()
@@ -77,7 +78,7 @@ class ClipboardProviderImpl @Inject constructor(
                 App.CLIP_DATA = data
                 setCurrentClip(data)
 
-                Coroutines.io { repository.updateRepository(App.CLIP_DATA) }
+                clipRepositoryHelper.insertOrUpdateClip(data)
             }
             Log.e(TAG, "Data: ${clipboardManager.primaryClip?.getItemAt(0)?.text}")
         }

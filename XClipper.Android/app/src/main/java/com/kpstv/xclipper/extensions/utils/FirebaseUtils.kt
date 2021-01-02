@@ -14,6 +14,7 @@ import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.extensions.Coroutines
 import com.kpstv.xclipper.extensions.enumerations.FirebaseState
 import com.kpstv.xclipper.extensions.toInt
+import com.kpstv.xclipper.ui.helpers.ClipRepositoryHelper
 import com.kpstv.xclipper.ui.helpers.NotificationHelper
 import dagger.hilt.android.qualifiers.ApplicationContext
 import es.dmoral.toasty.Toasty
@@ -24,7 +25,7 @@ import javax.inject.Singleton
 @Singleton
 class FirebaseUtils @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val repository: MainRepository,
+    private val clipRepositoryHelper: ClipRepositoryHelper,
     private val firebaseProvider: FirebaseProvider,
     private val preferenceProvider: PreferenceProvider,
     private val dbConnectionProvider: DBConnectionProvider,
@@ -45,9 +46,7 @@ class FirebaseUtils @Inject constructor(
                     }
                 },
                 removed = { items -> // Unencrypted listOf data
-                    Coroutines.io {
-                        items?.forEach { repository.deleteClip(it) }
-                    }
+                    clipRepositoryHelper.deleteClip(items)
                 },
                 removedAll = {
                     notificationHelper.sendNotification(
@@ -87,25 +86,19 @@ class FirebaseUtils @Inject constructor(
 
     private fun insertAllClips(clips: List<Clip>) {
         CoroutineScope(SupervisorJob() + Dispatchers.Main).launch {
-            when {
-                // TODO: Refactor the database & make sure to eliminate notification helper from it.
-                clips.size == 1 -> {
-                    repository.updateClip(clips[0])
-                }
-                clips.size > 5 -> {
-                    repository.disableNotify()
-                    var addedClips = 0
-                    clips.forEach { addedClips += repository.updateClip(it).toInt() }
-                    if (addedClips > 0) {
-                        notificationHelper.pushNotification(
-                            text = "$addedClips ${context.getString(R.string.multi_clips_added)}",
-                            withActions = false
-                        )
-                    }
-                    repository.enableNotify()
+            // TODO: Refactor the database & make sure to eliminate notification helper from it.
+            when (clips.size) {
+                1 -> {
+                    clipRepositoryHelper.insertOrUpdateClip(
+                        clip = clips[0],
+                        toFirebase = false
+                    )
                 }
                 else -> {
-                    clips.forEach { repository.updateClip(it) }
+                    clipRepositoryHelper.insertOrUpdateClip(
+                        clips = clips,
+                        toFirebase = false
+                    )
                 }
             }
         }
