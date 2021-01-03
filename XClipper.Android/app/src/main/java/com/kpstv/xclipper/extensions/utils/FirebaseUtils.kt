@@ -86,7 +86,6 @@ class FirebaseUtils @Inject constructor(
 
     private fun insertAllClips(clips: List<Clip>) {
         CoroutineScope(SupervisorJob() + Dispatchers.Main).launch {
-            // TODO: Refactor the database & make sure to eliminate notification helper from it.
             when (clips.size) {
                 1 -> {
                     clipRepositoryHelper.insertOrUpdateClip(

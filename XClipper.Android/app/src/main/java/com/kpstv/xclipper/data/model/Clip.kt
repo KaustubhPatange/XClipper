@@ -18,12 +18,11 @@ import kotlin.collections.HashMap
 data class Clip(
     val data: String,
     val time: Date,
-    var isPinned: Boolean = false, // TODO: If possible make it val?
+    val isPinned: Boolean = false,
     var tags: Map<String, String>? = null
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0
-    var toDisplay = false // TODO: Do you need this?
     var timeString = "while ago"
 
     companion object {

@@ -67,13 +67,7 @@ interface MainRepository {
 
     fun getDataSource(): LiveData<PagedList<Clip>>
 
-    /**
-     * Since save clip function does work on separate thread, synchronization
-     * between these threads on quick insertion is creating uneven insertions.
-     *
-     * TODO: There is a wrong sequence insertion of data
-     */
-    suspend fun validateData(): Boolean
+    suspend fun syncDataFromRemote(): Boolean
 
     fun getAllLiveClip(): LiveData<List<Clip>>
 }

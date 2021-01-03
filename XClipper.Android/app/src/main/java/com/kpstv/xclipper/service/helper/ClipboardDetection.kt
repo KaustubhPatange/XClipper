@@ -12,8 +12,7 @@ typealias Predicate = (ClipboardDetection.AEvent) -> Boolean
 object ClipboardDetection {
 
     private val typeViewSelectionChangeEvent: StripArrayList<AEvent> = StripArrayList(2)
-    private val eventList: StripArrayList<Int> =
-        StripArrayList(4) // TODO: Try to fix it by stripping 4 to 3
+    private val eventList: StripArrayList<Int> = StripArrayList(4)
 
     /**
      * Add an [AccessibilityEvent] to the striping array list.

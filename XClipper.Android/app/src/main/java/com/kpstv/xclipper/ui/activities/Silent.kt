@@ -15,6 +15,7 @@ import javax.inject.Inject
 
 // TODO: Seems like an unused Activity, was initial FragmentActivity
 
+@Deprecated("Unused activity now handled by SpecialDialog itself.")
 @AndroidEntryPoint
 class Silent : AppCompatActivity() {
 

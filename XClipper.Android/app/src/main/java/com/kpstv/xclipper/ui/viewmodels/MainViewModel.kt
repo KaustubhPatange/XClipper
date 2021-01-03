@@ -121,9 +121,9 @@ class MainViewModel @ViewModelInject constructor(
         }
     }
 
-    fun makeAValidationRequest(statusListener: StatusListener) {
+    fun makeASynchronizeRequest(statusListener: StatusListener) {
         viewModelScope.launch {
-            if (mainRepository.validateData()) {
+            if (mainRepository.syncDataFromRemote()) {
                 statusListener.onComplete()
             } else {
                 statusListener.onError()

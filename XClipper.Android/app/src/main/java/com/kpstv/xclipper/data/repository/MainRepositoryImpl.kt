@@ -49,7 +49,7 @@ class MainRepositoryImpl @Inject constructor(
         return true
     }
 
-    override suspend fun validateData(): Boolean {
+    override suspend fun syncDataFromRemote(): Boolean {
         firebaseProvider.clearData()
         val clips = firebaseProvider.getAllClipData()
         return if (clips == null)

@@ -362,7 +362,7 @@ class Home : Fragment(R.layout.fragment_home) {
                         .apply { repeatCount = Animation.INFINITE })
                 isEnabled = false
 
-                mainViewModel.makeAValidationRequest(StatusListener(
+                mainViewModel.makeASynchronizeRequest(StatusListener(
                     onBefore = {
                         isEnabled = true
                         this.clearAnimation()
