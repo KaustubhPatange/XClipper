@@ -43,6 +43,7 @@ import com.kpstv.xclipper.extensions.SimpleFunction
 import com.kpstv.xclipper.extensions.layoutInflater
 import com.kpstv.xclipper.service.ClipboardAccessibilityService
 import com.kpstv.xclipper.ui.helpers.AuthenticationHelper
+import es.dmoral.toasty.Toasty
 import java.io.InputStream
 import java.util.*
 import kotlin.coroutines.resume
@@ -95,11 +96,10 @@ class Utils {
          *  Source: https://stackoverflow.com/a/31583695/10133501
          */
         fun getCountryDialCode(context: Context): String? {
-            var countryId: String? = null
             var contryDialCode: String? = null
             val telephonyMngr =
                 context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-            countryId = telephonyMngr.simCountryIso.toUpperCase(Locale.ROOT)
+            val countryId = telephonyMngr.simCountryIso.toUpperCase(Locale.ROOT)
             val arrContryCode: Array<String> =
                 context.resources.getStringArray(R.array.DialingCountryCode)
             for (i in arrContryCode.indices) {
@@ -157,6 +157,8 @@ class Utils {
                 if (enabledServiceInfo.packageName == context.packageName && enabledServiceInfo.name == service.name
                 ) return true
             }
+            val accessibilityPrefs = Settings.Secure.getString(context.contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES)
+            if (accessibilityPrefs.contains("${context.packageName}/${service.canonicalName}")) return true
             return false
         }
 
@@ -328,12 +330,16 @@ class Utils {
             return str == "SQLite format 3\u0000"
         }
 
-        fun commonUrlLaunch(context: Context, url: String) = with(context) {
+        fun commonUrlLaunch(context: Context, url: String): Unit = with(context) {
             val intent = Intent(Intent.ACTION_VIEW).apply {
                 data = Uri.parse(url)
                 flags = FLAG_ACTIVITY_NEW_TASK
             }
-            startActivity(intent)
+            try {
+                startActivity(intent)
+            }catch (e: Exception) {
+                Toasty.error(this, R.string.err_action).show()
+            }
         }
 
         fun dpToPixel(context: Context, value: Float): Float = with(context) {

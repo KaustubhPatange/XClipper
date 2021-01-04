@@ -6,7 +6,6 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.kpstv.xclipper.data.converters.DateConverter
-import com.kpstv.xclipper.data.converters.LicenseTypeConverter
 import com.kpstv.xclipper.data.converters.TagConverter
 import com.kpstv.xclipper.data.localized.dao.*
 import com.kpstv.xclipper.data.model.*
@@ -24,7 +23,7 @@ import javax.inject.Singleton
         UrlInfo::class,
         UserEntity::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 

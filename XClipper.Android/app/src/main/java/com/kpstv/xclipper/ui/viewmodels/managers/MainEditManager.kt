@@ -5,12 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import com.kpstv.xclipper.App.EMPTY_STRING
 import com.kpstv.xclipper.App.STAGGERED_SPAN_COUNT
 import com.kpstv.xclipper.data.localized.dao.TagDao
-import com.kpstv.xclipper.data.model.Clip
-import com.kpstv.xclipper.data.model.ClipTag
-import com.kpstv.xclipper.data.model.Tag
+import com.kpstv.xclipper.data.model.*
+import com.kpstv.xclipper.extensions.ClipTagMap
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.collections.HashMap
 
 @Singleton
 class MainEditManager @Inject constructor(
@@ -19,12 +17,12 @@ class MainEditManager @Inject constructor(
     private val _spanCount = MutableLiveData(STAGGERED_SPAN_COUNT)
     private val _clip = MutableLiveData<Clip>()
     private val _tagFixedLiveData = MutableLiveData<List<Tag>>()
-    private val _selectedTags = MutableLiveData<Map<String, String>>(HashMap())
+    private val _selectedTags = MutableLiveData<List<ClipTagMap>>(listOf())
 
     val tagFixedLiveData: LiveData<List<Tag>>
         get() = _tagFixedLiveData
 
-    val selectedTags: LiveData<Map<String, String>>
+    val selectedTags: LiveData<List<ClipTagMap>>
         get() = _selectedTags
 
     val spanCount: LiveData<Int>
@@ -51,15 +49,16 @@ class MainEditManager @Inject constructor(
     fun getClip() = _clip.value
 
     fun addOrRemoveSelectedTag(tag: Tag) {
-       val hashMap = if (_selectedTags.value != null)
-           _selectedTags.value!!
+       val tagList: ArrayList<ClipTagMap> = if (_selectedTags.value != null)
+           ArrayList(_selectedTags.value!!)
         else
-           HashMap()
-        hashMap.toMutableMap().let {
-            if (it.remove(tag.name) == null)
-                it[tag.name] = EMPTY_STRING
-            _selectedTags.postValue(it)
-        }
+           ArrayList()
+        val element: ClipTagMap? = tagList.firstOrNull { it.key == tag.name }
+        if (element == null)
+            tagList.add(ClipTagMap(tag.name, EMPTY_STRING))
+        else
+            tagList.remove(element)
+        _selectedTags.postValue(tagList)
     }
 
     fun postSpanCount(value: Int) {

@@ -7,6 +7,7 @@ import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.extensions.enumerations.FilterType
 import com.kpstv.xclipper.extensions.listeners.RepositoryListener
 import com.kpstv.xclipper.extensions.listeners.StatusListener
+import kotlinx.coroutines.flow.Flow
 
 interface MainRepository {
     /**

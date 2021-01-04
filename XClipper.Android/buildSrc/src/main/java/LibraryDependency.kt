@@ -66,6 +66,7 @@ object LibraryDependency {
     const val LIFECYCLE_EXTENSIONS = "androidx.lifecycle:lifecycle-extensions:${LibraryVersion.LIFECYCLE}"
     const val LIFECYCLE_VIEWMODEL = "androidx.lifecycle:lifecycle-viewmodel-ktx:${LibraryVersion.LIFECYCLE}"
     const val LIFECYCLE_COMMON = "androidx.lifecycle:lifecycle-common-java8:${LibraryVersion.LIFECYCLE}"
+    const val LIFECYCLE_KTX = "androidx.lifecycle:lifecycle-livedata-ktx:${LibraryVersion.LIFECYCLE}"
     const val KODEIN_JVM = "org.kodein.di:kodein-di-generic-jvm:${LibraryVersion.KODEIN}"
     const val KODEIN_ANDROID = "org.kodein.di:kodein-di-framework-android-x:${LibraryVersion.KODEIN}"
     const val RETROFIT = "com.squareup.retrofit2:retrofit:${LibraryVersion.RETROFIT}"

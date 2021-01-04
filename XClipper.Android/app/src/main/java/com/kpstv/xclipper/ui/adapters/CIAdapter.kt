@@ -16,6 +16,7 @@ import com.google.android.flexbox.FlexboxLayout
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.Clip
+import com.kpstv.xclipper.extensions.keys
 import com.kpstv.xclipper.extensions.collapse
 import com.kpstv.xclipper.extensions.hide
 import com.kpstv.xclipper.extensions.show
@@ -214,8 +215,8 @@ class CIAdapter(
 
     private fun setTags(view: View, clip: Clip) {
         view.ci_tagLayout.removeAllViews()
-        clip.tags?.forEach mainLoop@{ entry ->
-            if (entry.key.isNotBlank()) {
+        clip.tags?.keys()?.forEach mainLoop@{ key ->
+            if (key.isNotBlank()) {
                 val textView = LayoutInflater.from(view.ci_btn_pin.context)
                     .inflate(R.layout.item_tag, null) as TextView
                 val layoutParams = FlexboxLayout.LayoutParams(
@@ -228,7 +229,7 @@ class CIAdapter(
                 layoutParams.marginEnd = 5
                 layoutParams.marginStart = 5
                 textView.layoutParams = layoutParams
-                textView.text = entry.key
+                textView.text = key
 
                 view.ci_tagLayout.addView(textView)
             }

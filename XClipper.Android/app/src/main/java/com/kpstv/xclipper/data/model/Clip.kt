@@ -7,11 +7,12 @@ import com.kpstv.bindings.AutoGenerateListConverter
 import com.kpstv.bindings.ConverterType
 import com.kpstv.xclipper.data.converters.DateConverter
 import com.kpstv.xclipper.data.converters.DateFormatConverter
+import com.kpstv.xclipper.extensions.ClipTagMap
 import com.kpstv.xclipper.extensions.enumValueOrNull
+import com.kpstv.xclipper.extensions.plus
 import com.kpstv.xclipper.extensions.utils.ClipUtils
 import org.json.JSONObject
 import java.util.*
-import kotlin.collections.HashMap
 
 @Entity(tableName = "table_clip")
 @AutoGenerateListConverter(using = ConverterType.GSON)
@@ -19,7 +20,7 @@ data class Clip(
     val data: String,
     val time: Date,
     val isPinned: Boolean = false,
-    var tags: Map<String, String>? = null
+    var tags: List<ClipTagMap>? = null
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0
@@ -42,10 +43,10 @@ data class Clip(
          * This will update the clip with new time & tags.
          */
         fun from(clip: Clip): Clip {
-            val tagMap: Map<String, String> = clip.tags ?: HashMap()
+            val tagList: List<ClipTagMap> = clip.tags ?: listOf()
             return clip.copy(
                 time = Calendar.getInstance().time,
-                tags = tagMap + ClipUtils.determineTags(clip.data)
+                tags = tagList + ClipUtils.determineTags(clip.data)
             ).also { it.id = clip.id }
         }
 
@@ -56,8 +57,8 @@ data class Clip(
         /**
          * Generates Clip with the properties "data", "time", "tags"
          */
-        fun from(unencryptedData: String, tags: Map<String, String>?): Clip  {
-            val tagMap = tags ?: HashMap()
+        fun from(unencryptedData: String, tags: List<ClipTagMap>?): Clip  {
+            val tagMap = tags ?: listOf()
             return Clip(
                 data = unencryptedData,
                 time = Calendar.getInstance().time,

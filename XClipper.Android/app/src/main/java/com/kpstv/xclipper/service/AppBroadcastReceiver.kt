@@ -13,8 +13,7 @@ import com.kpstv.xclipper.extensions.AbstractBroadcastReceiver
 import com.kpstv.xclipper.extensions.Coroutines
 import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.ui.activities.Main
-import com.kpstv.xclipper.ui.dialogs.SpecialDialog
-import com.kpstv.xclipper.ui.helpers.ClipRepositoryHelper
+import com.kpstv.xclipper.ui.dialogs.SpecialActions
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -54,7 +53,7 @@ class AppBroadcastReceiver : AbstractBroadcastReceiver() {
             }
             ACTION_SMART_OPTIONS -> {
 
-                val newIntent = Intent(context, SpecialDialog::class.java).apply {
+                val newIntent = Intent(context, SpecialActions::class.java).apply {
                     flags = FLAG_ACTIVITY_NEW_TASK
                     setData(data1)
                     putExtra(APP_CLIP_DATA, data)

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
 import androidx.room.*
 import com.kpstv.xclipper.data.model.Clip
+import kotlinx.coroutines.flow.Flow
 import java.util.*
 
 @Dao

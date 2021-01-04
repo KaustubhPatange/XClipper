@@ -7,18 +7,7 @@
     android:paddingBottom="10dp"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/bsm_notch"
-        android:layout_marginTop="5dp"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <View
-            android:background="@drawable/notch_background"
-            android:layout_gravity="center"
-            android:layout_width="35dp"
-            android:layout_height="5dp"/>
-    </LinearLayout>
+   <include android:id="@+id/bsm_notch" layout="@layout/common_sheet_notch"/>
 
     <LinearLayout
         android:layout_width="match_parent"

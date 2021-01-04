@@ -9,19 +9,9 @@ data class Tag(
     val id: Int? = null,
     val name: String
 ) {
-    override fun equals(other: Any?): Boolean {
-        return super.equals(other)
-    }
-
-    override fun hashCode(): Int {
-        var result = id ?: 0
-        result = 31 * result + name.hashCode()
-        return result
-    }
 
     companion object {
-        fun from(text: String): Tag =
-            Tag(name = text)
+        fun from(text: String): Tag = Tag(name = text)
     }
 }
 

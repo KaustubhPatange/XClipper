@@ -33,7 +33,7 @@ object DatabaseModules {
             App.DATABASE_NAME
         )
             .setJournalMode(RoomDatabase.JournalMode.TRUNCATE)
-            .fallbackToDestructiveMigrationFrom(1) // provide db version to destruct it
+            .fallbackToDestructiveMigrationFrom(2) // provide db version to destruct it
             .addCallback(callback)
             .build()
 
@@ -66,7 +66,6 @@ object RepositoryModule {
     @Provides
     fun provideMainRepository(
         clipDataDao: ClipDataDao,
-        firebaseProvider: FirebaseProvider,
-        notificationHelper: NotificationHelper
-    ): MainRepository = MainRepositoryImpl(clipDataDao, firebaseProvider, notificationHelper)
+        firebaseProvider: FirebaseProvider
+    ): MainRepository = MainRepositoryImpl(clipDataDao, firebaseProvider)
 }

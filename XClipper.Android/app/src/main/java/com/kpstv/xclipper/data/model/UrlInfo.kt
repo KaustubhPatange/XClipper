@@ -5,13 +5,14 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "table_url")
 data class UrlInfo(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int? = null,
     val longUrl: String,
     val shortUrl: String
 ) {
+    @PrimaryKey(autoGenerate = true)
+    var id: Int = 0
+
     companion object {
-        fun from(longUrl: String, shortUrl: String) =
+        fun from(longUrl: String, shortUrl: String): UrlInfo =
             UrlInfo(
                 longUrl = longUrl,
                 shortUrl = shortUrl

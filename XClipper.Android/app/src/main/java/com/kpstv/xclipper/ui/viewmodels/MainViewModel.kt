@@ -10,6 +10,7 @@ import com.kpstv.xclipper.data.localized.dao.TagDao
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.data.model.TagMap
+import com.kpstv.xclipper.extensions.keys
 import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.FirebaseProvider
@@ -271,7 +272,7 @@ class MainViewModel @ViewModelInject constructor(
                     }
                 }
                 tagFilter?.forEach inner@{ tag ->
-                    if (!clip.tags?.keys.isNullOrEmpty() && !clip.tags?.keys?.contains(tag.name)!!) {
+                    if (!clip.tags?.keys().isNullOrEmpty() && !clip.tags?.keys()?.contains(tag.name)!!) {
                         list.remove(clip)
                         return@inner
                     }

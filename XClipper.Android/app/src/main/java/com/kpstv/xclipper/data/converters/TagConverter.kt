@@ -1,44 +1,42 @@
 package com.kpstv.xclipper.data.converters
 
 import androidx.room.TypeConverter
-import com.kpstv.xclipper.App.EMPTY_STRING
-import com.kpstv.xclipper.App.ITEM_SEPARATOR
-import com.kpstv.xclipper.App.PAIR_SEPARATOR
-
-/**
- * Pair separator = :
- * Item separator = |
- **/
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
+import com.kpstv.xclipper.extensions.ClipTagMap
+import com.kpstv.xclipper.extensions.keys
+import com.kpstv.xclipper.extensions.values
+import org.json.JSONObject
 
 object TagConverter {
 
-    private val TAG = javaClass.simpleName
-
     @TypeConverter
     @JvmStatic
-    fun fromTagToString(pairs: Map<String, String>?): String? {
-        pairs?.let {
-            return it.flatMap { pair ->
-                ArrayList<String>().apply {
-                    add("${pair.key}${PAIR_SEPARATOR}${pair.value}")
-                }
-            }.joinToString(separator = ITEM_SEPARATOR) { data -> data }
+    fun fromTagToString(pairs: List<ClipTagMap>?): String? {
+        if (pairs == null) return null
+        val jsonObject = JsonObject()
+        for(key in pairs.keys().distinct()) {
+            val array = JsonArray()
+            pairs.filter { it.key == key }.values().forEach { array.add(it) }
+
+            jsonObject.add(key, array)
         }
-        return null
+        return jsonObject.toString()
     }
 
     @TypeConverter
     @JvmStatic
-    fun toTagFromString(data: String?): Map<String, String>? {
-        data?.let {
-            return it.split(ITEM_SEPARATOR).associate { string ->
-                val pair = string.split(PAIR_SEPARATOR)
-                if (!pair[0].isBlank())
-                    Pair(pair[0], pair[1])
-                else
-                    Pair(EMPTY_STRING, EMPTY_STRING)
+    fun toTagFromString(data: String?): List<ClipTagMap>? {
+        if (data == null) return null
+        val map = ArrayList<ClipTagMap>()
+        val jsonObject = JSONObject(data)
+
+        for(key in jsonObject.keys()) {
+            val array = jsonObject.getJSONArray(key)
+            for(i in 0 until array.length()) {
+                map.add(ClipTagMap(key, array.getString(i)))
             }
         }
-        return null
+        return map
     }
 }

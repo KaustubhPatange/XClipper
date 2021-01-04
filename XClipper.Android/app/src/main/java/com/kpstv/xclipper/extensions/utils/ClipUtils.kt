@@ -7,48 +7,47 @@ import com.kpstv.xclipper.App.PHONE_PATTERN_REGEX
 import com.kpstv.xclipper.App.PHONE_PATTERN_REGEX1
 import com.kpstv.xclipper.App.URL_PATTERN_REGEX
 import com.kpstv.xclipper.data.model.ClipTag
+import com.kpstv.xclipper.extensions.ClipTagMap
+import com.kpstv.xclipper.data.model.Dictionary
 import com.kpstv.xclipper.extensions.small
 
 class ClipUtils {
     companion object {
-        fun determineTags(data: String?): Map<String, String> {
-            if (data.isNullOrBlank()) return HashMap()
+        fun determineTags(data: String?): List<ClipTagMap> {
+            if (data.isNullOrBlank()) return listOf()
 
-            val map = HashMap<String, String>()
+            val dictList = ArrayList<ClipTagMap>()
 
             /** Matches the phone number pattern. */
-            if (!patternAdder(PHONE_PATTERN_REGEX, data, ClipTag.PHONE, map)
+            if (!patternAdder(PHONE_PATTERN_REGEX, data, ClipTag.PHONE, dictList)
             ) {
                 /** If not matched by first pattern we will try second one.  */
-                patternAdder(PHONE_PATTERN_REGEX1, data, ClipTag.PHONE, map)
+                patternAdder(PHONE_PATTERN_REGEX1, data, ClipTag.PHONE, dictList)
             }
 
             /** Date pattern matcher */
-            patternAdder(DATE_PATTERN_REGEX, data, ClipTag.DATE, map)
+            patternAdder(DATE_PATTERN_REGEX, data, ClipTag.DATE, dictList)
 
             /** Email pattern matcher */
-            patternAdder(EMAIL_PATTERN_REGEX, data, ClipTag.EMAIL, map)
+            patternAdder(EMAIL_PATTERN_REGEX, data, ClipTag.EMAIL, dictList)
 
             /** Url pattern matcher */
-            patternAdder(URL_PATTERN_REGEX, data, ClipTag.URL, map)
+            patternAdder(URL_PATTERN_REGEX, data, ClipTag.URL, dictList)
 
             /** Map pattern matcher */
-            patternAdder(MAP_PATTERN_REGEX, data, ClipTag.MAP, map)
+            patternAdder(MAP_PATTERN_REGEX, data, ClipTag.MAP, dictList)
 
-            return map
+            return dictList
         }
 
-        private fun patternAdder(
-            pattern: String,
-            data: String,
-            tag: ClipTag,
-            map: HashMap<String, String>
-        ): Boolean {
-            pattern.toRegex().let {
-                if (it.containsMatchIn(data)) {
-                    map[tag.small()] = it.find(data)?.value!!
-                    return true
+        private fun patternAdder(pattern: String, data: String, tag: ClipTag, dictList: ArrayList<ClipTagMap>): Boolean {
+            val regex: Regex = pattern.toRegex()
+            if (regex.containsMatchIn(data)) {
+                val results: Sequence<MatchResult> = regex.findAll(data)
+                for (result: MatchResult in results) {
+                    dictList.add(Dictionary(tag.small(), result.value))
                 }
+                if (results.any()) return true
             }
             return false
         }

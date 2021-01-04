@@ -3,6 +3,7 @@ package com.kpstv.xclipper
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.util.*
+import kotlin.collections.HashMap
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -53,11 +54,23 @@ class RandomTests {
         }
     }
 
+    class ExHashMap<K, V> {
+
+    }
+
     @Test
     fun list_test() {
 
-       val list = mutableListOf(1,23,412,41244,525475,745,32,532,3)
-        list.sortBy { it }
+        val map = HashMap<String, String>()
+        map.put("Hello", "1")
+        map.put("Hello", "2")
+        map.put("Hello", "3")
+        map.put("Hello", "4")
+
+        println(map)
+
+//       val list = mutableListOf(1,23,412,41244,525475,745,32,532,3)
+//        list.sortBy { it }
 
       /*  val user1 = User(1, "text")
         user1.list = listOf(1,2,3)

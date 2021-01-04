@@ -125,7 +125,7 @@ class AllPurposeDialog : DialogFragment() {
         return this
     }
 
-    private fun setDialog() = with(mainView) {
+    private fun setDialog(): Unit = with(mainView) {
 
         if (isProgressDialog) {
             all_progress.show()
@@ -173,7 +173,5 @@ class AllPurposeDialog : DialogFragment() {
                 visibility = View.GONE
             }
         }
-
-        Unit
     }
 }

@@ -5,18 +5,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.xclipper.R
+import com.kpstv.xclipper.extensions.ClipTagMap
 import com.kpstv.xclipper.data.model.Tag
+import com.kpstv.xclipper.extensions.containsKey
 import kotlinx.android.synthetic.main.item_tag_chip.view.*
 
 
 class EditAdapter(
     private val viewLifecycleOwner: LifecycleOwner,
-    private val selectedTags: LiveData<Map<String, String>>,
+    private val selectedTags: LiveData<List<ClipTagMap>>,
     private val onClick: (Tag, Int) -> Unit
 ) : ListAdapter<Tag, EditAdapter.EditHolder>(DiffCallback()) {
 
@@ -36,15 +37,12 @@ class EditAdapter(
         )
 
     override fun onBindViewHolder(holder: EditHolder, position: Int) {
-    //    (holder.itemView.layoutParams as (StaggeredGridLayoutManager.LayoutParams)).isFullSpan = true
         holder.bind(getItem(position))
     }
 
     private fun EditHolder.bind(tag: Tag) = with(itemView) {
         chip.isCloseIconVisible = false
         chip.text = tag.name
-/*
-        chip.isChipIconVisible = clip.tags?.keys?.count { it == tag.name }!! > 0*/
 
         chip.setOnClickListener{ onClick.invoke(tag, layoutPosition) }
 

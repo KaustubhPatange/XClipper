@@ -1,5 +1,6 @@
-package com.kpstv.xclipper.ui.fragments
+package com.kpstv.xclipper.ui.fragments.sheets
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +19,7 @@ class MoreBottomSheet(
     private val dictionaryApiHelper: DictionaryApiHelper,
     private val supportFragmentManager: FragmentManager,
     private val clipboardProvider: ClipboardProvider,
+    private val onClose: () -> Unit = {},
     private val clip: Clip
 ) : RoundedBottomSheetDialogFragment() {
 
@@ -41,5 +43,10 @@ class MoreBottomSheet(
 
             return this
         }
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        onClose.invoke()
     }
 }

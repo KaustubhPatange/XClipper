@@ -5,10 +5,13 @@ import com.kpstv.license.Encryption.Encrypt
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.ClipEntry
 import com.kpstv.xclipper.data.model.ClipTag
+import com.kpstv.xclipper.data.model.Dictionary
 import java.util.*
 import kotlin.collections.ArrayList
 
-fun Clip.clone(data: String, tags: Map<String, String>?): Clip {
+typealias ClipTagMap = Dictionary<String, String>
+
+fun Clip.clone(data: String, tags: List<ClipTagMap>?): Clip {
     return copy(data = data, tags = tags).also { it.id = id }
 }
 
@@ -75,4 +78,23 @@ fun Clip.encrypt(): Clip {
 /** Converts name to lowercase name */
 fun ClipTag.small(): String {
     return name.toLowerCase(Locale.ROOT)
+}
+
+operator fun Collection<ClipTagMap>.plus(elements: Collection<ClipTagMap>): List<ClipTagMap> {
+    val list = java.util.ArrayList<ClipTagMap>()
+    list.addAll(elements)
+    list.addAll(this)
+    return list.distinct()
+}
+
+fun Collection<ClipTagMap>.containsKey(key: String): Boolean {
+    return this.any { it.key == key }
+}
+
+fun Collection<ClipTagMap>.keys(): List<String> {
+    return this.map { it.key }.distinct()
+}
+
+fun Collection<ClipTagMap>.values(): List<String> {
+    return this.map { it.value }.distinct()
 }

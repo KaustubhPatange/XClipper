@@ -1,35 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="?colorForeground"
-    android:animateLayoutChanges="true"
     android:layout_height="wrap_content"
+    android:animateLayoutChanges="true"
+    android:background="?colorForeground"
     android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
-        android:background="?colorPrimary"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:background="?colorPrimary" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="120dp"
         android:orientation="vertical">
+
         <ProgressBar
-            android:layout_centerInParent="true"
-            android:paddingBottom="10dp"
             android:id="@+id/all_progress"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:paddingBottom="10dp" />
 
         <TextView
-            android:padding="15dp"
             android:id="@+id/all_textView"
-            android:text="dhwk dhdwk djwkd"
             android:layout_width="match_parent"
-            android:layout_height="120dp"/>
+            android:layout_height="120dp"
+            android:padding="15dp"
+            tools:text="Message" />
     </RelativeLayout>
 
 </LinearLayout>

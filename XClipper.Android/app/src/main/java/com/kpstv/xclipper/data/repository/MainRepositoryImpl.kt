@@ -14,23 +14,15 @@ import com.kpstv.xclipper.extensions.clone
 import com.kpstv.xclipper.extensions.enumerations.FilterType
 import com.kpstv.xclipper.extensions.mainThread
 import com.kpstv.xclipper.ui.helpers.NotificationHelper
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class MainRepositoryImpl @Inject constructor(
     private val clipDao: ClipDataDao,
-    private val firebaseProvider: FirebaseProvider,
-    private val notificationHelper: NotificationHelper
+    private val firebaseProvider: FirebaseProvider
 ) : MainRepository {
 
     private val TAG = javaClass.simpleName
-
-    var data: LiveData<PagedList<Clip>>? = null
-
-    init {
-        clipDao.getAllLiveData().observeForever {
-            data
-        }
-    }
 
     override fun getDataSource(): LiveData<PagedList<Clip>> = clipDao.getDataSource().toLiveData(10)
 
@@ -152,7 +144,11 @@ class MainRepositoryImpl @Inject constructor(
         if (data == null || data.length > MAX_CHARACTER_TO_STORE) return false
         val clip = Clip.from(data)
 
-        return updateRepository(clip, toFirebase)
+        val result = saveClip(clip)
+        if (toFirebase)
+            firebaseProvider.uploadData(clip)
+
+        return result
     }
 
     override suspend fun updateRepository(clip: Clip, toFirebase: Boolean): Boolean {
