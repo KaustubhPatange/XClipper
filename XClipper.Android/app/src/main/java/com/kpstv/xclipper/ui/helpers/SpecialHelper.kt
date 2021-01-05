@@ -45,8 +45,6 @@ class SpecialHelper(
     private val supportFragmentManager: FragmentManager,
     private val clipboardProvider: ClipboardProvider,
     private val clip: Clip,
-    @Deprecated("Dialog is deprecated")
-    private val isDialog: Boolean = false
 ) {
     private val TAG = javaClass.simpleName
     private lateinit var adapter: MenuAdapter
@@ -57,10 +55,6 @@ class SpecialHelper(
     private val data = clip.data
     fun setActions(view: View, onItemClick: SimpleFunction) = with(view) {
         this@SpecialHelper.onItemClick = onItemClick
-
-        if (isDialog) {
-            setForDialog(this)
-        }
 
         setDefineTag(this)
 
@@ -77,29 +71,6 @@ class SpecialHelper(
         setDateSpecials()
 
         setRecyclerView(this)
-    }
-
-    @Deprecated("Dialog is deprecated")
-    private fun setForDialog(view: View): Unit = with(view) {
-        bsm_notch.hide()
-
-        val currentClip =
-            clipboardProvider.getClipboard()?.getItemAt(0)?.coerceToText(context)?.toString()
-        if (currentClip != data) {
-            specialList.add(
-                SpecialMenu(
-                    image = R.drawable.ic_copy_white,
-                    title = context.getString(R.string.set_current_clip)
-                ) {
-                    clipboardProvider.ignoreChange {
-                        clipboardProvider.setClipboard(ClipData.newPlainText(data, data))
-                    }
-
-                    /** Dismiss the dialog */
-                    onItemClick.invoke()
-                }
-            )
-        }
     }
 
     private fun createChooser(tagName: String, onItemSelected: (String) -> Unit) {

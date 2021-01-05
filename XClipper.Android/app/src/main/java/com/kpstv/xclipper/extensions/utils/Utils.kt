@@ -158,7 +158,7 @@ class Utils {
                 ) return true
             }
             val accessibilityPrefs = Settings.Secure.getString(context.contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES)
-            if (accessibilityPrefs.contains("${context.packageName}/${service.canonicalName}")) return true
+            if (accessibilityPrefs?.contains("${context.packageName}/${service.canonicalName}") == true) return true
             return false
         }
 

@@ -7,7 +7,6 @@ plugins {
     kotlin(GradlePluginId.KAPT)
     id(GradlePluginId.SAFE_ARGS)
     id(GradlePluginId.DAGGER_HILT)
-    id("kotlin-android")
 }
 
 android {

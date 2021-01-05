@@ -61,6 +61,7 @@ fun List<Clip>.decrypt(): List<Clip> {
  *
  * Caution: Must be used for firebase data only.
  */
+@Deprecated("All the clips are already decrypted for storage")
 fun Clip.decrypt(): Clip {
     return copy(data = data.Decrypt())
 }

@@ -38,7 +38,7 @@
             android:excludeFromRecents="true"
             android:theme="@style/CustomDialogStyle.Dark" />
         <activity
-            android:name=".ui.dialogs.SpecialActions"
+            android:name=".ui.fragments.sheets.SpecialActions"
             android:excludeFromRecents="true"
             android:launchMode="singleInstance"
             android:theme="@style/CustomDialogStyle.Dark" />

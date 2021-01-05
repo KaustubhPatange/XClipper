@@ -54,7 +54,6 @@ class XClipperApplication : Application(), Configuration.Provider {
     private val TAG = javaClass.simpleName
 
     private fun init() {
-
         /** Setup HVLog */
         HVLog.Config.init(this)
         HVLog.Config.compactClassName = true

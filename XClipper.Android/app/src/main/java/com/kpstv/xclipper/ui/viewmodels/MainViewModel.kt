@@ -10,7 +10,6 @@ import com.kpstv.xclipper.data.localized.dao.TagDao
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.data.model.TagMap
-import com.kpstv.xclipper.extensions.keys
 import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.FirebaseProvider
@@ -18,6 +17,7 @@ import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.extensions.Coroutines
 import com.kpstv.xclipper.extensions.enumerations.FilterType
+import com.kpstv.xclipper.extensions.keys
 import com.kpstv.xclipper.extensions.listeners.RepositoryListener
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
 import com.kpstv.xclipper.extensions.listeners.ResponseResult
@@ -198,12 +198,12 @@ class MainViewModel @ViewModelInject constructor(
 
             val list = ArrayList<TagMap>()
             clips.forEach { clip ->
-                clip.tags?.forEach { e ->
-                    val find = list.find { it.name == e.key }
+                clip.tags?.keys()?.forEach { tag ->
+                    val find = list.find { it.name == tag }
                     if (find != null) {
                         find.count++
                     } else {
-                        list.add(TagMap(e.key, 1))
+                        list.add(TagMap(tag, 1))
                     }
                 }
             }
@@ -272,7 +272,7 @@ class MainViewModel @ViewModelInject constructor(
                     }
                 }
                 tagFilter?.forEach inner@{ tag ->
-                    if (!clip.tags?.keys().isNullOrEmpty() && !clip.tags?.keys()?.contains(tag.name)!!) {
+                    if (clip.tags?.keys().isNullOrEmpty() || clip.tags?.keys()?.contains(tag.name) == false) {
                         list.remove(clip)
                         return@inner
                     }

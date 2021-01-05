@@ -1,4 +1,4 @@
-package com.kpstv.xclipper.ui.dialogs
+package com.kpstv.xclipper.ui.fragments.sheets
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -14,6 +14,9 @@ import com.kpstv.xclipper.ui.helpers.TinyUrlApiHelper
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+/**
+ * When "Special Actions" is clicked from notifications this activity will be launched.
+ */
 @AndroidEntryPoint
 class SpecialActions : AppCompatActivity() {
 
