@@ -26,6 +26,10 @@ android {
         testInstrumentationRunner = AndroidConfig.TEST_INSTRUMENTATION_RUNNER
     }
 
+    sourceSets.getByName("main") {
+        java.setSrcDirs(listOf("src/main/kotlin"))
+    }
+
     signingConfigs {
         val propertiesFile = rootProject.file("keystore.properties")
         val properties = Properties()

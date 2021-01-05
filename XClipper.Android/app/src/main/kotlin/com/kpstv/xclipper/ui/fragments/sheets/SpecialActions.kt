@@ -8,7 +8,6 @@ import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.extensions.ioThread
 import com.kpstv.xclipper.extensions.mainThread
 import com.kpstv.xclipper.extensions.utils.ThemeUtils
-import com.kpstv.xclipper.ui.fragments.sheets.MoreBottomSheet
 import com.kpstv.xclipper.ui.helpers.DictionaryApiHelper
 import com.kpstv.xclipper.ui.helpers.TinyUrlApiHelper
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,7 +35,6 @@ class SpecialActions : AppCompatActivity() {
         }
 
         ThemeUtils.setDialogTheme(this)
-
 
         ioThread {
             val clip = repository.getData(data)
