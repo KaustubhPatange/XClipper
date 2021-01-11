@@ -39,6 +39,7 @@ private object LibraryVersion {
     const val HILT_COMPILER = "1.0.0-alpha01"
     const val AUTO_BINDINGS = "1.1-alpha16"
     const val REALTIME_EXTENSIONS = "0.1.3"
+    const val LIVEDATA_COMBINE_UTIL = "1.2.0"
 }
 
 object LibraryDependency {
@@ -103,4 +104,6 @@ object LibraryDependency {
     const val AUTO_BINDINGS = "io.github.kaustubhpatange:autobindings:${LibraryVersion.AUTO_BINDINGS}"
     const val AUTO_BINDINGS_COMPILER = "io.github.kaustubhpatange:autobindings-compiler:${LibraryVersion.AUTO_BINDINGS}"
     const val REALTIME_EXTENSIONS = "io.github.kaustubhpatange:realtime-extensions:${LibraryVersion.REALTIME_EXTENSIONS}"
+
+    const val LIVEDATA_COMBINE_UTIL = "com.github.Zhuinden:livedata-combinetuple-kt:${LibraryVersion.LIVEDATA_COMBINE_UTIL}"
 }

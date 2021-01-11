@@ -3,7 +3,10 @@ package com.kpstv.xclipper.ui.viewmodels
 import android.app.Application
 import android.content.Context
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.data.localized.FBOptions
 import com.kpstv.xclipper.data.localized.dao.TagDao
@@ -30,6 +33,7 @@ import com.kpstv.xclipper.ui.helpers.TinyUrlApiHelper
 import com.kpstv.xclipper.ui.viewmodels.managers.MainEditManager
 import com.kpstv.xclipper.ui.viewmodels.managers.MainSearchManager
 import com.kpstv.xclipper.ui.viewmodels.managers.MainStateManager
+import com.zhuinden.livedatacombinetuplekt.combineTuple
 import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.ArrayList
@@ -62,10 +66,10 @@ class MainViewModel @ViewModelInject constructor(
     val currentClip: LiveData<String>
         get() = clipboardProvider.getCurrentClip()
 
-    private val mediatorLiveData = MediatorLiveData<List<Clip>>()
+    private val mutableClipLiveData = MutableLiveData<List<Clip>>()
 
     val clipLiveData: LiveData<List<Clip>>
-        get() = mediatorLiveData
+        get() = mutableClipLiveData
 
     val tagCountData: LiveData<List<TagMap>>
         get() = _tagMapLiveData
@@ -214,40 +218,13 @@ class MainViewModel @ViewModelInject constructor(
             _tagLiveData.postValue(it)
         }
 
-        mediatorLiveData.addSource(searchManager.searchString) {
-            makeMySource(
-                _clipLiveData.value,
-                searchManager.searchFilters.value,
-                searchManager.tagFilters.value,
-                it
-            )
-        }
-
-        mediatorLiveData.addSource(searchManager.tagFilters) {
-            makeMySource(
-                _clipLiveData.value,
-                searchManager.searchFilters.value,
-                it,
-                searchManager.searchString.value
-            )
-        }
-
-        mediatorLiveData.addSource(searchManager.searchFilters) {
-            makeMySource(
-                _clipLiveData.value,
-                it,
-                searchManager.tagFilters.value,
-                searchManager.searchString.value
-            )
-        }
-
-        mediatorLiveData.addSource(_clipLiveData) {
-            makeMySource(
-                it,
-                searchManager.searchFilters.value,
-                searchManager.tagFilters.value,
-                searchManager.searchString.value
-            )
+        combineTuple(
+            _clipLiveData,
+            searchManager.searchString,
+            searchManager.tagFilters,
+            searchManager.searchFilters,
+        ).observeForever { (clipLiveData: List<Clip>?, searchString: String?, tagFilters: List<Tag>?, searchFilters: List<String>?) ->
+            makeMySource(clipLiveData, searchFilters, tagFilters, searchString)
         }
 
         /** Methods optimized to invoke only once regardless of calling from multiple sites. */
@@ -272,7 +249,9 @@ class MainViewModel @ViewModelInject constructor(
                     }
                 }
                 tagFilter?.forEach inner@{ tag ->
-                    if (clip.tags?.keys().isNullOrEmpty() || clip.tags?.keys()?.contains(tag.name) == false) {
+                    if (clip.tags?.keys().isNullOrEmpty() || clip.tags?.keys()
+                            ?.contains(tag.name) == false
+                    ) {
                         list.remove(clip)
                         return@inner
                     }
@@ -280,14 +259,14 @@ class MainViewModel @ViewModelInject constructor(
             }
 
             if (!searchText.isNullOrBlank()) {
-                mediatorLiveData.postValue(
+                mutableClipLiveData.postValue(
                     list.filter { clip ->
                         clip.data.toLowerCase(Locale.getDefault()).contains(searchText)
                     }
                 )
 
             } else
-                mediatorLiveData.postValue(list.toList())
+                mutableClipLiveData.postValue(list.toList())
         }
     }
 }

@@ -105,6 +105,7 @@ dependencies {
     implementation(LibraryDependency.LIFECYCLE_VIEWMODEL)
     implementation(LibraryDependency.LIFECYCLE_COMMON)
     implementation(LibraryDependency.LIFECYCLE_KTX)
+    implementation(LibraryDependency.LIVEDATA_COMBINE_UTIL)
 
     implementation(LibraryDependency.RETROFIT) {
         exclude("okhttp")
