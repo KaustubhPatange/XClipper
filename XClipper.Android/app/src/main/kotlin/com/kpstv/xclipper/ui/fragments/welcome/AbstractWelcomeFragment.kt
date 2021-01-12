@@ -1,5 +1,7 @@
 package com.kpstv.xclipper.ui.fragments.welcome
 
+import android.animation.Animator
+import android.animation.ValueAnimator
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.text.Spannable
@@ -34,9 +36,18 @@ abstract class AbstractWelcomeFragment : Fragment(R.layout.fragment_welcome) {
         val directions: NavDirections? = null
     )
 
+    companion object {
+        private var previousPaletteColor: Int = 0
+    }
+
     private val binding by viewBinding(FragmentWelcomeBinding::bind)
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        requireActivity().window.statusBarColor = 0
+        requireActivity().window.navigationBarColor = 0
+        requireActivity().window.decorView.systemUiVisibility =
+            View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+
         super.onCreate(savedInstanceState)
         sharedElementEnterTransition = TransitionInflater.from(requireContext()).inflateTransition(android.R.transition.move)
     }
@@ -54,10 +65,8 @@ abstract class AbstractWelcomeFragment : Fragment(R.layout.fragment_welcome) {
 
         val text = getString(configs.textId)
 
-        requireActivity().window.statusBarColor = palette
-        requireActivity().window.navigationBarColor = palette
+        animateLayoutColors(palette)
 
-        binding.root.setBackgroundColor(palette)
         binding.fwTextView.text =
             SpannableString(text).apply {
                 setSpan(
@@ -73,9 +82,13 @@ abstract class AbstractWelcomeFragment : Fragment(R.layout.fragment_welcome) {
         binding.fwBtnNext.setTextColor(palette)
         binding.fwBtnNext.backgroundTintList = ColorStateList.valueOf(nextPalette)
         binding.fwBtnNext.setOnClickListener {
+            // This will be used to create a color transition.
+            previousPaletteColor = palette
+
             // We are in the last screen of welcome fragment, we should remove the
             // status bar color overlay and keep it default to theme.
             if (configs.isLastScreen) {
+                requireActivity().window.decorView.systemUiVisibility = 0
                 ThemeUtils.restoreStatusAndNavigationColor(requireActivity())
             }
 
@@ -93,5 +106,21 @@ abstract class AbstractWelcomeFragment : Fragment(R.layout.fragment_welcome) {
         )
 
         findNavController().navigate(direction.actionId, null, options, extras)
+    }
+
+    private fun animateLayoutColors(currentPaletteColor: Int) {
+        if (previousPaletteColor != 0) {
+            ValueAnimator.ofArgb(previousPaletteColor, currentPaletteColor).apply {
+                addUpdateListener {
+                    // If user is quickly navigating back or through next button
+                    // Fragment's view becomes null if it's removed or being created.
+                    if (!isRemoving && isAdded)
+                        binding.root.setBackgroundColor(it.animatedValue as Int)
+                }
+                start()
+            }
+        } else {
+            binding.root.setBackgroundColor(currentPaletteColor)
+        }
     }
 }

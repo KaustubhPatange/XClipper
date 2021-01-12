@@ -40,6 +40,7 @@ class EnableSuggestion : AbstractWelcomeFragment() {
 
     override fun onResume() {
         super.onResume()
+        App.showSuggestion = isSystemOverlayEnabled(requireContext())
         preferenceProvider.putBooleanKey(App.SUGGESTION_PREF, isSystemOverlayEnabled(requireContext()))
     }
 
