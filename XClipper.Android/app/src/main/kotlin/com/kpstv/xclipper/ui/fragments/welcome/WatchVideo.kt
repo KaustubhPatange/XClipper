@@ -19,32 +19,23 @@ import javax.inject.Inject
  */
 @Deprecated("Should be removed") // TODO:
 @AndroidEntryPoint
-class WatchVideo : Fragment(R.layout.fragment_welcome) {
+class WatchVideo : AbstractWelcomeFragment() {
 
     @Inject lateinit var preferenceProvider: PreferenceProvider
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun getConfigurations(): Configuration = Configuration(
+        paletteId = R.color.palette7,
+        nextPaletteId = R.color.palette8,
+        textId = R.string.palette7_text,
+        nextTextId = R.string.next_8,
+        action = {
+            preferenceProvider.putBooleanKey(TUTORIAL_PREF, true)
 
-        setUpFragment(
-            view = view,
-            activity = requireActivity(),
-            paletteId = R.color.palette7,
-            nextPaletteId = R.color.palette8,
-            textId = R.string.palette7_text,
-            nextTextId = R.string.next_8,
-            action = {
-                preferenceProvider.putBooleanKey(TUTORIAL_PREF, true)
+            val options = NavOptions.Builder()
+                .setPopUpTo(R.id.fragment_greet, true)
+                .build()
 
-                val options = NavOptions.Builder()
-                    .setPopUpTo(R.id.fragment_greet, true)
-                    .build()
-
-                findNavController().navigate(
-                    WatchVideoDirections.actionWatchVideoToFragmentHome(),
-                    options
-                )
-            }
-        )
-    }
+            navigateTo(WatchVideoDirections.actionWatchVideoToFragmentHome(), options)
+        }
+    )
 }
