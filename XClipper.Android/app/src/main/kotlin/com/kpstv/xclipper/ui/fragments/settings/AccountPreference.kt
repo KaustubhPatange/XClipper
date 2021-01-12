@@ -6,6 +6,7 @@ import androidx.fragment.app.viewModels
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.App.AUTO_SYNC_PREF
 import com.kpstv.xclipper.App.BIND_DELETE_PREF
@@ -50,7 +51,7 @@ class AccountPreference : PreferenceFragmentCompat() {
 
         logPreference = findPreference(LOGOUT_PREF)
         logPreference?.setOnPreferenceClickListener {
-            AlertDialog.Builder(requireContext())
+            MaterialAlertDialogBuilder(requireContext())
                 .setTitle(getString(R.string.alert))
                 .setMessage(getString(R.string.logout_msg))
                 .setPositiveButton(getString(R.string.yes)) { _, _ ->
@@ -103,7 +104,7 @@ class AccountPreference : PreferenceFragmentCompat() {
         bindDeletePreference = findPreference(BIND_DELETE_PREF)
         bindDeletePreference?.setOnPreferenceChangeListener { _, newValue ->
             if (newValue == true) {
-                AlertDialog.Builder(requireContext())
+                MaterialAlertDialogBuilder(requireContext())
                     .setTitle(getString(R.string.warning))
                     .setCancelable(false)
                     .setMessage(getString(R.string.bind_delete_warning))

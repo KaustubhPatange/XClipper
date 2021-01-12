@@ -23,6 +23,7 @@ import androidx.annotation.AttrRes
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ShareCompat
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.zxing.integration.android.IntentIntegrator
@@ -167,7 +168,8 @@ class Utils {
          * to make clipboard capturing work even for the Android 10.
          */
         fun showAccessibilityDialog(context: Context, block: SimpleFunction): Unit = with(context) {
-            AlertDialog.Builder(this)
+            MaterialAlertDialogBuilder(this)
+                .setTitle(getString(R.string.accessibility_service))
                 .setMessage(context.getString(R.string.accessibility_capture))
                 .setPositiveButton(getString(R.string.ok)) { _, _ ->
                     openAccessibility(this)
@@ -199,7 +201,8 @@ class Utils {
 
         @RequiresApi(Build.VERSION_CODES.M)
         fun showOverlayDialog(context: Context): AlertDialog = with(context) {
-            AlertDialog.Builder(this)
+            MaterialAlertDialogBuilder(this)
+                .setTitle("Suggestions [BETA]")
                 .setMessage(getString(R.string.suggestion_capture))
                 .setPositiveButton(getString(R.string.ok)) { _, _ ->
                     openSystemOverlay(this)

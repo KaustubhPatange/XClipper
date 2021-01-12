@@ -2,6 +2,7 @@ package com.kpstv.xclipper.ui.helpers
 
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentActivity
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.install.InstallStateUpdatedListener
 import com.google.android.play.core.install.model.AppUpdateType
@@ -58,7 +59,7 @@ class UpdateHelper(
     }
 
     private fun notifyUpdateDownloadComplete() = with(activity) {
-        AlertDialog.Builder(this)
+        MaterialAlertDialogBuilder(this)
             .setTitle(getString(R.string.update_download_complete))
             .setMessage(getString(R.string.update_downoad_install))
             .setPositiveButton(getString(R.string.ok)) { _, _ ->
