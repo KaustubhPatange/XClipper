@@ -18,12 +18,13 @@ class WindowApp : AbstractWelcomeFragment() {
         paletteId = R.color.palette6,
         nextPaletteId = R.color.palette7,
         textId = R.string.palette6_text,
-        nextTextId = R.string.next_8, /*if (Utils.isAndroid10orUp()) R.string.next_7 else R.string.nextd_4*/
+        nextTextId = R.string.next_8,
         isLastScreen = true,
         action = {
             preferenceProvider.putBooleanKey(App.TUTORIAL_PREF, true)
 
             val options = NavOptions.Builder()
+                .setEnterAnim(android.R.anim.slide_in_left)
                 .setPopUpTo(R.id.fragment_greet, true)
                 .build()
 

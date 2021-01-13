@@ -1,10 +1,8 @@
 package com.kpstv.xclipper.ui.fragments.settings
 
 import android.os.Bundle
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
 import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.kpstv.xclipper.App
@@ -22,13 +20,14 @@ import com.kpstv.xclipper.extensions.listeners.ResponseListener
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.logoutFromDatabase
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showConnectDialog
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showConnectionDialog
+import com.kpstv.xclipper.ui.fragments.AnimatePreferenceFragment
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class AccountPreference : PreferenceFragmentCompat() {
+class AccountPreference : AnimatePreferenceFragment() {
 
     @Inject
     lateinit var preferenceProvider: PreferenceProvider

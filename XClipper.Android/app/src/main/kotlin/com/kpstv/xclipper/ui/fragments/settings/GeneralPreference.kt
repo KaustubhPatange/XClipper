@@ -1,34 +1,34 @@
 package com.kpstv.xclipper.ui.fragments.settings
 
-import android.os.Build
-import android.os.Bundle
-import androidx.preference.ListPreference
-import androidx.preference.MultiSelectListPreference
-import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.SwitchPreferenceCompat
-import com.kpstv.xclipper.App
-import com.kpstv.xclipper.App.BLACKLIST_PREF
-import com.kpstv.xclipper.App.DICTIONARY_LANGUAGE
-import com.kpstv.xclipper.App.IMAGE_MARKDOWN_PREF
-import com.kpstv.xclipper.App.LANG_PREF
-import com.kpstv.xclipper.App.SERVICE_PREF
-import com.kpstv.xclipper.App.SUGGESTION_PREF
-import com.kpstv.xclipper.App.SWIPE_DELETE_PREF
-import com.kpstv.xclipper.App.TRIM_CLIP_PREF
-import com.kpstv.xclipper.App.showSuggestion
-import com.kpstv.xclipper.App.swipeToDelete
-import com.kpstv.xclipper.App.trimClipText
-import com.kpstv.xclipper.R
-import com.kpstv.xclipper.extensions.Coroutines
-import com.kpstv.xclipper.extensions.utils.Utils.Companion.isClipboardAccessibilityServiceRunning
-import com.kpstv.xclipper.extensions.utils.Utils.Companion.isSystemOverlayEnabled
-import com.kpstv.xclipper.extensions.utils.Utils.Companion.openAccessibility
-import com.kpstv.xclipper.extensions.utils.Utils.Companion.retrievePackageList
-import com.kpstv.xclipper.extensions.utils.Utils.Companion.showAccessibilityDialog
-import com.kpstv.xclipper.extensions.utils.Utils.Companion.showOverlayDialog
-import es.dmoral.toasty.Toasty
+ import android.os.Build
+ import android.os.Bundle
+ import androidx.preference.ListPreference
+ import androidx.preference.MultiSelectListPreference
+ import androidx.preference.SwitchPreferenceCompat
+ import com.kpstv.xclipper.App
+ import com.kpstv.xclipper.App.BLACKLIST_PREF
+ import com.kpstv.xclipper.App.DICTIONARY_LANGUAGE
+ import com.kpstv.xclipper.App.IMAGE_MARKDOWN_PREF
+ import com.kpstv.xclipper.App.LANG_PREF
+ import com.kpstv.xclipper.App.SERVICE_PREF
+ import com.kpstv.xclipper.App.SUGGESTION_PREF
+ import com.kpstv.xclipper.App.SWIPE_DELETE_PREF
+ import com.kpstv.xclipper.App.TRIM_CLIP_PREF
+ import com.kpstv.xclipper.App.showSuggestion
+ import com.kpstv.xclipper.App.swipeToDelete
+ import com.kpstv.xclipper.App.trimClipText
+ import com.kpstv.xclipper.R
+ import com.kpstv.xclipper.extensions.Coroutines
+ import com.kpstv.xclipper.extensions.utils.Utils.Companion.isClipboardAccessibilityServiceRunning
+ import com.kpstv.xclipper.extensions.utils.Utils.Companion.isSystemOverlayEnabled
+ import com.kpstv.xclipper.extensions.utils.Utils.Companion.openAccessibility
+ import com.kpstv.xclipper.extensions.utils.Utils.Companion.retrievePackageList
+ import com.kpstv.xclipper.extensions.utils.Utils.Companion.showAccessibilityDialog
+ import com.kpstv.xclipper.extensions.utils.Utils.Companion.showOverlayDialog
+ import com.kpstv.xclipper.ui.fragments.AnimatePreferenceFragment
+ import es.dmoral.toasty.Toasty
 
-class GeneralPreference : PreferenceFragmentCompat() {
+class GeneralPreference : AnimatePreferenceFragment() {
     private val TAG = javaClass.simpleName
     private var checkPreference: SwitchPreferenceCompat? = null
     private var overlayPreference: SwitchPreferenceCompat? = null

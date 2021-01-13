@@ -9,7 +9,6 @@ import android.os.Bundle
 import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
 import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
 import com.kpstv.xclipper.App.DATABASE_MIME_TYPE
 import com.kpstv.xclipper.App.DATABASE_NAME
 import com.kpstv.xclipper.App.EXPORT_PREF
@@ -19,13 +18,14 @@ import com.kpstv.xclipper.R
 import com.kpstv.xclipper.extensions.SimpleFunction
 import com.kpstv.xclipper.extensions.getFormattedDate
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.isValidSQLite
+import com.kpstv.xclipper.ui.fragments.AnimatePreferenceFragment
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import java.util.*
 
 @AndroidEntryPoint
-class BackupPreference : PreferenceFragmentCompat() {
+class BackupPreference : AnimatePreferenceFragment() {
 
     companion object {
         private const val EXPORT_RESULT_CODE = 110

@@ -2,12 +2,12 @@ package com.kpstv.xclipper.ui.fragments.settings
 
 import android.os.Bundle
 import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
 import com.kpstv.xclipper.BuildConfig
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.extensions.utils.Utils
+import com.kpstv.xclipper.ui.fragments.AnimatePreferenceFragment
 
-class AboutPreference : PreferenceFragmentCompat() {
+class AboutPreference : AnimatePreferenceFragment() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.about_pref, rootKey)
 

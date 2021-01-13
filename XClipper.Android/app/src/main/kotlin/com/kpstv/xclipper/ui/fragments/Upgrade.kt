@@ -7,7 +7,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.animation.AnimationUtils
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.kpstv.xclipper.R
@@ -24,7 +23,7 @@ import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class Upgrade : Fragment(R.layout.fragment_upgrade) {
+class Upgrade : AnimateFragment(R.layout.fragment_upgrade) {
 
     @Inject
     lateinit var firebaseProvider: FirebaseProvider
