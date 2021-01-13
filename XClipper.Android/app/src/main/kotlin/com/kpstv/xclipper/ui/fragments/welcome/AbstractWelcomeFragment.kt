@@ -1,6 +1,5 @@
 package com.kpstv.xclipper.ui.fragments.welcome
 
-import android.animation.Animator
 import android.animation.ValueAnimator
 import android.content.res.ColorStateList
 import android.os.Bundle

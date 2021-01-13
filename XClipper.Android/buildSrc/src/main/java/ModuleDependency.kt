@@ -6,7 +6,7 @@ object ModuleDependency {
     const val LIBRARY_UTILS = ":app:library_utils"
     const val PRICING_CARDS = ":app:pricing"
 
-    fun getAllModules() = ModuleDependency::class.memberProperties
+    fun getAllModules(): Set<String> = ModuleDependency::class.memberProperties
         .filter { it.isConst }
         .map { it.getter.call().toString() }
         .toSet()
