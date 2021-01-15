@@ -88,9 +88,10 @@ EventType: TYPE_VIEW_CLICKED; EventTime: 245578516; PackageName: com.android.chr
     }
 
     private fun runEventTest(string: String): Boolean {
+        val clipboardDetector = ClipboardDetection()
         return EventsHelper.parse(string).map {
-            ClipboardDetection.addEvent(it.EventType ?: -1)
-            ClipboardDetection.detectAppropriateEvents(event = it, enableLogging = false)
+            clipboardDetector.addEvent(it.EventType ?: -1)
+            clipboardDetector.detectAppropriateEvents(event = it, enableLogging = false)
         }.any { it }
     }
 
