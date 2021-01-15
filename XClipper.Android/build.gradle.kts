@@ -2,7 +2,6 @@ buildscript {
     repositories {
         google()
         jcenter()
-
     }
     dependencies {
         classpath(GradleDependency.GRADLE_BUILD_TOOLS)

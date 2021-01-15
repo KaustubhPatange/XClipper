@@ -13,7 +13,7 @@ android {
     compileSdkVersion(AndroidConfig.COMPILE_SDK_VERSION)
     buildToolsVersion(AndroidConfig.BUILD_TOOLS_VERSION)
 
-    viewBinding.isEnabled = true
+    buildFeatures.viewBinding = true
 
     defaultConfig {
         applicationId = AndroidConfig.ID

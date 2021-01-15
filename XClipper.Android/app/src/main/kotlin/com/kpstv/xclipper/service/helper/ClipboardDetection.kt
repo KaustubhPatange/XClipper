@@ -8,7 +8,9 @@ import java.util.*
 
 typealias Predicate = (ClipboardDetection.AEvent) -> Boolean
 
-object ClipboardDetection {
+class ClipboardDetection(
+    private val copyWord: String = "Copy"
+) {
 
     private val typeViewSelectionChangeEvent: StripArrayList<AEvent> = StripArrayList(2)
     private val eventList: StripArrayList<Int> = StripArrayList(4)
@@ -33,7 +35,7 @@ object ClipboardDetection {
     /**
      * Made this separate function so writing tests can be easy.
      *
-     * @param enableLogging Protects the need for mocking [HVLog].
+     * @param enableLogging Protects the need for mocking [HVLog] in tests.
      */
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     fun detectAppropriateEvents(event: AEvent, enableLogging: Boolean = true): Boolean {
@@ -50,10 +52,9 @@ object ClipboardDetection {
          * copy behaviour.
          */
         if (event.EventType == AccessibilityEvent.TYPE_VIEW_CLICKED && event.Text != null
-            && (event.ContentDescription?.toString()?.toLowerCase(Locale.ROOT)
-                ?.contains("copy") == true
-                    || event.Text.toString().toLowerCase(Locale.ROOT).contains("copy")
-                    || event.ContentDescription == "Cut" || event.ContentDescription == "Copy")
+            && (event.ContentDescription?.contains(copyWord, true) == true
+                    || event.Text.toString().contains(copyWord, true)
+                    || event.ContentDescription == "Cut" || event.ContentDescription == copyWord)
         ) {
             if (enableLogging)
                 HVLog.d("Copy captured - 2")
@@ -90,8 +91,8 @@ object ClipboardDetection {
 
             if (previousEvent.EventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
                /* && previousEvent.ScrollX == -1 && previousEvent.ScrollY == -1*/ // TODO: See if you need any additional checks, uncomment it then
-                && (previousEvent.Text?.toString()?.contains("Copy", true) == true
-                || previousEvent.ContentDescription?.contains("Copy", true) == true)) {
+                && (previousEvent.Text?.toString()?.contains(copyWord, true) == true
+                || previousEvent.ContentDescription?.contains(copyWord, true) == true)) {
                 if (enableLogging)
                     HVLog.d("Copy captured - 1.1")
                 else

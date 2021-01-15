@@ -23,6 +23,7 @@ import com.kpstv.xclipper.extensions.utils.FirebaseUtils
 import com.kpstv.xclipper.extensions.utils.KeyboardUtils.Companion.getKeyboardHeight
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.isSystemOverlayEnabled
 import com.kpstv.xclipper.service.helper.ClipboardDetection
+import com.kpstv.xclipper.service.helper.LanguageDetector
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import javax.inject.Inject
@@ -30,8 +31,12 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class ClipboardAccessibilityService : AccessibilityService() {
 
-    @Inject lateinit var firebaseUtils: FirebaseUtils
-    @Inject lateinit var clipboardProvider: ClipboardProvider
+    @Inject
+    lateinit var firebaseUtils: FirebaseUtils
+    @Inject
+    lateinit var clipboardProvider: ClipboardProvider
+
+    private lateinit var clipboardDetector: ClipboardDetection
 
     /** We will save the package name to this variable from the event. */
     companion object {
@@ -68,6 +73,7 @@ class ClipboardAccessibilityService : AccessibilityService() {
     override fun onCreate() {
         super.onCreate()
         powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
+        clipboardDetector = ClipboardDetection(LanguageDetector.getCopyForLocale(applicationContext))
         HVLog.d()
     }
 
@@ -75,10 +81,10 @@ class ClipboardAccessibilityService : AccessibilityService() {
         currentPackage = event?.packageName
 
         logger(TAG, "$event")
-      //  logger(TAG, "SourceText: ${event?.source}; Text is null: ${event?.text.isNullOrEmpty()}; $event")
-     //   logger(TAG, "Actions: ${ClipboardDetection.ignoreSourceActions(event?.source?.actionList)}, List: ${event?.source?.actionList}")
+        //  logger(TAG, "SourceText: ${event?.source}; Text is null: ${event?.text.isNullOrEmpty()}; $event")
+        //   logger(TAG, "Actions: ${ClipboardDetection.ignoreSourceActions(event?.source?.actionList)}, List: ${event?.source?.actionList}")
         if (event?.eventType != null)
-            ClipboardDetection.addEvent(event.eventType)
+            clipboardDetector.addEvent(event.eventType)
 
         postKeyboardValue(getKeyboardHeight(applicationContext))
 
@@ -98,8 +104,7 @@ class ClipboardAccessibilityService : AccessibilityService() {
                 .sendBroadcast(Intent(ACTION_VIEW_CLOSE))
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
-            && ClipboardDetection.getSupportedEventTypes(event)
-            && !isPackageBlacklisted(event?.packageName)
+            && clipboardDetector.getSupportedEventTypes(event) && !isPackageBlacklisted(event?.packageName)
         ) {
             runForNextEventAlso = true
             logger(TAG, "Running for first time")
