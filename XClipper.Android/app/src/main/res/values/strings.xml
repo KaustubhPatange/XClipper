@@ -129,7 +129,7 @@
     <string name="mail_summary">Want to give feedback or a quick chat just hit me up</string>
     <string name="version_title">Version</string>
     <string name="package_title">Package</string>
-    <string name="upgrade">Upgrades</string>
+    <string name="upgrade">Upgrade</string>
     <string name="about">About</string>
     <string name="auto_sync_title">Automatic synchronization</string>
     <string name="layout_empty_text">Copy text or click to create a new empty paste</string>
@@ -177,7 +177,7 @@
     <string name="warning">Warning</string>
     <string name="bind_delete_warning">This may result into unexpected deletion of clips if your remote database has restriction on item limit.</string>
     <string name="trim_title">Text trimming</string>
-    <string name="trim_summary">This will remove all the whitespaces from the clip data while displaying.</string>
+    <string name="trim_summary">This will trim whitespaces from the clip data while displaying.</string>
     <string name="invalid_url">No url passed for shortening.</string>
     <string name="error_shorten">Requested url cannot be shorten</string>
     <string name="accessibility_service">Accessibility Service</string>

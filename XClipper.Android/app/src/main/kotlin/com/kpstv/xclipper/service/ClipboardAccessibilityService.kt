@@ -74,9 +74,9 @@ class ClipboardAccessibilityService : AccessibilityService() {
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         currentPackage = event?.packageName
 
-      //  logger(TAG, "$event")
-//        logger(TAG, "SourceText: ${event?.source}; Text is null: ${event?.text.isNullOrEmpty()}; $event")
-
+        logger(TAG, "$event")
+      //  logger(TAG, "SourceText: ${event?.source}; Text is null: ${event?.text.isNullOrEmpty()}; $event")
+     //   logger(TAG, "Actions: ${ClipboardDetection.ignoreSourceActions(event?.source?.actionList)}, List: ${event?.source?.actionList}")
         if (event?.eventType != null)
             ClipboardDetection.addEvent(event.eventType)
 
@@ -99,7 +99,6 @@ class ClipboardAccessibilityService : AccessibilityService() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
             && ClipboardDetection.getSupportedEventTypes(event)
-            { e -> e.PackageName == "com.google.android.gm" && keyboardHeight.value ?: 0 > 100 } // This events will fail the capture...
             && !isPackageBlacklisted(event?.packageName)
         ) {
             runForNextEventAlso = true

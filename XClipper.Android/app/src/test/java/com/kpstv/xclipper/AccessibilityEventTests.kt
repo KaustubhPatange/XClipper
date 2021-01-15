@@ -13,26 +13,16 @@ class AccessibilityEventTests {
     // TODO: Add more tests
 
     @Test
-    fun test() {
-        val r = "^\\[(.*)]\$".toRegex()
-        val s = "[Copy link address,ssw]"
-        println(r.find(s)?.groupValues?.get(1)?.split(","))
+    fun `Webview's in-window textarea`() {
+        val string = """
+EventType: TYPE_WINDOW_CONTENT_CHANGED; EventTime: 270535977; PackageName: com.android.chrome; MovementGranularity: 0; Action: 0; ContentChangeTypes: []; WindowChangeTypes: [] [ ClassName: android.view.View; Text: []; ContentDescription: null; ItemCount: 0; CurrentItemIndex: 0; Enabled: true; Password: false; Checked: false; FullScreen: false; Scrollable: false; BeforeText: null; FromIndex: -1; ToIndex: -1; ScrollX: 0; ScrollY: 0; MaxScrollX: 0; MaxScrollY: 0; AddedCount: -1; RemovedCount: -1; ParcelableData: null ]; recordCount: 0
+EventType: TYPE_WINDOW_CONTENT_CHANGED; EventTime: 270535978; PackageName: com.android.chrome; MovementGranularity: 0; Action: 0; ContentChangeTypes: []; WindowChangeTypes: [] [ ClassName: android.view.View; Text: []; ContentDescription: null; ItemCount: 0; CurrentItemIndex: 0; Enabled: true; Password: false; Checked: false; FullScreen: false; Scrollable: false; BeforeText: null; FromIndex: -1; ToIndex: -1; ScrollX: 0; ScrollY: 0; MaxScrollX: 0; MaxScrollY: 0; AddedCount: -1; RemovedCount: -1; ParcelableData: null ]; recordCount: 0
+EventType: TYPE_WINDOW_CONTENT_CHANGED; EventTime: 270536079; PackageName: com.android.chrome; MovementGranularity: 0; Action: 0; ContentChangeTypes: []; WindowChangeTypes: [] [ ClassName: android.view.View; Text: []; ContentDescription: null; ItemCount: 0; CurrentItemIndex: 0; Enabled: true; Password: false; Checked: false; FullScreen: false; Scrollable: false; BeforeText: null; FromIndex: -1; ToIndex: -1; ScrollX: 0; ScrollY: 0; MaxScrollX: 0; MaxScrollY: 0; AddedCount: -1; RemovedCount: -1; ParcelableData: null ]; recordCount: 0
+EventType: TYPE_WINDOW_CONTENT_CHANGED; EventTime: 270536227; PackageName: com.android.chrome; MovementGranularity: 0; Action: 0; ContentChangeTypes: []; WindowChangeTypes: [] [ ClassName: android.webkit.WebView; Text: []; ContentDescription: null; ItemCount: 0; CurrentItemIndex: 0; Enabled: true; Password: false; Checked: false; FullScreen: false; Scrollable: true; BeforeText: null; FromIndex: -1; ToIndex: -1; ScrollX: 0; ScrollY: 0; MaxScrollX: 0; MaxScrollY: 383; AddedCount: -1; RemovedCount: -1; ParcelableData: null ]; recordCount: 0
+EventType: TYPE_VIEW_TEXT_SELECTION_CHANGED; EventTime: 270536227; PackageName: com.android.chrome; MovementGranularity: 0; Action: 0; ContentChangeTypes: []; WindowChangeTypes: [] [ ClassName: android.widget.TextView; Text: [() {]; ContentDescription: null; ItemCount: 0; CurrentItemIndex: 0; Enabled: true; Password: false; Checked: false; FullScreen: false; Scrollable: false; BeforeText: null; FromIndex: 4; ToIndex: 4; ScrollX: 0; ScrollY: 0; MaxScrollX: 0; MaxScrollY: 0; AddedCount: -1; RemovedCount: -1; ParcelableData: null ]; recordCount: 0
+        """.trimIndent()
 
-        val totalTime = measureTimeMillis {
-            for (i in 1 until 10) {
-                val string =
-                    "EventType: TYPE_VIEW_LONG_CLICKED; EventTime: 50454360; PackageName: com.medium.reader; MovementGranularity: 0; Action: 0; ContentChangeTypes: []; WindowChangeTypes: [] [ ClassName: android.widget.TextView; Text: [Some reference which helped me to learn more about actions are as follows.]; ContentDescription: null; ItemCount: -1; CurrentItemIndex: -1; Enabled: true; Password: false; Checked: false; FullScreen: false; Scrollable: false; BeforeText: null; FromIndex: -1; ToIndex: -1; ScrollX: -1; ScrollY: -1; MaxScrollX: -1; MaxScrollY: -1; AddedCount: -1; RemovedCount: -1; ParcelableData: null ]; recordCount: 0"
-                val event = EventsHelper.parse(string)
-            }
-        }
-
-        println("Total time: $totalTime")
-
-
-        println(0x00000800.toHexString().toLong(16))
-        val sf = EventsHelper.getEventType("TYPE_WINDOW_CONTENT_CHANGED")
-        //ClipboardDetection.addEvent(AccessibilityEvent.TYPE_VIEW_LONG_CLICKED)
-//        ClipboardDetection.addEvent()
+        assertEquals(false, runEventTest(string)) // Ignore...
     }
 
     @Test
@@ -65,15 +55,21 @@ EventType: TYPE_VIEW_CLICKED; EventTime: 262072531; PackageName: android; Moveme
     }
 
     @Test
-    fun `Long press & select "Copy"`() {
+    fun `Long press to see more options & "Copy"`() {
         val string = """
-EventType: TYPE_WINDOW_CONTENT_CHANGED; EventTime: 258990954; PackageName: com.android.chrome; MovementGranularity: 0; Action: 0; ContentChangeTypes: [CONTENT_CHANGE_TYPE_SUBTREE]; WindowChangeTypes: [] [ ClassName: android.widget.FrameLayout; Text: []; ContentDescription: null; ItemCount: -1; CurrentItemIndex: -1; Enabled: true; Password: false; Checked: false; FullScreen: false; Scrollable: false; BeforeText: null; FromIndex: -1; ToIndex: -1; ScrollX: -1; ScrollY: -1; MaxScrollX: -1; MaxScrollY: -1; AddedCount: -1; RemovedCount: -1; ParcelableData: null ]; recordCount: 0
-EventType: TYPE_WINDOW_STATE_CHANGED; EventTime: 258991146; PackageName: com.android.chrome; MovementGranularity: 0; Action: 0; ContentChangeTypes: []; WindowChangeTypes: [] [ ClassName: android.widget.FrameLayout; Text: [More options, Copy, Share, Select all, Web search]; ContentDescription: null; ItemCount: -1; CurrentItemIndex: -1; Enabled: true; Password: false; Checked: false; FullScreen: false; Scrollable: false; BeforeText: null; FromIndex: -1; ToIndex: -1; ScrollX: -1; ScrollY: -1; MaxScrollX: -1; MaxScrollY: -1; AddedCount: -1; RemovedCount: -1; ParcelableData: null ]; recordCount: 0
-EventType: TYPE_WINDOW_CONTENT_CHANGED; EventTime: 258991259; PackageName: com.android.chrome; MovementGranularity: 0; Action: 0; ContentChangeTypes: []; WindowChangeTypes: [] [ ClassName: android.view.View; Text: []; ContentDescription: null; ItemCount: 0; CurrentItemIndex: 0; Enabled: true; Password: false; Checked: false; FullScreen: false; Scrollable: false; BeforeText: null; FromIndex: -1; ToIndex: -1; ScrollX: 0; ScrollY: 0; MaxScrollX: 0; MaxScrollY: 0; AddedCount: -1; RemovedCount: -1; ParcelableData: null ]; recordCount: 0
-EventType: TYPE_WINDOW_CONTENT_CHANGED; EventTime: 258991359; PackageName: com.android.chrome; MovementGranularity: 0; Action: 0; ContentChangeTypes: []; WindowChangeTypes: [] [ ClassName: android.view.View; Text: []; ContentDescription: null; ItemCount: 0; CurrentItemIndex: 0; Enabled: true; Password: false; Checked: false; FullScreen: false; Scrollable: false; BeforeText: null; FromIndex: -1; ToIndex: -1; ScrollX: 0; ScrollY: 0; MaxScrollX: 0; MaxScrollY: 0; AddedCount: -1; RemovedCount: -1; ParcelableData: null ]; recordCount: 0
-EventType: TYPE_WINDOW_CONTENT_CHANGED; EventTime: 258992219; PackageName: com.android.chrome; MovementGranularity: 0; Action: 0; ContentChangeTypes: []; WindowChangeTypes: [] [ ClassName: android.view.View; Text: []; ContentDescription: null; ItemCount: 0; CurrentItemIndex: 0; Enabled: true; Password: false; Checked: false; FullScreen: false; Scrollable: false; BeforeText: null; FromIndex: -1; ToIndex: -1; ScrollX: 0; ScrollY: 0; MaxScrollX: 0; MaxScrollY: 0; AddedCount: -1; RemovedCount: -1; ParcelableData: null ]; recordCount: 0
-EventType: TYPE_WINDOW_CONTENT_CHANGED; EventTime: 258992308; PackageName: com.android.chrome; MovementGranularity: 0; Action: 0; ContentChangeTypes: []; WindowChangeTypes: [] [ ClassName: android.webkit.WebView; Text: []; ContentDescription: null; ItemCount: 0; CurrentItemIndex: 0; Enabled: true; Password: false; Checked: false; FullScreen: false; Scrollable: true; BeforeText: null; FromIndex: -1; ToIndex: -1; ScrollX: 0; ScrollY: 0; MaxScrollX: 0; MaxScrollY: 3557; AddedCount: -1; RemovedCount: -1; ParcelableData: null ]; recordCount: 0
-EventType: TYPE_VIEW_TEXT_SELECTION_CHANGED; EventTime: 258992308; PackageName: com.android.chrome; MovementGranularity: 0; Action: 0; ContentChangeTypes: []; WindowChangeTypes: [] [ ClassName: android.widget.TextView; Text: [Publications]; ContentDescription: null; ItemCount: 0; CurrentItemIndex: 0; Enabled: true; Password: false; Checked: false; FullScreen: false; Scrollable: false; BeforeText: null; FromIndex: 12; ToIndex: 12; ScrollX: 0; ScrollY: 0; MaxScrollX: 0; MaxScrollY: 0; AddedCount: -1; RemovedCount: -1; ParcelableData: null ]; recordCount: 0
+EventType: TYPE_WINDOW_CONTENT_CHANGED; EventTime: 287111991; PackageName: com.android.chrome; MovementGranularity: 0; Action: 0; ContentChangeTypes: [CONTENT_CHANGE_TYPE_SUBTREE]; WindowChangeTypes: [] [ ClassName: android.widget.FrameLayout; Text: []; ContentDescription: null; ItemCount: -1; CurrentItemIndex: -1; Enabled: true; Password: false; Checked: false; FullScreen: false; Scrollable: false; BeforeText: null; FromIndex: -1; ToIndex: -1; ScrollX: -1; ScrollY: -1; MaxScrollX: -1; MaxScrollY: -1; AddedCount: -1; RemovedCount: -1; ParcelableData: null ]; recordCount: 0
+EventType: TYPE_WINDOW_CONTENT_CHANGED; EventTime: 287112091; PackageName: com.android.chrome; MovementGranularity: 0; Action: 0; ContentChangeTypes: [CONTENT_CHANGE_TYPE_SUBTREE]; WindowChangeTypes: [] [ ClassName: android.widget.FrameLayout; Text: []; ContentDescription: null; ItemCount: -1; CurrentItemIndex: -1; Enabled: true; Password: false; Checked: false; FullScreen: false; Scrollable: false; BeforeText: null; FromIndex: -1; ToIndex: -1; ScrollX: -1; ScrollY: -1; MaxScrollX: -1; MaxScrollY: -1; AddedCount: -1; RemovedCount: -1; ParcelableData: null ]; recordCount: 0
+EventType: TYPE_WINDOW_STATE_CHANGED; EventTime: 287112141; PackageName: com.android.chrome; MovementGranularity: 0; Action: 0; ContentChangeTypes: []; WindowChangeTypes: [] [ ClassName: android.widget.FrameLayout; Text: [More options, Copy, Share, Select all, Web search]; ContentDescription: null; ItemCount: -1; CurrentItemIndex: -1; Enabled: true; Password: false; Checked: false; FullScreen: false; Scrollable: false; BeforeText: null; FromIndex: -1; ToIndex: -1; ScrollX: -1; ScrollY: -1; MaxScrollX: -1; MaxScrollY: -1; AddedCount: -1; RemovedCount: -1; ParcelableData: null ]; recordCount: 0
+
+EventType: TYPE_WINDOW_CONTENT_CHANGED; EventTime: 287113695; PackageName: com.android.chrome; MovementGranularity: 0; Action: 0; ContentChangeTypes: [CONTENT_CHANGE_TYPE_SUBTREE]; WindowChangeTypes: [] [ ClassName: android.widget.FrameLayout; Text: []; ContentDescription: null; ItemCount: -1; CurrentItemIndex: -1; Enabled: true; Password: false; Checked: false; FullScreen: false; Scrollable: false; BeforeText: null; FromIndex: -1; ToIndex: -1; ScrollX: -1; ScrollY: -1; MaxScrollX: -1; MaxScrollY: -1; AddedCount: -1; RemovedCount: -1; ParcelableData: null ]; recordCount: 0
+EventType: TYPE_WINDOW_CONTENT_CHANGED; EventTime: 287113723; PackageName: com.android.chrome; MovementGranularity: 0; Action: 0; ContentChangeTypes: []; WindowChangeTypes: [] [ ClassName: android.view.View; Text: []; ContentDescription: null; ItemCount: 0; CurrentItemIndex: 0; Enabled: true; Password: false; Checked: false; FullScreen: false; Scrollable: false; BeforeText: null; FromIndex: -1; ToIndex: -1; ScrollX: 0; ScrollY: 0; MaxScrollX: 0; MaxScrollY: 0; AddedCount: -1; RemovedCount: -1; ParcelableData: null ]; recordCount: 0
+EventType: TYPE_WINDOW_CONTENT_CHANGED; EventTime: 287113723; PackageName: com.android.chrome; MovementGranularity: 0; Action: 0; ContentChangeTypes: []; WindowChangeTypes: [] [ ClassName: android.view.View; Text: []; ContentDescription: null; ItemCount: 0; CurrentItemIndex: 0; Enabled: true; Password: false; Checked: false; FullScreen: false; Scrollable: false; BeforeText: null; FromIndex: -1; ToIndex: -1; ScrollX: 0; ScrollY: 0; MaxScrollX: 0; MaxScrollY: 0; AddedCount: -1; RemovedCount: -1; ParcelableData: null ]; recordCount: 0
+EventType: TYPE_WINDOW_CONTENT_CHANGED; EventTime: 287113723; PackageName: com.android.chrome; MovementGranularity: 0; Action: 0; ContentChangeTypes: []; WindowChangeTypes: [] [ ClassName: android.view.View; Text: []; ContentDescription: null; ItemCount: 0; CurrentItemIndex: 0; Enabled: true; Password: false; Checked: false; FullScreen: false; Scrollable: false; BeforeText: null; FromIndex: -1; ToIndex: -1; ScrollX: 0; ScrollY: 0; MaxScrollX: 0; MaxScrollY: 0; AddedCount: -1; RemovedCount: -1; ParcelableData: null ]; recordCount: 0
+EventType: TYPE_WINDOW_CONTENT_CHANGED; EventTime: 287113723; PackageName: com.android.chrome; MovementGranularity: 0; Action: 0; ContentChangeTypes: []; WindowChangeTypes: [] [ ClassName: android.view.View; Text: []; ContentDescription: null; ItemCount: 0; CurrentItemIndex: 0; Enabled: true; Password: false; Checked: false; FullScreen: false; Scrollable: false; BeforeText: null; FromIndex: -1; ToIndex: -1; ScrollX: 0; ScrollY: 0; MaxScrollX: 0; MaxScrollY: 0; AddedCount: -1; RemovedCount: -1; ParcelableData: null ]; recordCount: 0
+EventType: TYPE_WINDOW_CONTENT_CHANGED; EventTime: 287113724; PackageName: com.android.chrome; MovementGranularity: 0; Action: 0; ContentChangeTypes: []; WindowChangeTypes: [] [ ClassName: android.webkit.WebView; Text: []; ContentDescription: null; ItemCount: 0; CurrentItemIndex: 0; Enabled: true; Password: false; Checked: false; FullScreen: false; Scrollable: true; BeforeText: null; FromIndex: -1; ToIndex: -1; ScrollX: 0; ScrollY: 139; MaxScrollX: 0; MaxScrollY: 4897; AddedCount: -1; RemovedCount: -1; ParcelableData: null ]; recordCount: 0
+EventType: TYPE_VIEW_TEXT_SELECTION_CHANGED; EventTime: 287113724; PackageName: com.android.chrome; MovementGranularity: 0; Action: 0; ContentChangeTypes: []; WindowChangeTypes: [] [ ClassName: android.widget.TextView; Text: [I learned how to add a repository via the command line with curl and how to add a description for a commit with git commit, but how to add a repository description via the command line?]; ContentDescription: null; ItemCount: 0; CurrentItemIndex: 0; Enabled: true; Password: false; Checked: false; FullScreen: false; Scrollable: false; BeforeText: null; FromIndex: 93; ToIndex: 93; ScrollX: 0; ScrollY: 0; MaxScrollX: 0; MaxScrollY: 0; AddedCount: -1; RemovedCount: -1; ParcelableData: null ]; recordCount: 0
+EventType: TYPE_WINDOW_CONTENT_CHANGED; EventTime: 287113724; PackageName: com.android.chrome; MovementGranularity: 0; Action: 0; ContentChangeTypes: []; WindowChangeTypes: [] [ ClassName: android.view.View; Text: []; ContentDescription: null; ItemCount: 0; CurrentItemIndex: 0; Enabled: true; Password: false; Checked: false; FullScreen: false; Scrollable: false; BeforeText: null; FromIndex: -1; ToIndex: -1; ScrollX: 0; ScrollY: 0; MaxScrollX: 0; MaxScrollY: 0; AddedCount: -1; RemovedCount: -1; ParcelableData: null ]; recordCount: 0
+EventType: TYPE_WINDOW_CONTENT_CHANGED; EventTime: 287113827; PackageName: com.android.chrome; MovementGranularity: 0; Action: 0; ContentChangeTypes: [CONTENT_CHANGE_TYPE_SUBTREE]; WindowChangeTypes: [] [ ClassName: android.widget.FrameLayout; Text: []; ContentDescription: null; ItemCount: -1; CurrentItemIndex: -1; Enabled: true; Password: false; Checked: false; FullScreen: false; Scrollable: false; BeforeText: null; FromIndex: -1; ToIndex: -1; ScrollX: -1; ScrollY: -1; MaxScrollX: -1; MaxScrollY: -1; AddedCount: -1; RemovedCount: -1; ParcelableData: null ]; recordCount: 0
         """.trimIndent()
 
         assertEquals(true, runEventTest(string))
@@ -110,7 +106,7 @@ object EventsHelper {
      * Multiline string can be accepting
      */
     fun parse(string: String): List<ClipboardDetection.AEvent> {
-        return string.toLines().map { lineParser(it) }
+        return string.toLines().filter { it.isNotEmpty() }.map { lineParser(it) }
     }
 
     // eg: EventType: TYPE_VIEW_CLICKED; EventTime: 245578516; PackageName: com.android.chrome; MovementGranularity: 0; Action: 0; ContentChangeTypes: []; WindowChangeTypes: [] [ ClassName: android.widget.TextView; Text: [Copy link address]; ContentDescription: null; ItemCount: -1; CurrentItemIndex: -1; Enabled: true; Password: false; Checked: false; FullScreen: false; Scrollable: false; BeforeText: null; FromIndex: -1; ToIndex: -1; ScrollX: -1; ScrollY: -1; MaxScrollX: -1; MaxScrollY: -1; AddedCount: -1; RemovedCount: -1; ParcelableData: null ]; recordCount: 1
@@ -122,9 +118,14 @@ object EventsHelper {
                 ClipboardDetection.AEvent::EventType.name -> e.EventType = getEventType(l)
                 ClipboardDetection.AEvent::EventTime.name -> e.EventTime = getValue(l)?.toLong()
                 ClipboardDetection.AEvent::PackageName.name -> e.PackageName = getValue(l)
-                ClipboardDetection.AEvent::MovementGranularity.name -> e.MovementGranularity =
-                    getValue(l)?.toInt()
+                ClipboardDetection.AEvent::MovementGranularity.name -> e.MovementGranularity = getValue(l)?.toInt()
+                ClipboardDetection.AEvent::ContentChangeTypes.name -> {
+                    if (l.contains(AccessibilityEvent::CONTENT_CHANGE_TYPE_SUBTREE.name))
+                        e.ContentChangeTypes = AccessibilityEvent.CONTENT_CHANGE_TYPE_SUBTREE
+                }
                 ClipboardDetection.AEvent::Action.name -> e.Action = getValue(l)?.toInt()
+                ClipboardDetection.AEvent::ScrollX.name -> e.ScrollX = getValue(l)?.toInt()
+                ClipboardDetection.AEvent::ScrollY.name -> e.ScrollY = getValue(l)?.toInt()
                 ClipboardDetection.AEvent::ClassName.name -> e.ClassName = getValue(l)
                 "WindowChangeTypes" -> {
                     val middleware = l.split(" [ ")
@@ -133,10 +134,8 @@ object EventsHelper {
                 ClipboardDetection.AEvent::Text.name -> e.Text = ArrayRegexPattern.find(
                     ValueArrayRegexPattern.find(l)?.groupValues?.get(1) ?: ""
                 )?.groupValues?.get(1)?.split(",")
-                ClipboardDetection.AEvent::ContentDescription.name -> e.ContentDescription =
-                    getValue(l)
-                ClipboardDetection.AEvent::CurrentItemIndex.name -> e.CurrentItemIndex =
-                    getValue(l)?.toInt()
+                ClipboardDetection.AEvent::ContentDescription.name -> e.ContentDescription = getValue(l)
+                ClipboardDetection.AEvent::CurrentItemIndex.name -> e.CurrentItemIndex = getValue(l)?.toInt()
                 ClipboardDetection.AEvent::FromIndex.name -> e.FromIndex = getValue(l)?.toInt()
                 ClipboardDetection.AEvent::ToIndex.name -> e.ToIndex = getValue(l)?.toInt()
                 ClipboardDetection.AEvent::ScrollX.name -> e.ScrollX = getValue(l)?.toInt()
