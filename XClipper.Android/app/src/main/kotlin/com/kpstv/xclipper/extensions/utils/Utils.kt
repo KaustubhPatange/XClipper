@@ -14,6 +14,8 @@ import android.content.pm.ServiceInfo
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.provider.Settings
 import android.telephony.TelephonyManager
 import android.util.DisplayMetrics
@@ -347,6 +349,15 @@ class Utils {
 
         fun dpToPixel(context: Context, value: Float): Float = with(context) {
             return value * (resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+        }
+
+        fun vibrateDevice(context: Context) {
+            val m = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                m.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE))
+            } else {
+                m.vibrate(50)
+            }
         }
     }
 }

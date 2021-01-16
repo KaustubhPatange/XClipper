@@ -21,7 +21,7 @@ object LanguageDetector {
      * I can use localazy to automate translation but its quite tiresome
      * instead I'll use the translation that I need to detect copy action.
      */
-    private val baseMap = mapOf(
+    private val baseMap = mutableMapOf(
         "en" to "Copy",
         "af" to "Kopieer",
         "am" to "ቅዳ",

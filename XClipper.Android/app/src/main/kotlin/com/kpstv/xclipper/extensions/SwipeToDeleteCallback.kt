@@ -1,5 +1,6 @@
 package com.kpstv.xclipper.extensions
 
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
@@ -10,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.xclipper.R
+import com.kpstv.xclipper.extensions.utils.Utils
 
 
 /**
@@ -22,11 +24,14 @@ class SwipeToDeleteCallback(
 ) : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
 
     private val deleteIcon = ContextCompat.getDrawable(context, R.drawable.ic_delete_white)
+    private val deleteIconForever = ContextCompat.getDrawable(context, R.drawable.ic_delete_forever)
     private val intrinsicWidth = deleteIcon?.intrinsicWidth ?: 0
     private val intrinsicHeight = deleteIcon?.intrinsicHeight ?: 0
     private val background = ColorDrawable()
     private val backgroundColor = ContextCompat.getColor(context, R.color.palette5)
     private val clearPaint = Paint().apply { xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR) }
+
+    private var readyToBeRemoved = false
 
     override fun onMove(
         recyclerView: RecyclerView,
@@ -36,14 +41,6 @@ class SwipeToDeleteCallback(
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
         onSwiped.invoke(viewHolder.adapterPosition)
-    }
-
-    override fun getMovementFlags(
-        recyclerView: RecyclerView,
-        viewHolder: RecyclerView.ViewHolder
-    ): Int {
-        if (viewHolder.adapterPosition == 10) return 0
-        return super.getMovementFlags(recyclerView, viewHolder)
     }
 
     override fun onChildDraw(
@@ -60,24 +57,13 @@ class SwipeToDeleteCallback(
         val isCanceled = dX == 0f && !isCurrentlyActive
 
         if (isCanceled) {
-            clearCanvas(
-                c,
-                itemView.left + dX,
-                itemView.top.toFloat(),
-                itemView.left.toFloat(),
-                itemView.bottom.toFloat()
-            )
+            clearCanvas(c, itemView.left + dX, itemView.top.toFloat(), itemView.left.toFloat(), itemView.bottom.toFloat())
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
             return
         }
 
         background.color = backgroundColor
-        background.setBounds(
-            itemView.left + dX.toInt(),
-            itemView.top,
-            itemView.left,
-            itemView.bottom
-        )
+        background.setBounds(itemView.left, itemView.top, itemView.left + dX.toInt(), itemView.bottom)
         background.draw(c)
 
         val deleteIconTop = itemView.top + (itemHeight - intrinsicHeight) / 2
@@ -85,8 +71,17 @@ class SwipeToDeleteCallback(
         val deleteIconRight = deleteIconLeft + intrinsicWidth
         val deleteIconBottom = deleteIconTop + intrinsicHeight
 
-        deleteIcon?.setBounds(deleteIconLeft, deleteIconTop, deleteIconRight, deleteIconBottom)
-        deleteIcon?.draw(c)
+        readyToBeRemoved = if ((itemView.left + dX.toInt()) >= ((itemView.width + 50) / 2)) {
+            if (!readyToBeRemoved) Utils.vibrateDevice(itemView.context)
+            deleteIconForever?.setBounds(deleteIconLeft, deleteIconTop, deleteIconRight, deleteIconBottom)
+            deleteIconForever?.draw(c)
+            true
+        } else {
+            deleteIcon?.setBounds(deleteIconLeft, deleteIconTop, deleteIconRight, deleteIconBottom)
+            deleteIcon?.draw(c)
+            false
+        }
+
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
     }
 
