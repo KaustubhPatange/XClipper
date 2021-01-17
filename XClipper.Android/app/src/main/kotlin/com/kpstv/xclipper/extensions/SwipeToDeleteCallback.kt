@@ -1,6 +1,5 @@
 package com.kpstv.xclipper.extensions
 
-import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
@@ -12,7 +11,6 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.extensions.utils.Utils
-
 
 /**
  * A class which will manage the swipe to delete feature
@@ -38,6 +36,12 @@ class SwipeToDeleteCallback(
         viewHolder: RecyclerView.ViewHolder,
         target: RecyclerView.ViewHolder
     ) = false
+
+//    override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
+//        if ((recyclerView.tag as? Int) == 1)
+//            return 0
+//        return super.getMovementFlags(recyclerView, viewHolder)
+//    }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
         onSwiped.invoke(viewHolder.adapterPosition)

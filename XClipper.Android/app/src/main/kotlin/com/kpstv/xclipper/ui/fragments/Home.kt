@@ -60,6 +60,15 @@ class Home : Fragment(R.layout.fragment_home) {
 
     private val mainViewModel: MainViewModel by viewModels()
 
+    private val swipeToDeleteItemTouch: ItemTouchHelper by lazy {
+        ItemTouchHelper(
+            SwipeToDeleteCallback(requireContext()) { pos ->
+                mainViewModel.deleteFromRepository(adapter.getItemAt(pos))
+                Toasty.info(requireContext(), getString(R.string.item_removed)).show()
+            }
+        )
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         setRecyclerView()
@@ -103,10 +112,12 @@ class Home : Fragment(R.layout.fragment_home) {
                     fab_addItem.show()
                     setNormalToolbar()
                     mainViewModel.stateManager.clearSelectedList()
+                    swipeToDeleteItemTouch.attachToRecyclerView(ci_recyclerView)
                 }
                 ToolbarState.MultiSelectionState -> {
                     setSelectedToolbar()
                     fab_addItem.hide()
+                    swipeToDeleteItemTouch.attachToRecyclerView(null)
                 }
                 else -> {
                     // TODO: When exhaustive
@@ -185,10 +196,7 @@ class Home : Fragment(R.layout.fragment_home) {
         /** Swipe to delete item */
 
         if (swipeToDelete)
-            ItemTouchHelper(SwipeToDeleteCallback(requireContext()) { pos ->
-                mainViewModel.deleteFromRepository(adapter.getItemAt(pos))
-                Toasty.info(requireContext(), getString(R.string.item_removed)).show()
-            }).attachToRecyclerView(ci_recyclerView)
+            swipeToDeleteItemTouch.attachToRecyclerView(ci_recyclerView)
     }
 
     /**
