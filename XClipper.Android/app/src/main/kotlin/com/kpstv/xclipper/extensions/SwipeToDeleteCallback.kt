@@ -37,12 +37,6 @@ class SwipeToDeleteCallback(
         target: RecyclerView.ViewHolder
     ) = false
 
-//    override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
-//        if ((recyclerView.tag as? Int) == 1)
-//            return 0
-//        return super.getMovementFlags(recyclerView, viewHolder)
-//    }
-
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
         onSwiped.invoke(viewHolder.adapterPosition)
     }
