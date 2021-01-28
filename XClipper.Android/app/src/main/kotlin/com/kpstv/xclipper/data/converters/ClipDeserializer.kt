@@ -6,7 +6,7 @@ import com.google.gson.JsonElement
 import com.kpstv.xclipper.data.model.Clip
 import java.lang.reflect.Type
 
-class CipDeserializer: JsonDeserializer<Clip> {
+class ClipDeserializer: JsonDeserializer<Clip> {
     override fun deserialize(
         json: JsonElement?,
         typeOfT: Type?,

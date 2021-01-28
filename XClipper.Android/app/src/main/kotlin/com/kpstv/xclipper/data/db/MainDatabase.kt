@@ -56,8 +56,11 @@ abstract class MainDatabase : RoomDatabase() {
                     clipTagDao.insert(Tag.from(it.small()))
                 }
                 clipTagDao.insert(Tag.from("sample tag"))
-                Log.e("RoomCallback", "Injecting sample data")
             }
         }
+    }
+
+    companion object {
+        const val DATABASE_NAME = "main.db"
     }
 }

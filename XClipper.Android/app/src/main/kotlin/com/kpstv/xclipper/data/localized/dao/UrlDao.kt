@@ -11,6 +11,15 @@ interface UrlDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(urlInfo: UrlInfo)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(urlInfos: List<UrlInfo>)
+
     @Query("select * from table_url where longUrl = :longUrl")
     suspend fun getUrlInfo(longUrl: String): UrlInfo?
+
+    @Query("select * from table_url")
+    suspend fun getAllData(): List<UrlInfo>
+
+    @Query("delete from table_url")
+    suspend fun deleteAll()
 }

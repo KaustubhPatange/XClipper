@@ -1,9 +1,9 @@
 package com.kpstv.xclipper.di
 
 import android.content.Context
+import com.kpstv.xclipper.data.db.MainDatabase
 import com.kpstv.xclipper.data.localized.dao.UserEntityDao
 import com.kpstv.xclipper.data.provider.*
-import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.ui.helpers.ClipRepositoryHelper
 import dagger.Module
 import dagger.Provides
@@ -32,14 +32,19 @@ object AppModule {
         @ApplicationContext context: Context,
         dbConnectionProvider: DBConnectionProvider,
         userEntityDao: UserEntityDao
-    ): FirebaseProvider =
-        FirebaseProviderImpl(context, dbConnectionProvider, userEntityDao)
+    ): FirebaseProvider = FirebaseProviderImpl(context, dbConnectionProvider, userEntityDao)
 
     @Singleton
     @Provides
     fun provideClipboard(
         @ApplicationContext context: Context,
         clipRepositoryHelper: ClipRepositoryHelper
-    ): ClipboardProvider =
-        ClipboardProviderImpl(context, clipRepositoryHelper)
+    ): ClipboardProvider = ClipboardProviderImpl(context, clipRepositoryHelper)
+
+    @Singleton
+    @Provides
+    fun provideBackupHelper(
+        @ApplicationContext context: Context,
+        database: MainDatabase
+    ): BackupProvider = BackupProviderImpl(context, database)
 }

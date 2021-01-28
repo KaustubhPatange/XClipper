@@ -77,10 +77,6 @@ class MainViewModel @ViewModelInject constructor(
     val tagLiveData: LiveData<List<Tag>>
         get() = _tagLiveData
 
-    fun refreshRepository() {
-        viewModelScope.launch { _clipLiveData.postValue(mainRepository.getAllData()) }
-    }
-
     fun postToRepository(clip: Clip) {
         viewModelScope.launch { mainRepository.updateRepository(clip) }
     }

@@ -9,6 +9,9 @@ interface TagDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(tag: Tag)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(tags: List<Tag>)
+
     @Transaction
     suspend fun insertTag(tag: Tag) {
         val allData = getAllData()
@@ -17,25 +20,11 @@ interface TagDao {
             insert(tag)
     }
 
-//    @Query("update table_tag set count = count + 1 where name = :name")
-//    suspend fun incrementCount(name: String)
-//
-//    @Query("update table_tag set count = count - 1 where name = :name")
-//    suspend fun decrement(name: String)
-//
-//    @Transaction
-//    suspend fun decrementCount(name: String) {
-//        getTag(name)?.let {
-//            if (it.count > 0)
-//                decrement(name)
-//        }
-//    }
-//
-//    @Query("select * from table_tag where name = :name limit 1")
-//    suspend fun getTag(name: String): Tag?
-
     @Delete
     suspend fun delete(tag: Tag)
+
+    @Query("delete from table_tag")
+    suspend fun deleteAll()
 
     @Query("select * from table_tag")
     suspend fun getAllData(): List<Tag>

@@ -12,6 +12,9 @@ interface ClipDataDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(clip: Clip)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(clips: List<Clip>)
+
     @Update
     suspend fun update(clip: Clip)
 
@@ -26,6 +29,9 @@ interface ClipDataDao {
 
     @Query("delete from table_clip where id = (select MIN(id) from table_clip);")
     suspend fun deleteFirst()
+
+    @Query("delete from table_clip")
+    suspend fun deleteAll()
 
     @Query("select * from table_clip where id = :id")
     suspend fun getData(id: Int): Clip?

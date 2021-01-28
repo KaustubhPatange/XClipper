@@ -308,35 +308,6 @@ class Home : Fragment(R.layout.fragment_home) {
     }
 
     /**
-     * This must be invoke when item on filter dialog is clicked.
-     *
-     * Right now it is captured through onActivityResult of TipDialog.
-     */
-    private fun tagDialogItemClickListener(tag: Tag?) {
-        if (tag == null) return
-        if (ci_chip_group.children.count { view ->
-                if (view is Chip)
-                    view.tag == App.TAG_FILTER_CHIP && view.text == tag.name
-                else
-                    false
-            } <= 0) {
-            ci_chip_group.addView(
-                Chip(requireContext()).apply {
-                    text = tag.name
-                    setTag(App.TAG_FILTER_CHIP)
-                    chipIcon =
-                        ContextCompat.getDrawable(requireContext(), R.drawable.ic_tag)
-                    isCloseIconVisible = true
-                    setOnCloseIconClickListener { chip ->
-                        ci_chip_group.removeView(chip)
-                        mainViewModel.searchManager.removeTagFilter(tag)
-                    }
-                }
-            )
-        }
-    }
-
-    /**
      * Call this function when ToolbarMultiSelection state is enabled.
      */
     private fun setSelectedToolbar() {

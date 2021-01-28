@@ -2,8 +2,11 @@ package com.kpstv.xclipper.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.kpstv.bindings.AutoGenerateListConverter
+import com.kpstv.bindings.ConverterType
 
 @Entity(tableName = "table_url")
+@AutoGenerateListConverter(using = ConverterType.GSON)
 data class UrlInfo(
     val longUrl: String,
     val shortUrl: String

@@ -30,7 +30,7 @@ object DatabaseModules {
         Room.databaseBuilder(
             context,
             MainDatabase::class.java,
-            App.DATABASE_NAME
+            MainDatabase.DATABASE_NAME
         )
             .setJournalMode(RoomDatabase.JournalMode.TRUNCATE)
             .fallbackToDestructiveMigrationFrom(2) // provide db version to destruct it

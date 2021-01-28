@@ -2,7 +2,7 @@ package com.kpstv.xclipper
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.kpstv.xclipper.data.converters.CipDeserializer
+import com.kpstv.xclipper.data.converters.ClipDeserializer
 import com.kpstv.xclipper.data.converters.DefinitionDeserializer
 import com.kpstv.xclipper.data.model.AppPkg
 import com.kpstv.xclipper.data.model.Clip
@@ -12,7 +12,7 @@ object App {
 
     val gson: Gson = GsonBuilder()
         .serializeNulls()
-        .registerTypeAdapter(Clip::class.java, CipDeserializer())
+        .registerTypeAdapter(Clip::class.java, ClipDeserializer())
         .registerTypeAdapter(Definition::class.java, DefinitionDeserializer())
         .create()
 
@@ -77,9 +77,6 @@ object App {
 
     const val PAIR_SEPARATOR = ";"
     const val ITEM_SEPARATOR = "|"
-
-    const val DATABASE_NAME = "main.db"
-    const val DATABASE_MIME_TYPE = "application/vnd.sqlite3"
 
     const val QR_SCAN_REQUEST_CODE = 153
     const val UPDATE_REQUEST_CODE = 555
