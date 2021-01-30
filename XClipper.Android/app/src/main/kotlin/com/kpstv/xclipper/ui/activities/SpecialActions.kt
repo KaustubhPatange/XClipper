@@ -1,4 +1,4 @@
-package com.kpstv.xclipper.ui.fragments.sheets
+package com.kpstv.xclipper.ui.activities
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -8,6 +8,7 @@ import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.extensions.ioThread
 import com.kpstv.xclipper.extensions.mainThread
 import com.kpstv.xclipper.extensions.utils.ThemeUtils
+import com.kpstv.xclipper.ui.fragments.sheets.MoreBottomSheet
 import com.kpstv.xclipper.ui.helpers.DictionaryApiHelper
 import com.kpstv.xclipper.ui.helpers.TinyUrlApiHelper
 import dagger.hilt.android.AndroidEntryPoint

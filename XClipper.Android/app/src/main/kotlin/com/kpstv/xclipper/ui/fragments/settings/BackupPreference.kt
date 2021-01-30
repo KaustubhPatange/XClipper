@@ -5,7 +5,6 @@ import android.content.Intent.*
 import android.os.Bundle
 import androidx.fragment.app.viewModels
 import androidx.preference.Preference
-import com.kpstv.xclipper.App.DATABASE_MIME_TYPE
 import com.kpstv.xclipper.App.EXPORT_PREF
 import com.kpstv.xclipper.App.IMPORT_PREF
 import com.kpstv.xclipper.R

@@ -13,7 +13,7 @@ import com.kpstv.xclipper.extensions.AbstractBroadcastReceiver
 import com.kpstv.xclipper.extensions.Coroutines
 import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.ui.activities.Main
-import com.kpstv.xclipper.ui.fragments.sheets.SpecialActions
+import com.kpstv.xclipper.ui.activities.SpecialActions
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

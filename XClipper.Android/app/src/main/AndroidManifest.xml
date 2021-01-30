@@ -37,7 +37,7 @@
             android:excludeFromRecents="true"
             android:theme="@style/CustomDialogStyle.Dark" />
         <activity
-            android:name=".ui.fragments.sheets.SpecialActions"
+            android:name=".ui.activities.SpecialActions"
             android:excludeFromRecents="true"
             android:launchMode="singleInstance"
             android:theme="@style/CustomDialogStyle.Dark" />
@@ -47,11 +47,6 @@
             android:theme="@style/CustomDialogStyle.Dark" />
         <activity
             android:name=".service.ChangeClipboardActivity"
-            android:excludeFromRecents="true"
-            android:launchMode="singleInstance"
-            android:theme="@style/Theme.AppCompat.Translucent" />
-        <activity
-            android:name=".ui.activities.Silent"
             android:excludeFromRecents="true"
             android:launchMode="singleInstance"
             android:theme="@style/Theme.AppCompat.Translucent" />
