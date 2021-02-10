@@ -7,9 +7,15 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.marginBottom
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updateMargins
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavDirections
 import androidx.navigation.NavOptions
@@ -77,6 +83,15 @@ abstract class AbstractWelcomeFragment : Fragment(R.layout.fragment_welcome) {
             }
         if (configs.insertView != null)
             binding.fwInsertLayout.addView(configs.insertView)
+
+        // When set View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION, UI is drawn behind
+        // the navigation bar, to fix it we apply proper insets.
+        binding.fwBtnNext.setOnApplyWindowInsetsListener { btnView, insets ->
+            btnView.updateLayoutParams<ConstraintLayout.LayoutParams> {
+                updateMargins(bottom = insets.systemWindowInsetBottom)
+            }
+            insets
+        }
         binding.fwBtnNext.text = getString(configs.nextTextId)
         binding.fwBtnNext.setTextColor(palette)
         binding.fwBtnNext.backgroundTintList = ColorStateList.valueOf(nextPalette)

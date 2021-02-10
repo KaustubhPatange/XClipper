@@ -23,11 +23,18 @@
         android:padding="10dp">
 
         <TextView
+            android:id="@+id/filter_tags"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/custom_tags"
             android:textColor="?colorTextPrimary"
             android:textSize="19sp" />
+
+        <View
+            android:layout_marginTop="10dp"
+            android:background="?colorSelected"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
 
         <com.kpstv.xclipper.extensions.elements.CustomRecyclerView
             android:id="@+id/dct_recycler_view"

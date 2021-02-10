@@ -98,11 +98,13 @@ class TagDialog : AppCompatActivity() {
         mainViewModel.stateManager.dialogState.observe(this, { state ->
             when (state) {
                 DialogState.Normal -> {
+                    filter_tags.text = getString(R.string.custom_tags)
                     dct_editLayout.dct_editText.text.clear()
                     dct_editLayout.collapse()
                     switchCompat.isChecked = false
                 }
                 DialogState.Edit -> {
+                    filter_tags.text = getString(R.string.add_remove_tags)
                     dct_editLayout.isEnabled = true
                     dct_editLayout.show()
                     switchCompat.isChecked = true
