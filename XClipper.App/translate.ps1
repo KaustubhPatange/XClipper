@@ -1,4 +1,4 @@
-# This script generates a Translation class file (%2) from the input (%1)
+﻿# This script generates a Translation class file (%2) from the input (%1)
 # ResourceDictionary xaml file.
 
 # This is used by visual studio to update Data/helpers/TranslationHelper.cs with the
@@ -6,7 +6,6 @@
 
 
 [xml]$xml = Get-Content $args[0]
-
 $sb = [System.Text.StringBuilder]::new()
 [void]$sb.AppendLine("using static Components.App;")
 [void]$sb.AppendLine("namespace Components")
@@ -26,7 +25,9 @@ $sb = [System.Text.StringBuilder]::new()
 [void]$sb.AppendLine("`t`t`t}")
 [void]$sb.AppendLine("`t`t}")
 foreach($n in $xml.FirstChild.ChildNodes) {
-    [void]$sb.AppendLine("`t`tpublic readonly string " + $n.Attributes[0].Value.ToUpper() + ' = rm.GetString("' + $n.Attributes[0].Value + '");')
+    if ($n.Attributes.Count -gt 0) {
+        [void]$sb.AppendLine("`t`tpublic readonly string " + $n.Attributes[0].Value.ToUpper() + ' = rm.GetString("' + $n.Attributes[0].Value + '");')
+    }
 }
 [void]$sb.AppendLine("`t}")
 [void]$sb.AppendLine("}")
