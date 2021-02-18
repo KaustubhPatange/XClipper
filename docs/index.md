@@ -9,3 +9,5 @@ If you are just getting started with XClipper, below are some general topics you
 - [FAQs](https://github.com/KaustubhPatange/XClipper/wiki/FAQs)
 
 If you have any issues or want to report bugs kindly create a [Github issue](https://github.com/KaustubhPatange/XClipper/issues) (the same goes for feature requests). Alternatively you can request features by submitting this [form](https://docs.google.com/forms/d/e/1FAIpQLSeNKV2rUM5Qz65proJW8qMnwrzq2s3dZh8N04Uaf4W0pqetnQ/viewform).
+
+You can also contact me from the website's [contact form](https://kaustubhpatange.github.io/XClipper).

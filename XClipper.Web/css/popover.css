@@ -30,6 +30,15 @@
   width: auto;
 }
 .popover__content:before {
+  top: 20px;
+  content: " ";
+  height: 60px;
+  position: absolute;
+  width: 20px;
+  left: -20px;
+  transition-duration: 0.3s;
+}
+.popover__content:after {
   top: 40px;
   content: " ";
   height: 0px;

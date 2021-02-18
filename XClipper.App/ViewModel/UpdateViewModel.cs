@@ -8,7 +8,6 @@ using System;
 using System.Windows;
 using System.Diagnostics;
 using System.IO;
-using static Components.MainHelper;
 using System.Linq;
 
 #nullable enable
@@ -21,7 +20,6 @@ namespace Components
         private ReleaseAsset? release;
         public UpdateViewModel(ReleaseItem updateModel)
         {
-         //   this.updateModel = updateModel;
             MainButton = new RelayCommand(MainButtonClicked);
 
             release = updateModel.assets.FirstOrDefault(c => c.name.EndsWith(".exe", StringComparison.OrdinalIgnoreCase));

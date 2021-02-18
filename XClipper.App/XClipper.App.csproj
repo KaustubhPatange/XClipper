@@ -555,4 +555,7 @@ md "$(SolutionDir)libraries\DesktopToast.custom"
 md "$(TargetDir)\locales"
 copy "$(SolutionDir)\$(ProjectName)\Locales\*.xaml" "$(TargetDir)\locales\"</PostBuildEvent>
   </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>powershell.exe -noexit -file $(ProjectDir)translate.ps1 $(ProjectDir)Locales\en.xaml $(ProjectDir)Data\helpers\TranslationHelper.cs</PreBuildEvent>
+  </PropertyGroup>
 </Project>

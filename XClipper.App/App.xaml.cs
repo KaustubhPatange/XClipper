@@ -392,19 +392,7 @@ namespace Components
 
         #endregion
 
-        #region IFirebaseBinder Events 
-
-        public void SendNotification(string title, string message, Action? onActive = null)
-        {
-            if (NoNotifyChanges) return;
-
-            new UWPToast.Builder(Dispatcher)
-                .AddText(Translation.MSG_IMAGE_SAVE_FAILED_TITLE)
-                .AddText(Translation.MSG_IMAGE_SAVE_FAILED_TEXT)
-                .SetSilent(!PlayNoticationSound)
-                .SetOnActivatedListener(onActive)
-                .build().ShowAsync();
-        }
+        #region IFirebaseBinder Events (Legacy)
 
         public void OnNoConfigurationFound() => CallSyncWindow();
 
@@ -477,6 +465,18 @@ namespace Components
         #endregion
 
         #region IFirebaseBinderV2 Events
+
+        public void SendNotification(string title, string message, Action? onActive = null)
+        {
+            if (NoNotifyChanges) return;
+
+            new UWPToast.Builder(Dispatcher)
+                .AddText(Translation.MSG_IMAGE_SAVE_FAILED_TITLE)
+                .AddText(Translation.MSG_IMAGE_SAVE_FAILED_TEXT)
+                .SetSilent(!PlayNoticationSound)
+                .SetOnActivatedListener(onActive)
+                .build().ShowAsync();
+        }
 
         public void OnClipItemAdded(List<string> unencryptedDataList)
         {
