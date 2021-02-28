@@ -31,12 +31,13 @@ import com.kpstv.xclipper.data.localized.dao.UserEntityDao
 import com.kpstv.xclipper.data.model.*
 import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.extensions.listeners.*
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 class FirebaseProviderImpl @Inject constructor(
-    private val context: Context,
+    @ApplicationContext private val context: Context,
     private val dbConnectionProvider: DBConnectionProvider,
     private val currentUserRepository: UserEntityDao
 ) : FirebaseProvider {

@@ -209,11 +209,11 @@ namespace Components
                     return;
             }
 
-            FirebaseCurrent = newData;
-
             DatabaseMaxItem = DMI;
             DatabaseMaxItemLength = DMIL;
             DatabaseMaxConnection = DMC;
+
+            FirebaseCurrent = newData;
 
             WriteFirebaseSetting();
 

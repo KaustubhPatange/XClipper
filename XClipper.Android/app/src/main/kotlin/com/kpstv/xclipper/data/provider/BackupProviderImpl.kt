@@ -4,11 +4,13 @@ import android.content.Context
 import android.net.Uri
 import com.kpstv.xclipper.data.db.MainDatabase
 import com.kpstv.xclipper.data.model.*
+import dagger.hilt.android.qualifiers.ApplicationContext
 import org.json.JSONObject
 import java.nio.charset.Charset
+import javax.inject.Inject
 
-class BackupProviderImpl(
-    private val context: Context,
+class BackupProviderImpl @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val database: MainDatabase
 ) : BackupProvider {
 

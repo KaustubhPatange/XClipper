@@ -4,6 +4,8 @@
 # This is used by visual studio to update Data/helpers/TranslationHelper.cs with the
 # values from Locales/en.xaml
 
+# Make sure this file is in UTF-8-BOM encoding otherwise CI build
+# will failed as VS will try to manually change it.
 
 [xml]$xml = Get-Content $args[0]
 $sb = [System.Text.StringBuilder]::new()
