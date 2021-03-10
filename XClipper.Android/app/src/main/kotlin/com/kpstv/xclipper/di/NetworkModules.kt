@@ -9,12 +9,10 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-@Module
-@InstallIn(SingletonComponent::class)
+@[Module InstallIn(SingletonComponent::class)]
 object NetworkModules {
 
-    @Singleton
-    @Provides
+    @[Provides Singleton]
     fun provideDictionaryApi(retrofitUtils: RetrofitUtils): GoogleDictionaryApi {
         return retrofitUtils.getRetrofitBuilder()
             .baseUrl(GoogleDictionaryApi.BASE_URL)
@@ -23,8 +21,7 @@ object NetworkModules {
             .create(GoogleDictionaryApi::class.java)
     }
 
-    @Singleton
-    @Provides
+    @[Provides Singleton]
     fun provideTinyUrlApi(retrofitUtils: RetrofitUtils): TinyUrlApi {
         return retrofitUtils.getRetrofitBuilder()
             .baseUrl(TinyUrlApi.BASE_URL)

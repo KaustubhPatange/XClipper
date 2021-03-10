@@ -17,12 +17,10 @@ import dagger.hilt.components.SingletonComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Singleton
 
-@Module
-@InstallIn(SingletonComponent::class)
+@[Module InstallIn(SingletonComponent::class)]
 object DatabaseModules {
 
-    @Singleton
-    @Provides
+    @[Provides Singleton]
     fun provideMainDatabase(
         @ApplicationContext context: Context,
         callback: MainDatabase.RoomCallback
@@ -37,33 +35,26 @@ object DatabaseModules {
             .addCallback(callback)
             .build()
 
-    @Singleton
-    @Provides
+    @[Provides Singleton]
     fun provideClipDataDao(mainDatabase: MainDatabase): ClipDataDao = mainDatabase.clipDataDao()
 
-    @Singleton
-    @Provides
+    @[Provides Singleton]
     fun provideClipTagDao(mainDatabase: MainDatabase): TagDao = mainDatabase.clipTagDao()
 
-    @Singleton
-    @Provides
+    @[Provides Singleton]
     fun provideClipDefineDao(mainDatabase: MainDatabase): DefineDao = mainDatabase.clipDefineDao()
 
-    @Singleton
-    @Provides
+    @[Provides Singleton]
     fun provideClipUrlDao(mainDatabase: MainDatabase): UrlDao = mainDatabase.clipUrlDao()
 
-    @Singleton
-    @Provides
+    @[Provides Singleton]
     fun provideUserEntityDao(mainDatabase: MainDatabase): UserEntityDao = mainDatabase.clipCurrentUserDao()
 }
 
-@Module
-@InstallIn(SingletonComponent::class)
+@[Module InstallIn(SingletonComponent::class)]
 object RepositoryModule {
 
-    @Singleton
-    @Provides
+    @[Provides Singleton]
     fun provideMainRepository(
         clipDataDao: ClipDataDao,
         firebaseProvider: FirebaseProvider
