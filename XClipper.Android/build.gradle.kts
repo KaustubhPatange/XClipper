@@ -1,4 +1,5 @@
 buildscript {
+    val kotlin_version by extra("1.4.30")
     repositories {
         google()
         jcenter()
@@ -8,6 +9,7 @@ buildscript {
         classpath(GradleDependency.KOTLIN_PLUGIN)
         classpath(GradleDependency.SAFE_ARGS)
         classpath(GradleDependency.DAGGER_HILT)
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
     }
 }
 

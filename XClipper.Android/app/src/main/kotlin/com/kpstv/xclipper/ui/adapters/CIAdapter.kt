@@ -25,7 +25,7 @@ import com.kpstv.xclipper.extensions.utils.ThemeUtils.Companion.CARD_COLOR
 import com.kpstv.xclipper.extensions.utils.ThemeUtils.Companion.CARD_SELECTED_COLOR
 import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.getColorFromAttr
-import com.kpstv.yts.extensions.load
+import com.kpstv.xclipper.extensions.load
 import kotlinx.android.synthetic.main.item_clip.view.*
 import java.util.*
 

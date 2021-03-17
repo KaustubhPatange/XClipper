@@ -1,4 +1,4 @@
-package com.kpstv.yts.extensions
+package com.kpstv.xclipper.extensions
 
 import android.graphics.Bitmap
 import android.widget.ImageView

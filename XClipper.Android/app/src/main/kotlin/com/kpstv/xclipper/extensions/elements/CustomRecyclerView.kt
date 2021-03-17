@@ -12,28 +12,14 @@ import com.kpstv.xclipper.R
  * Now also provides an extension to standard recyclerView which allows you to set
  * "maxHeight" parameter. Once reached it will start showing scrollbars vertically.
  */
-class CustomRecyclerView : RecyclerView {
+class CustomRecyclerView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyle: Int = 0
+) : RecyclerView(context, attrs, defStyle) {
     private var maxHeight = 0
-    constructor(context: Context?) : super(context!!)
-    constructor(context: Context?, attrs: AttributeSet?) : super(
-        context!!,
-        attrs
-    ) {
-        init(context, attrs)
-    }
 
-    constructor(
-        context: Context?,
-        attrs: AttributeSet?,
-        defStyle: Int
-    ) : super(context!!, attrs, defStyle) {
-        init(context, attrs)
-    }
-
-    private fun init(
-        context: Context,
-        attrs: AttributeSet?
-    ) {
+    init {
         val arr = context.obtainStyledAttributes(attrs, R.styleable.CustomRecyclerView)
         maxHeight = arr.getLayoutDimension(R.styleable.CustomRecyclerView_maxHeight, maxHeight)
         arr.recycle()

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.lifecycleScope
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.Clip
@@ -36,6 +37,7 @@ class MoreBottomSheet(
                 tinyUrlApiHelper = tinyUrlApiHelper,
                 clipboardProvider = clipboardProvider,
                 supportFragmentManager = supportFragmentManager,
+                lifecycleScope = viewLifecycleOwner.lifecycleScope,
                 clip = clip
             ).setActions(this) {
                 dismiss()

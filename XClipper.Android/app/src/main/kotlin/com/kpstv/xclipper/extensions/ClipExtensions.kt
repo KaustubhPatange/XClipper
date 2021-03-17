@@ -96,6 +96,10 @@ fun Collection<ClipTagMap>.keys(): List<String> {
     return this.map { it.key }.distinct()
 }
 
+fun Collection<ClipTagMap>.firstValue(key: String): String? {
+    return this.find { it.key == key }?.value
+}
+
 fun Collection<ClipTagMap>.values(): List<String> {
     return this.map { it.value }.distinct()
 }

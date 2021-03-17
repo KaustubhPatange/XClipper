@@ -35,7 +35,7 @@ private object LibraryVersion {
     const val COIL = "1.0.0-rc3"
     const val GLIDE = "4.11.0"
     const val RECYCLERVIEW = "1.1.0"
-    const val CWT = "0.1.6"
+    const val CWT = "0.1.7"
     const val HILT_COMPILER = "1.0.0-alpha01"
     const val AUTO_BINDINGS = "1.1-alpha16"
     const val REALTIME_EXTENSIONS = "0.1.3"
