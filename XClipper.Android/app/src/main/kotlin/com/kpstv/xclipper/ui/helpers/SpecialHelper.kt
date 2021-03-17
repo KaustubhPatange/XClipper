@@ -13,15 +13,16 @@ import android.util.Log
 import android.view.View
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kpstv.cwt.CWT
+import com.kpstv.linkpreview.LinkPreview
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.R
+import com.kpstv.xclipper.data.localized.dao.PreviewDao
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.ClipTag
+import com.kpstv.xclipper.data.model.Preview
 import com.kpstv.xclipper.data.model.SpecialMenu
-import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
 import com.kpstv.xclipper.extensions.utils.Utils
@@ -31,16 +32,16 @@ import com.kpstv.xclipper.ui.fragments.sheets.ShortenUriSheet
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.bottom_sheet_more.view.*
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.ArrayList
 
 @SuppressLint("SetTextI18n")
 class SpecialHelper(
     private val context: Context,
-    private val tinyUrlApiHelper: TinyUrlApiHelper,
     private val dictionaryApiHelper: DictionaryApiHelper,
+    private val linkPreviewDao: PreviewDao,
     private val supportFragmentManager: FragmentManager,
-    private val clipboardProvider: ClipboardProvider,
     private val lifecycleScope: CoroutineScope,
     private val clip: Clip,
 ) {
@@ -362,13 +363,35 @@ class SpecialHelper(
         bsm_recyclerView.setHasFixedSize(true)
     }
 
-    private fun setLinkPreview(view: View) {
-        val urlData = clip.tags?.containsKey(ClipTag.URL.small())
-        if (urlData == true) {
-            val firstValue = clip.tags?.firstValue(ClipTag.URL.small()) ?: return
-            view.link_preview.showPreview(firstValue, lifecycleScope)
-            view.link_preview.onClick { url ->
-                Utils.commonUrlLaunch(view.context, url)
+    private fun setLinkPreview(view: View) = with(view) {
+        lifecycleScope.launch {
+            val urlData = clip.tags?.containsKey(ClipTag.URL.small())
+            if (urlData == true) {
+                val topUrl = clip.tags?.firstValue(ClipTag.URL.small()) ?: return@launch
+                val model = linkPreviewDao.getFromUrl(topUrl)
+                if (model != null) {
+                    link_preview.setTitle(model.title)
+                    if (model.subtitle != null) link_preview.setSubtitle(model.subtitle)
+                    if (model.imageUrl != null) link_preview.setImage(model.imageUrl)
+
+                } else {
+                    link_preview.showPreview(topUrl, lifecycleScope)
+                    link_preview.loadCompleteListener =
+                        LinkPreview.LinkPreviewListener { title, subtitle, imageUrl ->
+                            lifecycleScope.launch {
+                                val previewModel = Preview(
+                                    title = title,
+                                    subtitle = subtitle,
+                                    imageUrl = imageUrl,
+                                    url = topUrl
+                                )
+                                linkPreviewDao.insert(previewModel)
+                            }
+                        }
+                }
+                link_preview.onClick {
+                    Utils.commonUrlLaunch(view.context, topUrl)
+                }
             }
         }
     }

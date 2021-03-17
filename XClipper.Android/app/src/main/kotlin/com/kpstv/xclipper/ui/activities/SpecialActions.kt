@@ -47,9 +47,6 @@ class SpecialActions : AppCompatActivity() {
 
             mainThread {
                 MoreBottomSheet(
-                    tinyUrlApiHelper = tinyUrlApiHelper,
-                    dictionaryApiHelper = dictionaryApiHelper,
-                    clipboardProvider = clipboardProvider,
                     supportFragmentManager = supportFragmentManager,
                     onClose = ::finish,
                     clip = clip

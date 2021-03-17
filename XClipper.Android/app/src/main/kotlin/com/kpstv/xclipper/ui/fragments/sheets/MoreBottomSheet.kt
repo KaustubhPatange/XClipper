@@ -9,20 +9,22 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment
 import com.kpstv.xclipper.R
+import com.kpstv.xclipper.data.localized.dao.PreviewDao
 import com.kpstv.xclipper.data.model.Clip
-import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.ui.helpers.DictionaryApiHelper
 import com.kpstv.xclipper.ui.helpers.SpecialHelper
-import com.kpstv.xclipper.ui.helpers.TinyUrlApiHelper
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MoreBottomSheet(
-    private val tinyUrlApiHelper: TinyUrlApiHelper,
-    private val dictionaryApiHelper: DictionaryApiHelper,
     private val supportFragmentManager: FragmentManager,
-    private val clipboardProvider: ClipboardProvider,
     private val onClose: () -> Unit = {},
     private val clip: Clip
 ) : RoundedBottomSheetDialogFragment() {
+
+    @Inject lateinit var linkPreviewDao: PreviewDao
+    @Inject lateinit var dictionaryApiHelper: DictionaryApiHelper
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,8 +36,7 @@ class MoreBottomSheet(
             SpecialHelper(
                 context = context,
                 dictionaryApiHelper = dictionaryApiHelper,
-                tinyUrlApiHelper = tinyUrlApiHelper,
-                clipboardProvider = clipboardProvider,
+                linkPreviewDao = linkPreviewDao,
                 supportFragmentManager = supportFragmentManager,
                 lifecycleScope = viewLifecycleOwner.lifecycleScope,
                 clip = clip

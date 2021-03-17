@@ -24,6 +24,12 @@ class LinkPreview @JvmOverloads constructor(
     defStyle: Int = 0
 ) : FrameLayout(context, attrs, defStyle) {
 
+    fun interface LinkPreviewListener {
+        fun onLoadComplete(title: String, subtitle: String?, imageUrl: String?)
+    }
+
+    var loadCompleteListener : LinkPreviewListener? = null
+
     private val cornerSize = 5 * resources.displayMetrics.density
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -72,6 +78,7 @@ class LinkPreview @JvmOverloads constructor(
 
     fun setTitle(value: String) {
         view.tv_title.text = value.replace("&amp;", "&")
+        view.show()
     }
 
     fun setSubtitle(value: String) {
@@ -82,8 +89,8 @@ class LinkPreview @JvmOverloads constructor(
         view.imageView.load(url)
     }
 
-    fun onClick(block: (String) -> Unit) {
-        view.clickableView.setOnClickListener { block.invoke(currentUrl)  }
+    fun onClick(block: () -> Unit) {
+        view.clickableView.setOnClickListener { block.invoke()  }
     }
 
     private val TAG = javaClass.simpleName
@@ -114,7 +121,11 @@ class LinkPreview @JvmOverloads constructor(
                     setImage(imageUrl)
                 }
 
-                if (title == null) view.collapse() else view.show()
+                if (title == null) {
+                    view.collapse()
+                } else {
+                    loadCompleteListener?.onLoadComplete(title, subtitle, imageUrl)
+                }
             }
         }
     }

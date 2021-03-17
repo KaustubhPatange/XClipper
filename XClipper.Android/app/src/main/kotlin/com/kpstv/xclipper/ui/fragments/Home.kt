@@ -54,7 +54,6 @@ class Home : Fragment(R.layout.fragment_home) {
 
     @Inject lateinit var clipboardProvider: ClipboardProvider
     @Inject lateinit var firebaseUtils: FirebaseUtils
-    @Inject lateinit var preferenceProvider: PreferenceProvider
 
     private lateinit var adapter: CIAdapter
 
@@ -173,9 +172,6 @@ class Home : Fragment(R.layout.fragment_home) {
                 }
                 CIAdapter.MENU_TYPE.Special -> {
                     MoreBottomSheet(
-                        tinyUrlApiHelper = mainViewModel.tinyUrlApiHelper,
-                        dictionaryApiHelper = mainViewModel.dictionaryApiHelper,
-                        clipboardProvider = clipboardProvider,
                         supportFragmentManager = requireActivity().supportFragmentManager,
                         clip = clip
                     ).show(
