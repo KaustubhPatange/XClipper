@@ -9,11 +9,11 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
-import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
 import com.kpstv.xclipper.App
@@ -23,7 +23,6 @@ import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.ToolbarState
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.data.provider.ClipboardProvider
-import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.extensions.enumerations.FirebaseState
 import com.kpstv.xclipper.extensions.listeners.StatusListener
@@ -38,6 +37,7 @@ import com.kpstv.xclipper.ui.adapters.CIAdapter
 import com.kpstv.xclipper.ui.dialogs.EditDialog
 import com.kpstv.xclipper.ui.dialogs.TagDialog
 import com.kpstv.xclipper.ui.fragments.sheets.MoreBottomSheet
+import com.kpstv.xclipper.ui.helpers.RecyclerViewScrollHelper
 import com.kpstv.xclipper.ui.helpers.SyncDialogHelper
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -58,7 +58,7 @@ class Home : Fragment(R.layout.fragment_home) {
     private lateinit var adapter: CIAdapter
 
     private val mainViewModel: MainViewModel by viewModels()
-
+    private val recyclerViewScrollHelper = RecyclerViewScrollHelper()
     private val swipeToDeleteItemTouch: ItemTouchHelper by lazy {
         ItemTouchHelper(
             SwipeToDeleteCallback(requireContext()) { pos ->
@@ -69,6 +69,7 @@ class Home : Fragment(R.layout.fragment_home) {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         setRecyclerView()
 
@@ -76,7 +77,9 @@ class Home : Fragment(R.layout.fragment_home) {
 
         setSearchViewListener()
 
-        fab_addItem.setOnClickListener(fabListener)
+        setFloatingButton()
+
+        setGoTopButton()
 
         emptyLayout.setOnClickListener(fabListener)
 
@@ -87,8 +90,18 @@ class Home : Fragment(R.layout.fragment_home) {
         checkClipboardData()
 
         autoValidateOnStartup()
+    }
 
-        super.onViewCreated(view, savedInstanceState)
+    private fun setGoTopButton() {
+        btn_go_up.applyBottomInsets()
+        btn_go_up.setOnClickListener {
+            recyclerViewScrollHelper.reset()
+        }
+    }
+
+    private fun setFloatingButton() {
+        fab_addItem.applyBottomInsets()
+        fab_addItem.setOnClickListener(fabListener)
     }
 
     private val fabListener = View.OnClickListener {
@@ -193,6 +206,18 @@ class Home : Fragment(R.layout.fragment_home) {
 
         if (swipeToDelete)
             swipeToDeleteItemTouch.attachToRecyclerView(ci_recyclerView)
+
+        recyclerViewScrollHelper.attach(
+            ci_recyclerView,
+            onScrollDown = {
+                fab_addItem.hide()
+                btn_go_up.animate().translationY(0f).start()
+            },
+            onScrollUp = {
+                fab_addItem.show()
+                btn_go_up.animate().translationY(500f).start()
+            }
+        )
     }
 
     /**

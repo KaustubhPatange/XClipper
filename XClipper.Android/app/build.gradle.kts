@@ -1,3 +1,4 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 import org.jetbrains.kotlin.konan.properties.Properties
 
 plugins {
@@ -57,6 +58,12 @@ android {
     }
 
     buildTypes {
+        defaultConfig {
+            val properties = Properties().apply {
+                load(rootProject.file("local.properties").inputStream())
+            }
+            buildConfigField("String", "SERVER_URI", "\"${properties.getProperty("server_uri")}\"")
+        }
         getByName(BuildType.RELEASE) {
             isMinifyEnabled = BuildTypeRelease.isMinifyEnabled
             signingConfig = signingConfigs.getByName(BuildType.RELEASE)
@@ -79,7 +86,7 @@ dependencies {
     implementation(LibraryDependency.KOTLIN_STDLIB)
     implementation(LibraryDependency.APP_COMPAT)
     implementation(LibraryDependency.FRAGMENT_KTX)
-    implementation(LibraryDependency.ACTIVITY_KTX)
+//    implementation(LibraryDependency.ACTIVITY_KTX)
     implementation(LibraryDependency.CORE_KTX)
     implementation(LibraryDependency.COLLECTIONS_KTX)
     implementation(LibraryDependency.RECYCLERVIEW)
@@ -132,6 +139,8 @@ dependencies {
     implementation(LibraryDependency.HILT_ANDROID)
     implementation(LibraryDependency.HILT_VIEWODEL)
     implementation(LibraryDependency.HILT_WORK_MANAGER)
+    implementation("androidx.appcompat:appcompat:1.2.0")
+    implementation("androidx.constraintlayout:constraintlayout:2.0.4")
 
     kapt(LibraryDependency.ROOM_COMPILER_KAPT)
     kapt(LibraryDependency.GLIDE_COMPILER)

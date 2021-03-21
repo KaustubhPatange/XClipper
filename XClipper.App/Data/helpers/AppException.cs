@@ -38,29 +38,45 @@ namespace Components
             IsAttached = true;
         }
 
+        public static bool HasCrashed => Instance.IsCrashed;
+
         #endregion
 
+        public bool IsCrashed = false;
+           
         public void Attach()
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             Application.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
+            System.Windows.Forms.Application.ThreadException += Winform_ThreadException;
         }
 
         #region Private Members
 
-        private void Current_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        private async void Winform_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
         {
-            WriteCrashDetails("app_report_", $"{e.Exception.Message}\n{e.Exception.StackTrace}");
+            IsCrashed = true;
+            await WriteCrashDetails("winform_report_", $"{e.Exception.Message}\n{e.Exception.StackTrace}").ConfigureAwait(false);
         }
 
-        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        private async void Current_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
-            WriteCrashDetails("domain_report_", e.ExceptionObject.ToString());
-            
+            IsCrashed = true;
+            await WriteCrashDetails("app_report_", $"{e.Exception.Message}\n{e.Exception.StackTrace}").ConfigureAwait(false);
         }
 
-        private void WriteCrashDetails(string prefix, string contents)
+        private async void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
+            IsCrashed = true;
+            await WriteCrashDetails("domain_report_", e.ExceptionObject.ToString()).ConfigureAwait(false);
+        }
+
+        private async Task WriteCrashDetails(string prefix, string contents)
+        {
+            new UWPToast.Builder(Application.Current.Dispatcher)
+               .AddText(Translation.APP_CRASH)
+               .AddText(Translation.MSG_IMAGE_SAVE_FAILED_TEXT)
+               .build().ShowAsync();
             var dib = new StringBuilder();
 
             try
@@ -107,18 +123,15 @@ namespace Components
 
             File.WriteAllText(crashFilePath, dib.ToString());
 
-            SendReport(Environment.UserName, dib.ToString()).RunAsync();
-
-            new UWPToast.Builder(Application.Current.Dispatcher)
-                .AddText(Translation.APP_CRASH)
-                .build().ShowAsync();
+            await SendReport(Environment.UserName, dib.ToString()).ConfigureAwait(false);
         }
 
         private async Task SendReport(string sender, string content)
         {
             var queryBuilder = new StringBuilder();
             queryBuilder.Append(BACKEND_SERVER)
-                .Append("/report?sender=").Append(sender);
+                .Append("/report?sender=").Append(sender)
+                .Append("&category=0"); // 0 means Desktop
             var client = new RestClient();
             var request = new RestRequest(queryBuilder.ToString(), Method.POST);
             request.AddParameter("text/plain", content, ParameterType.RequestBody);

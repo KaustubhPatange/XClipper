@@ -19,7 +19,7 @@ import com.kpstv.xclipper.ui.fragments.Home
 class UpdateHelper(
     private val activity: FragmentActivity
 ) : AbstractFragmentHelper<Home>(activity, Home::class) {
-    private lateinit var appUpdateManager: AppUpdateManager
+    private var appUpdateManager: AppUpdateManager? = null
 
     override fun onFragmentViewCreated() {
         checkForUpdates()
@@ -30,8 +30,7 @@ class UpdateHelper(
     }
 
     private fun checkForUpdates(): Unit = with(activity) {
-        appUpdateManager =
-            com.google.android.play.core.appupdate.AppUpdateManagerFactory.create(this)
+        val appUpdateManager = com.google.android.play.core.appupdate.AppUpdateManagerFactory.create(this)
         val appUpdateInfoTask = appUpdateManager.appUpdateInfo
         appUpdateManager.registerListener(listener)
         appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
@@ -46,6 +45,8 @@ class UpdateHelper(
                 )
             }
         }
+
+        this@UpdateHelper.appUpdateManager = appUpdateManager
     }
 
     private val listener = InstallStateUpdatedListener { state ->
@@ -63,7 +64,7 @@ class UpdateHelper(
             .setTitle(getString(R.string.update_download_complete))
             .setMessage(getString(R.string.update_downoad_install))
             .setPositiveButton(getString(R.string.ok)) { _, _ ->
-                appUpdateManager.completeUpdate()
+                appUpdateManager?.completeUpdate()
             }
             .setNegativeButton(getString(R.string.cancel), null)
             .show()
@@ -75,9 +76,12 @@ class UpdateHelper(
      * it is brought to foreground again.
      */
     private fun registerCallbackOnResume() {
+        if (appUpdateManager == null) {
+            checkForUpdates()
+        }
         appUpdateManager
-            .appUpdateInfo
-            .addOnSuccessListener { appUpdateInfo ->
+            ?.appUpdateInfo
+            ?.addOnSuccessListener { appUpdateInfo ->
                 if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
                     notifyUpdateDownloadComplete()
                 }

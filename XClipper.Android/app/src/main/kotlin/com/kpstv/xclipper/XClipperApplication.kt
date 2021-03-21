@@ -29,6 +29,7 @@ import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.service.worker.AccessibilityWorker
+import com.kpstv.xclipper.ui.helpers.CrashHelper
 import com.kpstv.xclipper.ui.helpers.NotificationHelper
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
@@ -46,6 +47,8 @@ class XClipperApplication : Application(), Configuration.Provider {
 
     override fun onCreate() {
         super.onCreate()
+        CrashHelper.inject(this)
+
         init()
 
         notificationHelper.createChannel()

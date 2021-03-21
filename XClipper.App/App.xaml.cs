@@ -139,7 +139,6 @@ namespace Components
             hookUtility.UnsubscribeAll();
             FirebaseSingletonV2.GetInstance.SaveUserState();
             ExplorerHelper.Unregister();
-
             base.OnExit(e);
         }
 

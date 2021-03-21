@@ -2,6 +2,7 @@
 *.apk
 .gradle
 /local.properties
+/gradle.properties
 /keystore.properties
 /key.jks
 /buildSrc

@@ -1,14 +1,9 @@
 package com.kpstv.xclipper.ui.fragments.welcome
 
-import android.os.Bundle
-import android.view.View
-import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
-import androidx.navigation.fragment.findNavController
 import com.kpstv.xclipper.App.TUTORIAL_PREF
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.provider.PreferenceProvider
-import com.kpstv.xclipper.extensions.utils.WelcomeUtils.Companion.setUpFragment
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -21,7 +16,8 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class WatchVideo : AbstractWelcomeFragment() {
 
-    @Inject lateinit var preferenceProvider: PreferenceProvider
+    @Inject
+    lateinit var preferenceProvider: PreferenceProvider
 
     override fun getConfigurations(): Configuration = Configuration(
         paletteId = R.color.palette7,

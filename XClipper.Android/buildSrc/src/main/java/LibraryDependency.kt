@@ -28,8 +28,8 @@ private object LibraryVersion {
     const val REALTIME_DATABASE = "19.3.1"
     const val FIREBASE_AUTH = "19.3.2"
     const val PLAY_SERVICE_AUTH = "18.0.0"
-    const val ACTIVITY = "1.2.0-rc01"
-    const val FRAGMENT = "1.2.5"
+    const val ACTIVITY = "1.3.0-alpha04"
+    const val FRAGMENT = "1.3.1" // FIXME: The toolbar thing
     const val WORK_MANAGER = "2.4.0"
     const val HVLOG = "0.1-alpha06"
     const val COIL = "1.0.0-rc3"
@@ -40,6 +40,7 @@ private object LibraryVersion {
     const val AUTO_BINDINGS = "1.1-alpha16"
     const val REALTIME_EXTENSIONS = "0.1.3"
     const val LIVEDATA_COMBINE_UTIL = "1.2.0"
+    const val CAOC = "2.3.0"
 }
 
 object LibraryDependency {
@@ -106,4 +107,5 @@ object LibraryDependency {
     const val REALTIME_EXTENSIONS = "io.github.kaustubhpatange:realtime-extensions:${LibraryVersion.REALTIME_EXTENSIONS}"
 
     const val LIVEDATA_COMBINE_UTIL = "com.github.Zhuinden:livedata-combinetuple-kt:${LibraryVersion.LIVEDATA_COMBINE_UTIL}"
+    const val CAOC = "cat.ereza:customactivityoncrash:${LibraryVersion.CAOC}"
 }

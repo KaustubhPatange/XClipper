@@ -16,6 +16,7 @@ import com.kpstv.xclipper.databinding.FragmentWelcomeBinding
 import com.kpstv.xclipper.extensions.SimpleFunction
 
 @Suppress("unused")
+@Deprecated("AbstractWelcomeFragment has been used to address problem with this.")
 class WelcomeUtils {
     companion object {
 

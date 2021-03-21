@@ -48,7 +48,7 @@ class AuthenticationHelper(
         }
 
     private val getResult =
-        activity.activityResultRegistry.register("myContract", customContract) { task ->
+        activity.activityResultRegistry.register("myContract_1", customContract) { task ->
             try {
                 val account = task?.getResult(ApiException::class.java)!!
                 firebaseAuthWithGoogle(account.idToken!!)

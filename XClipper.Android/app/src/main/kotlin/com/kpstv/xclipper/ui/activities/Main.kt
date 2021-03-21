@@ -42,14 +42,19 @@ class Main : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val navController = findNavController(R.id.nav_host_fragment)
-
-        val navOptions =
-            NavOptions.Builder().setPopUpTo(R.id.fragment_greet, true).build()
-
-        if (preferenceProvider.getBooleanKey(TUTORIAL_PREF, false)) {
-            navController.navigate(R.id.fragment_home, null, navOptions)
+        val mainGraph = navController.navInflater.inflate(R.navigation.nav_graph).apply {
+            startDestination = if (preferenceProvider.getBooleanKey(TUTORIAL_PREF, false)) {
+                R.id.fragment_home
+            } else {
+                R.id.fragment_greet
+            }
         }
+        navController.graph = mainGraph
 
+        registerHelpers()
+    }
+
+    private fun registerHelpers() {
         UpdateHelper(this).register()
         SyncDialogHelper(
             activity = this,
