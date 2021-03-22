@@ -136,72 +136,72 @@ namespace Components
         /// <summary>
         /// This will set the start location of the app.
         /// </summary>
-        public static XClipperLocation AppDisplayLocation { get; set; } = XClipperLocation.BottomRight;
+        public static XClipperLocation AppDisplayLocation { get; set; } = Settings.APP_DISPLAY_LOCATION;
 
         /// <summary>
         /// This tells what to store meaning only Text, Image, Files or All.
         /// </summary>
-        public static XClipperStore WhatToStore { get; set; } = XClipperStore.All;
+        public static XClipperStore WhatToStore { get; set; } = Settings.WHAT_TO_STORE;
 
         /// <summary>
         /// This tells the number of clip to store.
         /// </summary>
-        public static int TotalClipLength { get; set; } = 80;
+        public static int TotalClipLength { get; set; } = Settings.TOTAL_CLIP_LENGTH;
 
         /// <summary>
         /// This tells if Ctrl needs to be pressed in order to activate application.
         /// </summary>
-        public static bool IsCtrl { get; set; } = true;
+        public static bool IsCtrl { get; set; } = Settings.IS_CTRL;
 
         /// <summary>
         /// This tells if Alt needs to be pressed in order to activate application.
         /// </summary>
-        public static bool IsAlt { get; set; } = false;
+        public static bool IsAlt { get; set; } = Settings.IS_ALT;
 
         /// <summary>
         /// This tells if Shift needs to be pressed in order to activate application.
         /// </summary>
-        public static bool IsShift { get; set; } = false;
+        public static bool IsShift { get; set; } = Settings.IS_SHIFT;
 
         /// <summary>
         /// This will set Final Hot key of application.
         /// </summary>
-        public static string HotKey { get; set; } = "Oem3";
+        public static string HotKey { get; set; } = Settings.HOT_KEY;
 
         /// <summary>
         /// This will tell if application should start on System Startup.
         /// </summary>
-        public static bool StartOnSystemStartup { get; set; } = false;
+        public static bool StartOnSystemStartup { get; set; } = Settings.START_ON_SYSTEM_STARTUP;
 
         /// <summary>
         /// This will check for application updates.
         /// </summary>
-        public static bool CheckApplicationUpdates { get; set; } = true;
+        public static bool CheckApplicationUpdates { get; set; } = Settings.CHECK_APP_UPDATES;
 
         /// <summary>
         /// This will tell if application should show notification when app is launched.
         /// </summary>
-        public static bool DisplayStartNotification { get; set; } = true;
+        public static bool DisplayStartNotification { get; set; } = Settings.DISPLAY_START_NOTIFICATION;
 
         /// <summary>
         /// This will sound when notification is shown.
         /// </summary>
-        public static bool PlayNoticationSound { get; set; } = true;
+        public static bool PlayNoticationSound { get; set; } = Settings.PLAY_NOTIFICATION_SOUND;
 
         /// <summary>
         /// Shows a notification if data change occurs from other devices.
         /// </summary>
-        public static bool ShowDataChangeNotification { get; set; } = true;
+        public static bool ShowDataChangeNotification { get; set; } = Settings.SHOW_DATA_CHANGE_NOTIFICATION;
 
         /// <summary>
         /// This will set the current language file to be use.
         /// </summary>
-        public static string CurrentAppLanguage { get; set; } = "locales\\en.xaml";
+        public static string CurrentAppLanguage { get; set; } = Settings.CURRENT_LOCALE;
 
         /// <summary>
         /// A configuration to determine whether current database is password protected or not.
         /// </summary>
-        public static bool IsSecureDB { get; set; } = false;
+        public static bool IsSecureDB { get; set; } = Settings.IS_SECURE_DB;
 
         /// <summary>
         /// This string will hold the unique ID of this device.
@@ -248,17 +248,17 @@ namespace Components
         /// <summary>
         /// Determines whether to use custom user input password or not.
         /// </summary>
-        public static bool UseCustomPassword { get; set; } = false;
+        public static bool UseCustomPassword { get; set; } = Settings.USE_CUSTOM_PASSWORD;
 
         /// <summary>
         /// Stores the password in encrypted form.
         /// </summary>
-        public static string CustomPassword { get; set; } = CONNECTION_PASS.Decrypt();
+        public static string CustomPassword { get; set; } = Settings.CUSTOM_PASSWORD;
 
         /// <summary>
         /// Max number of list to display in XClipper window.
         /// </summary>
-        public static int TruncateList { get; set; } = 20;
+        public static int TruncateList { get; set; } = Settings.TRUNCATE_LIST;
 
         /// <summary>
         /// <inheritdoc cref="_IsCheckingForLicense"/>
@@ -367,7 +367,7 @@ namespace Components
         /// <summary>
         /// Password which will be used to decrypt item in database.
         /// </summary>
-        public static string DatabaseEncryptPassword { get; set; } = FB_DEFAULT_PASS.Decrypt();
+        public static string DatabaseEncryptPassword { get; set; } = Settings.DATABASE_ENCRYPT_PASSWORD;
 
         /// <summary>
         /// This stores all the credentials necessary for making connection with Firebase.
@@ -416,17 +416,17 @@ namespace Components
         /// 3. Data observation and device changes.<br/>
         /// 4. Data added to online database externally, respond to such changes locally.<br/>
         /// </summary>
-        public static bool BindDatabase { get; set; } = false;
+        public static bool BindDatabase { get; set; } = Settings.BIND_DATABASE;
 
         /// <summary>
         /// When set to true, App will respond to delete request coming from database.
         /// </summary>
-        public static bool BindDelete { get; set; } = false;
+        public static bool BindDelete { get; set; } = Settings.BIND_DELETE;
 
         /// <summary>
         /// When set to true, App will respond to image related queries.
         /// </summary>
-        public static bool BindImage { get; set; } = false;
+        public static bool BindImage { get; set; } = Settings.BIND_IMAGE;
 
         /// <summary>
         /// A setting that can use to decide whether to respond for quick paste.
@@ -436,12 +436,12 @@ namespace Components
         /// <summary>
         /// This will let application exit when any crash occurs.
         /// </summary>
-        public static bool ExitOnCrash { get; set; } = true;
+        public static bool ExitOnCrash { get; set; } = Settings.EXIT_ON_CRASH;
 
         /// <summary>
         /// If set to true XClipper will not show notification about any changes occurs to database.
         /// </summary>
-        public static bool NoNotifyChanges { get; set; } = false;
+        public static bool NoNotifyChanges { get; set; } = Settings.NO_NOTIFY_CHANGES;
 
         /// <summary>
         /// <inheritdoc cref="_IsNetworkConnected"/>

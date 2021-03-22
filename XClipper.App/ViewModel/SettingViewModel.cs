@@ -156,25 +156,26 @@ namespace Components
         /// </summary>
         private void ResetButtonClicked()
         {
-            SASS = StartOnSystemStartup = false;
-            CAU = CheckApplicationUpdates = true;
-            DSN = DisplayStartNotification = true;
-            PNS = PlayNoticationSound = true;
-            SDCN = ShowDataChangeNotification = true;
-            WhatToStore = WTS = XClipperStore.All;
-            AppDisplayLocation = ADL = XClipperLocation.BottomRight;
-            IsCtrl = KEY_IC = true;
-            IsAlt = KEY_IA = false;
-            UCP = UseCustomPassword = false;
-            CP = CustomPassword = CONNECTION_PASS.Decrypt();
-            FDP = DatabaseEncryptPassword = FB_DEFAULT_PASS.Decrypt();
-            IsShift = KEY_IS = false;
-            HotKey = KEY_HK = "Oem3";
-            CurrentAppLanguage = CAL = "locales\\en.xaml";
-            TotalClipLength = TCL = 20;
-            BindDatabase = BTD = false;
-            BindDelete = BFD = false;
-            BindImage = BIU = false;
+            StartOnSystemStartup = SASS = Settings.START_ON_SYSTEM_STARTUP;
+            CheckApplicationUpdates = CAU = Settings.CHECK_APP_UPDATES;
+            TotalClipLength = TCL = Settings.TOTAL_CLIP_LENGTH;
+            DisplayStartNotification = DSN = Settings.DISPLAY_START_NOTIFICATION;
+            PlayNoticationSound = PNS = Settings.PLAY_NOTIFICATION_SOUND;
+            ShowDataChangeNotification = SDCN = Settings.SHOW_DATA_CHANGE_NOTIFICATION;
+            WhatToStore = WTS = Settings.WHAT_TO_STORE;
+            AppDisplayLocation = ADL = Settings.APP_DISPLAY_LOCATION;
+            IsCtrl = KEY_IC = Settings.IS_CTRL;
+            IsAlt = KEY_IA = Settings.IS_ALT;
+            IsShift = KEY_IS = Settings.IS_SHIFT;
+            HotKey = KEY_HK = Settings.HOT_KEY;
+            CurrentAppLanguage = CAL = Settings.CURRENT_LOCALE;
+            UseCustomPassword  = UCP = Settings.USE_CUSTOM_PASSWORD;
+            CustomPassword = CP = Settings.CUSTOM_PASSWORD;
+            DatabaseEncryptPassword = FDP = Settings.DATABASE_ENCRYPT_PASSWORD;
+            BindDatabase = BTD = Settings.BIND_DATABASE;
+            BindDelete = BFD = Settings.BIND_DELETE;
+            BindImage = BIU = Settings.BIND_IMAGE;
+
             SetAppStartupEntry();
             WriteSettings();
             MsgBoxHelper.ShowInfo(Translation.SETTINGS_RESET);

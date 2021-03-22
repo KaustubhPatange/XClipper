@@ -114,5 +114,36 @@ namespace Components
         public const string DOC_MANUAL_ACTIVATION = "https://kaustubhpatange.github.io/XClipper/docs/#/activation";
 
         #endregion
+
+        #region Default Settings 
+
+        public class Settings
+        {
+            public const XClipperLocation APP_DISPLAY_LOCATION = XClipperLocation.BottomRight;
+            public const XClipperStore WHAT_TO_STORE = XClipperStore.All;
+            public const int TOTAL_CLIP_LENGTH = 80;
+            public const bool IS_CTRL = true;
+            public const bool IS_ALT = true;
+            public const bool IS_SHIFT = true;
+            public const string HOT_KEY = "Oem3";
+            public const bool START_ON_SYSTEM_STARTUP = false;
+            public const bool CHECK_APP_UPDATES = true;
+            public const bool DISPLAY_START_NOTIFICATION = true;
+            public const bool PLAY_NOTIFICATION_SOUND = true;
+            public const bool SHOW_DATA_CHANGE_NOTIFICATION = true;
+            public const string CURRENT_LOCALE = "locales\\en.xaml";
+            public const bool IS_SECURE_DB = false;
+            public const bool USE_CUSTOM_PASSWORD = false;
+            public static readonly string CUSTOM_PASSWORD = Core.CONNECTION_PASS.Decrypt();
+            public static readonly string DATABASE_ENCRYPT_PASSWORD = FB_DEFAULT_PASS.Decrypt();
+            public const int TRUNCATE_LIST = 20;
+            public const bool BIND_DATABASE = false;
+            public const bool BIND_DELETE = false;
+            public const bool BIND_IMAGE = false;
+            public const bool EXIT_ON_CRASH = true;
+            public const bool NO_NOTIFY_CHANGES = false;
+        }
+
+        #endregion
     }
 }

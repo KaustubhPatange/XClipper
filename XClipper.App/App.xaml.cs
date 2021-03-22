@@ -470,8 +470,8 @@ namespace Components
             if (NoNotifyChanges) return;
 
             new UWPToast.Builder(Dispatcher)
-                .AddText(Translation.MSG_IMAGE_SAVE_FAILED_TITLE)
-                .AddText(Translation.MSG_IMAGE_SAVE_FAILED_TEXT)
+                .AddText(title)
+                .AddText(message)
                 .SetSilent(!PlayNoticationSound)
                 .SetOnActivatedListener(onActive)
                 .build().ShowAsync();

@@ -37,7 +37,7 @@ using FireSharp.Core.Response;
  * (mainly due to refreshing existing token).
  * 
  * That's why instead of modeling the API for my use case I made my first-class solution
- * which will handle all of these also provides some routes to communicate with my app.
+ * which will handle all of these, also provides some routes to communicate with my app.
  * 
  * Currently the class does the following thing.
  * 1. Detect appropriate changes & fires onChange event which provides "path" & "data"

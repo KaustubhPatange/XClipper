@@ -38,12 +38,8 @@ namespace Components
             IsAttached = true;
         }
 
-        public static bool HasCrashed => Instance.IsCrashed;
-
         #endregion
 
-        public bool IsCrashed = false;
-           
         public void Attach()
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
@@ -55,19 +51,16 @@ namespace Components
 
         private async void Winform_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
         {
-            IsCrashed = true;
             await WriteCrashDetails("winform_report_", $"{e.Exception.Message}\n{e.Exception.StackTrace}").ConfigureAwait(false);
         }
 
         private async void Current_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
-            IsCrashed = true;
             await WriteCrashDetails("app_report_", $"{e.Exception.Message}\n{e.Exception.StackTrace}").ConfigureAwait(false);
         }
 
         private async void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            IsCrashed = true;
             await WriteCrashDetails("domain_report_", e.ExceptionObject.ToString()).ConfigureAwait(false);
         }
 

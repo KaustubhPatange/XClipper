@@ -24,6 +24,7 @@ jobs:
           echo keyAlias=github >> XClipper.Android/keystore.properties
           echo keyPassword=github >> XClipper.Android/keystore.properties
           echo storePassword=github >> XClipper.Android/keystore.properties
+          echo server_uri= >> XClipper.Android/local.properties
           cd XClipper.Android
           chmod +x gradlew
           ./gradlew app:assembleDebug --stacktrace
