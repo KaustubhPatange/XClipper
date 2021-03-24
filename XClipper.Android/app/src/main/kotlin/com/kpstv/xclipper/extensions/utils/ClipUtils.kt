@@ -3,6 +3,7 @@ package com.kpstv.xclipper.extensions.utils
 import com.kpstv.xclipper.App.DATE_PATTERN_REGEX
 import com.kpstv.xclipper.App.EMAIL_PATTERN_REGEX
 import com.kpstv.xclipper.App.MAP_PATTERN_REGEX
+import com.kpstv.xclipper.App.MARKDOWN_IMAGE_ONLY_REGEX
 import com.kpstv.xclipper.App.PHONE_PATTERN_REGEX
 import com.kpstv.xclipper.App.PHONE_PATTERN_REGEX1
 import com.kpstv.xclipper.App.URL_PATTERN_REGEX
@@ -18,6 +19,13 @@ class ClipUtils {
 
             val dictList = ArrayList<ClipTagMap>()
 
+            /** Url pattern matcher */
+            patternAdder(URL_PATTERN_REGEX, data, ClipTag.URL, dictList)
+
+            // Ignore further patterns for image markdown.
+            if (MARKDOWN_IMAGE_ONLY_REGEX.toRegex().matches(data))
+                return dictList
+
             /** Matches the phone number pattern. */
             if (!patternAdder(PHONE_PATTERN_REGEX, data, ClipTag.PHONE, dictList)
             ) {
@@ -30,9 +38,6 @@ class ClipUtils {
 
             /** Email pattern matcher */
             patternAdder(EMAIL_PATTERN_REGEX, data, ClipTag.EMAIL, dictList)
-
-            /** Url pattern matcher */
-            patternAdder(URL_PATTERN_REGEX, data, ClipTag.URL, dictList)
 
             /** Map pattern matcher */
             patternAdder(MAP_PATTERN_REGEX, data, ClipTag.MAP, dictList)

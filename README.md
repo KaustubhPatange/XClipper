@@ -58,7 +58,7 @@ If you want to contribute to this project, you're always welcome! [See Contribut
 
 ## Trademark
 
-- All images & icons (except logo) are licensed under [Icons8](https://icons8.com/).
+- All images & icons (except logo) are from [Icons8](https://icons8.com/).
 
 ## License
 

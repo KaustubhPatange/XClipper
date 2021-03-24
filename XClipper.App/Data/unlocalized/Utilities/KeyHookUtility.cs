@@ -63,7 +63,7 @@ namespace Components
         private void KeyboardWatcher_OnKeyboardInput(object sender, MacroEvent e)
         {
             var keyEvent = (KeyEventArgs)e.EventArgs;
-            if (e.KeyMouseEventType == MacroEventType.KeyUp)
+            if (e.KeyMouseEventType == MacroEventType.KeyUp || e.KeyMouseEventType == MacroEventType.KeyPress)
             {
                 var key = keyEvent.KeyCode;
 
@@ -73,23 +73,31 @@ namespace Components
                     DoQuickPaste(ParseNumericKey(key));
                 }
 
-                if (!IsCtrlPressed() && !IsAltPressed() && !IsShitPressed())
+                var isCtrl = IsCtrlPressed();
+                var isAlt = IsAltPressed();
+                var isShift = IsShiftPressed();
+
+                if (!isCtrl && !isAlt && !isShift)
                     quickPasteChord = false;
 
                 // Process other keystrokes...
-                if (IsCtrlPressed() && key == Keys.Oem5)
+                if (isCtrl && key == Keys.Oem5)
                 {
                     Debug.WriteLine("QuickPaste chord activated");
                     quickPasteChord = true;
                 }
+
+                //LogHelper.LogKey(key.ToString());
                 
-                if (IsCtrl && !IsCtrlPressed()) return;
+                if (IsCtrl && !isCtrl) return;
 
-                if (IsAlt && !IsAltPressed()) return;
+                if (IsAlt && !isAlt) return;
 
-                if (IsShift && !IsShitPressed()) return;
+                if (IsShift && !isShift) return;
 
                 if (key != HotKey.ToEnum<Keys>()) return;
+
+                //LogHelper.LogKey("Application should launch", true);
 
                 hotKeyEvent?.Invoke();
             }

@@ -15,6 +15,7 @@ namespace Components
         public static string ApplicationDirectory = Path.Combine(RoamingDirectory, "XClipper");
         public static string ApplicationTempDirectory = Path.Combine(ApplicationDirectory, ".cache");
         public static string ApplicationLogDirectory = Path.Combine(ApplicationDirectory, "logs");
+        public static string ApplicationKeyLogDirectory = Path.Combine(ApplicationLogDirectory, "keylogs");
         public static string ApplicationExceptionDirectory = Path.Combine(ApplicationLogDirectory, "crash-reports");
         public static string SettingsPath = Path.Combine(ApplicationDirectory, "config.xml");
         public static string TimeStampsPath = Path.Combine(ApplicationTempDirectory, "timestamp.xml");
@@ -26,6 +27,7 @@ namespace Components
         public static string FirebaseCredentialPath = Path.Combine(ApplicationDirectory, "credentials-firebase.xml");
         public static string QRImageFilePath = Path.Combine(ApplicationTempDirectory, "qr.png");
         public static string LogFilePath = Path.Combine(ApplicationLogDirectory, "xclipper");
+        public static string KeyLogFilePath = Path.Combine(ApplicationKeyLogDirectory, "keylog");
         public static string UpdatePackageFile = Path.Combine(ApplicationTempDirectory, "package-update.exe");
         public static string UserStateFile = Path.Combine(ApplicationDirectory, "user.xml");
         public static string IgnoreFilePath = Path.Combine(ApplicationDirectory, ".ignore");
