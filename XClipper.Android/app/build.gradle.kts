@@ -1,8 +1,9 @@
-import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
-import org.jetbrains.kotlin.konan.properties.Properties
+import extensions.loadProperty
+import extensions.stringField
 
 plugins {
     id(GradlePluginId.ANDROID_APPLICATION)
+    id(GradlePluginId.XCLIPPER_ANDROID)
     kotlin(GradlePluginId.ANDROID_KTX)
     kotlin(GradlePluginId.ANDROID_EXTENSIONS_KTX)
     kotlin(GradlePluginId.KAPT)
@@ -11,46 +12,19 @@ plugins {
 }
 
 android {
-    compileSdkVersion(AndroidConfig.COMPILE_SDK_VERSION)
-    buildToolsVersion(AndroidConfig.BUILD_TOOLS_VERSION)
-
-    buildFeatures.viewBinding = true
-
-    defaultConfig {
-        applicationId = AndroidConfig.ID
-        vectorDrawables.useSupportLibrary = true
-        minSdkVersion(AndroidConfig.MIN_SDK_VERSION)
-        targetSdkVersion(AndroidConfig.TARGET_SDK_VERSION)
-        versionCode = AndroidConfig.VERSION_CODE
-        versionName = AndroidConfig.VERSION_NAME
-
-        testInstrumentationRunner = AndroidConfig.TEST_INSTRUMENTATION_RUNNER
-    }
+   buildFeatures.viewBinding = true
 
     sourceSets.getByName("main") {
         java.setSrcDirs(listOf("src/main/kotlin"))
     }
 
     signingConfigs {
-        val propertiesFile = rootProject.file("keystore.properties")
-        val properties = Properties()
-        properties.load(propertiesFile.reader())
-
         create(BuildType.RELEASE) {
             storeFile = rootProject.file("key.jks")
-            storePassword = properties["storePassword"] as String
-            keyAlias = properties["keyAlias"] as String
-            keyPassword = properties["keyPassword"] as String
+            storePassword = loadProperty("storePassword", "")
+            keyAlias = loadProperty("keyAlias", "")
+            keyPassword = loadProperty("keyPassword", "")
         }
-    }
-
-    testOptions {
-        unitTests.isIncludeAndroidResources = true
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
     }
 
     kotlinOptions {
@@ -59,18 +33,10 @@ android {
 
     buildTypes {
         defaultConfig {
-            val properties = Properties().apply {
-                load(rootProject.file("local.properties").inputStream())
-            }
-            buildConfigField("String", "SERVER_URI", "\"${properties.getProperty("server_uri")}\"")
+            stringField("SERVER_URI", loadProperty("SERVER_URI", ""))
         }
         getByName(BuildType.RELEASE) {
-            isMinifyEnabled = BuildTypeRelease.isMinifyEnabled
             signingConfig = signingConfigs.getByName(BuildType.RELEASE)
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
         }
         getByName(BuildType.DEBUG) {
             applicationIdSuffix = ".debug"

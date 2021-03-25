@@ -12,8 +12,8 @@ import android.webkit.WebViewClient
 import android.widget.FrameLayout
 import androidx.core.content.withStyledAttributes
 import androidx.core.graphics.ColorUtils
+import com.kpstv.linkpreview.databinding.LayoutPreviewBinding
 import com.kpstv.xclipper.extensions.*
-import kotlinx.android.synthetic.main.layout_preview.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import okhttp3.*
@@ -42,7 +42,8 @@ class LinkPreview @JvmOverloads constructor(
         blendBackground()
     }
 
-    private val view: View = context.layoutInflater().inflate(R.layout.layout_preview, this, true).also { it.collapse() }
+    private val binding: LayoutPreviewBinding = LayoutPreviewBinding.inflate(context.layoutInflater(), this, true).also { it.root.collapse() }
+
     private val webView = WebView(context)
     private var lifecycleScope: CoroutineScope? = null
     private var currentUrl: String = ""
@@ -65,32 +66,32 @@ class LinkPreview @JvmOverloads constructor(
 
         context.withStyledAttributes(attrs, R.styleable.LinkPreview, defStyle) {
             if (hasValue(R.styleable.LinkPreview_imgSrc)) {
-                view.imageView.setImageResource(getResourceId(R.styleable.LinkPreview_imgSrc, -1))
+                binding.imageView.setImageResource(getResourceId(R.styleable.LinkPreview_imgSrc, -1))
             }
             if (hasValue(R.styleable.LinkPreview_titleTextColor)) {
-                view.tv_title.setTextColor(getColorStateList(R.styleable.LinkPreview_titleTextColor)?.defaultColor!!)
+                binding.tvTitle.setTextColor(getColorStateList(R.styleable.LinkPreview_titleTextColor)?.defaultColor!!)
             }
             if (hasValue(R.styleable.LinkPreview_subtitleTextColor)) {
-                view.tv_subtitle.setTextColor(getColorStateList(R.styleable.LinkPreview_subtitleTextColor)?.defaultColor!!)
+                binding.tvSubtitle.setTextColor(getColorStateList(R.styleable.LinkPreview_subtitleTextColor)?.defaultColor!!)
             }
         }
     }
 
     fun setTitle(value: String) {
-        view.tv_title.text = value.replace("&amp;", "&")
-        view.show()
+        binding.tvTitle.text = value.replace("&amp;", "&")
+        binding.root.show()
     }
 
     fun setSubtitle(value: String) {
-        view.tv_subtitle.text = value.replace("&amp;", "&")
+        binding.tvSubtitle.text = value.replace("&amp;", "&")
     }
 
     fun setImage(url: String) {
-        view.imageView.load(url)
+        binding.imageView.load(url)
     }
 
     fun onClick(block: () -> Unit) {
-        view.clickableView.setOnClickListener { block.invoke()  }
+        binding.clickableView.setOnClickListener { block.invoke()  }
     }
 
     private val TAG = javaClass.simpleName
@@ -122,7 +123,7 @@ class LinkPreview @JvmOverloads constructor(
                 }
 
                 if (title == null) {
-                    view.collapse()
+                    binding.root.collapse()
                 } else {
                     loadCompleteListener?.onLoadComplete(title, subtitle, imageUrl)
                 }

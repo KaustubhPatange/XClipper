@@ -5,7 +5,8 @@
 /gradle.properties
 /keystore.properties
 /key.jks
-/buildSrc
+/buildSrc/build
+/buildSrc/.gradle
 /.idea/caches
 /.idea/libraries
 /.idea/modules.xml
