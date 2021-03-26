@@ -125,8 +125,8 @@ namespace Components
             public const XClipperStore WHAT_TO_STORE = XClipperStore.All;
             public const int TOTAL_CLIP_LENGTH = 80;
             public const bool IS_CTRL = true;
-            public const bool IS_ALT = true;
-            public const bool IS_SHIFT = true;
+            public const bool IS_ALT = false;
+            public const bool IS_SHIFT = false;
             public const string HOT_KEY = "Oem3";
             public const bool START_ON_SYSTEM_STARTUP = false;
             public const bool CHECK_APP_UPDATES = true;
@@ -144,6 +144,7 @@ namespace Components
             public const bool BIND_IMAGE = false;
             public const bool EXIT_ON_CRASH = true;
             public const bool NO_NOTIFY_CHANGES = false;
+            public const bool USE_EXPERIMENTAL_KEY_CAPTURE = true;
         }
 
         #endregion

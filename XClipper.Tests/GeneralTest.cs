@@ -69,6 +69,7 @@ namespace XClipper.Tests
         [TestMethod]
         public void RandomTest()
         {
+            var s = new List<int>();
             //UWPToast.Builder()
             //Debug.WriteLine(AppDomain.CurrentDomain.BaseDirectory);
             //    try

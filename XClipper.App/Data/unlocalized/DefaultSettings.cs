@@ -444,6 +444,11 @@ namespace Components
         public static bool NoNotifyChanges { get; set; } = Settings.NO_NOTIFY_CHANGES;
 
         /// <summary>
+        /// The application will use an experimental method of hot key detection goes by stream of key events<br/>
+        /// for faster response. To opt out read <see href="https://kaustubhpatange.github.io/XClipper/docs/#/hidden">here</see>.
+        /// </summary>
+        public static bool UseExperimentalKeyCapture { get; set; } = Settings.USE_EXPERIMENTAL_KEY_CAPTURE;
+        /// <summary>
         /// <inheritdoc cref="_IsNetworkConnected"/>
         /// </summary>
         public static bool IsNetworkConnected
@@ -497,7 +502,8 @@ namespace Components
             environment
                   .Add(
                      new XElement(nameof(ExitOnCrash), ExitOnCrash.ToString()),
-                     new XElement(nameof(NoNotifyChanges), NoNotifyChanges.ToString())
+                     new XElement(nameof(NoNotifyChanges), NoNotifyChanges.ToString()),
+                     new XElement(nameof(UseExperimentalKeyCapture), UseExperimentalKeyCapture.ToString())
                      );
            
             var settings = new XElement(SETTINGS);
@@ -675,6 +681,7 @@ namespace Components
             var environment = settings.Element(ENVIRONMENT);
             ExitOnCrash = environment.Element(nameof(ExitOnCrash)).Value.ToBool();
             NoNotifyChanges = environment.Element(nameof(NoNotifyChanges)).Value.ToBool();
+            UseExperimentalKeyCapture = environment.Element(nameof(UseExperimentalKeyCapture)).Value.ToBool();
         }
 
         /// <summary>

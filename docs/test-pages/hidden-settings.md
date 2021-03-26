@@ -13,7 +13,8 @@ Each of these can be modified from XClipper's config.xml located in `%appData%\X
 
 ## List of all settings?
 
-| Name              | Default | What can be controlled?                                                                    |
-| ----------------- | ------- | ------------------------------------------------------------------------------------------ |
-| `ExitOnCrash`     | `True`  | If set to `False` application will not crash when an internal major failure occurs.        |
-| `NoNotifyChanges` | `False` | If set to `True` XClipper will not show notification about any changes occurs to database. |
+| Name                        | Default | What can be controlled?                                                                                                                               |
+| --------------------------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ExitOnCrash`               | `True`  | If set to `False` application will not crash when an internal major failure occurs.                                                                   |
+| `NoNotifyChanges`           | `False` | If set to `True` XClipper will not show notification about any changes occurs to database.                                                            |
+| `UseExperimentalKeyCapture` | `True`  | If set to `True` XClipper will use an experimental method of hot key detection goes by stream of key events for faster response (App restart needed). |
