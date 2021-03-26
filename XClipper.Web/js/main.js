@@ -60,6 +60,10 @@ function openGithub() {
   window.open("https://github.com/KaustubhPatange/XClipper");
 }
 
+function openScreenShots() {
+  window.open("https://imgur.com/a/n0KJd3Q");
+}
+
 function openDocs() {
   let href = window.location.href;
   href = href.replace(/#(.*)/g, "").replace("index.html", "");

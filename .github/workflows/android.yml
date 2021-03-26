@@ -21,10 +21,10 @@ jobs:
       - name: Building project
         run: |
           tar -xvzf scripts/gradle.tar.gz
-          echo keyAlias=github >> XClipper.Android/keystore.properties
-          echo keyPassword=github >> XClipper.Android/keystore.properties
-          echo storePassword=github >> XClipper.Android/keystore.properties
-          echo server_uri= >> XClipper.Android/local.properties
+          echo keyAlias=github >> XClipper.Android/.gradle/gradle.properties
+          echo keyPassword=github >> XClipper.Android/.gradle/gradle.properties
+          echo storePassword=github >> XClipper.Android/.gradle/gradle.properties
+          echo SERVER_URI= >> XClipper.Android/.gradle/gradle.properties
           cd XClipper.Android
           chmod +x gradlew
           ./gradlew app:assembleDebug --stacktrace
