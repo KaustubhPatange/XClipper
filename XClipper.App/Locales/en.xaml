@@ -153,6 +153,7 @@
     <system:String x:Key="clip_ctx_dq">Display QR</system:String>
     <system:String x:Key="clip_ctx_qi">Quick Info</system:String>
     <system:String x:Key="clip_ctx_sc">Set Current</system:String>
+    <system:String x:Key="clip_ctx_ol">Open link</system:String>
     <system:String x:Key="clip_ctx_de">Delete Entry</system:String>
     <system:String x:Key="clip_ctx_tp">Toggle Pin</system:String>
     <system:String x:Key="clip_msg_confirm">Are you sure? This can't be undone</system:String>

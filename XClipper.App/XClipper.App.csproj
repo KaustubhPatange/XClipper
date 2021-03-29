@@ -232,6 +232,7 @@
     <Compile Include="Data\Converters\NullToImageConverter.cs" />
     <Compile Include="Data\Converters\SyncForegroundConverter.cs" />
     <Compile Include="Data\Converters\TextForegroundConverter.cs" />
+    <Compile Include="Data\Converters\UrlVisibilityConverter.cs" />
     <Compile Include="Data\helpers\AppNotificationHelper.cs" />
     <Compile Include="Data\helpers\ConnectionHelper.cs" />
     <Compile Include="Data\helpers\DatabaseHelper.cs" />

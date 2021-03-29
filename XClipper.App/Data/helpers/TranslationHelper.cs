@@ -159,6 +159,7 @@ namespace Components
 		public readonly string CLIP_CTX_DQ = rm.GetString("clip_ctx_dq");
 		public readonly string CLIP_CTX_QI = rm.GetString("clip_ctx_qi");
 		public readonly string CLIP_CTX_SC = rm.GetString("clip_ctx_sc");
+		public readonly string CLIP_CTX_OL = rm.GetString("clip_ctx_ol");
 		public readonly string CLIP_CTX_DE = rm.GetString("clip_ctx_de");
 		public readonly string CLIP_CTX_TP = rm.GetString("clip_ctx_tp");
 		public readonly string CLIP_MSG_CONFIRM = rm.GetString("clip_msg_confirm");

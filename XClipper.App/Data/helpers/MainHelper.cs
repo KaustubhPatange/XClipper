@@ -159,7 +159,7 @@ DEL ""%~f0""";
         }
 
         [DllImport("Shlwapi.dll", CharSet = CharSet.Auto)]
-      //  public static extern Int32 StrFormatByteSize(long fileSize, [MarshalAs(UnmanagedType.LPTStr)] StringBuilder buffer, int bufferSize);
+        //  public static extern Int32 StrFormatByteSize(long fileSize, [MarshalAs(UnmanagedType.LPTStr)] StringBuilder buffer, int bufferSize);
         static extern Int32 StrFormatByteSize(long fileSize, [MarshalAs(UnmanagedType.LPWStr)] StringBuilder buffer, int bufferSize);
         /// <summary>
         /// Return a file size created by the StrFormatByteSize API function. 
@@ -210,6 +210,19 @@ DEL ""%~f0""";
                     dataStream.Seek(0, SeekOrigin.Begin);
                     dataStream.CopyTo(fileOutStream);
                 }
+            }
+        }
+
+        public static bool IsUrl(string text)
+        {
+            return Regex.IsMatch(text, @"https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_\+.~#?&\/\/=]*)");
+        }
+
+        public static void LaunchUrl(string url)
+        {
+            if (MainHelper.IsUrl(url))
+            {
+                Process.Start(url);
             }
         }
     }

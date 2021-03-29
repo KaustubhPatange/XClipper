@@ -348,6 +348,11 @@ namespace Components
                 ShowFilterWindow();
             }
 
+            if (e.Key == Key.Enter && IsAltPressed())
+            {
+                LaunchUrl((_lvClip.SelectedItem as TableCopy).RawText);
+            }
+
             // This key bind will handle Ctrl + Number key shortcut.
             if (IsNumericKeyPressed(e.Key) && IsCtrlPressed())
             {
@@ -747,6 +752,12 @@ namespace Components
 
 
         #region Menu Item Clicks
+
+        private void OpenLink_Clicked(object sender, RoutedEventArgs e)
+        {
+            var model = GetTableCopyFromSender(sender);
+            LaunchUrl(model.RawText);
+        }
 
         private void DisplayQR_Clicked(object sender, RoutedEventArgs e)
         {

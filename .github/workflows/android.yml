@@ -21,6 +21,7 @@ jobs:
       - name: Building project
         run: |
           tar -xvzf scripts/gradle.tar.gz
+          md XClipper.Android/.gradle
           echo keyAlias=github >> XClipper.Android/.gradle/gradle.properties
           echo keyPassword=github >> XClipper.Android/.gradle/gradle.properties
           echo storePassword=github >> XClipper.Android/.gradle/gradle.properties
