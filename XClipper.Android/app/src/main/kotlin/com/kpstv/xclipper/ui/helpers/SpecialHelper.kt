@@ -32,6 +32,8 @@ import com.kpstv.xclipper.ui.fragments.sheets.ShortenUriSheet
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.bottom_sheet_more.view.*
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.ArrayList
@@ -294,7 +296,10 @@ class SpecialHelper(
             ) {
                 createChooser(ClipTag.URL.small()) { data ->
                     CWT.Builder(context)
-                        .apply { options.privateMode = true }
+                        .apply {
+                            options.privateMode = true
+                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                        }
                         .launch(data)
 
                     /** Dismiss the dialog */

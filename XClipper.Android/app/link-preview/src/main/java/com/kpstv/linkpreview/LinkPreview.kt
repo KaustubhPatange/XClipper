@@ -6,7 +6,9 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
+import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.FrameLayout
@@ -15,6 +17,7 @@ import androidx.core.graphics.ColorUtils
 import com.kpstv.linkpreview.databinding.LayoutPreviewBinding
 import com.kpstv.xclipper.extensions.*
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.launch
 import okhttp3.*
 
@@ -50,17 +53,22 @@ class LinkPreview @JvmOverloads constructor(
         set(value) {
             if (value != field) {
                 field = value
-                val scope = lifecycleScope ?: return
-                loadPreview(value, scope)
+               /* val scope = lifecycleScope ?: return
+                loadPreview(value, scope)*/
             }
         }
 
     init {
         webView.settings.javaScriptEnabled = true
+        webView.addJavascriptInterface(this, "HTMLOUT")
         webView.webViewClient = object : WebViewClient() {
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 super.onPageStarted(view, url, favicon)
                 if (url != null) currentUrl = url
+            }
+
+            override fun onPageFinished(view: WebView?, url: String?) {
+                webView.loadUrl("javascript:window.HTMLOUT.processHTML('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
             }
         }
 
@@ -101,32 +109,31 @@ class LinkPreview @JvmOverloads constructor(
         webView.loadUrl(url)
     }
 
-    private fun loadPreview(url: String, lifecycleScope: CoroutineScope) {
+    @Suppress("unused")
+    @JavascriptInterface
+    fun processHTML(html: String) {
+        val scope = lifecycleScope ?: return
+        loadContent(html, scope)
+    }
+
+    private fun loadContent(body: String, lifecycleScope: CoroutineScope) {
         lifecycleScope.launch {
-            val client = OkHttpClient.Builder()
-                .followSslRedirects(true)
-                .followRedirects(true)
-                .build()
-            val response = client.newCall(Request.Builder().url(url).build()).await()
-            if (response.isSuccessful) {
-                val body = response.body?.string() ?: return@launch
-                response.close()
+            ensureActive()
 
-                val title = Regex(REGEX_TITLE).find(body)?.groups?.get(1)?.value
-                val subtitle = Regex(REGEX_DESCRIPTION).find(body)?.groups?.get(1)?.value
-                val imageUrl = Regex(REGEX_IMAGE).find(body)?.groups?.get(1)?.value
+            val title = Regex(REGEX_TITLE).find(body)?.groups?.get(1)?.value
+            val subtitle = Regex(REGEX_DESCRIPTION).find(body)?.groups?.get(1)?.value
+            val imageUrl = Regex(REGEX_IMAGE).find(body)?.groups?.get(1)?.value
 
-                if (title != null) setTitle(title)
-                if (subtitle != null) setSubtitle(subtitle)
-                if (imageUrl != null) {
-                    setImage(imageUrl)
-                }
+            if (title != null) setTitle(title)
+            if (subtitle != null) setSubtitle(subtitle)
+            if (imageUrl != null) {
+                setImage(imageUrl)
+            }
 
-                if (title == null) {
-                    binding.root.collapse()
-                } else {
-                    loadCompleteListener?.onLoadComplete(title, subtitle, imageUrl)
-                }
+            if (title == null) {
+                binding.root.collapse()
+            } else {
+                loadCompleteListener?.onLoadComplete(title, subtitle, imageUrl)
             }
         }
     }
