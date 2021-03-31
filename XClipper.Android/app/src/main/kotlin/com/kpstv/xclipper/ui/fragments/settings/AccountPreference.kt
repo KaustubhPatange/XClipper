@@ -57,7 +57,7 @@ class AccountPreference : AnimatePreferenceFragment() {
 
                     val dialog = showConnectionDialog(requireContext())
 
-                    mainViewModel.removeDeviceConnection(ResponseListener(
+                    mainViewModel.removeDeviceConnection(requireContext(), ResponseListener(
                         complete = {
                             dialog.dismiss()
                             bindPreference?.isChecked = false

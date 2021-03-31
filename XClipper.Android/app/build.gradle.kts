@@ -52,7 +52,6 @@ dependencies {
     implementation(LibraryDependency.KOTLIN_STDLIB)
     implementation(LibraryDependency.APP_COMPAT)
     implementation(LibraryDependency.FRAGMENT_KTX)
-//    implementation(LibraryDependency.ACTIVITY_KTX)
     implementation(LibraryDependency.CORE_KTX)
     implementation(LibraryDependency.COLLECTIONS_KTX)
     implementation(LibraryDependency.RECYCLERVIEW)
@@ -103,15 +102,10 @@ dependencies {
     implementation(LibraryDependency.REALTIME_EXTENSIONS)
 
     implementation(LibraryDependency.HILT_ANDROID)
-    implementation(LibraryDependency.HILT_VIEWODEL)
     implementation(LibraryDependency.HILT_WORK_MANAGER)
-    implementation("androidx.appcompat:appcompat:1.2.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.0.4")
 
-    kapt(LibraryDependency.ROOM_COMPILER_KAPT)
-    kapt(LibraryDependency.GLIDE_COMPILER)
     kapt(LibraryDependency.HILT_COMPILER)
-    kapt(LibraryDependency.HILT_VIEWODEL_COMPILER)
+    kapt(LibraryDependency.HILT_WORK_MANAGER_COMPILER)
     kapt(LibraryDependency.AUTO_BINDINGS_COMPILER)
 
     kapt(LibraryDependency.GLIDE_COMPILER)

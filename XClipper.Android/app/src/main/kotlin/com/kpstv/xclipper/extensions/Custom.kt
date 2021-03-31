@@ -122,7 +122,7 @@ fun String.toLines(): List<String> {
 }
 
 /**
- * If there is two same classes like below one maybe domain & other may be entity,
+ * If there is two same classes like one maybe domain & other may be entity,
  * following method might help to map such instance to other classes.
  *
  * Source: https://gist.github.com/KaustubhPatange/089792e18c19783247bb5b554e4ccaee

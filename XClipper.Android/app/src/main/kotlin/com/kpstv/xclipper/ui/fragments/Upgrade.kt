@@ -16,7 +16,7 @@ import com.kpstv.xclipper.extensions.LicenseType
 import com.kpstv.xclipper.extensions.hide
 import com.kpstv.xclipper.extensions.show
 import com.kpstv.xclipper.extensions.viewBinding
-import com.kpstv.xclipper.ui.viewmodels.UpgradeModel
+import com.kpstv.xclipper.ui.viewmodels.UpgradeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.flow.collect
@@ -28,7 +28,7 @@ class Upgrade : AnimateFragment(R.layout.fragment_upgrade) {
     @Inject
     lateinit var firebaseProvider: FirebaseProvider
 
-    private val viewModel by viewModels<UpgradeModel>()
+    private val viewModel by viewModels<UpgradeViewModel>()
     private val binding by viewBinding(FragmentUpgradeBinding::bind)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -65,7 +65,7 @@ class Upgrade : AnimateFragment(R.layout.fragment_upgrade) {
     private fun loadLatestPriceFetch() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             binding.root.isRefreshing = true
-            viewModel.fetchLatestPrice().collect { result ->
+            viewModel.fetchLatestPrice(requireContext()).collect { result ->
                 result.fold(
                     onSuccess = {
                         binding.premiumCard.setPurchaseAmount("$$it")

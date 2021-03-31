@@ -3,5 +3,5 @@ object CoreVersion {
     const val ANDROID_COROUTINES = "1.4.1"
 
     const val JETPACK_NAVIGATION = "2.3.4"
-    const val HILT = "2.30.1-alpha"
+    const val HILT = "2.33-beta"
 }

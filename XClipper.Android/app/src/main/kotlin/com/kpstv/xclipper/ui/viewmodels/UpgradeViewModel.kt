@@ -1,21 +1,22 @@
 package com.kpstv.xclipper.ui.viewmodels
 
 import android.content.Context
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.extensions.utils.RetrofitUtils
+import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 
-class UpgradeModel @ViewModelInject constructor(
-    @ApplicationContext private val context: Context,
+@HiltViewModel
+class UpgradeViewModel @Inject constructor(
     private val retrofitUtils: RetrofitUtils
 ) : ViewModel() {
 
-    suspend fun fetchLatestPrice(): Flow<Result<String>> = flow {
+    suspend fun fetchLatestPrice(context: Context): Flow<Result<String>> = flow {
         val response = retrofitUtils.fetch(
             context.getString(R.string.app_website)
         )

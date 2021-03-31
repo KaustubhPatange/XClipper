@@ -1,12 +1,7 @@
 package com.kpstv.xclipper.ui.viewmodels
 
-import android.app.Application
 import android.content.Context
-import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.data.localized.FBOptions
 import com.kpstv.xclipper.data.localized.dao.TagDao
@@ -28,18 +23,19 @@ import com.kpstv.xclipper.extensions.listeners.StatusListener
 import com.kpstv.xclipper.extensions.utils.FirebaseUtils
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.loginToDatabase
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.logoutFromDatabase
-import com.kpstv.xclipper.ui.helpers.DictionaryApiHelper
 import com.kpstv.xclipper.ui.helpers.TinyUrlApiHelper
 import com.kpstv.xclipper.ui.viewmodels.managers.MainEditManager
 import com.kpstv.xclipper.ui.viewmodels.managers.MainSearchManager
 import com.kpstv.xclipper.ui.viewmodels.managers.MainStateManager
 import com.zhuinden.livedatacombinetuplekt.combineTuple
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.util.*
+import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-class MainViewModel @ViewModelInject constructor(
-    application: Application,
+@HiltViewModel
+class MainViewModel @Inject constructor(
     firebaseUtils: FirebaseUtils,
     private val mainRepository: MainRepository,
     private val tagRepository: TagDao,
@@ -47,14 +43,11 @@ class MainViewModel @ViewModelInject constructor(
     private val firebaseProvider: FirebaseProvider,
     private val clipboardProvider: ClipboardProvider,
     private val dbConnectionProvider: DBConnectionProvider,
-    val dictionaryApiHelper: DictionaryApiHelper,
     val tinyUrlApiHelper: TinyUrlApiHelper,
     val editManager: MainEditManager,
     val searchManager: MainSearchManager,
     val stateManager: MainStateManager
-) : AndroidViewModel(application) {
-    val context: Context = application.applicationContext
-
+) : ViewModel() {
     private val TAG = javaClass.simpleName
 
     private val _clipLiveData = MutableLiveData<List<Clip>>()
@@ -168,7 +161,7 @@ class MainViewModel @ViewModelInject constructor(
         }
     }
 
-    fun removeDeviceConnection(responseListener: ResponseListener<Unit>) {
+    fun removeDeviceConnection(context: Context, responseListener: ResponseListener<Unit>) {
         viewModelScope.launch {
             val result = firebaseProvider.removeDevice(App.DeviceID)
             when (result) {

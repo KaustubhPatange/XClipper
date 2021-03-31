@@ -53,8 +53,6 @@ class LinkPreview @JvmOverloads constructor(
         set(value) {
             if (value != field) {
                 field = value
-               /* val scope = lifecycleScope ?: return
-                loadPreview(value, scope)*/
             }
         }
 
