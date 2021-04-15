@@ -41,6 +41,9 @@ private object LibraryVersion {
     const val REALTIME_EXTENSIONS = "0.1.3"
     const val LIVEDATA_COMBINE_UTIL = "1.2.0"
     const val CAOC = "2.3.0"
+    const val NAVIGATOR = "0.1-alpha04"
+    const val NAVIGATOR_BOTTOM_NAVIGATION = "0.1-alpha04"
+    const val NAVIGATOR_EXTENSIONS = "0.1"
 }
 
 object LibraryDependency {
@@ -107,4 +110,8 @@ object LibraryDependency {
 
     const val LIVEDATA_COMBINE_UTIL = "com.github.Zhuinden:livedata-combinetuple-kt:${LibraryVersion.LIVEDATA_COMBINE_UTIL}"
     const val CAOC = "cat.ereza:customactivityoncrash:${LibraryVersion.CAOC}"
+
+    const val NAVIGATOR = "io.github.kaustubhpatange:navigator:${LibraryVersion.NAVIGATOR}"
+    const val NAVIGATOR_EXTENSIONS = "io.github.kaustubhpatange:navigator-extensions:${LibraryVersion.NAVIGATOR_EXTENSIONS}"
+    const val NAVIGATOR_BOTTOM_NAVIGATION = "io.github.kaustubhpatange:navigator-bottom-navigation:${LibraryVersion.NAVIGATOR_BOTTOM_NAVIGATION}"
 }

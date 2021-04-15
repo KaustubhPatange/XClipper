@@ -79,8 +79,6 @@ abstract class AbstractWelcomeFragment : Fragment(R.layout.fragment_welcome) {
         if (configs.insertView != null)
             binding.fwInsertLayout.addView(configs.insertView)
 
-        // When set View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION, UI is drawn behind
-        // the navigation bar, to fix it we apply proper insets.
         binding.fwBtnNext.applyBottomInsets()
         binding.fwBtnNext.text = getString(configs.nextTextId)
         binding.fwBtnNext.setTextColor(palette)

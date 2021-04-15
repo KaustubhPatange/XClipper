@@ -101,6 +101,10 @@ dependencies {
     implementation(LibraryDependency.AUTO_BINDINGS)
     implementation(LibraryDependency.REALTIME_EXTENSIONS)
 
+    implementation(LibraryDependency.NAVIGATOR)
+    implementation(LibraryDependency.NAVIGATOR_EXTENSIONS)
+    implementation(LibraryDependency.NAVIGATOR_BOTTOM_NAVIGATION)
+
     implementation(LibraryDependency.HILT_ANDROID)
     implementation(LibraryDependency.HILT_WORK_MANAGER)
 
