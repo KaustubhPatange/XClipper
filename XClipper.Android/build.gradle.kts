@@ -7,7 +7,6 @@ buildscript {
     dependencies {
         classpath(GradleDependency.GRADLE_BUILD_TOOLS)
         classpath(GradleDependency.KOTLIN_PLUGIN)
-        classpath(GradleDependency.SAFE_ARGS)
         classpath(GradleDependency.DAGGER_HILT)
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
     }
@@ -18,6 +17,7 @@ allprojects {
         google()
         jcenter()
         mavenCentral()
+        mavenLocal()
         maven { url = uri("https://jitpack.io")}
         maven {
             url = uri("https://oss.sonatype.org/content/repositories/snapshots")

@@ -1,14 +1,34 @@
 package com.kpstv.xclipper.extensions
 
 import android.view.View
-import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.view.updateLayoutParams
-import androidx.core.view.updateMargins
+import android.view.ViewGroup
+import androidx.core.view.*
 
-fun View.applyBottomInsets() {
-    setOnApplyWindowInsetsListener { view, insets ->
-        view.updateLayoutParams<CoordinatorLayout.LayoutParams> {
-            updateMargins(bottom = insets.systemWindowInsetBottom)
+fun View.applyBottomInsets(to: View = this, merge: Boolean = false, pad: Boolean = false, extra: Int = 0) {
+    val marginBottom = to.marginBottom
+    val paddingBottom = to.paddingBottom
+    setOnApplyWindowInsetsListener { v, insets ->
+        if (pad) {
+            v.updatePadding(bottom = insets.systemWindowInsetBottom + extra + if (merge) paddingBottom else 0)
+        } else {
+            to.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                updateMargins(bottom = insets.systemWindowInsetBottom + extra + if (merge) marginBottom else 0)
+            }
+        }
+        insets
+    }
+}
+
+fun View.applyTopInsets(to: View = this, merge: Boolean = false, pad: Boolean = false, extra: Int = 0) {
+    val marginTop = to.marginTop
+    val paddingTop = to.paddingTop
+    setOnApplyWindowInsetsListener { v, insets ->
+        if (pad) {
+            v.updatePadding(top = insets.systemWindowInsetTop + extra + if (merge) paddingTop else 0)
+        } else {
+            to.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                updateMargins(top = insets.systemWindowInsetTop + extra + if (merge) marginTop else 0)
+            }
         }
         insets
     }

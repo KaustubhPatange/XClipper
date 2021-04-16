@@ -3,6 +3,7 @@ package com.kpstv.xclipper.ui.fragments.welcome
 import android.os.Build
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.isAndroid10orUp
+import com.kpstv.xclipper.ui.activities.Start
 
 class Greeting : AbstractWelcomeFragment() {
 
@@ -12,8 +13,8 @@ class Greeting : AbstractWelcomeFragment() {
         textId = R.string.palette1_text,
         nextTextId = if (isAndroid10orUp()) R.string.next_1 else R.string.nextd_1,
         directions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-            GreetingDirections.actionFragmentGreetToAndroid10()
+            Start.Screen.ANDROID10
         else
-            GreetingDirections.actionFragmentGreetToTurnOnService()
+            Start.Screen.TURN_ON_SERVICE
     )
 }

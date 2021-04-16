@@ -20,13 +20,9 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme.Dark">
         <activity android:name=".ui.activities.Crash"/>
-        <activity
-            android:name=".ui.activities.Settings"
-            android:label="@string/title_activity_settings" />
-        <activity android:name=".ui.activities.Splash" />
-        <activity android:name=".ui.activities.Main">
+        <activity android:name=".ui.activities.Start" android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

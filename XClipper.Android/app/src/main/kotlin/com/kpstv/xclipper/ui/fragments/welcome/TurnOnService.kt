@@ -4,6 +4,7 @@ import com.kpstv.xclipper.R
 import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.isClipboardAccessibilityServiceRunning
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showAccessibilityDialog
+import com.kpstv.xclipper.ui.activities.Start
 
 class TurnOnService : AbstractWelcomeFragment() {
 
@@ -16,13 +17,13 @@ class TurnOnService : AbstractWelcomeFragment() {
             if (!isClipboardAccessibilityServiceRunning(requireContext())) {
                 showAccessibilityDialog(requireContext())
             } else
-                navigateTo(TurnOnServiceDirections.actionTurnOnServiceToEnableSuggestion())
+                navigateTo(Start.Screen.ENABLE_SUGGESTIONS)
         }
     )
 
     override fun onResume() {
         super.onResume()
         if (isClipboardAccessibilityServiceRunning(requireContext()))
-            navigateTo(TurnOnServiceDirections.actionTurnOnServiceToEnableSuggestion())
+            navigateTo(Start.Screen.ENABLE_SUGGESTIONS)
     }
 }

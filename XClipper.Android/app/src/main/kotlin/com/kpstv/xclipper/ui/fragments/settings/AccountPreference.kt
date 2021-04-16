@@ -3,6 +3,7 @@ package com.kpstv.xclipper.ui.fragments.settings
 import android.os.Bundle
 import androidx.fragment.app.viewModels
 import androidx.preference.Preference
+import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.kpstv.xclipper.App
@@ -27,7 +28,7 @@ import es.dmoral.toasty.Toasty
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class AccountPreference : AnimatePreferenceFragment() {
+class AccountPreference : PreferenceFragmentCompat() {
 
     @Inject
     lateinit var preferenceProvider: PreferenceProvider

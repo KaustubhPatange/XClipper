@@ -1,6 +1,7 @@
 package com.kpstv.xclipper.ui.fragments
 
 import android.content.ClipData
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,12 +11,16 @@ import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
+import com.kpstv.navigation.AnimationDefinition
+import com.kpstv.navigation.Navigator
+import com.kpstv.navigation.ValueFragment
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.App.runAutoSync
 import com.kpstv.xclipper.App.swipeToDelete
@@ -28,11 +33,13 @@ import com.kpstv.xclipper.extensions.enumerations.FirebaseState
 import com.kpstv.xclipper.extensions.listeners.StatusListener
 import com.kpstv.xclipper.extensions.utils.FirebaseUtils
 import com.kpstv.xclipper.extensions.utils.ThemeUtils
+import com.kpstv.xclipper.extensions.utils.ThemeUtils.Companion.registerForThemeChange
 import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.openAccessibility
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.shareText
 import com.kpstv.xclipper.service.ChangeClipboardActivity
-import com.kpstv.xclipper.ui.activities.Settings
+import com.kpstv.xclipper.ui.activities.NavViewModel
+import com.kpstv.xclipper.ui.activities.Start
 import com.kpstv.xclipper.ui.adapters.CIAdapter
 import com.kpstv.xclipper.ui.dialogs.EditDialog
 import com.kpstv.xclipper.ui.dialogs.TagDialog
@@ -50,13 +57,14 @@ import kotlin.collections.ArrayList
 import kotlin.concurrent.schedule
 
 @AndroidEntryPoint
-class Home : Fragment(R.layout.fragment_home) {
+class Home : ValueFragment(R.layout.fragment_home) {
 
     @Inject lateinit var clipboardProvider: ClipboardProvider
     @Inject lateinit var firebaseUtils: FirebaseUtils
 
     private lateinit var adapter: CIAdapter
 
+    private val navViewModel by activityViewModels<NavViewModel>()
     private val mainViewModel: MainViewModel by viewModels()
     private val recyclerViewScrollHelper = RecyclerViewScrollHelper()
     private val swipeToDeleteItemTouch: ItemTouchHelper by lazy {
@@ -66,6 +74,14 @@ class Home : Fragment(R.layout.fragment_home) {
                 Toasty.info(requireContext(), getString(R.string.item_removed)).show()
             }
         )
+    }
+
+    override val forceBackPress: Boolean
+        get() = mainViewModel.stateManager.isMultiSelectionStateActive() || searchView?.isSearchOpen == true
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        registerForThemeChange()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -92,15 +108,26 @@ class Home : Fragment(R.layout.fragment_home) {
         autoValidateOnStartup()
     }
 
+    override fun onBackPressed(): Boolean {
+        when {
+            mainViewModel.stateManager.isMultiSelectionStateActive() -> {
+                mainViewModel.stateManager.setToolbarState(ToolbarState.NormalViewState)
+                return true
+            }
+            searchView?.onBackPressed() == true -> return true
+        }
+        return super.onBackPressed()
+    }
+
     private fun setGoTopButton() {
-        btn_go_up.applyBottomInsets()
+        btn_go_up.applyBottomInsets(merge = true)
         btn_go_up.setOnClickListener {
             recyclerViewScrollHelper.reset()
         }
     }
 
     private fun setFloatingButton() {
-        fab_addItem.applyBottomInsets()
+        fab_addItem.applyBottomInsets(merge = true)
         fab_addItem.setOnClickListener(fabListener)
     }
 
@@ -110,12 +137,12 @@ class Home : Fragment(R.layout.fragment_home) {
     }
 
     private fun bindUI() {
-        mainViewModel.clipLiveData.observe(viewLifecycleOwner) {
-            if (it.isEmpty() && !mainViewModel.searchManager.anyFilterApplied())
+        mainViewModel.clipLiveData.observe(viewLifecycleOwner) { clips ->
+            if (clips.isEmpty() && !mainViewModel.searchManager.anyFilterApplied())
                 layout_empty_parent.show()
             else
                 layout_empty_parent.collapse()
-            adapter.submitList(ArrayList(it?.cloneForAdapter()?.reversed()!!))
+            adapter.submitList(ArrayList(clips?.cloneForAdapter()?.reversed()!!))
             mainViewModel.stateManager.clearSelectedItem()
         }
         mainViewModel.stateManager.toolbarState.observe(viewLifecycleOwner) { state ->
@@ -185,10 +212,10 @@ class Home : Fragment(R.layout.fragment_home) {
                 }
                 CIAdapter.MENU_TYPE.Special -> {
                     MoreBottomSheet(
-                        supportFragmentManager = requireActivity().supportFragmentManager,
+                        supportFragmentManager = childFragmentManager,
                         clip = clip
                     ).show(
-                        requireActivity().supportFragmentManager,
+                        childFragmentManager,
                         "blank"
                     )
                 }
@@ -346,6 +373,7 @@ class Home : Fragment(R.layout.fragment_home) {
      * Call this function when ToolbarNormalState state is enabled.
      */
     private fun setNormalToolbar() {
+        appbarLayout.applyTopInsets()
         toolbar.navigationIcon = null
         toolbar.setNavigationOnClickListener(null)
         toolbar.menu.clear()
@@ -387,11 +415,14 @@ class Home : Fragment(R.layout.fragment_home) {
             }
         }
 
-        val settingImage =
-            LayoutInflater.from(requireContext())
-                .inflate(R.layout.imageview_menu_setting, null) as ImageView
+        val settingImage = LayoutInflater.from(requireContext()).inflate(R.layout.imageview_menu_setting, null) as ImageView
         settingImage.setOnClickListener {
-            startActivity(Intent(requireContext(), Settings::class.java))
+            navViewModel.navigateTo(
+                screen = Start.Screen.SETTING,
+                animation = AnimationDefinition.Fade(),
+                transactionType = Navigator.TransactionType.ADD,
+                addToBackStack = true,
+            )
         }
 
         toolbar.menu.findItem(R.id.action_sync).actionView = syncImage

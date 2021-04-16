@@ -9,6 +9,7 @@ import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.isSystemOverlayEnabled
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showOverlayDialog
+import com.kpstv.xclipper.ui.activities.Start
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.item_gifview.view.*
 import javax.inject.Inject
@@ -46,8 +47,8 @@ class EnableSuggestion : AbstractWelcomeFragment() {
 
     private fun navigateToNextScreen() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-            navigateTo(EnableSuggestionDirections.actionEnableSuggestionToStandardCopy())
+            navigateTo(Start.Screen.STANDARD_COPY)
         else
-            navigateTo(EnableSuggestionDirections.actionEnableSuggestionToWindowApp())
+            navigateTo(Start.Screen.WINDOWS_APP)
     }
 }

@@ -7,7 +7,6 @@ plugins {
     kotlin(GradlePluginId.ANDROID_KTX)
     kotlin(GradlePluginId.ANDROID_EXTENSIONS_KTX)
     kotlin(GradlePluginId.KAPT)
-    id(GradlePluginId.SAFE_ARGS)
     id(GradlePluginId.DAGGER_HILT)
 }
 
@@ -70,8 +69,6 @@ dependencies {
     implementation(LibraryDependency.FIREBASE_REALTIME_DATABASE)
     implementation(LibraryDependency.FIREBASE_AUTH)
     implementation(LibraryDependency.PLAY_SERVICE_AUTH)
-    implementation(LibraryDependency.NAVIGATION_FRAGMENT)
-    implementation(LibraryDependency.NAVIGATION_UI)
     implementation(LibraryDependency.PAGING)
     implementation(LibraryDependency.LIFECYCLE_EXTENSIONS)
     implementation(LibraryDependency.LIFECYCLE_VIEWMODEL)

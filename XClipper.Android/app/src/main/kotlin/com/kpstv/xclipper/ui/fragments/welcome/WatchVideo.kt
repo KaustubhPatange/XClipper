@@ -1,6 +1,5 @@
 package com.kpstv.xclipper.ui.fragments.welcome
 
-import androidx.navigation.NavOptions
 import com.kpstv.xclipper.App.TUTORIAL_PREF
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.provider.PreferenceProvider
@@ -27,11 +26,11 @@ class WatchVideo : AbstractWelcomeFragment() {
         action = {
             preferenceProvider.putBooleanKey(TUTORIAL_PREF, true)
 
-            val options = NavOptions.Builder()
+           /* val options = NavOptions.Builder()
                 .setPopUpTo(R.id.fragment_greet, true)
-                .build()
+                .build()*/
 
-            navigateTo(WatchVideoDirections.actionWatchVideoToFragmentHome(), options)
+           // navigateTo(WatchVideoDirections.actionWatchVideoToFragmentHome(), options)
         }
     )
 }

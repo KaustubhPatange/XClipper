@@ -4,6 +4,7 @@ package com.kpstv.xclipper.ui.fragments.settings
  import android.os.Bundle
  import androidx.preference.ListPreference
  import androidx.preference.MultiSelectListPreference
+ import androidx.preference.PreferenceFragmentCompat
  import androidx.preference.SwitchPreferenceCompat
  import com.kpstv.xclipper.App
  import com.kpstv.xclipper.App.BLACKLIST_PREF
@@ -28,7 +29,7 @@ package com.kpstv.xclipper.ui.fragments.settings
  import com.kpstv.xclipper.ui.fragments.AnimatePreferenceFragment
  import es.dmoral.toasty.Toasty
 
-class GeneralPreference : AnimatePreferenceFragment() {
+class GeneralPreference : PreferenceFragmentCompat() {
     private val TAG = javaClass.simpleName
     private var checkPreference: SwitchPreferenceCompat? = null
     private var overlayPreference: SwitchPreferenceCompat? = null

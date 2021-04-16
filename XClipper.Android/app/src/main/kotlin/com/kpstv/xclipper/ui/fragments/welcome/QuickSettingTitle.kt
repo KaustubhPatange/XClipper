@@ -1,8 +1,8 @@
 package com.kpstv.xclipper.ui.fragments.welcome
 
 import android.view.LayoutInflater
-import androidx.navigation.fragment.findNavController
 import com.kpstv.xclipper.R
+import com.kpstv.xclipper.ui.activities.Start
 import kotlinx.android.synthetic.main.item_gifview.view.*
 
 class QuickSettingTitle : AbstractWelcomeFragment() {
@@ -12,7 +12,7 @@ class QuickSettingTitle : AbstractWelcomeFragment() {
         nextPaletteId = R.color.palette6,
         textId = R.string.palette5_text,
         nextTextId = R.string.next_6,
-        directions = QuickSettingTitleDirections.actionQuickSettingTitleToWindowApp(),
+        directions = Start.Screen.WINDOWS_APP,
         insertView = LayoutInflater.from(requireContext()).inflate(
             R.layout.item_gifview, null
         ).apply {

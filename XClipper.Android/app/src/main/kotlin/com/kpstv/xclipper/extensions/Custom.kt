@@ -1,6 +1,7 @@
 package com.kpstv.xclipper.extensions
 
 import android.util.Log
+import androidx.fragment.app.Fragment
 import com.ferfalk.simplesearchview.SimpleSearchView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -15,6 +16,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
+import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
 import kotlin.reflect.KProperty1
 import kotlin.reflect.KVisibility
@@ -23,6 +25,7 @@ import kotlin.reflect.full.memberProperties
 typealias SimpleFunction = () -> Unit
 typealias ErrorFunction = (Exception?) -> Unit
 typealias FirebaseFunction = (DataSnapshot) -> Unit
+typealias FragClazz = KClass<out Fragment>
 
 fun SimpleSearchView.setOnQueryTextListener(
     onSubmit: ((String) -> Unit)? = null,

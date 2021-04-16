@@ -1,7 +1,12 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- A dark theme -->
     <style name="AppTheme" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+
+    <!-- A dark theme -->
+    <style name="AppTheme.Dark" parent="Theme.MaterialComponents.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorPrimary</item>
@@ -11,6 +16,7 @@
         <item name="colorTextSecondary">@color/colorTextSecondary</item>
         <item name="colorTextSecondaryLight">@color/colorTextSecondaryLight</item>
         <item name="colorForeground">@color/colorClickCard</item>
+        <item name="colorBackground">@color/colorCard</item>
         <item name="colorSeparator">@color/colorSeparator</item>`
         <item name="colorSelected">@color/colorSelected</item>
         <item name="colorCurrentClip">@color/colorSelectedClip</item>
@@ -28,6 +34,7 @@
         <item name="colorTextSecondary">@color/colorTextSecondary_Light</item>
         <item name="colorTextSecondaryLight">@color/colorTextSecondaryLight_Light</item>
         <item name="colorForeground">@color/colorClickCard_Light</item>
+        <item name="colorBackground">@color/colorCard_Light</item>
         <item name="colorSeparator">@color/colorSeparator_Light</item>
         <item name="colorSelected">@color/colorSelected_Light</item>
         <item name="colorCurrentClip">@color/colorSelectedClip_Light</item>
@@ -110,7 +117,7 @@
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
-    <style name="Theme.AppCompat.Translucent" parent="AppTheme">
+    <style name="Theme.AppCompat.Translucent" parent="AppTheme.Dark">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsFloating">true</item>

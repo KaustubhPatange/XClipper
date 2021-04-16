@@ -12,8 +12,8 @@ import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.extensions.AbstractBroadcastReceiver
 import com.kpstv.xclipper.extensions.Coroutines
 import com.kpstv.xclipper.extensions.utils.Utils
-import com.kpstv.xclipper.ui.activities.Main
 import com.kpstv.xclipper.ui.activities.SpecialActions
+import com.kpstv.xclipper.ui.activities.Start
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -37,7 +37,7 @@ class AppBroadcastReceiver : AbstractBroadcastReceiver() {
         when (intent.action) {
             ACTION_OPEN_APP -> {
                 context.startActivity(
-                    Intent(context, Main::class.java).apply {
+                    Intent(context, Start::class.java).apply {
                         flags = FLAG_ACTIVITY_BROUGHT_TO_FRONT or FLAG_ACTIVITY_NEW_TASK
                     }
                 )

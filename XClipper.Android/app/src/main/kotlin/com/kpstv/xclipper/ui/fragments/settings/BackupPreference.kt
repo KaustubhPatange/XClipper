@@ -5,6 +5,7 @@ import android.content.Intent.*
 import android.os.Bundle
 import androidx.fragment.app.viewModels
 import androidx.preference.Preference
+import androidx.preference.PreferenceFragmentCompat
 import com.kpstv.xclipper.App.EXPORT_PREF
 import com.kpstv.xclipper.App.IMPORT_PREF
 import com.kpstv.xclipper.R
@@ -16,7 +17,7 @@ import es.dmoral.toasty.Toasty
 import java.util.*
 
 @AndroidEntryPoint
-class BackupPreference : AnimatePreferenceFragment() {
+class BackupPreference : PreferenceFragmentCompat() {
 
     companion object {
         private const val EXPORT_RESULT_CODE = 110

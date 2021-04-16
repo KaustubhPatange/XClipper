@@ -1,10 +1,10 @@
 package com.kpstv.xclipper.ui.fragments.welcome
 
-import androidx.navigation.NavOptions
-import androidx.navigation.fragment.findNavController
+import com.kpstv.navigation.AnimationDefinition
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.provider.PreferenceProvider
+import com.kpstv.xclipper.ui.activities.Start
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -23,12 +23,7 @@ class WindowApp : AbstractWelcomeFragment() {
         action = {
             preferenceProvider.putBooleanKey(App.TUTORIAL_PREF, true)
 
-            val options = NavOptions.Builder()
-                .setEnterAnim(android.R.anim.slide_in_left)
-                .setPopUpTo(R.id.fragment_greet, true)
-                .build()
-
-            navigateTo(WindowAppDirections.actionWatchVideoToFragmentHome(), options)
+            navigateTo(Start.Screen.HOME, true, AnimationDefinition.CircularReveal())
         }
     )
 }

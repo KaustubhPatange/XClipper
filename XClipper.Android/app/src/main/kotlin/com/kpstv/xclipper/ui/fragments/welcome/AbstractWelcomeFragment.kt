@@ -10,20 +10,20 @@ import android.view.View
 import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
-import androidx.navigation.NavDirections
-import androidx.navigation.NavOptions
-import androidx.navigation.fragment.FragmentNavigatorExtras
-import androidx.navigation.fragment.findNavController
-import androidx.transition.TransitionInflater
+import androidx.fragment.app.activityViewModels
+import com.kpstv.navigation.AnimationDefinition
+import com.kpstv.navigation.NavAnimation
+import com.kpstv.navigation.ValueFragment
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.databinding.FragmentWelcomeBinding
 import com.kpstv.xclipper.extensions.SimpleFunction
 import com.kpstv.xclipper.extensions.applyBottomInsets
 import com.kpstv.xclipper.extensions.utils.ThemeUtils
 import com.kpstv.xclipper.extensions.viewBinding
+import com.kpstv.xclipper.ui.activities.NavViewModel
+import com.kpstv.xclipper.ui.activities.Start
 
-abstract class AbstractWelcomeFragment : Fragment(R.layout.fragment_welcome) {
+abstract class AbstractWelcomeFragment : ValueFragment(R.layout.fragment_welcome) {
 
     protected data class Configuration(
         @ColorRes val paletteId: Int,
@@ -33,7 +33,7 @@ abstract class AbstractWelcomeFragment : Fragment(R.layout.fragment_welcome) {
         val insertView: View? = null,
         val isLastScreen: Boolean = false,
         val action: SimpleFunction? = null,
-        val directions: NavDirections? = null
+        val directions: Start.Screen? = null
     )
 
     companion object {
@@ -41,16 +41,7 @@ abstract class AbstractWelcomeFragment : Fragment(R.layout.fragment_welcome) {
     }
 
     private val binding by viewBinding(FragmentWelcomeBinding::bind)
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        requireActivity().window.statusBarColor = 0
-        requireActivity().window.navigationBarColor = 0
-        requireActivity().window.decorView.systemUiVisibility =
-            View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-
-        super.onCreate(savedInstanceState)
-        sharedElementEnterTransition = TransitionInflater.from(requireContext()).inflateTransition(android.R.transition.move)
-    }
+    private val navViewModel by activityViewModels<NavViewModel>()
 
     protected abstract fun getConfigurations() : Configuration
 
@@ -89,9 +80,9 @@ abstract class AbstractWelcomeFragment : Fragment(R.layout.fragment_welcome) {
 
             // We are in the last screen of welcome fragment, we should remove the
             // status bar color overlay and keep it default to theme.
-            if (configs.isLastScreen) {
-                requireActivity().window.decorView.systemUiVisibility = 0
-                ThemeUtils.restoreStatusAndNavigationColor(requireActivity())
+            if (configs.isLastScreen) { // TODO:
+               /* requireActivity().window.decorView.systemUiVisibility = 0
+                ThemeUtils.restoreStatusAndNavigationColor(requireActivity())*/
             }
 
             if (configs.directions != null)
@@ -101,13 +92,19 @@ abstract class AbstractWelcomeFragment : Fragment(R.layout.fragment_welcome) {
         }
     }
 
-    fun navigateTo(direction: NavDirections, options: NavOptions? = null) {
-        val extras = FragmentNavigatorExtras(
-            binding.fwTextView to "paragraphText",
-            binding.fwInsertLayout to "insertLayout"
+    fun navigateTo(screen: Start.Screen, popUpTo: Boolean = false, animation: NavAnimation? = null) {
+        val anim = animation ?: AnimationDefinition.Shared(
+            mapOf(
+                binding.fwTextView to "paragraphText",
+                binding.fwInsertLayout to "insertLayout"
+            )
         )
-
-        findNavController().navigate(direction.actionId, null, options, extras)
+        navViewModel.navigateTo(
+            screen = screen,
+            addToBackStack = !popUpTo,
+            animation = anim,
+            popUpTo  = popUpTo
+        )
     }
 
     private fun animateLayoutColors(currentPaletteColor: Int) {
