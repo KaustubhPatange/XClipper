@@ -101,6 +101,9 @@ namespace Components
         }
         public string QRTooltip { get; set; } = QRData == null ? Translation.SETTINGS_QR_TOOLTIP_NO_BIND : Translation.SETTINGS_QR_TOOLTIP;
 
+        public Buffer CopyBuffer1 { get; set; } = DefaultSettings.CopyBuffer1;
+        public Buffer CopyBuffer2 { get; set; } = DefaultSettings.CopyBuffer2;
+
         #endregion
 
         #region Method Events
@@ -322,12 +325,7 @@ namespace Components
         /// <param name="args"></param>
         private void OnKeyDown(KeyEventArgs args)
         {
-            //if (args.IsRepeat)
-            //    return;
-
-            if (args.Key != Key.LeftCtrl && args.Key != Key.RightCtrl && args.Key != Key.LeftShift
-                && args.Key != Key.RightShift && args.Key != Key.LeftAlt && args.Key != Key.RightAlt
-                && args.Key != Key.System)
+            if (!KeyPressHelper.IsSpecialKey(args.Key))
                 KEY_HK = args.Key.ToString();
         }
 

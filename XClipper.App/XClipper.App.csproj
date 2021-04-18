@@ -218,6 +218,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="AppModule.cs" />
+    <Compile Include="Controls\BufferItem.xaml.cs">
+      <DependentUpon>BufferItem.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Dialog\InputDialog.xaml.cs">
       <DependentUpon>InputDialog.xaml</DependentUpon>
     </Compile>
@@ -244,6 +247,7 @@
     <Compile Include="Data\helpers\QuickPasteHelper.cs" />
     <Compile Include="Data\helpers\TimeStampHelper.cs" />
     <Compile Include="Data\helpers\UWPToast.cs" />
+    <Compile Include="Data\Models\Buffer.cs" />
     <Compile Include="Data\Models\Clip.cs" />
     <Compile Include="Data\Models\Device.cs" />
     <Compile Include="Data\Models\FirebaseData.cs" />
@@ -368,6 +372,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\BufferItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\Dialog\InputDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

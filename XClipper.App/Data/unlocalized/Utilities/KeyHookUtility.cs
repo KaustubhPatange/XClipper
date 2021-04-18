@@ -4,7 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Forms;
 using static Components.DefaultSettings;
 
@@ -21,6 +23,7 @@ namespace Components
         private Action? hotKeyEvent;
         private Action? pasteEvent;
         private Action<int>? quickPasteEvent;
+        private bool _isListening = true;
 
         public KeyHookUtility()
         { }
@@ -31,14 +34,15 @@ namespace Components
 
         public void Init()
         {
-            eventHookFactory = new KeyMouseFactory(Hook.GlobalEvents());
+            var events = Hook.GlobalEvents();
+            eventHookFactory = new KeyMouseFactory(events);
             keyboardWatcher = eventHookFactory.GetKeyboardWatcher();
             if (UseExperimentalKeyCapture)
                 keyboardWatcher.OnKeyboardInput += KeyboardWatcher_OnKeyboardInput2;
             else
                 keyboardWatcher.OnKeyboardInput += KeyboardWatcher_OnKeyboardInput;
 
-            keyboardWatcher.Start(Hook.GlobalEvents());
+            keyboardWatcher.Start(events);
         }
 
         /// <summary>
@@ -68,6 +72,16 @@ namespace Components
             pasteEvent = block;
         }
 
+        public void StartListening()
+        {
+            _isListening = true;
+        }
+        
+        public void StopListening()
+        {
+            _isListening = false;
+        }
+
         public void UnsubscribeAll()
         {
             Debug.WriteLine("Dispose");
@@ -80,24 +94,20 @@ namespace Components
 
         private List<Keys> keyStreams = new List<Keys>();
         private const int KEY_STORE_SIZE = 4;
+        private const int LAST_KEY_TIME_OFFSET = 400;
 
         private long TIME_LAST_KEY_OFFSET = 0;
         private bool quickPasteChord = false;
         private bool active = false;
+
         private void KeyboardWatcher_OnKeyboardInput2(object sender, MacroEvent e)
         {
             var keyEvent = e.EventArgs as KeyEventArgs;
             if (keyEvent == null) return;
             var key = keyEvent.KeyCode;
-            
-            if (ShouldPerformPasteAction(e, key))
-            {
-                Debug.WriteLine("Modifier Key: Should run paste command");
-                keyStreams.Clear();
-                pasteEvent?.Invoke();
-                return;
-            }
-            
+
+            if (!_isListening) return;
+
             if (keyStreams.Count >= KEY_STORE_SIZE)
                 keyStreams.RemoveAt(0);
 
@@ -105,15 +115,16 @@ namespace Components
 
             if (active)
             {
-                if (TIME_LAST_KEY_OFFSET > 0 && timeLong - TIME_LAST_KEY_OFFSET <= 500)
+                if (TIME_LAST_KEY_OFFSET > 0 && timeLong - TIME_LAST_KEY_OFFSET <= LAST_KEY_TIME_OFFSET)
                 {
                     Debug.WriteLine("IsActive");
                     return;
                 }
+
                 active = false;
             }
 
-            if (TIME_LAST_KEY_OFFSET > 0 && timeLong - TIME_LAST_KEY_OFFSET >= 500)
+            if (TIME_LAST_KEY_OFFSET > 0 && timeLong - TIME_LAST_KEY_OFFSET >= LAST_KEY_TIME_OFFSET)
                 keyStreams.Clear();
             TIME_LAST_KEY_OFFSET = timeLong;
 
@@ -121,6 +132,14 @@ namespace Components
                 keyStreams.Add(key);
             else
                 return;
+
+            if (ShouldPerformPasteAction(e, key))
+            {
+                Debug.WriteLine("Modifier Key: Should run paste command");
+                keyStreams.Clear();
+                pasteEvent?.Invoke();
+                return;
+            }
 
             bool isCtrl;
             if (DefaultSettings.IsCtrl)
@@ -147,6 +166,7 @@ namespace Components
             {
                 active = true;
                 hotKeyEvent?.Invoke();
+                keyStreams.Clear();
             }
 
             if (quickPasteChord && KeyPressHelper.IsNumericKeyPressed(key))
@@ -157,7 +177,8 @@ namespace Components
 
             quickPasteChord = false;
 
-            if (keyStreams.Any(c => c == Keys.LControlKey || c == Keys.RControlKey) && keyStreams.Any(c => c == Keys.Oem5))
+            if (keyStreams.Any(c => c == Keys.LControlKey || c == Keys.RControlKey) &&
+                keyStreams.Any(c => c == Keys.Oem5))
             {
                 Debug.WriteLine("QuickPaste chord activated");
                 quickPasteChord = true;
@@ -169,8 +190,12 @@ namespace Components
 
         private void KeyboardWatcher_OnKeyboardInput(object sender, MacroEvent e)
         {
-            var keyEvent = (KeyEventArgs)e.EventArgs;
+            var keyEvent = (KeyEventArgs) e.EventArgs;
+            
+            if (!_isListening) return;
+            
             Debug.WriteLine($"Key: {keyEvent.KeyCode}, Type: {e.KeyMouseEventType}");
+
             if (e.KeyMouseEventType == MacroEventType.KeyUp || e.KeyMouseEventType == MacroEventType.KeyPress)
             {
                 var key = keyEvent.KeyCode;
@@ -226,6 +251,7 @@ namespace Components
             return ClipWindow.EnqueuePaste && e.KeyMouseEventType == MacroEventType.KeyUp &&
                    KeyPressHelper.IsModifierKey(key);
         }
+
         private void DoQuickPaste2(int index)
         {
             Task.Run(async () =>
@@ -251,6 +277,7 @@ namespace Components
 
         public void Dispose()
         {
+            Debug.WriteLine("Disposed KeyHookUtility");
             quickPasteEvent = null;
             hotKeyEvent = null;
             eventHookFactory.Dispose();

@@ -49,7 +49,6 @@ namespace Components
 
         #endregion
 
-
         #region Constructor
 
         public ClipWindow()
@@ -291,7 +290,7 @@ namespace Components
                 SetListViewFocus(_lvClip.SelectedIndex + 1);
                 if (_lvClip.SelectedIndex == 0)
                 {
-                    
+                    // TODO: Do something for index
                 } else if (_lvClip.SelectedIndex > 0)
                 {
                     EnqueuePaste = true;
@@ -728,15 +727,7 @@ namespace Components
             // We will close the window to obtain focus to success window.
             CloseWindow();
 
-            // Saving clipboard...
-            ClipboardHelper.Preserve();
-
-            // Send text to screen...
-            ClipboardHelper.Clear();  // Always clear the clipboard first
-            ClipboardHelper.SetText(text);
-            System.Windows.Forms.SendKeys.SendWait("^v");
-            Thread.Sleep(100);
-            ClipboardHelper.Consume();
+            ClipboardHelper.PerformClipboardPaste(text);
         }
 
         /// <summary>

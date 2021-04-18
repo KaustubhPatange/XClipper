@@ -39,6 +39,7 @@ namespace Components
 		public readonly string APP_CRASH = rm.GetString("app_crash");
 		public readonly string SETTINGS_TAB_MAIN = rm.GetString("settings_tab_main");
 		public readonly string SETTINGS_TAB_CONNECT = rm.GetString("settings_tab_connect");
+		public readonly string SETTINGS_TAB_BUFFER = rm.GetString("settings_tab_buffer");
 		public readonly string SETTINGS_AUTH = rm.GetString("settings_auth");
 		public readonly string SETTINGS_NOTIFY = rm.GetString("settings_notify");
 		public readonly string SETTINGS_COMMON = rm.GetString("settings_common");

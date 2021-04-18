@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using System.Windows.Navigation;
 using System.Security.RightsManagement;
 using System.Data.SqlTypes;
+using System.Linq;
 
 #nullable enable
 
@@ -462,11 +463,15 @@ namespace Components
             }
         }
 
+        // Set of buffers that are used to store some external data on the go.
+        public static Buffer CopyBuffer1 { get; set; } = Settings.CopyBuffer1;
+        public static Buffer CopyBuffer2 { get; set; } = Settings.CopyBuffer2;
+
+        #endregion
+
         /// <summary>
         /// Set of timestamps that will trigger certain notifications.
         /// </summary>
-
-        #endregion
 
         public static class TimeStamps
         {
@@ -533,6 +538,21 @@ namespace Components
                     );
             document.Add(settings);
             document.Save(SettingsPath);
+
+            WriteBufferSetting();
+        }
+
+        /// <summary>
+        /// Writes buffer settings to a file including their keymaps & last captured data.
+        /// </summary>
+        public static void WriteBufferSetting()
+        {
+            var document = new XDocument();
+            var buffers = new XElement(BUFFERS);
+            buffers.Add(Buffer.ToNode(CopyBuffer1));
+            buffers.Add(Buffer.ToNode(CopyBuffer2));
+            document.Add(buffers);
+            document.Save(BufferFilePath);
         }
 
         /// <summary>
@@ -640,6 +660,7 @@ namespace Components
             }
 
             LoadApplicationSetting();
+            LoadBufferSetting();
             LoadTimeStampsSetting();
             LoadFirebaseSetting();
             LoadFirebaseCredentials();
@@ -682,6 +703,18 @@ namespace Components
             ExitOnCrash = environment.Element(nameof(ExitOnCrash)).Value.ToBool();
             NoNotifyChanges = environment.Element(nameof(NoNotifyChanges)).Value.ToBool();
             UseExperimentalKeyCapture = environment.Element(nameof(UseExperimentalKeyCapture)).Value.ToBool();
+        }
+
+        /// <summary>
+        /// Loads the buffer setting if exist.
+        /// </summary>
+        public static void LoadBufferSetting()
+        {
+            if (!File.Exists(BufferFilePath)) return;
+
+            var elements = XDocument.Load(BufferFilePath).Element(BUFFERS).Elements().ToList();
+            CopyBuffer1 = Buffer.FromNode(elements[0]);
+            CopyBuffer2 = Buffer.FromNode(elements[1]);
         }
 
         /// <summary>

@@ -42,6 +42,21 @@ namespace Components
             return key == Keys.Alt || key == Keys.Control || key == Keys.ControlKey || key == Keys.LControlKey || key == Keys.RControlKey 
                 || key == Keys.Shift || key == Keys.ShiftKey || key == Keys.LShiftKey || key == Keys.RShiftKey;
         }
+
+        /// <summary>
+        /// Determines if this key is a special key.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public static bool IsSpecialKey(Key key)
+        {
+            return key == Key.LeftCtrl || key == Key.RightCtrl || key == Key.LeftShift
+                   || key == Key.RightShift || key == Key.LeftAlt || key == Key.RightAlt
+                   || key == Key.System || key == Key.LWin || key == Key.RWin;
+        }
+        
+        public static Key ToInputKey(Keys k) => KeyInterop.KeyFromVirtualKey((int) k);
+        public static Keys ToWindowsKey(Key k) => (Keys) KeyInterop.VirtualKeyFromKey(k);
         
         private static int ParseKeyString(string key) => Regex.Replace(key, "[^0-9.]", "").ToInt();
     }

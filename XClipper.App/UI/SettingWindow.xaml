@@ -303,6 +303,15 @@
                             </StackPanel>
                         </Border>
                     </TabItem>
+
+                    <TabItem Header="{DynamicResource settings_tab_buffer}">
+                        <Border Padding="7,0,7,7">
+                            <StackPanel Orientation="Vertical">
+                                <control:BufferItem Title="Copy Buffer 1" BufferModel="{Binding CopyBuffer1}" />
+                                <control:BufferItem Title="Copy Buffer 2" BufferModel="{Binding CopyBuffer2}" />
+                            </StackPanel>
+                        </Border>
+                    </TabItem>
                 </TabControl>
 
                 <!--#region Bottom buttons-->

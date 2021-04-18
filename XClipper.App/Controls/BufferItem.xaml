@@ -1,0 +1,141 @@
+﻿<UserControl
+    x:Class="Components.Controls.BufferItem"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ap="http://www.galasoft.ch/mvvmlight"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+    xmlns:local="clr-namespace:Components.Controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="450"
+    d:DesignWidth="340"
+    Background="White"
+    mc:Ignorable="d">
+    <GroupBox Padding="5" Header="{Binding Title}">
+        <StackPanel Orientation="Vertical">
+
+            <!--  Copy  -->
+            <Grid Margin="5,0,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Text="Copy" />
+                <CheckBox
+                    Grid.Column="1"
+                    Margin="0,3,7,0"
+                    Content="ALT"
+                    IsChecked="{Binding BufferModel.Copy.IsAlt}" />
+                <CheckBox
+                    Grid.Column="2"
+                    Margin="0,3,7,0"
+                    Content="CTRL"
+                    IsChecked="{Binding BufferModel.Copy.IsCtrl}" />
+                <CheckBox
+                    Grid.Column="3"
+                    Margin="0,3,7,0"
+                    Content="SHIFT"
+                    IsChecked="{Binding BufferModel.Copy.IsShift}" />
+                <TextBox
+                    Grid.Column="4"
+                    MinWidth="80"
+                    IsReadOnly="True"
+                    Text="{Binding BufferModel.Copy.HotKey}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="PreviewKeyDown">
+                            <ap:EventToCommand Command="{Binding CopyKeyDownCommand}" PassEventArgsToCommand="True" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </TextBox>
+            </Grid>
+
+            <!--  Paste  -->
+            <Grid Margin="5,5,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Text="Paste" />
+                <CheckBox
+                    Grid.Column="1"
+                    Margin="0,3,7,0"
+                    Content="ALT"
+                    IsChecked="{Binding BufferModel.Paste.IsAlt}" />
+                <CheckBox
+                    Grid.Column="2"
+                    Margin="0,3,7,0"
+                    Content="CTRL"
+                    IsChecked="{Binding BufferModel.Paste.IsCtrl}" />
+                <CheckBox
+                    Grid.Column="3"
+                    Margin="0,3,7,0"
+                    Content="SHIFT"
+                    IsChecked="{Binding BufferModel.Paste.IsShift}" />
+                <TextBox
+                    Grid.Column="4"
+                    MinWidth="80"
+                    IsReadOnly="True"
+                    Text="{Binding BufferModel.Paste.HotKey}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="PreviewKeyDown">
+                            <ap:EventToCommand Command="{Binding PasteKeyDownCommand}" PassEventArgsToCommand="True" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </TextBox>
+            </Grid>
+
+            <!--  Cut  -->
+            <Grid Margin="5,5,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Text="Cut" />
+                <CheckBox
+                    Grid.Column="1"
+                    Margin="0,3,7,0"
+                    Content="ALT"
+                    IsChecked="{Binding BufferModel.Cut.IsAlt}" />
+                <CheckBox
+                    Grid.Column="2"
+                    Margin="0,3,7,0"
+                    Content="CTRL"
+                    IsChecked="{Binding BufferModel.Cut.IsCtrl}" />
+                <CheckBox
+                    Grid.Column="3"
+                    Margin="0,3,7,0"
+                    Content="SHIFT"
+                    IsChecked="{Binding BufferModel.Cut.IsShift}" />
+                <TextBox
+                    Grid.Column="4"
+                    MinWidth="80"
+                    IsReadOnly="True"
+                    Text="{Binding BufferModel.Cut.HotKey}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="PreviewKeyDown">
+                            <ap:EventToCommand Command="{Binding CutKeyDownCommand}" PassEventArgsToCommand="True" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </TextBox>
+            </Grid>
+
+            <CheckBox
+                Margin="0,10,0,0"
+                HorizontalAlignment="Right"
+                Content="Play sound on Copy or Cut"
+                IsChecked="{Binding BufferModel.PlaySound}" />
+        </StackPanel>
+    </GroupBox>
+</UserControl>

@@ -40,10 +40,7 @@ namespace Components
                         case ContentType.Text:
                             recorder?.Ignore(() =>
                             {
-                                ClipboardHelper.Preserve();
-                                ClipboardHelper.SetText(model.RawText);
-                                System.Windows.Forms.SendKeys.SendWait("^v");
-                                ClipboardHelper.Consume();
+                                ClipboardHelper.PerformClipboardPaste(model.RawText);
                             });
                             break;
                         case ContentType.Image:

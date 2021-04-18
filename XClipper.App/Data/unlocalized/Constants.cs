@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using System.Windows.Forms;
 
 namespace Components
 {
@@ -31,9 +32,9 @@ namespace Components
         public static string UpdatePackageFile = Path.Combine(ApplicationTempDirectory, "package-update.exe");
         public static string UserStateFile = Path.Combine(ApplicationDirectory, "user.xml");
         public static string IgnoreFilePath = Path.Combine(ApplicationDirectory, ".ignore");
+        public static string BufferFilePath = Path.Combine(ApplicationDirectory, "buffers.xml");
 
         #endregion
-
 
         #region Some application specific constants
 
@@ -46,6 +47,7 @@ namespace Components
         public const string ENVIRONMENT = "Environment";
         public const string TIMESTAMPS = "Timestamps";
         public const string CREDENTIAL = "Credential";
+        public const string BUFFERS = "Buffers";
         public const string FIREBASE = "Firebase";
         public const string DESKTOP_AUTH = "DesktopAuth";
         public const string MOBILE_AUTH = "MobileAuth";
@@ -145,6 +147,35 @@ namespace Components
             public const bool EXIT_ON_CRASH = true;
             public const bool NO_NOTIFY_CHANGES = false;
             public const bool USE_EXPERIMENTAL_KEY_CAPTURE = true;
+            public static Buffer CopyBuffer1
+            {
+                get
+                {
+                    Buffer b = new();
+                    b.Copy.IsCtrl = true;
+                    b.Copy.HotKey = Keys.Oemplus.ToString();
+
+                    b.Paste.IsCtrl = true;
+                    b.Paste.IsShift = true;
+                    b.Paste.HotKey = Keys.Oemplus.ToString();
+                    return b;
+                }
+            }
+
+            public static Buffer CopyBuffer2
+            {
+                get
+                {
+                    Buffer b = new();
+                    b.Copy.IsCtrl = true;
+                    b.Copy.HotKey = Keys.OemMinus.ToString();
+
+                    b.Paste.IsCtrl = true;
+                    b.Paste.IsShift = true;
+                    b.Paste.HotKey = Keys.OemMinus.ToString();
+                    return b;
+                }
+            }
         }
 
         #endregion

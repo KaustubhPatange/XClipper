@@ -32,7 +32,7 @@ using System.Net;
 
 namespace Components
 {
-    public partial class App : Application, ISettingEventBinder, IFirebaseBinder, IBuyEventBinder, IClipServiceBinder, IFirebaseBinderV2
+    public partial class App : Application, ISettingEventBinder, IFirebaseBinder, IBuyEventBinder, IClipServiceBinder, IFirebaseBinderV2, ClipboardHelper.IClipboardListener
     {
         #region Variable Declaration
 
@@ -77,11 +77,6 @@ namespace Components
             recorder.SetAppBinder(this);
             recorder.StartRecording();
 
-            hookUtility.Init();
-            hookUtility.SubscribeHotKeyEvents(LaunchCodeUI);
-            hookUtility.SubscribePasteEvent(PerformWindowPaste);
-            hookUtility.SubscribeQuickPasteEvent(QuickPasteHook);
-
             quickPasteHelper.Init(recorder);
 
             SetAppStartupEntry();
@@ -98,6 +93,7 @@ namespace Components
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
             ConnectionHelper.StartMonitoring();
+            ClipboardHelper.AddListener(this);
 
             LoadLanguageResource();
 
@@ -114,7 +110,7 @@ namespace Components
                 Visible = true
             };
 
-            notifyIcon.Click += (o, e) => LaunchCodeUI();
+            notifyIcon.DoubleClick += (o, e) => LaunchCodeUI();
             DisplayNotifyMessage();
 
             ApplicationHelper.AttachForegroundProcess(delegate
@@ -134,6 +130,11 @@ namespace Components
                 FirebaseHelper.InitializeService(this);
                 TimeStampHelper.ShowRequiredNotifications();
             });
+
+            hookUtility.Init();
+            hookUtility.SubscribeHotKeyEvents(LaunchCodeUI);
+            hookUtility.SubscribePasteEvent(PerformWindowPaste);
+            hookUtility.SubscribeQuickPasteEvent(QuickPasteHook);
         }
 
         protected override void OnExit(ExitEventArgs e)
@@ -574,6 +575,20 @@ namespace Components
 
         #endregion
 
+        #region IClipboardListener
+
+        public void OnClipboardPasteStarted()
+        {
+            hookUtility.StopListening();
+        }
+
+        public void OnClipboardPasteComplete()
+        {
+            hookUtility.StartListening();
+        }
+
+        #endregion
+
         #region Method Events
 
         private void ActivateLicense()
@@ -662,14 +677,6 @@ namespace Components
         private void PerformWindowPaste()
         {
             clipWindow.DoPasteAction();
-            /*Task.Run(async () =>
-            {
-                Current.Dispatcher.Invoke(delegate
-                {
-                    
-                });
-                await Task.Delay(100).ConfigureAwait(false);
-            });*/
         }
         
         private void QuickPasteHook(int number)

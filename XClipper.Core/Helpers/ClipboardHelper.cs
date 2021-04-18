@@ -1,8 +1,10 @@
-﻿using System.Collections.Specialized;
+﻿using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Windows.Media.Imaging;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Threading;
 
 #nullable enable
 
@@ -12,6 +14,42 @@ namespace Components
     {
         private static DataType? type;
         private static object? data;
+        private static List<IClipboardListener> _listeners = new();
+
+        public interface IClipboardListener
+        {
+            void OnClipboardPasteStarted();
+            void OnClipboardPasteComplete();
+        }
+
+        /// <summary>
+        /// Registers a listener which allows us to listen clipboard pastes.
+        /// </summary>
+        /// <param name="listener"></param>
+        public static void AddListener(IClipboardListener listener)
+        {
+            _listeners.Add(listener);
+        }
+        
+        public static void RemoveListener(IClipboardListener listener)
+        {
+            _listeners.Remove(listener);
+        }
+
+        /// <summary>
+        /// Simulates clipboard pasting by first preserving the existing data, setting incoming data &
+        /// performs Ctrl + V action to paste the data.
+        /// </summary>
+        public static void PerformClipboardPaste(string text)
+        {
+            _listeners.ForEach(l => l.OnClipboardPasteStarted());
+            Preserve();
+            SetText(text);
+            System.Windows.Forms.SendKeys.SendWait("^v");
+            Thread.Sleep(100);
+            Consume();
+            _listeners.ForEach(l => l.OnClipboardPasteComplete());
+        }
 
         public static void Clear()
         {

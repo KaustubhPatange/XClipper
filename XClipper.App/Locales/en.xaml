@@ -29,6 +29,7 @@
     <system:String x:Key="app_crash">XClipper app crashed!</system:String>
     <system:String x:Key="settings_tab_main">Main</system:String>
     <system:String x:Key="settings_tab_connect">Connect</system:String>
+    <system:String x:Key="settings_tab_buffer">Copy Buffers</system:String>
     <system:String x:Key="settings_auth">Authentication</system:String>
     <system:String x:Key="settings_notify">Notification</system:String>
     <system:String x:Key="settings_common">Common</system:String>
