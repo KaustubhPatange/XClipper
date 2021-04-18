@@ -220,10 +220,20 @@ DEL ""%~f0""";
 
         public static void LaunchUrl(string url)
         {
-            if (MainHelper.IsUrl(url))
+            if (IsUrl(url))
             {
                 Process.Start(url);
             }
+        }
+
+        public static bool IsHotKeysPressed(bool isAlt, bool isCtrl, bool isShift, string key = null)
+        {
+            bool execute = true;
+            if (DefaultSettings.IsAlt == true) execute &= isAlt;
+            if (DefaultSettings.IsCtrl == true) execute &= isCtrl;
+            if (DefaultSettings.IsShift == true) execute &= isShift;
+            if ((DefaultSettings.HotKey != key) && key != null) execute &= false;
+            return execute;
         }
     }
 }

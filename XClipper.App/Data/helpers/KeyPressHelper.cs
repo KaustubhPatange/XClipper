@@ -32,6 +32,17 @@ namespace Components
             return ParseKeyString(e.ToString());
         }
 
+        /// <summary>
+        /// Detect if any modifier keys are pressed.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public static bool IsModifierKey(Keys key)
+        {
+            return key == Keys.Alt || key == Keys.Control || key == Keys.ControlKey || key == Keys.LControlKey || key == Keys.RControlKey 
+                || key == Keys.Shift || key == Keys.ShiftKey || key == Keys.LShiftKey || key == Keys.RShiftKey;
+        }
+        
         private static int ParseKeyString(string key) => Regex.Replace(key, "[^0-9.]", "").ToInt();
     }
 }

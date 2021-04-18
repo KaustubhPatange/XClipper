@@ -35,6 +35,8 @@ namespace Components
 
     public partial class ClipWindow : Window, IClipBinder
     {
+        // When HotKeys are removed then 
+        public static bool EnqueuePaste = false;
 
         #region Variable Definition
 
@@ -264,19 +266,36 @@ namespace Components
         #region Key Capture Events
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
+            bool isAlt = IsAltPressed();
+            bool isShift = IsShiftPressed();
+            bool isCtrl = IsCtrlPressed();
+
             // This key bind will show qr window
-            if (e.Key == Key.R && IsCtrlPressed())
+            if (e.Key == Key.R && isCtrl)
                 ShowQRWindow();
 
             // This key bind will set current item to clipboard
-            if (e.Key == Key.C && IsCtrlPressed())
+            if (e.Key == Key.C && isCtrl)
                 SetCurrentClip();
 
             // This key bind will focus the SearchTextBox.
-            if (e.Key == Key.Q && IsCtrlPressed())
+            if (e.Key == Key.Q && isCtrl)
             {
                 _tbSearchBox.Focus();
                 _lvClip.SelectedIndex = -1;
+            }
+            
+            // Check if the hot keys are pressed again. In such case we move the selection down.
+            if (MainHelper.IsHotKeysPressed(isAlt, isCtrl, isShift, e.Key.ToString()))
+            {
+                SetListViewFocus(_lvClip.SelectedIndex + 1);
+                if (_lvClip.SelectedIndex == 0)
+                {
+                    
+                } else if (_lvClip.SelectedIndex > 0)
+                {
+                    EnqueuePaste = true;
+                }                
             }
 
             /** This key bind will bring focus to the first item from listview
@@ -325,7 +344,7 @@ namespace Components
             }
 
             // This key bind will show pop-up menu.
-            if (e.Key == Key.Tab && IsCtrlPressed() && _lvClip.SelectedItems.Count > 0)
+            if (e.Key == Key.Tab && isCtrl && _lvClip.SelectedItems.Count > 0)
             {
                 ShowPopupWindow(_lvClip.SelectedItem as TableCopy);
             }
@@ -337,24 +356,24 @@ namespace Components
             }
 
             // This key bind will toggle pin to the selected item.
-            if (e.Key == Key.T && IsCtrlPressed())
+            if (e.Key == Key.T && isCtrl)
             {
                 TogglePinFunc();
             }
 
             // This key bind will show filter box
-            if (e.Key == Key.F && IsCtrlPressed())
+            if (e.Key == Key.F && isCtrl)
             {
                 ShowFilterWindow();
             }
 
-            if (e.Key == Key.Enter && IsAltPressed())
+            if (e.Key == Key.Enter && isAlt)
             {
                 LaunchUrl((_lvClip.SelectedItem as TableCopy).RawText);
             }
 
             // This key bind will handle Ctrl + Number key shortcut.
-            if (IsNumericKeyPressed(e.Key) && IsCtrlPressed())
+            if (IsNumericKeyPressed(e.Key) && isCtrl)
             {
                 var index = ParseNumericKey(e.Key);
                 if (index == 0)
@@ -549,6 +568,7 @@ namespace Components
         /// </summary>
         public void CloseWindow()
         {
+            EnqueuePaste = false;
             _filterWindow.Hide();
             _popupWindow.CloseWindow();
             _qrWindow.CloseWindow();
@@ -594,6 +614,14 @@ namespace Components
                 _qrWindow.Show();
                 Focus();
             }
+        }
+
+        /// <summary>
+        /// A public method to invoke paste.
+        /// </summary>
+        public void DoPasteAction()
+        {
+            ForegroundMainOperations();
         }
 
         /// <summary>

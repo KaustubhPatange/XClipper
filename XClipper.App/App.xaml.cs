@@ -77,7 +77,9 @@ namespace Components
             recorder.SetAppBinder(this);
             recorder.StartRecording();
 
+            hookUtility.Init();
             hookUtility.SubscribeHotKeyEvents(LaunchCodeUI);
+            hookUtility.SubscribePasteEvent(PerformWindowPaste);
             hookUtility.SubscribeQuickPasteEvent(QuickPasteHook);
 
             quickPasteHelper.Init(recorder);
@@ -112,7 +114,7 @@ namespace Components
                 Visible = true
             };
 
-            notifyIcon.DoubleClick += (o, e) => LaunchCodeUI();
+            notifyIcon.Click += (o, e) => LaunchCodeUI();
             DisplayNotifyMessage();
 
             ApplicationHelper.AttachForegroundProcess(delegate
@@ -657,6 +659,19 @@ namespace Components
             }
         }
 
+        private void PerformWindowPaste()
+        {
+            clipWindow.DoPasteAction();
+            /*Task.Run(async () =>
+            {
+                Current.Dispatcher.Invoke(delegate
+                {
+                    
+                });
+                await Task.Delay(100).ConfigureAwait(false);
+            });*/
+        }
+        
         private void QuickPasteHook(int number)
         {
             quickPasteHelper.DoPasteAction(number);
