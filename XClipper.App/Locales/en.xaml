@@ -221,4 +221,5 @@
     <system:String x:Key="update_title">Update Checker</system:String>
     <system:String x:Key="update_download_complete">Download completed. Click &quot;OK&quot; to install the update.&#10;&#10;Tip: Current process will killed during this update.</system:String>
     <system:String x:Key="connect_title">Connect</system:String>
+    <system:String x:Key="buffer_item_play_sound">Play sound on Copy or Cut</system:String>
 </ResourceDictionary>

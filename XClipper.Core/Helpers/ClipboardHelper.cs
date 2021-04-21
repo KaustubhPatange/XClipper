@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.IO;
 using System.Windows.Media.Imaging;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Runtime.CompilerServices;
 using System.Threading;
 
 #nullable enable
@@ -15,11 +18,11 @@ namespace Components
         private static DataType? type;
         private static object? data;
         private static List<IClipboardListener> _listeners = new();
-
+        
         public interface IClipboardListener
         {
-            void OnClipboardPasteStarted();
-            void OnClipboardPasteComplete();
+            void OnGoingClipboardAction();
+            void OnCompleteClipboardAction();
         }
 
         /// <summary>
@@ -36,20 +39,78 @@ namespace Components
             _listeners.Remove(listener);
         }
 
+        #region Clipboard simulation methods
+
+        /// <summary>
+        /// Simulates clipboard copy by first preserving the existing data sending Copy command,
+        /// capture the clipboard & restore original clipboard.
+        /// Currently only text data type is supported.
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        public static string PerformClipboardCopy()
+        {
+            _listeners.ForEach(l => l.OnGoingClipboardAction());
+            string data = string.Empty;
+            try
+            {
+                Preserve();
+                System.Windows.Forms.SendKeys.SendWait("^c");
+                Thread.Sleep(100);
+                data = Clipboard.GetText();
+                Consume();
+            } catch { }
+            _listeners.ForEach(l => l.OnCompleteClipboardAction());
+            return data;
+        }
+        
+        /// <summary>
+        /// Simulates clipboard copy by first preserving the existing data sending Cut command,
+        /// capture the clipboard & restore original clipboard.
+        /// Currently only text data type is supported.
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        public static string PerformClipboardCut()
+        {
+            _listeners.ForEach(l => l.OnGoingClipboardAction());
+            string data = string.Empty;
+            try
+            {
+                Preserve();
+                System.Windows.Forms.SendKeys.SendWait("^x");
+                Thread.Sleep(100);
+                data = Clipboard.GetText();
+                Consume();
+            } catch { }
+            _listeners.ForEach(l => l.OnCompleteClipboardAction());
+            return data;
+        }
+        
         /// <summary>
         /// Simulates clipboard pasting by first preserving the existing data, setting incoming data &
         /// performs Ctrl + V action to paste the data.
         /// </summary>
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public static void PerformClipboardPaste(string text)
         {
-            _listeners.ForEach(l => l.OnClipboardPasteStarted());
-            Preserve();
-            SetText(text);
-            System.Windows.Forms.SendKeys.SendWait("^v");
-            Thread.Sleep(100);
-            Consume();
-            _listeners.ForEach(l => l.OnClipboardPasteComplete());
+            _listeners.ForEach(l => l.OnGoingClipboardAction());
+            try
+            {
+                Preserve();
+                SetText(text);
+                System.Windows.Forms.SendKeys.SendWait("^v");
+                Thread.Sleep(100);
+                Consume();
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message + "\n" +e.StackTrace);
+            }
+            _listeners.ForEach(l => l.OnCompleteClipboardAction());
         }
+
+        #endregion
 
         public static void Clear()
         {
@@ -58,7 +119,10 @@ namespace Components
 
         public static void SetText(string data)
         {
-            Clipboard.SetDataObject(data);
+            try
+            {
+                Clipboard.SetText(data);
+            } catch {  Clipboard.SetDataObject(data); }
         }
 
         public static void SetImage(BitmapSource source)
@@ -113,7 +177,10 @@ namespace Components
                 switch(type)
                 { 
                     case DataType.IMAGE:
-                        SetImage((BitmapSource)data);
+                        if (data is BitmapSource)
+                            SetImage((BitmapSource)data);
+                        else if (data is System.Drawing.Bitmap)
+                            SetImage(ToBitmapSource((System.Drawing.Bitmap)data));
                         break;
                     case DataType.FILE_DROP:
                         SetFileDropList((StringCollection)data);
@@ -137,6 +204,15 @@ namespace Components
         public static DataType GetPreservedClipboardType()
         {
             return type ?? DataType.NONE;
+        }
+
+        private static BitmapSource ToBitmapSource(System.Drawing.Bitmap bmp)
+        {
+            return System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
+                bmp.GetHbitmap(), 
+                IntPtr.Zero, 
+                System.Windows.Int32Rect.Empty, 
+                BitmapSizeOptions.FromWidthAndHeight(bmp.Width, bmp.Height));
         }
 
         public enum DataType

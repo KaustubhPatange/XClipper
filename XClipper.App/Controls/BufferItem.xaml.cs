@@ -48,6 +48,8 @@ namespace Components.Controls
 
         #endregion
 
+        #region KeyDownEvents
+
         private void OnCopyKeyDown(KeyEventArgs args)
         {
             if (!KeyPressHelper.IsSpecialKey(args.Key)) BufferModel.Copy.HotKey = args.Key.ToString();
@@ -61,6 +63,13 @@ namespace Components.Controls
         private void OnCutKeyDown(KeyEventArgs args)
         {
             if (!KeyPressHelper.IsSpecialKey(args.Key)) BufferModel.Cut.HotKey = args.Key.ToString();
+        }
+
+        #endregion
+
+        private void OnShowButtonClicked(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show(BufferModel.Data, "Data");
         }
     }
 }

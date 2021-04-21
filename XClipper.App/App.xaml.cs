@@ -25,6 +25,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Threading;
 using System.Globalization;
 using System.Drawing;
+using System.Media;
 using System.Windows.Interop;
 using System.Net;
 
@@ -32,7 +33,7 @@ using System.Net;
 
 namespace Components
 {
-    public partial class App : Application, ISettingEventBinder, IFirebaseBinder, IBuyEventBinder, IClipServiceBinder, IFirebaseBinderV2, ClipboardHelper.IClipboardListener
+    public partial class App : Application, ISettingEventBinder, IFirebaseBinder, IBuyEventBinder, IClipServiceBinder, IFirebaseBinderV2, ClipboardHelper.IClipboardListener, KeyHookUtility.IBufferInvokes
     {
         #region Variable Declaration
 
@@ -92,7 +93,7 @@ namespace Components
 
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-            ConnectionHelper.StartMonitoring();
+            ConnectionHelper.StartMonitoring(); 
             ClipboardHelper.AddListener(this);
 
             LoadLanguageResource();
@@ -132,6 +133,7 @@ namespace Components
             });
 
             hookUtility.Init();
+            hookUtility.SubscribeBufferEvents(this);
             hookUtility.SubscribeHotKeyEvents(LaunchCodeUI);
             hookUtility.SubscribePasteEvent(PerformWindowPaste);
             hookUtility.SubscribeQuickPasteEvent(QuickPasteHook);
@@ -142,6 +144,7 @@ namespace Components
             hookUtility.UnsubscribeAll();
             FirebaseSingletonV2.GetInstance.SaveUserState();
             ExplorerHelper.Unregister();
+            WriteBufferSetting();
             base.OnExit(e);
         }
 
@@ -577,14 +580,35 @@ namespace Components
 
         #region IClipboardListener
 
-        public void OnClipboardPasteStarted()
+        public void OnGoingClipboardAction()
         {
             hookUtility.StopListening();
         }
 
-        public void OnClipboardPasteComplete()
+        public void OnCompleteClipboardAction()
         {
             hookUtility.StartListening();
+        }
+
+        #endregion
+
+        #region IBufferInvokes
+
+        public void OnBufferCopyAction(Buffer b)
+        {
+            b.Data = ClipboardHelper.PerformClipboardCopy();
+            if (b.PlaySound) SystemSounds.Beep.Play();
+        }
+
+        public void OnBufferCutAction(Buffer b)
+        {
+            b.Data = ClipboardHelper.PerformClipboardCut();
+            if (b.PlaySound) SystemSounds.Beep.Play();
+        }
+
+        public void OnBufferPasteAction(Buffer b)
+        {
+            ClipboardHelper.PerformClipboardPaste(b.Data);
         }
 
         #endregion

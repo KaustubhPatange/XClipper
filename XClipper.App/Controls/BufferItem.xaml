@@ -15,7 +15,7 @@
         <StackPanel Orientation="Vertical">
 
             <!--  Copy  -->
-            <Grid Margin="5,0,0,0">
+            <Grid Margin="7,0,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="auto" />
@@ -131,11 +131,26 @@
                 </TextBox>
             </Grid>
 
-            <CheckBox
+            <StackPanel
                 Margin="0,10,0,0"
                 HorizontalAlignment="Right"
-                Content="Play sound on Copy or Cut"
-                IsChecked="{Binding BufferModel.PlaySound}" />
+                Orientation="Horizontal">
+                <Button
+                    Width="50"
+                    Height="22"
+                    Click="OnShowButtonClicked"
+                    Content="{DynamicResource app_show}" />
+                <CheckBox
+                    Margin="10,5,0,0"
+                    Content="{DynamicResource buffer_item_play_sound}"
+                    IsChecked="{Binding BufferModel.PlaySound}" />
+            </StackPanel>
+            <!--<Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="a"
+                </Grid.ColumnDefinitions>
+            </Grid>-->
         </StackPanel>
     </GroupBox>
 </UserControl>

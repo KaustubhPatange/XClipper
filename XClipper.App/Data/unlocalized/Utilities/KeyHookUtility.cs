@@ -1,14 +1,14 @@
-﻿using Gma.System.MouseKeyHook;
-using Loamen.KeyMouseHook;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Media;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using static Components.DefaultSettings;
+using Application = System.Windows.Application;
 
 #nullable enable
 
@@ -16,14 +16,20 @@ namespace Components
 {
     public sealed class KeyHookUtility : IDisposable
     {
+        public interface IBufferInvokes
+        {
+            void OnBufferCopyAction(Buffer b);
+            void OnBufferPasteAction(Buffer b);
+            void OnBufferCutAction(Buffer b);
+        }
         #region Variable Declaration
 
-        private KeyMouseFactory eventHookFactory;
-        private KeyboardWatcher keyboardWatcher;
         private Action? hotKeyEvent;
         private Action? pasteEvent;
         private Action<int>? quickPasteEvent;
-        private bool _isListening = true;
+        private IBufferInvokes? bufferBinder;
+
+        private CustomKeyboardWatcher _keyboardWatcher;
 
         public KeyHookUtility()
         { }
@@ -34,16 +40,17 @@ namespace Components
 
         public void Init()
         {
-            var events = Hook.GlobalEvents();
-            eventHookFactory = new KeyMouseFactory(events);
-            keyboardWatcher = eventHookFactory.GetKeyboardWatcher();
+            _keyboardWatcher = CustomKeyboardWatcher.Get();
+            
             if (UseExperimentalKeyCapture)
-                keyboardWatcher.OnKeyboardInput += KeyboardWatcher_OnKeyboardInput2;
+                _keyboardWatcher.OnKeyboardInput += KeyboardWatcher_OnKeyboardInput2;
             else
-                keyboardWatcher.OnKeyboardInput += KeyboardWatcher_OnKeyboardInput;
-
-            keyboardWatcher.Start(events);
+                _keyboardWatcher.OnKeyboardInput += KeyboardWatcher_OnKeyboardInput;
+            
+           // _keyboardWatcher.OnKeyboardInput += BufferCopy_OnKeyboardInput;
         }
+
+        #region Subscribers
 
         /// <summary>
         /// Notifies when the hot keys are pressed.
@@ -72,14 +79,25 @@ namespace Components
             pasteEvent = block;
         }
 
+        /// <summary>
+        /// Some invokes for buffer.
+        /// </summary>
+        /// <param name="block"></param>
+        public void SubscribeBufferEvents(IBufferInvokes binder)
+        {
+            bufferBinder = binder;
+        }
+
+        #endregion
+        
         public void StartListening()
         {
-            _isListening = true;
+            _keyboardWatcher.StopListening();
         }
         
         public void StopListening()
         {
-            _isListening = false;
+            _keyboardWatcher.StartListening();
         }
 
         public void UnsubscribeAll()
@@ -99,15 +117,14 @@ namespace Components
         private long TIME_LAST_KEY_OFFSET = 0;
         private bool quickPasteChord = false;
         private bool active = false;
+        private bool toProcessBuffer = true;
 
         private void KeyboardWatcher_OnKeyboardInput2(object sender, MacroEvent e)
         {
             var keyEvent = e.EventArgs as KeyEventArgs;
             if (keyEvent == null) return;
             var key = keyEvent.KeyCode;
-
-            if (!_isListening) return;
-
+            
             if (keyStreams.Count >= KEY_STORE_SIZE)
                 keyStreams.RemoveAt(0);
 
@@ -131,52 +148,54 @@ namespace Components
             if (!keyStreams.Any(c => c == key))
                 keyStreams.Add(key);
             else
+            {
+                toProcessBuffer = false;
                 return;
+            }
 
             if (ShouldPerformPasteAction(e, key))
             {
                 Debug.WriteLine("Modifier Key: Should run paste command");
+                toProcessBuffer = false;
                 keyStreams.Clear();
-                pasteEvent?.Invoke();
+                if (pasteEvent != null) SendAction(pasteEvent);
                 return;
             }
+            
+            bool isCtrl = keyStreams.Any(c => c == Keys.LControlKey || c == Keys.RControlKey);
+            bool isShift = keyStreams.Any(c => c == Keys.LShiftKey || c == Keys.RShiftKey);
+            bool isAlt = keyStreams.Any(c => c == Keys.Alt);
 
-            bool isCtrl;
-            if (DefaultSettings.IsCtrl)
-                isCtrl = keyStreams.Any(c => c == Keys.LControlKey || c == Keys.RControlKey);
-            else
-                isCtrl = true;
+            // Hot key detection
+            bool hotKeyCtrl;
+            if (DefaultSettings.IsCtrl) hotKeyCtrl = isCtrl; else hotKeyCtrl = true;
 
-            bool isShift;
-            if (DefaultSettings.IsShift)
-                isShift = keyStreams.Any(c => c == Keys.LShiftKey || c == Keys.RShiftKey);
-            else
-                isShift = true;
+            bool hotKeyShift;
+            if (DefaultSettings.IsShift) hotKeyShift = isShift; else hotKeyShift = true;
 
-            bool isAlt;
-            if (DefaultSettings.IsAlt)
-                isAlt = keyStreams.Any(c => c == Keys.Alt);
-            else
-                isAlt = true;
+            bool hotKeyAlt;
+            if (DefaultSettings.IsAlt) hotKeyAlt = isAlt; else hotKeyAlt = true;
 
             Keys hotKey = DefaultSettings.HotKey.ToEnum<Keys>();
             bool isHotKey = keyStreams.Any(c => c == hotKey);
 
-            if (isCtrl && isAlt && isShift && isHotKey)
+            if (hotKeyCtrl && hotKeyAlt && hotKeyShift && isHotKey)
             {
                 active = true;
-                hotKeyEvent?.Invoke();
                 keyStreams.Clear();
+                if (hotKey != null) SendAction(hotKeyEvent);
             }
 
+            // Quick paste cord 2
             if (quickPasteChord && KeyPressHelper.IsNumericKeyPressed(key))
             {
                 Debug.WriteLine("Quick Paste: Done");
-                DoQuickPaste2(KeyPressHelper.ParseNumericKey(key));
+                SendAction(() => DoQuickPaste2(KeyPressHelper.ParseNumericKey(key)));
             }
 
             quickPasteChord = false;
 
+            // Quick paste cord 1
             if (keyStreams.Any(c => c == Keys.LControlKey || c == Keys.RControlKey) &&
                 keyStreams.Any(c => c == Keys.Oem5))
             {
@@ -185,14 +204,12 @@ namespace Components
                 keyStreams.Clear();
             }
 
-            Debug.WriteLine($"Keystream size: {keyStreams.Count}, Contents: [{string.Join(",", keyStreams)}], isCtrl: {isCtrl}, isAlt: {isAlt}, isShift: {isShift}, isHotKey: {isHotKey}");
+            Debug.WriteLine($"Keystream size: {keyStreams.Count}, Contents: [{string.Join(",", keyStreams)}]");
         }
 
         private void KeyboardWatcher_OnKeyboardInput(object sender, MacroEvent e)
         {
             var keyEvent = (KeyEventArgs) e.EventArgs;
-            
-            if (!_isListening) return;
             
             Debug.WriteLine($"Key: {keyEvent.KeyCode}, Type: {e.KeyMouseEventType}");
 
@@ -246,6 +263,71 @@ namespace Components
 
         #endregion
 
+        #region Buffer Capture
+
+        private void BufferCopy_OnKeyboardInput(object sender, MacroEvent e)
+        {
+            var keyEvent = e.EventArgs as KeyEventArgs;
+            if (keyEvent == null) return;
+            var key = keyEvent.KeyCode;
+
+            if (!toProcessBuffer)
+            {
+                toProcessBuffer = true;
+                return;
+            }
+            if (e.KeyMouseEventType != MacroEventType.KeyUp) return; 
+            
+            bool isCtrl = keyStreams.Any(c => c == Keys.LControlKey || c == Keys.RControlKey);
+            bool isShift = keyStreams.Any(c => c == Keys.LShiftKey || c == Keys.RShiftKey);
+            bool isAlt = keyStreams.Any(c => c == Keys.Alt);
+            
+            // Buffer 1 detection
+            if (IsKeymapActive(DefaultSettings.CopyBuffer1.Paste, isShift, isAlt, isCtrl, key))
+                SendAction(() => bufferBinder?.OnBufferPasteAction(DefaultSettings.CopyBuffer1));
+            else if (IsKeymapActive(DefaultSettings.CopyBuffer1.Copy, isShift, isAlt, isCtrl, key))
+                SendAction(()=>bufferBinder?.OnBufferCopyAction(DefaultSettings.CopyBuffer1));
+            else if (IsKeymapActive(DefaultSettings.CopyBuffer1.Cut, isShift, isAlt, isCtrl, key))
+                SendAction(()=> bufferBinder?.OnBufferCutAction(DefaultSettings.CopyBuffer1));
+
+            // Buffer 2 detection
+            if (IsKeymapActive(DefaultSettings.CopyBuffer2.Paste, isShift, isAlt, isCtrl, key))
+                SendAction(() => bufferBinder?.OnBufferPasteAction(DefaultSettings.CopyBuffer2));
+            else if (IsKeymapActive(DefaultSettings.CopyBuffer2.Copy, isShift, isAlt, isCtrl, key))
+                SendAction(() => bufferBinder?.OnBufferCopyAction(DefaultSettings.CopyBuffer2));
+            else if (IsKeymapActive(DefaultSettings.CopyBuffer2.Cut, isShift, isAlt, isCtrl, key))
+                SendAction(() => bufferBinder?.OnBufferCutAction(DefaultSettings.CopyBuffer2)); 
+        }
+        
+        private bool IsKeymapActive(Keymap map, bool isShift, bool isAlt, bool isCtrl, Keys key)
+        {
+            bool execute = true;
+            if (map.IsAlt) execute &= isAlt;
+            if (map.IsCtrl) execute &= isCtrl;
+            if (map.IsShift) execute &= isShift;
+            if (map.HotKey != key.ToString()) execute &= false;
+            return execute;
+        }
+
+        #endregion
+
+        /// <summary>
+        /// In order to perform synchronous operation asynchronously.
+        /// </summary>
+        private void SendAction(Action action)
+        {
+            Application.Current.Dispatcher.BeginInvoke(action);
+        }
+
+        /// <summary>
+        /// Suppose hotkeys are Ctrl + Oem3.
+        /// 
+        /// Pressing Ctrl + Oem3 will launch the window &amp; pressing Oem3 while holding Ctrl
+        /// will move the cursor down &amp; leaving the Ctrl will run paste command.
+        /// </summary>
+        /// <param name="e"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
         private bool ShouldPerformPasteAction(MacroEvent e, Keys key)
         {
             return ClipWindow.EnqueuePaste && e.KeyMouseEventType == MacroEventType.KeyUp &&
@@ -280,8 +362,7 @@ namespace Components
             Debug.WriteLine("Disposed KeyHookUtility");
             quickPasteEvent = null;
             hotKeyEvent = null;
-            eventHookFactory.Dispose();
-            keyboardWatcher.Dispose();
+            _keyboardWatcher.Dispose();
             GC.SuppressFinalize(this);
         }
     }

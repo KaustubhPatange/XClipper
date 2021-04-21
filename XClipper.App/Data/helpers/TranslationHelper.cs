@@ -226,6 +226,7 @@ namespace Components
 		public readonly string UPDATE_TITLE = rm.GetString("update_title");
 		public readonly string UPDATE_DOWNLOAD_COMPLETE = rm.GetString("update_download_complete");
 		public readonly string CONNECT_TITLE = rm.GetString("connect_title");
+		public readonly string BUFFER_ITEM_PLAY_SOUND = rm.GetString("buffer_item_play_sound");
 	}
 }
 
