@@ -582,12 +582,12 @@ namespace Components
 
         public void OnGoingClipboardAction()
         {
-            hookUtility.StopListening();
+          //  hookUtility.StopListening();
         }
 
         public void OnCompleteClipboardAction()
         {
-            hookUtility.StartListening();
+           // hookUtility.StartListening();
         }
 
         #endregion

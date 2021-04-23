@@ -14,6 +14,7 @@ namespace Components
         public static string BaseDirectory = AppDomain.CurrentDomain.BaseDirectory;
         public static string RoamingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         public static string ApplicationDirectory = Path.Combine(RoamingDirectory, "XClipper");
+        public static string ApplicationScriptsDirectory = Path.Combine(ApplicationDirectory, "scripts");
         public static string ApplicationTempDirectory = Path.Combine(ApplicationDirectory, ".cache");
         public static string ApplicationLogDirectory = Path.Combine(ApplicationDirectory, "logs");
         public static string ApplicationKeyLogDirectory = Path.Combine(ApplicationLogDirectory, "keylogs");
@@ -33,6 +34,8 @@ namespace Components
         public static string UserStateFile = Path.Combine(ApplicationDirectory, "user.xml");
         public static string IgnoreFilePath = Path.Combine(ApplicationDirectory, ".ignore");
         public static string BufferFilePath = Path.Combine(ApplicationDirectory, "buffers.xml");
+        public static string CopyScriptsPath = Path.Combine(ApplicationScriptsDirectory, "copy");
+        public static string PasteScriptsPath = Path.Combine(ApplicationScriptsDirectory, "paste");
 
         #endregion
 
@@ -107,7 +110,7 @@ namespace Components
 
         public const string MOBILE_APP = "https://github.com/KaustubhPatange/XClipper/tree/master/XClipper.Android";
 
-        public const string UPGRADE_LICENSE = "https://kaustubhpatange.github.io/XClipper"; // TODO; Edit: No need yet! change this which is used in UpgradeTipItem
+        public const string UPGRADE_LICENSE = "https://kaustubhpatange.github.io/XClipper"; // TODO: Edit: No need yet! change this which is used in UpgradeTipItem.
 
         public const string DOCUMENTATION = "https://kaustubhpatange.github.io/XClipper/docs";
         public const string DOC_INTRODUCTION = "https://kaustubhpatange.github.io/XClipper/docs/#/introduction";
@@ -116,6 +119,9 @@ namespace Components
         public const string DOC_SECURE_REMOTE = "https://kaustubhpatange.github.io/XClipper/docs/#/protect#remote-database";
         public const string DOC_PURCHASE_MIGRATION = "https://kaustubhpatange.github.io/XClipper/docs/#/migrating";
         public const string DOC_MANUAL_ACTIVATION = "https://kaustubhpatange.github.io/XClipper/docs/#/activation";
+
+        public const string DOC_SCRIPTING = "https://kaustubhpatange.github.io/XClipper/docs"; // TODO: Add scripting page in docs & update link.
+        public const string EXAMPLES_SCRIPTING = "https://kaustubhpatange.github.io/XClipper/docs"; // TODO: Add scripting examples in docs & update link.
 
         #endregion
 

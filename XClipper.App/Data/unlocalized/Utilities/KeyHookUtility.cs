@@ -47,7 +47,7 @@ namespace Components
             else
                 _keyboardWatcher.OnKeyboardInput += KeyboardWatcher_OnKeyboardInput;
             
-           // _keyboardWatcher.OnKeyboardInput += BufferCopy_OnKeyboardInput;
+            //_keyboardWatcher.OnKeyboardInput += BufferCopy_OnKeyboardInput;
         }
 
         #region Subscribers
@@ -276,7 +276,6 @@ namespace Components
                 toProcessBuffer = true;
                 return;
             }
-            if (e.KeyMouseEventType != MacroEventType.KeyUp) return; 
             
             bool isCtrl = keyStreams.Any(c => c == Keys.LControlKey || c == Keys.RControlKey);
             bool isShift = keyStreams.Any(c => c == Keys.LShiftKey || c == Keys.RShiftKey);
@@ -306,6 +305,7 @@ namespace Components
             if (map.IsCtrl) execute &= isCtrl;
             if (map.IsShift) execute &= isShift;
             if (map.HotKey != key.ToString()) execute &= false;
+           // Debug.WriteLine($"Keymap: isCtrl: {isCtrl}, isAlt: {isAlt}, isShift: {isShift}, HotKey: {key}, ToExecute: {execute}");
             return execute;
         }
 
@@ -340,12 +340,12 @@ namespace Components
             {
                 SendKeys.SendWait("{BKSP}");
                 await Task.Delay(100).ConfigureAwait(false);
-                System.Windows.Application.Current.Dispatcher.Invoke(delegate
+                System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                 {
                     if (index == 0)
                         quickPasteEvent?.Invoke(9);
                     else quickPasteEvent?.Invoke(index - 1);
-                });
+                }));
             });
         }
 

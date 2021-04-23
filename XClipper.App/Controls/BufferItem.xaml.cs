@@ -52,17 +52,17 @@ namespace Components.Controls
 
         private void OnCopyKeyDown(KeyEventArgs args)
         {
-            if (!KeyPressHelper.IsSpecialKey(args.Key)) BufferModel.Copy.HotKey = args.Key.ToString();
+            if (!KeyPressHelper.IsSpecialKey(args.Key)) BufferModel.Copy.HotKey = KeyPressHelper.ToWindowsKey(args.Key).ToString();
         }
         
         private void OnPasteKeyDown(KeyEventArgs args)
         {
-            if (!KeyPressHelper.IsSpecialKey(args.Key)) BufferModel.Paste.HotKey = args.Key.ToString();
+            if (!KeyPressHelper.IsSpecialKey(args.Key)) BufferModel.Paste.HotKey = KeyPressHelper.ToWindowsKey(args.Key).ToString();
         }
         
         private void OnCutKeyDown(KeyEventArgs args)
         {
-            if (!KeyPressHelper.IsSpecialKey(args.Key)) BufferModel.Cut.HotKey = args.Key.ToString();
+            if (!KeyPressHelper.IsSpecialKey(args.Key)) BufferModel.Cut.HotKey = KeyPressHelper.ToWindowsKey(args.Key).ToString();
         }
 
         #endregion

@@ -12,6 +12,7 @@
     xmlns:local="clr-namespace:Components"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:media="clr-namespace:System.Windows.Media;assembly=PresentationCore"
+    xmlns:setting="clr-namespace:Components.Controls.Settings"
     xmlns:ui="clr-namespace:System.Windows;assembly=PresentationCore"
     Title="{DynamicResource app_settings}"
     Width="370"
@@ -302,6 +303,17 @@
 
                             </StackPanel>
                         </Border>
+                    </TabItem>
+
+                    <TabItem Header="{DynamicResource settings_tab_scripting}">
+                        <Grid>
+                            <TextBlock Margin="10,0,0,10" VerticalAlignment="Bottom">
+                                <Hyperlink local:HyperlinkProperties.IsExternal="True" NavigateUri="{Binding Source={x:Static local:Constants.DOC_SCRIPTING}}">
+                                    <Run Text="{DynamicResource msg_learn}" />
+                                </Hyperlink>
+                            </TextBlock>
+                            <setting:ScriptingPage />
+                        </Grid>
                     </TabItem>
 
                     <TabItem Header="{DynamicResource settings_tab_buffer}">

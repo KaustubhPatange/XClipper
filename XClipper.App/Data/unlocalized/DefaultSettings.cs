@@ -129,7 +129,6 @@ namespace Components
         private static FirebaseData? _FirebaseCurrent = null;
         private static OAuth? _DesktopAuth = null;
         private static OAuth? _MobileAuth = null;
-
         #endregion
 
         #region Actual Settings
@@ -483,7 +482,7 @@ namespace Components
         #region Notify Static PropertyChange
 
         public static event EventHandler<PropertyChangedEventArgs>? StaticPropertyChanged;
-        private static void NotifyStaticPropertyChanged(string propertyName)
+        internal static void NotifyStaticPropertyChanged(string propertyName)
         {
             StaticPropertyChanged?.Invoke(null, new PropertyChangedEventArgs(propertyName));
         }
@@ -664,6 +663,7 @@ namespace Components
             LoadTimeStampsSetting();
             LoadFirebaseSetting();
             LoadFirebaseCredentials();
+            Interpreter.LoadScripts();
         }
 
         /// <summary>
@@ -831,7 +831,6 @@ namespace Components
         #endregion
 
         #endregion
-
 
         #region Event handlers
 

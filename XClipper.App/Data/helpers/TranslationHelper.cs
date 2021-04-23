@@ -39,6 +39,7 @@ namespace Components
 		public readonly string APP_CRASH = rm.GetString("app_crash");
 		public readonly string SETTINGS_TAB_MAIN = rm.GetString("settings_tab_main");
 		public readonly string SETTINGS_TAB_CONNECT = rm.GetString("settings_tab_connect");
+		public readonly string SETTINGS_TAB_SCRIPTING = rm.GetString("settings_tab_scripting");
 		public readonly string SETTINGS_TAB_BUFFER = rm.GetString("settings_tab_buffer");
 		public readonly string SETTINGS_AUTH = rm.GetString("settings_auth");
 		public readonly string SETTINGS_NOTIFY = rm.GetString("settings_notify");
@@ -87,6 +88,8 @@ namespace Components
 		public readonly string SETTINGS_SAVE = rm.GetString("settings_save");
 		public readonly string SETTINGS_SAVE_WARNING = rm.GetString("settings_save_warning");
 		public readonly string SETTINGS_FB_PASSWORD = rm.GetString("settings_fb_password");
+		public readonly string SETTINGS_COPY_SCRIPTS = rm.GetString("settings_copy_scripts");
+		public readonly string SETTINGS_PASTE_SCRIPTS = rm.GetString("settings_paste_scripts");
 		public readonly string SETTINGS_IGNORE_TOOLTIP = rm.GetString("settings_ignore_tooltip");
 		public readonly string FILTER_HEADER = rm.GetString("filter_header");
 		public readonly string FILTER_TITLE = rm.GetString("filter_title");
@@ -227,6 +230,17 @@ namespace Components
 		public readonly string UPDATE_DOWNLOAD_COMPLETE = rm.GetString("update_download_complete");
 		public readonly string CONNECT_TITLE = rm.GetString("connect_title");
 		public readonly string BUFFER_ITEM_PLAY_SOUND = rm.GetString("buffer_item_play_sound");
+		public readonly string SCRIPT_NAME = rm.GetString("script_name");
+		public readonly string SCRIPT_ENABLED = rm.GetString("script_enabled");
+		public readonly string SCRIPT_CODE = rm.GetString("script_code");
+		public readonly string SCRIPT_LOAD_FILE = rm.GetString("script_load_file");
+		public readonly string SCRIPT_RUN_SANDBOX = rm.GetString("script_run_sandbox");
+		public readonly string SCRIPT_OUTPUT = rm.GetString("script_output");
+		public readonly string SCRIPT_EXAMPLES = rm.GetString("script_examples");
+		public readonly string SCRIPTING_DUPLICATE_EXIST = rm.GetString("scripting_duplicate_exist");
+		public readonly string SCRIPTING_SCRIPT_SAVED = rm.GetString("scripting_script_saved");
+		public readonly string SCRIPTING_SCRIPT_DELETE_TITLE = rm.GetString("scripting_script_delete_title");
+		public readonly string SCRIPTING_SCRIPT_DELETE_TEXT = rm.GetString("scripting_script_delete_text");
 	}
 }
 

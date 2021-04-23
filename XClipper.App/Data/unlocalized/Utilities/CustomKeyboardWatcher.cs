@@ -14,14 +14,12 @@ namespace Components
         private long _lastRecordTime;
         private bool _isRunning = true;
         public event EventHandler<MacroEvent> OnKeyboardInput;
-        private HookResult handle;
+        private static HookResult handle;
 
         private static CustomKeyboardWatcher Instance;
         private CustomKeyboardWatcher()
         {
-            handle = HookGlobalKeyboard(OnCallback);
-            KeyDown += OnKeyDown;
-            KeyUp += OnKeyUp;
+           Init();
         }
 
         public static CustomKeyboardWatcher Get()
@@ -42,11 +40,19 @@ namespace Components
             _isRunning = true;
         }
 
+        private void Init()
+        {
+            handle = HookGlobalKeyboard(OnCallback);
+            KeyDownEventHandler += OnKeyDown;
+            KeyUpEventHandler += OnKeyUp;
+        }
+        
         private void OnKeyDown(object sender, KeyEventArgs args)
         {
             if (!_isRunning) return;
             long count = Environment.TickCount;
-            OnKeyboardInput?.Invoke(sender, new MacroEvent(MacroEventType.KeyDown, args, (int)(_lastRecordTime - count)));
+            Debug.WriteLine("LastTime Record: " + (int)(count - _lastRecordTime));
+            OnKeyboardInput?.Invoke(sender, new MacroEvent(MacroEventType.KeyDown, args, (int)(count - _lastRecordTime)));
             _lastRecordTime = count;
         }
 
@@ -54,22 +60,23 @@ namespace Components
         {
             if (!_isRunning) return;
             long count = Environment.TickCount;
-            OnKeyboardInput?.Invoke(sender, new MacroEvent(MacroEventType.KeyUp, args, (int)(_lastRecordTime - count)));
+            OnKeyboardInput?.Invoke(sender, new MacroEvent(MacroEventType.KeyUp, args, (int)(count - _lastRecordTime)));
             _lastRecordTime = count;
         }
 
         public void Dispose()
         {
-            KeyDown -= OnKeyDown;
-            KeyUp -= OnKeyUp;
+            Debug.WriteLine("CustomKeyboardWatcher: Disposed()");
+            KeyDownEventHandler -= OnKeyDown;
+            KeyUpEventHandler -= OnKeyUp;
             handle.Dispose();
         }
         
-        public event KeyEventHandler KeyDown;
-        public event KeyEventHandler KeyUp;
+        public event KeyEventHandler KeyDownEventHandler;
+        public event KeyEventHandler KeyUpEventHandler;
         public void InvokeKeyDown(KeyEventArgsExtension e)
         {
-            var handler = KeyDown;
+            var handler = KeyDownEventHandler;
             if (handler == null || e.Handled || !e.IsKeyDown)
                 return;
             handler(this, e);
@@ -77,7 +84,7 @@ namespace Components
         
         public void InvokeKeyUp(KeyEventArgsExtension e)
         {
-            var handler = KeyUp;
+            var handler = KeyUpEventHandler;
             if (handler == null || e.Handled || !e.IsKeyUp)
                 return;
             handler(this, e);
@@ -102,15 +109,17 @@ namespace Components
         {
             _globalHookProc = (code, param, lParam) => GetHookProcedure(code, param, lParam, callback);
 
+            var s = Marshal.GetHINSTANCE(typeof(App).Module);
             var hookHandle = SetWindowsHookEx(
                 WH_KEYBOARD_LL,
                 _globalHookProc,
-                Process.GetCurrentProcess().MainModule.BaseAddress,
+                s,
                 0);
 
             if (hookHandle.IsInvalid)
                 throw new Exception("Invalid handle");
 
+            
             return new HookResult(hookHandle, _globalHookProc);
         }
         
@@ -134,6 +143,7 @@ namespace Components
         private static IntPtr GetHookProcedure(int nCode, IntPtr wParam, IntPtr lParam, Callback callback)
         {
             var passThrough = nCode != 0;
+            Debug.WriteLine("PassThough: " + nCode);
             if (passThrough)
                 return CallNextHookEx(IntPtr.Zero, nCode, wParam, lParam);
 

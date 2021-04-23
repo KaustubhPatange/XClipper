@@ -1,0 +1,81 @@
+﻿<Window
+    x:Class="Components.UI.ScriptWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:control="clr-namespace:Components.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Components"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="{DynamicResource settings_tab_scripting}"
+    Width="370"
+    SizeToContent="Height"
+    mc:Ignorable="d">
+    <Border Padding="10">
+        <StackPanel Orientation="Vertical">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="{DynamicResource script_name}" />
+                <TextBox
+                    Grid.Column="1"
+                    Margin="30,0,0,0"
+                    Text="{Binding ScriptModel.Name, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+            </Grid>
+
+            <DockPanel Margin="0,7,0,0">
+                <TextBlock Text="{DynamicResource script_enabled}" />
+                <CheckBox Margin="20,0,0,0" IsChecked="{Binding ScriptModel.Enabled, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                <TextBlock HorizontalAlignment="Right" FontSize="10">
+                    <Hyperlink local:HyperlinkProperties.IsExternal="True" NavigateUri="{Binding Source={x:Static local:Constants.EXAMPLES_SCRIPTING}}">
+                        <Run Text="{DynamicResource script_examples}" />
+                    </Hyperlink>
+                </TextBlock>
+            </DockPanel>
+
+            <control:GroupSeparator Margin="0,10,0,0" Header="{DynamicResource script_code}" />
+
+            <TextBox
+                Height="160"
+                Margin="0,10,0,0"
+                HorizontalScrollBarVisibility="Auto"
+                Text="{Binding ScriptModel.Code, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                VerticalScrollBarVisibility="Auto" />
+
+            <DockPanel Margin="0,10,0,0">
+                <Button
+                    Width="70"
+                    Height="22"
+                    Click="OnSaveButtonClicked"
+                    Content="{DynamicResource settings_save_btn}" />
+                <Button
+                    Width="100"
+                    Height="22"
+                    Margin="7,0,0,0"
+                    Click="OnLoadFromFileClicked"
+                    Content="{DynamicResource script_load_file}"
+                    DockPanel.Dock="Right" />
+                <Button
+                    Width="22"
+                    Height="22"
+                    Padding="0,2,3,2"
+                    HorizontalAlignment="Right"
+                    Click="OnRunButtonClicked"
+                    ToolTip="{DynamicResource script_run_sandbox}">
+                    <Image Source="pack://application:,,,/Resources/run.png" />
+                </Button>
+
+            </DockPanel>
+
+            <Expander Margin="0,10,0,0" Header="{DynamicResource script_output}">
+                <TextBox
+                    Height="100"
+                    Margin="7"
+                    IsReadOnly="True"
+                    Text="{Binding Output}"
+                    TextWrapping="Wrap" />
+            </Expander>
+        </StackPanel>
+    </Border>
+</Window>

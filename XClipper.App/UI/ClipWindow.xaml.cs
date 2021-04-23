@@ -1,7 +1,6 @@
 ﻿using ClipboardManager.models;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Windows;
 using Components.viewModels;
 using System.Threading.Tasks;
@@ -22,7 +21,6 @@ using System.Collections.Specialized;
 using static Components.TranslationHelper;
 using System.Windows.Media.Imaging;
 using Autofac;
-using System.Windows.Media;
 using System.Windows.Interop;
 
 namespace Components

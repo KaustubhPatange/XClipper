@@ -29,6 +29,7 @@
     <system:String x:Key="app_crash">XClipper app crashed!</system:String>
     <system:String x:Key="settings_tab_main">Main</system:String>
     <system:String x:Key="settings_tab_connect">Connect</system:String>
+    <system:String x:Key="settings_tab_scripting">Scripting</system:String>
     <system:String x:Key="settings_tab_buffer">Copy Buffers</system:String>
     <system:String x:Key="settings_auth">Authentication</system:String>
     <system:String x:Key="settings_notify">Notification</system:String>
@@ -77,6 +78,9 @@
     <system:String x:Key="settings_save">Settings applied! If it didn't try restarting the application</system:String>
     <system:String x:Key="settings_save_warning">Some settings didn't apply correctly! Try to enable them again.</system:String>
     <system:String x:Key="settings_fb_password">This will delete all existing data on firebase (if exist) since migration operations are costly.</system:String>
+    <system:String x:Key="settings_copy_scripts">Copy scripts</system:String>
+    <system:String x:Key="settings_paste_scripts">Paste scripts</system:String>
+
     <system:String x:Key="settings_ignore_tooltip">Ignore certain text pattern that should not be stored in the database.</system:String>
     <system:String x:Key="filter_header">Filter</system:String>
     <system:String x:Key="filter_title">Filter Items by:</system:String>
@@ -222,4 +226,17 @@
     <system:String x:Key="update_download_complete">Download completed. Click &quot;OK&quot; to install the update.&#10;&#10;Tip: Current process will killed during this update.</system:String>
     <system:String x:Key="connect_title">Connect</system:String>
     <system:String x:Key="buffer_item_play_sound">Play sound on Copy or Cut</system:String>
+
+    <system:String x:Key="script_name">Name</system:String>
+    <system:String x:Key="script_enabled">Enabled</system:String>
+    <system:String x:Key="script_code">Code</system:String>
+    <system:String x:Key="script_load_file">Load from file</system:String>
+    <system:String x:Key="script_run_sandbox">Test the script by running it in a sandbox environment.</system:String>
+    <system:String x:Key="script_output">Output</system:String>
+    <system:String x:Key="script_examples">Examples</system:String>
+
+    <system:String x:Key="scripting_duplicate_exist">A duplicate script code already exist.</system:String>
+    <system:String x:Key="scripting_script_saved">Script has been saved successfully.</system:String>
+    <system:String x:Key="scripting_script_delete_title">Delete?</system:String>
+    <system:String x:Key="scripting_script_delete_text">This will remove the script permanently, it cannot be undone!</system:String>
 </ResourceDictionary>

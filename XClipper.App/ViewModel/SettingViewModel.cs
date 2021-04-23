@@ -178,6 +178,8 @@ namespace Components
             BindDatabase = BTD = Settings.BIND_DATABASE;
             BindDelete = BFD = Settings.BIND_DELETE;
             BindImage = BIU = Settings.BIND_IMAGE;
+            CopyBuffer1 = DefaultSettings.CopyBuffer1 = Settings.CopyBuffer1;
+            CopyBuffer2 = DefaultSettings.CopyBuffer2 = Settings.CopyBuffer2;
 
             SetAppStartupEntry();
             WriteSettings();
