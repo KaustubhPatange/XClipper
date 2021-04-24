@@ -168,11 +168,15 @@ namespace Components.viewModels
 
         public void InsertAll(List<TableCopy> models) => dataDB.InsertAll(models);
 
+        private List<TableCopy> CacheData;
         public void InsertContent(TableCopy model, bool pushToDatabase = true)
         {
-            // This will check if same clip text is saved again
-            var list = dataDB.GetAllData().OrderByDescending(s => ParseDateTimeText(s.LastUsedDateTime)).ToList();
-            foreach (var c in list)
+            if (model == null) return;
+            
+            if (CacheData == null) 
+                CacheData = dataDB.GetAllData().OrderByDescending(s => ParseDateTimeText(s.LastUsedDateTime)).ToList();
+            
+            foreach (var c in CacheData)
             {
                 if (c.ContentType == model.ContentType)
                 {
@@ -192,11 +196,13 @@ namespace Components.viewModels
             }
 
             // Implementation of setting TotalClipLength 
-            if (list.Count >= TotalClipLength)
+            if (CacheData.Count >= TotalClipLength)
             {
-                dataDB.Delete(list[list.Count - 1]);
+                dataDB.Delete(CacheData[CacheData.Count - 1]);
+                CacheData.Remove(CacheData[CacheData.Count - 1]); // Remove from cache
             }
-
+            
+            CacheData.Add(model); // Add to cache
             dataDB.Insert(model);
 
             if (pushToDatabase)

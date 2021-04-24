@@ -51,7 +51,7 @@ namespace Components
         {
             if (!_isRunning) return;
             long count = Environment.TickCount;
-            Debug.WriteLine("LastTime Record: " + (int)(count - _lastRecordTime));
+           // Debug.WriteLine("LastTime Record: " + (int)(count - _lastRecordTime));
             OnKeyboardInput?.Invoke(sender, new MacroEvent(MacroEventType.KeyDown, args, (int)(count - _lastRecordTime)));
             _lastRecordTime = count;
         }
@@ -143,7 +143,7 @@ namespace Components
         private static IntPtr GetHookProcedure(int nCode, IntPtr wParam, IntPtr lParam, Callback callback)
         {
             var passThrough = nCode != 0;
-            Debug.WriteLine("PassThough: " + nCode);
+           // Debug.WriteLine("PassThough: " + nCode);
             if (passThrough)
                 return CallNextHookEx(IntPtr.Zero, nCode, wParam, lParam);
 
@@ -152,7 +152,7 @@ namespace Components
             
             if (!continueProcessing)
             {
-                Debug.WriteLine("Unsubscribed from the hook");
+               // Debug.WriteLine("Unsubscribed from the hook");
                 return new IntPtr(-1);
             }
             

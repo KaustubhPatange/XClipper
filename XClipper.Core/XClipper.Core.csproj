@@ -130,7 +130,6 @@
     <Compile Include="Data\unlocalized\ISettingEventBinder.cs" />
     <Compile Include="Data\unlocalized\MessageType.cs" />
     <Compile Include="Data\Utils\ImageCompare.cs" />
-    <Compile Include="Helpers\ClipboardHelper.cs" />
     <Compile Include="Helpers\PathHelper.cs" />
     <Compile Include="Helpers\EnumHelper.cs" />
     <Compile Include="Helpers\RegistryHelper.cs" />

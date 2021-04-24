@@ -11,6 +11,12 @@ using PropertyChanged;
 
 namespace Components
 {
+    // Copy script interpreter is hooked at TableHelper.cs
+    // Paste script interpreter is hooked at ClipboardHelper.cs
+    
+    /// <summary>
+    /// A small interpreter to transform data using CSScript on copy or paste action.
+    /// </summary>
     public static class Interpreter
     {
         public const string SCRIPT_EXTENSION = ".xcs";
@@ -40,7 +46,7 @@ namespace Components
             }
 
             /// <summary>
-            /// Determines that should we proceed with the next call.
+            /// Determines the abort status.
             /// </summary>
             /// <returns>"True" to abort &amp; "False" to proceed.</returns>
             public bool ShouldExecute()
@@ -62,17 +68,12 @@ namespace Components
         {
             try
             {
-                dynamic runner = CSScript.LoadCode(script.Code).CreateObject("*");
+                var runner = CSScript.CreateFunc<bool>(script.Code);
                 if (runner == null)
                     return new Result.Error("Error: No object/class found in the code.");
 
-                dynamic returned = runner.Run(clip);
-                if (returned is bool)
-                {
-                    var result = (bool) returned;
-                    return new Result.Success(result);
-                }
-                else return new Result.Error("Error: The method must return true/false.");
+                var result = runner.Invoke(clip);
+                return new Result.Success(result);
             }
             catch (Exception e)
             {
@@ -82,9 +83,41 @@ namespace Components
             
             return new Result.Error("Error: Couldn't determine the failure of execution.");
         }
-
-        #endregion
         
+        /// <summary>
+        /// <inheritdoc cref="InternalBatchRunScript"/>
+        /// </summary>
+        /// <returns><inheritdoc cref="InternalBatchRunScript"/></returns>
+        public static bool BatchRunCopyScripts(Clipper clip) => InternalBatchRunScript(OnCopyScripts, clip);
+        
+        /// <summary>
+        /// <inheritdoc cref="InternalBatchRunScript"/>
+        /// </summary>
+        /// <returns><inheritdoc cref="InternalBatchRunScript"/></returns>
+        public static bool BatchRunPasteScripts(Clipper clip) => InternalBatchRunScript(OnPasteScripts, clip);
+
+        /// <summary>
+        /// Batch run copy scripts &amp; returns the abort status.
+        /// </summary>
+        /// <returns>"True" to abort &amp; "False" to continue.</returns>
+        private static bool InternalBatchRunScript(ObservableCollection<Script> list, Clipper clip)
+        {
+            if (list.Count > 0)
+            {
+                foreach (var script in list)
+                {
+                    if (script.Enabled)
+                    {
+                        bool abort = Run(script, clip).ShouldExecute();
+                        if (abort) return true;
+                    }
+                }
+            }
+            return false;
+        }
+        
+        #endregion
+
         #region Properties
         public static ObservableCollection<Script> OnCopyScripts { get; private set; } = new();
         public static ObservableCollection<Script> OnPasteScripts { get; private set; } = new();
@@ -165,30 +198,30 @@ namespace Components
 
     public class Clipper
     {
+        public Clipper(string rawText, string imagePath, ContentType type)
+        {
+            RawText = rawText;
+            ImagePath = imagePath;
+            Type = type;
+        }
+        
         public string RawText { get; set; }
         public string ImagePath { get; private set; }
         public ContentType Type { get; private set; }
 
-        public static Clipper CreateSandbox() => new()
-        {
-            RawText = "This is a sample data",
-            ImagePath = null,
-            Type = ContentType.Text
-        };
+        public static Clipper CreateSandbox() => new("This is a sample data", null, ContentType.Text);
+        public static Clipper ForTextType(string text) => new(text, null, ContentType.Image);
     }
 
     [ImplementPropertyChanged]
     public class Script : INotifyPropertyChanged, IEquatable<Script>
     {
         public const string BASE_TEMPLATE = @"using System;
-using System.Windows.Forms;
 using Components;
 
-public class MyScript {
-    public bool Run(Clipper clip) {
-        MessageBox.Show(clip.RawText);
-        return false;
-    }
+public bool Run(Clipper clip) {
+    clip.RawText = clip.RawText.Trim();
+    return false;
 }
 ";
         public string Name { get; set; } = string.Empty;

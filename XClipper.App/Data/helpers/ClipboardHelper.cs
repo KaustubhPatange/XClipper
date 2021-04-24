@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using ClipboardManager.models;
 
 #nullable enable
 
@@ -95,13 +96,18 @@ namespace Components
         public static void PerformClipboardPaste(string text)
         {
             _listeners.ForEach(l => l.OnGoingClipboardAction());
+            string transformed = text;
             try
             {
-                Preserve();
-                SetText(text);
-                System.Windows.Forms.SendKeys.SendWait("^v");
-                Thread.Sleep(100);
-                Consume();
+                // Run paste scripts interpreter.
+                if (!AbortPasteScripts(text, out transformed))
+                {
+                    Preserve();
+                    SetText(transformed);
+                    System.Windows.Forms.SendKeys.SendWait("^v");
+                    Thread.Sleep(100);
+                    Consume();
+                }
             }
             catch (Exception e)
             {
@@ -213,6 +219,14 @@ namespace Components
                 IntPtr.Zero, 
                 System.Windows.Int32Rect.Empty, 
                 BitmapSizeOptions.FromWidthAndHeight(bmp.Width, bmp.Height));
+        }
+
+        private static bool AbortPasteScripts(string text, out string transform)
+        {
+            var clip = Clipper.ForTextType(text);
+            var result = Interpreter.BatchRunPasteScripts(clip);
+            transform = clip.RawText;
+            return result;
         }
 
         public enum DataType

@@ -22,7 +22,6 @@ namespace Components.Controls.Settings
 {
     public partial class ScriptingPage : UserControl
     {
-
         public ScriptingPage()
         {
             InitializeComponent();

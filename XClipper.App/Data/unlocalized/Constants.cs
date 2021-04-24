@@ -7,7 +7,6 @@ namespace Components
 {
     public static class Constants
     {
-
         #region Directory Constants
 
         public static string ApplicationLocation = Assembly.GetExecutingAssembly().Location;
