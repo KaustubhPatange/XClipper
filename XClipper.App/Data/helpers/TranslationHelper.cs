@@ -237,6 +237,8 @@ namespace Components
 		public readonly string SCRIPT_RUN_SANDBOX = rm.GetString("script_run_sandbox");
 		public readonly string SCRIPT_OUTPUT = rm.GetString("script_output");
 		public readonly string SCRIPT_EXAMPLES = rm.GetString("script_examples");
+		public readonly string SCRIPT_NAME_ERROR = rm.GetString("script_name_error");
+		public readonly string SCRIPT_CODE_ERROR = rm.GetString("script_code_error");
 		public readonly string SCRIPTING_DUPLICATE_EXIST = rm.GetString("scripting_duplicate_exist");
 		public readonly string SCRIPTING_SCRIPT_SAVED = rm.GetString("scripting_script_saved");
 		public readonly string SCRIPTING_SCRIPT_DELETE_TITLE = rm.GetString("scripting_script_delete_title");

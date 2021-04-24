@@ -13,6 +13,7 @@
     <StackPanel Margin="7" Orientation="Vertical">
         <control:GroupSeparator Margin="0,0,0,0" Header="{DynamicResource settings_copy_scripts}" />
         <ListView
+            x:Name="_copylistView"
             Height="75"
             Margin="0,5,0,0"
             ItemsSource="{Binding Path=(local:Interpreter.OnCopyScripts)}"
@@ -58,6 +59,7 @@
 
         <control:GroupSeparator Margin="0,10,0,0" Header="{DynamicResource settings_paste_scripts}" />
         <ListView
+            x:Name="_pastelistView"
             Height="75"
             Margin="0,5,0,0"
             ItemsSource="{Binding Path=(local:Interpreter.OnPasteScripts)}"

@@ -7,7 +7,8 @@
     xmlns:local="clr-namespace:Components"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="{DynamicResource settings_tab_scripting}"
-    Width="370"
+    Width="340"
+    ResizeMode="NoResize"
     SizeToContent="Height"
     mc:Ignorable="d">
     <Border Padding="10">
@@ -39,6 +40,9 @@
             <TextBox
                 Height="160"
                 Margin="0,10,0,0"
+                AcceptsReturn="True"
+                AcceptsTab="True"
+                FontFamily="Consolas"
                 HorizontalScrollBarVisibility="Auto"
                 Text="{Binding ScriptModel.Code, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                 VerticalScrollBarVisibility="Auto" />
@@ -48,7 +52,8 @@
                     Width="70"
                     Height="22"
                     Click="OnSaveButtonClicked"
-                    Content="{DynamicResource settings_save_btn}" />
+                    Content="{DynamicResource settings_save_btn}"
+                    IsEnabled="{Binding IsSaveEnabled}" />
                 <Button
                     Width="100"
                     Height="22"
@@ -62,16 +67,21 @@
                     Padding="0,2,3,2"
                     HorizontalAlignment="Right"
                     Click="OnRunButtonClicked"
+                    IsEnabled="{Binding IsRunEnabled}"
                     ToolTip="{DynamicResource script_run_sandbox}">
                     <Image Source="pack://application:,,,/Resources/run.png" />
                 </Button>
 
             </DockPanel>
 
-            <Expander Margin="0,10,0,0" Header="{DynamicResource script_output}">
+            <Expander
+                Margin="0,10,0,0"
+                Header="{DynamicResource script_output}"
+                IsExpanded="{Binding IsExpanderExpanded, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
                 <TextBox
-                    Height="100"
+                    Height="70"
                     Margin="7"
+                    FontFamily="Consolas"
                     IsReadOnly="True"
                     Text="{Binding Output}"
                     TextWrapping="Wrap" />

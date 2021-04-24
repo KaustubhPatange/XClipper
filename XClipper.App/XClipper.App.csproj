@@ -79,6 +79,10 @@
     <Reference Include="CommonServiceLocator, Version=2.0.2.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
       <HintPath>..\packages\CommonServiceLocator.2.0.2\lib\net45\CommonServiceLocator.dll</HintPath>
     </Reference>
+    <Reference Include="CSScriptLibrary, Version=3.24.0.0, Culture=neutral, PublicKeyToken=70fcc3d18c749033">
+      <HintPath>..\packages\CS-Script.bin.3.24.0.0\lib\net45\CSScriptLibrary.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="DesktopToast">
       <HintPath>..\libraries\DesktopToast.custom\DesktopToast.dll</HintPath>
       <!-- <HintPath>..\..\DesktopToast\DesktopToast\bin\Debug\DesktopToast.dll</HintPath> -->
@@ -120,6 +124,10 @@
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Microsoft.VisualStudio.DebuggerVisualizers, Version=16.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Mono.CSharp, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
+      <HintPath>..\packages\CS-Script.bin.3.24.0.0\lib\net45\Mono.CSharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -261,6 +269,9 @@
     <Compile Include="Data\unlocalized\Utilities\NetworkUtility.cs" />
     <Compile Include="Data\unlocalized\Utilities\UpdaterService.cs" />
     <Compile Include="NotificationActivator.cs" />
+    <Compile Include="Scripting.evaluator.cs" />
+    <Compile Include="Scripting.Extensions.cs" />
+    <Compile Include="Scripting.native.cs" />
     <Compile Include="UI\BuyWindow.xaml.cs">
       <DependentUpon>BuyWindow.xaml</DependentUpon>
     </Compile>

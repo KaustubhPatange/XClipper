@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
+using ClipboardManager.models;
+using CSScriptLibrary;
 using PropertyChanged;
 
 namespace Components
@@ -12,54 +15,82 @@ namespace Components
     {
         public const string SCRIPT_EXTENSION = ".xcs";
         
+        #region Runner
+
+        /// <summary>
+        /// A state representing success or failure of running interpreter.
+        /// </summary>
+        public abstract class Result
+        {
+            public class Success : Result
+            {
+                public bool ShouldProceed { get; private set; }
+                public Success(bool shouldProceed)
+                {
+                    ShouldProceed = shouldProceed;
+                }
+            }
+            public class Error : Result
+            {
+                public string Message { get; private set; }
+                public Error(string message)
+                {
+                    Message = message;
+                }
+            }
+
+            /// <summary>
+            /// Determines that should we proceed with the next call.
+            /// </summary>
+            /// <returns>"True" to abort &amp; "False" to proceed.</returns>
+            public bool ShouldExecute()
+            {
+                if (this is Success)
+                {
+                    var s = (Success) this;
+                    return s.ShouldProceed;
+                }
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Runs the script.
+        /// </summary>
+        /// <returns></returns>
+        public static Result Run(Script script, Clipper clip)
+        {
+            try
+            {
+                dynamic runner = CSScript.LoadCode(script.Code).CreateObject("*");
+                if (runner == null)
+                    return new Result.Error("Error: No object/class found in the code.");
+
+                dynamic returned = runner.Run(clip);
+                if (returned is bool)
+                {
+                    var result = (bool) returned;
+                    return new Result.Success(result);
+                }
+                else return new Result.Error("Error: The method must return true/false.");
+            }
+            catch (Exception e)
+            {
+                var message = Regex.Replace(e.Message, @"(c|C)\:\\Users\\.*\\dynamic\\([\d\.a-z-]+)", "Script");
+                return new Result.Error($"Error: {message}");
+            }
+            
+            return new Result.Error("Error: Couldn't determine the failure of execution.");
+        }
+
+        #endregion
+        
         #region Properties
-        
-        private static List<Script> _CopyScripts { get; set; } = new();
-        private static List<Script> _PasteScripts { get; set; } = new();
-
-        public static List<Script> OnCopyScripts
-        {
-            get => _CopyScripts;
-            set
-            {
-                if (value != _CopyScripts)
-                {
-                    _CopyScripts = value;
-                    DefaultSettings.NotifyStaticPropertyChanged(nameof(OnCopyScripts));
-                }
-            }
-        }
-        public static List<Script> OnPasteScripts
-        {
-            get => _PasteScripts;
-            set
-            {
-                if (value != _PasteScripts)
-                {
-                    _PasteScripts = value;
-                    DefaultSettings.NotifyStaticPropertyChanged(nameof(OnPasteScripts));
-                }
-            }
-        }
-        
-        #endregion
-
-        #region Script Update
-
-        public static void UpdateCopyScript(List<Script> list)
-        {
-            OnCopyScripts = list;
-            InternalWrite(list, Constants.CopyScriptsPath);
-        }
-        
-        public static void UpdatePasteScript(List<Script> list)
-        {
-            OnPasteScripts = list;
-            InternalWrite(list, Constants.PasteScriptsPath);
-        }
+        public static ObservableCollection<Script> OnCopyScripts { get; private set; } = new();
+        public static ObservableCollection<Script> OnPasteScripts { get; private set; } = new();
 
         #endregion
-        
+
         #region Read/Write
         
         /// <summary>
@@ -73,9 +104,11 @@ namespace Components
             
             InternalLoad(copyScripts, Constants.CopyScriptsPath);
             InternalLoad(pasteScripts, Constants.PasteScriptsPath);
-            
-            OnCopyScripts = copyScripts;
-            OnPasteScripts = pasteScripts;
+
+            OnCopyScripts = new(copyScripts);
+            OnPasteScripts = new(pasteScripts);
+
+            SubscribeChanges();
         }
 
         /// <summary>
@@ -88,8 +121,9 @@ namespace Components
             InternalWrite(OnPasteScripts, Constants.PasteScriptsPath);
         }
 
-        private static void InternalWrite(List<Script> list, string directory)
+        private static void InternalWrite(IEnumerable<Script> list, string directory)
         {
+            foreach (var f in new DirectoryInfo(directory).GetFiles($"*{SCRIPT_EXTENSION}")) f.Delete();
             foreach (Script script in list)
             {
                 var doc = new XDocument();
@@ -113,6 +147,12 @@ namespace Components
                 }
             }
         }
+
+        private static void SubscribeChanges()
+        {
+            OnCopyScripts.CollectionChanged += (o, e) => InternalWrite(OnCopyScripts, Constants.CopyScriptsPath);
+            OnPasteScripts.CollectionChanged += (o, e) => InternalWrite(OnPasteScripts, Constants.PasteScriptsPath);
+        }
         
         private static void Init()
         {
@@ -123,11 +163,37 @@ namespace Components
         #endregion
     }
 
+    public class Clipper
+    {
+        public string RawText { get; set; }
+        public string ImagePath { get; private set; }
+        public ContentType Type { get; private set; }
+
+        public static Clipper CreateSandbox() => new()
+        {
+            RawText = "This is a sample data",
+            ImagePath = null,
+            Type = ContentType.Text
+        };
+    }
+
+    [ImplementPropertyChanged]
     public class Script : INotifyPropertyChanged, IEquatable<Script>
     {
-        public string Name { get; set; }
-        public string Code { get; set; }
-        public bool Enabled { get; set; }
+        public const string BASE_TEMPLATE = @"using System;
+using System.Windows.Forms;
+using Components;
+
+public class MyScript {
+    public bool Run(Clipper clip) {
+        MessageBox.Show(clip.RawText);
+        return false;
+    }
+}
+";
+        public string Name { get; set; } = string.Empty;
+        public string Code { get; set; } = BASE_TEMPLATE;
+        public bool Enabled { get; set; } = true;
 
         public event PropertyChangedEventHandler PropertyChanged;
 

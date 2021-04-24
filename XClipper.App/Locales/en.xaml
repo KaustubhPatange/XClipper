@@ -234,6 +234,8 @@
     <system:String x:Key="script_run_sandbox">Test the script by running it in a sandbox environment.</system:String>
     <system:String x:Key="script_output">Output</system:String>
     <system:String x:Key="script_examples">Examples</system:String>
+    <system:String x:Key="script_name_error">Script name cannot be empty.</system:String>
+    <system:String x:Key="script_code_error">Script code cannot be empty.</system:String>
 
     <system:String x:Key="scripting_duplicate_exist">A duplicate script code already exist.</system:String>
     <system:String x:Key="scripting_script_saved">Script has been saved successfully.</system:String>

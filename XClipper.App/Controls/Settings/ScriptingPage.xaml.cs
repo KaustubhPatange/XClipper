@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,58 +22,58 @@ namespace Components.Controls.Settings
 {
     public partial class ScriptingPage : UserControl
     {
+
         public ScriptingPage()
         {
             InitializeComponent();
             (this.Content as FrameworkElement)!.DataContext = this;
+            Interpreter.OnCopyScripts.CollectionChanged += (o, e) => _copylistView.ItemsSource = Interpreter.OnCopyScripts;
+            Interpreter.OnPasteScripts.CollectionChanged += (o, e) => _pastelistView.ItemsSource = Interpreter.OnPasteScripts;
         }
 
         public int SelectedCopyScriptIndex { get; set; }
         public int SelectedPasteScriptIndex { get; set; }
 
-        public bool IsCopyButtonsEnabled => CopyScript.Count > 0 ? SelectedCopyScriptIndex != -1 : false;
-        public bool IsPasteButtonsEnabled => PasteScript.Count > 0 ? SelectedPasteScriptIndex != -1 : false;
+        public bool IsCopyButtonsEnabled => Interpreter.OnCopyScripts.Count > 0 ? SelectedCopyScriptIndex != -1 : false;
+        public bool IsPasteButtonsEnabled => Interpreter.OnCopyScripts.Count > 0 ? SelectedPasteScriptIndex != -1 : false;
 
-        public List<Script> CopyScript = new(Interpreter.OnCopyScripts);
-        public List<Script> PasteScript = new(Interpreter.OnPasteScripts);
-        
         #region Event Handlers
         
         private void OnCopyAddButton_Clicked(object sender, RoutedEventArgs e)
         {
-            InternalAddButton(CopyScript, () => Interpreter.UpdateCopyScript(CopyScript));
+            InternalAddButton(Interpreter.OnCopyScripts);
         }
 
         private void OnCopyEditButton_Clicked(object sender, RoutedEventArgs e)
         {
-            InternalEditButton(CopyScript, SelectedCopyScriptIndex, () => Interpreter.UpdateCopyScript(CopyScript));
+            InternalEditButton(Interpreter.OnCopyScripts, SelectedCopyScriptIndex);
         }
 
         private void OnCopyDeleteButton_Clicked(object sender, RoutedEventArgs e)
         {
-            InternalDeleteButton(CopyScript, SelectedCopyScriptIndex, () => Interpreter.UpdateCopyScript(CopyScript));
+            InternalDeleteButton(Interpreter.OnCopyScripts, SelectedCopyScriptIndex);
         }
 
         private void OnPasteAddButton_Clicked(object sender, RoutedEventArgs e)
         {
-            InternalAddButton(PasteScript, () => Interpreter.UpdateCopyScript(PasteScript));
+            InternalAddButton(Interpreter.OnPasteScripts);
         }
 
         private void OnPasteEditButton_Clicked(object sender, RoutedEventArgs e)
         {
-            InternalEditButton(PasteScript, SelectedPasteScriptIndex, () => Interpreter.UpdateCopyScript(PasteScript));
+            InternalEditButton(Interpreter.OnPasteScripts, SelectedPasteScriptIndex);
         }
 
         private void OnPasteDeleteButton_Clicked(object sender, RoutedEventArgs e)
         {
-            InternalDeleteButton(PasteScript, SelectedPasteScriptIndex, () => Interpreter.UpdateCopyScript(PasteScript));
+            InternalDeleteButton(Interpreter.OnPasteScripts, SelectedPasteScriptIndex);
         }
         
         #endregion
 
         #region Internal Methods
 
-        private void InternalAddButton(List<Script> scripts, Action OnSave)
+        private void InternalAddButton(ObservableCollection<Script> scripts)
         {
             new ScriptWindow.Builder()
                 .SetOnSave((script) =>
@@ -79,38 +82,31 @@ namespace Components.Controls.Settings
                     if (!exist)
                     {
                         scripts.Add(script);
-                        OnSave.Invoke();
                         MsgBoxHelper.ShowInfo(Translation.SCRIPTING_SCRIPT_SAVED);
                     } else MsgBoxHelper.ShowError(Translation.SCRIPTING_DUPLICATE_EXIST);
                 })
-                .Show(this.Parent as Window);
+                .Show(Window.GetWindow(this));
         }
 
-        private void InternalEditButton(List<Script> scripts, int index, Action OnSave)
+        private void InternalEditButton(ObservableCollection<Script> scripts, int index)
         {
             new ScriptWindow.Builder()
                 .SetScript(scripts[index])
                 .SetOnSave((script) =>
                 {
-                    bool exist = scripts.Any(c => c.Code == script.Code);
-                    if (!exist)
-                    {
-                        scripts[index] = script;
-                        OnSave.Invoke();
-                        MsgBoxHelper.ShowInfo(Translation.SCRIPTING_SCRIPT_SAVED);
-                    } else MsgBoxHelper.ShowError(Translation.SCRIPTING_DUPLICATE_EXIST);
+                    scripts[index] = script;
+                    MsgBoxHelper.ShowInfo(Translation.SCRIPTING_SCRIPT_SAVED);
                 })
-                .Show(this.Parent as Window);
+                .Show(Window.GetWindow(this));
         }
 
-        private void InternalDeleteButton(List<Script> scripts, int index, Action OnDelete)
+        private void InternalDeleteButton(ObservableCollection<Script> scripts, int index)
         {
             var result = MessageBox.Show(Translation.SCRIPTING_SCRIPT_DELETE_TEXT,
                 Translation.SCRIPTING_SCRIPT_DELETE_TITLE, MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
             if (result == MessageBoxResult.Yes)
             {
                 scripts.RemoveAt(index);
-                OnDelete.Invoke();
             }
         }
 
