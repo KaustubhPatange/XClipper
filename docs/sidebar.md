@@ -6,8 +6,10 @@
 - [Data synchronization](sync)
 - [Image synchronization](sync-image)
 - [Securing database](protect)
+- [Scripting](scripting)
 - [Manual license activation](activation)
 - [Migrating License](migrating)
+- [Copy Buffers](buffers)
 - [Hidden Settings](hidden)
 - [FAQs](faqs)
   **Developers**
@@ -20,8 +22,10 @@
 - [Data synchronization](test-pages/page2.md)
 - [Image synchronization](test-pages/image-dodo.md)
 - [Securing database](test-pages/page3.md)
+- [Scripting](test-pages/scripting.md)
 - [Manual license activation](test-pages/page4.md)
 - [Migrating License](test-pages/page5.md)
+- [Copy Buffers](test-pages/copy-buffers.md)
 - [Hidden Settings](test-pages/hidden-settings.md)
 - [FAQs](test-pages/common-question.md)
   **Developers**

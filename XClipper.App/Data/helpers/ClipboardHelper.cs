@@ -56,6 +56,8 @@ namespace Components
             try
             {
                 Preserve();
+                Clipboard.Clear();
+                Thread.Sleep(50);
                 System.Windows.Forms.SendKeys.SendWait("^c");
                 Thread.Sleep(100);
                 data = Clipboard.GetText();
@@ -79,6 +81,8 @@ namespace Components
             try
             {
                 Preserve();
+                Clipboard.Clear();
+                Thread.Sleep(50);
                 System.Windows.Forms.SendKeys.SendWait("^x");
                 Thread.Sleep(100);
                 data = Clipboard.GetText();

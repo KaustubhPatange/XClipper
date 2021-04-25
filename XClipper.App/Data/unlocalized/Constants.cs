@@ -119,8 +119,8 @@ namespace Components
         public const string DOC_PURCHASE_MIGRATION = "https://kaustubhpatange.github.io/XClipper/docs/#/migrating";
         public const string DOC_MANUAL_ACTIVATION = "https://kaustubhpatange.github.io/XClipper/docs/#/activation";
 
-        public const string DOC_SCRIPTING = "https://kaustubhpatange.github.io/XClipper/docs"; // TODO: Add scripting page in docs & update link.
-        public const string EXAMPLES_SCRIPTING = "https://kaustubhpatange.github.io/XClipper/docs"; // TODO: Add scripting examples in docs & update link.
+        public const string DOC_SCRIPTING = "https://kaustubhpatange.github.io/XClipper/docs/#/scripting";
+        public const string EXAMPLES_SCRIPTING = "https://kaustubhpatange.github.io/XClipper/docs/#/scripting?id=examples";
 
         #endregion
 

@@ -581,13 +581,15 @@ namespace Components
         #region IClipboardListener
 
         public void OnGoingClipboardAction()
-        {
-          //  hookUtility.StopListening();
+        { 
+            hookUtility.StopListening();
+            Debug.WriteLine("Stopped listening");
         }
 
         public void OnCompleteClipboardAction()
-        {
-           // hookUtility.StartListening();
+        { 
+            hookUtility.StartListening();
+            Debug.WriteLine("Started listening");
         }
 
         #endregion
