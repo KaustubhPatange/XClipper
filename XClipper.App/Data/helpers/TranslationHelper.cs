@@ -243,6 +243,9 @@ namespace Components
 		public readonly string SCRIPTING_SCRIPT_SAVED = rm.GetString("scripting_script_saved");
 		public readonly string SCRIPTING_SCRIPT_DELETE_TITLE = rm.GetString("scripting_script_delete_title");
 		public readonly string SCRIPTING_SCRIPT_DELETE_TEXT = rm.GetString("scripting_script_delete_text");
+		public readonly string SCRIPTING_MONITOR_TITLE = rm.GetString("scripting_monitor_title");
+		public readonly string SCRIPTING_MONITOR_FILE = rm.GetString("scripting_monitor_file");
+		public readonly string SCRIPTING_MONITORING = rm.GetString("scripting_monitoring");
 	}
 }
 

@@ -9,6 +9,7 @@ using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using ClipboardManager.models;
+using XClipper;
 
 #nullable enable
 

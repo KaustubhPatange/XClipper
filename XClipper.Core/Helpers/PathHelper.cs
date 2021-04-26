@@ -1,4 +1,6 @@
 ﻿using System.IO;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Components
 {
@@ -24,6 +26,25 @@ namespace Components
         public static string GetName(string path)
         {
             return path.Substring(path.LastIndexOf('\\') + 1);
+        }
+
+        /// <summary>
+        /// Returns the MD5 hash for the file.
+        /// </summary>
+        public static string GetMD5(string fileName)
+        {
+            using (var md5 = MD5.Create())
+            {
+                using (var stream = File.OpenRead(fileName))
+                {
+                    StringBuilder sb = new();
+                    byte[] hash = md5.ComputeHash(stream);
+                    foreach (byte bt in hash) {
+                        sb.Append(bt.ToString("x2"));
+                    }
+                    return sb.ToString();
+                }
+            }
         }
     }
 }

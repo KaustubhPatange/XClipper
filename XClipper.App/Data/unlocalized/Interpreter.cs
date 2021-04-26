@@ -8,6 +8,7 @@ using System.Xml.Linq;
 using ClipboardManager.models;
 using CSScriptLibrary;
 using PropertyChanged;
+using XClipper;
 
 namespace Components
 {
@@ -68,9 +69,15 @@ namespace Components
         {
             try
             {
+                if (!Regex.IsMatch(script.Code, @"public\s+bool\s+([A-Za-z0-9_]+)(\s+)?\((\s+)?Clipper\s+([A-Za-z0-9_]+)\)"))
+                    return new Result.Error("Error: No \"public\" method found accepting \"Clipper\" as parameter.\nHint: Add \"public bool Run(Clipper clip) { return false; }\"");
+                
                 var runner = CSScript.CreateFunc<bool>(script.Code);
                 if (runner == null)
                     return new Result.Error("Error: No object/class found in the code.");
+
+                if (Regex.IsMatch(script.Code, @"using(\s+)Components(\s+)?;"))
+                    return new Result.Error("Error: Using Components.dll assembly is prohibited.");
 
                 var result = runner.Invoke(clip);
                 return new Result.Success(result);
@@ -196,28 +203,11 @@ namespace Components
         #endregion
     }
 
-    public class Clipper
-    {
-        public Clipper(string rawText, string imagePath, ContentType type)
-        {
-            RawText = rawText;
-            ImagePath = imagePath;
-            Type = type;
-        }
-        
-        public string RawText { get; set; }
-        public string ImagePath { get; private set; }
-        public ContentType Type { get; private set; }
-
-        public static Clipper CreateSandbox() => new("This is a sample data", null, ContentType.Text);
-        public static Clipper ForTextType(string text) => new(text, null, ContentType.Image);
-    }
-
     [ImplementPropertyChanged]
     public class Script : INotifyPropertyChanged, IEquatable<Script>
     {
         public const string BASE_TEMPLATE = @"using System;
-using Components;
+using XClipper;
 
 public bool Run(Clipper clip) {
     clip.RawText = clip.RawText.Trim();

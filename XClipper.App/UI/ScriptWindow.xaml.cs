@@ -2,14 +2,18 @@
 using System.ComponentModel;
 using System.IO;
 using System.Windows;
+using System.Windows.Controls;
 using Microsoft.Win32;
 using PropertyChanged;
+using XClipper;
 using static Components.TranslationHelper;
 
 namespace Components.UI
 {
     public partial class ScriptWindow : Window, INotifyPropertyChanged
     {
+        public static string CODE_START_MONTIOR => Translation.SCRIPTING_MONITORING;
+
         public event PropertyChangedEventHandler PropertyChanged = (o, e) =>
         {
             ScriptWindow window = (ScriptWindow) o;
@@ -33,8 +37,9 @@ namespace Components.UI
         public bool IsExpanderExpanded { get; set; } = false;
         public bool IsRunEnabled { get; set; }
         public bool IsSaveEnabled { get; set; }
+        public bool IsCodeReadOnly { get; set; } = false;
         public string Output { get; set; } = string.Empty;
-
+        
         public void UpdateProperties()
         {
             IsRunEnabled = ScriptModel.Code.IsNotEmpty();
@@ -69,8 +74,41 @@ namespace Components.UI
             if (fd.ShowDialog() == true)
             {
                 ScriptModel.Code = File.ReadAllText(fd.FileName);
+                var result = MessageBox.Show(Translation.SCRIPTING_MONITOR_FILE, Translation.SCRIPTING_MONITOR_TITLE,
+                    MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+                if (result == MessageBoxResult.Yes)
+                {
+                    IsCodeReadOnly = true;
+                    ((Button) sender).ToolTip = fd.FileName;
+                    ((Button) sender).IsEnabled = false;
+                    StartMonitoring(fd.FileName);
+                }
             }
         }
+
+        #region Montioring
+
+        private string oldMD5;
+        private void StartMonitoring(string fileName)
+        {
+            Deactivated += (o, e) =>
+            {
+                oldMD5 = PathHelper.GetMD5(fileName);
+            };
+            Activated += (o, e) =>
+            {
+                if (oldMD5 != null)
+                {
+                    var current = PathHelper.GetMD5(fileName);
+                    if (current != oldMD5)
+                    {
+                        ScriptModel.Code = File.ReadAllText(fileName);
+                    }
+                }
+            };
+        }
+
+        #endregion
 
         public class Builder
         {

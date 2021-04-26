@@ -116,7 +116,7 @@ namespace Components
 
             ApplicationHelper.AttachForegroundProcess(delegate
             {
-                clipWindow.CloseWindow();
+                if (clipWindow.IsVisible) clipWindow.CloseWindow();
             });
 
             licenseService.Initiate(err =>
@@ -138,6 +138,13 @@ namespace Components
             hookUtility.SubscribePasteEvent(PerformWindowPaste);
             hookUtility.SubscribeQuickPasteEvent(QuickPasteHook);
         }
+
+        /*protected override void OnDeactivated(EventArgs e)
+        {
+            base.OnDeactivated(e);
+            Debug.WriteLine("DeactivatedEnd()");
+            clipWindow.CloseWindow();
+        }*/
 
         protected override void OnExit(ExitEventArgs e)
         {
@@ -582,13 +589,13 @@ namespace Components
 
         public void OnGoingClipboardAction()
         { 
-            hookUtility.StopListening();
+           // hookUtility.StopListening();
             Debug.WriteLine("Stopped listening");
         }
 
         public void OnCompleteClipboardAction()
         { 
-            hookUtility.StartListening();
+          //  hookUtility.StartListening();
             Debug.WriteLine("Started listening");
         }
 
@@ -717,8 +724,8 @@ namespace Components
             if (!clipWindow.IsVisible)
             {
                 clipWindow.Show();
+                clipWindow.GlobalActivate();
                 clipWindow._tbSearchBox.Focus();
-                ApplicationHelper.GlobalActivate(clipWindow);
             }
             else
                 clipWindow.CloseWindow();

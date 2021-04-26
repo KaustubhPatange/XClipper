@@ -1,6 +1,7 @@
 ﻿using ClipboardManager.models;
 using System;
 using System.Collections.Generic;
+using XClipper;
 using static WK.Libraries.SharpClipboardNS.SharpClipboard;
 using static Components.DefaultSettings;
 using static Components.MainHelper;
@@ -23,6 +24,7 @@ namespace Components
         public static TableCopy CreateTable(string RawData, ContentTypes type)
         {
             string internalRawData = RawData;
+            bool shouldPin = false;
             // Runs the copy interpreter
             if ((type == ContentTypes.Text || type == ContentTypes.Image) && !string.IsNullOrWhiteSpace(RawData))
             {
@@ -33,9 +35,11 @@ namespace Components
                 // Transform data
                 if (clipper.RawText != null) internalRawData = clipper.RawText;
                 if (clipper.ImagePath != null) internalRawData = clipper.ImagePath;
+                shouldPin = clipper.ShouldPin;
             }
             
             var table = new TableCopy();
+            table.IsPinned = shouldPin;
             switch (type)
             {
                 case ContentTypes.Text:

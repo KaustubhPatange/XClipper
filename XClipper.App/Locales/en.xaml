@@ -241,4 +241,8 @@
     <system:String x:Key="scripting_script_saved">Script has been saved successfully.</system:String>
     <system:String x:Key="scripting_script_delete_title">Delete?</system:String>
     <system:String x:Key="scripting_script_delete_text">This will remove the script permanently, it cannot be undone!</system:String>
+    <system:String x:Key="scripting_monitor_title">Monitor changes?</system:String>
+    <system:String x:Key="scripting_monitor_file">Would you like to monitor the file changes? This will stop once the script is saved or dialog is closed.</system:String>
+    <system:String x:Key="scripting_monitoring">The window is monitoring an external file for changes, edit that file to see changes.</system:String>
+
 </ResourceDictionary>

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using static Components.DefaultSettings;
+using static Components.ApplicationHelper;
 using Application = System.Windows.Application;
 
 #nullable enable
@@ -47,7 +48,7 @@ namespace Components
             else
                 _keyboardWatcher.OnKeyboardInput += KeyboardWatcher_OnKeyboardInput;
             
-            //_keyboardWatcher.OnKeyboardInput += BufferCopy_OnKeyboardInput;
+            _keyboardWatcher.OnKeyboardInput += BufferCopy_OnKeyboardInput;
         }
 
         #region Subscribers
@@ -310,15 +311,7 @@ namespace Components
         }
 
         #endregion
-
-        /// <summary>
-        /// In order to perform synchronous operation asynchronously.
-        /// </summary>
-        private void SendAction(Action action)
-        {
-            Application.Current.Dispatcher.BeginInvoke(action);
-        }
-
+        
         /// <summary>
         /// Suppose hotkeys are Ctrl + Oem3.
         /// 

@@ -15,6 +15,7 @@ namespace Components
         private bool _isRunning = true;
         public event EventHandler<MacroEvent> OnKeyboardInput;
         private static HookResult handle;
+        private static HookResult handle_back;
 
         private static CustomKeyboardWatcher Instance;
         private CustomKeyboardWatcher()
@@ -42,7 +43,8 @@ namespace Components
 
         private void Init()
         {
-            handle = HookGlobalKeyboard(OnCallback);
+            handle_back = RegisterSecondHook();
+            handle = RegisterFirstHook();
             KeyDownEventHandler += OnKeyDown;
             KeyUpEventHandler += OnKeyUp;
         }
@@ -70,6 +72,7 @@ namespace Components
             KeyDownEventHandler -= OnKeyDown;
             KeyUpEventHandler -= OnKeyUp;
             handle.Dispose();
+            handle_back.Dispose();
         }
         
         public event KeyEventHandler KeyDownEventHandler;
@@ -90,37 +93,55 @@ namespace Components
             handler(this, e);
         }
 
-        private bool OnCallback(CallbackData data)
+        private int _firstTick = 0;
+        private bool OnFirstCallback(CallbackData data)
         {
+            _firstTick = Environment.TickCount;
+            Debug.WriteLine($"First tick : {_firstTick}, Second Hook: {_secondTick}, {_firstTick == _secondTick}");
             var eDownUp = FromRawDataGlobal(data);
             InvokeKeyDown(eDownUp);
             InvokeKeyUp(eDownUp);
             return !eDownUp.Handled;
         }
+
+        private int _secondTick = 0;
+        private bool OnSecondCallback(CallbackData data)
+        {
+            _secondTick = Environment.TickCount;
+            Debug.WriteLine($"Second tick: {_secondTick}, First Hook : {_firstTick}, {_firstTick == _secondTick}");
+            var eDownUp = FromRawDataGlobal(data);
+            if (_secondTick != _firstTick)
+            {
+               // Debug.WriteLine("Registering first hook");
+                // RegisterFirstHook();
+            }
+            return !eDownUp.Handled;
+        }
         
         internal static HookProcedure _globalHookProc;
+        internal static HookProcedure _globalHookProc_backup;
         internal delegate bool Callback(CallbackData data);
         internal delegate HookResult Subscribe(Callback callbck);
         public delegate IntPtr HookProcedure(int nCode, IntPtr wParam, IntPtr lParam);
-
         internal const int WH_KEYBOARD_LL = 13;
-
-        private HookResult HookGlobalKeyboard(Callback callback)
+        
+        private HookResult RegisterFirstHook() => HookGlobalKeyboard(_globalHookProc, OnFirstCallback);
+        private HookResult RegisterSecondHook() => HookGlobalKeyboard(_globalHookProc_backup, OnSecondCallback);
+        private HookResult HookGlobalKeyboard(HookProcedure procedure, Callback callback)
         {
-            _globalHookProc = (code, param, lParam) => GetHookProcedure(code, param, lParam, callback);
+            procedure = (code, param, lParam) => GetHookProcedure(code, param, lParam, callback);
 
             var s = Marshal.GetHINSTANCE(typeof(App).Module);
             var hookHandle = SetWindowsHookEx(
                 WH_KEYBOARD_LL,
-                _globalHookProc,
+                procedure,
                 s,
                 0);
 
             if (hookHandle.IsInvalid)
                 throw new Exception("Invalid handle");
-
             
-            return new HookResult(hookHandle, _globalHookProc);
+            return new HookResult(hookHandle, procedure);
         }
         
         internal class HookResult : IDisposable

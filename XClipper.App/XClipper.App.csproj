@@ -255,6 +255,7 @@
     <Compile Include="Data\helpers\UWPToast.cs" />
     <Compile Include="Data\Models\Buffer.cs" />
     <Compile Include="Data\Models\Clip.cs" />
+    <Compile Include="Data\Models\Clipper.cs" />
     <Compile Include="Data\Models\Device.cs" />
     <Compile Include="Data\Models\FirebaseData.cs" />
     <Compile Include="Data\Models\OAuth.cs" />
