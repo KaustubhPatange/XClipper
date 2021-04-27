@@ -7,25 +7,33 @@ import com.kpstv.navigation.AnimationDefinition
 import com.kpstv.navigation.BaseArgs
 import com.kpstv.navigation.NavAnimation
 import com.kpstv.navigation.Navigator
+import com.kpstv.xclipper.extensions.FragClazz
 import com.kpstv.xclipper.ui.fragments.Settings
 
 class SettingNavViewModel : ViewModel() {
-    private val _navigation = MutableLiveData<Navigator.NavOptions>(null)
-    val navigation: LiveData<Navigator.NavOptions> = _navigation
+    private val _navigation = MutableLiveData<NavigationOptions>(null)
+    val navigation: LiveData<NavigationOptions> = _navigation
 
     fun navigateTo(
         screen: Settings.Screen,
         args: BaseArgs? = null,
         transactionType: Navigator.TransactionType = Navigator.TransactionType.REPLACE,
-        animation: NavAnimation = AnimationDefinition.SlideInRight(),
+        animation: NavAnimation = AnimationDefinition.SlideInRight,
         addToBackStack: Boolean = true
     ) {
-        _navigation.value = Navigator.NavOptions(
+        _navigation.value = NavigationOptions(
             clazz = screen.clazz,
-            args = args,
-            animation = animation,
-            type = transactionType,
-            addToBackStack = addToBackStack
+            navOptions = Navigator.NavOptions(
+                args = args,
+                animation = animation,
+                transaction = transactionType,
+                remember = addToBackStack
+            )
         )
     }
+
+    data class NavigationOptions(
+        val clazz: FragClazz,
+        val navOptions: Navigator.NavOptions
+    )
 }

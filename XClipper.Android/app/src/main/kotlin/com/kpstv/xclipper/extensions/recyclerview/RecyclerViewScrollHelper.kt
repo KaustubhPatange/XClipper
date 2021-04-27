@@ -1,6 +1,5 @@
-package com.kpstv.xclipper.ui.helpers
+package com.kpstv.xclipper.extensions.recyclerview
 
-import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.xclipper.extensions.SimpleFunction
 
@@ -29,7 +28,10 @@ class RecyclerViewScrollHelper : RecyclerView.OnScrollListener() {
     override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
         super.onScrollStateChanged(recyclerView, newState)
         verticalOffset = recyclerView.computeVerticalScrollOffset()
-        if (verticalOffset > 10 && !isBtnShown) {
+        if (verticalOffset == recyclerView.computeVerticalScrollRange()) {
+            isBtnShown = false
+            onScrollUp?.invoke()
+        } else if (verticalOffset > 10 && !isBtnShown) {
             onScrollDown?.invoke()
             isBtnShown = true
         } else if (verticalOffset < 10 && isBtnShown) {

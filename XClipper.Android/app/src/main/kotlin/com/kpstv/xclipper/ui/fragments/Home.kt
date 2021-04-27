@@ -10,12 +10,10 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
 import com.kpstv.navigation.AnimationDefinition
@@ -31,6 +29,8 @@ import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.extensions.enumerations.FirebaseState
 import com.kpstv.xclipper.extensions.listeners.StatusListener
+import com.kpstv.xclipper.extensions.recyclerview.RecyclerViewInsetHelper
+import com.kpstv.xclipper.extensions.recyclerview.SwipeToDeleteCallback
 import com.kpstv.xclipper.extensions.utils.FirebaseUtils
 import com.kpstv.xclipper.extensions.utils.ThemeUtils
 import com.kpstv.xclipper.extensions.utils.ThemeUtils.Companion.registerForThemeChange
@@ -44,7 +44,7 @@ import com.kpstv.xclipper.ui.adapters.CIAdapter
 import com.kpstv.xclipper.ui.dialogs.EditDialog
 import com.kpstv.xclipper.ui.dialogs.TagDialog
 import com.kpstv.xclipper.ui.fragments.sheets.MoreBottomSheet
-import com.kpstv.xclipper.ui.helpers.RecyclerViewScrollHelper
+import com.kpstv.xclipper.extensions.recyclerview.RecyclerViewScrollHelper
 import com.kpstv.xclipper.ui.helpers.SyncDialogHelper
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -142,7 +142,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
                 layout_empty_parent.show()
             else
                 layout_empty_parent.collapse()
-            adapter.submitList(ArrayList(clips?.cloneForAdapter()?.reversed()!!))
+            if (clips != null) adapter.submitList(clips.cloneForAdapter())
             mainViewModel.stateManager.clearSelectedItem()
         }
         mainViewModel.stateManager.toolbarState.observe(viewLifecycleOwner) { state ->
@@ -234,6 +234,16 @@ class Home : ValueFragment(R.layout.fragment_home) {
         if (swipeToDelete)
             swipeToDeleteItemTouch.attachToRecyclerView(ci_recyclerView)
 
+       /* ci_recyclerView.addItemDecoration(object : RecyclerView.ItemDecoration(){
+            override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+                val position = parent.getChildLayoutPosition(view)
+                if (position == adapter.itemCount - 1) {
+                    Log.e("HomeSimp", "Last position")
+                    outRect.bottom += 70
+                }
+            }
+        })*/
+        RecyclerViewInsetHelper().attach(ci_recyclerView, RecyclerViewInsetHelper.InsetType.BOTTOM, true)
         recyclerViewScrollHelper.attach(
             ci_recyclerView,
             onScrollDown = {
@@ -419,7 +429,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
         settingImage.setOnClickListener {
             navViewModel.navigateTo(
                 screen = Start.Screen.SETTING,
-                animation = AnimationDefinition.Fade(),
+                animation = AnimationDefinition.Fade,
                 transactionType = Navigator.TransactionType.ADD,
                 addToBackStack = true,
             )

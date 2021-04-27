@@ -1,4 +1,4 @@
-package com.kpstv.xclipper.extensions
+package com.kpstv.xclipper.extensions.recyclerview
 
 import android.content.Context
 import android.graphics.Canvas

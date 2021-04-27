@@ -31,8 +31,10 @@ class Start : AppCompatActivity(), NavigatorTransmitter {
     private val navViewModel by viewModels<NavViewModel>()
     private val mainViewModel by viewModels<MainViewModel>()
     private lateinit var navigator: Navigator
-    @Inject lateinit var dbConnectionProvider: DBConnectionProvider
-    @Inject lateinit var preferenceProvider: PreferenceProvider
+    @Inject
+    lateinit var dbConnectionProvider: DBConnectionProvider
+    @Inject
+    lateinit var preferenceProvider: PreferenceProvider
 
     override fun getNavigator(): Navigator = navigator
 
@@ -44,7 +46,7 @@ class Start : AppCompatActivity(), NavigatorTransmitter {
         navigator.autoChildElevation()
 
         navViewModel.navigation.observe(this) { options ->
-            navigator.navigateTo(options)
+            navigator.navigateTo(options.clazz, options.navOptions)
         }
 
         if (savedInstanceState == null) {
@@ -71,7 +73,7 @@ class Start : AppCompatActivity(), NavigatorTransmitter {
 
     // Needed for scanning QRs
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        ConnectionHelper(this, mainViewModel,dbConnectionProvider)
+        ConnectionHelper(this, mainViewModel, dbConnectionProvider)
             .parse(requestCode, resultCode, data)
         super.onActivityResult(requestCode, resultCode, data)
     }
@@ -93,7 +95,7 @@ class Start : AppCompatActivity(), NavigatorTransmitter {
 }
 
 class NavViewModel : ViewModel() {
-    internal val navigation = MutableLiveData<Navigator.NavOptions>()
+    internal val navigation = MutableLiveData<NavigationOptions>()
     fun navigateTo(
         screen: Start.Screen,
         args: BaseArgs? = null,
@@ -102,13 +104,20 @@ class NavViewModel : ViewModel() {
         animation: NavAnimation = AnimationDefinition.None,
         popUpTo: Boolean = false,
     ) {
-        navigation.value = Navigator.NavOptions(
+        navigation.value = NavigationOptions(
             clazz = screen.clazz,
-            args = args,
-            animation = animation,
-            type = transactionType,
-            addToBackStack = addToBackStack,
-            popUpToThis = popUpTo
+            navOptions = Navigator.NavOptions(
+                args = args,
+                animation = animation,
+                transaction = transactionType,
+                remember = addToBackStack,
+                clearAllHistory = popUpTo
+            )
         )
     }
+
+    data class NavigationOptions(
+        val clazz: FragClazz,
+        val navOptions: Navigator.NavOptions
+    )
 }

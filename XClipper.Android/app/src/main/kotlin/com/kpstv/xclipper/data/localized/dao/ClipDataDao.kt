@@ -53,11 +53,11 @@ interface ClipDataDao {
 
     /** We are reversing this result in CIAdapter that is why we are taking
      *  list in ascending order */
-    @Query("select * from table_clip order by isPinned")
+    @Query("select * from table_clip order by isPinned desc, time desc")
     fun getAllLiveData(): LiveData<List<Clip>>
 
     /** As compared to above we are not reversing the list during submission,
      *  so we've to apply descending order filter */
-    @Query("select * from table_clip order by isPinned desc")
+    @Query("select * from table_clip order by isPinned desc, time desc")
     fun getDataSource(): DataSource.Factory<Int, Clip>
 }

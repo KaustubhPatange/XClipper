@@ -91,6 +91,7 @@ class ClipboardAccessibilityService : AccessibilityService() {
         event?.source?.apply {
             if (className == EditText::class.java.name) {
                 nodeInfo = this
+            // this.text not equals this.hintText & this.textSelectionStart == this.textSelectionEnd will you current cursor position.
             }
         }
 

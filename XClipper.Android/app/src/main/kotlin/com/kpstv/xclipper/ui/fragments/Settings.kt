@@ -47,10 +47,7 @@ class Settings : ValueFragment(R.layout.activity_settings), NavigatorTransmitter
         viewModel.navigation.observe(viewLifecycleOwner, navigationObserver)
 
         if (savedInstanceState == null) {
-            navigator.navigateTo(Navigator.NavOptions(
-                clazz = Screen.MAIN.clazz,
-                animation = AnimationDefinition.SlideInRight()
-            ))
+            navigator.navigateTo(Screen.MAIN.clazz, Navigator.NavOptions(animation = AnimationDefinition.SlideInRight))
         }
 
         if (hasKeyArgs()) {
@@ -58,9 +55,9 @@ class Settings : ValueFragment(R.layout.activity_settings), NavigatorTransmitter
         }
     }
 
-    private val navigationObserver = Observer { options: Navigator.NavOptions? ->
+    private val navigationObserver = Observer { options: SettingNavViewModel.NavigationOptions? ->
         options?.let { opt ->
-            navigator.navigateTo(opt)
+            navigator.navigateTo(opt.clazz, opt.navOptions)
             binding.toolbar.title = getString(Screen.getTitle(opt.clazz))
         }
     }
