@@ -66,7 +66,7 @@ interface MainRepository {
      */
     suspend fun checkForDependent(tagName: String): Boolean
 
-    fun getDataSource(): LiveData<PagedList<Clip>>
+    fun getDataSource(wildcard: String = "%"): LiveData<PagedList<Clip>>
 
     suspend fun syncDataFromRemote(): Boolean
 

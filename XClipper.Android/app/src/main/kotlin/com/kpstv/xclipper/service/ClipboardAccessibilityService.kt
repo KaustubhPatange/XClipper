@@ -14,7 +14,10 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.kpstv.hvlog.HVLog
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.App.ACTION_INSERT_TEXT
+import com.kpstv.xclipper.App.ACTION_NODE_INFO
 import com.kpstv.xclipper.App.ACTION_VIEW_CLOSE
+import com.kpstv.xclipper.App.EXTRA_NODE_CURSOR
+import com.kpstv.xclipper.App.EXTRA_NODE_TEXT
 import com.kpstv.xclipper.App.EXTRA_SERVICE_TEXT
 import com.kpstv.xclipper.App.showSuggestion
 import com.kpstv.xclipper.data.provider.ClipboardProvider
@@ -80,7 +83,7 @@ class ClipboardAccessibilityService : AccessibilityService() {
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         currentPackage = event?.packageName
 
-        logger(TAG, "$event")
+       // logger(TAG, "$event")
         //  logger(TAG, "SourceText: ${event?.source}; Text is null: ${event?.text.isNullOrEmpty()}; $event")
         //   logger(TAG, "Actions: ${ClipboardDetection.ignoreSourceActions(event?.source?.actionList)}, List: ${event?.source?.actionList}")
         if (event?.eventType != null)
@@ -91,6 +94,11 @@ class ClipboardAccessibilityService : AccessibilityService() {
         event?.source?.apply {
             if (className == EditText::class.java.name) {
                 nodeInfo = this
+//                logger("ClipboardAccessibilityService", "Does this work")
+                if (textSelectionStart == textSelectionEnd) {
+                    val isHintShowing = if (Build.VERSION.SDK_INT >= 26) isShowingHintText else text.toString().length > textSelectionEnd
+                    sendDataToBubbleService(text.toString(), isHintShowing, textSelectionEnd)
+                }
             // this.text not equals this.hintText & this.textSelectionStart == this.textSelectionEnd will you current cursor position.
             }
         }
@@ -160,7 +168,6 @@ class ClipboardAccessibilityService : AccessibilityService() {
             }
         }
 
-
         LocalBroadcastManager.getInstance(applicationContext)
             .registerReceiver(object : BroadcastReceiver() {
                 override fun onReceive(context: Context?, intent: Intent?) {
@@ -224,6 +231,15 @@ class ClipboardAccessibilityService : AccessibilityService() {
     private fun updateScreenInteraction(value: Boolean) {
         if (screenInteraction.value != value)
             screenInteraction.postValue(value)
+    }
+
+    private fun sendDataToBubbleService(text: String, isHintShowing: Boolean, cursor: Int) {
+        LocalBroadcastManager.getInstance(applicationContext).apply {
+            sendBroadcast(Intent(ACTION_NODE_INFO).apply {
+                putExtra(EXTRA_NODE_TEXT, text)
+                putExtra(EXTRA_NODE_CURSOR, cursor)
+            })
+        }
     }
 
     /**

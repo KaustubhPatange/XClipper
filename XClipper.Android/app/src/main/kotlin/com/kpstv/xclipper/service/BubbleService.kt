@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -14,8 +15,11 @@ import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bsk.floatingbubblelib.DefaultFloatingBubbleTouchListener
 import com.bsk.floatingbubblelib.FloatingBubbleConfig
 import com.bsk.floatingbubblelib.FloatingBubbleService
+import com.bsk.floatingbubblelib.FloatingBubbleTouchListener
+import com.kpstv.xclipper.App
 import com.kpstv.xclipper.App.ACTION_INSERT_TEXT
 import com.kpstv.xclipper.App.ACTION_VIEW_CLOSE
 import com.kpstv.xclipper.App.EXTRA_SERVICE_TEXT
@@ -26,6 +30,7 @@ import com.kpstv.xclipper.databinding.BubbleViewBinding
 import com.kpstv.xclipper.databinding.ItemBubbleServiceBinding
 import com.kpstv.xclipper.extensions.hide
 import com.kpstv.xclipper.extensions.layoutInflater
+import com.kpstv.xclipper.extensions.logger
 import com.kpstv.xclipper.extensions.show
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -39,22 +44,25 @@ class BubbleService : FloatingBubbleService() {
     private val TAG = javaClass.simpleName
     private lateinit var adapter: PageClipAdapter
 
+    private var currentWord: String = ""
+
+    private lateinit var binding: BubbleViewBinding
+
     override fun getConfig(): FloatingBubbleConfig {
 
-        val binding = BubbleViewBinding.inflate(applicationContext.layoutInflater())
+        binding = BubbleViewBinding.inflate(applicationContext.layoutInflater())
 
         /** Setting adapter and onClick to send PASTE event. */
         adapter = PageClipAdapter {
             val sendIntent = Intent(ACTION_INSERT_TEXT).apply {
-                putExtra(EXTRA_SERVICE_TEXT, it)
+                putExtra(EXTRA_SERVICE_TEXT, it.removePrefix(currentWord))
             }
             LocalBroadcastManager.getInstance(applicationContext)
                 .sendBroadcast(sendIntent)
             setState(false)
         }
 
-        /** Pagination */
-        repository.getDataSource().observeForever(pageObserver)
+        subscribeSuggestions()
 
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         binding.recyclerView.adapter = adapter
@@ -63,16 +71,51 @@ class BubbleService : FloatingBubbleService() {
             setState(false)
         }
 
+        binding.btnClear.setOnClickListener {
+            clearFilters()
+            subscribeSuggestions()
+        }
+
         /** When a view is clicked outside the overlay this receiver should
          *  should minimize the expandable view.*/
+        val filter = IntentFilter().apply {
+            addAction(ACTION_VIEW_CLOSE)
+            addAction(App.ACTION_NODE_INFO)
+        }
         LocalBroadcastManager.getInstance(this).registerReceiver(
             object : BroadcastReceiver() {
                 override fun onReceive(context: Context?, intent: Intent?) {
-                    if (intent?.action == ACTION_VIEW_CLOSE)
-                        setState(false)
+                    if (intent?.action == null) return
+                    when(intent.action) {
+                        ACTION_VIEW_CLOSE -> setState(false)
+                        App.ACTION_NODE_INFO -> {
+                            val currentText = intent.getStringExtra(App.EXTRA_NODE_TEXT) ?: ""
+                            val currentPosition = intent.getIntExtra(App.EXTRA_NODE_CURSOR, -1)
+                            logger("BubbleService", "Current Text: $currentText, Current Position: $currentPosition")
+
+                            if (currentPosition <= 0 || currentText.length < currentPosition) {
+                                clearFilters()
+                            } else {
+                                // 6th pos
+                                // this is| an example
+                                val compiled = "\\s+".toRegex()
+                                val upto = currentText.substring(0, currentPosition)
+                                currentWord = upto.split(compiled).last()
+                                binding.tvQuery.text = "Query: $currentWord"
+                                binding.btnClear.show()
+                                /*if (upto.matches(compiled)) {
+                                    currentWord = upto.split(compiled).last()
+                                    binding.tvQuery.text = "Query: $currentWord"
+                                } else {
+                                    clearFilters()
+                                }*/
+                            }
+                            logger("BubbleService", "Word: $currentWord")
+                        }
+                    }
                 }
             },
-            IntentFilter(ACTION_VIEW_CLOSE)
+            filter
         )
 
         return FloatingBubbleConfig.Builder()
@@ -80,6 +123,28 @@ class BubbleService : FloatingBubbleService() {
             .expandableView(binding.root)
             .physicsEnabled(true)
             .build()
+    }
+
+    override fun getTouchListener(): FloatingBubbleTouchListener {
+        return object : DefaultFloatingBubbleTouchListener() {
+            override fun onTap(expanded: Boolean) {
+                if (expanded) subscribeSuggestions()
+            }
+            override fun onRemove() {
+                stopSelf()
+            }
+        }
+    }
+
+    private fun subscribeSuggestions() {
+        repository.getDataSource("$currentWord%").removeObserver(pageObserver)
+        repository.getDataSource("$currentWord%").observeForever(pageObserver)
+    }
+
+    private fun clearFilters() {
+        currentWord = ""
+        binding.tvQuery.text = ""
+        binding.btnClear.hide()
     }
 
     private val pageObserver = Observer<PagedList<Clip>?> {

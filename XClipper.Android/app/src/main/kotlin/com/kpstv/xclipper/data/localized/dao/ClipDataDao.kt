@@ -58,6 +58,6 @@ interface ClipDataDao {
 
     /** As compared to above we are not reversing the list during submission,
      *  so we've to apply descending order filter */
-    @Query("select * from table_clip order by isPinned desc, time desc")
-    fun getDataSource(): DataSource.Factory<Int, Clip>
+    @Query("select * from table_clip where data like :wildcard order by isPinned desc, time desc")
+    fun getDataSource(wildcard: String): DataSource.Factory<Int, Clip>
 }

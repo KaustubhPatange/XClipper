@@ -187,4 +187,5 @@
     <string name="crash_text_sent">And it has been reported to my server. So you don\'t need to perform any additional step.</string>
     <string name="crash_title">We crashed,</string>
     <string name="go_top">Go top</string>
+    <string name="clear">Clear</string>
 </resources>
