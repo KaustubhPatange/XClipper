@@ -97,9 +97,10 @@ class ClipboardAccessibilityService : AccessibilityService() {
 //                logger("ClipboardAccessibilityService", "Does this work")
                 if (textSelectionStart == textSelectionEnd) {
                     val isHintShowing = if (Build.VERSION.SDK_INT >= 26) isShowingHintText else text.toString().length > textSelectionEnd
+                    logger("BubbleService", "Text: $text, Cursor: $textSelectionEnd, isHint: $isHintShowing, contentDesc: $contentDescription")
+
                     sendDataToBubbleService(text.toString(), isHintShowing, textSelectionEnd)
                 }
-            // this.text not equals this.hintText & this.textSelectionStart == this.textSelectionEnd will you current cursor position.
             }
         }
 
@@ -109,8 +110,7 @@ class ClipboardAccessibilityService : AccessibilityService() {
             updateScreenInteraction(false)
 
         if (event?.packageName != packageName)
-            LocalBroadcastManager.getInstance(applicationContext)
-                .sendBroadcast(Intent(ACTION_VIEW_CLOSE))
+            LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(Intent(ACTION_VIEW_CLOSE))
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
             && clipboardDetector.getSupportedEventTypes(event) && !isPackageBlacklisted(event?.packageName)
@@ -185,21 +185,16 @@ class ClipboardAccessibilityService : AccessibilityService() {
                             clipboardProvider.ignoreChange {
 
                                 /** Saving current clipboard */
-                                val currentClipboard = clipboardProvider.getClipboard()
+                                val currentClipText = clipboardProvider.getCurrentClip().value;
 
                                 /** Setting data to be paste */
-                                clipboardProvider.setClipboard(
-                                    ClipData.newPlainText(
-                                        "copied",
-                                        pasteData
-                                    )
-                                )
+                                clipboardProvider.setClipboard(ClipData.newPlainText("copied", pasteData))
 
-                                /** Make an actual paste request */
+                                /** Make an actual paste action */
                                 performAction(AccessibilityNodeInfo.ACTION_PASTE)
 
                                 /** Restore previous clipboard */
-                                clipboardProvider.setClipboard(currentClipboard)
+                                clipboardProvider.setClipboard(ClipData.newPlainText(null, currentClipText))
 
                                 HVLog.d("Pasted into current clip")
                             }

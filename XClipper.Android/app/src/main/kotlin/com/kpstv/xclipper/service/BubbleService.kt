@@ -53,12 +53,11 @@ class BubbleService : FloatingBubbleService() {
         binding = BubbleViewBinding.inflate(applicationContext.layoutInflater())
 
         /** Setting adapter and onClick to send PASTE event. */
-        adapter = PageClipAdapter {
+        adapter = PageClipAdapter { text ->
             val sendIntent = Intent(ACTION_INSERT_TEXT).apply {
-                putExtra(EXTRA_SERVICE_TEXT, it.removePrefix(currentWord))
+                putExtra(EXTRA_SERVICE_TEXT, text.removeRange(0, currentWord.length))
             }
-            LocalBroadcastManager.getInstance(applicationContext)
-                .sendBroadcast(sendIntent)
+            LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(sendIntent)
             setState(false)
         }
 
@@ -91,7 +90,8 @@ class BubbleService : FloatingBubbleService() {
                         App.ACTION_NODE_INFO -> {
                             val currentText = intent.getStringExtra(App.EXTRA_NODE_TEXT) ?: ""
                             val currentPosition = intent.getIntExtra(App.EXTRA_NODE_CURSOR, -1)
-                            logger("BubbleService", "Current Text: $currentText, Current Position: $currentPosition")
+
+//                            logger("BubbleService", "Current Text: $currentText, Current Position: $currentPosition")
 
                             if (currentPosition <= 0 || currentText.length < currentPosition) {
                                 clearFilters()
@@ -103,14 +103,7 @@ class BubbleService : FloatingBubbleService() {
                                 currentWord = upto.split(compiled).last()
                                 binding.tvQuery.text = "Query: $currentWord"
                                 binding.btnClear.show()
-                                /*if (upto.matches(compiled)) {
-                                    currentWord = upto.split(compiled).last()
-                                    binding.tvQuery.text = "Query: $currentWord"
-                                } else {
-                                    clearFilters()
-                                }*/
                             }
-                            logger("BubbleService", "Word: $currentWord")
                         }
                     }
                 }
@@ -176,9 +169,7 @@ class BubbleService : FloatingBubbleService() {
         class PageClipHolder(view: View) : RecyclerView.ViewHolder(view)
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-            PageClipHolder(
-                ItemBubbleServiceBinding.inflate(parent.context.layoutInflater()).root
-            )
+            PageClipHolder(ItemBubbleServiceBinding.inflate(parent.context.layoutInflater(), null, false).root)
 
         override fun onBindViewHolder(holder: PageClipHolder, position: Int) {
             val clip = getItem(position)
