@@ -91,8 +91,6 @@ class BubbleService : FloatingBubbleService() {
                             val currentText = intent.getStringExtra(App.EXTRA_NODE_TEXT) ?: ""
                             val currentPosition = intent.getIntExtra(App.EXTRA_NODE_CURSOR, -1)
 
-//                            logger("BubbleService", "Current Text: $currentText, Current Position: $currentPosition")
-
                             if (currentPosition <= 0 || currentText.length < currentPosition) {
                                 clearFilters()
                             } else {
