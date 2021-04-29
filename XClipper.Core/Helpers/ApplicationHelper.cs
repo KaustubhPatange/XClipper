@@ -31,7 +31,8 @@ namespace Components
         /// </summary>
         public static void SendAction(Action action)
         {
-            Application.Current.Dispatcher.BeginInvoke(action);
+            Debug.WriteLine("Called: " + action);
+            //Application.Current.Dispatcher.BeginInvoke(action);
         }
 
         private static DispatcherTimer dtimer;

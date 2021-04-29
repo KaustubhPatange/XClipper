@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -17,6 +18,9 @@ namespace Components
         private static HookResult handle;
         private static HookResult handle_back;
 
+        private static int CHECKS_OFFSET = 2;
+        private List<bool> checks = new();
+        
         private static CustomKeyboardWatcher Instance;
         private CustomKeyboardWatcher()
         {
@@ -97,7 +101,6 @@ namespace Components
         private bool OnFirstCallback(CallbackData data)
         {
             _firstTick = Environment.TickCount;
-            Debug.WriteLine($"First tick : {_firstTick}, Second Hook: {_secondTick}, {_firstTick == _secondTick}");
             var eDownUp = FromRawDataGlobal(data);
             InvokeKeyDown(eDownUp);
             InvokeKeyUp(eDownUp);
@@ -108,13 +111,17 @@ namespace Components
         private bool OnSecondCallback(CallbackData data)
         {
             _secondTick = Environment.TickCount;
-            Debug.WriteLine($"Second tick: {_secondTick}, First Hook : {_firstTick}, {_firstTick == _secondTick}");
-            var eDownUp = FromRawDataGlobal(data);
+             var eDownUp = FromRawDataGlobal(data);
             if (_secondTick != _firstTick)
             {
-               // Debug.WriteLine("Registering first hook");
-                // RegisterFirstHook();
-            }
+                // TODO: Uncomment this to register checks.
+                if (checks.Count >= CHECKS_OFFSET)
+                {
+                    handle = RegisterFirstHook();
+                    checks.Clear();
+                }
+                else checks.Add(true);
+            } else checks.Clear();
             return !eDownUp.Handled;
         }
         

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Media;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
@@ -23,6 +24,7 @@ namespace Components
             void OnBufferPasteAction(Buffer b);
             void OnBufferCutAction(Buffer b);
         }
+
         #region Variable Declaration
 
         private Action? hotKeyEvent;
@@ -118,8 +120,6 @@ namespace Components
         private long TIME_LAST_KEY_OFFSET = 0;
         private bool quickPasteChord = false;
         private bool active = false;
-        private bool toProcessBuffer = true;
-
         private void KeyboardWatcher_OnKeyboardInput2(object sender, MacroEvent e)
         {
             var keyEvent = e.EventArgs as KeyEventArgs;
@@ -135,7 +135,7 @@ namespace Components
             {
                 if (TIME_LAST_KEY_OFFSET > 0 && timeLong - TIME_LAST_KEY_OFFSET <= LAST_KEY_TIME_OFFSET)
                 {
-                    Debug.WriteLine("IsActive");
+                    // Debug.WriteLine("IsActive");
                     return;
                 }
 
@@ -148,16 +148,15 @@ namespace Components
 
             if (!keyStreams.Any(c => c == key))
                 keyStreams.Add(key);
-            else
+            /*else
             {
                 toProcessBuffer = false;
                 return;
-            }
+            }*/
 
             if (ShouldPerformPasteAction(e, key))
             {
-                Debug.WriteLine("Modifier Key: Should run paste command");
-                toProcessBuffer = false;
+                // Debug.WriteLine("Modifier Key: Should run paste command");
                 keyStreams.Clear();
                 if (pasteEvent != null) SendAction(pasteEvent);
                 return;
@@ -190,7 +189,7 @@ namespace Components
             // Quick paste cord 2
             if (quickPasteChord && KeyPressHelper.IsNumericKeyPressed(key))
             {
-                Debug.WriteLine("Quick Paste: Done");
+                // Debug.WriteLine("Quick Paste: Done");
                 SendAction(() => DoQuickPaste2(KeyPressHelper.ParseNumericKey(key)));
             }
 
@@ -200,19 +199,19 @@ namespace Components
             if (keyStreams.Any(c => c == Keys.LControlKey || c == Keys.RControlKey) &&
                 keyStreams.Any(c => c == Keys.Oem5))
             {
-                Debug.WriteLine("QuickPaste chord activated");
+                // Debug.WriteLine("QuickPaste chord activated");
                 quickPasteChord = true;
                 keyStreams.Clear();
             }
 
-            Debug.WriteLine($"Keystream size: {keyStreams.Count}, Contents: [{string.Join(",", keyStreams)}]");
+            // Debug.WriteLine($"Keystream size: {keyStreams.Count}, Contents: [{string.Join(",", keyStreams)}]");
         }
 
         private void KeyboardWatcher_OnKeyboardInput(object sender, MacroEvent e)
         {
             var keyEvent = (KeyEventArgs) e.EventArgs;
             
-            Debug.WriteLine($"Key: {keyEvent.KeyCode}, Type: {e.KeyMouseEventType}");
+            // Debug.WriteLine($"Key: {keyEvent.KeyCode}, Type: {e.KeyMouseEventType}");
 
             if (e.KeyMouseEventType == MacroEventType.KeyUp || e.KeyMouseEventType == MacroEventType.KeyPress)
             {
@@ -220,7 +219,7 @@ namespace Components
 
                 if (quickPasteChord && KeyPressHelper.IsNumericKeyPressed(key))
                 {
-                    Debug.WriteLine("Quick Paste: Done");
+                    // Debug.WriteLine("Quick Paste: Done");
                     DoQuickPaste(KeyPressHelper.ParseNumericKey(key));
                 }
 
@@ -230,7 +229,7 @@ namespace Components
 
                 if (ShouldPerformPasteAction(e, key))
                 {
-                    Debug.WriteLine("Modifier Key: Should run paste command");
+                    // Debug.WriteLine("Modifier Key: Should run paste command");
                     pasteEvent?.Invoke();
                     return;
                 }
@@ -241,7 +240,7 @@ namespace Components
                 // Process other keystrokes...
                 if (isCtrl && key == Keys.Oem5)
                 {
-                    Debug.WriteLine("QuickPaste chord activated");
+                    // Debug.WriteLine("QuickPaste chord activated");
                     quickPasteChord = true;
                 }
 
@@ -272,16 +271,15 @@ namespace Components
             if (keyEvent == null) return;
             var key = keyEvent.KeyCode;
 
-            if (!toProcessBuffer)
-            {
-                toProcessBuffer = true;
-                return;
-            }
-            
+            if (e.KeyMouseEventType != MacroEventType.KeyUp) return;
+
             bool isCtrl = keyStreams.Any(c => c == Keys.LControlKey || c == Keys.RControlKey);
             bool isShift = keyStreams.Any(c => c == Keys.LShiftKey || c == Keys.RShiftKey);
             bool isAlt = keyStreams.Any(c => c == Keys.Alt);
-            
+            //bool isCtrl = KeyPressHelper.IsCtrlPressed();
+            //bool isShift = KeyPressHelper.IsShiftPressed();
+            //bool isAlt = KeyPressHelper.IsAltPressed();
+
             // Buffer 1 detection
             if (IsKeymapActive(DefaultSettings.CopyBuffer1.Paste, isShift, isAlt, isCtrl, key))
                 SendAction(() => bufferBinder?.OnBufferPasteAction(DefaultSettings.CopyBuffer1));
@@ -321,14 +319,18 @@ namespace Components
         /// <param name="e"></param>
         /// <param name="key"></param>
         /// <returns></returns>
-        private bool ShouldPerformPasteAction(MacroEvent e, Keys key)
+        private static bool ShouldPerformPasteAction(MacroEvent e, Keys key)
         {
             return ClipWindow.EnqueuePaste && e.KeyMouseEventType == MacroEventType.KeyUp &&
                    KeyPressHelper.IsModifierKey(key);
         }
 
+
+        private bool paste_running = false;
         private void DoQuickPaste2(int index)
         {
+            if (paste_running) return;
+            paste_running = true;
             Task.Run(async () =>
             {
                 SendKeys.SendWait("{BKSP}");
@@ -339,6 +341,7 @@ namespace Components
                         quickPasteEvent?.Invoke(9);
                     else quickPasteEvent?.Invoke(index - 1);
                 }));
+                paste_running = false;
             });
         }
 

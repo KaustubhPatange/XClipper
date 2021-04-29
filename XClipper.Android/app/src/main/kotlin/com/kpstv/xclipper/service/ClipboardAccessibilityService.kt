@@ -95,7 +95,7 @@ class ClipboardAccessibilityService : AccessibilityService() {
             if (className == EditText::class.java.name) {
                 nodeInfo = this
 //                logger("ClipboardAccessibilityService", "Does this work")
-                if (textSelectionStart == textSelectionEnd) {
+                if (textSelectionStart == textSelectionEnd && text != null) {
                     val isHintShowing = if (Build.VERSION.SDK_INT >= 26) isShowingHintText else text.toString().length > textSelectionEnd
                     logger("BubbleService", "Text: $text, Cursor: $textSelectionEnd, isHint: $isHintShowing, contentDesc: $contentDescription")
 

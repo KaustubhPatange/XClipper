@@ -24,7 +24,7 @@ class MainRepositoryImpl @Inject constructor(
 
     private val TAG = javaClass.simpleName
 
-    override fun getDataSource(wildcard: String): LiveData<PagedList<Clip>> = clipDao.getDataSource(wildcard).toLiveData(10)
+    override fun getDataSource(wildcard: String): LiveData<PagedList<Clip>> = clipDao.getDataSource("%$wildcard%").toLiveData(10)
 
     private suspend fun saveClip(clip: Clip?): Boolean {
         if (clip == null) return false

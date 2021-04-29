@@ -17,16 +17,16 @@
 
 **Test Pages (will be removed)**
 
-- [Introduction](test-pages/introduction-page.md)
-- [Finding your UID](test-pages/finding-uid.md)
-- [Data synchronization](test-pages/page2.md)
-- [Image synchronization](test-pages/image-dodo.md)
-- [Securing database](test-pages/page3.md)
-- [Scripting](test-pages/scripting.md)
-- [Manual license activation](test-pages/page4.md)
-- [Migrating License](test-pages/page5.md)
-- [Copy Buffers](test-pages/copy-buffers.md)
-- [Hidden Settings](test-pages/hidden-settings.md)
-- [FAQs](test-pages/common-question.md)
+- [Introduction](wiki/Introduction.md)
+- [Finding your UID](wiki/Finding-your-Unique-Id.md)
+- [Data synchronization](wiki/Data-Synchronization.md)
+- [Image synchronization](wiki/Enable-Image-synchronization.md)
+- [Securing database](wiki/Using-secure-database.md)
+- [Scripting](wiki/Scripting.md)
+- [Manual license activation](wiki/Manual-License-Activation.md)
+- [Migrating License](wiki/Migrating-License.md)
+- [Copy Buffers](wiki/Copy-Buffers.md)
+- [Hidden Settings](wiki/Hidden-Settings.md)
+- [FAQs](wiki/FAQs.md)
   **Developers**
-- [Compilation guide](test-pages/compile-guide.md)
+- [Compilation guide](wiki/Compilation-guide.md)

@@ -29,7 +29,7 @@ Since this project involves **license** system some of the source files has been
   - [Room](https://developer.android.com/topic/libraries/architecture/room) - SQLite object mapping library.
   - [Paging](https://developer.android.com/topic/libraries/architecture/paging) - Library helps you load and display small chunks of data at a time. Loading partial data on demand reduces usage of network bandwidth and system resources.
   - [Workmanager](https://developer.android.com/topic/libraries/architecture/workmanager) - An API that makes it easy to schedule deferrable, asynchronous tasks that are expected to run even if the app exits or the device restarts.
-- [Navigation Component](https://developer.android.com/guide/navigation) - Jetpack's recommended way to implement navigation aiming to improve user experience.
+- [Navigator](https://github.com/KaustubhPatange/navigator) - A small navigation library to ease fragment transactions & handling backstack.
 - [Dependency Injection](https://developer.android.com/training/dependency-injection) -
   - [Hilt-Dagger](https://dagger.dev/hilt/) - Standard library to incorporate Dagger dependency injection into an Android application.
   - [Hilt-ViewModel](https://developer.android.com/training/dependency-injection/hilt-jetpack) - DI for injecting ViewModel.

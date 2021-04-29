@@ -128,8 +128,8 @@ class BubbleService : FloatingBubbleService() {
     }
 
     private fun subscribeSuggestions() {
-        repository.getDataSource("$currentWord%").removeObserver(pageObserver)
-        repository.getDataSource("$currentWord%").observeForever(pageObserver)
+        repository.getDataSource(currentWord).removeObserver(pageObserver)
+        repository.getDataSource(currentWord).observeForever(pageObserver)
     }
 
     private fun clearFilters() {
