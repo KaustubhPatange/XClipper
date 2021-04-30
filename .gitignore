@@ -9,6 +9,7 @@ XClipper.Android/app/library_utils/
 XClipper.Android/buildSrc/build/
 XClipper.Android/app/release/
 XClipper.Web/js/purchase.js
+XClipper.sln.DotSettings
 
 scripts/out
 scripts/Work

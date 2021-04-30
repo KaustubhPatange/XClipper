@@ -118,6 +118,9 @@ namespace Components
             {
                 if (clipWindow.IsVisible) clipWindow.CloseWindow();
             });
+            //ApplicationHelper.AttachAppWindowDeactivation(clipWindow, clipWindow.CloseWindow);
+
+            // clipWindow.Deactivated += OnDeactivated;
 
             licenseService.Initiate(err =>
             {
@@ -141,9 +144,18 @@ namespace Components
 
         /*protected override void OnDeactivated(EventArgs e)
         {
+            OnDeactivated(null, e);
             base.OnDeactivated(e);
-            Debug.WriteLine("DeactivatedEnd()");
-            clipWindow.CloseWindow();
+        }*/
+
+        /*private void OnDeactivated(object sender, EventArgs e)
+        {
+            int visibleWindows = 0;
+            foreach (Window window in Current.Windows)
+            {
+                if (window.IsVisible) visibleWindows++;
+            }
+            if (visibleWindows <= 1) clipWindow.CloseWindow();
         }*/
 
         protected override void OnExit(ExitEventArgs e)
@@ -590,13 +602,13 @@ namespace Components
         public void OnGoingClipboardAction()
         { 
            // hookUtility.StopListening();
-            Debug.WriteLine("Stopped listening");
+           // Debug.WriteLine("Stopped listening");
         }
 
         public void OnCompleteClipboardAction()
         { 
           //  hookUtility.StartListening();
-            Debug.WriteLine("Started listening");
+          //  Debug.WriteLine("Started listening");
         }
 
         #endregion

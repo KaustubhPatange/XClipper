@@ -215,12 +215,13 @@ DEL ""%~f0""";
 
         public static bool IsUrl(string text)
         {
+            if (text == null) return false;
             return Regex.IsMatch(text, @"https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_\+.~#?&\/\/=]*)");
         }
 
         public static void LaunchUrl(string url)
         {
-            if (IsUrl(url))
+            if (url != null && IsUrl(url))
             {
                 Process.Start(url);
             }

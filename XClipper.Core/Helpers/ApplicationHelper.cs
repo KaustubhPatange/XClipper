@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interop;
+using System.Windows.Media.Animation;
 using System.Windows.Threading;
 
 namespace Components
@@ -31,8 +32,7 @@ namespace Components
         /// </summary>
         public static void SendAction(Action action)
         {
-            Debug.WriteLine("Called: " + action);
-            //Application.Current.Dispatcher.BeginInvoke(action);
+            Application.Current.Dispatcher.BeginInvoke(action);
         }
 
         private static DispatcherTimer dtimer;
@@ -61,6 +61,43 @@ namespace Components
             dtimer.Start();
         }
 
+        /*/// <summary>
+        /// When attached to <paramref name="window"/>, this will be last shown window of the
+        /// application before the deactivation will be called.
+        /// </summary>
+        public static void AttachAppWindowDeactivation(Window window, Action block)
+        {
+            window.LostKeyboardFocus += (sender, args) =>
+            {
+                IntPtr handle = GetForegroundWindow();
+                bool isActive = IsActivated(handle);
+                if (!isActive)
+                {
+                    block.Invoke();
+                }
+            };
+            
+            window.GotFocus += (sender, args) =>
+            {
+                IntPtr handle = GetForegroundWindow();
+                bool isActive = IsActivated(handle);
+                if (!isActive)
+                {
+                    block.Invoke();
+                }
+            };
+            
+            window.LostFocus += (sender, args) =>
+            {
+                IntPtr handle = GetForegroundWindow();
+                bool isActive = IsActivated(handle);
+                if (!isActive)
+                {
+                    block.Invoke();
+                }
+            };
+        }*/
+
         /// <summary>Returns true if the current application has focus, false otherwise</summary>
         public static bool IsActivated(IntPtr hWnd)
         {
@@ -81,10 +118,10 @@ namespace Components
         /// </summary>
         public static void GlobalActivate(this Window w)
         {
-            dtimer.Stop();
+            if (dtimer != null) dtimer.Stop();
             //Get the process ID for this window's thread, you can also pass current process Id as well.
             var interopHelper = new WindowInteropHelper(w);
-            /*var thisWindowThreadId = GetWindowThreadProcessId(interopHelper.Handle, IntPtr.Zero);
+            var thisWindowThreadId = GetWindowThreadProcessId(interopHelper.Handle, IntPtr.Zero);
 
             //Get the process ID for the foreground window's thread
             var currentForegroundWindow = GetForegroundWindow();
@@ -102,15 +139,18 @@ namespace Components
             //Show and activate the window
             if (w.WindowState == WindowState.Minimized) w.WindowState = WindowState.Normal;
             w.Show();
-            w.Activate();*/
-            
+            w.Activate();
+
             Task.Run(async () =>
             {
                 await Task.Delay(200);
                 Application.Current.Dispatcher.Invoke(() => SetForegroundWindow(interopHelper.Handle));
                 Application.Current.Dispatcher.Invoke(() => w.Focus());
-                await Task.Delay(300);
-                dtimer.Start();
+                if (dtimer != null)
+                {
+                    await Task.Delay(300);
+                    dtimer.Start();
+                }
             });
         }
         

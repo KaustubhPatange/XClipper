@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Media;
@@ -32,6 +33,8 @@ namespace Components
         private Action<int>? quickPasteEvent;
         private IBufferInvokes? bufferBinder;
 
+        private BackgroundWorker _worker = new();
+
         private CustomKeyboardWatcher _keyboardWatcher;
 
         public KeyHookUtility()
@@ -43,14 +46,19 @@ namespace Components
 
         public void Init()
         {
+            _worker.DoWork += KeyboardBackground_Worker;
             _keyboardWatcher = CustomKeyboardWatcher.Get();
-            
-            if (UseExperimentalKeyCapture)
+            _keyboardWatcher.OnKeyboardInput += (sender, args) =>
+            {
+                if (!_worker.IsBusy) _worker.RunWorkerAsync(args);
+            };
+
+            /*if (UseExperimentalKeyCapture)
                 _keyboardWatcher.OnKeyboardInput += KeyboardWatcher_OnKeyboardInput2;
             else
                 _keyboardWatcher.OnKeyboardInput += KeyboardWatcher_OnKeyboardInput;
             
-            _keyboardWatcher.OnKeyboardInput += BufferCopy_OnKeyboardInput;
+            _keyboardWatcher.OnKeyboardInput += BufferCopy_OnKeyboardInput;*/
         }
 
         #region Subscribers
@@ -111,15 +119,32 @@ namespace Components
 
         #endregion
 
+
+        #region Worker
+        
+        private void KeyboardBackground_Worker(object sender, DoWorkEventArgs args)
+        {
+            MacroEvent e = (MacroEvent) args.Argument;
+            if (UseExperimentalKeyCapture)
+                KeyboardWatcher_OnKeyboardInput2(null, e);
+            else
+                KeyboardWatcher_OnKeyboardInput(null, e);
+
+            BufferCopy_OnKeyboardInput(null, e);
+        }
+
+        #endregion
+
         #region Keyboard Capture Events
 
-        private List<Keys> keyStreams = new List<Keys>();
+        private List<Keys> keyStreams = new();
         private const int KEY_STORE_SIZE = 4;
         private const int LAST_KEY_TIME_OFFSET = 400;
 
         private long TIME_LAST_KEY_OFFSET = 0;
         private bool quickPasteChord = false;
         private bool active = false;
+        
         private void KeyboardWatcher_OnKeyboardInput2(object sender, MacroEvent e)
         {
             var keyEvent = e.EventArgs as KeyEventArgs;
@@ -273,13 +298,23 @@ namespace Components
 
             if (e.KeyMouseEventType != MacroEventType.KeyUp) return;
 
-            bool isCtrl = keyStreams.Any(c => c == Keys.LControlKey || c == Keys.RControlKey);
-            bool isShift = keyStreams.Any(c => c == Keys.LShiftKey || c == Keys.RShiftKey);
-            bool isAlt = keyStreams.Any(c => c == Keys.Alt);
-            //bool isCtrl = KeyPressHelper.IsCtrlPressed();
-            //bool isShift = KeyPressHelper.IsShiftPressed();
-            //bool isAlt = KeyPressHelper.IsAltPressed();
+            bool isCtrl;
+            bool isShift;
+            bool isAlt;
 
+            if (UseExperimentalKeyCapture)
+            {
+                isCtrl = keyStreams.Any(c => c == Keys.LControlKey || c == Keys.RControlKey);
+                isShift = keyStreams.Any(c => c == Keys.LShiftKey || c == Keys.RShiftKey);
+                isAlt = keyStreams.Any(c => c == Keys.Alt);
+            }
+            else
+            {
+                isCtrl = KeyPressHelper.IsCtrlPressed();
+                isShift = KeyPressHelper.IsShiftPressed();
+                isAlt = KeyPressHelper.IsAltPressed();
+            }
+            
             // Buffer 1 detection
             if (IsKeymapActive(DefaultSettings.CopyBuffer1.Paste, isShift, isAlt, isCtrl, key))
                 SendAction(() => bufferBinder?.OnBufferPasteAction(DefaultSettings.CopyBuffer1));

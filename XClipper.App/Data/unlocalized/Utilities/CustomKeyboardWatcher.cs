@@ -114,7 +114,6 @@ namespace Components
              var eDownUp = FromRawDataGlobal(data);
             if (_secondTick != _firstTick)
             {
-                // TODO: Uncomment this to register checks.
                 if (checks.Count >= CHECKS_OFFSET)
                 {
                     handle = RegisterFirstHook();
