@@ -16,16 +16,12 @@ import com.google.android.flexbox.FlexboxLayout
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.Clip
-import com.kpstv.xclipper.extensions.keys
-import com.kpstv.xclipper.extensions.collapse
-import com.kpstv.xclipper.extensions.hide
-import com.kpstv.xclipper.extensions.show
+import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.extensions.utils.ThemeUtils.Companion.CARD_CLICK_COLOR
 import com.kpstv.xclipper.extensions.utils.ThemeUtils.Companion.CARD_COLOR
 import com.kpstv.xclipper.extensions.utils.ThemeUtils.Companion.CARD_SELECTED_COLOR
 import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.getColorFromAttr
-import com.kpstv.xclipper.extensions.load
 import kotlinx.android.synthetic.main.item_clip.view.*
 import java.util.*
 
@@ -37,8 +33,8 @@ class CIAdapter(
     private val onClick: (Clip, Int) -> Unit,
     private val onLongClick: (Clip, Int) -> Unit,
     private val selectedClips: LiveData<ArrayList<Clip>>
-) : ListAdapter<Clip, CIAdapter.MainHolder>(DiffCallback()) {
-    class DiffCallback : DiffUtil.ItemCallback<Clip>() {
+) : ListAdapter<Clip, CIAdapter.MainHolder>(DiffCallback.asConfig()) {
+    private object DiffCallback : DiffUtil.ItemCallback<Clip>() {
         override fun areItemsTheSame(oldItem: Clip, newItem: Clip): Boolean =
             oldItem.data == newItem.data
 

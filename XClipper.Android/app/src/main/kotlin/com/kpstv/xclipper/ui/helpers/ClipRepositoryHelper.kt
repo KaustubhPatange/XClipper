@@ -1,6 +1,7 @@
 package com.kpstv.xclipper.ui.helpers
 
 import android.content.Context
+import android.util.Log
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.repository.MainRepository
@@ -10,6 +11,7 @@ import com.kpstv.xclipper.extensions.toInt
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.system.measureNanoTime
 
 @Singleton
 class ClipRepositoryHelper @Inject constructor(
@@ -23,9 +25,12 @@ class ClipRepositoryHelper @Inject constructor(
 
     fun insertOrUpdateClip(data: String, toNotify: Boolean = true, toFirebase: Boolean = true) {
         Coroutines.io {
-            val isInserted = repository.updateRepository(data, toFirebase)
-            if (isInserted && toNotify)
-                sendClipNotification(data)
+            val time = measureNanoTime {
+                val isInserted = repository.updateRepository(data, toFirebase)
+                if (isInserted && toNotify)
+                    sendClipNotification(data)
+            }
+            Log.e(this::class.simpleName, "Time taken: $time ns")
         }
     }
 

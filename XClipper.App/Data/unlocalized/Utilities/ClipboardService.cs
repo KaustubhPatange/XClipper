@@ -7,6 +7,7 @@ using static Components.Constants;
 using static Components.TableHelper;
 using ClipboardManager.models;
 using System.Diagnostics;
+using System.Drawing.Imaging;
 using System.Windows.Threading;
 
 #nullable enable
@@ -70,51 +71,55 @@ namespace Components
              * and save it to database.
              */
 
-            if (binder.ClipType == ContentType.Text && ToStoreTextClips())
+            try
             {
-                if (!string.IsNullOrWhiteSpace(binder.GetClipText.Trim()))
+                if (binder.ClipType == ContentType.Text && ToStoreTextClips())
                 {
-                    if (IgnoreHelper.ToExecute(binder.GetClipText))
-                        AppSingleton.GetInstance.InsertContent(CreateTable(binder.GetClipText, ContentTypes.Text));
-                }
-            }
-            else if (binder.ClipType == ContentType.Image && ToStoreImageClips())
-            {
-
-                if (!Directory.Exists(ImageFolder)) Directory.CreateDirectory(ImageFolder);
-
-                string filePath = Path.Combine(ImageFolder, $"{DateTime.Now.ToFormattedDateTime()}.png");
-
-                // We will write it to memory stream before saving
-                using (MemoryStream memory = new MemoryStream())
-                {
-                    using (FileStream fs = new FileStream(filePath, FileMode.Create, FileAccess.ReadWrite))
+                    if (!string.IsNullOrWhiteSpace(binder.GetClipText.Trim()))
                     {
-                        try
-                        {
-                            binder.GetClipImage.Save(memory, System.Drawing.Imaging.ImageFormat.Png);
-                            byte[] bytes = memory.ToArray();
-                            fs.Write(bytes, 0, bytes.Length);
-                            fs.Flush();
-                            fs.Close();
-                            AppSingleton.GetInstance.InsertContent(CreateTable(filePath, ContentTypes.Image));
-                        }
-                        catch (Exception ex)
-                        {
-                            // There is a GDI+ as well as NullReference exception causing from below code.
-                            LogHelper.Log(this, ex.Message + ex.StackTrace);
-                            appBinder?.OnImageSaveFailed();
-                        }
+                        if (IgnoreHelper.ToExecute(binder.GetClipText))
+                            AppSingleton.GetInstance.InsertContent(CreateTable(binder.GetClipText, ContentTypes.Text));
                     }
                 }
+                else if (binder.ClipType == ContentType.Image && ToStoreImageClips())
+                {
 
-            }
-            else if (binder.ClipType == ContentType.Files && ToStoreFilesClips())
-            {
-                AppSingleton.GetInstance.InsertContent(CreateTable(binder.ClipFiles));
+                    if (!Directory.Exists(ImageFolder)) Directory.CreateDirectory(ImageFolder);
 
-                binder.ClipFiles.Clear();
+                    string filePath = Path.Combine(ImageFolder, $"{DateTime.Now.ToFormattedDateTime()}.png");
+
+                    // We will write it to memory stream before saving
+                    using (MemoryStream memory = new MemoryStream())
+                    {
+                        using (FileStream fs = new FileStream(filePath, FileMode.Create, FileAccess.ReadWrite))
+                        {
+                            try
+                            {
+                                binder.GetClipImage.Save(memory, ImageFormat.Png);
+                                byte[] bytes = memory.ToArray();
+                                fs.Write(bytes, 0, bytes.Length);
+                                fs.Flush();
+                                fs.Close();
+                                AppSingleton.GetInstance.InsertContent(CreateTable(filePath, ContentTypes.Image));
+                            }
+                            catch (Exception ex)
+                            {
+                                // There is a GDI+ as well as NullReference exception causing from below code.
+                                LogHelper.Log(this, ex.Message + ex.StackTrace);
+                                appBinder?.OnImageSaveFailed();
+                            }
+                        }
+                    }
+
+                }
+                else if (binder.ClipType == ContentType.Files && ToStoreFilesClips())
+                {
+                    AppSingleton.GetInstance.InsertContent(CreateTable(binder.ClipFiles));
+
+                    binder.ClipFiles.Clear();
+                }
             }
+            catch(Exception e) { LogHelper.Log(this, $"{e.Message}\n{e.StackTrace}");}
         }
 
         #endregion

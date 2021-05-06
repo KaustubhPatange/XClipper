@@ -2,6 +2,8 @@ package com.kpstv.xclipper.extensions
 
 import android.util.Log
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.AsyncDifferConfig
+import androidx.recyclerview.widget.DiffUtil
 import com.ferfalk.simplesearchview.SimpleSearchView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -141,4 +143,10 @@ inline fun <reified F : Any, reified T : Any> mapToClass(from: F, convertType: (
         }
     }
     return T::class.constructors.first().callBy(args)
+}
+
+fun <T> DiffUtil.ItemCallback<T>.asConfig(): AsyncDifferConfig<T> {
+    return AsyncDifferConfig.Builder(this)
+        .setBackgroundThreadExecutor(Dispatchers.Default.asExecutor())
+        .build()
 }

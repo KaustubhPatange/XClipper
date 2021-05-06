@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import com.kpstv.xclipper.App.ACTION_OPEN_APP
 import com.kpstv.xclipper.App.ACTION_SMART_OPTIONS
 import com.kpstv.xclipper.App.APP_CLIP_DATA
+import com.kpstv.xclipper.App.NOTIFICATION_CODE
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.service.AppBroadcastReceiver
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -36,19 +37,25 @@ class NotificationHelper @Inject constructor(
         Log.e("NotificationHelper", "Creating channel")
         manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            manager.createNotificationChannel(NotificationChannel(
-                CHANNEL_ID,
-                getString(R.string.channel_name),
-                NotificationManager.IMPORTANCE_HIGH
-            ))
+            manager.createNotificationChannel(
+                NotificationChannel(
+                    CHANNEL_ID,
+                    getString(R.string.channel_name),
+                    NotificationManager.IMPORTANCE_HIGH
+                )
+            )
         }
     }
 
     fun sendNotification(title: String, message: String): Unit = with(context) {
+        val randomCode = getRandomNumberCode()
         val openIntent = PendingIntent.getBroadcast(
             context,
             0,
-            Intent(context, AppBroadcastReceiver::class.java).apply { action = ACTION_OPEN_APP },
+            Intent(context, AppBroadcastReceiver::class.java).apply {
+                action = ACTION_OPEN_APP
+                putExtra(NOTIFICATION_CODE, randomCode)
+             },
             0
         )
 
@@ -63,25 +70,28 @@ class NotificationHelper @Inject constructor(
             .build()
 
         if (!::manager.isInitialized) createChannel()
-        manager.notify(getRandomNumberCode(), notification)
+        manager.notify(randomCode, notification)
     }
 
     fun pushNotification(text: String, withActions: Boolean = true): Unit = with(context) {
+        val randomCode = getRandomNumberCode()
         val openIntent = PendingIntent.getBroadcast(
             context,
             0,
-            Intent(context, AppBroadcastReceiver::class.java).apply { action = ACTION_OPEN_APP },
+            Intent(context, AppBroadcastReceiver::class.java).apply {
+                action = ACTION_OPEN_APP
+                putExtra(NOTIFICATION_CODE, randomCode)
+            },
             0
         )
 
         val deleteIntent = Intent(context, AppBroadcastReceiver::class.java).apply {
-            data = Uri.parse(text)
             putExtra(APP_CLIP_DATA, text)
+            putExtra(NOTIFICATION_CODE, randomCode)
             action = ACTION_DELETE
         }
 
         val specialIntent = Intent(context, AppBroadcastReceiver::class.java).apply {
-            data = Uri.parse(text)
             putExtra(APP_CLIP_DATA, text)
             action = ACTION_SMART_OPTIONS
         }
@@ -95,21 +105,21 @@ class NotificationHelper @Inject constructor(
             .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
             .setContentIntent(openIntent)
 
-		if (withActions) {
-			notificationBuilder.addAction(
+        if (withActions) {
+            notificationBuilder.addAction(
                 R.drawable.ic_delete_white,
                 context.getString(R.string.delete),
                 PendingIntent.getBroadcast(context, 0, deleteIntent, 0)
             )
-			notificationBuilder.addAction(
+            notificationBuilder.addAction(
                 R.drawable.ic_special,
                 getString(R.string.more_actions),
                 PendingIntent.getBroadcast(context, 0, specialIntent, 0)
             )
-		}
+        }
 
         if (!::manager.isInitialized) createChannel()
-        manager.notify(getRandomNumberCode(), notificationBuilder.build())
+        manager.notify(randomCode, notificationBuilder.build())
     }
 
     fun sendAccessibilityDisabledNotification(context: Context): Unit = with(context) {

@@ -4,10 +4,14 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.*
+import android.net.Uri
+import android.util.Log
 import android.widget.Toast
 import com.kpstv.xclipper.App.ACTION_OPEN_APP
 import com.kpstv.xclipper.App.ACTION_SMART_OPTIONS
 import com.kpstv.xclipper.App.APP_CLIP_DATA
+import com.kpstv.xclipper.App.NOTIFICATION_CODE
+import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.extensions.AbstractBroadcastReceiver
 import com.kpstv.xclipper.extensions.Coroutines
@@ -32,7 +36,7 @@ class AppBroadcastReceiver : AbstractBroadcastReceiver() {
         super.onReceive(context, intent)
 
         val data = intent.getStringExtra(APP_CLIP_DATA)
-        val data1 = intent.data
+        val notifyId = intent.getIntExtra(NOTIFICATION_CODE, -1)
 
         when (intent.action) {
             ACTION_OPEN_APP -> {
@@ -41,21 +45,21 @@ class AppBroadcastReceiver : AbstractBroadcastReceiver() {
                         flags = FLAG_ACTIVITY_BROUGHT_TO_FRONT or FLAG_ACTIVITY_NEW_TASK
                     }
                 )
-                dismissNotification(context)
+                dismissNotification(context, notifyId)
             }
             ACTION_DELETE -> {
                 Coroutines.io {
                     repository.deleteClip(data)
                 }
 
-                dismissNotification(context)
+                dismissNotification(context, notifyId)
                 collapseStatusBar(context)
             }
             ACTION_SMART_OPTIONS -> {
 
                 val newIntent = Intent(context, SpecialActions::class.java).apply {
                     flags = FLAG_ACTIVITY_NEW_TASK
-                    setData(data1)
+                    setData(Uri.parse(data))
                     putExtra(APP_CLIP_DATA, data)
                 }
                 context.startActivity(newIntent)
@@ -64,14 +68,16 @@ class AppBroadcastReceiver : AbstractBroadcastReceiver() {
             }
             ACTION_OPEN_ACCESSIBILITY -> {
                 Utils.openAccessibility(context)
-                Toast.makeText(context, "Opening accessibility", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, context.getString(R.string.open_accessibility), Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    private fun dismissNotification(context: Context) {
-        val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        manager.cancelAll()
+    private fun dismissNotification(context: Context, notificationId: Int) {
+        if (notificationId != -1) {
+            val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            manager.cancel(notificationId)
+        }
     }
 
     private fun collapseStatusBar(context: Context) {

@@ -103,6 +103,7 @@ object App {
     const val PREMIUM_PRICE_REGEX = "id=\\\"premium-card-amount\\\">(.*?)<"
 
     const val APP_CLIP_DATA = "com.kpstv.xclipper.clip_data"
+    const val NOTIFICATION_CODE = "com.kpstv.xclipper.notification_code"
 
     const val ACTION_OPEN_APP = "com.kpstv.xclipper.open_app"
     const val ACTION_SMART_OPTIONS = "com.kpstv.xclipper.smart_options"
