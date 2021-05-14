@@ -51,7 +51,7 @@ class NotificationHelper @Inject constructor(
         val randomCode = getRandomNumberCode()
         val openIntent = PendingIntent.getBroadcast(
             context,
-            0,
+            getRandomPendingCode(),
             Intent(context, AppBroadcastReceiver::class.java).apply {
                 action = ACTION_OPEN_APP
                 putExtra(NOTIFICATION_CODE, randomCode)
@@ -77,7 +77,7 @@ class NotificationHelper @Inject constructor(
         val randomCode = getRandomNumberCode()
         val openIntent = PendingIntent.getBroadcast(
             context,
-            0,
+            getRandomPendingCode(),
             Intent(context, AppBroadcastReceiver::class.java).apply {
                 action = ACTION_OPEN_APP
                 putExtra(NOTIFICATION_CODE, randomCode)
@@ -109,12 +109,12 @@ class NotificationHelper @Inject constructor(
             notificationBuilder.addAction(
                 R.drawable.ic_delete_white,
                 context.getString(R.string.delete),
-                PendingIntent.getBroadcast(context, 0, deleteIntent, 0)
+                PendingIntent.getBroadcast(context, getRandomPendingCode(), deleteIntent, 0)
             )
             notificationBuilder.addAction(
                 R.drawable.ic_special,
                 getString(R.string.more_actions),
-                PendingIntent.getBroadcast(context, 0, specialIntent, 0)
+                PendingIntent.getBroadcast(context, getRandomPendingCode(), specialIntent, 0)
             )
         }
 
@@ -146,4 +146,5 @@ class NotificationHelper @Inject constructor(
     }
 
     private fun getRandomNumberCode() = Random().nextInt(400) + 150
+    private fun getRandomPendingCode() = Random().nextInt(400) + 550
 }

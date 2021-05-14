@@ -234,15 +234,6 @@ class Home : ValueFragment(R.layout.fragment_home) {
         if (swipeToDelete)
             swipeToDeleteItemTouch.attachToRecyclerView(ci_recyclerView)
 
-       /* ci_recyclerView.addItemDecoration(object : RecyclerView.ItemDecoration(){
-            override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-                val position = parent.getChildLayoutPosition(view)
-                if (position == adapter.itemCount - 1) {
-                    Log.e("HomeSimp", "Last position")
-                    outRect.bottom += 70
-                }
-            }
-        })*/
         RecyclerViewInsetHelper().attach(ci_recyclerView, RecyclerViewInsetHelper.InsetType.BOTTOM, true)
         recyclerViewScrollHelper.attach(
             ci_recyclerView,
@@ -475,5 +466,10 @@ class Home : ValueFragment(R.layout.fragment_home) {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK
         }
         startActivity(intent)
+    }
+
+    override fun onDestroyView() {
+        ci_recyclerView.adapter = null
+        super.onDestroyView()
     }
 }

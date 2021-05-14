@@ -9,9 +9,13 @@ import com.kpstv.xclipper.extensions.Coroutines
 import com.kpstv.xclipper.extensions.mainThread
 import com.kpstv.xclipper.extensions.toInt
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.system.measureNanoTime
+import kotlin.system.measureTimeMillis
 
 @Singleton
 class ClipRepositoryHelper @Inject constructor(
@@ -19,19 +23,34 @@ class ClipRepositoryHelper @Inject constructor(
     private val repository: MainRepository,
     private val notificationHelper: NotificationHelper
 ) {
+    private val pendingClipData = ArrayDeque<String>()
+
     fun insertOrUpdateClip(clip: Clip, toNotify: Boolean = true, toFirebase: Boolean = true) {
         insertOrUpdateClip(clip.data, toNotify, toFirebase)
     }
 
     fun insertOrUpdateClip(data: String, toNotify: Boolean = true, toFirebase: Boolean = true) {
-        Coroutines.io {
-            val time = measureNanoTime {
-                val isInserted = repository.updateRepository(data, toFirebase)
-                if (isInserted && toNotify)
-                    sendClipNotification(data)
-            }
-            Log.e(this::class.simpleName, "Time taken: $time ns")
+        CoroutineScope(Dispatchers.IO).launch {
+            internalInsertOrUpdateClip(data, toNotify, toFirebase)
         }
+    }
+
+    // A concurrent way to inserting clips into database.
+    private suspend fun internalInsertOrUpdateClip(data: String?, toNotify: Boolean = true, toFirebase: Boolean = true) {
+        if (data == null) return
+        if (pendingClipData.contains(data)) return
+        pendingClipData.addLast(data)
+        if (pendingClipData.size > 1) return
+
+        val time = measureTimeMillis {
+            val isInserted = repository.updateRepository(data, toFirebase)
+            if (isInserted && toNotify)
+                sendClipNotification(data)
+        }
+        Log.e(this::class.simpleName, "Data: $data, Time taken: $time ms")
+
+        pendingClipData.removeFirst()
+        if (pendingClipData.isNotEmpty()) internalInsertOrUpdateClip(pendingClipData.firstOrNull())
     }
 
     /**
