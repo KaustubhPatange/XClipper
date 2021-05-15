@@ -41,7 +41,7 @@ class Settings : ValueFragment(R.layout.activity_settings), NavigatorTransmitter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        navigator = Navigator(childFragmentManager, binding.settingsContainer)
+        navigator = Navigator.with(this, savedInstanceState).initialize(binding.settingsContainer)
 
         setToolbar()
         viewModel.navigation.observe(viewLifecycleOwner, navigationObserver)
@@ -50,7 +50,7 @@ class Settings : ValueFragment(R.layout.activity_settings), NavigatorTransmitter
             navigator.navigateTo(Screen.MAIN.clazz, Navigator.NavOptions(animation = AnimationDefinition.SlideInRight))
         }
 
-        if (hasKeyArgs()) {
+        if (hasKeyArgs<Args>()) {
             manageArguments()
         }
     }

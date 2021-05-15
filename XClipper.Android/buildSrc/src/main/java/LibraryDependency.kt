@@ -41,9 +41,9 @@ private object LibraryVersion {
     const val REALTIME_EXTENSIONS = "0.1.3"
     const val LIVEDATA_COMBINE_UTIL = "1.2.0"
     const val CAOC = "2.3.0"
-    const val NAVIGATOR = "0.1-alpha08"
-    const val NAVIGATOR_BOTTOM_NAVIGATION = "0.1-alpha05"
-    const val NAVIGATOR_EXTENSIONS = "0.1"
+    const val NAVIGATOR = "0.1-alpha16"
+    const val NAVIGATOR_BOTTOM_NAVIGATION = "0.1-alpha11"
+    const val NAVIGATOR_EXTENSIONS = "0.3"
 }
 
 object LibraryDependency {

@@ -42,7 +42,7 @@ class Start : AppCompatActivity(), NavigatorTransmitter {
         applyEdgeToEdgeMode()
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        navigator = Navigator(supportFragmentManager, binding.root)
+        navigator = Navigator.with(this, savedInstanceState).initialize(binding.root)
         navigator.autoChildElevation()
 
         navViewModel.navigation.observe(this) { options ->
@@ -111,7 +111,7 @@ class NavViewModel : ViewModel() {
                 animation = animation,
                 transaction = transactionType,
                 remember = addToBackStack,
-                clearAllHistory = popUpTo
+                historyOptions = if (popUpTo) HistoryOptions.ClearHistory else HistoryOptions.None
             )
         )
     }

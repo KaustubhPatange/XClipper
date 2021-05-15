@@ -168,15 +168,14 @@ namespace Components.viewModels
 
         public void InsertAll(List<TableCopy> models) => dataDB.InsertAll(models);
 
-        private List<TableCopy> CacheData;
+       // private List<TableCopy> CacheData;
         public void InsertContent(TableCopy model, bool pushToDatabase = true)
         {
             if (model == null) return;
             
-            if (CacheData == null) 
-                CacheData = dataDB.GetAllData().OrderByDescending(s => ParseDateTimeText(s.LastUsedDateTime)).ToList();
+            var list = ClipData;
             
-            foreach (var c in CacheData)
+            foreach (var c in list)
             {
                 if (c.ContentType == model.ContentType)
                 {
@@ -196,13 +195,11 @@ namespace Components.viewModels
             }
 
             // Implementation of setting TotalClipLength 
-            if (CacheData.Count >= TotalClipLength)
+            if (list.Count >= TotalClipLength)
             {
-                dataDB.Delete(CacheData[CacheData.Count - 1]);
-                CacheData.Remove(CacheData[CacheData.Count - 1]); // Remove from cache
+                dataDB.Delete(list[list.Count - 1]);
             }
             
-            CacheData.Add(model); // Add to cache
             dataDB.Insert(model);
 
             if (pushToDatabase)
