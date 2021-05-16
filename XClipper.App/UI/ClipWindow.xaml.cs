@@ -724,6 +724,7 @@ namespace Components
         {
             // We will close the window to obtain focus to success window.
             CloseWindow();
+            // Delay to regain focus.
             Task.Run(async () =>
             {
                 await Task.Delay(200);

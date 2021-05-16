@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -112,43 +113,42 @@ namespace Components
 
             return activeProcId == procId;
         }
-  
+        
         /// <summary>
         /// Activate a window from anywhere by attaching to the foreground window
         /// </summary>
         public static void GlobalActivate(this Window w)
         {
             if (dtimer != null) dtimer.Stop();
-            //Get the process ID for this window's thread, you can also pass current process Id as well.
-            var interopHelper = new WindowInteropHelper(w);
-            var thisWindowThreadId = GetWindowThreadProcessId(interopHelper.Handle, IntPtr.Zero);
 
-            //Get the process ID for the foreground window's thread
+            var hWnd = new WindowInteropHelper(w).EnsureHandle();
+
             var currentForegroundWindow = GetForegroundWindow();
             var currentForegroundWindowThreadId = GetWindowThreadProcessId(currentForegroundWindow, IntPtr.Zero);
-
-            //Attach this window's thread to the current window's thread
-            AttachThreadInput(currentForegroundWindowThreadId, thisWindowThreadId, true);
-
-            //Set the window position
-            SetWindowPos(interopHelper.Handle, new IntPtr(0), 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_SHOWWINDOW);
-
-            //Detach this window's thread from the current window's thread
-            AttachThreadInput(currentForegroundWindowThreadId, thisWindowThreadId, false);
-
-            //Show and activate the window
-            if (w.WindowState == WindowState.Minimized) w.WindowState = WindowState.Normal;
+            var thisWindowThreadId = GetWindowThreadProcessId(hWnd, IntPtr.Zero);
+            
+            Thread.Sleep(70);
+            
             w.Show();
             w.Activate();
+            
+            if (currentForegroundWindowThreadId != thisWindowThreadId)
+            {
+                AttachThreadInput(currentForegroundWindowThreadId, thisWindowThreadId, true);
+                SetForegroundWindow(hWnd);
+                AttachThreadInput(currentForegroundWindowThreadId, thisWindowThreadId, false);
+            }
+            else
+            {
+                SetForegroundWindow(hWnd);
+            }
 
             Task.Run(async () =>
             {
-                await Task.Delay(200);
-                Application.Current.Dispatcher.Invoke(() => SetForegroundWindow(interopHelper.Handle));
-                Application.Current.Dispatcher.Invoke(() => w.Focus());
                 if (dtimer != null)
                 {
                     await Task.Delay(300);
+                    Application.Current.Dispatcher.Invoke(()=>  File.AppendAllText("C:\\users\\devel\\Desktop\\focus.txt", $"{SetFocus(hWnd)}\n"));
                     dtimer.Start();
                 }
             });
@@ -205,6 +205,11 @@ namespace Components
         [DllImport("user32.dll")]
         public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
 
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+        
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern IntPtr SetFocus(IntPtr hWnd);
         #endregion
     }
 }

@@ -28,6 +28,7 @@ using System.Drawing;
 using System.Media;
 using System.Windows.Interop;
 using System.Net;
+using System.Windows.Input;
 
 #nullable enable
 
@@ -735,9 +736,9 @@ namespace Components
 
             if (!clipWindow.IsVisible)
             {
-                clipWindow.Show();
                 clipWindow.GlobalActivate();
                 clipWindow._tbSearchBox.Focus();
+                // Keyboard.Focus(clipWindow._tbSearchBox);
             }
             else
                 clipWindow.CloseWindow();
