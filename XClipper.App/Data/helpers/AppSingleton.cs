@@ -168,7 +168,6 @@ namespace Components.viewModels
 
         public void InsertAll(List<TableCopy> models) => dataDB.InsertAll(models);
 
-       // private List<TableCopy> CacheData;
         public void InsertContent(TableCopy model, bool pushToDatabase = true)
         {
             if (model == null) return;

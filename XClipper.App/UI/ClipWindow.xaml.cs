@@ -724,8 +724,14 @@ namespace Components
         {
             // We will close the window to obtain focus to success window.
             CloseWindow();
-
-            ClipboardHelper.PerformClipboardPaste(text);
+            Task.Run(async () =>
+            {
+                await Task.Delay(200);
+                Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    ClipboardHelper.PerformClipboardPaste(text);
+                }));
+            });
         }
 
         /// <summary>

@@ -137,23 +137,23 @@ namespace Components
 
         #region Keyboard Capture Events
 
-        private KeyStroke keyStroke = new();
-        private List<Keys> keyStreams = new();
+        private LinkedList<Keys> keyStreams = new();
         private const int KEY_STORE_SIZE = 4;
         private const int LAST_KEY_TIME_OFFSET = 400;
 
         private long TIME_LAST_KEY_OFFSET = 0;
         private bool quickPasteChord = false;
         private bool active = false;
-        
+
+        private bool isCtrl, isShift, isAlt;
         private void KeyboardWatcher_OnKeyboardInput2(object sender, MacroEvent e)
         {
             var keyEvent = e.EventArgs as KeyEventArgs;
             if (keyEvent == null) return;
             var key = keyEvent.KeyCode;
             
-            /*if (keyStreams.Count >= KEY_STORE_SIZE)
-                keyStreams.RemoveAt(0);*/
+            if (keyStreams.Count >= KEY_STORE_SIZE)
+                keyStreams.RemoveFirst();
 
             var timeLong = DateTime.Now.ToString("yyyyMMddHHmmssfff").ToLong();
 
@@ -169,35 +169,23 @@ namespace Components
             }
 
             if (TIME_LAST_KEY_OFFSET > 0 && timeLong - TIME_LAST_KEY_OFFSET >= LAST_KEY_TIME_OFFSET)
-                keyStroke.Clear();//keyStreams.Clear();
+                keyStreams.Clear();
             TIME_LAST_KEY_OFFSET = timeLong;
 
-            if (key == Keys.LControlKey || key == Keys.RControlKey)
-                keyStroke.IsCtrl = true;
-            else if (key == Keys.LShiftKey || key == Keys.RShiftKey)
-                keyStroke.isShift = true;
-            else if (key == Keys.Alt)
-                keyStroke.IsAlt = true;
-            else keyStroke.hotKey = key;
-            
-            /*if (!keyStreams.Any(c => c == key))
-                keyStreams.Add(key);*/
+            if (!keyStreams.Any(c => c == key))
+                keyStreams.AddLast(key);
 
             if (ShouldPerformPasteAction(e, key))
             {
                 // Debug.WriteLine("Modifier Key: Should run paste command");
-                keyStroke.Clear();
-                // keyStreams.Clear();
+                keyStreams.Clear();
                 if (pasteEvent != null) SendAction(pasteEvent);
                 return;
             }
             
-            /*bool isCtrl = keyStreams.Any(c => c == Keys.LControlKey || c == Keys.RControlKey);
-            bool isShift = keyStreams.Any(c => c == Keys.LShiftKey || c == Keys.RShiftKey);
-            bool isAlt = keyStreams.Any(c => c == Keys.Alt);*/
-            bool isCtrl = keyStroke.IsCtrl;
-            bool isAlt = keyStroke.IsAlt;
-            bool isShift = keyStroke.isShift;
+            isCtrl = keyStreams.Any(c => c == Keys.LControlKey || c == Keys.RControlKey);
+            isShift = keyStreams.Any(c => c == Keys.LShiftKey || c == Keys.RShiftKey);
+            isAlt = keyStreams.Any(c => c == Keys.Alt);
 
             // Hot key detection
             bool hotKeyCtrl;
@@ -210,14 +198,14 @@ namespace Components
             if (DefaultSettings.IsAlt) hotKeyAlt = isAlt; else hotKeyAlt = true;
 
             Keys hotKey = DefaultSettings.HotKey.ToEnum<Keys>();
-            bool isHotKey = keyStroke.hotKey == hotKey;
-            // bool isHotKey = keyStreams.Any(c => c == hotKey);
+            // bool isHotKey = keyStroke.hotKey == hotKey;
+            bool isHotKey = keyStreams.Any(c => c == hotKey);
 
             if (hotKeyCtrl && hotKeyAlt && hotKeyShift && isHotKey)
             {
                 active = true;
-                keyStroke.Clear();
-                // keyStreams.Clear();
+                // keyStroke.Clear();
+                keyStreams.Clear();
                 if (hotKey != null) SendAction(hotKeyEvent);
             }
 
@@ -231,16 +219,13 @@ namespace Components
             quickPasteChord = false;
 
             // Quick paste cord 1
-            if (keyStroke.IsCtrl && keyStroke.hotKey == Keys.Oem5)
-            /*if (keyStreams.Any(c => c == Keys.LControlKey || c == Keys.RControlKey) &&
-                keyStreams.Any(c => c == Keys.Oem5))*/
+            if (keyStreams.Any(c => c == Keys.LControlKey || c == Keys.RControlKey) &&
+                keyStreams.Any(c => c == Keys.Oem5))
             {
                 // Debug.WriteLine("QuickPaste chord activated");
                 quickPasteChord = true;
-                // keyStreams.Clear();
-                keyStroke.Clear();
+                keyStreams.Clear();
             }
-
             // Debug.WriteLine($"Keystream size: {keyStreams.Count}, Contents: [{string.Join(",", keyStreams)}]");
         }
 
@@ -260,9 +245,9 @@ namespace Components
                     DoQuickPaste(KeyPressHelper.ParseNumericKey(key));
                 }
 
-                var isCtrl = KeyPressHelper.IsCtrlPressed();
-                var isAlt = KeyPressHelper.IsAltPressed();
-                var isShift = KeyPressHelper.IsShiftPressed();
+                isCtrl = KeyPressHelper.IsCtrlPressed();
+                isAlt = KeyPressHelper.IsAltPressed();
+                isShift = KeyPressHelper.IsShiftPressed();
 
                 if (ShouldPerformPasteAction(e, key))
                 {
@@ -310,25 +295,7 @@ namespace Components
 
             if (e.KeyMouseEventType != MacroEventType.KeyUp) return;
 
-            bool isCtrl;
-            bool isShift;
-            bool isAlt;
-
-            if (UseExperimentalKeyCapture)
-            {
-                isCtrl = keyStroke.IsCtrl;
-                isAlt = keyStroke.IsAlt;
-                isShift = keyStroke.isShift;
-                /*isCtrl = keyStreams.Any(c => c == Keys.LControlKey || c == Keys.RControlKey);
-                isShift = keyStreams.Any(c => c == Keys.LShiftKey || c == Keys.RShiftKey);
-                isAlt = keyStreams.Any(c => c == Keys.Alt);*/
-            }
-            else
-            {
-                isCtrl = KeyPressHelper.IsCtrlPressed();
-                isShift = KeyPressHelper.IsShiftPressed();
-                isAlt = KeyPressHelper.IsAltPressed();
-            }
+            if (!isCtrl && !isShift && !isAlt) return;
             
             // Buffer 1 detection
             if (IsKeymapActive(DefaultSettings.CopyBuffer1.Paste, isShift, isAlt, isCtrl, key))
