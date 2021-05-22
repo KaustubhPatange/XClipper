@@ -222,8 +222,11 @@
     <system:String x:Key="sync_timeout_action_text">Click here to take necessary measures.</system:String>
     <system:String x:Key="sync_timeout_error_title">Timed out error occurred</system:String>
     <system:String x:Key="sync_timeout_error_text" xml:space="preserve">Seems like the problem is likely with your Internet connection.&#10;&#10;Firebase client will now shutdown to enable it again restart the application!</system:String>
-    <system:String x:Key="update_title">Update Checker</system:String>
+
+    <system:String x:Key="update_title">New version of XClipper is available</system:String>
+    <system:String x:Key="update_download_size_error">Oops, the file size did not matched with the one specified on the server! It looks like the update got corrupted, restart the update to see if it fixes automatically.</system:String>
     <system:String x:Key="update_download_complete">Download completed. Click &quot;OK&quot; to install the update.&#10;&#10;Tip: Current process will killed during this update.</system:String>
+
     <system:String x:Key="connect_title">Connect</system:String>
     <system:String x:Key="buffer_item_play_sound">Play sound on Copy or Cut</system:String>
 

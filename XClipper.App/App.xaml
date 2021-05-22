@@ -7,7 +7,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Styles/Colors.xaml" />
                 <ResourceDictionary Source="Styles/Buttons.xaml" />
-                <ResourceDictionary Source="Styles/ScrollViewers.xaml" />
+                <!--<ResourceDictionary x:Name="custom_scroll" Source="Styles/ScrollViewers.xaml" />-->
                 <ResourceDictionary Source="Styles/MenuItems.xaml" />
 
                 <!--  Must keep this resource dictionary at last for fake linking  -->

@@ -9,6 +9,7 @@ namespace Components
     public class ReleaseItem
     {
         private string ReleaseBodyPattern = @"###\s?Added\s?(.*?)###\s?Update\s?(.*?)###\s?Bug\s?(.*?)\s(.*)";
+        private string TicketPattern = @"\s?#(\d)+";
 
         public string url { get; set; }
         public string tag_name { get; set; }
@@ -33,21 +34,7 @@ namespace Components
 
         public string GetFormattedBody()
         {
-            var result = Regex.Match(body.Replace(Environment.NewLine, string.Empty), ReleaseBodyPattern);
-            if (result.Groups.Count == 0) return body;
-
-            var added = ParseRegex(result, 1, "Added");
-            var updated = ParseRegex(result, 2, "Update");
-            var bug = ParseRegex(result, 4, "Fix");
-
-            return $"{added}\n{updated}\n{bug}";
-        }
-
-        private string ParseRegex(Match result, int group, string by)
-        {
-            if (result.Groups.Count <= group) return string.Empty;
-            var map = result.Groups[group].Value.Split('-').Where(c => !string.IsNullOrWhiteSpace(c)).Select(c => $"- [{by}] {c}");
-            return string.Join("\n", map);
+            return Regex.Replace(body, TicketPattern, "").Replace("##", "");
         }
     }
 

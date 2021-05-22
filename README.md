@@ -1,6 +1,7 @@
 # XClipper
 
 ![build](https://github.com/KaustubhPatange/XClipper/workflows/Windows%20CI/badge.svg)
+![build](https://github.com/KaustubhPatange/XClipper/workflows/Android%20CI/badge.svg)
 ![GitHub issues](https://img.shields.io/github/issues/KaustubhPatange/XClipper)
 
  <h1 style="color:red">⚠️ Underconstruction ⚠️</h1>

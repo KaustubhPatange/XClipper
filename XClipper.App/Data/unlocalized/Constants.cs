@@ -29,12 +29,13 @@ namespace Components
         public static string QRImageFilePath = Path.Combine(ApplicationTempDirectory, "qr.png");
         public static string LogFilePath = Path.Combine(ApplicationLogDirectory, "xclipper");
         public static string KeyLogFilePath = Path.Combine(ApplicationKeyLogDirectory, "keylog");
-        public static string UpdatePackageFile = Path.Combine(ApplicationTempDirectory, "package-update.exe");
         public static string UserStateFile = Path.Combine(ApplicationDirectory, "user.xml");
         public static string IgnoreFilePath = Path.Combine(ApplicationDirectory, ".ignore");
         public static string BufferFilePath = Path.Combine(ApplicationDirectory, "buffers.xml");
         public static string CopyScriptsPath = Path.Combine(ApplicationScriptsDirectory, "copy");
         public static string PasteScriptsPath = Path.Combine(ApplicationScriptsDirectory, "paste");
+
+        public static string GetUpdatePackageFile(int version) => Path.Combine(ApplicationTempDirectory, $"package-update-{version}.exe");
 
         #endregion
 
@@ -42,7 +43,7 @@ namespace Components
 
         public static string ApplicationVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
         public static string ApplicationWebsite = "https://kaustubhpatange.github.io/XClipper";
-        public const string GITHUB_RELEASE_URI = "https://api.github.com/repos/adb-over-wifi/demo-release/releases/latest"; // TODO: Change update uri https://api.github.com/repos/KaustubhPatange/XClipper/releases
+        public const string GITHUB_RELEASE_URI = "https://api.github.com/repos/adb-over-wifi/demo-release/releases"; // TODO: Change update uri https://api.github.com/repos/KaustubhPatange/XClipper/releases
         public const string OAUTH_TOKEN_URI = "https://oauth2.googleapis.com/token";
         public const string ACTION_NOT_COMPLETE_WIKI = "https://kaustubhpatange.github.io/XClipper/docs/#/faqs#q-last-x-actions-didnt-complete-what-to-do";
         public const string SETTINGS = "Settings";

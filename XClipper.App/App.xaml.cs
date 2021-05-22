@@ -54,7 +54,6 @@ namespace Components
         private ILicense licenseService;
         private Mutex appMutex;
         private WinForm.MenuItem ConfigSettingItem, UpdateSettingItem;
-        private ReleaseItem? updateModel = null;
 
         // Some settings
         private bool ToRecord = true;
@@ -651,33 +650,33 @@ namespace Components
             {
                 if (isAvailable)
                 {
-                    updateModel = model;
-                    new UWPToast.Builder(Dispatcher)
-                        .AddText(Translation.APP_UPDATE_TITLE)
-                        .AddText(Translation.APP_UPDATE_TEXT)
-                        .SetSilent(!PlayNoticationSound)
-                        .SetOnActivatedListener(() => UpdateAction_BalloonTipClicked(this, EventArgs.Empty))
-                        .build().ShowAsync();
+                    CallUpdateWindow(model);
+                    //new UWPToast.Builder(Dispatcher)
+                    //    .AddText(Translation.APP_UPDATE_TITLE)
+                    //    .AddText(Translation.APP_UPDATE_TEXT)
+                    //    .SetSilent(!PlayNoticationSound)
+                    //    .SetOnActivatedListener(() => UpdateAction_BalloonTipClicked(this, EventArgs.Empty))
+                    //    .build().ShowAsync();
                 }
             });
         }
 
-        private void UpdateAction_BalloonTipClicked(object sender, EventArgs e)
-        {
-            if (IsPurchaseDone)
-            {
-                CallUpdateWindow(updateModel);
-                updateModel = null;
-            }
-            else
-            {
-                var result = MessageBox.Show(Translation.MSG_LICENSE_UPDATE, Translation.MSG_WARNING, MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                if (result == MessageBoxResult.Yes)
-                {
-                    AppModule.Container.Resolve<IUpdater>().Launch();
-                }
-            }
-        }
+        //private void UpdateAction_BalloonTipClicked(object sender, EventArgs e)
+        //{
+        //    if (IsPurchaseDone)
+        //    {
+        //        CallUpdateWindow(updateModel);
+        //        updateModel = null;
+        //    }
+        //    else
+        //    {
+        //        var result = MessageBox.Show(Translation.MSG_LICENSE_UPDATE, Translation.MSG_WARNING, MessageBoxButton.YesNo, MessageBoxImage.Warning);
+        //        if (result == MessageBoxResult.Yes)
+        //        {
+        //            AppModule.Container.Resolve<IUpdater>().Launch();
+        //        }
+        //    }
+        //}
 
         private void RestartAppClicked(object sender, EventArgs e)
         {
@@ -744,7 +743,7 @@ namespace Components
                 clipWindow.CloseWindow();
         }
 
-        private void CallUpdateWindow(ReleaseItem? model)
+        private void CallUpdateWindow(List<ReleaseItem>? model)
         {
             if (model == null) return;
             if (updateWindow != null)

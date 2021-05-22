@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 #nullable enable
 namespace Components
@@ -9,7 +10,7 @@ namespace Components
         /// This method will check for update and will run the method.
         /// </summary>
         /// <param name="block"></param>
-        void Check(Action<bool, ReleaseItem?>? block);
+        void Check(Action<bool, List<ReleaseItem>?>? block);
 
         /// <summary>
         /// This will launch the website for manually downloading update.

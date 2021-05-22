@@ -7,26 +7,35 @@
     xmlns:local="clr-namespace:Components.UI"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="{Binding AppTitle}"
-    Width="300"
+    Width="370"
     ResizeMode="NoResize"
     SizeToContent="Height"
     Topmost="True"
     WindowStartupLocation="CenterScreen"
+    WindowStyle="ToolWindow"
     mc:Ignorable="d">
-    <StackPanel Margin="10" Orientation="Vertical">
-        <Grid Margin="0,10,0,0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-            </Grid.RowDefinitions>
-            <ProgressBar
+    <StackPanel Orientation="Vertical">
+        <ProgressBar
+            Grid.Row="1"
+            Height="3"
+            Value="{Binding Progress}" />
+
+        <StackPanel Margin="10" Orientation="Vertical">
+            <TextBox
+                Height="140"
+                Margin="0,10,0,0"
+                FontSize="11"
+                IsReadOnly="True"
+                Text="{Binding InfoText}"
+                TextWrapping="Wrap"
+                VerticalScrollBarVisibility="Auto" />
+
+            <DockPanel />
+            <DockPanel
                 Grid.Row="0"
-                Height="10"
-                Value="{Binding Progress}" />
-            <DockPanel Grid.Row="1" Margin="0,15,0,0">
+                Height="22"
+                Margin="0,10,0,0"
+                VerticalAlignment="Top">
                 <TextBlock
                     VerticalAlignment="Center"
                     FontSize="10"
@@ -43,24 +52,20 @@
                     Text="{Binding TotalBytes}" />
                 <Button
                     Grid.Row="1"
-                    Width="80"
+                    Width="100"
                     Height="22"
                     HorizontalAlignment="Right"
                     Command="{Binding MainButton}"
-                    Content="{c:Binding 'Define == local:Status.Downloading ? Cancel : Download'}" />
+                    Content="{c:Binding 'Define == local:Status.Downloading ? Cancel : &quot;Update Now&quot;'}"
+                    IsEnabled="{Binding IsUpdateEnabled}" />
             </DockPanel>
+        </StackPanel>
 
-        </Grid>
-        <Label
-            Height="0.7"
-            Margin="0,10,0,5"
-            Background="DarkGray" />
-        <Expander Header="{DynamicResource msg_details}">
-            <TextBox
-                Height="100"
-                Margin="5,10,5,0"
-                Text="{Binding InfoText}"
-                VerticalScrollBarVisibility="Auto" />
-        </Expander>
+        <ProgressBar
+            Grid.Row="1"
+            Height="3"
+            Margin="0,2,0,0"
+            Value="{Binding Progress}" />
+
     </StackPanel>
 </Window>

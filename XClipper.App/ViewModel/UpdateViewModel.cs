@@ -5,6 +5,7 @@ using System.Net;
 using System.Windows.Input;
 using static Components.TranslationHelper;
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Diagnostics;
 using System.IO;
@@ -18,14 +19,24 @@ namespace Components
     {
         private WebClient client = new WebClient();
         private ReleaseAsset? release;
-        public UpdateViewModel(ReleaseItem updateModel)
+        private string UpdatePackageFile;
+        public UpdateViewModel(List<ReleaseItem>? updateModels)
         {
             MainButton = new RelayCommand(MainButtonClicked);
 
+            var updateModel = updateModels.FirstOrDefault();
             release = updateModel.assets.FirstOrDefault(c => c.name.EndsWith(".exe", StringComparison.OrdinalIgnoreCase));
+            TotalBytes = SizeHelper.FormatSizeWithSuffix(release?.size ?? 0);
 
-            TotalBytes = $"{release?.size} B";
-            InfoText = $"{updateModel.tag_name} ({updateModel.GetDatePretty()})\n\n{updateModel.GetFormattedBody()}\n\nSize: {release?.size.ToFileSizeApi()}";
+            UpdatePackageFile = GetUpdatePackageFile(updateModel.GetVersion());
+            
+            InfoText = string.Format("{0} {1} Build ({2})\n\n", updateModel.tag_name, updateModel.prerelease ? "Nightly" : "Stable", updateModel.GetDatePretty());
+            foreach (var releaseItem in updateModels)
+            {
+                InfoText += $"{releaseItem.GetFormattedBody()}\n\n";
+            }
+
+            if (release == null) IsUpdateEnabled = false;
         }
 
         #region Actual Bindings
@@ -39,6 +50,7 @@ namespace Components
         public string Download { get; } = Translation.MSG_DOWNLOAD;
         public string RecievedBytes { get; set; } = "0 B";
         public string TotalBytes { get; set; } = "0 B";
+        public bool IsUpdateEnabled { get; set; } = true;
 
         #endregion
 
@@ -69,8 +81,8 @@ namespace Components
                 client.DownloadProgressChanged += (o, e) =>
                 {
                     Progress = e.ProgressPercentage;
-                    RecievedBytes = $"{e.BytesReceived} B";
-                    TotalBytes = $"{e.TotalBytesToReceive} B";
+                    RecievedBytes = SizeHelper.FormatSizeWithSuffix(e.BytesReceived);
+                    TotalBytes = SizeHelper.FormatSizeWithSuffix(e.TotalBytesToReceive);
                 };
                 client.DownloadFileCompleted += (o, e) =>
                 {
@@ -100,6 +112,7 @@ namespace Components
             {
                 TotalBytes = "0 B";
                 RecievedBytes = "0 B";
+                MsgBoxHelper.ShowError(Translation.UPDATE_DOWNLOAD_SIZE_ERROR);
                 return;
             }
             var result = MessageBox.Show(Translation.UPDATE_DOWNLOAD_COMPLETE, Translation.MSG_INFO, MessageBoxButton.OKCancel, MessageBoxImage.Information);

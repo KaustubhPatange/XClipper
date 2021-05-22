@@ -135,6 +135,7 @@
     <Compile Include="Helpers\EnumHelper.cs" />
     <Compile Include="Helpers\RegistryHelper.cs" />
     <Compile Include="Helpers\ApplicationHelper.cs" />
+    <Compile Include="Helpers\SizeHelper.cs" />
     <Compile Include="models\FilterModel.cs" />
     <Compile Include="models\TableCopy.cs" />
     <Compile Include="models\ReleaseItem.cs" />

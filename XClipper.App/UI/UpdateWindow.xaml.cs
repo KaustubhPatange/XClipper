@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Windows;
 using System.Windows.Forms;
@@ -8,7 +9,7 @@ namespace Components.UI
     public partial class UpdateWindow : Window
     {
         private UpdateViewModel updateViewModel;
-        public UpdateWindow(ReleaseItem updateModel)
+        public UpdateWindow(List<ReleaseItem>? updateModel)
         {
             InitializeComponent();
 
