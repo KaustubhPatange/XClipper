@@ -225,7 +225,7 @@
 
     <system:String x:Key="update_title">New version of XClipper is available</system:String>
     <system:String x:Key="update_download_size_error">Oops, the file size did not matched with the one specified on the server! It looks like the update got corrupted, restart the update to see if it fixes automatically.</system:String>
-    <system:String x:Key="update_download_complete">Download completed. Click &quot;OK&quot; to install the update.&#10;&#10;Tip: Current process will killed during this update.</system:String>
+    <system:String x:Key="update_download_complete">Update has downloaded, click &quot;OK&quot; to install it.&#10;&#10;Tip: Current process will killed during this update.</system:String>
 
     <system:String x:Key="connect_title">Connect</system:String>
     <system:String x:Key="buffer_item_play_sound">Play sound on Copy or Cut</system:String>

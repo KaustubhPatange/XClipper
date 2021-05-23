@@ -87,7 +87,7 @@ namespace Components
                 client.DownloadFileCompleted += (o, e) =>
                 {
                     Define = Status.Completed;
-                    CallPostUpdate();
+                    Application.Current.Dispatcher.Invoke(CallPostUpdate);
                 };
                 client.DownloadFileAsync(new Uri(release?.browser_download_url), UpdatePackageFile);
 
