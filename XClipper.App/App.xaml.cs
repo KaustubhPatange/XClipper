@@ -646,38 +646,15 @@ namespace Components
         {
             if (!CheckApplicationUpdates) return;
             var updater = AppModule.Container.Resolve<IUpdater>();
-            updater.Check((isAvailable, model) =>
+            updater.Subscribe((isAvailable, model) =>
             {
                 if (isAvailable)
                 {
                     CallUpdateWindow(model);
-                    //new UWPToast.Builder(Dispatcher)
-                    //    .AddText(Translation.APP_UPDATE_TITLE)
-                    //    .AddText(Translation.APP_UPDATE_TEXT)
-                    //    .SetSilent(!PlayNoticationSound)
-                    //    .SetOnActivatedListener(() => UpdateAction_BalloonTipClicked(this, EventArgs.Empty))
-                    //    .build().ShowAsync();
                 }
             });
         }
-
-        //private void UpdateAction_BalloonTipClicked(object sender, EventArgs e)
-        //{
-        //    if (IsPurchaseDone)
-        //    {
-        //        CallUpdateWindow(updateModel);
-        //        updateModel = null;
-        //    }
-        //    else
-        //    {
-        //        var result = MessageBox.Show(Translation.MSG_LICENSE_UPDATE, Translation.MSG_WARNING, MessageBoxButton.YesNo, MessageBoxImage.Warning);
-        //        if (result == MessageBoxResult.Yes)
-        //        {
-        //            AppModule.Container.Resolve<IUpdater>().Launch();
-        //        }
-        //    }
-        //}
-
+        
         private void RestartAppClicked(object sender, EventArgs e)
         {
             var msg = MessageBox.Show(Translation.MSG_RESTART, Translation.MSG_INFO, MessageBoxButton.YesNo, MessageBoxImage.Warning);

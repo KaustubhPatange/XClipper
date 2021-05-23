@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 using static Components.Constants;
 
 #nullable enable
@@ -15,15 +16,29 @@ namespace Components
 {
     public class UpdaterService : IUpdater
     {
-        public void Check(Action<bool, List<ReleaseItem>?>? block)
+        private DispatcherTimer _timer = new();
+        private RestClient client = new();
+        private RestRequest request = new(GITHUB_RELEASE_URI, Method.GET);
+
+        private Action<bool, List<ReleaseItem>?> block;
+        public void Subscribe(Action<bool, List<ReleaseItem>?> block)
         {
-            var client = new RestClient();
-            var request = new RestRequest(GITHUB_RELEASE_URI, Method.GET);
+            this.block = block;
+            _timer.Interval = TimeSpan.FromMinutes(70);
+           _timer.Tick += OnNeedToCheckUpdate;
+           _timer.Start();
+           OnNeedToCheckUpdate(null, EventArgs.Empty);
+        }
+
+        private void OnNeedToCheckUpdate(object sender, EventArgs e)
+        {
+            _timer.Stop();
             client.ExecuteAsync(request, (response) =>
             {
-                float appVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString().Replace(".", "").ToInt() / (float)1000; // eg: 1000
+                _timer.Start();
+                int appVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString().Replace(".", "").ToInt(); // eg: 1000
                 List<ReleaseItem>? releases = JsonConvert.DeserializeObject<List<ReleaseItem>>(response.Content);
-                float newVersion = releases.FirstOrDefault().GetVersion() / (float)1000;
+                int newVersion = releases.FirstOrDefault().GetVersion();
                 
                 System.Windows.Application.Current.Dispatcher.Invoke(() =>
                 {
