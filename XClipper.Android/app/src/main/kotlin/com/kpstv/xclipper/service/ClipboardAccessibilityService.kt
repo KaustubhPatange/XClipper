@@ -9,10 +9,12 @@ import android.os.PowerManager
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.EditText
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.MutableLiveData
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.kpstv.hvlog.HVLog
 import com.kpstv.xclipper.App
+import com.kpstv.xclipper.App.ACTION_DISABLE_SERVICE
 import com.kpstv.xclipper.App.ACTION_INSERT_TEXT
 import com.kpstv.xclipper.App.ACTION_NODE_INFO
 import com.kpstv.xclipper.App.ACTION_VIEW_CLOSE
@@ -27,6 +29,7 @@ import com.kpstv.xclipper.extensions.utils.KeyboardUtils.Companion.getKeyboardHe
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.isSystemOverlayEnabled
 import com.kpstv.xclipper.service.helper.ClipboardDetection
 import com.kpstv.xclipper.service.helper.LanguageDetector
+import com.kpstv.xclipper.ui.fragments.settings.GeneralPreference
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import javax.inject.Inject
@@ -44,6 +47,11 @@ class ClipboardAccessibilityService : AccessibilityService() {
     /** We will save the package name to this variable from the event. */
     companion object {
         var currentPackage: CharSequence? = null
+
+        @RequiresApi(Build.VERSION_CODES.N)
+        fun disableService(context: Context) {
+            LocalBroadcastManager.getInstance(context).sendBroadcast(Intent(ACTION_DISABLE_SERVICE))
+        }
     }
 
     private val keyboardHeight: MutableLiveData<Int> = MutableLiveData()
@@ -168,40 +176,7 @@ class ClipboardAccessibilityService : AccessibilityService() {
             }
         }
 
-        LocalBroadcastManager.getInstance(applicationContext)
-            .registerReceiver(object : BroadcastReceiver() {
-                override fun onReceive(context: Context?, intent: Intent?) {
-                    if (intent?.hasExtra(EXTRA_SERVICE_TEXT) == true) {
-                        HVLog.d("Received ${::EXTRA_SERVICE_TEXT.name}")
-
-                        val pasteData = intent.getStringExtra(EXTRA_SERVICE_TEXT)
-
-                        if (!(nodeInfo != null && nodeInfo?.packageName != currentPackage) && context != null) {
-                            Toasty.info(context, "Click on text field to capture it").show()
-                            return
-                        }
-                        with(nodeInfo!!) {
-                            refresh()
-                            clipboardProvider.ignoreChange {
-
-                                /** Saving current clipboard */
-                                val currentClipText = clipboardProvider.getCurrentClip().value;
-
-                                /** Setting data to be paste */
-                                clipboardProvider.setClipboard(ClipData.newPlainText("copied", pasteData))
-
-                                /** Make an actual paste action */
-                                performAction(AccessibilityNodeInfo.ACTION_PASTE)
-
-                                /** Restore previous clipboard */
-                                clipboardProvider.setClipboard(ClipData.newPlainText(null, currentClipText))
-
-                                HVLog.d("Pasted into current clip")
-                            }
-                        }
-                    }
-                }
-            }, IntentFilter(ACTION_INSERT_TEXT))
+        registerLocalBroadcast()
     }
 
 
@@ -222,6 +197,60 @@ class ClipboardAccessibilityService : AccessibilityService() {
     }
 
     override fun onInterrupt() {}
+
+    private fun registerLocalBroadcast() {
+        val actions = IntentFilter().apply {
+            addAction(ACTION_INSERT_TEXT)
+            addAction(ACTION_DISABLE_SERVICE)
+        }
+        LocalBroadcastManager.getInstance(applicationContext)
+            .registerReceiver(object : BroadcastReceiver() {
+                override fun onReceive(context: Context?, intent: Intent?) {
+                    if (context == null) return
+                    when (intent?.action) {
+                        ACTION_INSERT_TEXT -> {
+                            actionInsertText(context, intent)
+                        }
+                        ACTION_DISABLE_SERVICE -> @RequiresApi(Build.VERSION_CODES.N) {
+                            disableSelf()
+                            GeneralPreference.checkForSettings(context)
+                        }
+                    }
+                }
+            }, actions)
+    }
+
+    private fun actionInsertText(context: Context, intent: Intent) {
+        if (intent.hasExtra(EXTRA_SERVICE_TEXT)) {
+            HVLog.d("Received ${::EXTRA_SERVICE_TEXT.name}")
+
+            val pasteData = intent.getStringExtra(EXTRA_SERVICE_TEXT)
+
+            if (!(nodeInfo != null && nodeInfo?.packageName != currentPackage)) {
+                Toasty.info(context, "Click on text field to capture it").show()
+                return
+            }
+            with(nodeInfo!!) {
+                refresh()
+                clipboardProvider.ignoreChange {
+
+                    /** Saving current clipboard */
+                    val currentClipText = clipboardProvider.getCurrentClip().value;
+
+                    /** Setting data to be paste */
+                    clipboardProvider.setClipboard(ClipData.newPlainText("copied", pasteData))
+
+                    /** Make an actual paste action */
+                    performAction(AccessibilityNodeInfo.ACTION_PASTE)
+
+                    /** Restore previous clipboard */
+                    clipboardProvider.setClipboard(ClipData.newPlainText(null, currentClipText))
+
+                    HVLog.d("Pasted into current clip")
+                }
+            }
+        }
+    }
 
     private fun updateScreenInteraction(value: Boolean) {
         if (screenInteraction.value != value)

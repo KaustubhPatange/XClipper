@@ -26,23 +26,25 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class Start : AppCompatActivity(), NavigatorTransmitter {
+class Start : AppCompatActivity(), FragmentNavigator.Transmitter {
     private val binding by viewBinding(ActivityStartBinding::inflate)
     private val navViewModel by viewModels<NavViewModel>()
     private val mainViewModel by viewModels<MainViewModel>()
-    private lateinit var navigator: Navigator
+    private lateinit var navigator: FragmentNavigator
     @Inject
     lateinit var dbConnectionProvider: DBConnectionProvider
     @Inject
     lateinit var preferenceProvider: PreferenceProvider
 
-    override fun getNavigator(): Navigator = navigator
+    override fun getNavigator(): FragmentNavigator = navigator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         applyEdgeToEdgeMode()
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        navigator = Navigator.with(this, savedInstanceState).initialize(binding.root)
+        navigator = Navigator.with(this, savedInstanceState)
+            .setNavigator(FragmentNavigator::class)
+            .initialize(binding.root)
         navigator.autoChildElevation()
 
         navViewModel.navigation.observe(this) { options ->
@@ -100,13 +102,13 @@ class NavViewModel : ViewModel() {
         screen: Start.Screen,
         args: BaseArgs? = null,
         addToBackStack: Boolean = false,
-        transactionType: Navigator.TransactionType = Navigator.TransactionType.REPLACE,
+        transactionType: FragmentNavigator.TransactionType = FragmentNavigator.TransactionType.REPLACE,
         animation: NavAnimation = AnimationDefinition.None,
         popUpTo: Boolean = false,
     ) {
         navigation.value = NavigationOptions(
             clazz = screen.clazz,
-            navOptions = Navigator.NavOptions(
+            navOptions = FragmentNavigator.NavOptions(
                 args = args,
                 animation = animation,
                 transaction = transactionType,
@@ -118,6 +120,6 @@ class NavViewModel : ViewModel() {
 
     data class NavigationOptions(
         val clazz: FragClazz,
-        val navOptions: Navigator.NavOptions
+        val navOptions: FragmentNavigator.NavOptions
     )
 }

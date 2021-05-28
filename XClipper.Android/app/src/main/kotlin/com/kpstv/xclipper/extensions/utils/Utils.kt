@@ -25,6 +25,7 @@ import androidx.annotation.AttrRes
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ShareCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -179,6 +180,21 @@ class Utils {
                 }
                 .setCancelable(false)
                 .setNegativeButton(getString(R.string.cancel)) { _, _ -> block.invoke() }
+                .show()
+        }
+
+        fun showDisableAccessibilityDialog(context: Context, block: SimpleFunction): Unit = with(context) {
+            MaterialAlertDialogBuilder(this)
+                .setTitle(getString(R.string.accessibility_service_disable))
+                .setMessage(getString(R.string.accessibility_disable_text))
+                .setCancelable(false)
+                .setPositiveButton(R.string.ok) { _, _ ->
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        ClipboardAccessibilityService.disableService(context)
+                    } else openAccessibility(context)
+                    block.invoke()
+                }
+                .setNegativeButton(R.string.cancel) { _, _ -> block.invoke() }
                 .show()
         }
 

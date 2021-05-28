@@ -26,13 +26,13 @@ import kotlinx.android.parcel.Parcelize
 import kotlin.reflect.KClass
 
 @AndroidEntryPoint
-class Settings : ValueFragment(R.layout.activity_settings), NavigatorTransmitter, LookFeelPreference.ThemeChangeCallbacks {
+class Settings : ValueFragment(R.layout.activity_settings), FragmentNavigator.Transmitter, LookFeelPreference.ThemeChangeCallbacks {
     private val binding by viewBinding(ActivitySettingsBinding::bind)
     private val viewModel by viewModels<SettingNavViewModel>()
     private val navViewModel by activityViewModels<NavViewModel>()
-    private lateinit var navigator: Navigator
+    private lateinit var navigator: FragmentNavigator
 
-    override fun getNavigator(): Navigator = navigator
+    override fun getNavigator(): FragmentNavigator = navigator
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -41,13 +41,15 @@ class Settings : ValueFragment(R.layout.activity_settings), NavigatorTransmitter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        navigator = Navigator.with(this, savedInstanceState).initialize(binding.settingsContainer)
+        navigator = Navigator.with(this, savedInstanceState)
+            .setNavigator(FragmentNavigator::class)
+            .initialize(binding.settingsContainer)
 
         setToolbar()
         viewModel.navigation.observe(viewLifecycleOwner, navigationObserver)
 
         if (savedInstanceState == null) {
-            navigator.navigateTo(Screen.MAIN.clazz, Navigator.NavOptions(animation = AnimationDefinition.SlideInRight))
+            navigator.navigateTo(Screen.MAIN.clazz, FragmentNavigator.NavOptions(animation = AnimationDefinition.SlideInRight))
         }
 
         if (hasKeyArgs<Args>()) {

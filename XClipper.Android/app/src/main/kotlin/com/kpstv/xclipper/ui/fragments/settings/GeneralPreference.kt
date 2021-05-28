@@ -1,7 +1,12 @@
 package com.kpstv.xclipper.ui.fragments.settings
 
+ import android.content.BroadcastReceiver
+ import android.content.Context
+ import android.content.Intent
+ import android.content.IntentFilter
  import android.os.Build
  import android.os.Bundle
+ import androidx.localbroadcastmanager.content.LocalBroadcastManager
  import androidx.preference.ListPreference
  import androidx.preference.MultiSelectListPreference
  import androidx.preference.PreferenceFragmentCompat
@@ -22,11 +27,10 @@ package com.kpstv.xclipper.ui.fragments.settings
  import com.kpstv.xclipper.extensions.Coroutines
  import com.kpstv.xclipper.extensions.utils.Utils.Companion.isClipboardAccessibilityServiceRunning
  import com.kpstv.xclipper.extensions.utils.Utils.Companion.isSystemOverlayEnabled
- import com.kpstv.xclipper.extensions.utils.Utils.Companion.openAccessibility
  import com.kpstv.xclipper.extensions.utils.Utils.Companion.retrievePackageList
  import com.kpstv.xclipper.extensions.utils.Utils.Companion.showAccessibilityDialog
+ import com.kpstv.xclipper.extensions.utils.Utils.Companion.showDisableAccessibilityDialog
  import com.kpstv.xclipper.extensions.utils.Utils.Companion.showOverlayDialog
- import com.kpstv.xclipper.ui.fragments.AnimatePreferenceFragment
  import es.dmoral.toasty.Toasty
 
 class GeneralPreference : PreferenceFragmentCompat() {
@@ -81,11 +85,11 @@ class GeneralPreference : PreferenceFragmentCompat() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) // Add that BETA tag to summary for Android 10+ users
             checkPreference?.summary = "[BETA] ${checkPreference?.summary}"
         checkPreference?.setOnPreferenceChangeListener { _, newValue ->
-            if (newValue as Boolean)
-                showAccessibilityDialog(requireContext()) {
-                    checkForService()
-                }
-            else openAccessibility(requireContext())
+            if (newValue as Boolean) {
+                showAccessibilityDialog(requireContext()) { checkForService() }
+            } else {
+                showDisableAccessibilityDialog(requireContext()) { checkForService() }
+            }
             true
         }
 
@@ -116,9 +120,27 @@ class GeneralPreference : PreferenceFragmentCompat() {
         }
     }
 
+    override fun onStart() {
+        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(
+            localBroadcastReceiver, IntentFilter(ACTION_CHECK_PREFERENCES)
+        )
+        super.onStart()
+    }
+
+    private val localBroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            checkForService()
+        }
+    }
+
     override fun onResume() {
         checkForService()
         super.onResume()
+    }
+
+    override fun onDestroyView() {
+        LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(localBroadcastReceiver)
+        super.onDestroyView()
     }
 
     private fun checkForService() {
@@ -127,6 +149,14 @@ class GeneralPreference : PreferenceFragmentCompat() {
             overlayPreference?.isChecked = isSystemOverlayEnabled(requireContext())
             rememberToCheckOverlaySwitch = false
             showSuggestion = true
+        }
+    }
+
+    companion object {
+        const val ACTION_CHECK_PREFERENCES = "com.kpstv.xclipper.action_check_preferences"
+
+        fun checkForSettings(context: Context) {
+            LocalBroadcastManager.getInstance(context).sendBroadcast(Intent(ACTION_CHECK_PREFERENCES))
         }
     }
 }

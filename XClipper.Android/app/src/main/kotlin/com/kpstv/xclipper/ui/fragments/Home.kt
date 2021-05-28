@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
 import com.kpstv.navigation.AnimationDefinition
+import com.kpstv.navigation.FragmentNavigator
 import com.kpstv.navigation.Navigator
 import com.kpstv.navigation.ValueFragment
 import com.kpstv.xclipper.App
@@ -421,7 +422,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
             navViewModel.navigateTo(
                 screen = Start.Screen.SETTING,
                 animation = AnimationDefinition.Fade,
-                transactionType = Navigator.TransactionType.ADD,
+                transactionType = FragmentNavigator.TransactionType.ADD,
                 addToBackStack = true,
             )
         }
