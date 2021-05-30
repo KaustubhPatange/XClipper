@@ -2,10 +2,12 @@ package com.kpstv.xclipper.service.helper
 
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
+import android.widget.Toast
 import androidx.annotation.VisibleForTesting
 import com.kpstv.hvlog.HVLog
 import com.kpstv.xclipper.extensions.StripArrayList
 import com.kpstv.xclipper.service.helper.ClipboardDetection.AEvent.Companion.copyActions
+import com.kpstv.xclipper.service.helper.ClipboardDetection.AEvent.Companion.copyKeyWords
 import java.util.*
 
 typealias Predicate = (ClipboardDetection.AEvent) -> Boolean
@@ -104,7 +106,16 @@ class ClipboardDetection(
             }
         }
 
-        if (event.SourceActions.containsAll(copyActions) && event.EventType == AccessibilityEvent.TYPE_VIEW_LONG_CLICKED) {
+        /*if (event.SourceActions.containsAll(copyActions) && event.EventType == AccessibilityEvent.TYPE_VIEW_LONG_CLICKED) {
+            if (enableLogging)
+                HVLog.d("Copy captured - 1.2")
+            else
+                println("Copy captured - 1.2")
+            return true
+        }*/
+
+        if (event.EventType == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED && event.ClassName == "${Toast::class.qualifiedName}\$TN"
+            && event.Text != null && event.Text?.toString()?.contains(copyKeyWords) == true) {
             if (enableLogging)
                 HVLog.d("Copy captured - 1.2")
             else
@@ -134,9 +145,10 @@ class ClipboardDetection(
         var SourceActions: List<AccessibilityNodeInfo.AccessibilityAction>,
     ) {
         companion object {
-            val copyActions = listOf<AccessibilityNodeInfo.AccessibilityAction>(
+            internal val copyActions = listOf<AccessibilityNodeInfo.AccessibilityAction>(
                 AccessibilityNodeInfo.AccessibilityAction.ACTION_LONG_CLICK,
             )
+            internal val copyKeyWords = "(copied)|(Copied)|(clipboard)".toRegex()
 
             fun from(event: AccessibilityEvent): AEvent {
                 return AEvent(
