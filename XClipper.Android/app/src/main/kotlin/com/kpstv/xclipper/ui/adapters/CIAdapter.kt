@@ -32,7 +32,7 @@ class CIAdapter(
     private val currentClip: LiveData<String>,
     private val onClick: (Clip, Int) -> Unit,
     private val onLongClick: (Clip, Int) -> Unit,
-    private val selectedClips: LiveData<ArrayList<Clip>>
+    private val selectedClips: LiveData<List<Clip>>
 ) : ListAdapter<Clip, CIAdapter.MainHolder>(DiffCallback.asConfig()) {
     private object DiffCallback : DiffUtil.ItemCallback<Clip>() {
         override fun areItemsTheSame(oldItem: Clip, newItem: Clip): Boolean =
@@ -140,9 +140,9 @@ class CIAdapter(
             }
         })
 
-        selectedClips.observe(lifecycleOwner, Observer {
+        selectedClips.observe(lifecycleOwner, Observer { clips ->
             when {
-                it.contains(clip) -> {
+                clips.contains(clip) -> {
                     holder.itemView.mainCard.setCardBackgroundColor(CARD_SELECTED_COLOR)
                 }
                 else -> {

@@ -1,9 +1,11 @@
 package com.kpstv.xclipper.service.helper
 
 import android.view.accessibility.AccessibilityEvent
+import android.view.accessibility.AccessibilityNodeInfo
 import androidx.annotation.VisibleForTesting
 import com.kpstv.hvlog.HVLog
 import com.kpstv.xclipper.extensions.StripArrayList
+import com.kpstv.xclipper.service.helper.ClipboardDetection.AEvent.Companion.copyActions
 import java.util.*
 
 typealias Predicate = (ClipboardDetection.AEvent) -> Boolean
@@ -91,6 +93,7 @@ class ClipboardDetection(
 
             if (previousEvent.EventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
                /* && previousEvent.ScrollX == -1 && previousEvent.ScrollY == -1*/ // TODO: See if you need any additional checks, uncomment it then
+                && previousEvent.Text?.size == 1
                 && (previousEvent.Text?.toString()?.contains(copyWord, true) == true
                 || previousEvent.ContentDescription?.contains(copyWord, true) == true)) {
                 if (enableLogging)
@@ -101,28 +104,14 @@ class ClipboardDetection(
             }
         }
 
-        /**
-         * This first condition will allow to capture text from an text selection,
-         * whether on chrome or somewhere else.
-         *
-         * eg: Press and hold a text > a pop comes with different options like
-         * copy, paste, select all, etc.
-         */
+        if (event.SourceActions.containsAll(copyActions) && event.EventType == AccessibilityEvent.TYPE_VIEW_LONG_CLICKED) {
+            if (enableLogging)
+                HVLog.d("Copy captured - 1.2")
+            else
+                println("Copy captured - 1.2")
+            return true
+        }
 
-        // Below logic works for many apps but fails on certain apps which makes it literally unusable.
-        // It would be better if this is ignored. People can always use quick setting tile to force copy.
-
-        /* if ((event.EventType == AccessibilityEvent.TYPE_VIEW_TEXT_SELECTION_CHANGED
-                     && event.FromIndex == event.ToIndex
-                     && (event.PackageName != "com.android.chrome" || event.PackageName != "com.google.android.gm")
-                     && event.CurrentItemIndex != -1)
-         ) {
-             if (event.ClassName == EditText::class.java.name && event.ScrollX != -1) return false
-             if (eventList.any { it == AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED }) return false
-             if (enableLogging)
-                 HVLog.d("Copy captured - 1, ToCaptureEvent: ${AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED}, EventList: $eventList")
-             return true
-         }*/
         lastEvent = event.clone()
         return false
     }
@@ -142,8 +131,13 @@ class ClipboardDetection(
         var ToIndex: Int? = null,
         var ScrollX: Int? = null,
         var ScrollY: Int? = null,
+        var SourceActions: List<AccessibilityNodeInfo.AccessibilityAction>,
     ) {
         companion object {
+            val copyActions = listOf<AccessibilityNodeInfo.AccessibilityAction>(
+                AccessibilityNodeInfo.AccessibilityAction.ACTION_LONG_CLICK,
+            )
+
             fun from(event: AccessibilityEvent): AEvent {
                 return AEvent(
                     EventType = event.eventType,
@@ -159,7 +153,8 @@ class ClipboardDetection(
                     FromIndex = event.fromIndex,
                     ToIndex = event.toIndex,
                     ScrollX = event.scrollX,
-                    ScrollY = event.scrollY
+                    ScrollY = event.scrollY,
+                    SourceActions = event.source?.actionList ?: emptyList()
                 )
             }
         }

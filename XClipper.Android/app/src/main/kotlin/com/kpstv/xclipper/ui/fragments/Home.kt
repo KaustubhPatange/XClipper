@@ -164,8 +164,8 @@ class Home : ValueFragment(R.layout.fragment_home) {
                 }
             }
         }
-        mainViewModel.stateManager.selectedItemClips.observeForever {
-            if (mainViewModel.stateManager.isMultiSelectionStateActive() && it.isEmpty())
+        mainViewModel.stateManager.selectedItemClips.observeForever { clips ->
+            if (mainViewModel.stateManager.isMultiSelectionStateActive() && clips?.isEmpty() == true)
                 mainViewModel.stateManager.setToolbarState(ToolbarState.NormalViewState)
         }
         mainViewModel.searchManager.tagFilters.observe(viewLifecycleOwner) {

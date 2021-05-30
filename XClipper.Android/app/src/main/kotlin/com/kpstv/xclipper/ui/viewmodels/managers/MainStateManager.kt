@@ -1,5 +1,6 @@
 package com.kpstv.xclipper.ui.viewmodels.managers
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.kpstv.xclipper.data.localized.DialogState
@@ -8,6 +9,7 @@ import com.kpstv.xclipper.data.model.Clip
 import javax.inject.Inject
 import javax.inject.Singleton
 
+@SuppressLint("NullSafeMutableLiveData")
 @Singleton
 class MainStateManager @Inject constructor() {
 
@@ -19,12 +21,12 @@ class MainStateManager @Inject constructor() {
     private val _dialogState: MutableLiveData<DialogState> =
         MutableLiveData(DialogState.Normal)
 
-    private val _selectedItemClips = MutableLiveData<ArrayList<Clip>>()
+    private val _selectedItemClips = MutableLiveData<List<Clip>>()
     private val _isMultiSelectionEnabled = MutableLiveData<Boolean>()
 
     private val _selectedItem = MutableLiveData<Clip>()
 
-    val selectedItemClips: LiveData<ArrayList<Clip>>
+    val selectedItemClips: LiveData<List<Clip>>
         get() = _selectedItemClips
 
     val toolbarState: LiveData<ToolbarState>
@@ -52,7 +54,7 @@ class MainStateManager @Inject constructor() {
         get() = _isMultiSelectionEnabled
 
     fun addOrRemoveClipFromSelectedList(clip: Clip) {
-        var list = _selectedItemClips.value
+        var list = _selectedItemClips.value?.toMutableList()
         if (list == null)
             list = ArrayList()
         else {

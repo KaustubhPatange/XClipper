@@ -1,5 +1,6 @@
 package com.kpstv.xclipper.ui.viewmodels.managers
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.kpstv.xclipper.App.EMPTY_STRING
@@ -10,6 +11,7 @@ import com.kpstv.xclipper.extensions.ClipTagMap
 import javax.inject.Inject
 import javax.inject.Singleton
 
+@SuppressLint("NullSafeMutableLiveData")
 @Singleton
 class MainEditManager @Inject constructor(
     tagRepository: TagDao

@@ -140,6 +140,7 @@ namespace Components
         private LinkedList<Keys> keyStreams = new();
         private const int KEY_STORE_SIZE = 4;
         private const int LAST_KEY_TIME_OFFSET = 400;
+        private const int CLEAR_KEY_TIME_OFFSET = 300;
 
         private long TIME_LAST_KEY_OFFSET = 0;
         private bool quickPasteChord = false;
@@ -168,7 +169,7 @@ namespace Components
                 active = false;
             }
 
-            if (TIME_LAST_KEY_OFFSET > 0 && timeLong - TIME_LAST_KEY_OFFSET >= LAST_KEY_TIME_OFFSET)
+            if (TIME_LAST_KEY_OFFSET > 0 && timeLong - TIME_LAST_KEY_OFFSET >= CLEAR_KEY_TIME_OFFSET)
                 keyStreams.Clear();
             TIME_LAST_KEY_OFFSET = timeLong;
 
