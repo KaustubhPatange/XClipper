@@ -142,7 +142,7 @@ class ClipboardDetection(
         var ToIndex: Int? = null,
         var ScrollX: Int? = null,
         var ScrollY: Int? = null,
-        var SourceActions: List<AccessibilityNodeInfo.AccessibilityAction>,
+        var SourceActions: List<AccessibilityNodeInfo.AccessibilityAction> = emptyList(),
     ) {
         companion object {
             internal val copyActions = listOf<AccessibilityNodeInfo.AccessibilityAction>(

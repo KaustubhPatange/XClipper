@@ -62,43 +62,6 @@ namespace Components
             dtimer.Start();
         }
 
-        /*/// <summary>
-        /// When attached to <paramref name="window"/>, this will be last shown window of the
-        /// application before the deactivation will be called.
-        /// </summary>
-        public static void AttachAppWindowDeactivation(Window window, Action block)
-        {
-            window.LostKeyboardFocus += (sender, args) =>
-            {
-                IntPtr handle = GetForegroundWindow();
-                bool isActive = IsActivated(handle);
-                if (!isActive)
-                {
-                    block.Invoke();
-                }
-            };
-            
-            window.GotFocus += (sender, args) =>
-            {
-                IntPtr handle = GetForegroundWindow();
-                bool isActive = IsActivated(handle);
-                if (!isActive)
-                {
-                    block.Invoke();
-                }
-            };
-            
-            window.LostFocus += (sender, args) =>
-            {
-                IntPtr handle = GetForegroundWindow();
-                bool isActive = IsActivated(handle);
-                if (!isActive)
-                {
-                    block.Invoke();
-                }
-            };
-        }*/
-
         /// <summary>Returns true if the current application has focus, false otherwise</summary>
         public static bool IsActivated(IntPtr hWnd)
         {
@@ -148,7 +111,7 @@ namespace Components
                 if (dtimer != null)
                 {
                     await Task.Delay(300);
-                    Application.Current.Dispatcher.Invoke(()=>  File.AppendAllText("C:\\users\\devel\\Desktop\\focus.txt", $"{SetFocus(hWnd)}\n"));
+                    Application.Current.Dispatcher.Invoke(() => SetFocus(hWnd));
                     dtimer.Start();
                 }
             });

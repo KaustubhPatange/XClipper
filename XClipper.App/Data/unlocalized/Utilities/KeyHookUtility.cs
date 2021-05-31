@@ -9,9 +9,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Input;
 using static Components.DefaultSettings;
 using static Components.ApplicationHelper;
 using Application = System.Windows.Application;
+using KeyEventArgs = System.Windows.Forms.KeyEventArgs;
 
 #nullable enable
 
@@ -136,27 +138,36 @@ namespace Components
         #endregion
 
         #region Keyboard Capture Events
-
+        
         private LinkedList<Keys> keyStreams = new();
         private const int KEY_STORE_SIZE = 4;
         private const int LAST_KEY_TIME_OFFSET = 400;
-        private const int CLEAR_KEY_TIME_OFFSET = 300;
+        private const int CLEAR_KEY_TIME_OFFSET = 200;
 
         private long TIME_LAST_KEY_OFFSET = 0;
         private bool quickPasteChord = false;
         private bool active = false;
 
         private bool isCtrl, isShift, isAlt;
+
+        private List<Keys> NavigationKeys = new()
+        {
+            Keys.Up, Keys.Down, Keys.Right, Keys.Left, Keys.Home, Keys.PageUp, Keys.PageDown, Keys.End
+        };
+        
         private void KeyboardWatcher_OnKeyboardInput2(object sender, MacroEvent e)
         {
             var keyEvent = e.EventArgs as KeyEventArgs;
             if (keyEvent == null) return;
             var key = keyEvent.KeyCode;
             
+            Debug.WriteLine($"Key: {key}, Event: {e.KeyMouseEventType}");
+            
             if (keyStreams.Count >= KEY_STORE_SIZE)
                 keyStreams.RemoveFirst();
 
-            var timeLong = DateTime.Now.ToString("yyyyMMddHHmmssfff").ToLong();
+            var timeLong = Environment.TickCount;
+            // var timeLong = DateTime.Now.ToString("yyyyMMddHHmmssfff").ToLong();
 
             if (active)
             {
@@ -228,8 +239,33 @@ namespace Components
                 keyStreams.Clear();
             }
             // Debug.WriteLine($"Keystream size: {keyStreams.Count}, Contents: [{string.Join(",", keyStreams)}]");
+            
+            /* TODO: Remove this Hotfix to over-come wrong invocation of hot key event.
+             * Issue: Wrong invocation of hot key events or wrong triggers based on holding SuperKeys.
+             * Produce: Type text, press a navigation key along with Ctrl modifier eg: Ctrl + Left then
+             *          quickly press tilde (~) which would cause hot key event to be invoked without
+             *          pressing the complete combination.
+             * Reason: Occurs due to fast insertion of Keys in keyStreams and have very less time to
+             *         remove them from the streams based on CLEAR_KEY_TIME_OFFSET.
+             * Current Fix: Let's just clear the keyStream whenever one of these navigation keys defined
+             *              in NavigationKeys list is pressed.
+             */
+            if (observeKeyUpsAndRemoveThem)
+            {
+                if (e.KeyMouseEventType == MacroEventType.KeyUp || key == hotKey)
+                    keyStreams.Clear();
+                else if (e.KeyMouseEventType == MacroEventType.KeyDown)
+                    observeKeyUpsAndRemoveThem = false;
+            }
+            if (NavigationKeys.Contains(key))
+            {
+                observeKeyUpsAndRemoveThem = true;
+                keyStreams.Clear();
+            }
         }
 
+        private bool observeKeyUpsAndRemoveThem = false;
+        
         private void KeyboardWatcher_OnKeyboardInput(object sender, MacroEvent e)
         {
             var keyEvent = (KeyEventArgs) e.EventArgs;
