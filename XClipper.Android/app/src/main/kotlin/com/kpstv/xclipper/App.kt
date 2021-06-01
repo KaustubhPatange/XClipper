@@ -25,7 +25,7 @@ object App {
     var APP_MAX_ITEM = FB_MIN_ITEM_STORAGE
 
     var CLIP_DATA: String? = null
-    var LOCAL_MAX_ITEM_STORAGE = 80
+    const val LOCAL_MAX_ITEM_STORAGE = 160
 
     var appList: List<AppPkg> = listOf()
     var blackListedApps: Set<String>? = null

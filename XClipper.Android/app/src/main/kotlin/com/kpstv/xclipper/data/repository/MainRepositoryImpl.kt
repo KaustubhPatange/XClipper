@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.paging.PagedList
 import androidx.paging.toLiveData
+import androidx.sqlite.db.SupportSQLiteQuery
 import com.kpstv.xclipper.App.LOCAL_MAX_ITEM_STORAGE
 import com.kpstv.xclipper.App.MAX_CHARACTER_TO_STORE
 import com.kpstv.xclipper.data.localized.dao.ClipDataDao
@@ -25,6 +26,8 @@ class MainRepositoryImpl @Inject constructor(
     private val TAG = javaClass.simpleName
 
     override fun getDataSource(wildcard: String): LiveData<PagedList<Clip>> = clipDao.getDataSource("%$wildcard%").toLiveData(10)
+
+    override fun custom(query: SupportSQLiteQuery): List<Clip> = clipDao.custom(query)
 
     private suspend fun saveClip(clip: Clip?): Boolean {
         if (clip == null) return false
@@ -127,11 +130,7 @@ class MainRepositoryImpl @Inject constructor(
         return clipDao.getAllLiveData()
     }
 
-    override suspend fun getAllData(): List<Clip>? {
-        return clipDao.getAllData()
-    }
-
-    override suspend fun getData(data: String): Clip? = clipDao.getAllData()?.firstOrNull { it.data == data }
+    override suspend fun getData(data: String): Clip? = clipDao.getData(data)
 
     override suspend fun processClipAndSave(clip: Clip?): Boolean {
         if (clip == null) return false

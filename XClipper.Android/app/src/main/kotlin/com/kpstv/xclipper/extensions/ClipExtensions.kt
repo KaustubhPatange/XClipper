@@ -34,6 +34,7 @@ fun List<Clip>.cloneToEntries(): List<ClipEntry> {
  * An extension function which will auto-generate "timeString" property
  * in all of the clip items.
  */
+@Deprecated("The solution is handled in adapter itself.")
 fun List<Clip>.cloneForAdapter(): List<Clip> {
     this.forEach {
         Clip.autoFill(it)

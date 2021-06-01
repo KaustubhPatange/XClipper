@@ -47,6 +47,7 @@ import com.kpstv.xclipper.ui.fragments.sheets.MoreBottomSheet
 import com.kpstv.xclipper.extensions.recyclerview.RecyclerViewScrollHelper
 import com.kpstv.xclipper.ui.helpers.SyncDialogHelper
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
+import com.zhuinden.livedatacombinetuplekt.combineTuple
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_home.*
@@ -77,7 +78,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
     }
 
     override val forceBackPress: Boolean
-        get() = mainViewModel.stateManager.isMultiSelectionStateActive() || searchView?.isSearchOpen == true
+        get() = mainViewModel.stateManager.isMultiSelectionStateActive() || searchView?.isSearchOpen == true || mainViewModel.searchManager.anyFilterApplied()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -115,6 +116,10 @@ class Home : ValueFragment(R.layout.fragment_home) {
                 return true
             }
             searchView?.onBackPressed() == true -> return true
+            mainViewModel.searchManager.anyFilterApplied() -> {
+                mainViewModel.searchManager.clearAll()
+                return true
+            }
         }
         return super.onBackPressed()
     }
@@ -142,7 +147,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
                 layout_empty_parent.show()
             else
                 layout_empty_parent.collapse()
-            if (clips != null) adapter.submitList(clips.cloneForAdapter())
+            if (clips != null) adapter.submitList(clips)
             mainViewModel.stateManager.clearSelectedItem()
         }
         mainViewModel.stateManager.toolbarState.observe(viewLifecycleOwner) { state ->
@@ -167,10 +172,11 @@ class Home : ValueFragment(R.layout.fragment_home) {
             if (mainViewModel.stateManager.isMultiSelectionStateActive() && clips?.isEmpty() == true)
                 mainViewModel.stateManager.setToolbarState(ToolbarState.NormalViewState)
         }
-        mainViewModel.searchManager.tagFilters.observe(viewLifecycleOwner) {
-            if (it == null) return@observe
-            updateTagFilters(it)
-        }
+        combineTuple(mainViewModel.searchManager.searchFilters, mainViewModel.searchManager.tagFilters)
+            .observe(viewLifecycleOwner) { (searchFilters: ArrayList<String>?, tagFilters: ArrayList<Tag>?) ->
+                if (searchFilters == null || tagFilters == null) return@observe
+                updateSearchAndTagFilters(searchFilters, tagFilters)
+            }
     }
 
     private fun setRecyclerView() {
@@ -313,16 +319,6 @@ class Home : ValueFragment(R.layout.fragment_home) {
     private fun setSearchViewListener() {
         searchView.setOnQueryTextListener(
             onSubmit = { query ->
-                ci_chip_group.addView(
-                    Chip(requireContext()).apply {
-                        text = query
-                        isCloseIconVisible = true
-                        setOnCloseIconClickListener { chip ->
-                            ci_chip_group.removeView(chip)
-                            mainViewModel.searchManager.addOrRemoveSearchFilter(query)
-                        }
-                    }
-                )
                 searchView.onBackPressed()
                 mainViewModel.searchManager.clearSearch()
                 mainViewModel.searchManager.addOrRemoveSearchFilter(query)
@@ -339,8 +335,20 @@ class Home : ValueFragment(R.layout.fragment_home) {
         }
     }
 
-    private fun updateTagFilters(tags: List<Tag>) {
+    private fun updateSearchAndTagFilters(searches: List<String>, tags: List<Tag>) {
         ci_chip_group.removeAllViews()
+        searches.forEach { query ->
+            ci_chip_group.addView(
+                Chip(requireContext()).apply {
+                    text = query
+                    isCloseIconVisible = true
+                    setOnCloseIconClickListener { chip ->
+                        ci_chip_group.removeView(chip)
+                        mainViewModel.searchManager.addOrRemoveSearchFilter(query)
+                    }
+                }
+            )
+        }
         for (tag in tags) {
             ci_chip_group.addView(
                 Chip(requireContext()).apply {

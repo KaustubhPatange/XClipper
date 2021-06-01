@@ -2,6 +2,7 @@ package com.kpstv.xclipper.data.repository
 
 import androidx.lifecycle.LiveData
 import androidx.paging.PagedList
+import androidx.sqlite.db.SupportSQLiteQuery
 import com.kpstv.xclipper.ui.helpers.NotificationHelper
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.extensions.enumerations.FilterType
@@ -50,7 +51,6 @@ interface MainRepository {
     suspend fun updateRepository(data: String?, toFirebase:Boolean = true): Boolean
     suspend fun updateRepository(clip: Clip, toFirebase:Boolean = true): Boolean
 
-    suspend fun getAllData(): List<Clip>?
     suspend fun getData(data: String): Clip?
 
     /**
@@ -71,4 +71,5 @@ interface MainRepository {
     suspend fun syncDataFromRemote(): Boolean
 
     fun getAllLiveClip(): LiveData<List<Clip>>
+    fun custom(query: SupportSQLiteQuery): List<Clip>
 }

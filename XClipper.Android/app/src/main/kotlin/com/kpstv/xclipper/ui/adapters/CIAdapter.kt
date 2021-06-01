@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.flexbox.FlexboxLayout
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.R
+import com.kpstv.xclipper.data.converters.DateFormatConverter
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.extensions.utils.ThemeUtils.Companion.CARD_CLICK_COLOR
@@ -61,7 +62,7 @@ class CIAdapter(
         if (App.LoadImageMarkdownText)
             renderImageMarkdown(holder, clip.data, position)
 
-        holder.itemView.ci_timeText.text = clip.timeString
+        holder.itemView.ci_timeText.text = DateFormatConverter.getFormattedDate(clip.time)
 
         setPinMovements(clip, holder)
 

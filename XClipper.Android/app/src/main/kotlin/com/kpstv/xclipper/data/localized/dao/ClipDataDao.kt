@@ -3,7 +3,10 @@ package com.kpstv.xclipper.data.localized.dao
 import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
 import androidx.room.*
+import androidx.sqlite.db.SimpleSQLiteQuery
+import androidx.sqlite.db.SupportSQLiteQuery
 import com.kpstv.xclipper.data.model.Clip
+import com.kpstv.xclipper.data.model.Tag
 import kotlinx.coroutines.flow.Flow
 import java.util.*
 
@@ -60,4 +63,30 @@ interface ClipDataDao {
      *  so we've to apply descending order filter */
     @Query("select * from table_clip where data like :wildcard order by isPinned desc, time desc")
     fun getDataSource(wildcard: String): DataSource.Factory<Int, Clip>
+
+    @RawQuery(observedEntities = [Clip::class])
+    fun custom(query: SupportSQLiteQuery): List<Clip>
+
+    companion object {
+        fun createQuery(searchFilter: ArrayList<String>?, tagFilter: ArrayList<Tag>?, searchText: String?): SimpleSQLiteQuery {
+            val builder = StringBuilder("select * from table_clip")
+            val params = mutableListOf<Any>()
+            if (searchText?.isNotEmpty() == true || searchFilter?.size ?: 0 > 0 || tagFilter?.size ?: 0 > 0) builder.append(" where ")
+            if (searchText != null && searchText.isNotEmpty()) {
+                params.add("%$searchText%")
+                builder.append("data like ? and ")
+            }
+            searchFilter?.forEach { filter ->
+                params.add("%$filter%")
+                builder.append("data like ? and ")
+            }
+            tagFilter?.map { it.name }?.forEach { filter ->
+                params.add("%\"$filter\":[%")
+                builder.append("tags like ? and ")
+            }
+            val query = builder.toString().trimEnd()
+            val formatted = if (query.endsWith("and")) query.removeSuffix("and") else query
+            return SimpleSQLiteQuery("$formatted order by isPinned desc, time desc", params.toTypedArray())
+        }
+    }
 }

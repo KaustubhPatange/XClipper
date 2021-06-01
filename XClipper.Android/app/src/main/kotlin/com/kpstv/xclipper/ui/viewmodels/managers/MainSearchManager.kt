@@ -34,6 +34,13 @@ class MainSearchManager @Inject constructor() {
         _searchArrayFilter.postValue(_searchArray)
     }
 
+    fun clearAllSearchFilter() {
+        if (_searchArray.isNotEmpty()) {
+            _searchArray.clear()
+            _searchArrayFilter.postValue(_searchArray)
+        }
+    }
+
     fun existTagFilter(tag: Tag): Boolean {
         return _tagArray.any { it.name == tag.name }
     }
@@ -50,12 +57,27 @@ class MainSearchManager @Inject constructor() {
         _tagArrayFilter.postValue(_tagArray)
     }
 
+    fun clearAllTagFilter() {
+        if (_tagArray.isNotEmpty()) {
+            _tagArray.clear()
+            _tagArrayFilter.postValue(_tagArray)
+        }
+    }
+
     /**
      * Determines if any search filter is applied.
      */
     fun anyFilterApplied() =
         _searchArray.isNotEmpty() || _searchString.value?.isNotEmpty() == true || _tagArray.isNotEmpty()
 
-    fun clearSearch() = _searchString.postValue("")
+    fun clearSearch() {
+        if (_searchString.value != "") _searchString.postValue("")
+    }
+
+    fun clearAll() {
+        clearSearch()
+        clearAllSearchFilter()
+        clearAllTagFilter()
+    }
     private val TAG = javaClass.simpleName
 }

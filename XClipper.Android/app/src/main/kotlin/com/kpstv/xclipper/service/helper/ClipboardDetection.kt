@@ -6,7 +6,6 @@ import android.widget.Toast
 import androidx.annotation.VisibleForTesting
 import com.kpstv.hvlog.HVLog
 import com.kpstv.xclipper.extensions.StripArrayList
-import com.kpstv.xclipper.service.helper.ClipboardDetection.AEvent.Companion.copyActions
 import com.kpstv.xclipper.service.helper.ClipboardDetection.AEvent.Companion.copyKeyWords
 import java.util.*
 
@@ -145,9 +144,9 @@ class ClipboardDetection(
         var SourceActions: List<AccessibilityNodeInfo.AccessibilityAction> = emptyList(),
     ) {
         companion object {
-            internal val copyActions = listOf<AccessibilityNodeInfo.AccessibilityAction>(
+            /*internal val copyActions = listOf<AccessibilityNodeInfo.AccessibilityAction>(
                 AccessibilityNodeInfo.AccessibilityAction.ACTION_LONG_CLICK,
-            )
+            )*/
             internal val copyKeyWords = "(copied)|(Copied)|(clipboard)".toRegex()
 
             fun from(event: AccessibilityEvent): AEvent {

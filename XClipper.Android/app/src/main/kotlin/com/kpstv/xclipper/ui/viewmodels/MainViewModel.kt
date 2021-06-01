@@ -1,9 +1,11 @@
 package com.kpstv.xclipper.ui.viewmodels
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.*
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.data.localized.FBOptions
+import com.kpstv.xclipper.data.localized.dao.ClipDataDao
 import com.kpstv.xclipper.data.localized.dao.TagDao
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.Tag
@@ -29,6 +31,8 @@ import com.kpstv.xclipper.ui.viewmodels.managers.MainSearchManager
 import com.kpstv.xclipper.ui.viewmodels.managers.MainStateManager
 import com.zhuinden.livedatacombinetuplekt.combineTuple
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -51,6 +55,8 @@ class MainViewModel @Inject constructor(
     private val TAG = javaClass.simpleName
 
     private val _clipLiveData = MutableLiveData<List<Clip>>()
+
+    private val _newClipLiveData = MutableLiveData<List<Clip>>()
 
     private val _tagMapLiveData = MutableLiveData<List<TagMap>>()
 
@@ -207,18 +213,34 @@ class MainViewModel @Inject constructor(
             _tagLiveData.postValue(it)
         }
 
-        combineTuple(
+        /*combineTuple(
             _clipLiveData,
             searchManager.searchString,
             searchManager.tagFilters,
             searchManager.searchFilters,
         ).observeForever { (clipLiveData: List<Clip>?, searchString: String?, tagFilters: List<Tag>?, searchFilters: List<String>?) ->
             makeMySource(clipLiveData, searchFilters, tagFilters, searchString)
+        }*/
+
+        combineTuple(
+            searchManager.searchString,
+            searchManager.tagFilters,
+            searchManager.searchFilters
+        ).observeForever { (searchString: String?, tagFilters: List<Tag>?, searchFilters: List<String>?) ->
+            val filter = ClipDataDao.createQuery(searchFilters, tagFilters, searchString)
+            CoroutineScope(viewModelScope.coroutineContext + Dispatchers.IO).launch {
+                val list = mainRepository.custom(filter)
+                mutableClipLiveData.postValue(list)
+            }
         }
 
         /** Methods optimized to invoke only once regardless of calling from multiple sites. */
         firebaseUtils.observeDatabaseInitialization()
         clipboardProvider.observeClipboardChange()
+
+        _newClipLiveData.observeForever {
+            Log.e("MainViewModel", "Size: ${it?.size}")
+        }
     }
 
     private fun makeMySource(
