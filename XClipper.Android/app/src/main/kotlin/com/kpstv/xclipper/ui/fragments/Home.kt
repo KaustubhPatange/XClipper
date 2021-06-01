@@ -18,7 +18,6 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
 import com.kpstv.navigation.AnimationDefinition
 import com.kpstv.navigation.FragmentNavigator
-import com.kpstv.navigation.Navigator
 import com.kpstv.navigation.ValueFragment
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.App.runAutoSync

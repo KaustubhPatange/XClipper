@@ -46,6 +46,7 @@ import com.kpstv.xclipper.databinding.DialogProgressViewBinding
 import com.kpstv.xclipper.extensions.SimpleFunction
 import com.kpstv.xclipper.extensions.layoutInflater
 import com.kpstv.xclipper.service.ClipboardAccessibilityService
+import com.kpstv.xclipper.ui.dialogs.FeatureDialog
 import com.kpstv.xclipper.ui.helpers.AuthenticationHelper
 import es.dmoral.toasty.Toasty
 import java.io.InputStream
@@ -374,6 +375,20 @@ class Utils {
             } else {
                 m.vibrate(50)
             }
+        }
+
+        fun showSearchFeatureDialog(context: Context, preferenceProvider: PreferenceProvider): Boolean {
+            val key = "to_show_search_feature"
+            if (preferenceProvider.getBooleanKey(key, true)) {
+                FeatureDialog(context)
+                    .setResourceId(R.drawable.feature_suggestion_search)
+                    .setTitle(R.string.search_title)
+                    .setSubtitle(R.string.search_subtitle)
+                    .show()
+                preferenceProvider.putBooleanKey(key, false)
+                return true
+            }
+            return false
         }
     }
 }

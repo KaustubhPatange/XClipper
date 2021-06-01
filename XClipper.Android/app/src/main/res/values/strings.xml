@@ -191,4 +191,7 @@
     <string name="open_accessibility">Opening accessibility</string>
     <string name="accessibility_service_disable">Disable Service?</string>
     <string name="accessibility_disable_text">This will stop the clipboard monitoring functionality.</string>
+    <string name="got_it">OK, I got it</string>
+    <string name="search_title">Search suggestion</string>
+    <string name="search_subtitle">XClipper can show you suggestions based on the last word from a search query.</string>
 </resources>

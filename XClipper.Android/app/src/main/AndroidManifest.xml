@@ -48,6 +48,10 @@
             android:launchMode="singleInstance"
             android:theme="@style/Theme.AppCompat.Translucent" />
         <activity
+            android:name=".ui.dialogs.FeatureDialog$DialogActivity"
+            android:launchMode="singleInstance"
+            android:theme="@style/Theme.AppCompat.Translucent"/>
+        <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="portrait"
             tools:replace="screenOrientation" />

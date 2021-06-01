@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -23,8 +22,10 @@ import com.kpstv.xclipper.App
 import com.kpstv.xclipper.App.ACTION_INSERT_TEXT
 import com.kpstv.xclipper.App.ACTION_VIEW_CLOSE
 import com.kpstv.xclipper.App.EXTRA_SERVICE_TEXT
+import com.kpstv.xclipper.App.EXTRA_SERVICE_TEXT_LENGTH
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.Clip
+import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.databinding.BubbleViewBinding
 import com.kpstv.xclipper.databinding.ItemBubbleServiceBinding
@@ -32,6 +33,8 @@ import com.kpstv.xclipper.extensions.hide
 import com.kpstv.xclipper.extensions.layoutInflater
 import com.kpstv.xclipper.extensions.logger
 import com.kpstv.xclipper.extensions.show
+import com.kpstv.xclipper.extensions.utils.Utils
+import com.kpstv.xclipper.extensions.utils.Utils.Companion.showSearchFeatureDialog
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -40,6 +43,8 @@ class BubbleService : FloatingBubbleService() {
 
     @Inject
     lateinit var repository: MainRepository
+    @Inject
+    lateinit var preferenceProvider: PreferenceProvider
 
     private val TAG = javaClass.simpleName
     private lateinit var adapter: PageClipAdapter
@@ -55,7 +60,8 @@ class BubbleService : FloatingBubbleService() {
         /** Setting adapter and onClick to send PASTE event. */
         adapter = PageClipAdapter { text ->
             val sendIntent = Intent(ACTION_INSERT_TEXT).apply {
-                putExtra(EXTRA_SERVICE_TEXT, text.removeRange(0, currentWord.length))
+                putExtra(EXTRA_SERVICE_TEXT_LENGTH, currentWord.length)
+                putExtra(EXTRA_SERVICE_TEXT, text/*.removeRange(0, currentWord.length)*/)
             }
             LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(sendIntent)
             setState(false)
@@ -119,7 +125,11 @@ class BubbleService : FloatingBubbleService() {
     override fun getTouchListener(): FloatingBubbleTouchListener {
         return object : DefaultFloatingBubbleTouchListener() {
             override fun onTap(expanded: Boolean) {
-                if (expanded) subscribeSuggestions()
+                if (!showSearchFeatureDialog(context, preferenceProvider)) {
+                    if (expanded) subscribeSuggestions()
+                } else {
+                    setState(false)
+                }
             }
             override fun onRemove() {
                 stopSelf()

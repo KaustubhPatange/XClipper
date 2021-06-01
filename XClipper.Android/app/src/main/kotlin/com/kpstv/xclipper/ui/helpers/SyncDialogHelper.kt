@@ -49,7 +49,7 @@ class SyncDialogHelper(
         private const val SYNC_DATE_STRING = "sync_date_string"
 
         fun showDialog(context: Context) = with(context) {
-            CustomLottieDialog(this)
+            CustomLottieDialog(context)
                 .setLottieView(R.raw.connection)
                 .setLoop(false)
                 .setSpeed(3.5f)

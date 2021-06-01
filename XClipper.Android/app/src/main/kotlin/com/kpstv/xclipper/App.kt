@@ -116,6 +116,7 @@ object App {
     const val EXTRA_NODE_CURSOR = "com.kpstv.xclipper.extra_node_cursor"
     const val EXTRA_NODE_TEXT = "com.kpstv.xclipper.extra_node_text"
     const val EXTRA_SERVICE_TEXT = "com.kpstv.xclipper.service_text"
+    const val EXTRA_SERVICE_TEXT_LENGTH = "com.kpstv.xclipper.service_text_word_length"
     const val EXTRA_FRAGMENT_ARG_KEY = ":settings:fragment_args_key"
     const val EXTRA_SHOW_FRAGMENT_ARGUMENTS = ":settings:show_fragment_args"
 

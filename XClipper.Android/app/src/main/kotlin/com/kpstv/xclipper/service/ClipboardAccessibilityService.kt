@@ -2,10 +2,10 @@ package com.kpstv.xclipper.service
 
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityServiceInfo
-import android.app.Notification
 import android.content.*
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.os.Build
+import android.os.Bundle
 import android.os.PowerManager
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
@@ -22,6 +22,7 @@ import com.kpstv.xclipper.App.ACTION_VIEW_CLOSE
 import com.kpstv.xclipper.App.EXTRA_NODE_CURSOR
 import com.kpstv.xclipper.App.EXTRA_NODE_TEXT
 import com.kpstv.xclipper.App.EXTRA_SERVICE_TEXT
+import com.kpstv.xclipper.App.EXTRA_SERVICE_TEXT_LENGTH
 import com.kpstv.xclipper.App.showSuggestion
 import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.extensions.logger
@@ -223,7 +224,6 @@ class ClipboardAccessibilityService : AccessibilityService() {
 
     private fun actionInsertText(context: Context, intent: Intent) {
         if (intent.hasExtra(EXTRA_SERVICE_TEXT)) {
-            HVLog.d("Received ${::EXTRA_SERVICE_TEXT.name}")
 
             val pasteData = intent.getStringExtra(EXTRA_SERVICE_TEXT)
 
@@ -234,20 +234,24 @@ class ClipboardAccessibilityService : AccessibilityService() {
             with(nodeInfo!!) {
                 refresh()
                 clipboardProvider.ignoreChange {
+                    val wordLength = intent.getIntExtra(EXTRA_SERVICE_TEXT_LENGTH, textSelectionEnd)
 
-                    /** Saving current clipboard */
-                    val currentClipText = clipboardProvider.getCurrentClip().value;
+                    HVLog.d("Received ${::EXTRA_SERVICE_TEXT.name}, WordLength: ${wordLength}, Text: $pasteData")
 
-                    /** Setting data to be paste */
+                    val currentClipText = clipboardProvider.getCurrentClip().value
+
                     clipboardProvider.setClipboard(ClipData.newPlainText("copied", pasteData))
 
-                    /** Make an actual paste action */
+                    if (wordLength != 0 && textSelectionEnd != -1) {
+                        performAction(AccessibilityNodeInfo.ACTION_SET_SELECTION, Bundle().apply {
+                            putInt(AccessibilityNodeInfo.ACTION_ARGUMENT_SELECTION_START_INT, textSelectionEnd - wordLength)
+                            putInt(AccessibilityNodeInfo.ACTION_ARGUMENT_SELECTION_END_INT, textSelectionEnd)
+                        })
+                    }
+
                     performAction(AccessibilityNodeInfo.ACTION_PASTE)
 
-                    /** Restore previous clipboard */
                     clipboardProvider.setClipboard(ClipData.newPlainText(null, currentClipText))
-
-                    HVLog.d("Pasted into current clip")
                 }
             }
         }
