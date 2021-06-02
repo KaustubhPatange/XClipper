@@ -2,6 +2,7 @@ package com.kpstv.xclipper.data.repository
 
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagedList
 import androidx.paging.toLiveData
 import androidx.sqlite.db.SupportSQLiteQuery
@@ -9,13 +10,14 @@ import com.kpstv.xclipper.App.LOCAL_MAX_ITEM_STORAGE
 import com.kpstv.xclipper.App.MAX_CHARACTER_TO_STORE
 import com.kpstv.xclipper.data.localized.dao.ClipDataDao
 import com.kpstv.xclipper.data.model.Clip
+import com.kpstv.xclipper.data.model.PartialClipTagMap
+import com.kpstv.xclipper.data.model.TagMap
 import com.kpstv.xclipper.data.provider.FirebaseProvider
-import com.kpstv.xclipper.extensions.Coroutines
+import com.kpstv.xclipper.extensions.ClipTagMap
 import com.kpstv.xclipper.extensions.clone
 import com.kpstv.xclipper.extensions.enumerations.FilterType
-import com.kpstv.xclipper.extensions.mainThread
-import com.kpstv.xclipper.ui.helpers.NotificationHelper
-import kotlinx.coroutines.flow.Flow
+import com.kpstv.xclipper.extensions.keys
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 class MainRepositoryImpl @Inject constructor(
@@ -27,7 +29,7 @@ class MainRepositoryImpl @Inject constructor(
 
     override fun getDataSource(wildcard: String): LiveData<PagedList<Clip>> = clipDao.getDataSource("%$wildcard%").toLiveData(10)
 
-    override fun custom(query: SupportSQLiteQuery): List<Clip> = clipDao.custom(query)
+    override fun createQuery(query: SupportSQLiteQuery): List<Clip> = clipDao.getData(query)
 
     private suspend fun saveClip(clip: Clip?): Boolean {
         if (clip == null) return false
@@ -158,5 +160,14 @@ class MainRepositoryImpl @Inject constructor(
             firebaseProvider.uploadData(finalClip)
 
         return result
+    }
+
+    override fun getAllTags(): Flow<List<TagMap>> {
+        return clipDao.getAllTags().transform { value ->
+            val tags = value.flatMap { partialTagMap: PartialClipTagMap -> partialTagMap.items.distinctBy { it.key } }
+                .groupBy { it.key }
+                .map { TagMap(it.key, it.value.size) }
+            emit(tags)
+        }
     }
 }

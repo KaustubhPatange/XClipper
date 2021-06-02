@@ -1,8 +1,8 @@
 package com.kpstv.xclipper.data.localized.dao
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.kpstv.xclipper.data.model.Tag
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TagDao {
@@ -30,5 +30,5 @@ interface TagDao {
     suspend fun getAllData(): List<Tag>
 
     @Query("select * from table_tag order by name")
-    fun getAllLiveData(): LiveData<List<Tag>>
+    fun getAllLiveData(): Flow<List<Tag>>
 }

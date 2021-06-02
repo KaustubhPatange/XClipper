@@ -1,7 +1,6 @@
 package com.kpstv.xclipper.ui.viewmodels
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.*
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.data.localized.FBOptions
@@ -17,7 +16,6 @@ import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.extensions.Coroutines
 import com.kpstv.xclipper.extensions.enumerations.FilterType
-import com.kpstv.xclipper.extensions.keys
 import com.kpstv.xclipper.extensions.listeners.RepositoryListener
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
 import com.kpstv.xclipper.extensions.listeners.ResponseResult
@@ -33,10 +31,10 @@ import com.zhuinden.livedatacombinetuplekt.combineTuple
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
@@ -54,27 +52,18 @@ class MainViewModel @Inject constructor(
 ) : ViewModel() {
     private val TAG = javaClass.simpleName
 
-    private val _clipLiveData = MutableLiveData<List<Clip>>()
-
-    private val _newClipLiveData = MutableLiveData<List<Clip>>()
-
-    private val _tagMapLiveData = MutableLiveData<List<TagMap>>()
-
-    private val _tagLiveData = MutableLiveData<List<Tag>>()
+    val viewModelIOScope = viewModelScope.coroutineContext + Dispatchers.IO
 
     val currentClip: LiveData<String>
         get() = clipboardProvider.getCurrentClip()
 
-    private val mutableClipLiveData = MutableLiveData<List<Clip>>()
+    private val mutableClipLiveData = MutableStateFlow<List<Clip>>(emptyList())
 
-    val clipLiveData: LiveData<List<Clip>>
-        get() = mutableClipLiveData
+    val clipLiveData: LiveData<List<Clip>> = mutableClipLiveData.asLiveData(viewModelIOScope)
 
-    val tagCountData: LiveData<List<TagMap>>
-        get() = _tagMapLiveData
+    val tagCountData: LiveData<List<TagMap>> = mainRepository.getAllTags().asLiveData(viewModelIOScope)
 
-    val tagLiveData: LiveData<List<Tag>>
-        get() = _tagLiveData
+    val tagLiveData: LiveData<List<Tag>> = tagRepository.getAllLiveData().asLiveData(viewModelIOScope)
 
     fun postToRepository(clip: Clip) {
         viewModelScope.launch { mainRepository.updateRepository(clip) }
@@ -192,92 +181,20 @@ class MainViewModel @Inject constructor(
     }
 
     init {
-        mainRepository.getAllLiveClip().observeForever { clips ->
-            _clipLiveData.postValue(clips)
-
-            val list = ArrayList<TagMap>()
-            clips.forEach { clip ->
-                clip.tags?.keys()?.forEach { tag ->
-                    val find = list.find { it.name == tag }
-                    if (find != null) {
-                        find.count++
-                    } else {
-                        list.add(TagMap(tag, 1))
-                    }
-                }
-            }
-            _tagMapLiveData.value = list
-        }
-
-        tagRepository.getAllLiveData().observeForever {
-            _tagLiveData.postValue(it)
-        }
-
-        /*combineTuple(
-            _clipLiveData,
-            searchManager.searchString,
-            searchManager.tagFilters,
-            searchManager.searchFilters,
-        ).observeForever { (clipLiveData: List<Clip>?, searchString: String?, tagFilters: List<Tag>?, searchFilters: List<String>?) ->
-            makeMySource(clipLiveData, searchFilters, tagFilters, searchString)
-        }*/
-
         combineTuple(
             searchManager.searchString,
             searchManager.tagFilters,
             searchManager.searchFilters
         ).observeForever { (searchString: String?, tagFilters: List<Tag>?, searchFilters: List<String>?) ->
             val filter = ClipDataDao.createQuery(searchFilters, tagFilters, searchString)
-            CoroutineScope(viewModelScope.coroutineContext + Dispatchers.IO).launch {
-                val list = mainRepository.custom(filter)
-                mutableClipLiveData.postValue(list)
+            CoroutineScope(viewModelIOScope).launch {
+                val list = mainRepository.createQuery(filter)
+                mutableClipLiveData.emit(list)
             }
         }
 
         /** Methods optimized to invoke only once regardless of calling from multiple sites. */
         firebaseUtils.observeDatabaseInitialization()
         clipboardProvider.observeClipboardChange()
-
-        _newClipLiveData.observeForever {
-            Log.e("MainViewModel", "Size: ${it?.size}")
-        }
-    }
-
-    private fun makeMySource(
-        mainList: List<Clip>?,
-        searchFilter: ArrayList<String>?,
-        tagFilter: ArrayList<Tag>?,
-        searchText: String?
-    ) {
-        if (mainList != null) {
-            val list = ArrayList<Clip>(mainList)
-
-            mainList.forEach { clip ->
-                searchFilter?.forEach inner@{ filter ->
-                    if (!clip.data.toLowerCase(Locale.getDefault()).contains(filter)) {
-                        list.remove(clip)
-                        return@inner
-                    }
-                }
-                tagFilter?.forEach inner@{ tag ->
-                    if (clip.tags?.keys().isNullOrEmpty() || clip.tags?.keys()
-                            ?.contains(tag.name) == false
-                    ) {
-                        list.remove(clip)
-                        return@inner
-                    }
-                }
-            }
-
-            if (!searchText.isNullOrBlank()) {
-                mutableClipLiveData.postValue(
-                    list.filter { clip ->
-                        clip.data.toLowerCase(Locale.getDefault()).contains(searchText)
-                    }
-                )
-
-            } else
-                mutableClipLiveData.postValue(list.toList())
-        }
     }
 }

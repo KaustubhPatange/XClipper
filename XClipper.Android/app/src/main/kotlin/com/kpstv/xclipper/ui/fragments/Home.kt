@@ -342,8 +342,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
                 Chip(requireContext()).apply {
                     text = query
                     isCloseIconVisible = true
-                    setOnCloseIconClickListener { chip ->
-                        ci_chip_group.removeView(chip)
+                    setOnCloseIconClickListener {
                         mainViewModel.searchManager.addOrRemoveSearchFilter(query)
                     }
                 }

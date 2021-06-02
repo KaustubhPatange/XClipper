@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
+import androidx.lifecycle.lifecycleScope
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
@@ -15,7 +16,6 @@ import com.kpstv.xclipper.App.DELAY_SPAN
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.DialogState
 import com.kpstv.xclipper.data.model.Tag
-import com.kpstv.xclipper.extensions.Coroutines
 import com.kpstv.xclipper.extensions.collapse
 import com.kpstv.xclipper.extensions.listeners.StatusListener
 import com.kpstv.xclipper.extensions.show
@@ -67,15 +67,8 @@ class TagDialog : AppCompatActivity() {
         btn_send.setOnClickListener {
             sendButton()
         }
-    }
 
-
-    override fun onPostCreate(savedInstanceState: Bundle?) {
-        super.onPostCreate(savedInstanceState)
-
-        /** A Timeout on binding creates a cool effect */
-
-        Coroutines.main {
+        lifecycleScope.launchWhenStarted {
             delay(DELAY_SPAN)
             bindUI()
             linearLayout1.minimumHeight = resources.getDimension(R.dimen.dimen170).toInt()

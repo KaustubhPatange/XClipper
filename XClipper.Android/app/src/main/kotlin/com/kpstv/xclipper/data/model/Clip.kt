@@ -1,5 +1,6 @@
 package com.kpstv.xclipper.data.model
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.JsonElement
@@ -92,6 +93,12 @@ data class ClipEntry(
         }
     }
 }
+
+data class PartialClipTagMap(
+    val id: Int,
+    @ColumnInfo(name = "tags")
+    val items: List<ClipTagMap> // make sure it's not empty when checked from query.
+)
 
 enum class ClipTag {
     PHONE, DATE, URL, EMAIL, MAP;

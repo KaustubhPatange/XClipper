@@ -5,6 +5,7 @@ import androidx.paging.PagedList
 import androidx.sqlite.db.SupportSQLiteQuery
 import com.kpstv.xclipper.ui.helpers.NotificationHelper
 import com.kpstv.xclipper.data.model.Clip
+import com.kpstv.xclipper.data.model.TagMap
 import com.kpstv.xclipper.extensions.enumerations.FilterType
 import com.kpstv.xclipper.extensions.listeners.RepositoryListener
 import com.kpstv.xclipper.extensions.listeners.StatusListener
@@ -71,5 +72,6 @@ interface MainRepository {
     suspend fun syncDataFromRemote(): Boolean
 
     fun getAllLiveClip(): LiveData<List<Clip>>
-    fun custom(query: SupportSQLiteQuery): List<Clip>
+    fun getAllTags(): Flow<List<TagMap>>
+    fun createQuery(query: SupportSQLiteQuery): List<Clip>
 }

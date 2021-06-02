@@ -8,6 +8,11 @@ import com.kpstv.xclipper.App.STAGGERED_SPAN_COUNT
 import com.kpstv.xclipper.data.localized.dao.TagDao
 import com.kpstv.xclipper.data.model.*
 import com.kpstv.xclipper.extensions.ClipTagMap
+import dagger.hilt.android.scopes.ViewModelScoped
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -76,11 +81,14 @@ class MainEditManager @Inject constructor(
         })
     }
     private val TAG = javaClass.simpleName
+
     init {
-        tagRepository.getAllLiveData().observeForever {
-            _tagFixedLiveData.postValue(it.filter { tag ->
-                ClipTag.fromValue(tag.name) == null
-            })
+        CoroutineScope(Dispatchers.IO).launch {
+            tagRepository.getAllLiveData().collect { data ->
+                _tagFixedLiveData.postValue(data.filter { tag ->
+                    ClipTag.fromValue(tag.name) == null
+                })
+            }
         }
     }
 }

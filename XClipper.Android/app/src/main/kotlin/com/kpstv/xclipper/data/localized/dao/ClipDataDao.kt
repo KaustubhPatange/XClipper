@@ -6,6 +6,7 @@ import androidx.room.*
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import com.kpstv.xclipper.data.model.Clip
+import com.kpstv.xclipper.data.model.PartialClipTagMap
 import com.kpstv.xclipper.data.model.Tag
 import kotlinx.coroutines.flow.Flow
 import java.util.*
@@ -64,8 +65,11 @@ interface ClipDataDao {
     @Query("select * from table_clip where data like :wildcard order by isPinned desc, time desc")
     fun getDataSource(wildcard: String): DataSource.Factory<Int, Clip>
 
+    @Query("select id, tags from table_clip where tags != '{}'")
+    fun getAllTags(): Flow<List<PartialClipTagMap>>
+
     @RawQuery(observedEntities = [Clip::class])
-    fun custom(query: SupportSQLiteQuery): List<Clip>
+    fun getData(query: SupportSQLiteQuery): List<Clip>
 
     companion object {
         fun createQuery(searchFilter: ArrayList<String>?, tagFilter: ArrayList<Tag>?, searchText: String?): SimpleSQLiteQuery {
