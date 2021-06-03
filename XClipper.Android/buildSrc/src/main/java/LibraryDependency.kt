@@ -36,12 +36,12 @@ private object LibraryVersion {
     const val GLIDE = "4.11.0"
     const val RECYCLERVIEW = "1.1.0"
     const val CWT = "0.1.7"
-    const val HILT_WORKMANAGER = "1.0.0-beta01"
+    const val HILT = "1.0.0"
     const val AUTO_BINDINGS = "1.1-beta02"
     const val REALTIME_EXTENSIONS = "0.1.3"
     const val LIVEDATA_COMBINE_UTIL = "1.2.0"
     const val CAOC = "2.3.0"
-    const val NAVIGATOR = "0.1-alpha21"
+    const val NAVIGATOR = "0.1-alpha22"
     const val NAVIGATOR_BOTTOM_NAVIGATION = "0.1-alpha15"
     const val NAVIGATOR_EXTENSIONS = "0.4"
 }
@@ -83,10 +83,10 @@ object LibraryDependency {
     const val FIREBASE_AUTH = "com.google.firebase:firebase-auth-ktx:${LibraryVersion.FIREBASE_AUTH}"
     const val PLAY_SERVICE_AUTH = "com.google.android.gms:play-services-auth:${LibraryVersion.PLAY_SERVICE_AUTH}"
 
-    const val HILT_WORK_MANAGER = "androidx.hilt:hilt-work:${LibraryVersion.HILT_WORKMANAGER}"
-    const val HILT_WORK_MANAGER_COMPILER = "androidx.hilt:hilt-compiler:${LibraryVersion.HILT_WORKMANAGER}"
+    const val HILT_WORK_MANAGER = "androidx.hilt:hilt-work:${LibraryVersion.HILT}"
+    const val HILT_WORK_MANAGER_COMPILER = "androidx.hilt:hilt-compiler:${LibraryVersion.HILT}"
     const val HILT_ANDROID = "com.google.dagger:hilt-android:${CoreVersion.HILT}"
-    const val HILT_COMPILER = "com.google.dagger:hilt-compiler:${CoreVersion.HILT}"
+    const val HILT_COMPILER = "com.google.dagger:hilt-android-compiler:${CoreVersion.HILT}"
 
     const val SIMPLE_SEARCH_VIEW = "com.github.Ferfalk:SimpleSearchView:${LibraryVersion.SIMPLE_SEARCH_VIEW}"
     const val ANDROIDX_PREFERENCES = "androidx.preference:preference:${LibraryVersion.PREFERENCES}"

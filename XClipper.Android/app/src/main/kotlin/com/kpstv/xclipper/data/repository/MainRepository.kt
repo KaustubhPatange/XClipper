@@ -62,14 +62,11 @@ interface MainRepository {
     suspend fun checkForDuplicate(data: String?): Boolean
     suspend fun checkForDuplicate(data: String?, id: Int): Boolean
 
-    /**
-     * This function will check if there is any data depending on this tag.
-     */
-    suspend fun checkForDependent(tagName: String): Boolean
-
     fun getDataSource(wildcard: String = "%"): LiveData<PagedList<Clip>>
 
     suspend fun syncDataFromRemote(): Boolean
+
+    fun getTotalCount(): LiveData<Int>
 
     fun getAllLiveClip(): LiveData<List<Clip>>
     fun getAllTags(): Flow<List<TagMap>>

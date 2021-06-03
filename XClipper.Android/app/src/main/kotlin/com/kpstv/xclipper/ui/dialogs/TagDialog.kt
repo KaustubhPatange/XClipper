@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.kpstv.xclipper.App.DELAY_SPAN
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.DialogState
@@ -141,13 +142,19 @@ class TagDialog : AppCompatActivity() {
             dialogState = mainViewModel.stateManager.dialogState,
             tagFilter = mainViewModel.searchManager.tagFilters,
             tagMapData = mainViewModel.tagCountData,
-            onCloseClick = { tag, _ ->
-                mainViewModel.deleteFromTagRepository(
-                    tag, StatusListener(
-                        onComplete = { },
-                        onError = Toasty.error(this, getString(R.string.error_tag_dependent))::show
-                    )
-                )
+            onCloseClick = { tag, count, _ ->
+                if (count > 0) {
+                    MaterialAlertDialogBuilder(this)
+                        .setTitle(getString(R.string.tag_delete_title, tag.name))
+                        .setMessage(getString(R.string.tag_delete_message, count))
+                        .setPositiveButton(R.string.ok) { _, _ ->
+                            mainViewModel.deleteFromTagRepository(tag)
+                        }
+                        .setNegativeButton(R.string.cancel, null)
+                        .show()
+                } else {
+                    mainViewModel.deleteFromTagRepository(tag)
+                }
             },
             onClick = { tag, _ ->
                 if (mainViewModel.stateManager.isEditDialogStateActive()) return@TagAdapter

@@ -124,14 +124,9 @@ class MainViewModel @Inject constructor(
         Coroutines.io { tagRepository.insertTag(tag) }
     }
 
-    fun deleteFromTagRepository(tag: Tag, statusListener: StatusListener) {
+    fun deleteFromTagRepository(tag: Tag) {
         viewModelScope.launch {
-            if (mainRepository.checkForDependent(tag.name)) {
-                statusListener.onError()
-            } else {
-                tagRepository.delete(tag)
-                statusListener.onComplete()
-            }
+            tagRepository.delete(tag)
         }
     }
 
@@ -182,10 +177,11 @@ class MainViewModel @Inject constructor(
 
     init {
         combineTuple(
+            mainRepository.getTotalCount(),
             searchManager.searchString,
             searchManager.tagFilters,
             searchManager.searchFilters
-        ).observeForever { (searchString: String?, tagFilters: List<Tag>?, searchFilters: List<String>?) ->
+        ).observeForever { (_: Int?, searchString: String?, tagFilters: List<Tag>?, searchFilters: List<String>?) ->
             val filter = ClipDataDao.createQuery(searchFilters, tagFilters, searchString)
             CoroutineScope(viewModelIOScope).launch {
                 val list = mainRepository.createQuery(filter)

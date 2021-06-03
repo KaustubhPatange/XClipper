@@ -43,17 +43,18 @@ class Settings : ValueFragment(R.layout.activity_settings), FragmentNavigator.Tr
         super.onViewCreated(view, savedInstanceState)
         navigator = Navigator.with(this, savedInstanceState)
             .setNavigator(FragmentNavigator::class)
-            .initialize(binding.settingsContainer)
+            .initialize(binding.settingsContainer, Destination.of(Screen.MAIN.clazz))
 
         setToolbar()
         viewModel.navigation.observe(viewLifecycleOwner, navigationObserver)
 
-        if (savedInstanceState == null) {
-            navigator.navigateTo(Screen.MAIN.clazz, FragmentNavigator.NavOptions(animation = AnimationDefinition.SlideInRight))
-        }
-
         if (hasKeyArgs<Args>()) {
             manageArguments()
+        }
+
+        childFragmentManager.addOnBackStackChangedListener call@{
+            val current = navigator.getCurrentFragment() ?: return@call
+            binding.toolbar.title = getString(Screen.getTitle(current::class))
         }
     }
 
@@ -84,16 +85,9 @@ class Settings : ValueFragment(R.layout.activity_settings), FragmentNavigator.Tr
             animation = AnimationDefinition.CircularReveal(
                 forFragment = LookFeelPreference::class,
                 fromTarget = viewRect
-            )
+            ),
+            historyOptions = HistoryOptions.SingleTopInstance
         )
-    }
-
-    override fun onBackPressed(): Boolean {
-        binding.toolbar.title = getString(Screen.MAIN.title)
-        if (navigator.canFinish()) {
-            return super.onBackPressed()
-        }
-        return true
     }
 
     enum class Screen(val clazz: KClass<out Fragment>, @StringRes val title: Int) {

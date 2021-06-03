@@ -29,6 +29,8 @@ class MainRepositoryImpl @Inject constructor(
 
     override fun getDataSource(wildcard: String): LiveData<PagedList<Clip>> = clipDao.getDataSource("%$wildcard%").toLiveData(10)
 
+    override fun getTotalCount(): LiveData<Int> = clipDao.getTotalCount()
+
     override fun createQuery(query: SupportSQLiteQuery): List<Clip> = clipDao.getData(query)
 
     private suspend fun saveClip(clip: Clip?): Boolean {
@@ -122,10 +124,6 @@ class MainRepositoryImpl @Inject constructor(
         if (data == null) return false
         val clip = clipDao.getData(data) ?: return false
         return clip.id != id
-    }
-
-    override suspend fun checkForDependent(tagName: String): Boolean {
-        return clipDao.getAllData()?.firstOrNull { it.tags?.contains(tagName) == true } != null
     }
 
     override fun getAllLiveClip(): LiveData<List<Clip>> {

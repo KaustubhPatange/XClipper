@@ -68,6 +68,9 @@ interface ClipDataDao {
     @Query("select id, tags from table_clip where tags != '{}'")
     fun getAllTags(): Flow<List<PartialClipTagMap>>
 
+    @Query("select count(id) from table_clip")
+    fun getTotalCount(): LiveData<Int>
+
     @RawQuery(observedEntities = [Clip::class])
     fun getData(query: SupportSQLiteQuery): List<Clip>
 

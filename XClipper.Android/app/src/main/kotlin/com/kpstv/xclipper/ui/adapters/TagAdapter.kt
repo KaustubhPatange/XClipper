@@ -21,7 +21,7 @@ class TagAdapter(
     private val dialogState: LiveData<DialogState>,
     private val tagFilter: LiveData<ArrayList<Tag>>,
     private val tagMapData: LiveData<List<TagMap>>,
-    private val onCloseClick: (Tag, Int) -> Unit,
+    private val onCloseClick: (Tag, count: Int, index: Int) -> Unit,
     private val onClick: (Tag, Int) -> Unit
 ) : ListAdapter<Tag, TagAdapter.TagHolder>(DiffCallback()) {
 
@@ -62,16 +62,18 @@ class TagAdapter(
 
         tagMapData.observe(lifecycleOwner) { list ->
             val find = list.find { it.name == tag.name }
-            if (find?.count != null)
+            if (find?.count != null) {
                 chip.text = "${tag.name} (${find.count})"
+                chip.tag = find.count
+            }
         }
 
         tagFilter.observe(lifecycleOwner) { list ->
             chip.isChipIconVisible = list.any { it.name == tag.name }
         }
 
-        chip.setOnCloseIconClickListener {
-            onCloseClick.invoke(tag, layoutPosition)
+        chip.setOnCloseIconClickListener { v ->
+            onCloseClick.invoke(tag, v.tag as? Int ?: 0, layoutPosition)
         }
         chip.setOnClickListener { onClick.invoke(tag, layoutPosition) }
     }

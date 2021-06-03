@@ -429,7 +429,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
                 screen = Start.Screen.SETTING,
                 animation = AnimationDefinition.Fade,
                 transactionType = FragmentNavigator.TransactionType.ADD,
-                addToBackStack = true,
+                remember = true,
             )
         }
 

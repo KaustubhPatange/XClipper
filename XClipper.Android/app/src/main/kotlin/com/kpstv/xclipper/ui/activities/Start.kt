@@ -42,21 +42,15 @@ class Start : AppCompatActivity(), FragmentNavigator.Transmitter {
         applyEdgeToEdgeMode()
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        val startScreen = if (preferenceProvider.getBooleanKey(App.TUTORIAL_PREF, false)) Screen.HOME.clazz else Screen.GREET.clazz
         navigator = Navigator.with(this, savedInstanceState)
             .setNavigator(FragmentNavigator::class)
-            .initialize(binding.root)
+            .initialize(binding.root, Destination.of(startScreen))
         navigator.autoChildElevation()
 
         navViewModel.navigation.observe(this) { options ->
             navigator.navigateTo(options.clazz, options.navOptions)
-        }
-
-        if (savedInstanceState == null) {
-            if (preferenceProvider.getBooleanKey(App.TUTORIAL_PREF, false)) {
-                navViewModel.navigateTo(Screen.HOME)
-            } else {
-                navViewModel.navigateTo(Screen.GREET)
-            }
         }
 
         registerHelpers()
@@ -101,10 +95,10 @@ class NavViewModel : ViewModel() {
     fun navigateTo(
         screen: Start.Screen,
         args: BaseArgs? = null,
-        addToBackStack: Boolean = false,
+        remember: Boolean = false,
         transactionType: FragmentNavigator.TransactionType = FragmentNavigator.TransactionType.REPLACE,
         animation: NavAnimation = AnimationDefinition.None,
-        popUpTo: Boolean = false,
+        historyOptions: HistoryOptions = HistoryOptions.None
     ) {
         navigation.value = NavigationOptions(
             clazz = screen.clazz,
@@ -112,8 +106,8 @@ class NavViewModel : ViewModel() {
                 args = args,
                 animation = animation,
                 transaction = transactionType,
-                remember = addToBackStack,
-                historyOptions = if (popUpTo) HistoryOptions.ClearHistory else HistoryOptions.None
+                remember = remember,
+                historyOptions = historyOptions
             )
         )
     }

@@ -12,13 +12,13 @@ import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import com.kpstv.navigation.AnimationDefinition
+import com.kpstv.navigation.HistoryOptions
 import com.kpstv.navigation.NavAnimation
 import com.kpstv.navigation.ValueFragment
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.databinding.FragmentWelcomeBinding
 import com.kpstv.xclipper.extensions.SimpleFunction
 import com.kpstv.xclipper.extensions.applyBottomInsets
-import com.kpstv.xclipper.extensions.utils.ThemeUtils
 import com.kpstv.xclipper.extensions.viewBinding
 import com.kpstv.xclipper.ui.activities.NavViewModel
 import com.kpstv.xclipper.ui.activities.Start
@@ -101,9 +101,9 @@ abstract class AbstractWelcomeFragment : ValueFragment(R.layout.fragment_welcome
         )
         navViewModel.navigateTo(
             screen = screen,
-            addToBackStack = !popUpTo,
+            remember = !popUpTo,
             animation = anim,
-            popUpTo  = popUpTo
+            historyOptions = HistoryOptions.ClearHistory
         )
     }
 

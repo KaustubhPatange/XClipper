@@ -194,4 +194,6 @@
     <string name="got_it">OK, I got it</string>
     <string name="search_title">Search suggestion</string>
     <string name="search_subtitle">XClipper can show you suggestions based on the last word from a search query.</string>
+    <string name="tag_delete_title">Delete \"%1$s\"</string>
+    <string name="tag_delete_message">%1$d clip(s) are dependent on this tag. Do you still want to still remove it?</string>
 </resources>
