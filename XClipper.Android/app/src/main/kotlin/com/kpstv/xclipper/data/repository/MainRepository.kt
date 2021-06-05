@@ -62,7 +62,7 @@ interface MainRepository {
     suspend fun checkForDuplicate(data: String?): Boolean
     suspend fun checkForDuplicate(data: String?, id: Int): Boolean
 
-    fun getDataSource(wildcard: String = "%"): LiveData<PagedList<Clip>>
+    fun getDataSource(wildcard: String = "%", pagingSize: Int = 10): LiveData<PagedList<Clip>>
 
     suspend fun syncDataFromRemote(): Boolean
 
@@ -70,5 +70,5 @@ interface MainRepository {
 
     fun getAllLiveClip(): LiveData<List<Clip>>
     fun getAllTags(): Flow<List<TagMap>>
-    fun createQuery(query: SupportSQLiteQuery): List<Clip>
+    fun executeQuery(query: SupportSQLiteQuery): List<Clip>
 }

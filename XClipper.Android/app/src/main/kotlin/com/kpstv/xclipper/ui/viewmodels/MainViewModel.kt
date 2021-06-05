@@ -31,7 +31,6 @@ import com.zhuinden.livedatacombinetuplekt.combineTuple
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -184,7 +183,7 @@ class MainViewModel @Inject constructor(
         ).observeForever { (_: Int?, searchString: String?, tagFilters: List<Tag>?, searchFilters: List<String>?) ->
             val filter = ClipDataDao.createQuery(searchFilters, tagFilters, searchString)
             CoroutineScope(viewModelIOScope).launch {
-                val list = mainRepository.createQuery(filter)
+                val list = mainRepository.executeQuery(filter)
                 mutableClipLiveData.emit(list)
             }
         }

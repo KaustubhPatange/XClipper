@@ -74,6 +74,9 @@ interface ClipDataDao {
     @RawQuery(observedEntities = [Clip::class])
     fun getData(query: SupportSQLiteQuery): List<Clip>
 
+    @RawQuery(observedEntities = [Clip::class])
+    fun getObservableDataSource(query: SupportSQLiteQuery): DataSource.Factory<Int, Clip>
+
     companion object {
         fun createQuery(searchFilter: ArrayList<String>?, tagFilter: ArrayList<Tag>?, searchText: String?): SimpleSQLiteQuery {
             val builder = StringBuilder("select * from table_clip")

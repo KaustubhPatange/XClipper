@@ -29,10 +29,7 @@ import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.databinding.BubbleViewBinding
 import com.kpstv.xclipper.databinding.ItemBubbleServiceBinding
-import com.kpstv.xclipper.extensions.hide
-import com.kpstv.xclipper.extensions.layoutInflater
-import com.kpstv.xclipper.extensions.logger
-import com.kpstv.xclipper.extensions.show
+import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showSearchFeatureDialog
 import dagger.hilt.android.AndroidEntryPoint
@@ -162,7 +159,7 @@ class BubbleService : FloatingBubbleService() {
     }
 
     class PageClipAdapter(val onClick: (String) -> Unit) :
-        PagedListAdapter<Clip, PageClipAdapter.PageClipHolder>(DiffUtils) {
+        PagedListAdapter<Clip, PageClipAdapter.PageClipHolder>(DiffUtils.asConfig()) {
 
         companion object {
             private val DiffUtils = object : DiffUtil.ItemCallback<Clip>() {

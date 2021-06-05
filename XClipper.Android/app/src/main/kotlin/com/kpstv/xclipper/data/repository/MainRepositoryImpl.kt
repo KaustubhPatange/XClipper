@@ -2,7 +2,6 @@ package com.kpstv.xclipper.data.repository
 
 import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagedList
 import androidx.paging.toLiveData
 import androidx.sqlite.db.SupportSQLiteQuery
@@ -13,11 +12,10 @@ import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.PartialClipTagMap
 import com.kpstv.xclipper.data.model.TagMap
 import com.kpstv.xclipper.data.provider.FirebaseProvider
-import com.kpstv.xclipper.extensions.ClipTagMap
 import com.kpstv.xclipper.extensions.clone
 import com.kpstv.xclipper.extensions.enumerations.FilterType
-import com.kpstv.xclipper.extensions.keys
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.transform
 import javax.inject.Inject
 
 class MainRepositoryImpl @Inject constructor(
@@ -27,11 +25,11 @@ class MainRepositoryImpl @Inject constructor(
 
     private val TAG = javaClass.simpleName
 
-    override fun getDataSource(wildcard: String): LiveData<PagedList<Clip>> = clipDao.getDataSource("%$wildcard%").toLiveData(10)
+    override fun getDataSource(wildcard: String, pagingSize: Int): LiveData<PagedList<Clip>> = clipDao.getDataSource("%$wildcard%").toLiveData(pagingSize)
 
     override fun getTotalCount(): LiveData<Int> = clipDao.getTotalCount()
 
-    override fun createQuery(query: SupportSQLiteQuery): List<Clip> = clipDao.getData(query)
+    override fun executeQuery(query: SupportSQLiteQuery): List<Clip> = clipDao.getData(query)
 
     private suspend fun saveClip(clip: Clip?): Boolean {
         if (clip == null) return false

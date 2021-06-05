@@ -25,6 +25,8 @@ import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.getColorFromAttr
 import kotlinx.android.synthetic.main.item_clip.view.*
 import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class CIAdapter(
     private val lifecycleOwner: LifecycleOwner,
@@ -47,6 +49,11 @@ class CIAdapter(
     private lateinit var copyClick: (Clip, Int) -> Unit
     private lateinit var menuClick: (Clip, Int, MENU_TYPE) -> Unit
 
+    private val selectedDataObservers = HashMap<Int, Observer<String>>()
+    private val selectedItemObservers = HashMap<Int, Observer<Clip>>()
+    private val multiSelectionObservers = HashMap<Int, Observer<Boolean>>()
+    private val selectedClipsObservers = HashMap<Int, Observer<List<Clip>>>()
+
     override fun getItemViewType(position: Int) = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainHolder =
@@ -58,6 +65,7 @@ class CIAdapter(
         val clip = getItem(position)
 
         holder.itemView.ci_textView.text = if (App.trimClipText) clip.data.trim() else clip.data
+        holder.itemView.tag = clip.id // used for unsubscribing.
 
         if (App.LoadImageMarkdownText)
             renderImageMarkdown(holder, clip.data, position)
@@ -103,22 +111,18 @@ class CIAdapter(
             )
         }
 
-        currentClip.observe(lifecycleOwner, {
-            if (holder.itemView.ci_textView.text == it)
+        val selectedDataObserver: Observer<String> = Observer { current ->
+            if (holder.itemView.ci_textView.text == current)
                 holder.itemView.ci_textView.setTextColor(
                     getColorFromAttr(holder.itemView.context, R.attr.colorCurrentClip)
                 )
             else holder.itemView.ci_textView.setTextColor(
                 getColorFromAttr(holder.itemView.context, R.attr.colorTextPrimary)
             )
-        })
-
-        selectedItem.observe(lifecycleOwner, {
-
-            /** Will figure out where to place this */
+        }
+        val selectedItemObserver: Observer<Clip> = Observer { selectedClip ->
             setPinMovements(clip, holder)
-
-            if (it == clip) {
+            if (selectedClip == clip) {
                 holder.itemView.hiddenLayout.show()
                 holder.itemView.mainCard.setCardBackgroundColor(CARD_CLICK_COLOR)
                 holder.itemView.mainCard.cardElevation = Utils.dpToPixel(holder.itemView.context, 3f)
@@ -127,10 +131,9 @@ class CIAdapter(
                 holder.itemView.mainCard.cardElevation = Utils.dpToPixel(holder.itemView.context, 0f)
                 holder.itemView.hiddenLayout.collapse()
             }
-        })
-
-        multiSelectionState.observe(lifecycleOwner, {
-            if (it) {
+        }
+        val multiSelectionObserver: Observer<Boolean> = Observer { state ->
+            if (state) {
                 holder.itemView.ci_copyButton.hide()
                 holder.itemView.ci_timeText.hide()
                 holder.itemView.ci_tagLayout.hide()
@@ -139,9 +142,9 @@ class CIAdapter(
                 holder.itemView.ci_timeText.show()
                 holder.itemView.ci_tagLayout.show()
             }
-        })
-
-        selectedClips.observe(lifecycleOwner, Observer { clips ->
+        }
+        val selectedClipsObserver: Observer<List<Clip>> = Observer { clips ->
+            if (clips == null) return@Observer
             when {
                 clips.contains(clip) -> {
                     holder.itemView.mainCard.setCardBackgroundColor(CARD_SELECTED_COLOR)
@@ -155,7 +158,21 @@ class CIAdapter(
                         holder.itemView.mainCard.setCardBackgroundColor(CARD_COLOR)
                 }
             }
-        })
+        }
+
+        currentClip.observe(lifecycleOwner, selectedDataObserver).also { selectedDataObservers[clip.id] = selectedDataObserver }
+        selectedItem.observe(lifecycleOwner, selectedItemObserver).also { selectedItemObservers[clip.id] = selectedItemObserver }
+        multiSelectionState.observe(lifecycleOwner, multiSelectionObserver).also { multiSelectionObservers[clip.id] = multiSelectionObserver }
+        selectedClips.observe(lifecycleOwner, selectedClipsObserver).also { selectedClipsObservers[clip.id] = selectedClipsObserver }
+    }
+
+    override fun onViewRecycled(holder: MainHolder) {
+        super.onViewRecycled(holder)
+        val id = holder.itemView.tag as? Int ?: return
+        selectedDataObservers.remove(id)?.let { currentClip.removeObserver(it) }
+        selectedItemObservers.remove(id)?.let { selectedItem.removeObserver(it) }
+        multiSelectionObservers.remove(id)?.let { multiSelectionState.removeObserver(it) }
+        selectedClipsObservers.remove(id)?.let { selectedClips.removeObserver(it) }
     }
 
     private fun renderImageMarkdown(holder: MainHolder, data: String?, position: Int) {

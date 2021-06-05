@@ -143,7 +143,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
 
     private fun bindUI() {
         mainViewModel.clipLiveData.observe(viewLifecycleOwner) { clips ->
-            if (clips.isEmpty() && !mainViewModel.searchManager.anyFilterApplied())
+            if (clips?.isEmpty() == true && !mainViewModel.searchManager.anyFilterApplied())
                 layout_empty_parent.show()
             else
                 layout_empty_parent.collapse()
