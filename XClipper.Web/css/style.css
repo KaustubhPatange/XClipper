@@ -274,3 +274,38 @@ body {
     height: 0px;
   }
 }
+
+/* Animations */
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  99% {
+    opacity: 0.01;
+  }
+  100% {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+}
+
+.lottie-fadeOut-animation {
+  height: 200px;
+  animation: fadeOut 500ms 4500ms both;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.text-fadeIn-animation {
+  height: 0;
+  animation: fadeIn 500ms both;
+}

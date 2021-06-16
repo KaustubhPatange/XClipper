@@ -1,12 +1,11 @@
 package com.kpstv.xclipper.extensions.recyclerview
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffXfermode
+import android.graphics.*
 import android.graphics.drawable.ColorDrawable
+import android.util.Log
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.ColorUtils
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.xclipper.R
@@ -60,14 +59,16 @@ class SwipeToDeleteCallback(
             return
         }
 
-        background.color = backgroundColor
-        background.setBounds(itemView.left, itemView.top, itemView.left + dX.toInt(), itemView.bottom)
-        background.draw(c)
-
         val deleteIconTop = itemView.top + (itemHeight - intrinsicHeight) / 2
         val deleteIconLeft = itemView.left + intrinsicWidth
         val deleteIconRight = deleteIconLeft + intrinsicWidth
         val deleteIconBottom = deleteIconTop + intrinsicHeight
+
+        val maxBlendDistance = (deleteIconRight + intrinsicWidth).toFloat()
+
+        background.color = ColorUtils.blendARGB(backgroundColor, Color.WHITE, 1f - dX.coerceAtMost(maxBlendDistance) / maxBlendDistance)
+        background.setBounds(itemView.left, itemView.top, itemView.left + dX.toInt(), itemView.bottom)
+        background.draw(c)
 
         readyToBeRemoved = if ((itemView.left + dX.toInt()) >= ((itemView.width + 50) / 2)) {
             if (!readyToBeRemoved) Utils.vibrateDevice(itemView.context)

@@ -21,6 +21,58 @@ $(document).ready(function () {
   loadInformation();
 });
 
+function showModalDialog(
+  title,
+  message,
+  buttonText = "OK",
+  lottieAnimationPath = null
+) {
+  document.getElementById("dialog-title").innerHTML = title;
+  document.getElementById("dialog-button").innerHTML = buttonText;
+  const content = document.getElementById("dialog-content");
+  content.innerHTML = "";
+
+  if (lottieAnimationPath != null) {
+    $("#dialog-modal").modal("show");
+
+    const container = document.getElementById("lottie-container");
+    container.innerHTML = "";
+    container.className = "lottie-fadeOut-animation";
+
+    lottie.loadAnimation({
+      container: container,
+      renderer: "svg",
+      loop: false,
+      autoplay: true,
+      path: lottieAnimationPath,
+    });
+
+    container.addEventListener(
+      "animationend",
+      function (e) {
+        content.innerHTML = message;
+        content.className = "text-fadeIn-animation";
+      },
+      false
+    );
+  } else {
+    content.innerHTML = message;
+  }
+}
+
+/* function baseDialog() {
+  showModalDialog(
+    "Purchase Completed",
+    "Restart the XClipper application on Windows to activate the license.",
+    "Alright",
+    "XClipper.Web/raw/premium_unlocked.json"
+  );
+} */
+
+function hideCircle() {
+  console.log("Ran");
+}
+
 function makeToActOnCard(cardElement, cardElementHr) {
   var card = document.getElementById(cardElement);
   var cardHr = document.getElementById(cardElementHr);
