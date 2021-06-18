@@ -543,7 +543,9 @@ namespace Components
         public void OnClipItemUpdated(string previousUnEncryptedData, string newUnEncryptedData)
         {
             Debug.WriteLine($"[V2 Updated]: Old: {previousUnEncryptedData}, New: {newUnEncryptedData}");
-            AppSingleton.GetInstance.UpdateClipItem(previousUnEncryptedData, newUnEncryptedData, () => SendNotification(Translation.SYNC_UPDATE_TITLE, newUnEncryptedData));
+            AppSingleton.GetInstance.UpdateClipItem(previousUnEncryptedData, newUnEncryptedData, 
+                () => SendNotification(Translation.SYNC_UPDATE_TITLE, newUnEncryptedData),
+                () => ParseUpdateResult(newUnEncryptedData, ContentType.Text));
         }
 
         public void OnDeviceAdded(Device device)

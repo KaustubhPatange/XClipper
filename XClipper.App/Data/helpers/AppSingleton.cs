@@ -283,12 +283,14 @@ namespace Components.viewModels
         /// </summary>
         /// <param name="oldUnEncryptedText"></param>
         /// <param name="newUnEncryptedText"></param>
-        public void UpdateClipItem(string oldUnEncryptedText, string newUnEncryptedText, Action? OnUpdated = null)
+        public void UpdateClipItem(string oldUnEncryptedText, string newUnEncryptedText, Action? OnUpdated = null, Action? OnAdded = null)
         {
             DeleteClipData(oldUnEncryptedText);
             CheckAndUpdateData(newUnEncryptedText);
             if (oldUnEncryptedText.isCloselyResemble(newUnEncryptedText))
                 OnUpdated?.Invoke();
+            else 
+                OnAdded?.Invoke();
         }
 
         /// <summary>
