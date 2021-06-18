@@ -101,6 +101,11 @@
                     KeyUp="Window_KeyDown"
                     TextChanged="SearchTextChanged" />
             </DockPanel>
+
+            <!--
+                VirtualizingStackPanel.IsVirtualizing="True"
+                VirtualizingStackPanel.VirtualizationMode="Standard"
+            -->
             <ListView
                 x:Name="_lvClip"
                 Grid.Row="1"
@@ -110,7 +115,14 @@
                 MouseMove="_lvClip_MouseMove"
                 ScrollViewer.CanContentScroll="True"
                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                SelectionChanged="_lvClip_SelectionChanged">
+                SelectionChanged="_lvClip_SelectionChanged"
+                VirtualizingStackPanel.IsVirtualizing="True"
+                VirtualizingStackPanel.VirtualizationMode="Standard">
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
                 <ListView.ItemContainerStyle>
                     <Style TargetType="{x:Type ListViewItem}">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch" />

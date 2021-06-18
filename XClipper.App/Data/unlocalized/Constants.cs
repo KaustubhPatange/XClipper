@@ -131,7 +131,7 @@ namespace Components
         {
             public const XClipperLocation APP_DISPLAY_LOCATION = XClipperLocation.BottomRight;
             public const XClipperStore WHAT_TO_STORE = XClipperStore.All;
-            public const int TOTAL_CLIP_LENGTH = 200;
+            public const int TOTAL_CLIP_LENGTH = 500;
             public const bool IS_CTRL = true;
             public const bool IS_ALT = false;
             public const bool IS_SHIFT = false;
