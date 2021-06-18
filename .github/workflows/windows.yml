@@ -1,17 +1,22 @@
 name: Windows CI
 on:
   push:
-    paths:
-      - ".github/workflows/windows.yml"
-      - "XClipper.App/**"
-      - "XClipper.Core/**"
-      - "scripts/**"
+    paths-ignore:
+      - "XClipper.Web/**"
+      - "XClipper.Android/**"
+      - *.md
+      - "art/**"
+      - "docs/**"
+      - "*.html"
+
   pull_request:
-    paths:
-      - ".github/workflows/windows.yml"
-      - "XClipper.App/**"
-      - "XClipper.Core/**"
-      - "scripts/**"
+    paths-ignore:
+      - "XClipper.Web/**"
+      - "XClipper.Android/**"
+      - *.md
+      - "art/**"
+      - "docs/**"
+      - "*.html"
 
 jobs:
   windows:

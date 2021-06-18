@@ -102,10 +102,6 @@
                     TextChanged="SearchTextChanged" />
             </DockPanel>
 
-            <!--
-                VirtualizingStackPanel.IsVirtualizing="True"
-                VirtualizingStackPanel.VirtualizationMode="Standard"
-            -->
             <ListView
                 x:Name="_lvClip"
                 Grid.Row="1"

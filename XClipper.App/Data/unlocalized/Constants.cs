@@ -129,6 +129,10 @@ namespace Components
 
         public class Settings
         {
+            public enum UpdateChannel
+            {
+                Stable = 0, Nightly = 1
+            }
             public const XClipperLocation APP_DISPLAY_LOCATION = XClipperLocation.BottomRight;
             public const XClipperStore WHAT_TO_STORE = XClipperStore.All;
             public const int TOTAL_CLIP_LENGTH = 500;
@@ -182,6 +186,8 @@ namespace Components
                     return b;
                 }
             }
+            
+            public const UpdateChannel UPDATE_CHANNEL = UpdateChannel.Nightly;
         }
 
         #endregion

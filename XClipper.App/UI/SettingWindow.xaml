@@ -45,7 +45,11 @@
                                 Content="{DynamicResource settings_cau}"
                                 Foreground="{c:Binding 'local:DefaultSettings.IsPurchaseDone ? media:Brushes.Black : media:Brushes.Gray'}"
                                 IsChecked="{Binding CAU}"
-                                IsEnabled="{Binding Path=(local:DefaultSettings.IsPurchaseDone)}" />
+                                IsEnabled="{Binding Path=(local:DefaultSettings.IsPurchaseDone)}">
+                                <CheckBox.ToolTip>
+                                    <ToolTip Content="{DynamicResource settings_cau_tooltip}" Visibility="{c:Binding 'local:DefaultSettings.IsPurchaseDone ? ui:Visibility.Hidden : ui:Visibility.Visible'}" />
+                                </CheckBox.ToolTip>
+                            </CheckBox>
                             <CheckBox Content="{DynamicResource settings_sdcn}" IsChecked="{Binding SDCN}" />
                             <CheckBox Content="{DynamicResource settings_dsn}" IsChecked="{Binding DSN}" />
                             <CheckBox Content="{DynamicResource settings_pns}" IsChecked="{Binding PNS}" />

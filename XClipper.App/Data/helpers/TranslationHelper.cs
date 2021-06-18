@@ -91,6 +91,7 @@ namespace Components
 		public readonly string SETTINGS_COPY_SCRIPTS = rm.GetString("settings_copy_scripts");
 		public readonly string SETTINGS_PASTE_SCRIPTS = rm.GetString("settings_paste_scripts");
 		public readonly string SETTINGS_IGNORE_TOOLTIP = rm.GetString("settings_ignore_tooltip");
+		public readonly string SETTINGS_CAU_TOOLTIP = rm.GetString("settings_cau_tooltip");
 		public readonly string FILTER_HEADER = rm.GetString("filter_header");
 		public readonly string FILTER_TITLE = rm.GetString("filter_title");
 		public readonly string FILTER_INDEX = rm.GetString("filter_index");

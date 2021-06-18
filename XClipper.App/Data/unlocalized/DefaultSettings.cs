@@ -466,6 +466,11 @@ namespace Components
         public static Buffer CopyBuffer1 { get; set; } = Settings.CopyBuffer1;
         public static Buffer CopyBuffer2 { get; set; } = Settings.CopyBuffer2;
 
+        /// <summary>
+        /// Allows you to configure the type of update you are interested in receiving.
+        /// </summary>
+        public static Settings.UpdateChannel UpdateChannel { get; set; } = Settings.UPDATE_CHANNEL;
+
         #endregion
 
         /// <summary>
@@ -507,7 +512,8 @@ namespace Components
                   .Add(
                      new XElement(nameof(ExitOnCrash), ExitOnCrash.ToString()),
                      new XElement(nameof(NoNotifyChanges), NoNotifyChanges.ToString()),
-                     new XElement(nameof(UseExperimentalKeyCapture), UseExperimentalKeyCapture.ToString())
+                     new XElement(nameof(UseExperimentalKeyCapture), UseExperimentalKeyCapture.ToString()),
+                     new XElement(nameof(UpdateChannel), (int)UpdateChannel)
                      );
            
             var settings = new XElement(SETTINGS);
@@ -703,6 +709,7 @@ namespace Components
             ExitOnCrash = environment.Element(nameof(ExitOnCrash)).Value.ToBool();
             NoNotifyChanges = environment.Element(nameof(NoNotifyChanges)).Value.ToBool();
             UseExperimentalKeyCapture = environment.Element(nameof(UseExperimentalKeyCapture)).Value.ToBool();
+            UpdateChannel = (Settings.UpdateChannel) environment.Element(nameof(UpdateChannel)).Value.ToInt();
         }
 
         /// <summary>

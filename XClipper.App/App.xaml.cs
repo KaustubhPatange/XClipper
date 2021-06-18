@@ -646,7 +646,7 @@ namespace Components
 
         private void CheckForUpdates()
         {
-            if (!CheckApplicationUpdates) return;
+            if (!CheckApplicationUpdates && IsPurchaseDone) return;
             var updater = AppModule.Container.Resolve<IUpdater>();
             updater.Subscribe((isAvailable, model) =>
             {

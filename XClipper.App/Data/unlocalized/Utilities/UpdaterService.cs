@@ -38,7 +38,10 @@ namespace Components
                 _timer.Start();
                 int appVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString().Replace(".", "").ToInt(); // eg: 1000
                 List<ReleaseItem>? releases = JsonConvert.DeserializeObject<List<ReleaseItem>>(response.Content);
-                int newVersion = releases.FirstOrDefault().GetVersion();
+                
+                releases = ApplyFilterBasedOnUpdateChannel(releases);
+                
+                int newVersion = releases?.FirstOrDefault().GetVersion() ?? 0;
                 
                 System.Windows.Application.Current.Dispatcher.Invoke(() =>
                 {
@@ -50,6 +53,29 @@ namespace Components
         public void Launch()
         {
             Process.Start(ApplicationWebsite);
+        }
+        
+        // Transforms the list based on filter channel.
+        private List<ReleaseItem>? ApplyFilterBasedOnUpdateChannel(List<ReleaseItem>? releases)
+        {
+            ReleaseItem? update = null;
+            switch (DefaultSettings.UpdateChannel)
+            {
+                case Settings.UpdateChannel.Stable:
+                    update = releases.Find(c => !c.prerelease);
+                    break;
+                case Settings.UpdateChannel.Nightly:
+                    update = releases.Find(c => c.prerelease);
+                    break;
+            }
+
+            if (update != null)
+            {
+                var index = releases.IndexOf(update);
+                return releases.GetRange(index, releases.Count - 1);
+            }
+
+            return releases;
         }
     }
 }

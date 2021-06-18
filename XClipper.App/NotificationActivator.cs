@@ -17,6 +17,7 @@ namespace Components
 		public static void register()
         {
 			NotificationActivator.RegisterComType(typeof(NotificationActivator), UWPToast.OnActivated);
+			NotificationHelper.RegisterComServer(typeof(NotificationActivator), Assembly.GetExecutingAssembly().Location);
 		}
 	}
 }
