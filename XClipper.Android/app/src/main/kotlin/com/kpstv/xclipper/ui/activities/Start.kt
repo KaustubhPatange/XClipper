@@ -44,8 +44,7 @@ class Start : AppCompatActivity(), FragmentNavigator.Transmitter {
         setContentView(binding.root)
 
         val startScreen = if (preferenceProvider.getBooleanKey(App.TUTORIAL_PREF, false)) Screen.HOME.clazz else Screen.GREET.clazz
-        navigator = Navigator.with(this, savedInstanceState)
-            .setNavigator(FragmentNavigator::class)
+        navigator = FragmentNavigator.with(this, savedInstanceState)
             .initialize(binding.root, Destination.of(startScreen))
         navigator.autoChildElevation()
 

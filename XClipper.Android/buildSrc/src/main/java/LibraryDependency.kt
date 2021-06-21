@@ -41,9 +41,8 @@ private object LibraryVersion {
     const val REALTIME_EXTENSIONS = "0.1.3"
     const val LIVEDATA_COMBINE_UTIL = "1.2.0"
     const val CAOC = "2.3.0"
-    const val NAVIGATOR = "0.1-alpha22"
-    const val NAVIGATOR_BOTTOM_NAVIGATION = "0.1-alpha15"
-    const val NAVIGATOR_EXTENSIONS = "0.4"
+    const val NAVIGATOR = "0.1-alpha27"
+    const val NAVIGATOR_EXTENSIONS = "0.5"
 }
 
 object LibraryDependency {
@@ -113,5 +112,4 @@ object LibraryDependency {
 
     const val NAVIGATOR = "io.github.kaustubhpatange:navigator:${LibraryVersion.NAVIGATOR}"
     const val NAVIGATOR_EXTENSIONS = "io.github.kaustubhpatange:navigator-extensions:${LibraryVersion.NAVIGATOR_EXTENSIONS}"
-    const val NAVIGATOR_BOTTOM_NAVIGATION = "io.github.kaustubhpatange:navigator-bottom-navigation:${LibraryVersion.NAVIGATOR_BOTTOM_NAVIGATION}"
 }

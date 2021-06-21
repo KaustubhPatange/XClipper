@@ -100,7 +100,6 @@ dependencies {
 
     implementation(LibraryDependency.NAVIGATOR)
     implementation(LibraryDependency.NAVIGATOR_EXTENSIONS)
-    implementation(LibraryDependency.NAVIGATOR_BOTTOM_NAVIGATION)
 
     implementation(LibraryDependency.HILT_ANDROID)
     implementation(LibraryDependency.HILT_WORK_MANAGER)

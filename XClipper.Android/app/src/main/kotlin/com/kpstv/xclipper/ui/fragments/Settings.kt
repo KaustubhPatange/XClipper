@@ -41,8 +41,7 @@ class Settings : ValueFragment(R.layout.activity_settings), FragmentNavigator.Tr
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        navigator = Navigator.with(this, savedInstanceState)
-            .setNavigator(FragmentNavigator::class)
+        navigator = FragmentNavigator.with(this, savedInstanceState)
             .initialize(binding.settingsContainer, Destination.of(Screen.MAIN.clazz))
 
         setToolbar()
@@ -83,7 +82,7 @@ class Settings : ValueFragment(R.layout.activity_settings), FragmentNavigator.Tr
             screen = Start.Screen.SETTING,
             args = Args(openLookFeel = true),
             animation = AnimationDefinition.CircularReveal(
-                forFragment = LookFeelPreference::class,
+                delayMillis = 80,
                 fromTarget = viewRect
             ),
             historyOptions = HistoryOptions.SingleTopInstance
