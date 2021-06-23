@@ -63,6 +63,7 @@
                                     Grid.Column="1"
                                     Width="50"
                                     Margin="10,0,0,0"
+                                    local:NumericTextBoxProperties.MaxNumber="{Binding Source={x:Static local:Constants+Settings.TOTAL_CLIP_LENGTH}}"
                                     Text="{Binding TCL, UpdateSourceTrigger=PropertyChanged}"
                                     TextAlignment="Center" />
                             </Grid>
@@ -323,8 +324,28 @@
                     <TabItem Header="{DynamicResource settings_tab_buffer}">
                         <Border Padding="7,0,7,7">
                             <StackPanel Orientation="Vertical">
-                                <control:BufferItem Title="Copy Buffer 1" BufferModel="{Binding CopyBuffer1}" />
-                                <control:BufferItem Title="Copy Buffer 2" BufferModel="{Binding CopyBuffer2}" />
+                                <DockPanel>
+                                    <TextBlock
+                                        Margin="0,0,0,0"
+                                        VerticalAlignment="Bottom"
+                                        DockPanel.Dock="Right">
+                                        <Hyperlink local:HyperlinkProperties.IsExternal="True" NavigateUri="{Binding Source={x:Static local:Constants.DOC_BUFFER}}">
+                                            <Run Text="{DynamicResource msg_learn}" />
+                                        </Hyperlink>
+                                    </TextBlock>
+                                    <CheckBox
+                                        Content="{DynamicResource settings_enable_feature}"
+                                        DockPanel.Dock="Left"
+                                        IsChecked="{Binding ECB}" />
+                                </DockPanel>
+                                <Separator Margin="0,7,0,0" />
+                                <StackPanel
+                                    Margin="0,5,0,0"
+                                    IsEnabled="{Binding ECB}"
+                                    Orientation="Vertical">
+                                    <control:BufferItem Title="Copy Buffer 1" BufferModel="{Binding CopyBuffer1}" />
+                                    <control:BufferItem Title="Copy Buffer 2" BufferModel="{Binding CopyBuffer2}" />
+                                </StackPanel>
                             </StackPanel>
                         </Border>
                     </TabItem>

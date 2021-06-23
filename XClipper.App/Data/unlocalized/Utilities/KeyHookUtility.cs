@@ -132,7 +132,8 @@ namespace Components
             else
                 KeyboardWatcher_OnKeyboardInput(null, e);
 
-            BufferCopy_OnKeyboardInput(null, e);
+            if (EnableCopyBuffer)
+                BufferCopy_OnKeyboardInput(null, e);
         }
 
         #endregion

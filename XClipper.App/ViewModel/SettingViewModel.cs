@@ -82,6 +82,7 @@ namespace Components
         public bool BTD { get; set; } = BindDatabase;
         public bool BIU { get; set; } = BindImage;
         public bool BFD { get; set; } = BindDelete;
+        public bool ECB { get; set; } = EnableCopyBuffer;
         public bool ISDB
         {
             get { return is_secure_db; }
@@ -161,7 +162,7 @@ namespace Components
         {
             StartOnSystemStartup = SASS = Settings.START_ON_SYSTEM_STARTUP;
             CheckApplicationUpdates = CAU = Settings.CHECK_APP_UPDATES;
-            TotalClipLength = TCL = Settings.TOTAL_CLIP_LENGTH;
+            TotalClipLength = TCL = Settings.CURRENT_CLIP_LENGTH;
             DisplayStartNotification = DSN = Settings.DISPLAY_START_NOTIFICATION;
             PlayNoticationSound = PNS = Settings.PLAY_NOTIFICATION_SOUND;
             ShowDataChangeNotification = SDCN = Settings.SHOW_DATA_CHANGE_NOTIFICATION;
@@ -178,6 +179,7 @@ namespace Components
             BindDatabase = BTD = Settings.BIND_DATABASE;
             BindDelete = BFD = Settings.BIND_DELETE;
             BindImage = BIU = Settings.BIND_IMAGE;
+            EnableCopyBuffer = ECB = Settings.ENABLE_COPY_BUFFER;
             CopyBuffer1 = DefaultSettings.CopyBuffer1 = Settings.CopyBuffer1;
             CopyBuffer2 = DefaultSettings.CopyBuffer2 = Settings.CopyBuffer2;
 
@@ -208,6 +210,7 @@ namespace Components
             CurrentAppLanguage = CAL;
             BindDelete = BFD;
             BindImage = BIU;
+            EnableCopyBuffer = ECB;
             SetAppStartupEntry();
 
             var isBindApplied = ToggleBindDatabase();

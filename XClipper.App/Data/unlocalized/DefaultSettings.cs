@@ -146,7 +146,7 @@ namespace Components
         /// <summary>
         /// This tells the number of clip to store.
         /// </summary>
-        public static int TotalClipLength { get; set; } = Settings.TOTAL_CLIP_LENGTH;
+        public static int TotalClipLength { get; set; } = Settings.CURRENT_CLIP_LENGTH;
 
         /// <summary>
         /// This tells if Ctrl needs to be pressed in order to activate application.
@@ -463,6 +463,7 @@ namespace Components
         }
 
         // Set of buffers that are used to store some external data on the go.
+        public static bool EnableCopyBuffer { get; set; } = Settings.ENABLE_COPY_BUFFER;
         public static Buffer CopyBuffer1 { get; set; } = Settings.CopyBuffer1;
         public static Buffer CopyBuffer2 { get; set; } = Settings.CopyBuffer2;
 
@@ -540,7 +541,7 @@ namespace Components
                     new XElement(nameof(BindDatabase), BindDatabase.ToString()),
                     new XElement(nameof(BindDelete), BindDelete.ToString()),
                     new XElement(nameof(BindImage), BindImage.ToString())
-                    );
+                );
             document.Add(settings);
             document.Save(SettingsPath);
 
@@ -554,6 +555,7 @@ namespace Components
         {
             var document = new XDocument();
             var buffers = new XElement(BUFFERS);
+            buffers.Add(new XElement(nameof(EnableCopyBuffer), EnableCopyBuffer.ToString()));
             buffers.Add(Buffer.ToNode(CopyBuffer1));
             buffers.Add(Buffer.ToNode(CopyBuffer2));
             document.Add(buffers);
@@ -686,7 +688,7 @@ namespace Components
 
             AppDisplayLocation = settings.Element(nameof(AppDisplayLocation)).Value.ToEnum<XClipperLocation>();
             WhatToStore = settings.Element(nameof(WhatToStore)).Value.ToEnum<XClipperStore>();
-            TotalClipLength = settings.Element(nameof(TotalClipLength)).Value.ToInt();
+            TotalClipLength = settings.Element(nameof(TotalClipLength)).Value.ToInt().CoerceAtMost(Settings.TOTAL_CLIP_LENGTH);
             IsCtrl = settings.Element(nameof(IsCtrl)).Value.ToBool();
             IsAlt = settings.Element(nameof(IsAlt)).Value.ToBool();
             IsShift = settings.Element(nameof(IsShift)).Value.ToBool();
@@ -720,8 +722,9 @@ namespace Components
             if (!File.Exists(BufferFilePath)) return;
 
             var elements = XDocument.Load(BufferFilePath).Element(BUFFERS).Elements().ToList();
-            CopyBuffer1 = Buffer.FromNode(elements[0]);
-            CopyBuffer2 = Buffer.FromNode(elements[1]);
+            EnableCopyBuffer = elements[0].Value.ToBool();
+            CopyBuffer1 = Buffer.FromNode(elements[1]);
+            CopyBuffer2 = Buffer.FromNode(elements[2]);
         }
 
         /// <summary>

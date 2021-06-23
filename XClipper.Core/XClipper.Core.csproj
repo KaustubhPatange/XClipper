@@ -115,6 +115,7 @@
     <Compile Include="Data\Extensions\Misc\AuthManager.cs" />
     <Compile Include="Data\Extensions\ScrollViewerExtensions.cs" />
     <Compile Include="Data\Extensions\TypeSpecific\CollectionExtensions.cs" />
+    <Compile Include="Data\Extensions\TypeSpecific\IntegerExtensions.cs" />
     <Compile Include="Data\Extensions\TypeSpecific\LoopExtensions.cs" />
     <Compile Include="Data\Extensions\TypeSpecific\StringExtensions.cs" />
     <Compile Include="Data\Extensions\TypeSpecific\TaskExtensions.cs" />

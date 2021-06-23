@@ -121,13 +121,14 @@ namespace Components
         public const string DOC_MANUAL_ACTIVATION = "https://kaustubhpatange.github.io/XClipper/docs/#/activation";
 
         public const string DOC_SCRIPTING = "https://kaustubhpatange.github.io/XClipper/docs/#/scripting";
+        public const string DOC_BUFFER = "https://kaustubhpatange.github.io/XClipper/docs/#/buffers";
         public const string EXAMPLES_SCRIPTING = "https://kaustubhpatange.github.io/XClipper/docs/#/scripting?id=examples";
 
         #endregion
 
         #region Default Settings 
 
-        public class Settings
+        public static class Settings
         {
             public enum UpdateChannel
             {
@@ -136,6 +137,7 @@ namespace Components
             public const XClipperLocation APP_DISPLAY_LOCATION = XClipperLocation.BottomRight;
             public const XClipperStore WHAT_TO_STORE = XClipperStore.All;
             public const int TOTAL_CLIP_LENGTH = 500;
+            public const int CURRENT_CLIP_LENGTH = 200;
             public const bool IS_CTRL = true;
             public const bool IS_ALT = false;
             public const bool IS_SHIFT = false;
@@ -157,6 +159,7 @@ namespace Components
             public const bool EXIT_ON_CRASH = true;
             public const bool NO_NOTIFY_CHANGES = false;
             public const bool USE_EXPERIMENTAL_KEY_CAPTURE = true;
+            public const bool ENABLE_COPY_BUFFER = false;
             public static Buffer CopyBuffer1
             {
                 get
