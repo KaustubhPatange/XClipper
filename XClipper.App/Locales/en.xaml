@@ -82,7 +82,7 @@
     <system:String x:Key="settings_paste_scripts">Paste scripts</system:String>
     <system:String x:Key="settings_ignore_tooltip">Ignore certain text pattern that should not be stored in the database.</system:String>
     <system:String x:Key="settings_cau_tooltip">Unlock premium to enable the ability of changing how application updates will show.</system:String>
-    <system:String x:Key="settings_enable_feature">Enable the feature</system:String>
+    <system:String x:Key="settings_enable_feature">Enable this feature</system:String>
 
     <system:String x:Key="filter_header">Filter</system:String>
     <system:String x:Key="filter_title">Filter Items by:</system:String>
