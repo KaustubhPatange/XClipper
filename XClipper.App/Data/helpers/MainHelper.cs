@@ -180,7 +180,7 @@ DEL ""%~f0""";
         /// Set current QR data which will be used by SettingsWindow to generate QR code details.
         /// </summary>
         /// <returns></returns>
-        public static bool CreateCurrentQRData()
+        public static bool ToggleCurrentQRData()
         {
             if (FirebaseCurrent == null || !BindDatabase)
             {
@@ -198,7 +198,7 @@ DEL ""%~f0""";
             };
             return true;
         }
-
+        
         public static async Task DownloadFile(Uri url, string outImagePath)
         {
             using (HttpClient client = new HttpClient())

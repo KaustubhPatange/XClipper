@@ -281,7 +281,7 @@ namespace Components
 
             if (FirebaseCurrent != null)
             {
-                CreateCurrentQRData(); // Create QR data for settings window.
+                ToggleCurrentQRData(); // Create QR data for settings window.
                 if (FirebaseCurrent.IsAuthNeeded)
                 {
                     if (!IsValidCredential())

@@ -48,7 +48,19 @@ namespace Components
                 })) return;
 
                 FirebaseSingletonV2.GetInstance.Initialize();
-                MainHelper.CreateCurrentQRData();
+                MainHelper.ToggleCurrentQRData();
+            } else DeInitializeService();
+        }
+
+        /// <summary>
+        /// De-initialize the service based on the value from <see cref="DefaultSettings.BindDatabase"/>
+        /// </summary>
+        public static void DeInitializeService()
+        {
+            if (!BindDatabase)
+            {
+                FirebaseSingletonV2.GetInstance.Deinitialize();
+                MainHelper.ToggleCurrentQRData();
             }
         }
 

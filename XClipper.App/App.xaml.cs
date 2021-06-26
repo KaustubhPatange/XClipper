@@ -52,6 +52,7 @@ namespace Components
         private DeviceWindow deviceWindow;
         private IKeyboardRecorder recorder;
         private ILicense licenseService;
+        private IClipboardUtlity clipboardUtility;
         private Mutex appMutex;
         private WinForm.MenuItem ConfigSettingItem, UpdateSettingItem;
 
@@ -70,6 +71,7 @@ namespace Components
 
             recorder = AppModule.Container.Resolve<IKeyboardRecorder>();
             licenseService = AppModule.Container.Resolve<ILicense>();
+            clipboardUtility = AppModule.Container.Resolve<IClipboardUtlity>();
 
             LoadSettings();
 
@@ -545,7 +547,11 @@ namespace Components
             Debug.WriteLine($"[V2 Updated]: Old: {previousUnEncryptedData}, New: {newUnEncryptedData}");
             AppSingleton.GetInstance.UpdateClipItem(previousUnEncryptedData, newUnEncryptedData, 
                 () => SendNotification(Translation.SYNC_UPDATE_TITLE, newUnEncryptedData),
-                () => ParseUpdateResult(newUnEncryptedData, ContentType.Text));
+                () =>
+                {
+                    if (newUnEncryptedData != clipboardUtility.GetClipText) 
+                        ParseUpdateResult(newUnEncryptedData, ContentType.Text);
+                });
         }
 
         public void OnDeviceAdded(Device device)

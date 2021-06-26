@@ -103,7 +103,7 @@ abstract class AbstractWelcomeFragment : ValueFragment(R.layout.fragment_welcome
             screen = screen,
             remember = !popUpTo,
             animation = anim,
-            historyOptions = HistoryOptions.ClearHistory
+            historyOptions = if (popUpTo) HistoryOptions.ClearHistory else HistoryOptions.None
         )
     }
 

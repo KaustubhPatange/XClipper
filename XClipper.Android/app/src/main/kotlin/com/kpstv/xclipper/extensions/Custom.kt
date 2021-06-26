@@ -90,14 +90,6 @@ fun logger(TAG: String, message: String, exception: Exception) {
         Log.e(TAG, message, exception)
 }
 
-fun <T> lazyDeferred(block: suspend CoroutineScope.() -> T): Lazy<Deferred<T>> {
-    return lazy {
-        GlobalScope.async(start = CoroutineStart.LAZY) {
-            block.invoke(this)
-        }
-    }
-}
-
 fun Boolean.toInt(): Int = if (this) 1 else 0
 
 fun Date.getFormattedDate(): String =

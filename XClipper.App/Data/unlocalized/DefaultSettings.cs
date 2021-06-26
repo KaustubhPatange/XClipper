@@ -129,6 +129,14 @@ namespace Components
         private static FirebaseData? _FirebaseCurrent = null;
         private static OAuth? _DesktopAuth = null;
         private static OAuth? _MobileAuth = null;
+        /// <summary>
+        /// When set to true it will allow syncing of local database with online database.<br/> A valid binding can be,<br/><br/> 
+        /// 1. Data added locally then pushed to online database.<br/> 
+        /// 2. Data removed locally and changes submitted to online database.<br/>
+        /// 3. Data observation and device changes.<br/>
+        /// 4. Data added to online database externally, respond to such changes locally.<br/>
+        /// </summary>
+        private static bool _BindDatabase = Settings.BIND_DATABASE;
         #endregion
 
         #region Actual Settings
@@ -410,13 +418,17 @@ namespace Components
         }
 
         /// <summary>
-        /// When set to true it will allow syncing of local database with online database.<br/> A valid binding can be,<br/><br/> 
-        /// 1. Data added locally then pushed to online database.<br/> 
-        /// 2. Data removed locally and changes submitted to online database.<br/>
-        /// 3. Data observation and device changes.<br/>
-        /// 4. Data added to online database externally, respond to such changes locally.<br/>
+        /// <inheritdoc cref="_BindDatabase"/>
         /// </summary>
-        public static bool BindDatabase { get; set; } = Settings.BIND_DATABASE;
+        public static bool BindDatabase
+        {
+            get => _BindDatabase;
+            set
+            {
+                _BindDatabase = value;
+                NotifyStaticPropertyChanged(nameof(BindDatabase));
+            }
+        }
 
         /// <summary>
         /// When set to true, App will respond to delete request coming from database.
@@ -457,7 +469,7 @@ namespace Components
             set
             {
                 _IsNetworkConnected = value;
-                NotifyStaticPropertyChanged(nameof(_IsNetworkConnected));
+                NotifyStaticPropertyChanged(nameof(IsNetworkConnected));
                 NetworkChange?.Invoke();
             }
         }
