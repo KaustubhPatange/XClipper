@@ -180,7 +180,7 @@ DEL ""%~f0""";
         /// Set current QR data which will be used by SettingsWindow to generate QR code details.
         /// </summary>
         /// <returns></returns>
-        public static bool ToggleCurrentQRData()
+        public static bool ToggleCurrentQRData() // If you refactored the name make sure to update the tar.gz on github action
         {
             if (FirebaseCurrent == null || !BindDatabase)
             {

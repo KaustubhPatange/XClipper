@@ -2,7 +2,8 @@
 
 ![build](https://github.com/KaustubhPatange/XClipper/workflows/Windows%20CI/badge.svg)
 ![build](https://github.com/KaustubhPatange/XClipper/workflows/Android%20CI/badge.svg)
-![GitHub issues](https://img.shields.io/github/issues/KaustubhPatange/XClipper)
+<a href="https://github.com/KaustubhPatange/XClipper/issues">![GitHub issues](https://img.shields.io/github/issues/KaustubhPatange/XClipper)</a>
+<a href="https://github.com/KaustubhPatange/XClipper/discussions">![GitHub discussions](https://img.shields.io/github/discussions/KaustubhPatange/XClipper?color=%237289DA)</a>
 
  <h1 style="color:red">⚠️ Underconstruction ⚠️</h1>
 
@@ -36,6 +37,10 @@ All of the individual documentation topics can be found in the [docs](https://ka
 - [Getting started with XClipper](https://kaustubhpatange.github.io/XClipper/docs/#/introduction)
 - [Start synchronizing clipboard activity](https://kaustubhpatange.github.io/XClipper/docs/#/sync)
 - [FAQs](https://kaustubhpatange.github.io/XClipper/docs/#/faqs)
+
+## Discussions
+
+[Discussions](https://github.com/KaustubhPatange/XClipper/discussions) is a place where you can ask anything like question, feature discussion, pre-bug reports or any topic of your choice as long as it is related to the project.
 
 ## Compilation Guide
 
