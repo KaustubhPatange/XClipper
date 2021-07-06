@@ -144,4 +144,5 @@ object App {
     const val EXPORT_PREF = "export_pref"
     const val IMAGE_MARKDOWN_PREF = "image_markdown_pref"
     const val TRIM_CLIP_PREF = "trim_clip_pref"
+    const val SHOW_SEARCH_FEATURE = "to_show_search_feature"
 }

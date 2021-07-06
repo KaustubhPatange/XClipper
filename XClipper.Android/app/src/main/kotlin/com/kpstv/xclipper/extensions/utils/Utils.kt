@@ -378,14 +378,13 @@ class Utils {
         }
 
         fun showSearchFeatureDialog(context: Context, preferenceProvider: PreferenceProvider): Boolean {
-            val key = "to_show_search_feature"
-            if (preferenceProvider.getBooleanKey(key, true)) {
+            if (preferenceProvider.getBooleanKey(App.SHOW_SEARCH_FEATURE, true)) {
                 FeatureDialog(context)
                     .setResourceId(R.drawable.feature_suggestion_search)
                     .setTitle(R.string.search_title)
                     .setSubtitle(R.string.search_subtitle)
                     .show()
-                preferenceProvider.putBooleanKey(key, false)
+                preferenceProvider.putBooleanKey(App.SHOW_SEARCH_FEATURE, false)
                 return true
             }
             return false

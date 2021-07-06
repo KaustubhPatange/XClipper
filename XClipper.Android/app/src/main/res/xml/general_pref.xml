@@ -46,6 +46,11 @@
             app:key="lang_pref"
             app:title="@string/lang_title" />
 
+        <Preference
+            app:key="reset_intro_pref"
+            app:title="Reset onboarding screens"
+            app:summary="This also includes the dialogs that are shown to demonstrate a particular feature."/>
+
     </PreferenceCategory>
 
     <PreferenceCategory app:title="Experimental">

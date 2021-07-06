@@ -2,6 +2,7 @@ package com.kpstv.xclipper.ui.helpers
 
 import android.content.Context
 import android.util.Log
+import com.kpstv.xclipper.BuildConfig
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.repository.MainRepository
@@ -47,7 +48,8 @@ class ClipRepositoryHelper @Inject constructor(
             if (isInserted && toNotify)
                 sendClipNotification(data)
         }
-        Log.e(this::class.simpleName, "Data: $data, Time taken: $time ms")
+        if (BuildConfig.DEBUG)
+            Log.e(this::class.simpleName, "Data: $data, Time taken: $time ms")
 
         pendingClipData.removeFirst()
         if (pendingClipData.isNotEmpty()) internalInsertOrUpdateClip(pendingClipData.firstOrNull())

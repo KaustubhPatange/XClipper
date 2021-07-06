@@ -15,13 +15,17 @@ import com.kpstv.navigation.AnimationDefinition
 import com.kpstv.navigation.HistoryOptions
 import com.kpstv.navigation.NavAnimation
 import com.kpstv.navigation.ValueFragment
+import com.kpstv.xclipper.App
 import com.kpstv.xclipper.R
+import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.databinding.FragmentWelcomeBinding
 import com.kpstv.xclipper.extensions.SimpleFunction
 import com.kpstv.xclipper.extensions.applyBottomInsets
 import com.kpstv.xclipper.extensions.viewBinding
 import com.kpstv.xclipper.ui.activities.NavViewModel
 import com.kpstv.xclipper.ui.activities.Start
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 abstract class AbstractWelcomeFragment : ValueFragment(R.layout.fragment_welcome) {
 
@@ -42,6 +46,9 @@ abstract class AbstractWelcomeFragment : ValueFragment(R.layout.fragment_welcome
 
     private val binding by viewBinding(FragmentWelcomeBinding::bind)
     private val navViewModel by activityViewModels<NavViewModel>()
+
+    @Inject
+    lateinit var preferenceProvider: PreferenceProvider
 
     protected abstract fun getConfigurations() : Configuration
 
@@ -78,11 +85,8 @@ abstract class AbstractWelcomeFragment : ValueFragment(R.layout.fragment_welcome
             // This will be used to create a color transition.
             previousPaletteColor = palette
 
-            // We are in the last screen of welcome fragment, we should remove the
-            // status bar color overlay and keep it default to theme.
-            if (configs.isLastScreen) { // TODO:
-               /* requireActivity().window.decorView.systemUiVisibility = 0
-                ThemeUtils.restoreStatusAndNavigationColor(requireActivity())*/
+            if (configs.isLastScreen) {
+                preferenceProvider.putBooleanKey(App.TUTORIAL_PREF, true)
             }
 
             if (configs.directions != null)

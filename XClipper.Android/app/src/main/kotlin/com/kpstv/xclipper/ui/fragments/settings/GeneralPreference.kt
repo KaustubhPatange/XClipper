@@ -7,10 +7,7 @@ package com.kpstv.xclipper.ui.fragments.settings
  import android.os.Build
  import android.os.Bundle
  import androidx.localbroadcastmanager.content.LocalBroadcastManager
- import androidx.preference.ListPreference
- import androidx.preference.MultiSelectListPreference
- import androidx.preference.PreferenceFragmentCompat
- import androidx.preference.SwitchPreferenceCompat
+ import androidx.preference.*
  import com.kpstv.xclipper.App
  import com.kpstv.xclipper.App.BLACKLIST_PREF
  import com.kpstv.xclipper.App.DICTIONARY_LANGUAGE
@@ -24,6 +21,7 @@ package com.kpstv.xclipper.ui.fragments.settings
  import com.kpstv.xclipper.App.swipeToDelete
  import com.kpstv.xclipper.App.trimClipText
  import com.kpstv.xclipper.R
+ import com.kpstv.xclipper.data.provider.PreferenceProvider
  import com.kpstv.xclipper.extensions.Coroutines
  import com.kpstv.xclipper.extensions.utils.Utils.Companion.isClipboardAccessibilityServiceRunning
  import com.kpstv.xclipper.extensions.utils.Utils.Companion.isSystemOverlayEnabled
@@ -31,12 +29,17 @@ package com.kpstv.xclipper.ui.fragments.settings
  import com.kpstv.xclipper.extensions.utils.Utils.Companion.showAccessibilityDialog
  import com.kpstv.xclipper.extensions.utils.Utils.Companion.showDisableAccessibilityDialog
  import com.kpstv.xclipper.extensions.utils.Utils.Companion.showOverlayDialog
+ import dagger.hilt.android.AndroidEntryPoint
  import es.dmoral.toasty.Toasty
+ import javax.inject.Inject
 
+@AndroidEntryPoint
 class GeneralPreference : PreferenceFragmentCompat() {
     private val TAG = javaClass.simpleName
     private var checkPreference: SwitchPreferenceCompat? = null
     private var overlayPreference: SwitchPreferenceCompat? = null
+
+    @Inject lateinit var preferenceProvider: PreferenceProvider
 
     /**
      * Since overlay permission makes you to leave the activity, the only way
@@ -113,6 +116,14 @@ class GeneralPreference : PreferenceFragmentCompat() {
             true
         }
 
+        /** Reset onboarding screens **/
+        findPreference<Preference>(RESET_PREF)?.setOnPreferenceClickListener {
+            preferenceProvider.putBooleanKey(App.SHOW_SEARCH_FEATURE, false) // bubble search feature
+            preferenceProvider.putBooleanKey(App.TUTORIAL_PREF, false)
+            Toasty.info(requireContext(), getString(R.string.onboard_screens_reset)).show()
+            true
+        }
+
         /** Experimental Image loading */
         findPreference<SwitchPreferenceCompat>(IMAGE_MARKDOWN_PREF)?.setOnPreferenceChangeListener { _, newValue ->
             App.LoadImageMarkdownText = newValue as Boolean
@@ -154,6 +165,7 @@ class GeneralPreference : PreferenceFragmentCompat() {
 
     companion object {
         const val ACTION_CHECK_PREFERENCES = "com.kpstv.xclipper.action_check_preferences"
+        const val RESET_PREF = "reset_intro_pref"
 
         fun checkForSettings(context: Context) {
             LocalBroadcastManager.getInstance(context).sendBroadcast(Intent(ACTION_CHECK_PREFERENCES))

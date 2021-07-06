@@ -15,9 +15,6 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class WatchVideo : AbstractWelcomeFragment() {
 
-    @Inject
-    lateinit var preferenceProvider: PreferenceProvider
-
     override fun getConfigurations(): Configuration = Configuration(
         paletteId = R.color.palette7,
         nextPaletteId = R.color.palette8,

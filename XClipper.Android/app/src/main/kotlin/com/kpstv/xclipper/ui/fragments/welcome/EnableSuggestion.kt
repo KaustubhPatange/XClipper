@@ -17,9 +17,6 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class EnableSuggestion : AbstractWelcomeFragment() {
 
-    @Inject
-    lateinit var preferenceProvider: PreferenceProvider
-
     @SuppressLint("NewApi")
     override fun getConfigurations(): Configuration = Configuration(
         paletteId = R.color.palette3,

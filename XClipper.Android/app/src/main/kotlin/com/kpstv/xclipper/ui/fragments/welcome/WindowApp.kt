@@ -11,18 +11,13 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class WindowApp : AbstractWelcomeFragment() {
 
-    @Inject
-    lateinit var preferenceProvider: PreferenceProvider
-
     override fun getConfigurations(): Configuration = Configuration(
         paletteId = R.color.palette6,
         nextPaletteId = R.color.palette7,
         textId = R.string.palette6_text,
         nextTextId = R.string.next_8,
-        isLastScreen = true,
+        isLastScreen = true, // last screen must add @AndroidEntryPoint annotation
         action = {
-            preferenceProvider.putBooleanKey(App.TUTORIAL_PREF, true)
-
             navigateTo(Start.Screen.HOME, true, AnimationDefinition.CircularReveal())
         }
     )
