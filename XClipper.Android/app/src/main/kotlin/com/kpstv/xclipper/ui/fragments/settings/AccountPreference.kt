@@ -12,12 +12,14 @@ import com.kpstv.xclipper.App.BIND_DELETE_PREF
 import com.kpstv.xclipper.App.BIND_PREF
 import com.kpstv.xclipper.App.CONNECT_PREF
 import com.kpstv.xclipper.App.FORCE_REMOVE_PREF
+import com.kpstv.xclipper.App.HELP_PREF
 import com.kpstv.xclipper.App.LOGOUT_PREF
 import com.kpstv.xclipper.App.UID
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
+import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.logoutFromDatabase
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showConnectDialog
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showConnectionDialog
@@ -130,6 +132,11 @@ class AccountPreference : PreferenceFragmentCompat() {
             true
         }
 
+        /** Help Preference */
+        findPreference<Preference>(HELP_PREF)?.setOnPreferenceClickListener {
+            Utils.commonUrlLaunch(requireContext(), getString(R.string.app_docs_sync))
+            true
+        }
     }
 
     override fun onResume() {

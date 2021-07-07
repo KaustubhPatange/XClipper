@@ -32,7 +32,7 @@ class SettingsFragment : ValueFragment(R.layout.recycler_view) {
 
         /** Sync Setting */
         list.add(
-            SpecialMenu(title = getString(R.string.account), image = R.drawable.ic_account) {
+            SpecialMenu(title = getString(R.string.account), image = R.drawable.ic_sync) {
                 navViewModel.navigateTo(Settings.Screen.ACCOUNT)
             }
         )

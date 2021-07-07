@@ -64,7 +64,7 @@
     <string name="stc">Scan to connect</string>
     <string name="connection_exist">Already connected to database!</string>
     <string name="err_device_validate">Session expired!</string>
-    <string name="account">Account</string>
+    <string name="account">Synchronization</string>
     <string name="bind_title">Database binding</string>
     <string name="bind_summary">Enable uploading of device data to the database</string>
     <string name="logout_summary">Remove all connection with the database</string>
@@ -197,4 +197,6 @@
     <string name="tag_delete_title">Delete \"%1$s\"</string>
     <string name="tag_delete_message">%1$d clip(s) are dependent on this tag. Do you still want to still remove it?</string>
     <string name="onboard_screens_reset">All onboarding screens has been reset!</string>
+    <string name="read_guide">Need help?</string>
+    <string name="read_guide_text">Read this step by step tutorial on how to setup synchronization across multiple devices.</string>
 </resources>
