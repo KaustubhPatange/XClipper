@@ -1,1 +1,3 @@
+What's new in version x.x.x.x? 
+<!-- Loaded from scripts\changes.txt -->
 - Initial Release
