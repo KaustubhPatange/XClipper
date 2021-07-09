@@ -204,7 +204,8 @@ namespace Components
                 if (firebaseInvoked)
                 {
                     PushUser();
-                }else
+                }
+                else
                 {
                     ResetUser();
                 }
@@ -356,7 +357,7 @@ namespace Components
                 MsgBoxHelper.ShowError(Translation.MSG_FIREBASE_CLIENT_ERR);
                 //clearAwaitedGlobalUserTask();
 
-                // TODO; Do something when client isn't initialized (I guess this check would be of use).
+                // TODO; Edit, I think it's done Do something when client isn't initialized (I guess this check would be of use).
                 /* 
                  * We can implement a call stack to this, all you need to do is to make
                  * a stack that accepts data & operation name. Once this client is
@@ -444,8 +445,8 @@ namespace Components
                 {
                     if (BindDatabase)
                         binder.OnDataRemoved(a);
-                            
-                }, onDataChange: (o, a, c) => 
+
+                }, onDataChange: (o, a, c) =>
                 {
                     User? firebaseUser = JsonConvert.DeserializeObject<User>(a.Data);
                     Debug.WriteLine("skdjkwdjd");
@@ -842,7 +843,7 @@ namespace Components
                 try
                 {
                     var xml = File.ReadAllText(UserStateFile);
-                  //  user = User.FromNode(XElement.Parse(xml));
+                    //  user = User.FromNode(XElement.Parse(xml));
                     Log("Previous user state is restored");
                 }
                 catch

@@ -1,4 +1,4 @@
-_This is a paid feature read more about it [here]()._ // TODO: Add a guide and color to this text
+_This is a paid feature read more about it [here](https://kaustubhpatange.github.io/XClipper/)._
 
 - ![#f03c15](https://via.placeholder.com/15/f03c15/000000?text=+) `#f03c15`
   > By default the database we created to enable sync is not secure enough. Anyone with the url can easily read or having all credentials can also perform write operations.

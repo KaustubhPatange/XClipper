@@ -14,7 +14,6 @@ using System.Windows.Threading;
 
 namespace Components
 {
-    //TODO: If everything works fine then remove the commented methods.
     public static class ApplicationHelper
     {
 
@@ -27,7 +26,7 @@ namespace Components
         #endregion
 
         #region Methods
-        
+
         /// <summary>
         /// In order to perform synchronous operation asynchronously.
         /// </summary>
@@ -52,10 +51,10 @@ namespace Components
                 bool isActive = IsActivated(handle);
                 if (!isActive)
                 {
-                  //  if (isExecuted) return;
-                   // Debug.WriteLine("Deactivated()");
+                    //  if (isExecuted) return;
+                    // Debug.WriteLine("Deactivated()");
                     block.Invoke();
-                   // isExecuted = true;
+                    // isExecuted = true;
                 }
                 else isExecuted = false;
             };
@@ -76,7 +75,7 @@ namespace Components
 
             return activeProcId == procId;
         }
-        
+
         /// <summary>
         /// Activate a window from anywhere by attaching to the foreground window
         /// </summary>
@@ -89,12 +88,12 @@ namespace Components
             var currentForegroundWindow = GetForegroundWindow();
             var currentForegroundWindowThreadId = GetWindowThreadProcessId(currentForegroundWindow, IntPtr.Zero);
             var thisWindowThreadId = GetWindowThreadProcessId(hWnd, IntPtr.Zero);
-            
+
             Thread.Sleep(70);
-            
+
             w.Show();
             w.Activate();
-            
+
             if (currentForegroundWindowThreadId != thisWindowThreadId)
             {
                 AttachThreadInput(currentForegroundWindowThreadId, thisWindowThreadId, true);
@@ -116,7 +115,7 @@ namespace Components
                 }
             });
         }
-        
+
         /// <summary>
         /// Gets the Window title
         /// </summary>
@@ -146,13 +145,13 @@ namespace Components
         #endregion
 
         #region Imports
-        
+
         [DllImport("user32.dll")]
         static extern int GetWindowText(IntPtr hWnd, StringBuilder text, int count);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
         internal static extern IntPtr GetForegroundWindow();
-        
+
         [DllImport("user32.dll")]
         static extern bool SetForegroundWindow(IntPtr hWnd);
 
@@ -170,7 +169,7 @@ namespace Components
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-        
+
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern IntPtr SetFocus(IntPtr hWnd);
         #endregion

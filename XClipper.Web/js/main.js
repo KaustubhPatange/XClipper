@@ -159,8 +159,8 @@ function contactSubmit() {
     }
   };
   xmlHttp.open(
-    "POST",
-    "https://script.google.com/macros/s/AKfycbzX3zKSJvupqu914uo-p4IVCPXFFjVidJ4aG7gaHYTWPe8Sgmqq/exec",
+    "POST", // will be sent to xclipper.help@gmail.com
+    "https://script.google.com/macros/s/AKfycbzuX490mM41ZO7TqzGAn6oAfC4HP6avThqrrO208nNiQYfRUTY/exec",
     true
   );
   xmlHttp.send(JSON.stringify(params));

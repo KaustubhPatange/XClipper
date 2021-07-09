@@ -5,8 +5,6 @@
 <a href="https://github.com/KaustubhPatange/XClipper/issues">![GitHub issues](https://img.shields.io/github/issues/KaustubhPatange/XClipper)</a>
 <a href="https://github.com/KaustubhPatange/XClipper/discussions">![GitHub discussions](https://img.shields.io/github/discussions/KaustubhPatange/XClipper?color=%237289DA)</a>
 
- <h1 style="color:red">⚠️ Underconstruction ⚠️</h1>
-
 **XClipper** is a clipboard manager for Windows & Android which helps to track clipboard activities and makes it easier to interact with them ❤️
 
 <a href="https://kaustubhpatange.github.io/XClipper"><img width="120px" src="XClipper.Web/images/icon.png"/></a>
