@@ -5,7 +5,7 @@ namespace Components
     public static class TaskExtensions
     {
         /// <summary>
-        /// Code will be run on different thread.
+        /// Code will be run on different thread just like fire &#38; forget.
         /// <code> 
         /// Task.Run(async () => await t.ConfigureAwait(false));
         /// </code>

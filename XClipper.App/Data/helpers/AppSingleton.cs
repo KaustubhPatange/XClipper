@@ -196,7 +196,9 @@ namespace Components.viewModels
             // Implementation of setting TotalClipLength 
             if (list.Count >= TotalClipLength)
             {
-                dataDB.Delete(list[list.Count - 1]);
+                var lastItem = list[list.Count - 1];
+                dataDB.Delete(lastItem);
+                FirebaseSingletonV2.GetInstance.RemoveImage(Path.GetFileName(lastItem.ImagePath)).RunAsync(); // fire & forget
             }
             
             dataDB.Insert(model);
