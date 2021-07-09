@@ -198,7 +198,7 @@ namespace Components.viewModels
             {
                 var lastItem = list[list.Count - 1];
                 dataDB.Delete(lastItem);
-                FirebaseSingletonV2.GetInstance.RemoveImage(Path.GetFileName(lastItem.ImagePath)).RunAsync(); // fire & forget
+                FirebaseSingletonV2.GetInstance.RemoveImage(Path.GetFileName(lastItem.ImagePath)).RunAsync(); // TODO: See if you really want to delete the clip from online database as well.
             }
             
             dataDB.Insert(model);
