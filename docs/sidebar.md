@@ -15,7 +15,9 @@
   **Developers**
 - [Compilation guide](compile)
 
+<!--
 **Test Pages (will be removed)**
+
 
 - [Introduction](wiki/Introduction.md)
 - [Finding your UID](wiki/Finding-your-Unique-Id.md)
@@ -29,4 +31,4 @@
 - [Hidden Settings](wiki/Hidden-Settings.md)
 - [FAQs](wiki/FAQs.md)
   **Developers**
-- [Compilation guide](wiki/Compilation-guide.md)
+- [Compilation guide](wiki/Compilation-guide.md) -->

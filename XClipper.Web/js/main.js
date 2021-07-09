@@ -198,7 +198,7 @@ function downloadFocusOut() {
 
 async function loadInformation() {
   const options = {
-    url: "https://api.github.com/repos/adb-over-wifi/demo-release/releases", // TODO: Change to real github api release uri
+    url: "https://api.github.com/repos/KaustubhPatange/XClipper/releases",
     method: "GET",
   };
 
