@@ -210,7 +210,7 @@ namespace Components
 
         private void UpdateSettingClicked(object sender, EventArgs e)
         {
-            CheckForUpdates();
+            CheckForUpdates(true);
         }
 
         private void ImportDataClicked(object sender, EventArgs e)
@@ -650,7 +650,7 @@ namespace Components
             UpdateSettingItem.Visible = true;
         }
 
-        private void CheckForUpdates()
+        private void CheckForUpdates(bool showNotAvailableMessage = false)
         {
             if (!CheckApplicationUpdates && IsPurchaseDone) return;
             var updater = AppModule.Container.Resolve<IUpdater>();
@@ -659,6 +659,9 @@ namespace Components
                 if (isAvailable)
                 {
                     CallUpdateWindow(model);
+                } else if (showNotAvailableMessage)
+                {
+                   MessageBox.Show(Translation.MSG_NO_UPDATE_TEXT, Translation.MSG_NO_UPDATE_TITLE);
                 }
             });
         }

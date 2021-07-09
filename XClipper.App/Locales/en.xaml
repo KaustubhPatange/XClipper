@@ -148,6 +148,9 @@
     <system:String x:Key="msg_intro_message">Looks like you are just starting out with XClipper. Check this tutorial to learn more about it's shortcuts.</system:String>
     <system:String x:Key="msg_purchase_title">Premium</system:String>
     <system:String x:Key="msg_purchase_message">Purchase premium to unlock all features as well as support me to continue working on this project.</system:String>
+    <system:String x:Key="msg_no_update_title">Update not available.</system:String>
+    <system:String x:Key="msg_no_update_text">No new update is available which means you are using the latest version.</system:String>
+    
     <system:String x:Key="popup_added">Added:</system:String>
     <system:String x:Key="popup_space_focus">...Press (Space) to Focus...</system:String>
     <system:String x:Key="popup_edit_err">Editing is not supported for this format</system:String>

@@ -153,6 +153,8 @@ namespace Components
 		public readonly string MSG_INTRO_MESSAGE = rm.GetString("msg_intro_message");
 		public readonly string MSG_PURCHASE_TITLE = rm.GetString("msg_purchase_title");
 		public readonly string MSG_PURCHASE_MESSAGE = rm.GetString("msg_purchase_message");
+		public readonly string MSG_NO_UPDATE_TITLE = rm.GetString("msg_no_update_title");
+		public readonly string MSG_NO_UPDATE_TEXT = rm.GetString("msg_no_update_text");
 		public readonly string POPUP_ADDED = rm.GetString("popup_added");
 		public readonly string POPUP_SPACE_FOCUS = rm.GetString("popup_space_focus");
 		public readonly string POPUP_EDIT_ERR = rm.GetString("popup_edit_err");
