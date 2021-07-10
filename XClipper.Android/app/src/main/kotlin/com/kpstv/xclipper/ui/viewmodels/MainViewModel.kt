@@ -14,7 +14,6 @@ import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.data.repository.MainRepository
-import com.kpstv.xclipper.extensions.Coroutines
 import com.kpstv.xclipper.extensions.enumerations.FilterType
 import com.kpstv.xclipper.extensions.listeners.RepositoryListener
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
@@ -51,21 +50,21 @@ class MainViewModel @Inject constructor(
 ) : ViewModel() {
     private val TAG = javaClass.simpleName
 
-    val viewModelIOScope = viewModelScope.coroutineContext + Dispatchers.IO
+    val viewModelIOContext = viewModelScope.coroutineContext + Dispatchers.IO
 
     val currentClip: LiveData<String>
         get() = clipboardProvider.getCurrentClip()
 
     private val mutableClipLiveData = MutableStateFlow<List<Clip>>(emptyList())
 
-    val clipLiveData: LiveData<List<Clip>> = mutableClipLiveData.asLiveData(viewModelIOScope)
+    val clipLiveData: LiveData<List<Clip>> = mutableClipLiveData.asLiveData(viewModelIOContext)
 
-    val tagCountData: LiveData<List<TagMap>> = mainRepository.getAllTags().asLiveData(viewModelIOScope)
+    val tagCountData: LiveData<List<TagMap>> = mainRepository.getAllTags().asLiveData(viewModelIOContext)
 
-    val tagLiveData: LiveData<List<Tag>> = tagRepository.getAllLiveData().asLiveData(viewModelIOScope)
+    val tagLiveData: LiveData<List<Tag>> = tagRepository.getAllLiveData().asLiveData(viewModelIOContext)
 
     fun postToRepository(clip: Clip) {
-        viewModelScope.launch { mainRepository.updateRepository(clip) }
+        CoroutineScope(viewModelIOContext).launch { mainRepository.updateRepository(clip, toFirebase = true) }
     }
 
     fun changeClipPin(clip: Clip?, boolean: Boolean) {
@@ -93,15 +92,15 @@ class MainViewModel @Inject constructor(
     }
 
     fun deleteFromRepository(clip: Clip) {
-        viewModelScope.launch { mainRepository.deleteClip(clip) }
+        CoroutineScope(viewModelIOContext).launch { mainRepository.deleteClip(clip) }
     }
 
     fun deleteMultipleFromRepository(clips: List<Clip>) {
-        viewModelScope.launch { mainRepository.deleteMultiple(clips) }
+        CoroutineScope(viewModelIOContext).launch { mainRepository.deleteMultiple(clips) }
     }
 
     fun postUpdateToRepository(oldClip: Clip, newClip: Clip) {
-        viewModelScope.launch {
+        CoroutineScope(viewModelIOContext).launch {
             mainRepository.updateClip(newClip, FilterType.Id)
             if (oldClip.data != newClip.data) {
                 firebaseProvider.replaceData(oldClip, newClip)
@@ -120,7 +119,7 @@ class MainViewModel @Inject constructor(
     }
 
     fun postToTagRepository(tag: Tag) {
-        Coroutines.io { tagRepository.insertTag(tag) }
+        viewModelScope.launch { tagRepository.insertTag(tag) }
     }
 
     fun deleteFromTagRepository(tag: Tag) {
@@ -182,7 +181,7 @@ class MainViewModel @Inject constructor(
             searchManager.searchFilters
         ).observeForever { (_: Int?, searchString: String?, tagFilters: List<Tag>?, searchFilters: List<String>?) ->
             val filter = ClipDataDao.createQuery(searchFilters, tagFilters, searchString)
-            CoroutineScope(viewModelIOScope).launch {
+            CoroutineScope(viewModelIOContext).launch {
                 val list = mainRepository.executeQuery(filter)
                 mutableClipLiveData.emit(list)
             }
