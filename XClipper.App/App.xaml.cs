@@ -685,7 +685,7 @@ namespace Components
 
         private void LoadLanguageResource()
         {
-            foreach (var file in Directory.GetFiles("locales", "*.xaml"))
+            foreach (var file in Directory.GetFiles($"{BaseDirectory}\\locales", "*.xaml"))
             {
                 LanguageCollection.Add(file);
             }

@@ -42,7 +42,10 @@ jobs:
       - name: Building Installer
         id: installer
         run: |
-          copy /y XClipper.App\Locales\*.xaml XClipper.App\bin\Release\locales
+          copy XClipper.App\Locales\*.xaml XClipper.App\bin\Release\locales
+          del XClipper.App\bin\Release\*.xml
+          del XClipper.App\bin\Release\*.pdb
+          del XClipper.App\bin\Release\*.config
           echo "::set-output name=production_version::$(${{ github.workspace }}\packager.exe -i exe)"
           ${{ github.workspace }}\packager.exe -r
           scripts\inno\iscc.exe scripts\installer.iss
