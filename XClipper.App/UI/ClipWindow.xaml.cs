@@ -521,6 +521,8 @@ namespace Components
             else
             {
                 if (index == -1) index = _lvClip.SelectedIndex;
+                if (index == -1) return;
+                
                 var model = _lvClip.Items[index] as TableCopy;
                 UpdateLastUsedTime(model);
                 switch (model.ContentType)

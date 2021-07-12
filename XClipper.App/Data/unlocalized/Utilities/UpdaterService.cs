@@ -58,6 +58,8 @@ namespace Components
         // Transforms the list based on filter channel.
         private List<ReleaseItem>? ApplyFilterBasedOnUpdateChannel(List<ReleaseItem>? releases)
         {
+            if (releases == null) return null;
+            
             ReleaseItem? update = null;
             switch (DefaultSettings.UpdateChannel)
             {
