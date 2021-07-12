@@ -74,7 +74,7 @@ namespace Components
             if (update != null)
             {
                 var index = releases.IndexOf(update);
-                return releases.GetRange(index, releases.Count - 1);
+                return releases.GetRange(index, releases.Count);
             }
 
             return releases;

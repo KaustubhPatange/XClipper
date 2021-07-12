@@ -1,4 +1,4 @@
-## What's new in version x.x.x.x? 
+## What's new in version v1.x.x.x? 
 <!-- Loaded from scripts\changes.txt -->
 <!-- Make sure you update version number in XClipper.sln for this new release -->
 - Initial Release
