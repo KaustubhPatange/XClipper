@@ -10,6 +10,7 @@ using System.Dynamic;
 using System.Collections.Generic;
 using static Components.TranslationHelper;
 using System.Diagnostics;
+using System.Reflection;
 using System.Threading.Tasks;
 using RestSharp;
 using System.Runtime.Remoting.Channels;
@@ -75,6 +76,8 @@ namespace Components
             try
             {
                 dib.AppendLine("-----------------------------------------------------------");
+                // App Version
+                dib.AppendLine($"App Version: {Assembly.GetExecutingAssembly().GetName().Version}");
                 // OS
                 dib.AppendLine($"OS: {Environment.OSVersion} {(Environment.Is64BitOperatingSystem ? "x64" : "x86")} {Environment.UserName}");
                 // Display
