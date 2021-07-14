@@ -79,37 +79,49 @@ namespace Components
                 // App Version
                 dib.AppendLine($"App Version: {Assembly.GetExecutingAssembly().GetName().Version}");
                 // OS
-                dib.AppendLine($"OS: {Environment.OSVersion} {(Environment.Is64BitOperatingSystem ? "x64" : "x86")} {Environment.UserName}");
+                dib.AppendLine(
+                    $"OS: {Environment.OSVersion} {(Environment.Is64BitOperatingSystem ? "x64" : "x86")} {Environment.UserName}");
                 // Display
                 foreach (dynamic obj in GetAllObjects("Win32_DesktopMonitor"))
                 {
                     if (obj.ScreenWidth != null)
-                        dib.AppendLine($"Display: {obj.ScreenWidth}x{obj.ScreenHeight}, {obj.SystemName}, {obj.MonitorType}");
+                        dib.AppendLine(
+                            $"Display: {obj.ScreenWidth}x{obj.ScreenHeight}, {obj.SystemName}, {obj.MonitorType}");
                 }
+
                 // Memory
                 foreach (dynamic obj in GetAllObjects("Win32_PhysicalMemory"))
                 {
-                    dib.AppendLine($"Memory: {((long)obj.Capacity).ToFileSizeApi()} {obj.Speed} MHz");
+                    dib.AppendLine($"Memory: {((long) obj.Capacity).ToFileSizeApi()} {obj.Speed} MHz");
                 }
+
                 // Video Controller
                 foreach (dynamic obj in GetAllObjects("Win32_VideoController"))
                 {
-                    dib.AppendLine($"VideoController: {obj.Name}, {((long)obj.AdapterRAM).ToFileSizeApi()}");
+                    dib.AppendLine($"VideoController: {obj.Name}, {((long) obj.AdapterRAM).ToFileSizeApi()}");
                 }
+
                 // Processor
                 foreach (dynamic obj in GetAllObjects("Win32_Processor"))
                 {
                     dib.AppendLine($"ChipSet: {obj.Name} Threads/Cores: ({obj.ThreadCount}/{obj.NumberOfCores})");
                 }
+
                 // BIOS
                 foreach (dynamic obj in GetAllObjects("Win32_BIOS"))
                 {
                     dib.AppendLine($"BIOS: {obj.Name}");
                 }
+
                 dib.AppendLine("-----------------------------------------------------------");
                 dib.AppendLine("");
             }
-            catch { }
+            catch (Exception ex)
+            {
+                dib.AppendLine($"Error: {ex}");
+                dib.AppendLine("-----------------------------------------------------------");
+                dib.AppendLine("");
+            }
 
             dib.Append(contents);
 

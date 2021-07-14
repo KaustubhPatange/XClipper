@@ -125,7 +125,7 @@ namespace Components
 
         public static void Clear()
         {
-            Clipboard.Clear();
+            try { Clipboard.Clear(); } catch { }
         }
 
         public static void SetText(string data)
@@ -133,22 +133,26 @@ namespace Components
             try
             {
                 Clipboard.SetText(data);
-            } catch {  Clipboard.SetDataObject(data); }
+            }
+            catch
+            {
+                try { Clipboard.SetDataObject(data); } catch {}
+            }
         }
 
         public static void SetImage(BitmapSource source)
         {
-            System.Windows.Clipboard.SetImage(source);
+            try { System.Windows.Clipboard.SetImage(source); } catch { }
         }
 
         public static void SetAudio(Stream stream)
         {
-            System.Windows.Clipboard.SetAudio(stream);
+            try { System.Windows.Clipboard.SetAudio(stream); } catch { }
         }
 
         public static void SetFileDropList(StringCollection collection)
         {
-            Clipboard.SetFileDropList(collection);
+            try { Clipboard.SetFileDropList(collection); } catch { }
         }
 
         /// <summary>

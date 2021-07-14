@@ -36,35 +36,38 @@ namespace Components
         {
             factory.ClipboardChanged += (o, e) =>
             {
-                /* There is a bug in library which automtically triggers this whenever
+                try
+                {
+                    /* There is a bug in library which automtically triggers this whenever
                  * app is launched first time so I did a hack to fallback this call.
                  */
-                if (isFirstLaunch)
-                {
-                    isFirstLaunch = false;
-                    return;
-                }
-
-                /**
-                 * We will debounce the record span by the <see cref="offset"/>
-                 * to prevent any duplicate capture.
-                 */
-                var currentMilliSeconds = GetCurrentMilliSeconds();
-
-                if ((lastRecordMilliSeconds + offset) > currentMilliSeconds)
-                    return;
-
-                lastRecordMilliSeconds = GetCurrentMilliSeconds();
-
-                if (e.ContentType != SharpClipboard.ContentTypes.Other)
-                {
-                    ClipType = (ContentType)(int)e.ContentType;
-                    if (e.ContentType == SharpClipboard.ContentTypes.Image)
+                    if (isFirstLaunch)
                     {
-                        if (ProcessImage()) return;
+                        isFirstLaunch = false;
+                        return;
                     }
-                    binder.OnChanged();
-                }
+
+                    /**
+                     * We will debounce the record span by the <see cref="offset"/>
+                     * to prevent any duplicate capture.
+                     */
+                    var currentMilliSeconds = GetCurrentMilliSeconds();
+
+                    if ((lastRecordMilliSeconds + offset) > currentMilliSeconds)
+                        return;
+
+                    lastRecordMilliSeconds = GetCurrentMilliSeconds();
+
+                    if (e.ContentType != SharpClipboard.ContentTypes.Other)
+                    {
+                        ClipType = (ContentType)(int)e.ContentType;
+                        if (e.ContentType == SharpClipboard.ContentTypes.Image)
+                        {
+                            if (ProcessImage()) return;
+                        }
+                        binder.OnChanged();
+                    }
+                } catch { }
             };
         }
 
