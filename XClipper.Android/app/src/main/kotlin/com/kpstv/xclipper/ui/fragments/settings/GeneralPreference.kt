@@ -118,7 +118,7 @@ class GeneralPreference : PreferenceFragmentCompat() {
 
         /** Reset onboarding screens **/
         findPreference<Preference>(RESET_PREF)?.setOnPreferenceClickListener {
-            preferenceProvider.putBooleanKey(App.SHOW_SEARCH_FEATURE, false) // bubble search feature
+            preferenceProvider.putBooleanKey(App.SHOW_SEARCH_FEATURE, true) // bubble search feature
             preferenceProvider.putBooleanKey(App.TUTORIAL_PREF, false)
             Toasty.info(requireContext(), getString(R.string.onboard_screens_reset)).show()
             true

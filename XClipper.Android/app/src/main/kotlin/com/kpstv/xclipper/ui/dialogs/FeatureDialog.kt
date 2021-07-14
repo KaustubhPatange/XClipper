@@ -102,7 +102,7 @@ class FeatureDialog(ctx: Context) {
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
 
-            val data: DialogData = intent?.getParcelableExtra(DIALOG_DATA) as DialogData
+            val data: DialogData = intent?.getParcelableExtra<DialogData>(DIALOG_DATA) as DialogData
             val dialog = create(this, data).apply {
                 setOnClickListener { alert ->
                     alert.setOnDismissListener {
