@@ -11,7 +11,7 @@
 - [Migrating License](migrating)
 - [Copy Buffers](buffers)
 - [Hidden Settings](hidden)
-- [FAQs](faqs)
+- [FAQs](faq)
   **Developers**
 - [Compilation guide](compile)
 
