@@ -34,7 +34,7 @@ All of the individual documentation topics can be found in the [docs](https://ka
 
 - [Getting started with XClipper](https://kaustubhpatange.github.io/XClipper/docs/#/introduction)
 - [Start synchronizing clipboard activity](https://kaustubhpatange.github.io/XClipper/docs/#/sync)
-- [FAQs](https://kaustubhpatange.github.io/XClipper/docs/#/faqs)
+- [FAQs](https://kaustubhpatange.github.io/XClipper/docs/#/faq)
 
 ## Discussions
 
