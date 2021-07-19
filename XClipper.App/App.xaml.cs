@@ -687,7 +687,7 @@ namespace Components
         {
             foreach (var file in Directory.GetFiles($"{BaseDirectory}\\locales", "*.xaml"))
             {
-                LanguageCollection.Add(file);
+                LanguageCollection.Add(file.Replace($"{BaseDirectory}\\", ""));
             }
 
             rm.Source = new Uri($"{BaseDirectory}\\{CurrentAppLanguage}", UriKind.RelativeOrAbsolute);
