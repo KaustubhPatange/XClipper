@@ -8,7 +8,6 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using static Components.DefaultSettings;
-using static Components.TranslationHelper;
 using static Components.FirebaseHelper;
 using static Components.MainHelper;
 using static Components.Constants;

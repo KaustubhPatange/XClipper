@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Windows.Threading;
 using System.Collections.Generic;
-using static Components.TranslationHelper;
 
 #nullable enable
 

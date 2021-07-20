@@ -1,6 +1,5 @@
 ﻿using static Components.DefaultSettings;
 using static Components.Constants;
-using static Components.TranslationHelper;
 using System.IO;
 using System.Xml.Linq;
 using FireSharp.Core.Interfaces;
@@ -526,9 +525,9 @@ namespace Components
                     previousUnEncryptedData: removedClips.FirstOrDefault().DecryptBase64(DatabaseEncryptPassword),
                     newUnEncryptedData: addedClips.FirstOrDefault().DecryptBase64(DatabaseEncryptPassword)
                 );
-            else if (addedClips.IsNotEmpty()) // On clip updated
+            else if (addedClips.IsListNotEmpty()) // On clip updated
                 binder?.OnClipItemAdded(addedClips.Select(c => c.DecryptBase64(DatabaseEncryptPassword)).ToList());
-            else if (removedClips.IsNotEmpty()) // On clip removed
+            else if (removedClips.IsListNotEmpty()) // On clip removed
                 binder?.OnClipItemRemoved(removedClips.Select(c => c.DecryptBase64(DatabaseEncryptPassword)).ToList());
 
             // Check for device addition & removal...

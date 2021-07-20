@@ -11,7 +11,6 @@ using System;
 using Components.viewModels;
 using static Components.Core;
 using System.Windows.Controls;
-using static Components.TranslationHelper;
 using System.Security.RightsManagement;
 using System.Windows.Documents;
 using System.Windows.Navigation;

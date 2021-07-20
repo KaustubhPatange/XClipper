@@ -3,7 +3,6 @@ using GalaSoft.MvvmLight.Command;
 using static Components.Constants;
 using System.Net;
 using System.Windows.Input;
-using static Components.TranslationHelper;
 using System;
 using System.Collections.Generic;
 using System.Windows;

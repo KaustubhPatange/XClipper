@@ -5,7 +5,6 @@ using System.Windows.Data;
 using System.Windows.Media;
 using static Components.DefaultSettings;
 using static Components.LicenseHandler;
-using static Components.TranslationHelper;
 
 namespace Components
 {

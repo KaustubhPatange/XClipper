@@ -2,7 +2,6 @@
 using System.Globalization;
 using System.Windows.Data;
 using static Components.DefaultSettings;
-using static Components.TranslationHelper;
 
 namespace Components
 {

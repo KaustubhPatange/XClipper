@@ -18,7 +18,6 @@ using System.IO;
 using Microsoft.Win32;
 using Microsoft.VisualBasic.FileIO;
 using System.Collections.Specialized;
-using static Components.TranslationHelper;
 using System.Windows.Media.Imaging;
 using Autofac;
 using System.Windows.Interop;

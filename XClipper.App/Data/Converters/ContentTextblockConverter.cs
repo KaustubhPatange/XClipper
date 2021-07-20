@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using static Components.App;
-using static Components.TranslationHelper;
 
 namespace Components
 {

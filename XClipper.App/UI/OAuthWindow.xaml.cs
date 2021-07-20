@@ -8,7 +8,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using static Components.TranslationHelper;
 using static Components.FirebaseHelper;
 
 namespace Components.UI

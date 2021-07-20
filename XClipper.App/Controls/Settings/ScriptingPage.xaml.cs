@@ -16,7 +16,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Components.UI;
-using static Components.TranslationHelper;
 
 namespace Components.Controls.Settings
 {

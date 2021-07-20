@@ -65,7 +65,7 @@ namespace Components
             if (File.Exists(IgnoreFilePath))
             {
                 var lines = File.ReadAllLines(IgnoreFilePath).Where(l => !l.StartsWith(Grammar.Comment)).Select(l => l.Trim());
-                if (lines.IsNotEmpty())
+                if (lines.IsListNotEmpty())
                 {
                     foreach (var line in lines)
                     {

@@ -32,6 +32,9 @@ namespace Components
             }
         }
 
+        public static bool isEmpty(this string t) => string.IsNullOrEmpty(t);
+        public static bool isNotEmpty(this string t) => !isEmpty(t);
+
         /// <summary>
         /// Calculate the similarity of two strings based on the offset percent.<br/><br/>
         /// See Also: <see href="https://stackoverflow.com/a/40775015/10133501">Stack Overflow</see> ↵

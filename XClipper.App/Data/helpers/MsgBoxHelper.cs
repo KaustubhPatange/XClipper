@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using static Components.TranslationHelper;
 
 namespace Components
 {

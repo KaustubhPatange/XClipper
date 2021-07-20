@@ -1,5 +1,4 @@
 ﻿using static Components.DefaultSettings;
-using static Components.TranslationHelper;
 using static Components.Constants;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;

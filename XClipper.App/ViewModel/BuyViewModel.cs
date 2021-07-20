@@ -5,7 +5,6 @@ using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
 using static Components.DefaultSettings;
 using System.Windows;
-using static Components.TranslationHelper;
 using static Components.MainHelper;
 using static Components.Core;
 using RestSharp;

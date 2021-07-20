@@ -8,7 +8,6 @@ using System.Windows.Input;
 using System.Management;
 using System.Dynamic;
 using System.Collections.Generic;
-using static Components.TranslationHelper;
 using System.Diagnostics;
 using System.Reflection;
 using System.Threading.Tasks;

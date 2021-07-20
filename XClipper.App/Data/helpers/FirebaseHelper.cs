@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using static Components.Constants;
 using static Components.DefaultSettings;
-using static Components.TranslationHelper;
 
 #nullable enable
 

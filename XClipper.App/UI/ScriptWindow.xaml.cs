@@ -6,7 +6,6 @@ using System.Windows.Controls;
 using Microsoft.Win32;
 using PropertyChanged;
 using XClipper;
-using static Components.TranslationHelper;
 
 namespace Components.UI
 {
@@ -42,8 +41,8 @@ namespace Components.UI
         
         public void UpdateProperties()
         {
-            IsRunEnabled = ScriptModel.Code.IsNotEmpty();
-            IsSaveEnabled = ScriptModel.Code.IsNotEmpty() && ScriptModel.Name.IsNotEmpty();
+            IsRunEnabled = ScriptModel.Code.IsListNotEmpty();
+            IsSaveEnabled = ScriptModel.Code.IsListNotEmpty() && ScriptModel.Name.IsListNotEmpty();
         }
 
         private void OnSaveButtonClicked(object sender, RoutedEventArgs e)

@@ -15,7 +15,6 @@ using Microsoft.Win32;
 using System.IO.Compression;
 using static Components.PathHelper;
 using SQLite;
-using static Components.TranslationHelper;
 using ClipboardManager.models;
 using FireSharp.Core.EventStreaming;
 using Autofac;
@@ -28,6 +27,7 @@ using System.Drawing;
 using System.Media;
 using System.Windows.Interop;
 using System.Net;
+using System.Text;
 using System.Windows.Input;
 
 #nullable enable
@@ -40,6 +40,7 @@ namespace Components
 
         public static List<string> LanguageCollection = new List<string>();
         public static ResourceDictionary rm = new ResourceDictionary();
+        public static ResourceDictionary rmf = new ResourceDictionary(); // fallback to en.xaml
         private KeyHookUtility hookUtility = new KeyHookUtility();
         private QuickPasteHelper quickPasteHelper = new QuickPasteHelper();
         private ClipWindow clipWindow;
@@ -689,9 +690,31 @@ namespace Components
             {
                 LanguageCollection.Add(file.Replace($"{BaseDirectory}\\", ""));
             }
-
+            
             rm.Source = new Uri($"{BaseDirectory}\\{CurrentAppLanguage}", UriKind.RelativeOrAbsolute);
+            rmf.Source = new Uri($"{BaseDirectory}\\{Settings.CURRENT_LOCALE}", UriKind.RelativeOrAbsolute);
+            
+            var builder = new StringBuilder();
+            builder.Append(@"<ResourceDictionary
+    xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""
+    xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml""
+    xmlns:system=""clr-namespace:System;assembly=mscorlib"">
+");
+            foreach (var key in rmf.Keys)
+            {
+                if (key is string)
+                {
+                    var value = rm.GetString(key as string) ?? rmf.GetString(key as string);
+                    builder.AppendLine($"<system:String x:Key=\"{key}\">{value}</system:String>");
+                }
+            }
 
+            builder.AppendLine("</ResourceDictionary>");
+            string path = $"{GetTemporaryPath()}\\xclipper-lang.xaml";
+            File.WriteAllText(path, builder.ToString());
+
+            rm.Source = new Uri(path, UriKind.RelativeOrAbsolute);
+            
             Resources.MergedDictionaries.RemoveAt(Resources.MergedDictionaries.Count - 1);
             Resources.MergedDictionaries.Add(rm);
         }

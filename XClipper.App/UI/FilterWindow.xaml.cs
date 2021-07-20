@@ -5,7 +5,6 @@ using System.Windows;
 using static Components.App;
 using System.Windows.Input;
 using Components.viewModels;
-using static Components.TranslationHelper;
 
 namespace Components
 {

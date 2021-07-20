@@ -14,7 +14,6 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using static Components.MainHelper;
-using static Components.TranslationHelper;
 
 namespace Components
 {
