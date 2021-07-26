@@ -1,0 +1,24 @@
+XClipper is a smart clipboard manager for Android with many features including support for synchronizing clipboard activity between Android & Windows through a companion desktop app (Read more about this feature on the website).
+
+So recently with Android 10, Google removed clipboard monitoring through the background process. This issue caused various apps to not function properly. There was a time I remembered where this issue on the [issue tracker](https://issuetracker.google.com/issues/123461156) was fully fudged with comments by people arguing why this functionality was removed. Nevertheless, we can't do anything other than find a way to monitor clipboard activity again. After quite a lot of research, I discovered a hack that enables clipboard monitoring for Android 10 devices. Although this feature is still in BETA with lot's of functionality missing. I made this project open source so developers can contribute their solution to this project.
+
+With this application, users can turn back monitoring of clipboard activity which will detect any copy, cut events, and save it the app history. See the list of features this app provides,
+
+🚀 Supports Android 10+ devices
+🚀 Open-sourced on Github
+
+🚀 Sync your clipboard across devices (Android & Windows only)
+🚀 Direct message a number without saving to contacts (WhatsApp or SMS)
+🚀 Shorten any links with TinyURL in one click
+🚀 Define a word (Multiple languages available in settings)
+🚀 Share copied content with people
+🚀 Open link in the browser
+🚀 Search the copied text on Google
+🚀 Find location on the map with co-ordinates or address
+🚀 Import and Export data to your device & Google drive
+
+<b>Website</b>
+https://kaustubhpatange.github.io/XClipper
+
+<b>Github</b>
+https://github.com/KaustubhPatange/XClipper/tree/master/XClipper.Android
