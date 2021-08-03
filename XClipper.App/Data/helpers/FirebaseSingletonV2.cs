@@ -66,12 +66,13 @@ namespace Components
 
         #region Variable declarations
 
-        private bool isPreviousAddRemaining, isPreviousRemoveRemaining, isPreviousUpdateRemaining = false;
+        private bool isPreviousAddRemaining, isPreviousRemoveRemaining, isPreviousUpdateRemaining, isPreviousRemoveDeviceRemaining = false;
         private bool _isDeinitialized = false, invokeStackAfterClientInitialization = false;
         public bool IsDeinitialized { get => _isDeinitialized; }
 
         private readonly List<string> addStack = new List<string>();
         private readonly List<string> removeStack = new List<string>();
+        private readonly List<string> removeDeviceStack = new List<string>();
         private readonly Dictionary<string, string> updateStack = new Dictionary<string, string>();
         private List<FirebaseInvoke> firebaseInvokeStack = new List<FirebaseInvoke>();
 
@@ -290,6 +291,9 @@ namespace Components
                     case FirebaseInvoke.REMOVE_CLIP_ALL:
                         firebaseInvokeStack.Add(FirebaseInvoke.REMOVE_CLIP_ALL);
                         firebaseInvokeStack = firebaseInvokeStack.Distinct().ToList();
+                        break;
+                    case FirebaseInvoke.REMOVE_DEVICE:
+                        removeDeviceStack.Add((string)data);
                         break;
                     default:
                         binder?.SendNotification(Translation.SYNC_ERROR_TITLE, Translation.MSG_FIREBASE_CLIENT_ERR);
@@ -712,6 +716,11 @@ namespace Components
                 var pair = updateStack.Pop();
                 await UpdateData(pair.Key, pair.Value).ConfigureAwait(false);
             }
+            if (removeDeviceStack.Count > 0)
+            {
+                var deviceId = removeDeviceStack.Pop();
+                await RemoveDevice(deviceId).ConfigureAwait(false);
+            }
             foreach(var item in firebaseInvokeStack)
             {
                 switch(item)
@@ -725,13 +734,13 @@ namespace Components
         bool dispatcherEventPass = false;
         private void SurpassEvent(object o, EventArgs e)
         {
-            if (addStack.Count > 0 || removeStack.Count > 0 || updateStack.Count > 0 || firebaseInvokeStack.Count > 0)
+            if (addStack.Count > 0 || removeStack.Count > 0 || updateStack.Count > 0 || firebaseInvokeStack.Count > 0 || removeDeviceStack.Count > 0)
             {
                 if (dispatcherEventPass)
                 {
                     dTimer.Stop();
                     dispatcherEventPass = false;
-                    var eventsCount = addStack.Count + removeStack.Count + updateStack.Count + firebaseInvokeStack.Count;
+                    var eventsCount = addStack.Count + removeStack.Count + updateStack.Count + firebaseInvokeStack.Count + removeDeviceStack.Count;
                     binder?.SendNotification(string.Format(Translation.SYNC_TIMEOUT_ACTION_TITLE, eventsCount), Translation.SYNC_TIMEOUT_ACTION_TEXT, () => {
                         FirebaseHelper.ShowSurpassMessage();
                     });
@@ -786,17 +795,33 @@ namespace Components
         public async Task<List<Device>> RemoveDevice(string DeviceId)
         {
             Log($"Device Id: {DeviceId}");
-            if (AssertUnifiedChecks(FirebaseInvoke.REMOVE_DEVICE)) return new List<Device>();
+            if (AssertUnifiedChecks(FirebaseInvoke.REMOVE_DEVICE, DeviceId)) return new List<Device>();
+
+            if (isPreviousRemoveDeviceRemaining)
+            {
+                removeDeviceStack.Add(DeviceId);
+                Log($"Adding to removeDeviceStack: {addStack.Count}");
+                return new List<Device>();
+            }
+
+            isPreviousRemoveDeviceRemaining = true;
 
             if (await RunCommonTask().ConfigureAwait(false))
             {
                 var devices = user.Devices.Where(d => d.id != DeviceId).ToList();
+                if (removeDeviceStack.Count > 0)
+                {
+                    devices.RemoveAll(d => removeDeviceStack.Contains(d.id));
+                    removeDeviceStack.Clear();
+                }
                 if (devices.IsEmpty())
                     await client.SafeDeleteAsync($"{USER_REF}/{UID}/{DEVICE_REF}").ConfigureAwait(false);
                 else 
                     await client.SafeUpdateAsync($"{USER_REF}/{UID}/{DEVICE_REF}", devices).ConfigureAwait(false);
                 return devices;
             }
+
+            isPreviousRemoveDeviceRemaining = false;
 
             return new List<Device>();
         }
