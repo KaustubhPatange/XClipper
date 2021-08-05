@@ -44,6 +44,16 @@ android {
     }
 }
 
+tasks.register("checkForChangelog") {
+    doFirst {
+        val versionCode = project.android.defaultConfig.versionCode
+                val file = File("$rootDir\\fastlane\\metadata\\android\\en-US\\changelogs\\${versionCode}.txt")
+        if (!file.exists()) {
+            throw BuildCancelledException("Error: Please define a changelog for the versionCode $versionCode at \"fastlane\\metadata\\android\\en-US\\changelogs\"")
+        }
+    }
+}
+
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     for (moduleId in ModuleDependency.getAllModules().filterNot { it == ModuleDependency.APP })

@@ -18,6 +18,7 @@ default_platform(:android)
 platform :android do
   desc "Deploy a new version to the Google Play"
   lane :beta do
+    gradle(task: "app:checkForChangelog")
     gradle(task: "clean bundleRelease")
     upload_to_play_store(track: 'beta')
   end

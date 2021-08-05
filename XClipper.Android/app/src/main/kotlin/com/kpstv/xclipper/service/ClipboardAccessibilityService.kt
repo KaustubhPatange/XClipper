@@ -91,50 +91,54 @@ class ClipboardAccessibilityService : AccessibilityService() {
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
-        currentPackage = event?.packageName
+        try {
+            currentPackage = event?.packageName
 
-       // logger(TAG, "$event")
-        //  logger(TAG, "SourceText: ${event?.source}; Text is null: ${event?.text.isNullOrEmpty()}; $event")
-        //   logger(TAG, "Actions: ${ClipboardDetection.ignoreSourceActions(event?.source?.actionList)}, List: ${event?.source?.actionList}")
-        if (event?.eventType != null)
-            clipboardDetector.addEvent(event.eventType)
+            // logger(TAG, "$event")
+            //  logger(TAG, "SourceText: ${event?.source}; Text is null: ${event?.text.isNullOrEmpty()}; $event")
+            //   logger(TAG, "Actions: ${ClipboardDetection.ignoreSourceActions(event?.source?.actionList)}, List: ${event?.source?.actionList}")
+            if (event?.eventType != null)
+                clipboardDetector.addEvent(event.eventType)
 
-        postKeyboardValue(getKeyboardHeight(applicationContext))
+            postKeyboardValue(getKeyboardHeight(applicationContext))
 
-        event?.source?.apply {
-            if (className == EditText::class.java.name) {
-                nodeInfo = this
+            event?.source?.apply {
+                if (className == EditText::class.java.name) {
+                    nodeInfo = this
 //                logger("ClipboardAccessibilityService", "Does this work")
-                if (textSelectionStart == textSelectionEnd && text != null) {
-                    val isHintShowing = if (Build.VERSION.SDK_INT >= 26) isShowingHintText else text.toString().length > textSelectionEnd
-                    logger("BubbleService", "Text: $text, Cursor: $textSelectionEnd, isHint: $isHintShowing, contentDesc: $contentDescription")
+                    if (textSelectionStart == textSelectionEnd && text != null) {
+                        val isHintShowing = if (Build.VERSION.SDK_INT >= 26) isShowingHintText else text.toString().length > textSelectionEnd
+                        logger("BubbleService", "Text: $text, Cursor: $textSelectionEnd, isHint: $isHintShowing, contentDesc: $contentDescription")
 
-                    sendDataToBubbleService(text.toString(), isHintShowing, textSelectionEnd)
+                        sendDataToBubbleService(text.toString(), isHintShowing, textSelectionEnd)
+                    }
                 }
             }
-        }
 
-        if (powerManager.isInteractive) {
-            updateScreenInteraction(true)
-        } else
-            updateScreenInteraction(false)
+            if (powerManager.isInteractive) {
+                updateScreenInteraction(true)
+            } else
+                updateScreenInteraction(false)
 
-        if (event?.packageName != packageName)
-            LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(Intent(ACTION_VIEW_CLOSE))
+            if (event?.packageName != packageName)
+                LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(Intent(ACTION_VIEW_CLOSE))
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
-            && clipboardDetector.getSupportedEventTypes(event) && !isPackageBlacklisted(event?.packageName)
-        ) {
-            runForNextEventAlso = true
-            logger(TAG, "Running for first time")
-            runActivity(FLAG_ACTIVITY_NEW_TASK)
-            return
-        }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+                && clipboardDetector.getSupportedEventTypes(event) && !isPackageBlacklisted(event?.packageName)
+            ) {
+                runForNextEventAlso = true
+                logger(TAG, "Running for first time")
+                runActivity(FLAG_ACTIVITY_NEW_TASK)
+                return
+            }
 
-        if (runForNextEventAlso) {
-            logger(TAG, "Running for second time")
-            runForNextEventAlso = false
-            runActivity(FLAG_ACTIVITY_NEW_TASK)
+            if (runForNextEventAlso) {
+                logger(TAG, "Running for second time")
+                runForNextEventAlso = false
+                runActivity(FLAG_ACTIVITY_NEW_TASK)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
