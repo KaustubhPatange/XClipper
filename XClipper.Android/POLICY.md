@@ -18,7 +18,7 @@ Link to privacy policy of third party service providers used by the app
 
 - [Google Play Services](https://www.google.com/policies/privacy/)
 
-Apart from this the app uses services from third-party APIs mentioned below.
+Apart from this the app uses services from third-party APIs mentioned below (None of these mentioned websites collects any kind of data from the user).
 
 - [https://api.dictionaryapi.dev](https://dictionaryapi.dev/) - An open source API for finding definitions of a word.
 - https://tinyurl.com - A service for shortening URL.

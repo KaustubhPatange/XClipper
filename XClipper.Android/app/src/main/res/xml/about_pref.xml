@@ -36,7 +36,7 @@
 
         <Preference
             app:key="privacy_pref"
-            app:title="Privacy Policy"/>
+            app:title="@string/privacy_policy"/>
     </PreferenceCategory>
 
 </PreferenceScreen>
