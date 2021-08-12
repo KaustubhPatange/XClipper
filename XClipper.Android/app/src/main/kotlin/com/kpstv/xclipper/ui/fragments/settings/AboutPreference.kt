@@ -38,5 +38,10 @@ class AboutPreference : PreferenceFragmentCompat() {
             Utils.commonUrlLaunch(requireContext(), getString(R.string.app_github_issues))
             true
         }
+
+        findPreference<Preference>("privacy_pref")?.setOnPreferenceClickListener {
+            Utils.commonUrlLaunch(requireContext(), getString(R.string.app_privacy_policy))
+            true
+        }
     }
 }

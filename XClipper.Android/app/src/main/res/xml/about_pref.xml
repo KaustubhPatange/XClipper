@@ -33,6 +33,10 @@
             app:key="report_pref"
             app:title="@string/report_title"
             app:summary="@string/report_summary"/>
+
+        <Preference
+            app:key="privacy_pref"
+            app:title="Privacy Policy"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

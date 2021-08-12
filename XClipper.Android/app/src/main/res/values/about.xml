@@ -9,4 +9,6 @@
     <string name="app_github">https://github.com/KaustubhPatange/XClipper</string>
     <string name="app_github_issues">https://github.com/KaustubhPatange/XClipper/issues</string>
 
+    <string name="app_privacy_policy">https://github.com/KaustubhPatange/XClipper/blob/master/XClipper.Android/POLICY.md</string>
+
 </resources>
