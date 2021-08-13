@@ -12,6 +12,7 @@ import com.kpstv.xclipper.extensions.utils.Utils.Companion.showOverlayDialog
 import com.kpstv.xclipper.ui.activities.Start
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.item_gifview.view.*
+import pl.droidsonroids.gif.GifDrawable
 import javax.inject.Inject
 
 @AndroidEntryPoint

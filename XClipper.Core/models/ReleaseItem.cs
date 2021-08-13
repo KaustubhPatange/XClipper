@@ -9,7 +9,7 @@ namespace Components
     public class ReleaseItem
     {
         private string ReleaseBodyPattern = @"###\s?Added\s?(.*?)###\s?Update\s?(.*?)###\s?Bug\s?(.*?)\s(.*)";
-        private string TicketPattern = @"\s?#(\d)+";
+        private string TicketPattern = @"\s?#(\d)+|<!--(.*?)-->";
 
         public string url { get; set; }
         public string tag_name { get; set; }
@@ -34,7 +34,9 @@ namespace Components
 
         public string GetFormattedBody()
         {
-            return Regex.Replace(body, TicketPattern, "").Replace("##", "");
+            var ir = Regex.Replace(body, TicketPattern, "")
+                .Replace("##", "");
+            return Regex.Replace(ir, @"^(?:[\t ]*(?:\r?\n|\r))+", "", RegexOptions.Multiline);
         }
     }
 

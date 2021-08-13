@@ -18,7 +18,8 @@ makeToActOnCard("freeCard", "freeCardHr");
 makeToActOnCard("premiumCard", "premiumCardHr");
 
 $(document).ready(function () {
-  loadInformation();
+  loadWindowsInformation();
+  // loadAndroidInformation(); // TODO: Uncomment this when the app install should be shown from github releases.
 });
 
 function showModalDialog(
@@ -196,7 +197,7 @@ function downloadFocusOut() {
   document.getElementById("download-popup").style.display = "none";
 }
 
-async function loadInformation() {
+async function loadWindowsInformation() {
   const options = {
     url: "https://api.github.com/repos/KaustubhPatange/XClipper/releases",
     method: "GET",
@@ -204,9 +205,36 @@ async function loadInformation() {
 
   const response = await promisifiedRequest(options);
   const jObject = JSON.parse(response);
-  jObject[0].assets.map((e) => {
-    if (String(e.name).endsWith(".exe")) {
-      document.getElementById("btn-window").href = e.browser_download_url;
-    }
-  });
+  for (var i = 0; i < jObject.length; i++) {
+    const obj = jObject[i];
+    var set = false;
+    obj.assets.map((e) => {
+      if (String(e.name).endsWith(".exe")) {
+        document.getElementById("btn-window").href = e.browser_download_url;
+        set = true;
+      }
+    });
+    if (set) break;
+  }
+}
+
+async function loadAndroidInformation() {
+  const options = {
+    url: "https://api.github.com/repos/KaustubhPatange/XClipper/releases",
+    method: "GET",
+  };
+
+  const response = await promisifiedRequest(options);
+  const jObject = JSON.parse(response);
+  for (var i = 0; i < jObject.length; i++) {
+    const obj = jObject[i];
+    var set = false;
+    obj.assets.map((e) => {
+      if (String(e.name).endsWith(".apk")) {
+        document.getElementById("btn-apk").href = e.browser_download_url;
+        set = true;
+      }
+    });
+    if (set) break;
+  }
 }

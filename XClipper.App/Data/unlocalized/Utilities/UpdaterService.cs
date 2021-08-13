@@ -59,25 +59,26 @@ namespace Components
         private List<ReleaseItem>? ApplyFilterBasedOnUpdateChannel(List<ReleaseItem>? releases)
         {
             if (releases == null) return null;
+            var filtered = releases.Where(c => c.assets.Any(d => d.browser_download_url.EndsWith(".exe"))).ToList();
             
             ReleaseItem? update = null;
             switch (DefaultSettings.UpdateChannel)
             {
                 case Settings.UpdateChannel.Stable:
-                    update = releases.Find(c => !c.prerelease);
+                    update = filtered.Find(c => !c.prerelease);
                     break;
                 case Settings.UpdateChannel.Nightly:
-                    update = releases.Find(c => c.prerelease);
+                    update = filtered.Find(c => c.prerelease);
                     break;
             }
 
             if (update != null)
             {
-                var index = releases.IndexOf(update);
-                return releases.GetRange(index, releases.Count);
+                var index = filtered.IndexOf(update);
+                return filtered.GetRange(index, filtered.Count);
             }
 
-            return releases;
+            return filtered;
         }
     }
 }

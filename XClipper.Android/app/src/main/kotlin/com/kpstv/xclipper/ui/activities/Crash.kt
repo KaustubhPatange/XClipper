@@ -103,6 +103,7 @@ class Crash : AppCompatActivity() {
                 Manufacture: ${Build.MANUFACTURER}
                 Id: ${Build.ID}
                 Release: ${Build.VERSION.RELEASE}
+                App Version: ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})
                 -----------------------------------------------------------
                 """.trimIndent()
         val body = "$deviceDetails\n\n$stackTrace"

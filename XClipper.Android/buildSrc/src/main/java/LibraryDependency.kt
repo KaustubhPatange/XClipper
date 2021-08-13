@@ -24,7 +24,7 @@ private object LibraryVersion {
     const val TOASTY = "1.4.2"
     const val ROUND_BOTTOM_SHEET = "1.0.1"
     const val FLOATING_BUBBLE = "3.0.2"
-    const val GIF_DRAWABLE = "1.2.19"
+    const val GIF_DRAWABLE = "1.2.22"
     const val REALTIME_DATABASE = "19.3.1"
     const val FIREBASE_AUTH = "19.3.2"
     const val PLAY_SERVICE_AUTH = "18.0.0"
@@ -43,6 +43,7 @@ private object LibraryVersion {
     const val CAOC = "2.3.0"
     const val NAVIGATOR = "0.1-alpha27"
     const val NAVIGATOR_EXTENSIONS = "0.5"
+    const val WEBKIT = "1.2.0"
 }
 
 object LibraryDependency {
@@ -112,4 +113,6 @@ object LibraryDependency {
 
     const val NAVIGATOR = "io.github.kaustubhpatange:navigator:${LibraryVersion.NAVIGATOR}"
     const val NAVIGATOR_EXTENSIONS = "io.github.kaustubhpatange:navigator-extensions:${LibraryVersion.NAVIGATOR_EXTENSIONS}"
+
+    const val WEBKIT = "androidx.webkit:webkit:${LibraryVersion.WEBKIT}"
 }
