@@ -101,7 +101,7 @@ jobs:
         run: |
           curl -H "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/repos/$GITHUB_REPOSITORY/releases \
             | tr '\r\n' ' ' \
-            | jq '.[] | select(.draft == true) | .id' \
+            | jq '.[] | select( .assets[].browser_download_url | contains (".exe") ) | select(.draft == true) | .id' \
             | xargs -I '{}' \
           curl -X DELETE -H "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/repos/$GITHUB_REPOSITORY/releases/{}
 
