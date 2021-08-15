@@ -10,12 +10,9 @@ import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
-import com.kpstv.xclipper.data.repository.MainRepository
-import com.kpstv.xclipper.extensions.Coroutines
 import com.kpstv.xclipper.extensions.enumerations.FirebaseState
-import com.kpstv.xclipper.extensions.toInt
 import com.kpstv.xclipper.ui.helpers.ClipRepositoryHelper
-import com.kpstv.xclipper.ui.helpers.NotificationHelper
+import com.kpstv.xclipper.ui.helpers.Notifications
 import dagger.hilt.android.qualifiers.ApplicationContext
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.*
@@ -29,7 +26,6 @@ class FirebaseUtils @Inject constructor(
     private val firebaseProvider: FirebaseProvider,
     private val preferenceProvider: PreferenceProvider,
     private val dbConnectionProvider: DBConnectionProvider,
-    private val notificationHelper: NotificationHelper
 ) {
     private val TAG = FirebaseUtils::class.simpleName
 
@@ -49,7 +45,8 @@ class FirebaseUtils @Inject constructor(
                     clipRepositoryHelper.deleteClip(items)
                 },
                 removedAll = {
-                    notificationHelper.sendNotification(
+                    Notifications.sendNotification(
+                        context = context,
                         title = getString(R.string.app_name),
                         message = getString(R.string.data_removed_all)
                     )

@@ -1,12 +1,9 @@
-package com.kpstv.xclipper.extensions
+package com.kpstv.update
 
 import kotlinx.coroutines.suspendCancellableCoroutine
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.Response
+import okhttp3.*
 import java.io.IOException
 import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 
 suspend fun Call.await(): Result<Response> {
     return suspendCancellableCoroutine { continuation ->
@@ -17,7 +14,10 @@ suspend fun Call.await(): Result<Response> {
             }
 
             override fun onResponse(call: Call, response: Response) {
-                continuation.resume(Result.success(response))
+                if (response.isSuccessful)
+                    continuation.resume(Result.success(response))
+                else
+                    continuation.resume(Result.failure(IllegalStateException("The response was not successful")))
             }
         })
         continuation.invokeOnCancellation {
@@ -27,4 +27,8 @@ suspend fun Call.await(): Result<Response> {
             }
         }
     }
+}
+
+suspend fun OkHttpClient.get(url: String): Result<Response> {
+    return newCall(Request.Builder().url(url).build()).await()
 }

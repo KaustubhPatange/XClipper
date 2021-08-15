@@ -37,7 +37,7 @@ private object LibraryVersion {
     const val RECYCLERVIEW = "1.1.0"
     const val CWT = "0.1.7"
     const val HILT = "1.0.0"
-    const val AUTO_BINDINGS = "1.1-beta02"
+    const val AUTO_BINDINGS = "1.1-beta04"
     const val REALTIME_EXTENSIONS = "0.1.3"
     const val LIVEDATA_COMBINE_UTIL = "1.2.0"
     const val CAOC = "2.3.0"
@@ -105,6 +105,7 @@ object LibraryDependency {
 
     const val CWT = "io.github.kaustubhpatange:cwt:${LibraryVersion.CWT}"
     const val AUTO_BINDINGS = "io.github.kaustubhpatange:autobindings:${LibraryVersion.AUTO_BINDINGS}"
+    const val AUTO_BINDINGS_ROOM_NOOP = "io.github.kaustubhpatange:autobindings-room-noop:${LibraryVersion.AUTO_BINDINGS}"
     const val AUTO_BINDINGS_COMPILER = "io.github.kaustubhpatange:autobindings-compiler:${LibraryVersion.AUTO_BINDINGS}"
     const val REALTIME_EXTENSIONS = "io.github.kaustubhpatange:realtime-extensions:${LibraryVersion.REALTIME_EXTENSIONS}"
 

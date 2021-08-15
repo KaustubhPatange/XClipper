@@ -82,7 +82,8 @@ class Crash : AppCompatActivity() {
 
         lifecycleScope.launchWhenStarted {
             // No dependency injection because this activity outlives original process.
-            sendReport(stackTrace)
+            if (!BuildConfig.DEBUG)
+                sendReport(stackTrace)
         }
 
         stateData.observe(this) { success ->
@@ -112,7 +113,7 @@ class Crash : AppCompatActivity() {
         val url = "${BuildConfig.SERVER_URI}/report?sender=API%20${Build.VERSION.SDK_INT}&category=1"
         val request = Request.Builder().url(url).post(body.toRequestBody("text/plain".toMediaType())).build()
         val response = OkHttpClient().newCall(request).await()
-        stateData.value = response.isSuccessful
+        response.onSuccess { stateData.value = it.isSuccessful }
     }
 
     internal fun Int.dp() = this * resources.displayMetrics.density

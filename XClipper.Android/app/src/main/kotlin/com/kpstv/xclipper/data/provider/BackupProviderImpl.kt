@@ -42,10 +42,10 @@ class BackupProviderImpl @Inject constructor(
             stream.close()
 
             JSONObject(json).apply {
-                val clipTags: List<Tag> = TagListConverter.fromStringToTag(getString(database::clipTagDao::name.get()))
-                val clipUrls: List<UrlInfo> = UrlInfoListConverter.fromStringToUrlInfo(getString(database::clipUrlDao::name.get()))
-                val clipDefines: List<Definition> = DefinitionListConverter.fromStringToDefinition(getString(database::clipDefineDao::name.get()))
-                val clipData: List<Clip> = ClipListConverter.fromStringToClip(getString(database::clipDataDao::name.get()))
+                val clipTags: List<Tag> = TagListConverter.fromStringToTag(getString(database::clipTagDao::name.get())) ?: emptyList()
+                val clipUrls: List<UrlInfo> = UrlInfoListConverter.fromStringToUrlInfo(getString(database::clipUrlDao::name.get())) ?: emptyList()
+                val clipDefines: List<Definition> = DefinitionListConverter.fromStringToDefinition(getString(database::clipDefineDao::name.get())) ?: emptyList()
+                val clipData: List<Clip> = ClipListConverter.fromStringToClip(getString(database::clipDataDao::name.get())) ?: emptyList()
 
                 database.clipTagDao().deleteAll()
                 database.clipTagDao().insert(clipTags)

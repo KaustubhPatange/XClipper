@@ -12,7 +12,6 @@ import com.kpstv.xclipper.extensions.toInt
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -22,7 +21,6 @@ import kotlin.system.measureTimeMillis
 class ClipRepositoryHelper @Inject constructor(
     @ApplicationContext private val context: Context,
     private val repository: MainRepository,
-    private val notificationHelper: NotificationHelper
 ) {
     private val pendingClipData = ArrayDeque<String>()
 
@@ -70,7 +68,8 @@ class ClipRepositoryHelper @Inject constructor(
                     sendClipNotification(clip)
             }
             if (addedClips > 0 && !singleNotify && toNotify) {
-                notificationHelper.pushNotification(
+                Notifications.pushNotification(
+                    context = context,
                     text = "$addedClips ${context.getString(R.string.multi_clips_added)}",
                     withActions = false
                 )
@@ -90,7 +89,7 @@ class ClipRepositoryHelper @Inject constructor(
 
     private fun sendClipNotification(data: String) {
         mainThread {
-            notificationHelper.pushNotification(data)
+            Notifications.pushNotification(context, data)
         }
     }
 }

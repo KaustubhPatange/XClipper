@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.extensions.utils.RetrofitUtils
+import com.kpstv.xclipper.extensions.utils.asString
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -17,19 +17,22 @@ class UpgradeViewModel @Inject constructor(
 ) : ViewModel() {
 
     suspend fun fetchLatestPrice(context: Context): Flow<Result<String>> = flow {
-        val response = retrofitUtils.fetch(
+        val result = retrofitUtils.fetch(
             context.getString(R.string.app_website)
         )
 
         try {
-            if (!response.isSuccessful) throw Exception()
-            val body = response.body?.string()
+            result.fold(
+                onSuccess = { response ->
+                    if (!response.isSuccessful) throw Exception()
 
-            response.close()
+                    val body = response.asString()
+                    val amount = App.PREMIUM_PRICE_REGEX.toRegex().find(body!!)?.groups?.get(1)?.value!!
 
-            val amount = App.PREMIUM_PRICE_REGEX.toRegex().find(body!!)?.groups?.get(1)?.value!!
-
-            emit(Result.success(amount))
+                    emit(Result.success(amount))
+                },
+                onFailure = { throw Exception("Oops") }
+            )
         }catch (e: Exception) {
             emit(Result.failure<String>(Exception(context.getString(R.string.premium_latest))))
         }

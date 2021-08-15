@@ -22,7 +22,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.Dark">
         <activity android:name=".ui.activities.Crash"/>
-        <activity android:name=".ui.activities.Start" android:theme="@style/AppTheme">
+        <activity android:name=".ui.activities.Start" android:launchMode="singleTop" android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

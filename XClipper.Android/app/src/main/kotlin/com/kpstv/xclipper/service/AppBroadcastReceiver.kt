@@ -7,6 +7,7 @@ import android.content.Intent.*
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
+import com.kpstv.update.Updater
 import com.kpstv.xclipper.App.ACTION_OPEN_APP
 import com.kpstv.xclipper.App.ACTION_SMART_OPTIONS
 import com.kpstv.xclipper.App.APP_CLIP_DATA
@@ -16,9 +17,12 @@ import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.extensions.AbstractBroadcastReceiver
 import com.kpstv.xclipper.extensions.Coroutines
 import com.kpstv.xclipper.extensions.utils.Utils
+import com.kpstv.xclipper.service.worker.GithubUpdateWorker
 import com.kpstv.xclipper.ui.activities.SpecialActions
 import com.kpstv.xclipper.ui.activities.Start
 import dagger.hilt.android.AndroidEntryPoint
+import es.dmoral.toasty.Toasty
+import java.io.File
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -30,6 +34,10 @@ class AppBroadcastReceiver : AbstractBroadcastReceiver() {
 
     companion object {
         const val ACTION_OPEN_ACCESSIBILITY = "com.kpstv.action_open_accessibility"
+        const val ACTION_STOP_UPDATE = "com.kpstv.action_stop_update"
+        const val ACTION_INSTALL_APK = "com.kpstv.action_install_apk"
+
+        const val ARGUMENT_INSTALL_APK_FILE = "com.kpstv.action_install_apk:arg_apk_file"
     }
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -69,6 +77,17 @@ class AppBroadcastReceiver : AbstractBroadcastReceiver() {
             ACTION_OPEN_ACCESSIBILITY -> {
                 Utils.openAccessibility(context)
                 Toast.makeText(context, context.getString(R.string.open_accessibility), Toast.LENGTH_SHORT).show()
+            }
+            ACTION_STOP_UPDATE -> {
+                GithubUpdateWorker.stop(context)
+            }
+            ACTION_INSTALL_APK -> {
+                val filePath = intent.getStringExtra(ARGUMENT_INSTALL_APK_FILE)
+                if (filePath != null) {
+                    Updater.installUpdate(context, File(filePath))
+                } else {
+                    Toasty.error(context, context.getString(R.string.update_error)).show()
+                }
             }
         }
     }

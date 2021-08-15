@@ -30,7 +30,7 @@ import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.service.worker.AccessibilityWorker
 import com.kpstv.xclipper.ui.helpers.CrashHelper
-import com.kpstv.xclipper.ui.helpers.NotificationHelper
+import com.kpstv.xclipper.ui.helpers.Notifications
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 
@@ -40,7 +40,6 @@ import javax.inject.Inject
 class XClipperApplication : Application(), Configuration.Provider {
 
     @Inject lateinit var workerFactory: HiltWorkerFactory
-    @Inject lateinit var notificationHelper: NotificationHelper
     @Inject lateinit var preferenceProvider: PreferenceProvider
     @Inject lateinit var firebaseProvider: FirebaseProvider
     @Inject lateinit var dbConnectionProvider: DBConnectionProvider
@@ -51,7 +50,7 @@ class XClipperApplication : Application(), Configuration.Provider {
 
         init()
 
-        notificationHelper.createChannel()
+        Notifications.initialize(this)
     }
 
     private val TAG = javaClass.simpleName

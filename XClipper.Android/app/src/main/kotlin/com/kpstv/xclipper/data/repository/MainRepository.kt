@@ -3,12 +3,9 @@ package com.kpstv.xclipper.data.repository
 import androidx.lifecycle.LiveData
 import androidx.paging.PagedList
 import androidx.sqlite.db.SupportSQLiteQuery
-import com.kpstv.xclipper.ui.helpers.NotificationHelper
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.TagMap
 import com.kpstv.xclipper.extensions.enumerations.FilterType
-import com.kpstv.xclipper.extensions.listeners.RepositoryListener
-import com.kpstv.xclipper.extensions.listeners.StatusListener
 import kotlinx.coroutines.flow.Flow
 
 interface MainRepository {

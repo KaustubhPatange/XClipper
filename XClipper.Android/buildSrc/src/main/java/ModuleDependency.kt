@@ -7,6 +7,7 @@ object ModuleDependency {
     const val PRICING_CARDS = ":app:pricing"
     const val LINK_PREVIEW = ":app:link-preview"
     const val COMMON = ":app:common"
+    const val UPDATE = ":app:update"
 
     fun getAllModules(): Set<String> = ModuleDependency::class.memberProperties
         .filter { it.isConst }

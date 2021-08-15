@@ -4,6 +4,7 @@ import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterF
 import com.kpstv.xclipper.App.gson
 import com.kpstv.xclipper.extensions.await
 import com.kpstv.xclipper.extensions.utils.interceptors.NetworkConnectionInterceptor
+import com.kpstv.xclipper.extensions.utils.interceptors.NoInternetException
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -22,7 +23,7 @@ import javax.inject.Singleton
  */
 @Singleton
 class RetrofitUtils @Inject constructor(
-    private val interceptor: NetworkConnectionInterceptor
+    private val networkConnectionInterceptor: NetworkConnectionInterceptor
 ) {
     private var retrofitBuilder: Retrofit.Builder? = null
     private var httpBuilder: OkHttpClient.Builder? = null
@@ -43,7 +44,7 @@ class RetrofitUtils @Inject constructor(
 
         return httpBuilder
             ?: OkHttpClient.Builder()
-                .addInterceptor(interceptor)
+                .addInterceptor(networkConnectionInterceptor)
                 // .addInterceptor(loggingInterceptor)  // TODO: Uncomment this interceptor when needed for debugging
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
@@ -52,6 +53,17 @@ class RetrofitUtils @Inject constructor(
 
     fun getHttpClient() = getHttpBuilder().build()
 
-    suspend fun fetch(url: String): Response =
-        getHttpClient().newCall(Request.Builder().url(url).build()).await()
+    suspend fun fetch(url: String): Result<Response> {
+        return try {
+            getHttpClient().newCall(Request.Builder().url(url).build()).await()
+        } catch (e: NoInternetException) {
+            Result.failure(e)
+        }
+    }
+}
+
+fun Response.asString() : String? {
+    val data = body?.string()
+    close()
+    return data
 }
