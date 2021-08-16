@@ -49,7 +49,9 @@ jobs:
         id: versions
         shell: pwsh
         run: |
-          echo '::set-output name=TAG_NAME::$(echo ((findstr /L VERSION_NAME "${{github.workspace}}\XClipper.Android\buildSrc\src\main\java\AndroidConfig.kt").Split("=")[1].Trim().Replace('"',"")))'
+          $tag = (findstr /L VERSION_NAME "${{github.workspace}}\XClipper.Android\buildSrc\src\main\java\AndroidConfig.kt").Split("=")[1].Trim().Replace('"',"")
+          echo "Version is $tag"
+          echo "::set-output name=TAG_NAME::$tag"
       - run: |
           cd XClipper.Android
           chmod +x gradlew
