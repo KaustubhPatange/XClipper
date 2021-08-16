@@ -18,18 +18,95 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
+
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            ~/vpn/build
+          key: ${{ runner.os }}-${{ github.job }}-${{ hashFiles('**/*.gradle.kts*') }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
+      
+      - name: Extract required files
+        run: |
+          echo %GRADLE_LIBRARY_UTILS% > lu.base64
+          certutil -decode lu.base64 lu.tar.gz
+          
+          tar -xvzf lu.tar.gz
+
+          echo %KEY_JKS% > key.base64
+          certutil -decode key.base64 "${{github.workspace}}\XClipper.Android\key.jks"
+
+          dir
+        env:
+          GRADLE_LIBRARY_UTILS: ${{ secrets.GRADLE_LIBRARY_UTILS }}
+          KEY_JKS: ${{ secrets.KEY_JKS }}
+
+      - name: Fill required properties
+        run: |
+          md XClipper.Android/.gradle
+          echo SERVER_URI=%SERVER_URI% >> "${{github.workspace}}\XClipper.Android\.gradle\gradle.properties"
+          echo keyAlias=%KEY_ALIAS% >> "${{github.workspace}}\XClipper.Android\.gradle\gradle.properties"
+          echo keyPassword=%KEY_PASSWORD% >> "${{github.workspace}}\XClipper.Android\.gradle\gradle.properties"
+          echo storePassword=%STORE_PASSWORD% >> "${{github.workspace}}\XClipper.Android\.gradle\gradle.properties"
+        env:
+          SERVER_URI: ${{ secrets.SERVER_URI }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+
+      - name: Extracting version infos
+        id: versions
+        shell: pwsh
+        run: |
+          $line = findstr /L VERSION_NAME "${{github.workspace}}\XClipper.Android\buildSrc\src\main\java\AndroidConfig.kt"
+          $tag = ((findstr /L VERSION_NAME "${{github.workspace}}\XClipper.Android\buildSrc\src\main\java\AndroidConfig.kt").Split("=")[1].Trim().Replace('"',""))
+
+          echo $line
+          echo $tag
+
+          echo '::set-output name=TAG_NAME::$(echo v$tag)'
       - name: Building project
         run: |
-          tar -xvzf scripts/gradle.tar.gz
-          md XClipper.Android/.gradle
-          echo keyAlias=github >> XClipper.Android/.gradle/gradle.properties
-          echo keyPassword=github >> XClipper.Android/.gradle/gradle.properties
-          echo storePassword=github >> XClipper.Android/.gradle/gradle.properties
-          echo SERVER_URI= >> XClipper.Android/.gradle/gradle.properties
           cd XClipper.Android
           chmod +x gradlew
-          ./gradlew app:assembleDebug --stacktrace
+          ./gradlew app:assembleRelease --stacktrace
           ./gradlew app:test
+
+      - name: Draft Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.versions.outputs.TAG_NAME }}
+          release_name: v${{ steps.versions.outputs.TAG_NAME }}
+          body_path: ${{ github.workspace }}\scripts\changes.txt
+          draft: true
+      
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./XClipper.Android/app/build/outputs/apk/release/app-release.apk
+          asset_name: XClipper-${{ steps.versions.outputs.TAG_NAME }}.apk
+          asset_content_type: application/octet-stream
+
+    draft_remove:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Remove Old Release Drafts
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl -H "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/repos/$GITHUB_REPOSITORY/releases \
+            | tr '\r\n' ' ' \
+            | jq '.[] | select( .assets[].browser_download_url | contains (".apk") ) | select(.draft == true) | .id' \
+            | xargs -I '{}' \
+          curl -X DELETE -H "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/repos/$GITHUB_REPOSITORY/releases/{}
+
 
   # Common action to notify on discord
 

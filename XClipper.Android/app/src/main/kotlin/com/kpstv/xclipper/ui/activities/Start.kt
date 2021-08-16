@@ -72,12 +72,6 @@ class Start : AppCompatActivity(), FragmentNavigator.Transmitter {
         intentHelper.handle(intent)
     }
 
-    override fun onStart() {
-        super.onStart()
-        Notifications.sendUpdateAvailableNotification(this)
-// TODO: Update available notification does not work, try testing it.
-    }
-
     override fun onBackPressed() {
         if (navigator.canFinish())
             super.onBackPressed()
