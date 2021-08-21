@@ -1,1 +1,2 @@
 Fixed: Issue with clipboard service crashing.
+Fixed: Attempted to fix native crash due to gif library.

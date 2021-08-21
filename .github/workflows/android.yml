@@ -79,7 +79,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./XClipper.Android/app/build/outputs/apk/release/app-release.apk
-          asset_name: XClipper-${{ steps.versions.outputs.TAG_NAME }}.apk
+          asset_name: XClipper-v${{ steps.versions.outputs.TAG_NAME }}.apk
           asset_content_type: application/octet-stream
 
   draft_remove:

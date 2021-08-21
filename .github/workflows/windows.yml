@@ -8,6 +8,7 @@ on:
       - "art/**"
       - "docs/**"
       - "*.html"
+      - ".github/workflows/android.yml"
 
   pull_request:
     paths-ignore:
@@ -17,6 +18,7 @@ on:
       - "art/**"
       - "docs/**"
       - "*.html"
+      - ".github/workflows/android.yml"
 
 jobs:
   windows:
