@@ -25,7 +25,6 @@ import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.getColorFromAttr
 import kotlinx.android.synthetic.main.item_clip.view.*
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 class CIAdapter(
@@ -160,19 +159,12 @@ class CIAdapter(
             }
         }
 
+        // no need to remove these observers from hashmap as it will guarantee to not create duplicates causing memory leaks.
+
         currentClip.observe(lifecycleOwner, selectedDataObserver).also { selectedDataObservers[clip.id] = selectedDataObserver }
         selectedItem.observe(lifecycleOwner, selectedItemObserver).also { selectedItemObservers[clip.id] = selectedItemObserver }
         multiSelectionState.observe(lifecycleOwner, multiSelectionObserver).also { multiSelectionObservers[clip.id] = multiSelectionObserver }
         selectedClips.observe(lifecycleOwner, selectedClipsObserver).also { selectedClipsObservers[clip.id] = selectedClipsObserver }
-    }
-
-    override fun onViewRecycled(holder: MainHolder) {
-        super.onViewRecycled(holder)
-        val id = holder.itemView.tag as? Int ?: return
-        selectedDataObservers.remove(id)?.let { currentClip.removeObserver(it) }
-        selectedItemObservers.remove(id)?.let { selectedItem.removeObserver(it) }
-        multiSelectionObservers.remove(id)?.let { multiSelectionState.removeObserver(it) }
-        selectedClipsObservers.remove(id)?.let { selectedClips.removeObserver(it) }
     }
 
     private fun renderImageMarkdown(holder: MainHolder, data: String?, position: Int) {

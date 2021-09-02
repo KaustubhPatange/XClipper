@@ -6,7 +6,6 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.ACTION_DELETE
-import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
@@ -20,11 +19,8 @@ import com.kpstv.xclipper.extensions.colorFrom
 import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.service.AppBroadcastReceiver
 import com.kpstv.xclipper.ui.activities.Start
-import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import java.util.*
-import javax.inject.Inject
-import javax.inject.Singleton
 
 object Notifications {
     const val CHANNEL_ID = "my_channel_01"
@@ -190,12 +186,17 @@ object Notifications {
             putExtra(AppBroadcastReceiver.ARGUMENT_INSTALL_APK_FILE, file.absolutePath)
         }
 
+        val pendingIntent = PendingIntent.getBroadcast(this, getRandomNumberCode(), installIntent, 0)
+
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle(getString(R.string.update_download_complete))
-            .setContentText(getString(R.string.update_downoad_install2))
+            .setContentText(getString(R.string.update_download_install2))
             .setSmallIcon(android.R.drawable.stat_sys_download_done)
-            .setContentIntent(PendingIntent.getBroadcast(this, getRandomNumberCode(), installIntent, 0))
-            .setAutoCancel(true)
+            .addAction(NotificationCompat.Action(
+                android.R.drawable.stat_sys_download_done,
+                getString(R.string.update_download_install_button),
+                pendingIntent
+            ))
 
         manager.notify(UPDATE_NOTIFICATION_ID,  notification.build())
     }

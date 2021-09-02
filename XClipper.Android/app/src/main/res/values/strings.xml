@@ -146,8 +146,9 @@
     <string name="premium_pricing">Synchronize your clipboard activity with PC securely for lifetime.</string>
     <string name="awesome">You are awesome!</string>
     <string name="update_download_complete">Update downloaded</string>
-    <string name="update_downoad_install">Click OK to apply update!</string>
-    <string name="update_downoad_install2">Tap to install update!</string>
+    <string name="update_download_install">Click OK to apply update!</string>
+    <string name="update_download_install2">Click \"Install\" to apply the update!</string>
+    <string name="update_download_install_button">Install</string>
     <string name="item_removed">Item removed permanently</string>
     <string name="swipe_title">Swipe to delete</string>
     <string name="swipe_summary">Swiping item to right will delete it permanently</string>

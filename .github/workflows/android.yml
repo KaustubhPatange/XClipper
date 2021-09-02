@@ -82,6 +82,12 @@ jobs:
           asset_name: XClipper-v${{ steps.versions.outputs.TAG_NAME }}.apk
           asset_content_type: application/octet-stream
 
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: app-release.apk
+          path: XClipper.Android/app/build/outputs/apk/release/app-release.apk
+
   draft_remove:
     runs-on: ubuntu-latest
     steps:

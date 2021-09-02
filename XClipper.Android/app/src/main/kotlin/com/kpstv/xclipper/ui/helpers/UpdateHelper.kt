@@ -23,7 +23,6 @@ import com.kpstv.xclipper.service.worker.GithubUpdateWorker
 import com.kpstv.xclipper.ui.dialogs.CustomLottieDialog
 import com.kpstv.xclipper.ui.fragments.Home
 import kotlinx.coroutines.launch
-import java.io.File
 
 /**
  * A class created to manage updates. I created this to prevent my Home fragment
@@ -118,7 +117,7 @@ class UpdateHelper(
     private fun notifyUpdateDownloadComplete() = with(activity) {
         MaterialAlertDialogBuilder(this)
             .setTitle(getString(R.string.update_download_complete))
-            .setMessage(getString(R.string.update_downoad_install))
+            .setMessage(getString(R.string.update_download_install))
             .setPositiveButton(getString(R.string.ok)) { _, _ ->
                 appUpdateManager?.completeUpdate()
             }
