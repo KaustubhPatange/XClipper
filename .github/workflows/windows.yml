@@ -56,6 +56,7 @@ jobs:
         shell: pwsh
         run: |
           echo "::set-output name=production::$(echo (Get-ChildItem -Path "scripts\out" | sort | Select-Object -First 1).Name | cut -c -25)"
+          echo "::set-output name=sha_short::$(echo ${{ github.sha }} | cut -c -7)"
       - name: Creating portable tar.gz
         run: |
           cd XClipper.App\bin\Release && tar -cvzf "${{ github.workspace }}\scripts\out\${{ steps.vars.outputs.production }}.tar.gz" *
@@ -92,10 +93,6 @@ jobs:
           asset_path: ./scripts/out/${{ steps.vars.outputs.production }}.tar.gz
           asset_name: XClipper-Portable-x64.tar.gz
           asset_content_type: application/octet-stream
-
-      - name: Creating some output variables
-        id: vars
-        run: echo "::set-output name=sha_short::$(echo ${{ github.sha }} | cut -c -7)"
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
