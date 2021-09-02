@@ -93,6 +93,16 @@ jobs:
           asset_name: XClipper-Portable-x64.tar.gz
           asset_content_type: application/octet-stream
 
+      - name: Creating some output variables
+        id: vars
+        run: echo "::set-output name=sha_short::$(echo ${{ github.sha }} | cut -c -7)"
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: XClipper.win-snapshot-${{ steps.vars.outputs.sha_short }}
+          path: scripts/out/
+
   draft_remove:
     runs-on: ubuntu-latest
     steps:
