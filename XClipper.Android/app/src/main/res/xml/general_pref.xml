@@ -8,12 +8,10 @@
             app:key="service_pref"
             app:title="@string/service_title" />
 
-        <MultiSelectListPreference
+        <Preference
             android:summary="@string/blacklist_summary"
             android:title="@string/blacklist_title"
             app:dependency="service_pref"
-            app:entries="@array/lang_entries"
-            app:entryValues="@array/lang_values"
             app:key="blacklist_pref" />
 
         <SwitchPreferenceCompat

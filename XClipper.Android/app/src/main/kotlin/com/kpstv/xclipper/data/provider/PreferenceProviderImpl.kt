@@ -69,6 +69,12 @@ class PreferenceProviderImpl @Inject constructor(
         return preference.getStringSet(key, default) ?: default
     }
 
+    override fun setStringSet(key: String, values: Set<String>) {
+        preference.edit {
+            putStringSet(key, values)
+        }
+    }
+
     override fun observePreference(block: (SharedPreferences, String) -> Unit) {
         _keyLiveData.observeForever {
             block.invoke(preference, it)
