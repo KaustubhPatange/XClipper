@@ -1,0 +1,2 @@
+Fixed: Inconsistent pinning/unpinning behavior.
+Fixed: Some auto-updater's notification issues.

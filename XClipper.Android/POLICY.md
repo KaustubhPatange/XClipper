@@ -17,11 +17,18 @@ The app does use third party services that may collect information used to ident
 Link to privacy policy of third party service providers used by the app
 
 - [Google Play Services](https://www.google.com/policies/privacy/)
+- [Google Firebase](https://firebase.google.com/support/privacy/)
 
 Apart from this the app uses services from third-party APIs mentioned below (None of these mentioned websites collects any kind of data from the user).
 
 - [https://api.dictionaryapi.dev](https://dictionaryapi.dev/) - An open source API for finding definitions of a word.
 - https://tinyurl.com - A service for shortening URL.
+- [https://api.github.com](https://docs.github.com/en/github/site-policy/github-privacy-statement) - Github API to fetch some app settings from the official [repo](https://github.com/KaustubhPatange/XClipper).
+
+Following are some list of permissions I used,
+
+1. [QUERY_ALL_PACKAGES](https://developer.android.com/reference/android/Manifest.permission#QUERY_ALL_PACKAGES) - Needed the package name of the apps that user can choose to disable clipboard monitoring through the app (This data is not uploaded anywhere & are kept local to the device).
+2. [CAMERA](https://developer.android.com/reference/android/Manifest.permission#CAMERA) - Needed to scan QR codes for database connection.
 
 ## **Log Data**
 
