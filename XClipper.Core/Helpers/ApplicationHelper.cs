@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -37,6 +38,14 @@ namespace Components
 
         private static DispatcherTimer dtimer;
         private static bool isExecuted;
+        
+        // private static List<Window> windowActivateQueue = new List<Window>();
+        //
+        // public static bool IsInProcessOfActivating()
+        // {
+        //     
+        // }
+
         /// <summary>
         /// This will provide a callback whenever the application process is not foreground.
         /// </summary>
@@ -54,6 +63,7 @@ namespace Components
                     //  if (isExecuted) return;
                     // Debug.WriteLine("Deactivated()");
                     block.Invoke();
+                    dtimer.Stop();
                     // isExecuted = true;
                 }
                 else isExecuted = false;
@@ -76,44 +86,48 @@ namespace Components
             return activeProcId == procId;
         }
 
+        private static readonly object activateLock = new object();
+        
         /// <summary>
         /// Activate a window from anywhere by attaching to the foreground window
         /// </summary>
-        public static void GlobalActivate(this Window w)
-        {
-            if (dtimer != null) dtimer.Stop();
-
-            var hWnd = new WindowInteropHelper(w).EnsureHandle();
-
-            var currentForegroundWindow = GetForegroundWindow();
-            var currentForegroundWindowThreadId = GetWindowThreadProcessId(currentForegroundWindow, IntPtr.Zero);
-            var thisWindowThreadId = GetWindowThreadProcessId(hWnd, IntPtr.Zero);
-
-            Thread.Sleep(70);
-
-            w.Show();
-            w.Activate();
-
-            if (currentForegroundWindowThreadId != thisWindowThreadId)
+        public static void GlobalActivate(this Window w) {
+            lock (activateLock)
             {
-                AttachThreadInput(currentForegroundWindowThreadId, thisWindowThreadId, true);
-                SetForegroundWindow(hWnd);
-                AttachThreadInput(currentForegroundWindowThreadId, thisWindowThreadId, false);
-            }
-            else
-            {
-                SetForegroundWindow(hWnd);
-            }
+                if (dtimer != null) dtimer.Stop();
 
-            Task.Run(async () =>
-            {
-                if (dtimer != null)
+                var hWnd = new WindowInteropHelper(w).EnsureHandle();
+
+                var currentForegroundWindow = GetForegroundWindow();
+                var currentForegroundWindowThreadId = GetWindowThreadProcessId(currentForegroundWindow, IntPtr.Zero);
+                var thisWindowThreadId = GetWindowThreadProcessId(hWnd, IntPtr.Zero);
+
+                Thread.Sleep(70);
+
+                w.Show();
+                w.Activate();
+
+                if (currentForegroundWindowThreadId != thisWindowThreadId)
                 {
-                    await Task.Delay(300);
-                    Application.Current.Dispatcher.Invoke(() => SetFocus(hWnd));
-                    dtimer.Start();
+                    AttachThreadInput(currentForegroundWindowThreadId, thisWindowThreadId, true);
+                    SetForegroundWindow(hWnd);
+                    AttachThreadInput(currentForegroundWindowThreadId, thisWindowThreadId, false);
                 }
-            });
+                else
+                {
+                    SetForegroundWindow(hWnd);
+                }
+
+                Task.Run(async () =>
+                {
+                    if (dtimer != null)
+                    {
+                        await Task.Delay(300);
+                        Application.Current.Dispatcher.Invoke(() => SetFocus(hWnd));
+                        dtimer.Start();
+                    }
+                });   
+            }
         }
 
         /// <summary>
