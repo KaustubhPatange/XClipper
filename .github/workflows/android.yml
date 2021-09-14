@@ -37,6 +37,9 @@ jobs:
           echo "${{ secrets.KEY_JKS }}" > key.base64
           certutil -decode key.base64 "${{github.workspace}}\XClipper.Android\key.jks"
 
+          echo "${{ secrets.GOOGLE_SERVICES_JSON }}" > google-services.json.base64
+          certutil -decode google-services.json.base64 "${{ github.workspace }}\XClipper.Android\app\google-services.json"
+
       - name: Fill required properties
         run: |
           md XClipper.Android/.gradle
