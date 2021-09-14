@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Build
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -26,12 +25,15 @@ import com.kpstv.xclipper.App.bindToFirebase
 import com.kpstv.xclipper.App.getMaxConnection
 import com.kpstv.xclipper.App.getMaxStorage
 import com.kpstv.xclipper.App.gson
+import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.FBOptions
 import com.kpstv.xclipper.data.localized.dao.UserEntityDao
 import com.kpstv.xclipper.data.model.*
 import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.extensions.listeners.*
+import com.kpstv.xclipper.ui.helpers.FirebaseSyncHelper
 import dagger.hilt.android.qualifiers.ApplicationContext
+import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
@@ -69,11 +71,16 @@ class FirebaseProviderImpl @Inject constructor(
             .setDatabaseUrl(options.endpoint)
             .build()
 
-        if (FirebaseApp.getApps(context).isEmpty()) {
-            FirebaseApp.initializeApp(context, firebaseOptions)
+        if (!FirebaseSyncHelper.isRegistered(context)) {
+            FirebaseSyncHelper.register(context, firebaseOptions)
         }
 
-        database = Firebase.database(options.endpoint)
+        val app = FirebaseSyncHelper.get() ?: run {
+            Toasty.error(context, context.getString(R.string.error_initialize_fb)).show()
+            return
+        }
+
+        database = Firebase.database(app, options.endpoint)
         if (notifyInitialization)
             isInitialized.postValue(true)
 
@@ -83,7 +90,7 @@ class FirebaseProviderImpl @Inject constructor(
 
     override fun uninitialized() {
         if (isInitialized.value == true) {
-            FirebaseApp.getInstance(FirebaseApp.DEFAULT_APP_NAME).delete()
+            FirebaseSyncHelper.unregister()
             isInitialized.postValue(false)
         }
     }

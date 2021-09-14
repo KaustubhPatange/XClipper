@@ -1,9 +1,10 @@
 private object GradlePluginVersion {
     const val KOTLIN = CoreVersion.KOTLIN
     const val ANDROID_GRADLE = "4.1.1"
-    const val GOOGLE_SERVICE = "4.3.3"
+    const val GOOGLE_SERVICE = "4.3.10"
     const val SAFE_ARGS = CoreVersion.JETPACK_NAVIGATION
     const val HILT = "2.28-alpha"
+    const val CRASHLYTICS = "2.7.1"
 }
 
 object GradlePluginId {
@@ -16,6 +17,7 @@ object GradlePluginId {
     const val GOOGLE_SERVICE = "com.google.gms.google-services"
     const val SAFE_ARGS = "androidx.navigation.safeargs.kotlin"
     const val DAGGER_HILT = "dagger.hilt.android.plugin"
+    const val CRASHLYTICS = "com.google.firebase.crashlytics"
 }
 
 object GradleDependency {
@@ -24,4 +26,5 @@ object GradleDependency {
     const val GOOGLE_SERVICE = "com.google.gms:google-services:${GradlePluginVersion.GOOGLE_SERVICE}"
     const val SAFE_ARGS = "androidx.navigation:navigation-safe-args-gradle-plugin:${GradlePluginVersion.SAFE_ARGS}"
     const val DAGGER_HILT = "com.google.dagger:hilt-android-gradle-plugin:${GradlePluginVersion.HILT}"
+    const val CRASHLYTICS = "com.google.firebase:firebase-crashlytics-gradle:${GradlePluginVersion.CRASHLYTICS}"
 }

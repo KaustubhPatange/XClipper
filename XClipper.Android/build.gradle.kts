@@ -8,6 +8,8 @@ buildscript {
         classpath(GradleDependency.GRADLE_BUILD_TOOLS)
         classpath(GradleDependency.KOTLIN_PLUGIN)
         classpath(GradleDependency.DAGGER_HILT)
+        classpath(GradleDependency.CRASHLYTICS)
+        classpath(GradleDependency.GOOGLE_SERVICE)
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
     }
 }

@@ -189,6 +189,8 @@
     <string name="show_stacktrace">Show stacktrace</string>
     <string name="crash_text_sending">Hang on, we are sending this report to my server…</string>
     <string name="crash_text_sent">And it has been reported to my server. So you don\'t need to perform any additional step.</string>
+    <string name="crash_text_sent_second_try">Oops! Failed to report but we trying one last time.</string>
+    <string name="crash_text_sent_err">Failed to report crash to the service.</string>
     <string name="crash_title">We crashed,</string>
     <string name="go_top">Go top</string>
     <string name="clear">Clear</string>
@@ -214,4 +216,7 @@
     <string name="load_apps">Loading apps metadata…</string>
     <string name="alright">Alright</string>
     <string name="blacklist_apps">Select blacklist apps</string>
+    <string name="error_initialize_fb">Couldn\'t initialize Firebase</string>
+    <string name="sync_register_title">Re-register device</string>
+    <string name="sync_register_text">Due to some changes in sync, you need to register this device again to enable clipboard synchronization.\n\nGo to Settings > Synchronization or click \"Learn more\".</string>
 </resources>

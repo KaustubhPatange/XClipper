@@ -52,6 +52,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.layout_empty.*
+import java.lang.RuntimeException
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList

@@ -147,6 +147,9 @@
     <Reference Include="SharpClipboard, Version=3.5.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpClipboard.3.5.0\lib\net20\SharpClipboard.dll</HintPath>
     </Reference>
+    <Reference Include="SharpRaven, Version=2.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpRaven.2.4.0\lib\net45\SharpRaven.dll</HintPath>
+    </Reference>
     <Reference Include="SQLite-net, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\sqlite-net-sqlcipher.1.6.292\lib\netstandard1.1\SQLite-net.dll</HintPath>
     </Reference>
@@ -173,6 +176,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.Message
 import android.util.Log
 import android.view.View
 import android.widget.TextView
@@ -13,13 +14,20 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updateMargins
 import androidx.core.widget.NestedScrollView
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kpstv.xclipper.BuildConfig
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.databinding.ActivityCrashBinding
 import com.kpstv.xclipper.extensions.await
 import com.kpstv.xclipper.extensions.viewBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -42,8 +50,9 @@ class Crash : AppCompatActivity() {
         }
     }
 
-    private val stateData = MutableLiveData(false)
     private val binding by viewBinding(ActivityCrashBinding::inflate)
+
+    private val job = SupervisorJob()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         window.statusBarColor = 0
@@ -80,22 +89,22 @@ class Crash : AppCompatActivity() {
 
         binding.btnClose.setOnClickListener { finish() }
 
-        lifecycleScope.launchWhenStarted {
+        CoroutineScope(job + Dispatchers.IO).launch {
             // No dependency injection because this activity outlives original process.
             if (!BuildConfig.DEBUG)
                 sendReport(stackTrace)
         }
+    }
 
-        stateData.observe(this) { success ->
-            if (success) {
-                binding.secondaryText.text = getString(R.string.crash_text_sent)
-            } else {
-                binding.secondaryText.text = getString(R.string.crash_text_sending)
-            }
+    private fun updateMessage(message: String) {
+        lifecycleScope.launch {
+            binding.secondaryText.text = message
         }
     }
 
     private suspend fun sendReport(stackTrace: String) {
+        updateMessage(getString(R.string.crash_text_sending))
+
         val deviceDetails = """
                 -----------------------------------------------------------
                 Model: ${Build.MODEL}
@@ -113,8 +122,18 @@ class Crash : AppCompatActivity() {
         val url = "${BuildConfig.SERVER_URI}/report?sender=API%20${Build.VERSION.SDK_INT}&category=1"
         val request = Request.Builder().url(url).post(body.toRequestBody("text/plain".toMediaType())).build()
         val response = OkHttpClient().newCall(request).await()
-        response.onSuccess { stateData.value = it.isSuccessful }
+        response.onSuccess { updateMessage(getString(R.string.crash_text_sent)) }
+        response.onFailure { updateMessage(getString(R.string.crash_text_sent_second_try)) }
+        if (FirebaseCrashlytics.getInstance().checkForUnsentReports().await() == true) {
+            FirebaseCrashlytics.getInstance().sendUnsentReports()
+        }
+        updateMessage(getString(R.string.crash_text_sent))
     }
 
     internal fun Int.dp() = this * resources.displayMetrics.density
+
+    override fun onDestroy() {
+        job.cancel()
+        super.onDestroy()
+    }
 }

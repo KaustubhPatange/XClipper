@@ -11,15 +11,16 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
-import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.FBOptions
 import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
+import es.dmoral.toasty.Toasty
 
 /**
  * Helper class to make Firebase auth process simpler
@@ -73,9 +74,14 @@ class AuthenticationHelper(
             .setDatabaseUrl(options.endpoint)
             .build()
 
-        val app = if (FirebaseApp.getApps(this).isEmpty())
-            FirebaseApp.initializeApp(this, firebaseOptions)
-        else FirebaseApp.getApps(this)[0]
+        if (!FirebaseSyncHelper.isRegistered(this)) {
+            FirebaseSyncHelper.register(this, firebaseOptions)
+        }
+
+        val app = FirebaseSyncHelper.get() ?: run {
+            Toasty.error(this, getString(R.string.error_initialize_fb)).show()
+            return@with
+        }
 
         googleSignInClient = GoogleSignIn.getClient(this, defaultGoogleSignInOptions(clientId))
 
@@ -101,7 +107,7 @@ class AuthenticationHelper(
     }
 
     private fun unregister() {
-        FirebaseApp.getApps(activity).clear()
+        FirebaseSyncHelper.unregister()
     }
 
     companion object {

@@ -66,18 +66,8 @@ class GeneralPreference : PreferenceFragmentCompat() {
         /** Black list app preference */
         val blacklistPreference = findPreference<Preference>(BLACKLIST_PREF)
 
-   /*     Coroutines.main {
-            *//** Load installed app list *//*
-            App.appList = retrievePackageList(requireContext())
-            blacklistPreference?.entries = App.appList.mapNotNull { it.label }.toTypedArray()
-            blacklistPreference?.entryValues = App.appList.mapNotNull { it.packageName }.toTypedArray()
-        }*/
-
         blacklistPreference?.setOnPreferenceClickListener {
             showBlacklistAppDialog()
-//            if (newValue is Set<*>) {
-//                App.blackListedApps = newValue as Set<String>
-//            }
             true
         }
 
@@ -201,24 +191,6 @@ class GeneralPreference : PreferenceFragmentCompat() {
                     })
                 }.create()
                 appsDialog?.show()
-
-                /*val adapter = ArrayAdapter(requireContext(), android.R.layout.select_dialog_multichoice, apps.map { it.packageName })
-                appsDialog?.dismiss()
-                appsDialog = MaterialAlertDialogBuilder(requireContext()).apply {
-                    setAdapter(adapter) { _, index ->
-                        val dialog = appsDialog ?: return@setAdapter
-                        val checkedItems = dialog.listView.checkedItemPositions.valueIterator().asSequence().map { checked ->
-                            if (!checked) return@map null
-                            val packageName = apps[index].packageName?.toString() ?: return@map null
-                            packageName
-                        }.filterNotNull().toSet()
-                        App.blackListedApps = checkedItems
-                        preferenceProvider.setStringSet(BLACKLIST_PREF, checkedItems)
-                    }
-                }.create().apply {
-                    listView.choiceMode = ListView.CHOICE_MODE_MULTIPLE
-                    show()
-                }*/
             }
         }
         appsDialog = MaterialAlertDialogBuilder(requireContext()).apply {

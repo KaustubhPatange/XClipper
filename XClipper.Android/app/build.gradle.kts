@@ -8,6 +8,8 @@ plugins {
     kotlin(GradlePluginId.ANDROID_EXTENSIONS_KTX)
     kotlin(GradlePluginId.KAPT)
     id(GradlePluginId.DAGGER_HILT)
+    id(GradlePluginId.GOOGLE_SERVICE)
+    id(GradlePluginId.CRASHLYTICS)
 }
 
 android {
@@ -69,6 +71,7 @@ dependencies {
     implementation(LibraryDependency.PLAY_CORE)
     implementation(LibraryDependency.PLAY_CORE_KTX)
     implementation(LibraryDependency.COROUTINES_CORE)
+    implementation(LibraryDependency.COROUTINES_TASKS)
     implementation(LibraryDependency.COROUTINES_ANDROID)
     implementation(LibraryDependency.WORK_MANAGER)
     implementation(LibraryDependency.GSON)
@@ -78,7 +81,9 @@ dependencies {
 
     implementation(LibraryDependency.FIREBASE_REALTIME_DATABASE)
     implementation(LibraryDependency.FIREBASE_AUTH)
+    implementation(LibraryDependency.FIREBASE_CRASHLYTICS)
     implementation(LibraryDependency.PLAY_SERVICE_AUTH)
+
     implementation(LibraryDependency.PAGING)
     implementation(LibraryDependency.LIFECYCLE_EXTENSIONS)
     implementation(LibraryDependency.LIFECYCLE_VIEWMODEL)

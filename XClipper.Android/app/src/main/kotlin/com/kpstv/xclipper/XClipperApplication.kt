@@ -30,6 +30,7 @@ import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.service.worker.AccessibilityWorker
 import com.kpstv.xclipper.ui.helpers.CrashHelper
+import com.kpstv.xclipper.ui.helpers.FirebaseSyncHelper
 import com.kpstv.xclipper.ui.helpers.Notifications
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
@@ -57,7 +58,7 @@ class XClipperApplication : Application(), Configuration.Provider {
 
     private fun init() {
         /** Setup HVLog */
-        HVLog.Config.init(this)
+        HVLog.Config.init(this, reportWhenApplicationCrashed = false)
         HVLog.Config.compactClassName = true
 
         /** Set device ID at startup */

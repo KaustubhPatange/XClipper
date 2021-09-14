@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import com.kpstv.navigation.*
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.data.provider.DBConnectionProvider
+import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.databinding.ActivityStartBinding
 import com.kpstv.xclipper.extensions.FragClazz
@@ -35,6 +36,8 @@ class Start : AppCompatActivity(), FragmentNavigator.Transmitter {
     @Inject
     lateinit var preferenceProvider: PreferenceProvider
     @Inject
+    lateinit var firebaseProvider: FirebaseProvider
+    @Inject
     lateinit var retrofitUtils: RetrofitUtils
 
     val updateHelper by lazy { UpdateHelper(this, retrofitUtils) }
@@ -59,6 +62,8 @@ class Start : AppCompatActivity(), FragmentNavigator.Transmitter {
         registerHelpers()
 
         intentHelper.handle(intent)
+
+        FirebaseSyncHelper.migrate(this, preferenceProvider, firebaseProvider)
     }
 
     private fun registerHelpers() {

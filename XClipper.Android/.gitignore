@@ -3,6 +3,7 @@
 .gradle
 /local.properties
 /gradle.properties
+google-services.json
 /keystore.properties
 /key.jks
 /buildSrc/build

@@ -48,6 +48,7 @@ import com.kpstv.xclipper.extensions.layoutInflater
 import com.kpstv.xclipper.service.ClipboardAccessibilityService
 import com.kpstv.xclipper.ui.dialogs.FeatureDialog
 import com.kpstv.xclipper.ui.helpers.AuthenticationHelper
+import com.kpstv.xclipper.ui.helpers.FirebaseSyncHelper
 import es.dmoral.toasty.Toasty
 import java.io.InputStream
 import java.text.DecimalFormat
@@ -321,7 +322,9 @@ class Utils {
         ) {
             dbConnectionProvider.optionsProvider()?.apply {
                 if (isAuthNeeded) {
-                    Firebase.auth.signOut()
+                    FirebaseSyncHelper.get()?.let { app ->
+                        Firebase.auth(app).signOut()
+                    }
                     AuthenticationHelper.signOutGoogle(context, authClientId)
                 }
             }
