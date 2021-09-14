@@ -6,10 +6,7 @@ import android.content.Intent
 import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
-import com.kpstv.xclipper.App.CLIP_DATA
 import com.kpstv.xclipper.data.provider.ClipboardProvider
-import com.kpstv.xclipper.data.repository.MainRepository
-import com.kpstv.xclipper.extensions.Coroutines
 import com.kpstv.xclipper.ui.helpers.ClipRepositoryHelper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -48,8 +45,7 @@ class ChangeClipboardActivity : FragmentActivity() {
     }
 
     private fun saveData(data: String?) {
-        if (data != null && CLIP_DATA != data) {
-            CLIP_DATA = data
+        if (data != null) {
 
             /** Set current clip */
             clipProvider.setCurrentClip(data)

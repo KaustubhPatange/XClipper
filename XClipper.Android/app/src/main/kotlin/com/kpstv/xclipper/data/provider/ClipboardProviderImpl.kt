@@ -74,8 +74,7 @@ class ClipboardProviderImpl @Inject constructor(
             if (isPackageBlacklisted(currentPackage)) return
 
             val data = clipboardManager.primaryClip?.getItemAt(0)?.coerceToText(context)?.toString()
-            if (data != null && App.CLIP_DATA != data) {
-                App.CLIP_DATA = data
+            if (data != null) {
                 setCurrentClip(data)
 
                 clipRepositoryHelper.insertOrUpdateClip(data)

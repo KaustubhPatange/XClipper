@@ -24,7 +24,6 @@ object App {
     var APP_MAX_DEVICE = FB_MIN_DEVICE_CONNECTION
     var APP_MAX_ITEM = FB_MIN_ITEM_STORAGE
 
-    var CLIP_DATA: String? = null
     const val LOCAL_MAX_ITEM_STORAGE = 200
 
     var appList: List<AppPkg> = listOf()

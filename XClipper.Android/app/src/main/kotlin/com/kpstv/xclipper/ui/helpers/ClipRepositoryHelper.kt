@@ -68,10 +68,9 @@ class ClipRepositoryHelper @Inject constructor(
                     sendClipNotification(clip)
             }
             if (addedClips > 0 && !singleNotify && toNotify) {
-                Notifications.pushNotification(
-                    context = context,
-                    text = "$addedClips ${context.getString(R.string.multi_clips_added)}",
-                    withActions = false
+                sendClipNotification(
+                    data = "$addedClips ${context.getString(R.string.multi_clips_added)}",
+                    withAction = false
                 )
             }
         }
@@ -87,9 +86,9 @@ class ClipRepositoryHelper @Inject constructor(
         sendClipNotification(clip.data)
     }
 
-    private fun sendClipNotification(data: String) {
+    private fun sendClipNotification(data: String, withAction: Boolean = true) {
         mainThread {
-            Notifications.pushNotification(context, data)
+            Notifications.pushNotification(context, data, withAction)
         }
     }
 }

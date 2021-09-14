@@ -38,13 +38,6 @@ namespace Components
 
         private static DispatcherTimer dtimer;
         private static bool isExecuted;
-        
-        // private static List<Window> windowActivateQueue = new List<Window>();
-        //
-        // public static bool IsInProcessOfActivating()
-        // {
-        //     
-        // }
 
         /// <summary>
         /// This will provide a callback whenever the application process is not foreground.
