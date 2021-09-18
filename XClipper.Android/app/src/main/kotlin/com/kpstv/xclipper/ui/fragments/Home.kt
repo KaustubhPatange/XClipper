@@ -26,6 +26,7 @@ import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.ToolbarState
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.data.provider.ClipboardProvider
+import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.extensions.enumerations.FirebaseState
 import com.kpstv.xclipper.extensions.listeners.StatusListener
@@ -62,6 +63,7 @@ import kotlin.concurrent.schedule
 class Home : ValueFragment(R.layout.fragment_home) {
 
     @Inject lateinit var clipboardProvider: ClipboardProvider
+    @Inject lateinit var preferenceProvider: PreferenceProvider
     @Inject lateinit var firebaseUtils: FirebaseUtils
 
     private lateinit var adapter: CIAdapter
@@ -218,12 +220,10 @@ class Home : ValueFragment(R.layout.fragment_home) {
                     mainViewModel.changeClipPin(clip, !clip.isPinned)
                 }
                 CIAdapter.MENU_TYPE.Special -> {
-                    MoreBottomSheet(
-                        supportFragmentManager = childFragmentManager,
-                        clip = clip
-                    ).show(
-                        childFragmentManager,
-                        "blank"
+                    MoreBottomSheet.show(
+                        fragment = this,
+                        clip = clip,
+                        preferenceProvider = preferenceProvider
                     )
                 }
                 CIAdapter.MENU_TYPE.Share -> {

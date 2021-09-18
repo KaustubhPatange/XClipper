@@ -1,0 +1,1 @@
+Added: Disclosure dialog for https://dictionaryapi.dev

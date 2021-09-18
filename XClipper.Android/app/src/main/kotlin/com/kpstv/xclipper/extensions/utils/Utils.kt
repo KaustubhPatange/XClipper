@@ -23,6 +23,7 @@ import android.util.TypedValue
 import android.view.accessibility.AccessibilityManager
 import androidx.annotation.AttrRes
 import androidx.annotation.RequiresApi
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ShareCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -392,6 +393,19 @@ class Utils {
                 return true
             }
             return false
+        }
+
+        fun showDisclosureDialog(context: Context, @StringRes message: Int, onAccept: () -> Unit, onDeny: () -> Unit = {}) {
+            MaterialAlertDialogBuilder(context)
+                .setTitle(R.string.disclosure)
+                .setMessage(message)
+                .setPositiveButton(R.string.accept) { _, _ -> onAccept()}
+                .setNegativeButton(R.string.deny) { _, _ ->
+                    Toasty.error(context, context.getString(R.string.disclosure_deny)).show()
+                    onDeny()
+                }
+                .setCancelable(false)
+                .show()
         }
 
         fun getSizePretty(size: Long?, addPrefix: Boolean = true): String? {

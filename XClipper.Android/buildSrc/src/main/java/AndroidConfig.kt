@@ -5,7 +5,7 @@ object AndroidConfig {
     const val BUILD_TOOLS_VERSION = "30.0.3"
 
     const val VERSION_CODE = 18
-    const val VERSION_NAME = "1.1.5"
+    const val VERSION_NAME = "1.1.4"
 
     const val ID = "com.kpstv.xclipper"
     const val TEST_INSTRUMENTATION_RUNNER = "android.support.test.runner.AndroidJUnitRunner"

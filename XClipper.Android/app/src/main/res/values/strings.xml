@@ -219,4 +219,10 @@
     <string name="error_initialize_fb">Couldn\'t initialize Firebase</string>
     <string name="sync_register_title">Re-register device</string>
     <string name="sync_register_text">Due to some changes in sync, you need to register this device again to enable clipboard synchronization.\n\nGo to Settings > Synchronization or click \"Learn more\".</string>
+
+    <string name="accept">Accept</string>
+    <string name="deny">Deny</string>
+    <string name="dictionary_disclosure"><b>XClipper</b> uses <a href="https://dictionaryapi.dev/">api.dictionaryapi.dev</a> API for retrieving meanings for the words in your clip. This service does not send any user\'s data, check privacy policy from app settings for more information.</string>
+    <string name="disclosure_deny">Cannot use this service without agreeing the policy.</string>
+    <string name="disclosure">Disclosure</string>
 </resources>

@@ -21,7 +21,7 @@ Link to privacy policy of third party service providers used by the app
 
 Apart from this the app uses services from third-party APIs mentioned below (None of these mentioned websites collects any kind of data from the user).
 
-- [https://api.dictionaryapi.dev](https://dictionaryapi.dev/) - An open source API for finding definitions of a word.
+- [https://api.dictionaryapi.dev](https://dictionaryapi.dev/) - An open source API on [github](https://github.com/meetDeveloper/freeDictionaryAPI) for finding definitions of a word.
 - https://tinyurl.com - A service for shortening URL.
 - [https://api.github.com](https://docs.github.com/en/github/site-policy/github-privacy-statement) - Github API to fetch some app settings from the official [repo](https://github.com/KaustubhPatange/XClipper).
 

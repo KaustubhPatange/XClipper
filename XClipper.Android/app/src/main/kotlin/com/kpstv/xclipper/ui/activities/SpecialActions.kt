@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.kpstv.xclipper.App.APP_CLIP_DATA
 import com.kpstv.xclipper.data.provider.ClipboardProvider
+import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.extensions.ioThread
 import com.kpstv.xclipper.extensions.mainThread
@@ -24,6 +25,7 @@ class SpecialActions : AppCompatActivity() {
     @Inject lateinit var tinyUrlApiHelper: TinyUrlApiHelper
     @Inject lateinit var dictionaryApiHelper: DictionaryApiHelper
     @Inject lateinit var clipboardProvider: ClipboardProvider
+    @Inject lateinit var preferenceProvider: PreferenceProvider
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,13 +48,11 @@ class SpecialActions : AppCompatActivity() {
             }
 
             mainThread {
-                MoreBottomSheet(
-                    supportFragmentManager = supportFragmentManager,
+                MoreBottomSheet.show(
+                    activity = this,
                     onClose = ::finish,
-                    clip = clip
-                ).show(
-                    supportFragmentManager,
-                    "blank"
+                    clip = clip,
+                    preferenceProvider = preferenceProvider
                 )
             }
         }
