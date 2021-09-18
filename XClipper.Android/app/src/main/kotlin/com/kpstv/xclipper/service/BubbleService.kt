@@ -1,9 +1,6 @@
 package com.kpstv.xclipper.service
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -25,14 +22,16 @@ import com.kpstv.xclipper.App.EXTRA_SERVICE_TEXT
 import com.kpstv.xclipper.App.EXTRA_SERVICE_TEXT_LENGTH
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.Clip
+import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.databinding.BubbleViewBinding
 import com.kpstv.xclipper.databinding.ItemBubbleServiceBinding
 import com.kpstv.xclipper.extensions.*
-import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showSearchFeatureDialog
+import com.kpstv.xclipper.ui.activities.SpecialActions
 import dagger.hilt.android.AndroidEntryPoint
+import es.dmoral.toasty.Toasty
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -42,6 +41,8 @@ class BubbleService : FloatingBubbleService() {
     lateinit var repository: MainRepository
     @Inject
     lateinit var preferenceProvider: PreferenceProvider
+    @Inject
+    lateinit var clipboardProvider: ClipboardProvider
 
     private val TAG = javaClass.simpleName
     private lateinit var adapter: PageClipAdapter
@@ -55,7 +56,7 @@ class BubbleService : FloatingBubbleService() {
         binding = BubbleViewBinding.inflate(applicationContext.layoutInflater())
 
         /** Setting adapter and onClick to send PASTE event. */
-        adapter = PageClipAdapter { text ->
+        adapter = PageClipAdapter(clipboardProvider) { text ->
             val sendIntent = Intent(ACTION_INSERT_TEXT).apply {
                 putExtra(EXTRA_SERVICE_TEXT_LENGTH, currentWord.length)
                 putExtra(EXTRA_SERVICE_TEXT, text/*.removeRange(0, currentWord.length)*/)
@@ -158,7 +159,7 @@ class BubbleService : FloatingBubbleService() {
         super.onDestroy()
     }
 
-    class PageClipAdapter(val onClick: (String) -> Unit) :
+    class PageClipAdapter(private val clipboardProvider: ClipboardProvider, val onClick: (String) -> Unit) :
         PagedListAdapter<Clip, PageClipAdapter.PageClipHolder>(DiffUtils.asConfig()) {
 
         companion object {
@@ -174,7 +175,7 @@ class BubbleService : FloatingBubbleService() {
         class PageClipHolder(view: View) : RecyclerView.ViewHolder(view)
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-            PageClipHolder(ItemBubbleServiceBinding.inflate(parent.context.layoutInflater(), null, false).root)
+            PageClipHolder(ItemBubbleServiceBinding.inflate(parent.context.layoutInflater(), parent, false).root)
 
         override fun onBindViewHolder(holder: PageClipHolder, position: Int) {
             val clip = getItem(position)
@@ -189,6 +190,14 @@ class BubbleService : FloatingBubbleService() {
                 ibcTextView.text = clip?.data
                 ibcTextView.setOnClickListener {
                     onClick.invoke(clip?.data!!)
+                }
+                ibcTextView.setOnLongClickListener {
+                    SpecialActions.launch(root.context, clip?.data!!)
+                    true
+                }
+                btnCopy.setOnClickListener {
+                    clipboardProvider.setClipboard(ClipData.newPlainText("Copied", clip?.data!!))
+                    Toasty.info(root.context, root.context.getString(R.string.ctc)).show()
                 }
             }
         }

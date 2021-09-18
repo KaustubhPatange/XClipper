@@ -1,27 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:layout_height="wrap_content"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:layout_height="40dp"
     android:clickable="true"
     android:focusable="true"
-    android:orientation="horizontal"
-    xmlns:android="http://schemas.android.com/apk/res/android" >
+    android:orientation="horizontal">
+
     <View
+        android:id="@+id/ibc_pinView"
+        android:layout_width="3dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         android:layout_marginBottom="2dp"
-        android:id="@+id/ibc_pinView"
-        android:background="@color/colorSelectedClip"
-        android:layout_width="3dp"
-        android:layout_height="match_parent"/>
+        android:background="@color/colorSelectedClip" />
+
     <TextView
         android:id="@+id/ibc_textView"
-        android:textColor="#ffff"
-        android:ellipsize="end"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:clickable="true"
+        android:ellipsize="end"
         android:focusable="true"
         android:lines="1"
         android:maxLines="1"
         android:padding="10dp"
-        android:singleLine="true"/>
+        android:singleLine="true"
+        android:textColor="#ffff"
+        tools:text="This is a sample text" />
+
+    <ImageView
+        android:layout_marginEnd="5dp"
+        android:id="@+id/btn_copy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="3dp"
+        android:src="@drawable/ic_copy" />
+
 </LinearLayout>

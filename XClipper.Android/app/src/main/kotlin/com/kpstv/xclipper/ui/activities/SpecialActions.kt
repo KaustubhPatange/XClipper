@@ -1,5 +1,8 @@
 package com.kpstv.xclipper.ui.activities
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.kpstv.xclipper.App.APP_CLIP_DATA
@@ -55,6 +58,17 @@ class SpecialActions : AppCompatActivity() {
                     preferenceProvider = preferenceProvider
                 )
             }
+        }
+    }
+
+    companion object {
+        fun launch(context: Context, clipData: String) {
+            val newIntent = Intent(context, SpecialActions::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                data = Uri.parse(clipData)
+                putExtra(APP_CLIP_DATA, clipData)
+            }
+            context.startActivity(newIntent)
         }
     }
 }

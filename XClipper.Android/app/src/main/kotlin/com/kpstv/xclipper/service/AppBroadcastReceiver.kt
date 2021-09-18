@@ -65,12 +65,9 @@ class AppBroadcastReceiver : AbstractBroadcastReceiver() {
             }
             ACTION_SMART_OPTIONS -> {
 
-                val newIntent = Intent(context, SpecialActions::class.java).apply {
-                    flags = FLAG_ACTIVITY_NEW_TASK
-                    setData(Uri.parse(data))
-                    putExtra(APP_CLIP_DATA, data)
+                if (data != null) {
+                    SpecialActions.launch(context, data)
                 }
-                context.startActivity(newIntent)
 
                 collapseStatusBar(context)
             }
