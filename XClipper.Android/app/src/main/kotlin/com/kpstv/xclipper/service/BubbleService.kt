@@ -48,6 +48,7 @@ class BubbleService : FloatingBubbleService() {
     private lateinit var adapter: PageClipAdapter
 
     private var currentWord: String = ""
+    private var shouldResubscribe: Boolean = false // only when currentWord changes
 
     private lateinit var binding: BubbleViewBinding
 
@@ -105,6 +106,8 @@ class BubbleService : FloatingBubbleService() {
                                 currentWord = upto.split(compiled).last()
                                 binding.tvQuery.text = "Query: $currentWord"
                                 binding.btnClear.show()
+
+                                shouldResubscribe = true
                             }
                         }
                     }
@@ -124,7 +127,7 @@ class BubbleService : FloatingBubbleService() {
         return object : DefaultFloatingBubbleTouchListener() {
             override fun onTap(expanded: Boolean) {
                 if (!showSearchFeatureDialog(context, preferenceProvider)) {
-                    if (expanded) subscribeSuggestions()
+                    if (expanded && shouldResubscribe) subscribeSuggestions()
                 } else {
                     setState(false)
                 }
