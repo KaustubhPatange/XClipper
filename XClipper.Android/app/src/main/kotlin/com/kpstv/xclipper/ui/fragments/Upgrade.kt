@@ -14,6 +14,7 @@ import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.databinding.FragmentUpgradeBinding
 import com.kpstv.xclipper.extensions.LicenseType
 import com.kpstv.xclipper.extensions.hide
+import com.kpstv.xclipper.extensions.listeners.ResponseResult
 import com.kpstv.xclipper.extensions.show
 import com.kpstv.xclipper.extensions.viewBinding
 import com.kpstv.xclipper.ui.viewmodels.UpgradeViewModel
@@ -66,14 +67,10 @@ class Upgrade : AnimateFragment(R.layout.fragment_upgrade) {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             binding.root.isRefreshing = true
             viewModel.fetchLatestPrice(requireContext()).collect { result ->
-                result.fold(
-                    onSuccess = {
-                        binding.premiumCard.setPurchaseAmount("$$it")
-                    },
-                    onFailure = {
-                        Toasty.error(requireContext(), "Error: ${it.message}").show()
-                    }
-                )
+                when(result) {
+                    is ResponseResult.Complete ->   binding.premiumCard.setPurchaseAmount("$${result.data}")
+                    is ResponseResult.Error -> Toasty.error(requireContext(), "Error: ${result.error.message}").show()
+                }
                 binding.root.isRefreshing = false
             }
         }

@@ -34,8 +34,8 @@ object FirebaseSyncHelper {
             ) {
                 firebaseProvider.removeDevice(App.DeviceID)
                 FirebaseApp.getApps(context).forEach { app ->
-                    app.delete()
                     Firebase.auth(app).signOut()
+                    app.delete()
                 }
                 MaterialAlertDialogBuilder(context)
                     .setTitle(R.string.sync_register_title)

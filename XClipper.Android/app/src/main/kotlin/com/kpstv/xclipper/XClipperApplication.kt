@@ -59,6 +59,7 @@ class XClipperApplication : Application(), Configuration.Provider {
     private fun init() {
         /** Setup HVLog */
         HVLog.Config.init(this, reportWhenApplicationCrashed = false)
+        HVLog.Config.writeToFile = false
         HVLog.Config.compactClassName = true
 
         /** Set device ID at startup */

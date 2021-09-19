@@ -1,0 +1,3 @@
+Added: Copy button & Long press to show more options for suggestion items.
+Fixed: Firebase migration issue.
+Fixed: Crash when clicked on Upgrade.
