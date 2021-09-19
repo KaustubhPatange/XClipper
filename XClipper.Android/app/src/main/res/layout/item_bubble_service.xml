@@ -10,6 +10,14 @@
         android:layout_marginTop="2dp"
         android:layout_marginBottom="2dp"
         android:id="@+id/ibc_pinView"
+        android:background="@color/colorPinnedClip"
+        android:layout_width="4dp"
+        android:layout_height="match_parent"/>
+    <View
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
+        android:id="@+id/ibc_currentView"
         android:background="@color/colorSelectedClip"
         android:layout_width="3dp"
         android:layout_height="match_parent"/>

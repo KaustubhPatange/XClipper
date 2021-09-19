@@ -233,6 +233,7 @@
                                         <TextBlock
                                             x:Name="_tbTitle"
                                             Grid.Column="0"
+                                            Foreground="{Binding RawText, Converter={x:Static local:CurrentClipConverter.Instance}, UpdateSourceTrigger=PropertyChanged}"
                                             Style="{StaticResource BigTextBlock}"
                                             Text="{Binding Text}"
                                             TextAlignment="Left" />

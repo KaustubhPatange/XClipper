@@ -190,6 +190,11 @@ class BubbleService : FloatingBubbleService() {
                 else
                     ibcPinView.hide()
 
+                if (clipboardProvider.getCurrentClip().value == clip?.data)
+                    ibcCurrentView.show()
+                else
+                    ibcCurrentView.hide()
+
                 ibcTextView.text = clip?.data
                 ibcTextView.setOnClickListener {
                     onClick.invoke(clip?.data!!)

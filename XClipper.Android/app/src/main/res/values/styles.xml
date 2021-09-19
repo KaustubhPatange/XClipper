@@ -20,6 +20,7 @@
         <item name="colorSeparator">@color/colorSeparator</item>`
         <item name="colorSelected">@color/colorSelected</item>
         <item name="colorCurrentClip">@color/colorSelectedClip</item>
+        <item name="colorPinnedClip">@color/colorPinnedClip</item>
         <item name="android:navigationBarColor">?background</item>
     </style>
 
@@ -38,6 +39,7 @@
         <item name="colorSeparator">@color/colorSeparator_Light</item>
         <item name="colorSelected">@color/colorSelected_Light</item>
         <item name="colorCurrentClip">@color/colorSelectedClip_Light</item>
+        <item name="colorPinnedClip">@color/colorPinnedClip_Light</item>
         <item name="android:navigationBarColor">?background</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
     </style>

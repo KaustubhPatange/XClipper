@@ -8,6 +8,7 @@
     <attr name="colorSelected" format="reference|color"/>
     <attr name="colorBackground" format="reference|color" />
     <attr name="colorCurrentClip" format="reference|color"/>
+    <attr name="colorPinnedClip" format="reference|color"/>
 
     <declare-styleable name="CustomRecyclerView">
         <attr name="maxHeight" format="dimension" />

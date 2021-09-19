@@ -21,6 +21,7 @@ using System.Collections.Specialized;
 using System.Windows.Media.Imaging;
 using Autofac;
 using System.Windows.Interop;
+using System.Windows.Data;
 
 namespace Components
 {
@@ -769,6 +770,7 @@ namespace Components
                         ClipboardHelper.SetFileDropList(clip.LongText.Split(',').ToCollection());
                         break;
                 }
+                CollectionViewSource.GetDefaultView(_lvClip.ItemsSource).Refresh();
             });
         }
 

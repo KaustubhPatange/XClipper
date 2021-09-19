@@ -66,6 +66,12 @@ class CIAdapter(
         holder.itemView.ci_textView.text = if (App.trimClipText) clip.data.trim() else clip.data
         holder.itemView.tag = clip.id // used for unsubscribing.
 
+        if (clip.isPinned) {
+            holder.itemView.ic_pinView.show()
+        } else {
+            holder.itemView.ic_pinView.hide()
+        }
+
         if (App.LoadImageMarkdownText)
             renderImageMarkdown(holder, clip.data, position)
 

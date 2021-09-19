@@ -23,8 +23,11 @@
     <Color x:Key="ColorError">#8E1400</Color>
     <SolidColorBrush x:Key="ErrorBrush" Color="{StaticResource ColorError}" />
 
-    <Color x:Key="ColorPinned">#FFD868</Color>
+    <Color x:Key="ColorPinned">#36B37E</Color>
     <SolidColorBrush x:Key="PinnedBrush" Color="{StaticResource ColorPinned}" />
+
+    <Color x:Key="ColorCurrentClip">#FBFF87</Color>
+    <SolidColorBrush x:Key="CurrentClipBrush" Color="{StaticResource ColorCurrentClip}" />
 
     <Color x:Key="ColorGreen">#339933</Color>
     <SolidColorBrush x:Key="GreenBrush" Color="{StaticResource ColorGreen}" />

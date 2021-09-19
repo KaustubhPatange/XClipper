@@ -14,6 +14,9 @@
     <color name="colorSelectedClip">#FBFF87</color>
     <color name="colorSelectedClip_Light">#80833D</color>
 
+    <color name="colorPinnedClip">#36B37E</color>
+    <color name="colorPinnedClip_Light">#019E72</color>
+
     <color name="colorSelected">#404040</color>
     <color name="colorSelected_Light">#bfbfbf</color>
 
