@@ -1,20 +1,28 @@
 package com.kpstv.xclipper.ui.fragments
 
+import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.core.view.children
+import androidx.core.view.forEach
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
+import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.kpstv.navigation.AnimationDefinition
 import com.kpstv.navigation.FragmentNavigator
@@ -24,6 +32,7 @@ import com.kpstv.xclipper.App.runAutoSync
 import com.kpstv.xclipper.App.swipeToDelete
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.ToolbarState
+import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
@@ -53,7 +62,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.layout_empty.*
-import java.lang.RuntimeException
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -67,6 +75,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
     @Inject lateinit var firebaseUtils: FirebaseUtils
 
     private lateinit var adapter: CIAdapter
+    private var undoSnackBar: Snackbar? = null
 
     private val navViewModel by activityViewModels<NavViewModel>()
     private val mainViewModel: MainViewModel by viewModels()
@@ -74,8 +83,8 @@ class Home : ValueFragment(R.layout.fragment_home) {
     private val swipeToDeleteItemTouch: ItemTouchHelper by lazy {
         ItemTouchHelper(
             SwipeToDeleteCallback(requireContext()) { pos ->
-                mainViewModel.deleteFromRepository(adapter.getItemAt(pos))
-                Toasty.info(requireContext(), getString(R.string.item_removed)).show()
+                val item = adapter.getItemAt(pos)
+                showUndoAndDelete(listOf(item))
             }
         )
     }
@@ -87,6 +96,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
         super.onAttach(context)
         registerForThemeChange()
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -110,6 +120,8 @@ class Home : ValueFragment(R.layout.fragment_home) {
         checkClipboardData()
 
         autoValidateOnStartup()
+
+        attachTouchEventListenerRecursively(view)
     }
 
     override fun onBackPressed(): Boolean {
@@ -291,30 +303,43 @@ class Home : ValueFragment(R.layout.fragment_home) {
     }
 
     private fun deleteAllWithUndo() {
-        val totalItems = ArrayList(adapter.currentList)
-        val tweakItems = ArrayList(totalItems)
         val itemsToRemove = mainViewModel.stateManager.selectedItemClips.value!!
-        val size = itemsToRemove.size
 
-        val task = Timer("UndoDelete", false).schedule(App.UNDO_DELETE_SPAN) {
-            mainViewModel.deleteMultipleFromRepository(itemsToRemove)
-        }
-
-        if (size > 0)
+        if (itemsToRemove.isNotEmpty())
             mainViewModel.stateManager.setToolbarState(ToolbarState.NormalViewState)
+
+        showUndoAndDelete(itemsToRemove)
+    }
+
+    private fun showUndoAndDelete(itemsToRemove: List<Clip>) {
+        undoSnackBar?.dismiss() // clear previous snackbar
+
+        val clonedItems = ArrayList(adapter.currentList)
+        val tweakItems = ArrayList(adapter.currentList)
 
         tweakItems.removeAll(itemsToRemove)
         adapter.submitList(tweakItems)
 
+        val snackbarCallback = object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
+            override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                mainViewModel.deleteMultipleFromRepository(itemsToRemove)
+            }
+        }
+
         Snackbar.make(
             ci_recyclerView,
-            "$size ${getString(R.string.item_delete)}",
-            Snackbar.LENGTH_SHORT
-        ).setAction(getString(R.string.undo)) {
-            task.cancel()
-            adapter.submitList(totalItems)
-            adapter.notifyDataSetChanged()
-        }.show()
+            "${itemsToRemove.size} ${getString(R.string.item_delete)}",
+            Snackbar.LENGTH_INDEFINITE
+        ).apply {
+            setAction(getString(R.string.undo)) {
+                removeCallback(snackbarCallback)
+                adapter.submitList(clonedItems)
+                adapter.notifyDataSetChanged()
+            }
+            addCallback(snackbarCallback)
+            show()
+            undoSnackBar = this
+        }
     }
 
     private fun setSearchViewListener() {
@@ -447,6 +472,33 @@ class Home : ValueFragment(R.layout.fragment_home) {
             toolbar.menu.findItem(R.id.action_sync).actionView?.performClick()
     }
 
+    @SuppressLint("ClickableViewAccessibility")
+    private val onTouchListener = View.OnTouchListener { _, event ->
+        if (event.actionMasked == MotionEvent.ACTION_DOWN && undoSnackBar != null) {
+            undoSnackBar?.dismiss()
+            undoSnackBar = null
+        }
+        return@OnTouchListener false
+    }
+
+    private fun attachTouchEventListenerRecursively(view: View) {
+        view.setOnTouchListener(onTouchListener)
+        if (view is ViewGroup) {
+            view.children.forEach loop@ { child ->
+                if (child is RecyclerView) {
+                    child.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
+                        override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+                            return onTouchListener.onTouch(rv, e)
+                        }
+                        override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
+                        override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
+                    })
+                    return@loop
+                }
+                attachTouchEventListenerRecursively(child)
+            }
+        }
+    }
 
     /**
      * This will show a small snackbar if our clipboard accessibility service is disabled.
