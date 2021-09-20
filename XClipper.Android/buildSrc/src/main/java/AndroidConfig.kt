@@ -4,7 +4,7 @@ object AndroidConfig {
     const val TARGET_SDK_VERSION = 30
     const val BUILD_TOOLS_VERSION = "30.0.3"
 
-    const val VERSION_CODE = 20
+    const val VERSION_CODE = 21
     const val VERSION_NAME = "1.1.6"
 
     const val ID = "com.kpstv.xclipper"

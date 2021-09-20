@@ -33,7 +33,7 @@ data class Clip(
 
     fun getFullFormattedDate(): String {
         return try {
-            SimpleDateFormat(FULL_DATA_FORMAT, Locale.ROOT).format(time)
+            SimpleDateFormat(FULL_DATA_FORMAT, Locale.getDefault()).format(time)
         } catch (e: Exception) {
             Logger.w(e, "Incorrect date time format: $time")
             "unknown"

@@ -1,10 +1,14 @@
 package com.kpstv.xclipper.ui.helpers
 
+import android.content.IntentSender
+import android.view.WindowManager
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.install.InstallState
 import com.google.android.play.core.install.InstallStateUpdatedListener
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
@@ -16,6 +20,7 @@ import com.kpstv.xclipper.BuildConfig
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.WebSettings
 import com.kpstv.xclipper.data.model.WebSettingsConverter
+import com.kpstv.xclipper.extensions.Logger
 import com.kpstv.xclipper.extensions.utils.RetrofitUtils
 import com.kpstv.xclipper.extensions.utils.asString
 import com.kpstv.xclipper.service.worker.GithubCheckWorker
@@ -60,6 +65,10 @@ class UpdateHelper(
         registerCallbackOnResume()
     }
 
+    override fun onFragmentDestroyed() {
+        appUpdateManager?.unregisterListener(listener)
+    }
+
     private suspend fun initialize() {
         val responseString = retrofitUtils.fetch(SETTINGS_URL).getOrNull()?.asString()
         val webSettings = WebSettingsConverter.fromStringToWebSettings(responseString) ?: WebSettings()
@@ -92,37 +101,53 @@ class UpdateHelper(
             if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
                 && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)
             ) {
-                appUpdateManager.startUpdateFlowForResult(
-                    appUpdateInfo,
-                    AppUpdateType.FLEXIBLE,
-                    this,
-                    com.kpstv.xclipper.App.UPDATE_REQUEST_CODE
-                )
+                try {
+                    appUpdateManager.startUpdateFlowForResult(
+                        appUpdateInfo,
+                        AppUpdateType.FLEXIBLE,
+                        this,
+                        com.kpstv.xclipper.App.UPDATE_REQUEST_CODE
+                    )
+                } catch (e: IntentSender.SendIntentException) {
+                    Logger.w(e, "In-app updates workflow did not succeed")
+                }
             }
         }
 
         this@UpdateHelper.appUpdateManager = appUpdateManager
     }
 
-    private val listener = InstallStateUpdatedListener { state ->
-        if (state.installStatus() == InstallStatus.DOWNLOADING) {
-            val bytesDownloaded = state.bytesDownloaded()
-            val totalBytesToDownload = state.totalBytesToDownload()
-            HVLog.d(m = "Bytes Downloaded: $bytesDownloaded, TotalBytes: $totalBytesToDownload")
-        } else if (state.installStatus() == InstallStatus.DOWNLOADED) {
-            notifyUpdateDownloadComplete()
+    private val listener: InstallStateUpdatedListener = object : InstallStateUpdatedListener {
+        override fun onStateUpdate(state: InstallState) {
+            if (state.installStatus() == InstallStatus.DOWNLOADING) {
+                val bytesDownloaded = state.bytesDownloaded()
+                val totalBytesToDownload = state.totalBytesToDownload()
+                HVLog.d(m = "Bytes Downloaded: $bytesDownloaded, TotalBytes: $totalBytesToDownload")
+            } else if (state.installStatus() == InstallStatus.DOWNLOADED) {
+                notifyUpdateDownloadComplete()
+            } else if (state.installStatus() == InstallStatus.INSTALLED) {
+                appUpdateManager?.unregisterListener(this)
+            }
         }
     }
 
     private fun notifyUpdateDownloadComplete() = with(activity) {
-        MaterialAlertDialogBuilder(this)
-            .setTitle(getString(R.string.update_download_complete))
-            .setMessage(getString(R.string.update_download_install))
-            .setPositiveButton(getString(R.string.ok)) { _, _ ->
+        if (activity.isDestroyed) {
+            appUpdateManager?.completeUpdate()
+        } else {
+            try {
+                MaterialAlertDialogBuilder(this)
+                    .setTitle(getString(R.string.update_download_complete))
+                    .setMessage(getString(R.string.update_download_install))
+                    .setPositiveButton(getString(R.string.ok)) { _, _ ->
+                        appUpdateManager?.completeUpdate()
+                    }
+                    .setNegativeButton(getString(R.string.cancel), null)
+                    .show()
+            } catch (e: WindowManager.BadTokenException) {
                 appUpdateManager?.completeUpdate()
             }
-            .setNegativeButton(getString(R.string.cancel), null)
-            .show()
+        }
     }
 
     /**
