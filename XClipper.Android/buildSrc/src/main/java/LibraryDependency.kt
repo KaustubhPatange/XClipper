@@ -46,6 +46,7 @@ private object LibraryVersion {
     const val NAVIGATOR = "0.1-alpha27"
     const val NAVIGATOR_EXTENSIONS = "0.5"
     const val WEBKIT = "1.2.0"
+    const val TIMBER = "5.0.1"
 }
 
 object LibraryDependency {
@@ -122,4 +123,6 @@ object LibraryDependency {
     const val NAVIGATOR_EXTENSIONS = "io.github.kaustubhpatange:navigator-extensions:${LibraryVersion.NAVIGATOR_EXTENSIONS}"
 
     const val WEBKIT = "androidx.webkit:webkit:${LibraryVersion.WEBKIT}"
+
+    const val TIMBER = "com.jakewharton.timber:timber:${LibraryVersion.TIMBER}"
 }

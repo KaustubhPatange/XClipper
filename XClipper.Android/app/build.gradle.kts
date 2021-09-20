@@ -112,6 +112,7 @@ dependencies {
     implementation(LibraryDependency.CWT)
     implementation(LibraryDependency.AUTO_BINDINGS)
     implementation(LibraryDependency.REALTIME_EXTENSIONS)
+    implementation(LibraryDependency.TIMBER)
 
     implementation(LibraryDependency.NAVIGATOR)
     implementation(LibraryDependency.NAVIGATOR_EXTENSIONS)

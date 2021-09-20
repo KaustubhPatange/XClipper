@@ -52,14 +52,18 @@ class EditDialog : AppCompatActivity() {
 
         setRecyclerView()
 
-        edType = if (mainViewModel.editManager.getClip() == null) EDType.Create
-        else {
+        edType = if (mainViewModel.editManager.getClip() != null) {
 
             /** Set the current clip for managing */
+
             clip = mainViewModel.editManager.getClip()!!
 
             de_editText.setText(clip.data)
+            tv_bottomText.text = clip.getFullFormattedDate()
+
             EDType.Edit
+        } else {
+            EDType.Create
         }
     }
 

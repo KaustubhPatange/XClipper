@@ -28,6 +28,7 @@ import com.kpstv.xclipper.App.trimClipText
 import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
+import com.kpstv.xclipper.extensions.Logger
 import com.kpstv.xclipper.service.worker.AccessibilityWorker
 import com.kpstv.xclipper.ui.helpers.CrashHelper
 import com.kpstv.xclipper.ui.helpers.FirebaseSyncHelper
@@ -52,6 +53,12 @@ class XClipperApplication : Application(), Configuration.Provider {
         init()
 
         Notifications.initialize(this)
+
+        Logger.init(BuildConfig.DEBUG)
+
+        if (BuildConfig.DEBUG) {
+            Logger.disable(this)
+        }
     }
 
     private val TAG = javaClass.simpleName

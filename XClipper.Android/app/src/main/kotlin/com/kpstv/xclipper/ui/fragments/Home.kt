@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
@@ -482,7 +483,8 @@ class Home : ValueFragment(R.layout.fragment_home) {
     }
 
     private fun attachTouchEventListenerRecursively(view: View) {
-        view.setOnTouchListener(onTouchListener)
+        if (view !is TextView)
+            view.setOnTouchListener(onTouchListener)
         if (view is ViewGroup) {
             view.children.forEach loop@ { child ->
                 if (child is RecyclerView) {

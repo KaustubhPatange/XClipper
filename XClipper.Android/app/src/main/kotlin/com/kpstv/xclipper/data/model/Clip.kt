@@ -6,13 +6,17 @@ import androidx.room.PrimaryKey
 import com.google.gson.JsonElement
 import com.kpstv.bindings.AutoGenerateListConverter
 import com.kpstv.bindings.ConverterType
+import com.kpstv.xclipper.App
 import com.kpstv.xclipper.data.converters.DateConverter
 import com.kpstv.xclipper.data.converters.DateFormatConverter
 import com.kpstv.xclipper.extensions.ClipTagMap
+import com.kpstv.xclipper.extensions.Logger
 import com.kpstv.xclipper.extensions.enumValueOrNull
 import com.kpstv.xclipper.extensions.plus
 import com.kpstv.xclipper.extensions.utils.ClipUtils
 import org.json.JSONObject
+import java.text.SimpleDateFormat
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 @Entity(tableName = "table_clip")
@@ -27,7 +31,18 @@ data class Clip(
     var id: Int = 0
     var timeString = "while ago"
 
+    fun getFullFormattedDate(): String {
+        return try {
+            SimpleDateFormat(FULL_DATA_FORMAT, Locale.ROOT).format(time)
+        } catch (e: Exception) {
+            Logger.w(e, "Incorrect date time format: $time")
+            "unknown"
+        }
+    }
+
     companion object {
+        private const val FULL_DATA_FORMAT = "dd MMM yyyy, hh:mm a"
+
         /**
          * Generates Clip data along with the properties "data", "time"
          */
