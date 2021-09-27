@@ -82,6 +82,7 @@ dependencies {
     implementation(LibraryDependency.FIREBASE_REALTIME_DATABASE)
     implementation(LibraryDependency.FIREBASE_AUTH)
     implementation(LibraryDependency.FIREBASE_CRASHLYTICS)
+    implementation(LibraryDependency.FIREBASE_ANALYTICS)
     implementation(LibraryDependency.PLAY_SERVICE_AUTH)
 
     implementation(LibraryDependency.PAGING)

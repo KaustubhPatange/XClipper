@@ -1,0 +1,4 @@
+Added: Undo action for swipe delete, it will be persisted unless user interacts with the screen.
+Added: Visual indicator to identify pinned items (reflects in suggestions as well).
+Updated: Edit dialog will now full show date & time based on current locale.
+Fixed: Google Play in app updates issues.

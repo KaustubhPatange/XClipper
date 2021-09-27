@@ -29,6 +29,7 @@ private object LibraryVersion {
     const val FIREBASE_BOM = "28.4.0"
     const val FIREBASE_AUTH = "19.3.2"
     const val FIREBASE_CRASHLYTICS = "18.2.1"
+    const val FIREBASE_ANALYTICS = "19.0.1"
     const val PLAY_SERVICE_AUTH = "18.0.0"
     const val ACTIVITY = "1.3.0-alpha04"
     const val FRAGMENT = "1.3.1"
@@ -88,6 +89,7 @@ object LibraryDependency {
     const val FIREBASE_REALTIME_DATABASE = "com.google.firebase:firebase-database-ktx:${LibraryVersion.REALTIME_DATABASE}"
     const val FIREBASE_AUTH = "com.google.firebase:firebase-auth-ktx:${LibraryVersion.FIREBASE_AUTH}"
     const val FIREBASE_CRASHLYTICS = "com.google.firebase:firebase-crashlytics-ktx:${LibraryVersion.FIREBASE_CRASHLYTICS}"
+    const val FIREBASE_ANALYTICS = "com.google.firebase:firebase-analytics-ktx:${LibraryVersion.FIREBASE_ANALYTICS}"
     const val PLAY_SERVICE_AUTH = "com.google.android.gms:play-services-auth:${LibraryVersion.PLAY_SERVICE_AUTH}"
 
     const val HILT_WORK_MANAGER = "androidx.hilt:hilt-work:${LibraryVersion.HILT}"

@@ -1,7 +1,7 @@
 package com.kpstv.xclipper.extensions
 
 import android.content.Context
-//import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import org.jetbrains.annotations.NonNls
 import timber.log.Timber
@@ -20,7 +20,7 @@ object Logger {
   @JvmSynthetic
   fun disable(context: Context) {
     FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false)
-//    FirebaseAnalytics.getInstance(context).setAnalyticsCollectionEnabled(false)
+    FirebaseAnalytics.getInstance(context).setAnalyticsCollectionEnabled(false)
   }
 
   @JvmStatic
