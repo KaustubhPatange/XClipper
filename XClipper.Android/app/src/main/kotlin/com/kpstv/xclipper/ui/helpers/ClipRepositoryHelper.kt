@@ -47,7 +47,7 @@ class ClipRepositoryHelper @Inject constructor(
                 sendClipNotification(data)
         }
         if (BuildConfig.DEBUG)
-            Log.e(this::class.simpleName, "Data: $data, Time taken: $time ms")
+            Log.e(this::class.simpleName, "Data: ${data.take(50)}, Time taken: $time ms")
 
         pendingClipData.removeFirstOrNull()
         if (pendingClipData.isNotEmpty()) internalInsertOrUpdateClip(pendingClipData.firstOrNull())

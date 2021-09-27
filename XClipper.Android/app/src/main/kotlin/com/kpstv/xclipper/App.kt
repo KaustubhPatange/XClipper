@@ -45,7 +45,7 @@ object App {
 
     const val DELAY_SPAN: Long = 20
     const val DELAY_FIREBASE_SPAN: Long = 3000
-    const val MAX_CHARACTER_TO_STORE = 1000
+    const val MAX_CHARACTER_TO_STORE = 10_000
 
     const val STANDARD_DATE_FORMAT = "yyyyMMddHHmmss"
 

@@ -55,8 +55,8 @@ class ClipboardDetection(
          * copy behaviour.
          */
         if (event.EventType == AccessibilityEvent.TYPE_VIEW_CLICKED && event.Text != null
-            && (event.ContentDescription?.contains(copyWord, true) == true
-                    || event.Text.toString().contains(copyWord, true)
+            && (event.ContentDescription?.length ?:0 < MAX_COPY_WORD_DETECTION_LENGTH && event.ContentDescription?.contains(copyWord, true) == true
+                    || (event.Text.toString().length < MAX_COPY_WORD_DETECTION_LENGTH && event.Text.toString().contains(copyWord, true))
                     || event.ContentDescription == "Cut" || event.ContentDescription == copyWord)
         ) {
             if (enableLogging)
@@ -172,4 +172,8 @@ class ClipboardDetection(
     }
 
     private fun AEvent.clone(): AEvent = this.copy(Text = ArrayList(this.Text ?: listOf()))
+
+    private companion object {
+        private const val MAX_COPY_WORD_DETECTION_LENGTH = 30
+    }
 }
