@@ -29,6 +29,7 @@ import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.extensions.Logger
+import com.kpstv.xclipper.extensions.utils.FirebaseUtils
 import com.kpstv.xclipper.service.worker.AccessibilityWorker
 import com.kpstv.xclipper.ui.helpers.CrashHelper
 import com.kpstv.xclipper.ui.helpers.FirebaseSyncHelper
@@ -45,6 +46,7 @@ class XClipperApplication : Application(), Configuration.Provider {
     @Inject lateinit var preferenceProvider: PreferenceProvider
     @Inject lateinit var firebaseProvider: FirebaseProvider
     @Inject lateinit var dbConnectionProvider: DBConnectionProvider
+    @Inject lateinit var firebaseUtils: dagger.Lazy<FirebaseUtils>
 
     override fun onCreate() {
         super.onCreate()
@@ -79,7 +81,9 @@ class XClipperApplication : Application(), Configuration.Provider {
         DICTIONARY_LANGUAGE = preferenceProvider.getStringKey(LANG_PREF, "en")!!
 
         /** This will load firebase config setting */
-        dbConnectionProvider.loadDataFromPreference()
+        if (dbConnectionProvider.isValidData()) { // implicit loadDataFromPreference();
+            firebaseUtils.get().observeDatabaseChangeEvents()
+        }
 
         DARK_THEME = preferenceProvider.getBooleanKey(DARK_PREF, true)
         showSuggestion = preferenceProvider.getBooleanKey(SUGGESTION_PREF, false)
