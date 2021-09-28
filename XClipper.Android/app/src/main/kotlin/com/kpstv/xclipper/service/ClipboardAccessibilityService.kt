@@ -25,6 +25,7 @@ import com.kpstv.xclipper.App.EXTRA_SERVICE_TEXT
 import com.kpstv.xclipper.App.EXTRA_SERVICE_TEXT_LENGTH
 import com.kpstv.xclipper.App.showSuggestion
 import com.kpstv.xclipper.data.provider.ClipboardProvider
+import com.kpstv.xclipper.extensions.Logger
 import com.kpstv.xclipper.extensions.logger
 import com.kpstv.xclipper.extensions.utils.FirebaseUtils
 import com.kpstv.xclipper.extensions.utils.KeyboardUtils.Companion.getKeyboardHeight
@@ -138,7 +139,7 @@ class ClipboardAccessibilityService : AccessibilityService() {
                 runActivity(FLAG_ACTIVITY_NEW_TASK)
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Logger.w(e, "Accessibility Crash")
         }
     }
 

@@ -37,7 +37,6 @@ namespace Components
         }
 
         private static DispatcherTimer dtimer;
-        private static bool isExecuted;
 
         /// <summary>
         /// This will provide a callback whenever the application process is not foreground.
@@ -49,17 +48,14 @@ namespace Components
             dtimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
             dtimer.Tick += delegate
             {
+                dtimer.Stop();
                 IntPtr handle = GetForegroundWindow();
                 bool isActive = IsActivated(handle);
                 if (!isActive)
                 {
-                    //  if (isExecuted) return;
-                    // Debug.WriteLine("Deactivated()");
                     block.Invoke();
-                    dtimer.Stop();
-                    // isExecuted = true;
                 }
-                else isExecuted = false;
+                dtimer.Start();
             };
             dtimer.Start();
         }
@@ -115,8 +111,9 @@ namespace Components
                 {
                     if (dtimer != null)
                     {
-                        await Task.Delay(300);
+                        await Task.Delay(100);
                         Application.Current.Dispatcher.Invoke(() => SetFocus(hWnd));
+                        await Task.Delay(200);
                         dtimer.Start();
                     }
                 });   

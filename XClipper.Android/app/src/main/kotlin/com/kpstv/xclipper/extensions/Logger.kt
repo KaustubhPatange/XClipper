@@ -61,9 +61,11 @@ object Logger {
   private class CrashlyticsTree : ExtendedDebugTree() {
     override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
       if (t != null) {
-        FirebaseCrashlytics.getInstance().recordException(t) // records non-fatal exceptions
+        val final = Exception("[$tag] - $message", t)
+        FirebaseCrashlytics.getInstance().recordException(final) // records non-fatal exceptions
+      } else {
+        FirebaseCrashlytics.getInstance().log("[$tag] - $message")
       }
-      FirebaseCrashlytics.getInstance().log("[$tag] - $message")
     }
   }
 }
