@@ -58,12 +58,12 @@ class BubbleService : FloatingBubbleService() {
 
         /** Setting adapter and onClick to send PASTE event. */
         adapter = PageClipAdapter(clipboardProvider) { text ->
+            setState(false)
             val sendIntent = Intent(ACTION_INSERT_TEXT).apply {
                 putExtra(EXTRA_SERVICE_TEXT_LENGTH, currentWord.length)
                 putExtra(EXTRA_SERVICE_TEXT, text/*.removeRange(0, currentWord.length)*/)
             }
             LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(sendIntent)
-            setState(false)
         }
 
         subscribeSuggestions()

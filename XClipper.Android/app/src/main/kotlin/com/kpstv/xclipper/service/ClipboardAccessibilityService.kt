@@ -9,8 +9,8 @@ import android.os.Bundle
 import android.os.PowerManager
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
-import android.widget.EditText
 import androidx.annotation.RequiresApi
+import androidx.core.os.bundleOf
 import androidx.lifecycle.MutableLiveData
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.kpstv.hvlog.HVLog
@@ -28,13 +28,12 @@ import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.extensions.Logger
 import com.kpstv.xclipper.extensions.logger
 import com.kpstv.xclipper.extensions.utils.FirebaseUtils
-import com.kpstv.xclipper.extensions.utils.KeyboardUtils.Companion.getKeyboardHeight
+import com.kpstv.xclipper.extensions.utils.KeyboardUtils.Companion.isKeyboardVisible
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.isSystemOverlayEnabled
 import com.kpstv.xclipper.service.helper.ClipboardDetection
 import com.kpstv.xclipper.service.helper.LanguageDetector
 import com.kpstv.xclipper.ui.fragments.settings.GeneralPreference
 import dagger.hilt.android.AndroidEntryPoint
-import es.dmoral.toasty.Toasty
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -49,6 +48,7 @@ class ClipboardAccessibilityService : AccessibilityService() {
 
     /** We will save the package name to this variable from the event. */
     companion object {
+        @Volatile
         var currentPackage: CharSequence? = null
 
         @RequiresApi(Build.VERSION_CODES.N)
@@ -57,16 +57,16 @@ class ClipboardAccessibilityService : AccessibilityService() {
         }
     }
 
-    private val keyboardHeight: MutableLiveData<Int> = MutableLiveData()
+    private val keyboardVisibility: MutableLiveData<Boolean> = MutableLiveData()
 
-    private fun postKeyboardValue(value: Int) {
-        // TODO: Try not showing keyboard in XClipper app.
-        if (keyboardHeight.value != value) keyboardHeight.postValue(value)
+    private fun postKeyboardValue(value: Boolean) {
+        if (keyboardVisibility.value != value) keyboardVisibility.postValue(value)
     }
 
     private lateinit var powerManager: PowerManager
 
     private var nodeInfo: AccessibilityNodeInfo? = null
+    private var editableNode: AccessibilityNodeInfo? = null
 
     /**
      * TODO: Remove this unused parameter
@@ -93,7 +93,8 @@ class ClipboardAccessibilityService : AccessibilityService() {
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         try {
-            currentPackage = event?.packageName
+            if (event?.packageName != packageName)
+                currentPackage = event?.packageName
 
             // logger(TAG, "$event")
             //  logger(TAG, "SourceText: ${event?.source}; Text is null: ${event?.text.isNullOrEmpty()}; $event")
@@ -101,19 +102,21 @@ class ClipboardAccessibilityService : AccessibilityService() {
             if (event?.eventType != null)
                 clipboardDetector.addEvent(event.eventType)
 
-            postKeyboardValue(getKeyboardHeight(applicationContext))
+            if (event?.eventType != AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED)
+                postKeyboardValue(isKeyboardVisible(applicationContext))
 
-            event?.source?.apply {
-                if (className == EditText::class.java.name) {
-                    nodeInfo = this
-//                logger("ClipboardAccessibilityService", "Does this work")
+            val source = event?.source
+            if (source != null) {
+                var node: AccessibilityNodeInfo = source
+                if (!node.isEditable) recursivelyFindRequiredNodeForSuggestion(node)?.let { node = it }
+                with(node) {
+                    if (isEditable) editableNode = this
                     if (textSelectionStart == textSelectionEnd && text != null) {
-                        val isHintShowing = if (Build.VERSION.SDK_INT >= 26) isShowingHintText else text.toString().length > textSelectionEnd
-                        logger("BubbleService", "Text: $text, Cursor: $textSelectionEnd, isHint: $isHintShowing, contentDesc: $contentDescription")
-
-                        sendDataToBubbleService(text.toString(), isHintShowing, textSelectionEnd)
+                        sendDataToBubbleService(text.toString(), isHintVisible, textSelectionEnd)
                     }
                 }
+                nodeInfo = node
+                if (editableNode?.packageName != currentPackage) editableNode = null
             }
 
             if (powerManager.isInteractive) {
@@ -121,7 +124,7 @@ class ClipboardAccessibilityService : AccessibilityService() {
             } else
                 updateScreenInteraction(false)
 
-            if (event?.packageName != packageName)
+            if (event?.eventType == AccessibilityEvent.TYPE_VIEW_CLICKED && event.packageName != packageName)
                 LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(Intent(ACTION_VIEW_CLOSE))
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
@@ -162,13 +165,13 @@ class ClipboardAccessibilityService : AccessibilityService() {
         firebaseUtils.observeDatabaseChangeEvents()
         clipboardProvider.observeClipboardChange()
 
-        keyboardHeight.observeForever { value ->
-            logger(TAG, "Value: $value")
+        keyboardVisibility.observeForever { visible ->
+            logger(TAG, "Value: $visible")
 
             /** A safe check to make sure we should check permission if we
              *  are using service related to it. */
             if (isSystemOverlayEnabled(applicationContext) && showSuggestion) {
-                if (value > 100)
+                if (visible)
                     try {
                         startService(Intent(applicationContext, BubbleService::class.java))
                     } catch (e: Exception) {
@@ -216,7 +219,12 @@ class ClipboardAccessibilityService : AccessibilityService() {
                     if (context == null) return
                     when (intent?.action) {
                         ACTION_INSERT_TEXT -> {
-                            actionInsertText(context, intent)
+                            val editableNode = editableNode
+                            val nodeInfo = nodeInfo
+                            if (editableNode != null)
+                                actionInsertText(editableNode, intent)
+                            else if (nodeInfo != null)
+                                actionInsertText(nodeInfo, intent)
                         }
                         ACTION_DISABLE_SERVICE -> @RequiresApi(Build.VERSION_CODES.N) {
                             disableSelf()
@@ -227,39 +235,55 @@ class ClipboardAccessibilityService : AccessibilityService() {
             }, actions)
     }
 
-    private fun actionInsertText(context: Context, intent: Intent) {
+    private fun actionInsertText(node: AccessibilityNodeInfo, intent: Intent) = with(node) {
         if (intent.hasExtra(EXTRA_SERVICE_TEXT)) {
+            refresh()
 
             val pasteData = intent.getStringExtra(EXTRA_SERVICE_TEXT)
 
-            if (!(nodeInfo != null && nodeInfo?.packageName != currentPackage)) {
-                Toasty.info(context, "Click on text field to capture it").show()
-                return
-            }
-            with(nodeInfo!!) {
-                refresh()
-                clipboardProvider.ignoreChange {
-                    val wordLength = intent.getIntExtra(EXTRA_SERVICE_TEXT_LENGTH, textSelectionEnd)
-
-                    HVLog.d("Received ${::EXTRA_SERVICE_TEXT.name}, WordLength: ${wordLength}, Text: $pasteData")
-
-                    val currentClipText = clipboardProvider.getCurrentClip().value
-
-                    clipboardProvider.setClipboard(ClipData.newPlainText("copied", pasteData))
-
-                    if (wordLength != 0 && textSelectionEnd != -1) {
-                        performAction(AccessibilityNodeInfo.ACTION_SET_SELECTION, Bundle().apply {
-                            putInt(AccessibilityNodeInfo.ACTION_ARGUMENT_SELECTION_START_INT, textSelectionEnd - wordLength)
-                            putInt(AccessibilityNodeInfo.ACTION_ARGUMENT_SELECTION_END_INT, textSelectionEnd)
-                        })
-                    }
-
-                    performAction(AccessibilityNodeInfo.ACTION_PASTE)
-
-                    clipboardProvider.setClipboard(ClipData.newPlainText(null, currentClipText))
-                }
+            if (isEditable) {
+                val wordLength = intent.getIntExtra(EXTRA_SERVICE_TEXT_LENGTH, node.textSelectionEnd)
+                actionPaste(pasteData, wordLength)
+            } else {
+                actionPaste(pasteData)
             }
         }
+    }
+
+    private fun AccessibilityNodeInfo.actionPaste(pasteData: String?, wordLength: Int = 0) {
+        if (isEditable && text != null && textSelectionEnd == -1) { // empty EditText
+            performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, bundleOf(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE to pasteData))
+            return
+        }
+
+        clipboardProvider.ignoreChange {
+            HVLog.d("Received ${::EXTRA_SERVICE_TEXT.name}, WordLength: ${wordLength}, Text: $pasteData")
+
+            val currentClipText = clipboardProvider.getCurrentClip().value
+
+            clipboardProvider.setClipboard(ClipData.newPlainText("copied", pasteData))
+
+            if (isEditable && wordLength != 0 && textSelectionEnd != -1) {
+                performAction(AccessibilityNodeInfo.ACTION_SET_SELECTION, Bundle().apply {
+                    putInt(AccessibilityNodeInfo.ACTION_ARGUMENT_SELECTION_START_INT, textSelectionEnd - wordLength)
+                    putInt(AccessibilityNodeInfo.ACTION_ARGUMENT_SELECTION_END_INT, textSelectionEnd)
+                })
+            }
+
+            performAction(AccessibilityNodeInfo.ACTION_PASTE)
+
+            clipboardProvider.setClipboard(ClipData.newPlainText(null, currentClipText))
+        }
+    }
+
+    // We will find an editable node. If none of them exist it means we cannot use
+    // search suggestions feature & we will directly paste the content.
+    private fun recursivelyFindRequiredNodeForSuggestion(node: AccessibilityNodeInfo?) : AccessibilityNodeInfo? {
+        if (node?.isEditable == true) return node
+        for(i in 0 until (node?.childCount ?: 0)) {
+            return recursivelyFindRequiredNodeForSuggestion(node?.getChild(i))
+        }
+        return null
     }
 
     private fun updateScreenInteraction(value: Boolean) {
@@ -281,4 +305,8 @@ class ClipboardAccessibilityService : AccessibilityService() {
      */
     private fun isPackageBlacklisted(pkg: CharSequence?) =
         App.blackListedApps?.contains(pkg) == true
+
+
+    private val AccessibilityNodeInfo.isHintVisible
+        get() = if (Build.VERSION.SDK_INT >= 26) isShowingHintText else text.toString().length > textSelectionEnd
 }
