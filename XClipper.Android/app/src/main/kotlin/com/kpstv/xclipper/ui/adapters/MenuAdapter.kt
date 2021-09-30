@@ -9,7 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.SpecialMenu
-import com.kpstv.xclipper.extensions.utils.Utils.Companion.getColorFromAttr
+import com.kpstv.xclipper.extensions.utils.Utils.Companion.getDataFromAttr
 import kotlinx.android.synthetic.main.item_special.view.*
 
 class MenuAdapter(
@@ -31,9 +31,9 @@ class MenuAdapter(
         is_text.text = item.title
         is_image.setImageDrawable(ContextCompat.getDrawable(context, item.image))
 
-        val defaultThemeColor = getColorFromAttr(
+        val defaultThemeColor = getDataFromAttr(
             context = context,
-            attrColor = R.attr.colorTextSecondaryLight
+            attr = R.attr.colorTextSecondaryLight
         )
 
         if (item.imageTint == -1)

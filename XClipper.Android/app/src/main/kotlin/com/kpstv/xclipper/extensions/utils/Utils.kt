@@ -26,7 +26,6 @@ import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ShareCompat
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -89,13 +88,13 @@ class Utils {
          * Always pass this@Activity as context.
          * Else it won't resolve theme
          */
-        fun getColorFromAttr(
+        fun getDataFromAttr(
             context: Context,
-            @AttrRes attrColor: Int,
+            @AttrRes attr: Int,
             typedValue: TypedValue = TypedValue(),
             resolveRefs: Boolean = true
         ): Int {
-            context.theme.resolveAttribute(attrColor, typedValue, resolveRefs)
+            context.theme.resolveAttribute(attr, typedValue, resolveRefs)
             return typedValue.data
         }
 

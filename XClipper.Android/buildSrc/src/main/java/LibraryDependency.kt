@@ -23,7 +23,7 @@ private object LibraryVersion {
     const val ZXING_QR = "4.1.0"
     const val TOASTY = "1.4.2"
     const val ROUND_BOTTOM_SHEET = "1.0.1"
-    const val FLOATING_BUBBLE = "3.0.2"
+    const val FLOATING_BUBBLE = "3.0.3"
     const val GIF_DRAWABLE = "1.2.22"
     const val REALTIME_DATABASE = "19.3.1"
     const val FIREBASE_BOM = "28.4.0"

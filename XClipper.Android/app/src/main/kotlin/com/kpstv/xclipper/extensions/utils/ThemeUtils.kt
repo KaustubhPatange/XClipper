@@ -38,7 +38,7 @@ class ThemeUtils {
                 activity.window.statusBarColor = Color.BLACK
                 activity.window.navigationBarColor = Color.BLACK
             } else if (Build.VERSION.SDK_INT >= 23) {
-                val color = Utils.getColorFromAttr(activity, R.attr.colorPrimary)
+                val color = Utils.getDataFromAttr(activity, R.attr.colorPrimary)
                 activity.window.statusBarColor = color
 
                 if (!App.DARK_THEME) {
@@ -48,7 +48,7 @@ class ThemeUtils {
                 }
             }
 
-            val color = Utils.getColorFromAttr(activity, R.attr.colorBackground)
+            val color = Utils.getDataFromAttr(activity, R.attr.colorBackground)
             activity.window.setBackgroundDrawable(ColorDrawable(color))
         }
 

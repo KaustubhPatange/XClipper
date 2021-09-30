@@ -1,6 +1,7 @@
 package com.kpstv.xclipper.service
 
 import android.content.*
+import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -28,6 +29,7 @@ import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.databinding.BubbleViewBinding
 import com.kpstv.xclipper.databinding.ItemBubbleServiceBinding
 import com.kpstv.xclipper.extensions.*
+import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showSearchFeatureDialog
 import com.kpstv.xclipper.ui.activities.SpecialActions
 import dagger.hilt.android.AndroidEntryPoint
@@ -116,10 +118,14 @@ class BubbleService : FloatingBubbleService() {
             filter
         )
 
+        val actionBarSize = Utils.getDataFromAttr(context, android.R.attr.actionBarSize).run {
+            TypedValue.complexToDimensionPixelSize(this, resources.displayMetrics)
+        }
         return FloatingBubbleConfig.Builder()
             .bubbleIcon(ContextCompat.getDrawable(applicationContext, R.drawable.bubble_icon))
             .expandableView(binding.root)
             .physicsEnabled(true)
+            .bubbleYOffset(actionBarSize)
             .build()
     }
 

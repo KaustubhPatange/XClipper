@@ -22,7 +22,7 @@ import com.kpstv.xclipper.extensions.utils.ThemeUtils.Companion.CARD_CLICK_COLOR
 import com.kpstv.xclipper.extensions.utils.ThemeUtils.Companion.CARD_COLOR
 import com.kpstv.xclipper.extensions.utils.ThemeUtils.Companion.CARD_SELECTED_COLOR
 import com.kpstv.xclipper.extensions.utils.Utils
-import com.kpstv.xclipper.extensions.utils.Utils.Companion.getColorFromAttr
+import com.kpstv.xclipper.extensions.utils.Utils.Companion.getDataFromAttr
 import kotlinx.android.synthetic.main.item_clip.view.*
 import java.util.*
 import kotlin.collections.HashMap
@@ -119,10 +119,10 @@ class CIAdapter(
         val selectedDataObserver: Observer<String> = Observer { current ->
             if (holder.itemView.ci_textView.text == current)
                 holder.itemView.ci_textView.setTextColor(
-                    getColorFromAttr(holder.itemView.context, R.attr.colorCurrentClip)
+                    getDataFromAttr(holder.itemView.context, R.attr.colorCurrentClip)
                 )
             else holder.itemView.ci_textView.setTextColor(
-                getColorFromAttr(holder.itemView.context, R.attr.colorTextPrimary)
+                getDataFromAttr(holder.itemView.context, R.attr.colorTextPrimary)
             )
         }
         val selectedItemObserver: Observer<Clip> = Observer { selectedClip ->
