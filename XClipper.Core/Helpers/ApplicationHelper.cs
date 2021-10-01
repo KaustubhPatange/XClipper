@@ -38,6 +38,8 @@ namespace Components
 
         private static DispatcherTimer dtimer;
 
+        private static volatile bool applicationActive = false;
+
         /// <summary>
         /// This will provide a callback whenever the application process is not foreground.
         /// </summary>
@@ -45,17 +47,23 @@ namespace Components
         public static void AttachForegroundProcess(Action block)
         {
             /** I do not support this logic, maybe in future I'll find a better solution. */
-            dtimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
+
+            Application.Current.Activated += (o, e) => { applicationActive = true; };
+            Application.Current.Deactivated += (o, e) => {
+                block.Invoke();
+                applicationActive = false;
+            };
+
+            dtimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(150) };
             dtimer.Tick += delegate
             {
-                dtimer.Stop();
                 IntPtr handle = GetForegroundWindow();
                 bool isActive = IsActivated(handle);
-                if (!isActive)
+                if (!isActive && applicationActive) 
                 {
                     block.Invoke();
+                    applicationActive = false;
                 }
-                dtimer.Start();
             };
             dtimer.Start();
         }
@@ -91,7 +99,7 @@ namespace Components
                 var currentForegroundWindowThreadId = GetWindowThreadProcessId(currentForegroundWindow, IntPtr.Zero);
                 var thisWindowThreadId = GetWindowThreadProcessId(hWnd, IntPtr.Zero);
 
-                Thread.Sleep(70);
+                //Thread.Sleep(70);
 
                 w.Show();
                 w.Activate();
@@ -107,16 +115,17 @@ namespace Components
                     SetForegroundWindow(hWnd);
                 }
 
-                Task.Run(async () =>
-                {
-                    if (dtimer != null)
-                    {
-                        await Task.Delay(100);
-                        Application.Current.Dispatcher.Invoke(() => SetFocus(hWnd));
-                        await Task.Delay(200);
-                        dtimer.Start();
-                    }
-                });   
+                if (dtimer != null) dtimer.Start();
+                //Task.Run(async () =>
+                //{
+                //    if (dtimer != null)
+                //    {
+                //        await Task.Delay(100);
+                //        Application.Current.Dispatcher.Invoke(() => SetFocus(hWnd));
+                //        await Task.Delay(200);
+                //        dtimer.Start();
+                //    }
+                //});   
             }
         }
 

@@ -121,13 +121,9 @@ namespace Components
             {
                 if (clipWindow.IsVisible) clipWindow.CloseWindow();
             });
-            //ApplicationHelper.AttachAppWindowDeactivation(clipWindow, clipWindow.CloseWindow);
-
-            // clipWindow.Deactivated += OnDeactivated;
 
             licenseService.Initiate(err =>
             {
-                // if (err is InvalidLicenseException) return;
                 if (err != null && err is not InvalidLicenseException)
                 {
                     MsgBoxHelper.ShowError(err.Message);
