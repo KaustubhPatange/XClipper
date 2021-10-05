@@ -60,16 +60,16 @@ namespace Components
         {
             if (releases == null) return null;
             var filtered = releases.Where(c => c.assets.Any(d => d.browser_download_url.EndsWith(".exe"))).ToList();
-            
+
             ReleaseItem? update = null;
-            switch (DefaultSettings.UpdateChannel)
+            if (DefaultSettings.UpdateChannel == Settings.UpdateChannel.Nightly)
             {
-                case Settings.UpdateChannel.Stable:
-                    update = filtered.Find(c => !c.prerelease);
-                    break;
-                case Settings.UpdateChannel.Nightly:
-                    update = filtered.Find(c => c.prerelease);
-                    break;
+                update = filtered.Find(c => c.prerelease);
+            }
+            var stableBuild = filtered.Find(c => !c.prerelease);
+            if (stableBuild.GetVersion() > (update?.GetVersion() ?? 0))
+            {
+                update = stableBuild;
             }
 
             if (update != null)

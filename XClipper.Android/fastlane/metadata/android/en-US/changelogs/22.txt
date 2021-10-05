@@ -1,0 +1,5 @@
+Updated: Moved the placement of the Suggestion bubble below the action bar.
+Updated: Increase limit for clipboard detection to 10k characters.
+Fixed: Keyboard popping issues.
+Fixed: Database reconnection on process death.
+Fixed: Suggestion dismissing & pasting logic.
