@@ -79,6 +79,7 @@
     <string name="close">Close</string>
     <string name="logout_success">Logged out successfully!</string>
     <string name="err_uid">Not a valid UID</string>
+    <string name="quick_settings_save_clip">Save Clip</string>
     <string name="connect_success">Connected successfully!</string>
     <string name="accessibility_capture">In order to monitor clipboard you need to enable the accessibility service from settings.\n\n1. Click OK to open accessibility settings.\n2. Click on Installed Services (Samsung).\n3. Search for XClipper.\n4. Click and enable it.</string>
     <string name="suggestion_capture">You need to enable System overlay permission.\n\n1. Click OK to open Display Overlay settings.\n2. Enable \"Allow display over other apps\".</string>
@@ -104,7 +105,7 @@
     <string name="palette2_text">Accessibility,\n\n\nYou need to turn on \"accessibility\" service for this app.\n\n\nThis is due to a restriction imposed by Google which does not allow long running background tasks.\n\n\nThis service will keep running in background capturing your clipboard data.</string>
     <string name="palette3_text">Suggestions [BETA],\n\n\nGet a small bubble whenever keyboard pops out containing all your clips.\n\n\nEnable it from App Settings > General > Suggestions.</string>
     <string name="palette4_text">Android 10+ user,\n\n\nSometimes standard copy doesn\'t work, in such case use \"XCopy\".</string>
-    <string name="palette5_text">Android 10+ user,\n\n\nSometimes copy action is not detected, in such case use quick setting option.</string>
+    <string name="palette5_text">Android 10+ user,\n\n\nSometimes copy action is not detected, in such case use "Save Clip" feature.</string>
     <string name="palette6_text">Synchronization,\n\n\nThe application works best with it\'s Windows desktop app.\n\n\nIt allows you to synchronize clipboard data across devices.\n\n\nVisit https://kaustubhpatange.github.io/XClipper/docs for more info.</string>
     <string name="palette7_text">Wrapping up,\n\n\nWatch video to understand full feature usage of application.\n\n\nhttps://youtube.com</string>
     <string name="palette_android_text">Android 10+ user,\n\n\nDue to new introduced privacy changes clipboard monitoring has stopped working from Android 10.\n\n\nFind more info about this issue on issue tracker https://issuetracker.google.com/issues/123461156\n\n\nBut through some hacks (not perfect one) we can enable it using an accessibility service.\n\n\nThis feature is still in BETA!</string>

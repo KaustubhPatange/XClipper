@@ -6,6 +6,7 @@ import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.os.Build
 import android.service.quicksettings.TileService
 import androidx.annotation.RequiresApi
+import com.kpstv.xclipper.R
 
 @RequiresApi(Build.VERSION_CODES.N)
 class TileService : TileService() {
@@ -16,6 +17,12 @@ class TileService : TileService() {
             flags = FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_MULTIPLE_TASK
         }
         startActivityAndCollapse(intent)
+    }
+
+    override fun onTileAdded() {
+        qsTile?.label = getString(R.string.quick_settings_save_clip)
+        qsTile?.updateTile()
+        super.onTileAdded()
     }
 
     override fun onStartListening() {

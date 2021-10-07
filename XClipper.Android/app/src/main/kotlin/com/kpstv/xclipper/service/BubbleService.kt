@@ -197,9 +197,9 @@ class BubbleService : FloatingBubbleService() {
                     ibcPinView.hide()
 
                 if (clipboardProvider.getCurrentClip().value == clip?.data)
-                    ibcCurrentView.show()
+                    ibcTextView.setTextColor(ContextCompat.getColor(ibcTextView.context, R.color.colorSelectedClip))
                 else
-                    ibcCurrentView.hide()
+                    ibcTextView.setTextColor(ContextCompat.getColor(ibcTextView.context, R.color.white))
 
                 ibcTextView.text = clip?.data
                 ibcTextView.setOnClickListener {
