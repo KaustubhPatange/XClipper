@@ -12,6 +12,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.kpstv.xclipper.App
+import com.kpstv.xclipper.App.ACTIVE_ADB_MODE_PREF
 import com.kpstv.xclipper.App.BLACKLIST_PREF
 import com.kpstv.xclipper.App.DICTIONARY_LANGUAGE
 import com.kpstv.xclipper.App.IMAGE_MARKDOWN_PREF
@@ -33,8 +34,12 @@ import com.kpstv.xclipper.extensions.utils.Utils.Companion.retrievePackageList
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showAccessibilityDialog
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showDisableAccessibilityDialog
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showOverlayDialog
+import com.kpstv.xclipper.service.helper.ClipboardLogDetector
+import com.kpstv.xclipper.ui.dialogs.CustomLottieDialog
+import com.kpstv.xclipper.ui.dialogs.Dialogs
 import com.kpstv.xclipper.ui.dialogs.MultiSelectDialogBuilder
 import com.kpstv.xclipper.ui.dialogs.MultiSelectModel3
+import com.kpstv.xclipper.ui.helpers.AppSettings
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.CoroutineScope
@@ -47,9 +52,11 @@ import javax.inject.Inject
 class GeneralPreference : PreferenceFragmentCompat() {
     private val TAG = javaClass.simpleName
     private var checkPreference: SwitchPreferenceCompat? = null
+    private var improveDetectPreference: SwitchPreferenceCompat? = null
     private var overlayPreference: SwitchPreferenceCompat? = null
 
     @Inject lateinit var preferenceProvider: PreferenceProvider
+    @Inject lateinit var appSettings: AppSettings
 
     private var appsDialog: AlertDialog? = null
 
@@ -59,6 +66,7 @@ class GeneralPreference : PreferenceFragmentCompat() {
      * will set the preference.
      */
     private var rememberToCheckOverlaySwitch = false
+    private var rememberToCheckImproveDetection = false
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.general_pref, rootKey)
@@ -96,6 +104,22 @@ class GeneralPreference : PreferenceFragmentCompat() {
             } else {
                 showDisableAccessibilityDialog(requireContext()) { checkForService() }
             }
+            true
+        }
+
+        /** Improve detection preference */
+        improveDetectPreference = findPreference(ACTIVE_ADB_MODE_PREF)
+        if (Build.VERSION.SDK_INT < 29) improveDetectPreference?.isEnabled = false
+        improveDetectPreference?.setOnPreferenceChangeListener call@{ _, newValue ->
+            if (newValue as Boolean) {
+                val canDetect = ClipboardLogDetector.isDetectionCompatible(requireContext())
+                if (!canDetect) {
+                    rememberToCheckImproveDetection = true
+                    Dialogs.showImproveDetectionDialog(requireContext())
+                    return@call canDetect
+                }
+            }
+            appSettings.setImproveDetectionEnabled(newValue)
             true
         }
 
@@ -138,6 +162,7 @@ class GeneralPreference : PreferenceFragmentCompat() {
         LocalBroadcastManager.getInstance(requireContext()).registerReceiver(
             localBroadcastReceiver, IntentFilter(ACTION_CHECK_PREFERENCES)
         )
+        improveDetectPreference?.isChecked = appSettings.isImproveDetectionEnabled()
         super.onStart()
     }
 
@@ -159,6 +184,12 @@ class GeneralPreference : PreferenceFragmentCompat() {
 
     private fun checkForService() {
         checkPreference?.isChecked = isClipboardAccessibilityServiceRunning(requireContext())
+        if (rememberToCheckImproveDetection) {
+            val canDetect = ClipboardLogDetector.isDetectionCompatible(requireContext())
+            appSettings.setImproveDetectionEnabled(canDetect)
+            improveDetectPreference?.isChecked = canDetect
+            rememberToCheckImproveDetection = false
+        }
         if (rememberToCheckOverlaySwitch) {
             overlayPreference?.isChecked = isSystemOverlayEnabled(requireContext())
             rememberToCheckOverlaySwitch = false
@@ -206,7 +237,6 @@ class GeneralPreference : PreferenceFragmentCompat() {
         }.create()
         appsDialog?.show()
     }
-
 
     companion object {
         const val ACTION_CHECK_PREFERENCES = "com.kpstv.xclipper.action_check_preferences"

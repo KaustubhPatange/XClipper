@@ -11,7 +11,8 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+    <uses-permission android:name="android.permission.READ_LOGS" />
 
     <application
         android:name=".XClipperApplication"
@@ -22,8 +23,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.Dark">
-        <activity android:name=".ui.activities.Crash"/>
-        <activity android:name=".ui.activities.Start" android:launchMode="singleTop" android:theme="@style/AppTheme">
+        <activity android:name=".ui.activities.Crash" />
+        <activity
+            android:name=".ui.activities.Start"
+            android:launchMode="singleTop"
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -51,7 +55,7 @@
         <activity
             android:name=".ui.dialogs.FeatureDialog$DialogActivity"
             android:launchMode="singleInstance"
-            android:theme="@style/Theme.AppCompat.Translucent"/>
+            android:theme="@style/Theme.AppCompat.Translucent" />
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="portrait"
@@ -100,7 +104,17 @@
         </service>
         <service android:name=".service.BubbleService" />
 
-        <receiver android:name=".service.AppBroadcastReceiver" />
+        <receiver android:name=".service.receiver.AppBroadcastReceiver" />
+        <receiver
+            android:name=".service.receiver.BootCompleteReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="android.intent.action.REBOOT" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

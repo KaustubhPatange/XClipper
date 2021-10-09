@@ -55,23 +55,15 @@ import java.text.DecimalFormat
 import java.util.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
-
+import kotlin.reflect.KClass
 
 class Utils {
     companion object {
-        fun isRunning(ctx: Context): Boolean {
-            val activityManager =
-                ctx.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-            val tasks =
-                activityManager.getRunningTasks(Int.MAX_VALUE)
-            for (task in tasks) {
-                if ("com.kpstv.xclipper.service.ChangeClipboardActivity".equals(
-                        task.baseActivity!!.className,
-                        ignoreCase = true
-                    )
-                ) return true
-            }
-            return false
+        fun isActivityRunning(ctx: Context, clazz: KClass<out Activity>): Boolean {
+            val activityManager = ctx.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+            return activityManager.getRunningTasks(Int.MAX_VALUE).any {
+                    it.topActivity?.className == clazz.qualifiedName
+                }
         }
 
         fun shareText(context: Activity, clip: Clip) {

@@ -223,7 +223,15 @@
 
     <string name="accept">Accept</string>
     <string name="deny">Deny</string>
+    <string name="enable">Enable</string>
     <string name="dictionary_disclosure"><b>XClipper</b> uses <a href="https://dictionaryapi.dev/">api.dictionaryapi.dev</a> API for retrieving meanings for the words in your clip. This service does not send any user\'s data, check privacy policy from app settings for more information.</string>
     <string name="disclosure_deny">Cannot use this service without agreeing the policy.</string>
     <string name="disclosure">Disclosure</string>
+    <string name="adb_mode_title">Improve detection</string>
+    <string name="adb_mode_summary">Enhance clipboard detection logic by some additional configuration.</string>
+    <string name="adb_mode_long_summary">Enhance clipboard detection logic through additional configuration which requires a PC &amp; some knowledge of using ADB.</string>
+
+    <string name="adb_dialog_title">Android Q+ Copy detection</string>
+    <string name="adb_dialog_message1">The solution requires some configuration to be done via a PC. Run the following ADB commands on your terminal with this device connected &amp; USB debugging enabled.</string>
+    <string name="adb_dialog_message2">adb -d shell pm grant com.kpstv.xclipper android.permission.READ_LOGS;\n\nadb -d shell appops set com.kpstv.xclipper SYSTEM_ALERT_WINDOW allow;\n\nadb -d shell am force-stop com.kpstv.xclipper;</string>
 </resources>

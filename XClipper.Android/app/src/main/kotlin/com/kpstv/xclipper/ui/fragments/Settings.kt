@@ -82,7 +82,6 @@ class Settings : ValueFragment(R.layout.activity_settings), FragmentNavigator.Tr
             screen = Start.Screen.SETTING,
             args = Args(openLookFeel = true),
             animation = AnimationDefinition.CircularReveal(
-                delayMillis = 80,
                 fromTarget = viewRect
             ),
             historyOptions = HistoryOptions.SingleTopInstance

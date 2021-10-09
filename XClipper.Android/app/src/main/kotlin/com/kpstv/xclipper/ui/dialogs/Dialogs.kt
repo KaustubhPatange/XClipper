@@ -1,0 +1,51 @@
+package com.kpstv.xclipper.ui.dialogs
+
+import android.content.Context
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.BackgroundColorSpan
+import android.widget.TextView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.kpstv.xclipper.R
+import com.kpstv.xclipper.extensions.setPadding
+import com.kpstv.xclipper.extensions.utils.Utils
+
+object Dialogs {
+
+    /* Improve detection dialog */
+
+    fun showImproveDetectionDialog(context: Context) {
+        CustomLottieDialog(context)
+            .setTitle(R.string.adb_mode_title)
+            .setMessage(R.string.adb_mode_long_summary)
+            .setLottieRes(R.raw.abstract_star)
+            .setLottieResCredits(context.getString(R.string.abstract_star_author))
+            .setLoop(true)
+            .setPositiveButton(R.string.enable) { improveDetectionAdbDialog(context) }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
+    }
+    private fun improveDetectionAdbDialog(context: Context) {
+        val color = Utils.getDataFromAttr(context, R.attr.colorSeparator)
+
+        val spannableString = SpannableStringBuilder()
+        spannableString.append(context.getString(R.string.adb_dialog_message1))
+        spannableString.append("\n\n")
+        spannableString.append(context.getString(R.string.adb_dialog_message2), BackgroundColorSpan(color), Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+
+        val paddingHorizontally = (25 * context.resources.displayMetrics.density).toInt()
+        val paddingVertically = (15 * context.resources.displayMetrics.density).toInt()
+        val textView = TextView(context).apply {
+            text = spannableString
+            setPadding(paddingHorizontally, paddingVertically)
+        }
+        MaterialAlertDialogBuilder(context)
+            .setTitle(R.string.adb_dialog_title)
+            .setView(textView)
+            .setPositiveButton(R.string.learn_more) { _, _ ->
+                Utils.commonUrlLaunch(context, context.getString(R.string.app_docs_improve_detect))
+            }
+            .setNeutralButton(R.string.cancel, null)
+            .show()
+    }
+}

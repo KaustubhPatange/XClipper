@@ -17,7 +17,7 @@ import com.kpstv.xclipper.App.NOTIFICATION_CODE
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.extensions.colorFrom
 import com.kpstv.xclipper.extensions.utils.Utils
-import com.kpstv.xclipper.service.AppBroadcastReceiver
+import com.kpstv.xclipper.service.receiver.AppBroadcastReceiver
 import com.kpstv.xclipper.ui.activities.Start
 import java.io.File
 import java.util.*
@@ -31,6 +31,7 @@ object Notifications {
     private const val ACCESSIBILITY_NOTIFICATION_ID = 34
     private const val UPDATE_PROGRESS_NOTIFICATION_ID = 21
     private const val UPDATE_NOTIFICATION_ID = 7
+    private const val IMPROVE_DETECTION_DISABLED_NOTIFICATION_ID = 35
 
     private lateinit var manager: NotificationManager
 
@@ -224,6 +225,27 @@ object Notifications {
             .build()
 
         manager.notify(UPDATE_NOTIFICATION_ID, notification)
+    }
+
+    fun sendImproveDetectionDisabled(context: Context) = with(context) {
+        val learnMoreIntent = AppBroadcastReceiver.createOpenUrlAction(this, getString(R.string.app_docs_improve_detect))
+
+        val notification = NotificationCompat.Builder(this, CHANNEL_ID)
+            .setContentTitle("Improve clipboard detection disabled")
+            .setStyle(NotificationCompat.BigTextStyle()
+                .bigText("It looks like the system has disabled the improve clipboard detection mechanism. You need to again configure it using ADB"))
+            .setSmallIcon(R.drawable.ic_clip)
+            .setColor(colorFrom(R.color.colorPrimaryDark))
+            .setColorized(true)
+            .setAutoCancel(true)
+            .addAction(NotificationCompat.Action(
+                android.R.drawable.stat_sys_download_done,
+                getString(R.string.update_download_install_button),
+                PendingIntent.getBroadcast(context, getRandomPendingCode(), learnMoreIntent, 0)
+            ))
+            .build()
+
+        manager.notify(IMPROVE_DETECTION_DISABLED_NOTIFICATION_ID, notification)
     }
 
     private fun getMutableFlags() = if (Build.VERSION.SDK_INT >= 23) PendingIntent.FLAG_IMMUTABLE else 0

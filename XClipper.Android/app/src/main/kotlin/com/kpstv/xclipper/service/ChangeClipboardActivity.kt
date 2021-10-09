@@ -1,12 +1,15 @@
 package com.kpstv.xclipper.service
 
+import android.app.ActivityManager
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import androidx.core.app.ActivityManagerCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import com.kpstv.xclipper.data.provider.ClipboardProvider
+import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.ui.helpers.ClipRepositoryHelper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -58,5 +61,16 @@ class ChangeClipboardActivity : FragmentActivity() {
     override fun onDestroy() {
         super.onDestroy()
         Log.e(TAG, "Destroyed()")
+    }
+
+    companion object {
+        fun launch(context: Context) = with(context) {
+            val intent = Intent(this, ChangeClipboardActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+        }
+        fun isRunning(context: Context) : Boolean {
+            return Utils.isActivityRunning(context, ChangeClipboardActivity::class)
+        }
     }
 }

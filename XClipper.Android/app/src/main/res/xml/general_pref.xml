@@ -8,6 +8,12 @@
             app:key="service_pref"
             app:title="@string/service_title" />
 
+        <SwitchPreferenceCompat
+            app:key="adb_mode_pref"
+            android:dependency="service_pref"
+            app:summary="@string/adb_mode_summary"
+            app:title="@string/adb_mode_title" />
+
         <Preference
             android:summary="@string/blacklist_summary"
             android:title="@string/blacklist_title"
@@ -33,8 +39,8 @@
         <SwitchPreferenceCompat
             android:defaultValue="false"
             app:key="trim_clip_pref"
-            app:title="@string/trim_title"
-            app:summary="@string/trim_summary"/>
+            app:summary="@string/trim_summary"
+            app:title="@string/trim_title" />
 
         <ListPreference
             android:summary="@string/lang_summary"
@@ -46,8 +52,8 @@
 
         <Preference
             app:key="reset_intro_pref"
-            app:title="Reset onboarding screens"
-            app:summary="This also includes the dialogs that are shown to demonstrate a particular feature."/>
+            app:summary="This also includes the dialogs that are shown to demonstrate a particular feature."
+            app:title="Reset onboarding screens" />
 
     </PreferenceCategory>
 

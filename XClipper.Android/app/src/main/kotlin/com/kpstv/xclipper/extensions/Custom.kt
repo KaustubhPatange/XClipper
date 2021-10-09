@@ -1,7 +1,11 @@
 package com.kpstv.xclipper.extensions
 
+import android.content.Context
 import android.util.Log
+import android.view.View
+import androidx.annotation.Px
 import androidx.fragment.app.Fragment
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.DiffUtil
 import com.ferfalk.simplesearchview.SimpleSearchView
@@ -141,4 +145,10 @@ fun <T> DiffUtil.ItemCallback<T>.asConfig(): AsyncDifferConfig<T> {
     return AsyncDifferConfig.Builder(this)
         .setBackgroundThreadExecutor(Dispatchers.Default.asExecutor())
         .build()
+}
+
+fun Context.broadcastManager() = LocalBroadcastManager.getInstance(this)
+
+fun View.setPadding(@Px horizontally: Int, @Px vertically: Int) {
+    setPadding(horizontally, vertically, horizontally, vertically)
 }

@@ -1,11 +1,9 @@
-package com.kpstv.xclipper.service
+package com.kpstv.xclipper.service.receiver
 
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.*
-import android.net.Uri
-import android.util.Log
 import android.widget.Toast
 import com.kpstv.update.Updater
 import com.kpstv.xclipper.App.ACTION_OPEN_APP
@@ -38,6 +36,16 @@ class AppBroadcastReceiver : AbstractBroadcastReceiver() {
         const val ACTION_INSTALL_APK = "com.kpstv.action_install_apk"
 
         const val ARGUMENT_INSTALL_APK_FILE = "com.kpstv.action_install_apk:arg_apk_file"
+
+        private const val ACTION_OPEN_URL = "com.kpstv.action_open_url"
+        private const val ARGUMENT_OPEN_URL_LINK = "com.kpstv.action_open_url:arg_link"
+
+        fun createOpenUrlAction(context: Context, url: String) : Intent {
+            return Intent(context, AppBroadcastReceiver::class.java).apply {
+                action = ACTION_OPEN_URL
+                putExtra(ARGUMENT_OPEN_URL_LINK, url)
+            }
+        }
     }
 
     override fun onReceive(context: Context, intent: Intent) {

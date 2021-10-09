@@ -6,6 +6,7 @@ import android.provider.Settings
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import com.kpstv.hvlog.HVLog
+import com.kpstv.xclipper.App.ACTIVE_ADB_MODE_PREF
 import com.kpstv.xclipper.App.AUTO_SYNC_PREF
 import com.kpstv.xclipper.App.BIND_DELETE_PREF
 import com.kpstv.xclipper.App.BIND_PREF
@@ -30,9 +31,10 @@ import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.extensions.Logger
 import com.kpstv.xclipper.extensions.utils.FirebaseUtils
+import com.kpstv.xclipper.service.helper.ClipboardLogDetector
 import com.kpstv.xclipper.service.worker.AccessibilityWorker
+import com.kpstv.xclipper.ui.helpers.AppSettings
 import com.kpstv.xclipper.ui.helpers.CrashHelper
-import com.kpstv.xclipper.ui.helpers.FirebaseSyncHelper
 import com.kpstv.xclipper.ui.helpers.Notifications
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
@@ -46,6 +48,7 @@ class XClipperApplication : Application(), Configuration.Provider {
     @Inject lateinit var preferenceProvider: PreferenceProvider
     @Inject lateinit var firebaseProvider: FirebaseProvider
     @Inject lateinit var dbConnectionProvider: DBConnectionProvider
+    @Inject lateinit var appSettings: AppSettings
     @Inject lateinit var firebaseUtils: dagger.Lazy<FirebaseUtils>
 
     override fun onCreate() {
@@ -93,6 +96,10 @@ class XClipperApplication : Application(), Configuration.Provider {
         blackListedApps = preferenceProvider.getStringSet(App.BLACKLIST_PREF, mutableSetOf())
         bindDelete = preferenceProvider.getBooleanKey(BIND_DELETE_PREF, false)
         bindToFirebase = if (UID.isBlank()) false else preferenceProvider.getBooleanKey(BIND_PREF, false)
+
+        if (!ClipboardLogDetector.isDetectionCompatible(applicationContext)) {
+            appSettings.setImproveDetectionEnabled(false)
+        }
 
         /** Initialize firebase data */
         firebaseProvider.initialize(dbConnectionProvider.optionsProvider())

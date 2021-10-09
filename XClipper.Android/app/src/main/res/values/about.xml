@@ -10,7 +10,11 @@
     <string name="app_github_issues">https://github.com/KaustubhPatange/XClipper/issues</string>
 
     <string name="app_docs_device_add">https://kaustubhpatange.github.io/XClipper/docs/#/sync?id=connecting-mobile-device-to-the-storage</string>
+    <string name="app_docs_improve_detect">https://kaustubhpatange.github.io/XClipper/docs/#/sync?id=connecting-mobile-device-to-the-storage</string>
 
     <string name="app_privacy_policy">https://github.com/KaustubhPatange/XClipper/blob/master/XClipper.Android/POLICY.md</string>
 
+    <!-- Lottie resource credits -->
+
+    <string name="abstract_star_author">https://lottiefiles.com/25225-abstract-loader</string>
 </resources>

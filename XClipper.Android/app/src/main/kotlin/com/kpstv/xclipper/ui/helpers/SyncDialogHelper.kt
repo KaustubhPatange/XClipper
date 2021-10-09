@@ -50,7 +50,7 @@ class SyncDialogHelper(
 
         fun showDialog(context: Context) = with(context) {
             CustomLottieDialog(context)
-                .setLottieView(R.raw.connection)
+                .setLottieRes(R.raw.connection)
                 .setLoop(false)
                 .setSpeed(3.5f)
                 .setTitle(R.string.synchronize)

@@ -3,7 +3,6 @@ package com.kpstv.xclipper.service
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityServiceInfo
 import android.content.*
-import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
@@ -15,24 +14,24 @@ import androidx.lifecycle.MutableLiveData
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.kpstv.hvlog.HVLog
 import com.kpstv.xclipper.App
+import com.kpstv.xclipper.App.ACTION_DISABLE_IMPROVE_DETECTION
 import com.kpstv.xclipper.App.ACTION_DISABLE_SERVICE
+import com.kpstv.xclipper.App.ACTION_ENABLE_IMPROVE_DETECTION
 import com.kpstv.xclipper.App.ACTION_INSERT_TEXT
-import com.kpstv.xclipper.App.ACTION_NODE_INFO
-import com.kpstv.xclipper.App.ACTION_VIEW_CLOSE
-import com.kpstv.xclipper.App.EXTRA_NODE_CURSOR
-import com.kpstv.xclipper.App.EXTRA_NODE_TEXT
-import com.kpstv.xclipper.App.EXTRA_SERVICE_TEXT
-import com.kpstv.xclipper.App.EXTRA_SERVICE_TEXT_LENGTH
 import com.kpstv.xclipper.App.showSuggestion
 import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.extensions.Logger
+import com.kpstv.xclipper.extensions.broadcastManager
 import com.kpstv.xclipper.extensions.logger
 import com.kpstv.xclipper.extensions.utils.FirebaseUtils
 import com.kpstv.xclipper.extensions.utils.KeyboardUtils.Companion.isKeyboardVisible
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.isSystemOverlayEnabled
 import com.kpstv.xclipper.service.helper.ClipboardDetection
+import com.kpstv.xclipper.service.helper.ClipboardLogDetector
 import com.kpstv.xclipper.service.helper.LanguageDetector
 import com.kpstv.xclipper.ui.fragments.settings.GeneralPreference
+import com.kpstv.xclipper.ui.helpers.AppSettingKeys
+import com.kpstv.xclipper.ui.helpers.AppSettings
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -43,11 +42,16 @@ class ClipboardAccessibilityService : AccessibilityService() {
     lateinit var firebaseUtils: FirebaseUtils
     @Inject
     lateinit var clipboardProvider: ClipboardProvider
+    @Inject
+    lateinit var appSettings: AppSettings
 
     private lateinit var clipboardDetector: ClipboardDetection
+    private lateinit var clipboardLogDetector: ClipboardLogDetector
 
     /** We will save the package name to this variable from the event. */
     companion object {
+        private const val EXTRA_SERVICE_TEXT = "com.kpstv.xclipper.service_text"
+        private const val EXTRA_SERVICE_TEXT_LENGTH = "com.kpstv.xclipper.service_text_word_length"
         @Volatile
         var currentPackage: CharSequence? = null
 
@@ -88,6 +92,7 @@ class ClipboardAccessibilityService : AccessibilityService() {
         super.onCreate()
         powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
         clipboardDetector = ClipboardDetection(LanguageDetector.getCopyForLocale(applicationContext))
+        clipboardLogDetector = ClipboardLogDetector.newInstanceCompat(applicationContext)
         HVLog.d()
     }
 
@@ -112,7 +117,7 @@ class ClipboardAccessibilityService : AccessibilityService() {
                 with(node) {
                     if (isEditable) editableNode = this
                     if (textSelectionStart == textSelectionEnd && text != null) {
-                        sendDataToBubbleService(text.toString(), isHintVisible, textSelectionEnd)
+                        BubbleService.Actions.sendNodeInfo(applicationContext, text.toString(), textSelectionEnd)
                     }
                 }
                 nodeInfo = node
@@ -125,21 +130,21 @@ class ClipboardAccessibilityService : AccessibilityService() {
                 updateScreenInteraction(false)
 
             if (event?.eventType == AccessibilityEvent.TYPE_VIEW_CLICKED && event.packageName != packageName)
-                LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(Intent(ACTION_VIEW_CLOSE))
+                BubbleService.Actions.sendCloseState(applicationContext)
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
                 && clipboardDetector.getSupportedEventTypes(event) && !isPackageBlacklisted(event?.packageName)
             ) {
                 runForNextEventAlso = true
                 logger(TAG, "Running for first time")
-                runActivity(FLAG_ACTIVITY_NEW_TASK)
+                runChangeClipboardActivity()
                 return
             }
 
             if (runForNextEventAlso) {
                 logger(TAG, "Running for second time")
                 runForNextEventAlso = false
-                runActivity(FLAG_ACTIVITY_NEW_TASK)
+                runChangeClipboardActivity()
             }
         } catch (e: Exception) {
             Logger.w(e, "Accessibility Crash")
@@ -166,8 +171,6 @@ class ClipboardAccessibilityService : AccessibilityService() {
         clipboardProvider.observeClipboardChange()
 
         keyboardVisibility.observeForever { visible ->
-            logger(TAG, "Value: $visible")
-
             /** A safe check to make sure we should check permission if we
              *  are using service related to it. */
             if (isSystemOverlayEnabled(applicationContext) && showSuggestion) {
@@ -187,14 +190,8 @@ class ClipboardAccessibilityService : AccessibilityService() {
         }
 
         registerLocalBroadcast()
-    }
-
-
-    private val lock = Any()
-    private fun runActivity(flag: Int) = synchronized(lock) {
-        val intent = Intent(this, ChangeClipboardActivity::class.java)
-        intent.addFlags(flag)
-        startActivity(intent)
+        registerClipboardLogDetector()
+        appSettings.registerListener(settingsListener)
     }
 
     override fun onDestroy() {
@@ -203,17 +200,48 @@ class ClipboardAccessibilityService : AccessibilityService() {
         /** Ensures that we remove database initialization observation. */
         firebaseUtils.removeDatabaseInitializationObservation()
         clipboardProvider.removeClipboardObserver()
+        clipboardLogDetector.dispose()
+        appSettings.unregisterListener(settingsListener)
         super.onDestroy()
     }
 
     override fun onInterrupt() {}
 
+    private fun registerClipboardLogDetector() {
+        clipboardLogDetector.registerListener(object : ClipboardLogDetector.Listener {
+            override fun onClipboardEventDetected() {
+                println("Detecting clipboard")
+                if (!runForNextEventAlso && !ChangeClipboardActivity.isRunning(applicationContext)) {
+                    runChangeClipboardActivity()
+                }
+            }
+            override fun onPermissionNotGranted() {
+                es.dmoral.toasty.Toasty.error(applicationContext, "READ_LOGS Permission not granted").show()
+                // TODO: Show a dialog
+            }
+        })
+        if (appSettings.isImproveDetectionEnabled())
+            clipboardLogDetector.startDetecting()
+    }
+
+    private val settingsListener = AppSettings.Listener { key, value ->
+        if (key == AppSettingKeys.IMPROVE_DETECTION && value is Boolean) {
+            if (value) {
+                Actions.sendImproveDetectionEnable(applicationContext)
+            } else {
+                Actions.sendImproveDetectionDisable(applicationContext)
+            }
+        }
+    }
+
     private fun registerLocalBroadcast() {
         val actions = IntentFilter().apply {
             addAction(ACTION_INSERT_TEXT)
             addAction(ACTION_DISABLE_SERVICE)
+            addAction(ACTION_ENABLE_IMPROVE_DETECTION)
+            addAction(ACTION_DISABLE_IMPROVE_DETECTION)
         }
-        LocalBroadcastManager.getInstance(applicationContext)
+        applicationContext.broadcastManager()
             .registerReceiver(object : BroadcastReceiver() {
                 override fun onReceive(context: Context?, intent: Intent?) {
                     if (context == null) return
@@ -229,6 +257,12 @@ class ClipboardAccessibilityService : AccessibilityService() {
                         ACTION_DISABLE_SERVICE -> @RequiresApi(Build.VERSION_CODES.N) {
                             disableSelf()
                             GeneralPreference.checkForSettings(context)
+                        }
+                        ACTION_ENABLE_IMPROVE_DETECTION -> {
+                            if (!clipboardLogDetector.isStarted()) clipboardLogDetector.startDetecting()
+                        }
+                        ACTION_DISABLE_IMPROVE_DETECTION -> {
+                            if (clipboardLogDetector.isStarted()) clipboardLogDetector.stopDetecting()
                         }
                     }
                 }
@@ -291,22 +325,30 @@ class ClipboardAccessibilityService : AccessibilityService() {
             screenInteraction.postValue(value)
     }
 
-    private fun sendDataToBubbleService(text: String, isHintShowing: Boolean, cursor: Int) {
-        LocalBroadcastManager.getInstance(applicationContext).apply {
-            sendBroadcast(Intent(ACTION_NODE_INFO).apply {
-                putExtra(EXTRA_NODE_TEXT, text)
-                putExtra(EXTRA_NODE_CURSOR, cursor)
-            })
-        }
-    }
-
     /**
      * Returns true if the current package name is not part of blacklist app list.
      */
     private fun isPackageBlacklisted(pkg: CharSequence?) =
         App.blackListedApps?.contains(pkg) == true
 
+    private val lock = Any()
+    private fun runChangeClipboardActivity() = synchronized(lock) {
+        ChangeClipboardActivity.launch(applicationContext)
+    }
 
-    private val AccessibilityNodeInfo.isHintVisible
-        get() = if (Build.VERSION.SDK_INT >= 26) isShowingHintText else text.toString().length > textSelectionEnd
+    object Actions {
+        fun sendImproveDetectionEnable(context: Context) {
+            context.broadcastManager().sendBroadcast(Intent(ACTION_ENABLE_IMPROVE_DETECTION))
+        }
+        fun sendImproveDetectionDisable(context: Context) {
+            context.broadcastManager().sendBroadcast(Intent(ACTION_DISABLE_IMPROVE_DETECTION))
+        }
+        fun sendClipboardInsertText(context: Context, wordLength: Int, text: String) {
+            val sendIntent = Intent(ACTION_INSERT_TEXT).apply {
+                putExtra(EXTRA_SERVICE_TEXT_LENGTH, wordLength)
+                putExtra(EXTRA_SERVICE_TEXT, text)
+            }
+            context.broadcastManager().sendBroadcast(sendIntent)
+        }
+    }
 }

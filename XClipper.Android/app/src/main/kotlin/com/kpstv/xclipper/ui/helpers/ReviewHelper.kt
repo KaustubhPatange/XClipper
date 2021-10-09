@@ -67,7 +67,7 @@ class ReviewHelper(
     @Deprecated("Currently there is no way to detect whether a user has reviewed the app. Usage of dialogs or any similar use-cases are prohibited.")
     fun showReviewDialog() = with(activity) {
         CustomLottieDialog(this)
-            .setLottieView(R.raw.star)
+            .setLottieRes(R.raw.star)
             .setLoop(false)
             .setTitle(R.string.rate_title)
             .setMessage(R.string.rate_text)

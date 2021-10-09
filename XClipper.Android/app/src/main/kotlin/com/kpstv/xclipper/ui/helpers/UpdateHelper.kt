@@ -3,7 +3,6 @@ package com.kpstv.xclipper.ui.helpers
 import android.content.IntentSender
 import android.view.WindowManager
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.play.core.appupdate.AppUpdateManager
@@ -170,7 +169,7 @@ class UpdateHelper(
 
     private fun showUpdateDialog(onUpdateClick: () -> Unit) {
         CustomLottieDialog(activity)
-            .setLottieView(R.raw.update)
+            .setLottieRes(R.raw.update)
             .setTitle(activity.getString(R.string.update_available))
             .setMessage(activity.getString(R.string.update_available_text))
             .setNeutralButton(R.string.later)

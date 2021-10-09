@@ -16,11 +16,6 @@ import com.bsk.floatingbubblelib.DefaultFloatingBubbleTouchListener
 import com.bsk.floatingbubblelib.FloatingBubbleConfig
 import com.bsk.floatingbubblelib.FloatingBubbleService
 import com.bsk.floatingbubblelib.FloatingBubbleTouchListener
-import com.kpstv.xclipper.App
-import com.kpstv.xclipper.App.ACTION_INSERT_TEXT
-import com.kpstv.xclipper.App.ACTION_VIEW_CLOSE
-import com.kpstv.xclipper.App.EXTRA_SERVICE_TEXT
-import com.kpstv.xclipper.App.EXTRA_SERVICE_TEXT_LENGTH
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.provider.ClipboardProvider
@@ -54,6 +49,14 @@ class BubbleService : FloatingBubbleService() {
 
     private lateinit var binding: BubbleViewBinding
 
+    companion object {
+        private const val ACTION_VIEW_CLOSE = "com.kpstv.xclipper.action_view_close"
+
+        private const val ACTION_NODE_INFO = "com.kpstv.xclipper.action_node_text"
+        private const val EXTRA_NODE_CURSOR = "com.kpstv.xclipper.extra_node_cursor"
+        private const val EXTRA_NODE_TEXT = "com.kpstv.xclipper.extra_node_text"
+    }
+
     override fun getConfig(): FloatingBubbleConfig {
 
         binding = BubbleViewBinding.inflate(applicationContext.layoutInflater())
@@ -61,11 +64,7 @@ class BubbleService : FloatingBubbleService() {
         /** Setting adapter and onClick to send PASTE event. */
         adapter = PageClipAdapter(clipboardProvider) { text ->
             setState(false)
-            val sendIntent = Intent(ACTION_INSERT_TEXT).apply {
-                putExtra(EXTRA_SERVICE_TEXT_LENGTH, currentWord.length)
-                putExtra(EXTRA_SERVICE_TEXT, text/*.removeRange(0, currentWord.length)*/)
-            }
-            LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(sendIntent)
+            ClipboardAccessibilityService.Actions.sendClipboardInsertText(applicationContext, currentWord.length, text)
         }
 
         subscribeSuggestions()
@@ -86,7 +85,7 @@ class BubbleService : FloatingBubbleService() {
          *  should minimize the expandable view.*/
         val filter = IntentFilter().apply {
             addAction(ACTION_VIEW_CLOSE)
-            addAction(App.ACTION_NODE_INFO)
+            addAction(ACTION_NODE_INFO)
         }
         LocalBroadcastManager.getInstance(this).registerReceiver(
             object : BroadcastReceiver() {
@@ -94,9 +93,9 @@ class BubbleService : FloatingBubbleService() {
                     if (intent?.action == null) return
                     when(intent.action) {
                         ACTION_VIEW_CLOSE -> setState(false)
-                        App.ACTION_NODE_INFO -> {
-                            val currentText = intent.getStringExtra(App.EXTRA_NODE_TEXT) ?: ""
-                            val currentPosition = intent.getIntExtra(App.EXTRA_NODE_CURSOR, -1)
+                        ACTION_NODE_INFO -> {
+                            val currentText = intent.getStringExtra(EXTRA_NODE_TEXT) ?: ""
+                            val currentPosition = intent.getIntExtra(EXTRA_NODE_CURSOR, -1)
 
                             if (currentPosition <= 0 || currentText.length < currentPosition) {
                                 clearFilters()
@@ -166,6 +165,18 @@ class BubbleService : FloatingBubbleService() {
     override fun onDestroy() {
         repository.getDataSource().removeObserver(pageObserver)
         super.onDestroy()
+    }
+
+    object Actions {
+        fun sendCloseState(context: Context) {
+            context.broadcastManager().sendBroadcast(Intent(ACTION_VIEW_CLOSE))
+        }
+        fun sendNodeInfo(context: Context, nodeText: String, cursorPosition: Int) {
+            context.broadcastManager().sendBroadcast(Intent(ACTION_NODE_INFO).apply {
+                putExtra(EXTRA_NODE_TEXT, nodeText)
+                putExtra(EXTRA_NODE_CURSOR, cursorPosition)
+            })
+        }
     }
 
     class PageClipAdapter(private val clipboardProvider: ClipboardProvider, val onClick: (String) -> Unit) :
