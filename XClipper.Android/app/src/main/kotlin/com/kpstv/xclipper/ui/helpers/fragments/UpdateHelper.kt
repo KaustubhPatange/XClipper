@@ -1,4 +1,4 @@
-package com.kpstv.xclipper.ui.helpers
+package com.kpstv.xclipper.ui.helpers.fragments
 
 import android.content.IntentSender
 import android.view.WindowManager

@@ -27,6 +27,7 @@ dependencies {
     implementation(LibraryDependency.LIFECYCLE_COMMON)
     implementation(LibraryDependency.ACTIVITY_KTX)
     implementation(LibraryDependency.GLIDE)
+    implementation("androidx.localbroadcastmanager:localbroadcastmanager:1.0.0")
 
     kapt(LibraryDependency.GLIDE_COMPILER)
 }

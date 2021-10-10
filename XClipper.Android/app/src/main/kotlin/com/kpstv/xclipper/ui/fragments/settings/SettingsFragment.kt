@@ -7,17 +7,25 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.kpstv.navigation.ValueFragment
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.SpecialMenu
-import com.kpstv.xclipper.databinding.RecyclerViewBinding
+import com.kpstv.xclipper.data.provider.PreferenceProvider
+import com.kpstv.xclipper.databinding.FragmentSettingsMainBinding
 import com.kpstv.xclipper.extensions.viewBinding
 import com.kpstv.xclipper.ui.adapters.MenuAdapter
 import com.kpstv.xclipper.ui.fragments.Settings
+import com.kpstv.xclipper.ui.helpers.fragments.ImproveDetectionHelper
 import com.kpstv.xclipper.ui.viewmodels.SettingNavViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
-class SettingsFragment : ValueFragment(R.layout.recycler_view) {
-    private val binding by viewBinding(RecyclerViewBinding::bind)
+@AndroidEntryPoint
+class SettingsFragment : ValueFragment(R.layout.fragment_settings_main) {
+    private val binding by viewBinding(FragmentSettingsMainBinding::bind)
     private val navViewModel by viewModels<SettingNavViewModel>(
         ownerProducer = ::requireParentFragment
     )
+
+    @Inject
+    lateinit var preferenceProvider: PreferenceProvider
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -71,5 +79,14 @@ class SettingsFragment : ValueFragment(R.layout.recycler_view) {
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = MenuAdapter(list, R.layout.item_settings)
         binding.recyclerView.setHasFixedSize(true)
+
+        setUpQuickTips()
+    }
+
+    private fun setUpQuickTips() {
+        /* Improve detection tip */
+        ImproveDetectionHelper.addQuickTip(binding.tipContainer, preferenceProvider) {
+            navViewModel.navigateTo(Settings.Screen.GENERAL, GeneralPreference.Args(highlightImproveDetection = true))
+        }
     }
 }

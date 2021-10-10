@@ -109,19 +109,20 @@
     <string name="palette6_text">Synchronization,\n\n\nThe application works best with it\'s Windows desktop app.\n\n\nIt allows you to synchronize clipboard data across devices.\n\n\nVisit https://kaustubhpatange.github.io/XClipper/docs for more info.</string>
     <string name="palette7_text">Wrapping up,\n\n\nWatch video to understand full feature usage of application.\n\n\nhttps://youtube.com</string>
     <string name="palette_android_text">Android 10+ user,\n\n\nDue to new introduced privacy changes clipboard monitoring has stopped working from Android 10.\n\n\nFind more info about this issue on issue tracker https://issuetracker.google.com/issues/123461156\n\n\nBut through some hacks (not perfect one) we can enable it using an accessibility service.\n\n\nThis feature is still in BETA!</string>
+    <string name="palette_improve_detection">Android 10+ user,\n\n\n\You can \"Improve Clipboard Detection\" through some additional configuration done via PC.\n\n\nRun the following ADB commands with device connected &amp; \"USB Debugging\" enabled.</string>
 
-    <string name="next_1">Next 1/7</string>
-    <string name="next_2">Next 2/7</string>
-    <string name="next_3">Next 3/7</string>
-    <string name="next_4">Next 4/7</string>
-    <string name="next_5">Next 5/7</string>
-    <string name="next_6">Next 6/7</string>
-    <string name="next_7">Next 7/7</string>
+    <string name="next_1">Next 1/8</string>
+    <string name="next_2">Next 2/8</string>
+    <string name="next_3">Next 3/8</string>
+    <string name="next_4">Next 4/8</string>
+    <string name="next_5">Next 5/8</string>
+    <string name="next_6">Next 6/8</string>
+    <string name="next_7">Next 7/8</string>
 
-    <string name="nextd_1">Next 1/2</string>
-    <string name="nextd_2">Next 2/2</string>
-    <string name="nextd_3">Next 3/2</string>
-    <string name="nextd_4">Next 4/2</string>
+    <string name="nextd_1">Next 1/4</string>
+    <string name="nextd_2">Next 2/4</string>
+    <string name="nextd_3">Next 3/4</string>
+    <string name="nextd_4">Next 4/4</string>
 
     <string name="next_8">Finish</string>
     <string name="pin">Pin</string>
@@ -233,5 +234,7 @@
 
     <string name="adb_dialog_title">Android Q+ Copy detection</string>
     <string name="adb_dialog_message1">The solution requires some configuration to be done via a PC. Run the following ADB commands on your terminal with this device connected &amp; USB debugging enabled.</string>
-    <string name="adb_dialog_message2">adb -d shell pm grant com.kpstv.xclipper android.permission.READ_LOGS;\n\nadb -d shell appops set com.kpstv.xclipper SYSTEM_ALERT_WINDOW allow;\n\nadb -d shell am force-stop com.kpstv.xclipper;</string>
+    <string name="adb_dialog_message2">adb -d shell pm grant %1$s android.permission.READ_LOGS;\n\nadb -d shell appops set %1$s SYSTEM_ALERT_WINDOW allow;\n\nadb -d shell am force-stop %1$s;</string>
+
+    <string name="do_not_show">Do not show</string>
 </resources>

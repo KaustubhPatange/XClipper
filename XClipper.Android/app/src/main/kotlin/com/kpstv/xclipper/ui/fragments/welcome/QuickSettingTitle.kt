@@ -11,7 +11,7 @@ class QuickSettingTitle : AbstractWelcomeFragment() {
         paletteId = R.color.palette5,
         nextPaletteId = R.color.palette6,
         textId = R.string.palette5_text,
-        nextTextId = R.string.next_6,
+        nextTextId = R.string.next_7,
         directions = Start.Screen.WINDOWS_APP,
         insertView = LayoutInflater.from(requireContext()).inflate(
             R.layout.item_gifview, null

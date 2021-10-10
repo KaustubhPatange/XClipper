@@ -14,7 +14,7 @@ object Dialogs {
 
     /* Improve detection dialog */
 
-    fun showImproveDetectionDialog(context: Context) {
+    fun showImproveDetectionDialog(context: Context, additional: CustomLottieDialog.() -> Unit = {}) {
         CustomLottieDialog(context)
             .setTitle(R.string.adb_mode_title)
             .setMessage(R.string.adb_mode_long_summary)
@@ -23,6 +23,7 @@ object Dialogs {
             .setLoop(true)
             .setPositiveButton(R.string.enable) { improveDetectionAdbDialog(context) }
             .setNegativeButton(R.string.cancel, null)
+            .apply(additional)
             .show()
     }
     private fun improveDetectionAdbDialog(context: Context) {
@@ -31,7 +32,7 @@ object Dialogs {
         val spannableString = SpannableStringBuilder()
         spannableString.append(context.getString(R.string.adb_dialog_message1))
         spannableString.append("\n\n")
-        spannableString.append(context.getString(R.string.adb_dialog_message2), BackgroundColorSpan(color), Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+        spannableString.append(context.getString(R.string.adb_dialog_message2, context.packageName), BackgroundColorSpan(color), Spanned.SPAN_INCLUSIVE_INCLUSIVE)
 
         val paddingHorizontally = (25 * context.resources.displayMetrics.density).toInt()
         val paddingVertically = (15 * context.resources.displayMetrics.density).toInt()

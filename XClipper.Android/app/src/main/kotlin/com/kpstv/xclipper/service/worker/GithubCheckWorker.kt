@@ -8,7 +8,7 @@ import com.kpstv.xclipper.data.model.WebSettingsConverter
 import com.kpstv.xclipper.extensions.utils.RetrofitUtils
 import com.kpstv.xclipper.extensions.utils.asString
 import com.kpstv.xclipper.ui.helpers.Notifications
-import com.kpstv.xclipper.ui.helpers.UpdateHelper
+import com.kpstv.xclipper.ui.helpers.fragments.UpdateHelper
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import java.util.concurrent.TimeUnit

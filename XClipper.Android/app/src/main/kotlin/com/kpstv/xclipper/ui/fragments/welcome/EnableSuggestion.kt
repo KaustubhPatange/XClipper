@@ -23,7 +23,7 @@ class EnableSuggestion : AbstractWelcomeFragment() {
         paletteId = R.color.palette3,
         nextPaletteId = R.color.palette4,
         textId = R.string.palette3_text,
-        nextTextId = if (Utils.isAndroid10orUp()) R.string.next_4 else R.string.nextd_3,
+        nextTextId = if (Utils.isAndroid10orUp()) R.string.next_5 else R.string.nextd_3,
         action = {
             if (!isSystemOverlayEnabled(requireContext())) {
                 showOverlayDialog(requireContext())

@@ -10,6 +10,7 @@ import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 
 fun Context.layoutInflater(): LayoutInflater = LayoutInflater.from(this)
 
@@ -38,3 +39,5 @@ fun Context.getColorAttr(@AttrRes id: Int, @ColorInt fallbackColor: Int = 0): In
     theme?.resolveAttribute(id, typedValue, true)
     return typedValue.data
 }
+
+fun Context.broadcastManager() = LocalBroadcastManager.getInstance(this)

@@ -6,11 +6,16 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
+import android.os.Parcelable
+import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.kpstv.navigation.BaseArgs
+import com.kpstv.navigation.getKeyArgs
+import com.kpstv.navigation.hasKeyArgs
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.App.ACTIVE_ADB_MODE_PREF
 import com.kpstv.xclipper.App.BLACKLIST_PREF
@@ -28,20 +33,20 @@ import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.databinding.DialogProgressBinding
 import com.kpstv.xclipper.extensions.layoutInflater
-import com.kpstv.xclipper.extensions.utils.Utils.Companion.isClipboardAccessibilityServiceRunning
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.isSystemOverlayEnabled
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.retrievePackageList
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showAccessibilityDialog
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showDisableAccessibilityDialog
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showOverlayDialog
+import com.kpstv.xclipper.service.ClipboardAccessibilityService
 import com.kpstv.xclipper.service.helper.ClipboardLogDetector
-import com.kpstv.xclipper.ui.dialogs.CustomLottieDialog
 import com.kpstv.xclipper.ui.dialogs.Dialogs
 import com.kpstv.xclipper.ui.dialogs.MultiSelectDialogBuilder
 import com.kpstv.xclipper.ui.dialogs.MultiSelectModel3
 import com.kpstv.xclipper.ui.helpers.AppSettings
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
+import kotlinx.android.parcel.Parcelize
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -49,7 +54,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class GeneralPreference : PreferenceFragmentCompat() {
+class GeneralPreference : AbstractPreferenceFragment() {
     private val TAG = javaClass.simpleName
     private var checkPreference: SwitchPreferenceCompat? = null
     private var improveDetectPreference: SwitchPreferenceCompat? = null
@@ -158,6 +163,14 @@ class GeneralPreference : PreferenceFragmentCompat() {
         }
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        if (hasKeyArgs<Args>()) {
+            val args = getKeyArgs<Args>()
+            if (args.highlightImproveDetection) highlightItemWithTitle(getString(R.string.adb_mode_title))
+        }
+    }
+
     override fun onStart() {
         LocalBroadcastManager.getInstance(requireContext()).registerReceiver(
             localBroadcastReceiver, IntentFilter(ACTION_CHECK_PREFERENCES)
@@ -183,7 +196,7 @@ class GeneralPreference : PreferenceFragmentCompat() {
     }
 
     private fun checkForService() {
-        checkPreference?.isChecked = isClipboardAccessibilityServiceRunning(requireContext())
+        checkPreference?.isChecked = ClipboardAccessibilityService.isRunning(requireContext())
         if (rememberToCheckImproveDetection) {
             val canDetect = ClipboardLogDetector.isDetectionCompatible(requireContext())
             appSettings.setImproveDetectionEnabled(canDetect)
@@ -246,4 +259,7 @@ class GeneralPreference : PreferenceFragmentCompat() {
             LocalBroadcastManager.getInstance(context).sendBroadcast(Intent(ACTION_CHECK_PREFERENCES))
         }
     }
+
+    @Parcelize
+    data class Args(val highlightImproveDetection: Boolean = false) : BaseArgs(), Parcelable
 }

@@ -44,8 +44,8 @@ private object LibraryVersion {
     const val REALTIME_EXTENSIONS = "0.1.3"
     const val LIVEDATA_COMBINE_UTIL = "1.2.0"
     const val CAOC = "2.3.0"
-    const val NAVIGATOR = "0.1-alpha30"
-    const val NAVIGATOR_EXTENSIONS = "0.6"
+    const val NAVIGATOR = "0.1-alpha31"
+    const val NAVIGATOR_EXTENSIONS = "0.7"
     const val WEBKIT = "1.2.0"
     const val TIMBER = "5.0.1"
 }

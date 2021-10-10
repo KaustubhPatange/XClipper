@@ -13,10 +13,8 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
-import androidx.core.view.forEach
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -56,7 +54,8 @@ import com.kpstv.xclipper.ui.dialogs.EditDialog
 import com.kpstv.xclipper.ui.dialogs.TagDialog
 import com.kpstv.xclipper.ui.fragments.sheets.MoreBottomSheet
 import com.kpstv.xclipper.extensions.recyclerview.RecyclerViewScrollHelper
-import com.kpstv.xclipper.ui.helpers.SyncDialogHelper
+import com.kpstv.xclipper.service.ClipboardAccessibilityService
+import com.kpstv.xclipper.ui.helpers.fragments.SyncDialogHelper
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import com.zhuinden.livedatacombinetuplekt.combineTuple
 import dagger.hilt.android.AndroidEntryPoint
@@ -66,7 +65,6 @@ import kotlinx.android.synthetic.main.layout_empty.*
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
-import kotlin.concurrent.schedule
 
 @AndroidEntryPoint
 class Home : ValueFragment(R.layout.fragment_home) {
@@ -506,7 +504,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
      * This will show a small snackbar if our clipboard accessibility service is disabled.
      */
     private fun checkForAccessibilityService() {
-        if (!Utils.isClipboardAccessibilityServiceRunning(requireContext())) {
+        if (!ClipboardAccessibilityService.isRunning(requireContext())) {
             Snackbar.make(
                 ci_recyclerView,
                 "Accessibility service not running",

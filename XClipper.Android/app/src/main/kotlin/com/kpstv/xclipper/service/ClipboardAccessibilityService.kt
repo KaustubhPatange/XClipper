@@ -25,6 +25,7 @@ import com.kpstv.xclipper.extensions.broadcastManager
 import com.kpstv.xclipper.extensions.logger
 import com.kpstv.xclipper.extensions.utils.FirebaseUtils
 import com.kpstv.xclipper.extensions.utils.KeyboardUtils.Companion.isKeyboardVisible
+import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.isSystemOverlayEnabled
 import com.kpstv.xclipper.service.helper.ClipboardDetection
 import com.kpstv.xclipper.service.helper.ClipboardLogDetector
@@ -59,6 +60,8 @@ class ClipboardAccessibilityService : AccessibilityService() {
         fun disableService(context: Context) {
             LocalBroadcastManager.getInstance(context).sendBroadcast(Intent(ACTION_DISABLE_SERVICE))
         }
+
+        fun isRunning(context: Context): Boolean = Utils.isAccessibilityServiceEnabled(context, ClipboardAccessibilityService::class.java)
     }
 
     private val keyboardVisibility: MutableLiveData<Boolean> = MutableLiveData()
@@ -210,7 +213,6 @@ class ClipboardAccessibilityService : AccessibilityService() {
     private fun registerClipboardLogDetector() {
         clipboardLogDetector.registerListener(object : ClipboardLogDetector.Listener {
             override fun onClipboardEventDetected() {
-                println("Detecting clipboard")
                 if (!runForNextEventAlso && !ChangeClipboardActivity.isRunning(applicationContext)) {
                     runChangeClipboardActivity()
                 }

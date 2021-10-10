@@ -5,6 +5,8 @@ import android.content.res.ColorStateList
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import android.view.View
 import androidx.annotation.ColorRes
@@ -24,7 +26,6 @@ import com.kpstv.xclipper.extensions.applyBottomInsets
 import com.kpstv.xclipper.extensions.viewBinding
 import com.kpstv.xclipper.ui.activities.NavViewModel
 import com.kpstv.xclipper.ui.activities.Start
-import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 abstract class AbstractWelcomeFragment : ValueFragment(R.layout.fragment_welcome) {
@@ -32,8 +33,12 @@ abstract class AbstractWelcomeFragment : ValueFragment(R.layout.fragment_welcome
     protected data class Configuration(
         @ColorRes val paletteId: Int,
         @ColorRes val nextPaletteId: Int,
-        @StringRes val textId: Int,
         @StringRes val nextTextId: Int,
+        @StringRes val textId: Int,
+        /**
+         * Set [textId] to -1 to use this
+         */
+        val text: Spanned = SpannableString(""),
         val insertView: View? = null,
         val isLastScreen: Boolean = false,
         val action: SimpleFunction? = null,
@@ -59,21 +64,15 @@ abstract class AbstractWelcomeFragment : ValueFragment(R.layout.fragment_welcome
 
         val palette = ContextCompat.getColor(requireContext(), configs.paletteId)
         val nextPalette = ContextCompat.getColor(requireContext(), configs.nextPaletteId)
-        val white = ContextCompat.getColor(requireContext(), android.R.color.white)
-
-        val text = getString(configs.textId)
 
         animateLayoutColors(palette)
 
-        binding.fwTextView.text =
-            SpannableString(text).apply {
-                setSpan(
-                    ForegroundColorSpan(white),
-                    0,
-                    text.length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-            }
+        val spannedText : Spanned = if (configs.textId != -1) {
+            SpannableStringBuilder(getString(configs.textId))
+        } else {
+            configs.text
+        }
+        binding.fwTextView.text = spannedText
         if (configs.insertView != null)
             binding.fwInsertLayout.addView(configs.insertView)
 

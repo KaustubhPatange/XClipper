@@ -132,12 +132,6 @@ class Utils {
             App.blackListedApps?.contains(pkg) == true
 
         /**
-         * Checks if clipboard accessibility service running or not.
-         */
-        fun isClipboardAccessibilityServiceRunning(context: Context) =
-            isAccessibilityServiceEnabled(context, ClipboardAccessibilityService::class.java)
-
-        /**
          * This will check if accessibility service is enabled or not.
          *
          * @param service Provide the accessibility service class of which you want to

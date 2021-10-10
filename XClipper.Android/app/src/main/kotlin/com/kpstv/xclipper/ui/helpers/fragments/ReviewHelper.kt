@@ -1,4 +1,4 @@
-package com.kpstv.xclipper.ui.helpers
+package com.kpstv.xclipper.ui.helpers.fragments
 
 import androidx.fragment.app.FragmentActivity
 import com.google.android.play.core.review.ReviewManagerFactory

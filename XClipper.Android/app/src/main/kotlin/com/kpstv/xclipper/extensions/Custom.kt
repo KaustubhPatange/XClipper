@@ -147,8 +147,4 @@ fun <T> DiffUtil.ItemCallback<T>.asConfig(): AsyncDifferConfig<T> {
         .build()
 }
 
-fun Context.broadcastManager() = LocalBroadcastManager.getInstance(this)
-
-fun View.setPadding(@Px horizontally: Int, @Px vertically: Int) {
-    setPadding(horizontally, vertically, horizontally, vertically)
-}
+infix fun Boolean.xnor(other: Boolean): Boolean = this == other

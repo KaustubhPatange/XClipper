@@ -20,6 +20,10 @@ import com.kpstv.xclipper.ui.fragments.Home
 import com.kpstv.xclipper.ui.fragments.Settings
 import com.kpstv.xclipper.ui.fragments.welcome.*
 import com.kpstv.xclipper.ui.helpers.*
+import com.kpstv.xclipper.ui.helpers.fragments.ImproveDetectionHelper
+import com.kpstv.xclipper.ui.helpers.fragments.ReviewHelper
+import com.kpstv.xclipper.ui.helpers.fragments.SyncDialogHelper
+import com.kpstv.xclipper.ui.helpers.fragments.UpdateHelper
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -70,6 +74,7 @@ class Start : AppCompatActivity(), FragmentNavigator.Transmitter {
         updateHelper.register()
         SyncDialogHelper(this, preferenceProvider, dbConnectionProvider).register()
         ReviewHelper(this, preferenceProvider).register()
+        ImproveDetectionHelper(this, preferenceProvider).register()
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -94,6 +99,7 @@ class Start : AppCompatActivity(), FragmentNavigator.Transmitter {
         GREET(Greeting::class),
         ANDROID10(Android10::class),
         TURN_ON_SERVICE(TurnOnService::class),
+        IMPROVE_DETECTION(ImproveDetection::class),
         ENABLE_SUGGESTIONS(EnableSuggestion::class),
         STANDARD_COPY(StandardCopy::class),
         QUICK_SETTING_TITLE(QuickSettingTitle::class),

@@ -31,6 +31,9 @@ interface ClipboardLogDetector {
             else
                 ClipboardLogDetector21Impl()
         }
+        fun isDetectionVersionCompatible(context: Context) : Boolean {
+            return Build.VERSION.SDK_INT >= 29
+        }
         fun isDetectionCompatible(context: Context) : Boolean {
             return if (Build.VERSION.SDK_INT >= 29)
                 context.checkSelfPermission(Manifest.permission.READ_LOGS) == PackageManager.PERMISSION_GRANTED && Settings.canDrawOverlays(context)

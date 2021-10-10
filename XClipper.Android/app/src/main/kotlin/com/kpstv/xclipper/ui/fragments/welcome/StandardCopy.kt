@@ -11,7 +11,7 @@ class StandardCopy : AbstractWelcomeFragment() {
         paletteId = R.color.palette4,
         nextPaletteId = R.color.palette5,
         textId = R.string.palette4_text,
-        nextTextId = R.string.next_5,
+        nextTextId = R.string.next_6,
         directions = Start.Screen.QUICK_SETTING_TITLE,
         insertView = LayoutInflater.from(context).inflate(R.layout.item_gifview, null).apply {
             gifImageView.setImageResource(R.drawable.feature_xcopy)
