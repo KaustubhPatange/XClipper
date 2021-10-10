@@ -71,7 +71,6 @@ class GeneralPreference : AbstractPreferenceFragment() {
      * will set the preference.
      */
     private var rememberToCheckOverlaySwitch = false
-    private var rememberToCheckImproveDetection = false
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.general_pref, rootKey)
@@ -119,7 +118,7 @@ class GeneralPreference : AbstractPreferenceFragment() {
             if (newValue as Boolean) {
                 val canDetect = ClipboardLogDetector.isDetectionCompatible(requireContext())
                 if (!canDetect) {
-                    rememberToCheckImproveDetection = true
+                    preferenceProvider.putBooleanKey(TEMP_CHECK_IMPROVE_ON_START, true)
                     Dialogs.showImproveDetectionDialog(requireContext())
                     return@call canDetect
                 }
@@ -197,12 +196,6 @@ class GeneralPreference : AbstractPreferenceFragment() {
 
     private fun checkForService() {
         checkPreference?.isChecked = ClipboardAccessibilityService.isRunning(requireContext())
-        if (rememberToCheckImproveDetection) {
-            val canDetect = ClipboardLogDetector.isDetectionCompatible(requireContext())
-            appSettings.setImproveDetectionEnabled(canDetect)
-            improveDetectPreference?.isChecked = canDetect
-            rememberToCheckImproveDetection = false
-        }
         if (rememberToCheckOverlaySwitch) {
             overlayPreference?.isChecked = isSystemOverlayEnabled(requireContext())
             rememberToCheckOverlaySwitch = false
@@ -254,6 +247,20 @@ class GeneralPreference : AbstractPreferenceFragment() {
     companion object {
         const val ACTION_CHECK_PREFERENCES = "com.kpstv.xclipper.action_check_preferences"
         const val RESET_PREF = "reset_intro_pref"
+
+        private const val TEMP_CHECK_IMPROVE_ON_START = "temp_check_improve_on_start"
+
+        fun checkImproveSettingsOnStart(context: Context, appSettings: AppSettings, preferenceProvider: PreferenceProvider) {
+            val checkImprove = preferenceProvider.getBooleanKey(TEMP_CHECK_IMPROVE_ON_START, false)
+            val canDetect = ClipboardLogDetector.isDetectionCompatible(context)
+            if (checkImprove) {
+                preferenceProvider.putBooleanKey(TEMP_CHECK_IMPROVE_ON_START, false)
+                if (canDetect) {
+                    appSettings.setImproveDetectionEnabled(canDetect)
+                    preferenceProvider.putBooleanKey(ACTIVE_ADB_MODE_PREF, true)
+                }
+            }
+        }
 
         fun checkForSettings(context: Context) {
             LocalBroadcastManager.getInstance(context).sendBroadcast(Intent(ACTION_CHECK_PREFERENCES))

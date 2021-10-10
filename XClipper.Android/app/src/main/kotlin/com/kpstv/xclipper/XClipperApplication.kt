@@ -6,7 +6,6 @@ import android.provider.Settings
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import com.kpstv.hvlog.HVLog
-import com.kpstv.xclipper.App.ACTIVE_ADB_MODE_PREF
 import com.kpstv.xclipper.App.AUTO_SYNC_PREF
 import com.kpstv.xclipper.App.BIND_DELETE_PREF
 import com.kpstv.xclipper.App.BIND_PREF
@@ -33,6 +32,7 @@ import com.kpstv.xclipper.extensions.Logger
 import com.kpstv.xclipper.extensions.utils.FirebaseUtils
 import com.kpstv.xclipper.service.helper.ClipboardLogDetector
 import com.kpstv.xclipper.service.worker.AccessibilityWorker
+import com.kpstv.xclipper.ui.fragments.settings.GeneralPreference
 import com.kpstv.xclipper.ui.helpers.AppSettings
 import com.kpstv.xclipper.ui.helpers.CrashHelper
 import com.kpstv.xclipper.ui.helpers.Notifications
@@ -100,6 +100,8 @@ class XClipperApplication : Application(), Configuration.Provider {
         if (!ClipboardLogDetector.isDetectionCompatible(applicationContext)) {
             appSettings.setImproveDetectionEnabled(false)
         }
+
+        GeneralPreference.checkImproveSettingsOnStart(applicationContext, appSettings, preferenceProvider)
 
         /** Initialize firebase data */
         firebaseProvider.initialize(dbConnectionProvider.optionsProvider())

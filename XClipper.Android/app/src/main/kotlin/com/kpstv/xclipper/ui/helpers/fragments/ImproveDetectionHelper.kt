@@ -1,8 +1,8 @@
 package com.kpstv.xclipper.ui.helpers.fragments
 
-import android.os.Build
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
+import com.kpstv.xclipper.App
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.extensions.*
@@ -10,6 +10,7 @@ import com.kpstv.xclipper.service.ClipboardAccessibilityService
 import com.kpstv.xclipper.service.helper.ClipboardLogDetector
 import com.kpstv.xclipper.ui.dialogs.Dialogs
 import com.kpstv.xclipper.ui.fragments.Home
+import com.kpstv.xclipper.ui.helpers.AppSettings
 import java.util.*
 
 class ImproveDetectionHelper(
@@ -57,19 +58,21 @@ class ImproveDetectionHelper(
         fun addQuickTip(
             container: ViewGroup,
             preferenceProvider: PreferenceProvider,
+            appSettings: AppSettings,
             doOnAction: SimpleFunction
         ) {
+            val context = container.context
             val showQuickTip = !preferenceProvider.getBooleanKey(QUICK_TIP_SHOWN, false) xnor
-                    ClipboardAccessibilityService.isRunning(container.context) xnor
-                    ClipboardLogDetector.isDetectionVersionCompatible(container.context) xnor
-                    !ClipboardLogDetector.isDetectionCompatible(container.context)
+                    ClipboardAccessibilityService.isRunning(context) xnor
+                    ClipboardLogDetector.isDetectionVersionCompatible(context) xnor
+                    if (ClipboardLogDetector.isDetectionCompatible(context)) { !appSettings.isImproveDetectionEnabled() } else true
 
             if (showQuickTip) {
                 val tipView = QuickTip(container).run {
                     setTitleText(R.string.adb_mode_title)
                     setSubText(R.string.adb_mode_summary)
                     setIcon(R.drawable.ic_increase)
-                    applyColor(container.context.colorFrom(R.color.palette_android))
+                    applyColor(context.colorFrom(R.color.palette_android))
                     hideButtonPanel()
                     setOnClick(doOnAction)
                     setOnLongClick {

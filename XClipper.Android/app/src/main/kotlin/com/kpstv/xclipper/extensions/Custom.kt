@@ -1,27 +1,18 @@
 package com.kpstv.xclipper.extensions
 
-import android.content.Context
 import android.util.Log
-import android.view.View
-import androidx.annotation.Px
 import androidx.fragment.app.Fragment
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.DiffUtil
 import com.ferfalk.simplesearchview.SimpleSearchView
 import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
 import com.google.gson.annotations.SerializedName
-import com.kpstv.firebase.DataResponse
 import com.kpstv.xclipper.App.STANDARD_DATE_FORMAT
 import com.kpstv.xclipper.BuildConfig
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.asExecutor
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
 import kotlin.reflect.KProperty1
@@ -147,4 +138,4 @@ fun <T> DiffUtil.ItemCallback<T>.asConfig(): AsyncDifferConfig<T> {
         .build()
 }
 
-infix fun Boolean.xnor(other: Boolean): Boolean = this == other
+infix fun Boolean.xnor(other: Boolean): Boolean = (this xor other).not()

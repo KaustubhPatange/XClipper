@@ -12,6 +12,7 @@ import com.kpstv.xclipper.databinding.FragmentSettingsMainBinding
 import com.kpstv.xclipper.extensions.viewBinding
 import com.kpstv.xclipper.ui.adapters.MenuAdapter
 import com.kpstv.xclipper.ui.fragments.Settings
+import com.kpstv.xclipper.ui.helpers.AppSettings
 import com.kpstv.xclipper.ui.helpers.fragments.ImproveDetectionHelper
 import com.kpstv.xclipper.ui.viewmodels.SettingNavViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,8 +25,8 @@ class SettingsFragment : ValueFragment(R.layout.fragment_settings_main) {
         ownerProducer = ::requireParentFragment
     )
 
-    @Inject
-    lateinit var preferenceProvider: PreferenceProvider
+    @Inject lateinit var preferenceProvider: PreferenceProvider
+    @Inject lateinit var appSettings: AppSettings
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -85,7 +86,7 @@ class SettingsFragment : ValueFragment(R.layout.fragment_settings_main) {
 
     private fun setUpQuickTips() {
         /* Improve detection tip */
-        ImproveDetectionHelper.addQuickTip(binding.tipContainer, preferenceProvider) {
+        ImproveDetectionHelper.addQuickTip(binding.tipContainer, preferenceProvider, appSettings) {
             navViewModel.navigateTo(Settings.Screen.GENERAL, GeneralPreference.Args(highlightImproveDetection = true))
         }
     }
