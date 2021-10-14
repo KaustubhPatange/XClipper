@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.kpstv.navigation.*
+import com.kpstv.pin_lock.PinLockHelper
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.FirebaseProvider
@@ -50,6 +51,7 @@ class Start : AppCompatActivity(), FragmentNavigator.Transmitter {
     override fun getNavigator(): FragmentNavigator = navigator
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        PinLockHelper.checkPinLock(this)
         applyEdgeToEdgeMode()
         super.onCreate(savedInstanceState)
         setContentView(binding.root)

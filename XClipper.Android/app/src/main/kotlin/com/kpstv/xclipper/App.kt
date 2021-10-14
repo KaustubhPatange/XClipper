@@ -142,4 +142,5 @@ object App {
     const val TRIM_CLIP_PREF = "trim_clip_pref"
     const val SHOW_SEARCH_FEATURE = "to_show_search_feature"
     const val ACTIVE_ADB_MODE_PREF = "adb_mode_pref"
+    const val PIN_LOCK_PREF = "pin_lock_pref"
 }

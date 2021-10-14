@@ -22,6 +22,7 @@ import com.kpstv.xclipper.App.BLACKLIST_PREF
 import com.kpstv.xclipper.App.DICTIONARY_LANGUAGE
 import com.kpstv.xclipper.App.IMAGE_MARKDOWN_PREF
 import com.kpstv.xclipper.App.LANG_PREF
+import com.kpstv.xclipper.App.PIN_LOCK_PREF
 import com.kpstv.xclipper.App.SERVICE_PREF
 import com.kpstv.xclipper.App.SUGGESTION_PREF
 import com.kpstv.xclipper.App.SWIPE_DELETE_PREF
@@ -44,6 +45,7 @@ import com.kpstv.xclipper.ui.dialogs.Dialogs
 import com.kpstv.xclipper.ui.dialogs.MultiSelectDialogBuilder
 import com.kpstv.xclipper.ui.dialogs.MultiSelectModel3
 import com.kpstv.xclipper.ui.helpers.AppSettings
+import com.kpstv.pin_lock.PinLockHelper
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import kotlinx.android.parcel.Parcelize
@@ -59,6 +61,7 @@ class GeneralPreference : AbstractPreferenceFragment() {
     private var checkPreference: SwitchPreferenceCompat? = null
     private var improveDetectPreference: SwitchPreferenceCompat? = null
     private var overlayPreference: SwitchPreferenceCompat? = null
+    private var pinLockPreference: SwitchPreferenceCompat? = null
 
     @Inject lateinit var preferenceProvider: PreferenceProvider
     @Inject lateinit var appSettings: AppSettings
@@ -71,6 +74,7 @@ class GeneralPreference : AbstractPreferenceFragment() {
      * will set the preference.
      */
     private var rememberToCheckOverlaySwitch = false
+    private var rememberToCheckForPinLock = false
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.general_pref, rootKey)
@@ -125,6 +129,25 @@ class GeneralPreference : AbstractPreferenceFragment() {
             }
             appSettings.setImproveDetectionEnabled(newValue)
             true
+        }
+
+        /** Pin Lock preference */
+        pinLockPreference = findPreference(PIN_LOCK_PREF)
+        pinLockPreference?.setOnPreferenceChangeListener call@{ _, newValue ->
+            val value = newValue as Boolean // TODO: Add a dialog to tell about this feature then Yes or OK to create a pin
+            if (value && !PinLockHelper.isPinLockEnabled()) {
+                // trying to create a new pin
+                PinLockHelper.createANewPinLock(requireContext())
+                rememberToCheckForPinLock = true
+            } else if (!value && PinLockHelper.isPinLockEnabled()) {
+                // trying to disable it
+                PinLockHelper.disablePinLock(requireActivity())
+                rememberToCheckForPinLock = true
+            } else if (value && PinLockHelper.isPinLockEnabled()) {
+                // must be error from our side so we should just set pin lock
+                return@call true
+            }
+            false
         }
 
         /** Swipe to delete preference */
@@ -200,6 +223,9 @@ class GeneralPreference : AbstractPreferenceFragment() {
             overlayPreference?.isChecked = isSystemOverlayEnabled(requireContext())
             rememberToCheckOverlaySwitch = false
             showSuggestion = true
+        }
+        if (rememberToCheckForPinLock) {
+            pinLockPreference?.isChecked = PinLockHelper.isPinLockEnabled()
         }
     }
 

@@ -237,4 +237,11 @@
     <string name="adb_dialog_message2">adb -d shell pm grant %1$s android.permission.READ_LOGS;\n\nadb -d shell appops set %1$s SYSTEM_ALERT_WINDOW allow;\n\nadb -d shell am force-stop %1$s;</string>
 
     <string name="do_not_show">Do not show</string>
+    <string name="pin_lock_title">Pin Lock (Biometric)</string>
+    <string name="billing_disconnected">Billing service disconnected</string>
+    <string name="err_billing_not_ready">Billing client not ready</string>
+    <string name="err_billing_disconnect">Billing service disconnected</string>
+    <string name="err_billing_unfinished">Error: %1$s</string>
+    <string name="err_purchase_failed">Purchase failed</string>
+    <string name="err_billing_unknown">Unknown error</string>
 </resources>

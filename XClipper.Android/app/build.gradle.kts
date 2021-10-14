@@ -79,6 +79,7 @@ dependencies {
     implementation(LibraryDependency.ROOM_RUNTIME)
     implementation(LibraryDependency.OKHTTP)
 
+    implementation(LibraryDependency.BILLING)
     implementation(LibraryDependency.FIREBASE_REALTIME_DATABASE)
     implementation(LibraryDependency.FIREBASE_AUTH)
     implementation(LibraryDependency.FIREBASE_CRASHLYTICS)
@@ -114,6 +115,7 @@ dependencies {
     implementation(LibraryDependency.AUTO_BINDINGS)
     implementation(LibraryDependency.REALTIME_EXTENSIONS)
     implementation(LibraryDependency.TIMBER)
+    implementation(LibraryDependency.PINLOCK)
 
     implementation(LibraryDependency.NAVIGATOR)
     implementation(LibraryDependency.NAVIGATOR_EXTENSIONS)

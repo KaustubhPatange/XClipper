@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="PinModuleTheme" parent="Theme.MaterialComponents">
+        <item name="pinCodeTheme">@style/CustomPinLockStyle</item>
+        <item name="android:windowBackground">@color/appColor</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="CustomPinLockStyle" parent="DefaultPinLockStyle">
+        <item name="lp_full_pin_dot">@drawable/pin_lock_full_dot</item>
+        <item name="lp_empty_pin_dot">@drawable/pin_lock_empty_dot</item>
+        <item name="lp_divider_color">@color/divider</item>
+        <item name="lp_finger_print_drawable">@drawable/pin_ic_fingerprint</item>
+        <item name="lp_finger_print_color">@android:color/transparent</item>
+        <item name="lp_finger_print_success_drawable">@drawable/pin_ic_fingerprint_success</item>
+        <item name="lp_finger_print_success_color">@android:color/transparent</item>
+        <item name="lp_finger_print_error_drawable">@drawable/pin_ic_fingerprint_error</item>
+        <item name="lp_finger_print_error_color">@color/errorColor</item>
+    </style>
+
+
+    <!-- Colors -->
+
+    <color name="appColor">#e32581</color>
+    <color name="divider">#D52379</color>
+    <color name="appColor_light">#DA639D</color>
+    <color name="appColor_dark">#9E2F63</color>
+    <color name="errorColor">#A8011F</color>
+    <color name="successColor">#028180</color>
+
+    <!-- Strings -->
+
+    <string name="pin_lock_disabled">Pin lock is disabled</string>
+    <string name="pin_lock_attempt_reach">Maximum password attempts reached (4)</string>
+
+</resources>

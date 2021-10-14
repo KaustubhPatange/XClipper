@@ -8,6 +8,10 @@ import androidx.preference.PreferenceManager
 import com.kpstv.license.Encryption.DecryptPref
 import com.kpstv.license.Encryption.EncryptPref
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.channels.sendBlocking
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
 
 class PreferenceProviderImpl @Inject constructor(
@@ -79,5 +83,19 @@ class PreferenceProviderImpl @Inject constructor(
         _keyLiveData.observeForever {
             block.invoke(preference, it)
         }
+    }
+
+    override fun observeBooleanKeyAsFlow(key: String, default: Boolean): Flow<Boolean> = callbackFlow {
+        fun sendUpdatedValue() {
+            val value = preference.getBoolean(key, default)
+            sendBlocking(value)
+        }
+        val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, prefKey ->
+            if (key == prefKey) sendUpdatedValue()
+        }
+        preference.registerOnSharedPreferenceChangeListener(listener)
+        sendUpdatedValue()
+
+        awaitClose { preference.unregisterOnSharedPreferenceChangeListener(listener) }
     }
 }
