@@ -23,15 +23,18 @@ import es.dmoral.toasty.Toasty
 import kotlinx.android.parcel.Parcelize
 import javax.inject.Inject
 
-class ExtensionHelper private constructor(private val context: Context, private val preferenceProvider: PreferenceProvider) {
+class ExtensionHelper(private val context: Context, preferenceProvider: PreferenceProvider, sku: String) {
     // TODO: Add work manager to also make sure if extensions are not expired.
-    private var name: String = ""
-    private var description: String = ""
-    private var sku: String = ""
+
+    companion object {
+        fun observePurchaseComplete(preferenceProvider: PreferenceProvider, sku: String) = preferenceProvider.observeBooleanKeyAsFlow(sku, false)
+    }
 
     private val billingHelper = BillingHelper(context, preferenceProvider, sku)
 
     fun isActive() = billingHelper.isActive()
+
+    fun observePurchaseComplete() = billingHelper.observeActiveness()
 
     internal class BillingHelper(context: Context, private val preferenceProvider: PreferenceProvider, private val sku: String) {
         private var skuDetails: SkuDetails? = null

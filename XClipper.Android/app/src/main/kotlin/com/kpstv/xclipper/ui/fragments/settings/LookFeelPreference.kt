@@ -9,7 +9,6 @@ import com.kpstv.xclipper.App.DARK_PREF
 import com.kpstv.xclipper.App.DARK_THEME
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.extensions.globalVisibleRect
-import com.kpstv.xclipper.ui.fragments.AnimatePreferenceFragment
 
 class LookFeelPreference : PreferenceFragmentCompat(){
     interface ThemeChangeCallbacks {

@@ -5,7 +5,8 @@ import androidx.annotation.DrawableRes
 
 interface ExtensionData {
     val title: String
-    val description: String
+    val fullDescription: String
+    val smallDescription: String
 
     @get:DrawableRes
     val icon: Int

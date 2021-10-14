@@ -94,7 +94,7 @@ class Settings : ValueFragment(R.layout.activity_settings), FragmentNavigator.Tr
         ACCOUNT(AccountPreference::class, R.string.account),
         LOOK_FEEL(LookFeelPreference::class, R.string.look_feel),
         BACKUP(BackupPreference::class, R.string.backup),
-        UPGRADE(Upgrade::class, R.string.upgrade),
+        UPGRADE(Upgrades::class, R.string.upgrade),
         ABOUT(AboutPreference::class, R.string.about);
 
         companion object {

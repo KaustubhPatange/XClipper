@@ -34,6 +34,7 @@ class ImproveDetectionHelper(
             val newDate = Calendar.getInstance().time.getFormattedDate().toLong()
             if (newDate >= oldDate) {
                 updateDate()
+                // TODO: Add logic like improve tip to show on certain times.
                 Dialogs.showImproveDetectionDialog(activity) {
                     setNeutralButton(R.string.do_not_show) {
                         preferenceProvider.putBooleanKey(SHOW_DIALOG, false)
@@ -61,6 +62,7 @@ class ImproveDetectionHelper(
             appSettings: AppSettings,
             doOnAction: SimpleFunction
         ) {
+            // TODO: Fix the issue where if Improve detection is enabled but clipboard service is disabled in such case don't show.
             val context = container.context
             val showQuickTip = !preferenceProvider.getBooleanKey(QUICK_TIP_SHOWN, false) xnor
                     ClipboardAccessibilityService.isRunning(context) xnor

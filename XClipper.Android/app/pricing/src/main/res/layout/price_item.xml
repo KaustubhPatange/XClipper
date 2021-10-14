@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:gravity="center">
 
     <LinearLayout
@@ -84,6 +85,6 @@
         android:gravity="center"
         app:layout_anchor="@id/mainCard"
         app:layout_anchorGravity="bottom|center"
-        android:text="   Purchase" />
+        tools:text="Purchase" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

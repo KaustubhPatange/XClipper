@@ -40,6 +40,8 @@
 
     <color name="support">#FF5656</color>
 
+    <color name="activated">#00A17A</color>
+
     <color name="palette1">#A6418B</color>
     <color name="palette_android">#43A88C</color>
     <color name="palette2">#2A5998</color>

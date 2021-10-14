@@ -23,7 +23,6 @@ import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.logoutFromDatabase
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showConnectDialog
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showConnectionDialog
-import com.kpstv.xclipper.ui.fragments.AnimatePreferenceFragment
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty

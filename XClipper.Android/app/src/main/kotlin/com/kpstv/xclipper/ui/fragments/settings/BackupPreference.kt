@@ -10,7 +10,6 @@ import com.kpstv.xclipper.App.EXPORT_PREF
 import com.kpstv.xclipper.App.IMPORT_PREF
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.extensions.getFormattedDate
-import com.kpstv.xclipper.ui.fragments.AnimatePreferenceFragment
 import com.kpstv.xclipper.ui.viewmodels.BackupViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty

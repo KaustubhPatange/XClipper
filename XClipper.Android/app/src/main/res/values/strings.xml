@@ -134,7 +134,7 @@
     <string name="mail_summary">Want to give feedback or a quick chat just hit me up</string>
     <string name="version_title">Version</string>
     <string name="package_title">Package</string>
-    <string name="upgrade">Upgrade</string>
+    <string name="upgrade">Upgrades</string>
     <string name="about">About</string>
     <string name="auto_sync_title">Automatic synchronization</string>
     <string name="layout_empty_text">Copy text or click to create a new empty paste</string>
@@ -244,4 +244,10 @@
     <string name="err_billing_unfinished">Error: %1$s</string>
     <string name="err_purchase_failed">Purchase failed</string>
     <string name="err_billing_unknown">Unknown error</string>
+    <string name="purchase">\tPurchase</string>
+    <string name="subscribed">Subscribed</string>
+    <string name="thank_support">Thank you for supporting :)</string>
+    <string name="premium_inactive_footnotes">Will be active when you connect to a database to enable synchronization.</string>
+
+    <string name="upgrades_extensions">Extensions (add-ons)</string>
 </resources>

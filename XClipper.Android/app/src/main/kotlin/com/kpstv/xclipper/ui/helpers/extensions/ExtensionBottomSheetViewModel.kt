@@ -29,6 +29,8 @@ class ExtensionBottomSheetViewModel @Inject constructor(
         billingHelper.init { billingHelper.launch(activity) }
         extensionBottomSheetStateFlow.tryEmit(ExtensionBottomSheetState.PurchaseStarted)
     }
+
+    fun observeActivationChange(sku: String) = ExtensionHelper.observePurchaseComplete(preferenceProvider, sku).asLiveData()
 }
 
 sealed interface ExtensionBottomSheetState {

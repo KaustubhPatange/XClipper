@@ -13,11 +13,8 @@ import com.kpstv.navigation.hasKeyArgs
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.databinding.BottomSheetExtensionBinding
-import com.kpstv.xclipper.extensions.DelegatedAnimator
+import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.extensions.elements.CustomRoundedBottomSheetFragment
-import com.kpstv.xclipper.extensions.hide
-import com.kpstv.xclipper.extensions.show
-import com.kpstv.xclipper.extensions.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import kotlinx.android.parcel.Parcelize
@@ -35,16 +32,21 @@ class ExtensionBottomSheet : CustomRoundedBottomSheetFragment(R.layout.bottom_sh
         if (hasKeyArgs<Args>()) {
             val args = getKeyArgs<Args>()
 
+            val colorTint = ColorStateList.valueOf(args.dominantColor)
+
             binding.tvTitle.text = args.title
-            binding.tvDesc.text = args.description
+            binding.tvDesc.text = args.fullDescription
             binding.ivLogo.setImageResource(args.icon)
-            binding.ivLogo.imageTintList = ColorStateList.valueOf(args.dominantColor)
-            binding.btnActivate.backgroundTintList = ColorStateList.valueOf(args.dominantColor)
+            binding.ivLogo.imageTintList = colorTint
+            binding.viewProgress.progressTintList = colorTint
+            binding.btnActivate.backgroundTintList = colorTint
             binding.cardLogo.setCardBackgroundColor(ColorUtils.blendARGB(args.dominantColor, Color.BLACK, 0.4f))
 
             binding.btnActivate.setOnClickListener {
                 viewModel.startPurchase(requireActivity(), args.sku)
             }
+
+            observeActivation(args)
 
             viewModel.viewState.observe(viewLifecycleOwner) { state ->
                 when(state) {
@@ -54,7 +56,7 @@ class ExtensionBottomSheet : CustomRoundedBottomSheetFragment(R.layout.bottom_sh
                         binding.viewLottie.hide()
                     }
                     is ExtensionBottomSheetState.PurchaseStarted -> {
-                        dialog?.setCancelable(false)
+//                        dialog?.setCancelable(false)
                         binding.viewDetail.hide()
                         binding.viewProgress.show()
                         binding.viewLottie.hide()
@@ -90,12 +92,37 @@ class ExtensionBottomSheet : CustomRoundedBottomSheetFragment(R.layout.bottom_sh
         }
     }
 
+    private fun observeActivation(args: Args) {
+        viewModel.observeActivationChange(args.sku).observe(viewLifecycleOwner) { unlocked ->
+            if (unlocked) {
+                binding.btnActivate.isEnabled = false
+                binding.btnActivate.setText(R.string.subscribed)
+                binding.btnActivate.setCompoundDrawables(
+                    requireContext().drawableFrom(R.drawable.ic_check_circle),
+                    null, null, null
+                )
+            }
+        }
+    }
+
     @Parcelize
     data class Args(
         override val title: String,
-        override val description: String,
+        override val fullDescription: String,
         override val icon: Int,
         override val dominantColor: Int,
-        override val sku: String
-    ) : ExtensionData, BaseArgs()
+        override val sku: String,
+        override val smallDescription: String
+    ) : ExtensionData, BaseArgs() {
+        companion object {
+            fun ExtensionItem.toExtensionBottomSheetArgs() = Args(
+                title = title,
+                fullDescription = fullDescription,
+                icon = icon,
+                dominantColor = dominantColor,
+                sku = sku,
+                smallDescription = smallDescription
+            )
+        }
+    }
 }
