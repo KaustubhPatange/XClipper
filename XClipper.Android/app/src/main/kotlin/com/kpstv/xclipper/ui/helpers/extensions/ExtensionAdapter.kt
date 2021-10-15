@@ -12,6 +12,7 @@ import com.kpstv.xclipper.R
 import com.kpstv.xclipper.databinding.ItemExtensionBinding
 import com.kpstv.xclipper.extensions.getColorAttr
 import com.kpstv.xclipper.extensions.layoutInflater
+import com.kpstv.xclipper.extensions.setDefaultCardColor
 import java.util.*
 
 data class ExtensionAdapterItem(
@@ -98,9 +99,7 @@ class ExtensionAdapter(
             binding.ivLogo.imageTintList = ColorStateList.valueOf(
                 binding.root.context.getColorAttr(R.attr.colorTextSecondary)
             )
-            binding.cardLogo.setCardBackgroundColor(
-                binding.cardLogo.cardBackgroundColor.defaultColor
-            )
+            binding.cardLogo.setDefaultCardColor()
         }
     }
 }

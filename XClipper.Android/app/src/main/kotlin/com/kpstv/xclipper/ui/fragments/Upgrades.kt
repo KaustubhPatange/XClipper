@@ -1,28 +1,31 @@
 package com.kpstv.xclipper.ui.fragments
 
+import android.content.Context
 import android.content.Intent
 import android.content.Intent.ACTION_VIEW
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.doOnLayout
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import com.kpstv.navigation.BaseArgs
+import com.kpstv.navigation.getKeyArgs
+import com.kpstv.navigation.hasKeyArgs
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.databinding.FragmentUpgradeBinding
 import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.extensions.listeners.ResponseResult
-import com.kpstv.xclipper.ui.helpers.extensions.AddOns
-import com.kpstv.xclipper.ui.helpers.extensions.ExtensionAdapter
+import com.kpstv.xclipper.ui.helpers.extensions.*
 import com.kpstv.xclipper.ui.helpers.extensions.ExtensionAdapterItem.Companion.toAdapterItem
-import com.kpstv.xclipper.ui.helpers.extensions.ExtensionBottomSheet
 import com.kpstv.xclipper.ui.helpers.extensions.ExtensionBottomSheet.Args.Companion.toExtensionBottomSheetArgs
-import com.kpstv.xclipper.ui.helpers.extensions.ExtensionHelper
 import com.kpstv.xclipper.ui.viewmodels.UpgradeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
+import kotlinx.android.parcel.Parcelize
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
@@ -80,6 +83,14 @@ class Upgrades : AnimateFragment(R.layout.fragment_upgrade) {
         )
 
         binding.rvExtension.adapter = adapter
+
+        if (hasKeyArgs<Args>()) {
+            val args = getKeyArgs<Args>()
+            if (args.highlightExtensionPosition != -1) {
+                val position = args.highlightExtensionPosition
+                binding.rvExtension.highlightChildPosition(position)
+            }
+        }
     }
 
     private fun loadLatestPriceFetch() {
@@ -100,4 +111,11 @@ class Upgrades : AnimateFragment(R.layout.fragment_upgrade) {
             data = Uri.parse(url)
             flags = FLAG_ACTIVITY_NEW_TASK
         })
+
+    @Parcelize
+    data class Args(var highlightExtensionPosition: Int = -1) : BaseArgs() {
+        fun setHighlightExtensionPosition(context: Context, highlightItem: ExtensionItem) {
+            highlightExtensionPosition = AddOns.getAllExtensions(context).indexOf(highlightItem)
+        }
+    }
 }

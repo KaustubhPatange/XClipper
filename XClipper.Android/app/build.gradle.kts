@@ -43,6 +43,11 @@ android {
             applicationIdSuffix = ".debug"
             isDebuggable = true
         }
+        create(BuildType.IAP) {
+            initWith(getByName(BuildType.DEBUG))
+            setMatchingFallbacks(BuildType.DEBUG)
+            applicationIdSuffix = applicationIdSuffix?.removePrefix(".debug")
+        }
     }
 }
 

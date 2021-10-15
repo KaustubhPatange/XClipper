@@ -1,5 +1,6 @@
 package com.kpstv.xclipper.extensions
 
+import android.animation.Animator
 import android.animation.ValueAnimator
 import android.graphics.Color
 import android.graphics.Rect
@@ -9,6 +10,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.IdRes
 import androidx.annotation.Px
+import androidx.cardview.widget.CardView
+import androidx.core.graphics.ColorUtils
 import androidx.core.view.children
 import kotlin.reflect.KClass
 
@@ -22,13 +25,37 @@ fun View.setPadding(@Px horizontally: Int, @Px vertically: Int) {
     setPadding(horizontally, vertically, horizontally, vertically)
 }
 
-fun View.runBlinkEffect(color: Int = Color.WHITE, times: Int = 3) {
-    val drawable = background
+/**
+ * Run blink effect. Setting [color] to -1 will try to auto detect the
+ * color from the view background or maybe theme.
+ */
+fun View.runBlinkEffect(color: Int = -1, times: Int = 3) {
+    val drawable = if (this !is CardView) background else ColorDrawable(cardBackgroundColor.defaultColor)
     val fromColor = if (drawable is ColorDrawable) drawable.color else Color.TRANSPARENT
-    ValueAnimator.ofArgb(fromColor, color, fromColor).apply {
+
+    var finalColor = if (color == -1) Color.WHITE else color
+    if (fromColor != 0 && color == -1) {
+        finalColor = if (ColorUtils.calculateLuminance(fromColor) < 0.5) {
+            ColorUtils.blendARGB(fromColor, Color.WHITE, 0.5f)
+        } else {
+            ColorUtils.blendARGB(fromColor, Color.BLACK, 0.5f)
+        }
+    }
+
+    ValueAnimator.ofArgb(fromColor, finalColor, fromColor).apply {
         addUpdateListener {
             setBackgroundColor(it.animatedValue as Int)
+            if (this is CardView) setCardBackgroundColor(it.animatedValue as Int)
         }
+        addListener(object : Animator.AnimatorListener{
+            override fun onAnimationStart(animation: Animator?) {}
+            override fun onAnimationEnd(animation: Animator?) {
+                if (this@runBlinkEffect is CardView) setCardBackgroundColor((drawable as ColorDrawable).color)
+                else background = drawable
+            }
+            override fun onAnimationCancel(animation: Animator?) {}
+            override fun onAnimationRepeat(animation: Animator?) {}
+        })
         repeatCount = (times - 1).coerceAtLeast(0)
         repeatMode = ValueAnimator.REVERSE
         start()

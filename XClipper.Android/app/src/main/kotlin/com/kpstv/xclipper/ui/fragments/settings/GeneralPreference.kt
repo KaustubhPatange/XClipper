@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.view.View
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.*
@@ -46,6 +47,10 @@ import com.kpstv.xclipper.ui.dialogs.MultiSelectDialogBuilder
 import com.kpstv.xclipper.ui.dialogs.MultiSelectModel3
 import com.kpstv.xclipper.ui.helpers.AppSettings
 import com.kpstv.pin_lock.PinLockHelper
+import com.kpstv.xclipper.ui.fragments.Settings
+import com.kpstv.xclipper.ui.helpers.extensions.AddOns
+import com.kpstv.xclipper.ui.helpers.extensions.AddOnsHelper
+import com.kpstv.xclipper.ui.viewmodels.SettingNavViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import kotlinx.android.parcel.Parcelize
@@ -66,6 +71,8 @@ class GeneralPreference : AbstractPreferenceFragment() {
     @Inject lateinit var preferenceProvider: PreferenceProvider
     @Inject lateinit var appSettings: AppSettings
 
+    private val settingsNavViewModel by viewModels<SettingNavViewModel>(ownerProducer = ::requireParentFragment)
+
     private var appsDialog: AlertDialog? = null
 
     /**
@@ -75,6 +82,8 @@ class GeneralPreference : AbstractPreferenceFragment() {
      */
     private var rememberToCheckOverlaySwitch = false
     private var rememberToCheckForPinLock = false
+
+    private val pinLockExtensionHelper by lazy { AddOnsHelper.getHelperForPinLock(requireContext(), preferenceProvider) }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.general_pref, rootKey)
@@ -134,18 +143,30 @@ class GeneralPreference : AbstractPreferenceFragment() {
         /** Pin Lock preference */
         pinLockPreference = findPreference(PIN_LOCK_PREF)
         pinLockPreference?.setOnPreferenceChangeListener call@{ _, newValue ->
-            val value = newValue as Boolean // TODO: Add a dialog to tell about this feature then Yes or OK to create a pin
-            if (value && !PinLockHelper.isPinLockEnabled()) {
-                // trying to create a new pin
-                PinLockHelper.createANewPinLock(requireContext())
-                rememberToCheckForPinLock = true
-            } else if (!value && PinLockHelper.isPinLockEnabled()) {
-                // trying to disable it
-                PinLockHelper.disablePinLock(requireActivity())
-                rememberToCheckForPinLock = true
-            } else if (value && PinLockHelper.isPinLockEnabled()) {
-                // must be error from our side so we should just set pin lock
-                return@call true
+            if (pinLockExtensionHelper.isActive()) {
+                val value = newValue as Boolean // TODO: Add a dialog to tell about this feature then Yes or OK to create a pin
+                if (value && !PinLockHelper.isPinLockEnabled()) {
+                    // trying to create a new pin
+                    PinLockHelper.createANewPinLock(requireContext())
+                    rememberToCheckForPinLock = true
+                } else if (!value && PinLockHelper.isPinLockEnabled()) {
+                    // trying to disable it
+                    PinLockHelper.disablePinLock(requireActivity())
+                    rememberToCheckForPinLock = true
+                } else if (value && PinLockHelper.isPinLockEnabled()) {
+                    // must be error from our side so we should just set pin lock
+                    return@call true
+                }
+            } else {
+                // TODO: Show a dialog & then navigate to upgrade fragment respectively...
+                AddOnsHelper.showExtensionDialog(
+                    context = requireContext(),
+                    onClick = {
+                        settingsNavViewModel.goToUpgradeWithArgs {
+                            setHighlightExtensionPosition(requireContext(), AddOns.getPinExtension(requireContext()))
+                        }
+                    }
+                )
             }
             false
         }

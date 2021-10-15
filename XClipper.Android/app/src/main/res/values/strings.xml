@@ -239,15 +239,20 @@
     <string name="do_not_show">Do not show</string>
     <string name="pin_lock_title">Pin Lock (Biometric)</string>
     <string name="billing_disconnected">Billing service disconnected</string>
-    <string name="err_billing_not_ready">Billing client not ready</string>
+    <string name="err_billing_not_ready">Billing client not ready, Try again</string>
     <string name="err_billing_disconnect">Billing service disconnected</string>
     <string name="err_billing_unfinished">Error: %1$s</string>
     <string name="err_purchase_failed">Purchase failed</string>
+    <string name="err_purchase_no_item">Could not find the In-App item</string>
     <string name="err_billing_unknown">Unknown error</string>
     <string name="purchase">\tPurchase</string>
     <string name="subscribed">Subscribed</string>
     <string name="thank_support">Thank you for supporting :)</string>
     <string name="premium_inactive_footnotes">Will be active when you connect to a database to enable synchronization.</string>
+    <string name="premium_extension_footnotes">One time purchases to unlock additional app capabilities.</string>
 
     <string name="upgrades_extensions">Extensions (add-ons)</string>
+    <string name="activate">Activate</string>
+    <string name="extension_title">Add-on Extension</string>
+    <string name="extension_message">This is an add-on extension that unlocks certain capabilities of the app which requires a small purchase to unlock.</string>
 </resources>

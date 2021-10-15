@@ -57,13 +57,22 @@
             android:textColor="?colorTextPrimary"
             android:textSize="18sp" />
 
+        <TextView
+            android:layout_marginHorizontal="30dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:text="@string/premium_extension_footnotes"
+            android:textColor="?colorTextSecondary"
+            android:textSize="12sp" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:paddingStart="20dp"
             android:clipToPadding="false"
             android:id="@+id/rv_extension"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="20dp"
             android:orientation="horizontal"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_extension"

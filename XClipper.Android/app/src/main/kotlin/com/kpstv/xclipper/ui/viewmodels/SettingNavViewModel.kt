@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.kpstv.navigation.*
 import com.kpstv.xclipper.extensions.FragClazz
 import com.kpstv.xclipper.ui.fragments.Settings
+import com.kpstv.xclipper.ui.fragments.Upgrades
 
 class SettingNavViewModel : ViewModel() {
     private val _navigation = MutableLiveData<NavigationOptions>(null)
@@ -27,6 +28,11 @@ class SettingNavViewModel : ViewModel() {
                 remember = addToBackStack
             )
         )
+    }
+
+    fun goToUpgradeWithArgs(provideArgs: Upgrades.Args.() -> Unit) {
+        val args = Upgrades.Args().apply(provideArgs)
+        navigateTo(Settings.Screen.UPGRADE, args)
     }
 
     data class NavigationOptions(

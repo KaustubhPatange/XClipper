@@ -26,7 +26,7 @@ class ExtensionBottomSheetViewModel @Inject constructor(
         billingHelper.registerOnPurchaseCompleteListener {
             extensionBottomSheetStateFlow.tryEmit(ExtensionBottomSheetState.PurchaseCompleted)
         }
-        billingHelper.init { billingHelper.launch(activity) }
+        billingHelper.init(onComplete = { billingHelper.launch(activity) })
         extensionBottomSheetStateFlow.tryEmit(ExtensionBottomSheetState.PurchaseStarted)
     }
 

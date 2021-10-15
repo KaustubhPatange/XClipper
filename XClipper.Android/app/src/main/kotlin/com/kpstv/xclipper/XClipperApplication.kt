@@ -32,6 +32,7 @@ import com.kpstv.xclipper.extensions.Logger
 import com.kpstv.xclipper.extensions.utils.FirebaseUtils
 import com.kpstv.xclipper.service.helper.ClipboardLogDetector
 import com.kpstv.xclipper.service.worker.AccessibilityWorker
+import com.kpstv.xclipper.service.worker.ExtensionWorker
 import com.kpstv.xclipper.ui.fragments.settings.GeneralPreference
 import com.kpstv.xclipper.ui.helpers.AppSettings
 import com.kpstv.xclipper.ui.helpers.CrashHelper
@@ -106,8 +107,9 @@ class XClipperApplication : Application(), Configuration.Provider {
         /** Initialize firebase data */
         firebaseProvider.initialize(dbConnectionProvider.optionsProvider())
 
-        /** Initialize accessibility worker */
+        /** Initialize workers */
         AccessibilityWorker.schedule(this)
+        ExtensionWorker.schedule(this)
     }
 
     override fun getWorkManagerConfiguration() =

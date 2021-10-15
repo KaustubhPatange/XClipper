@@ -21,7 +21,9 @@ import com.kpstv.xclipper.extensions.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import kotlinx.android.parcel.Parcelize
+import kotlinx.coroutines.suspendCancellableCoroutine
 import javax.inject.Inject
+import kotlin.coroutines.resume
 
 class ExtensionHelper(private val context: Context, preferenceProvider: PreferenceProvider, sku: String) {
     // TODO: Add work manager to also make sure if extensions are not expired.
@@ -44,6 +46,8 @@ class ExtensionHelper(private val context: Context, preferenceProvider: Preferen
         private val purchasesUpdatedListener = PurchasesUpdatedListener { billingResult, purchases ->
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
                 purchases.forEach { handlePurchase(it) }
+            } else if (billingResult.responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
+                errorListener?.invoke(PurchaseCancelledException())
             }
         }
 
@@ -63,7 +67,7 @@ class ExtensionHelper(private val context: Context, preferenceProvider: Preferen
         /**
          * Initialize before purchase
          */
-        fun init(onComplete: () -> Unit = {}) {
+        fun init(onComplete: () -> Unit = {}, onError: () -> Unit= {}) {
             billingClient.startConnection(object : BillingClientStateListener {
                 override fun onBillingSetupFinished(billingResult: BillingResult) {
                     if (billingResult.responseCode ==  BillingClient.BillingResponseCode.OK) {
@@ -77,8 +81,16 @@ class ExtensionHelper(private val context: Context, preferenceProvider: Preferen
                 }
                 override fun onBillingServiceDisconnected() {
                     errorListener?.invoke(BillingServiceDisconnectedException())
+                    onError.invoke()
                 }
             })
+        }
+
+        suspend fun init() : Unit = suspendCancellableCoroutine { continuation ->
+            init(
+                onComplete = { continuation.resume(Unit) },
+                onError = { continuation.resume(Unit) }
+            )
         }
 
         /** Launch the billing flow for purchasing */
@@ -114,24 +126,27 @@ class ExtensionHelper(private val context: Context, preferenceProvider: Preferen
             params.setSkusList(listOf(sku)).setType(BillingClient.SkuType.INAPP)
 
             billingClient.querySkuDetailsAsync(params.build()) { _, skuDetailsList ->
-                skuDetailsList?.let { list ->
-                    val skuDetails = list.find { it.sku == sku }
-                    onComplete.invoke(skuDetails)
+                val product = skuDetailsList?.firstOrNull { it.sku == sku }
+                if (product == null) {
+                    errorListener?.invoke(PurchaseItemNotFoundException())
+                    return@querySkuDetailsAsync
+                } else {
+                    onComplete.invoke(product)
                 }
             }
         }
 
         private fun validatePurchase(onComplete: () -> Unit) {
-            billingClient.queryPurchaseHistoryAsync(BillingClient.SkuType.INAPP) call@{ _, purchaseList ->
-                if (purchaseList == null || purchaseList.isEmpty()) {
+            billingClient.queryPurchasesAsync(BillingClient.SkuType.INAPP) call@{ _, purchaseList ->
+                if (purchaseList.isEmpty()) {
                     deactivatePurchase()
-                    return@call
-                }
-                val hasPurchased = purchaseList.any { record -> record.skus.contains(sku) }
-                if (hasPurchased) {
-                    activatePurchase()
                 } else {
-                    deactivatePurchase()
+                    val hasPurchased = purchaseList.any { record -> record.skus.contains(sku) }
+                    if (hasPurchased) {
+                        activatePurchase()
+                    } else {
+                        deactivatePurchase()
+                    }
                 }
 
                 onComplete.invoke()
@@ -168,9 +183,11 @@ class ExtensionHelper(private val context: Context, preferenceProvider: Preferen
 
         companion object Exceptions {
             class BillingSetupFinishedFailedException(message: String) : Exception(message)
-            class BillingServiceDisconnectedException() : Exception()
-            class BillingClientNotReadyException() : Exception()
-            class PurchaseNotAcknowledgedException() : Exception()
+            class BillingServiceDisconnectedException : Exception()
+            class BillingClientNotReadyException : Exception()
+            class PurchaseNotAcknowledgedException : Exception()
+            class PurchaseItemNotFoundException : Exception()
+            class PurchaseCancelledException : Exception()
         }
     }
 }

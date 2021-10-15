@@ -31,6 +31,7 @@
     <PreferenceCategory app:title="Security">
 
         <SwitchPreferenceCompat
+            app:icon="@drawable/ic_lock_outline"
             app:key="pin_lock_pref"
             app:title="@string/pin_lock_title" />
 
