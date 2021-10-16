@@ -12,6 +12,20 @@ import com.kpstv.xclipper.extensions.utils.Utils
 
 object Dialogs {
 
+    /* Pin lock info dialog */
+
+    fun showPinLockInfoDialog(context: Context, onPositive: () -> Unit) {
+        CustomLottieDialog(context)
+            .setTitle(R.string.pin_lock_dialog_title)
+            .setMessage(R.string.pin_lock_dialog_text)
+            .setLottieRes(R.raw.fingerprint)
+            .setLoop(false)
+            .setLottieResCredits(context.getString(R.string.fingerprint_author))
+            .setPositiveButton(R.string.pin_lock_dialog_positive, onPositive)
+            .setNeutralButton(R.string.cancel, null)
+            .show()
+    }
+
     /* Improve detection dialog */
 
     fun showImproveDetectionDialog(context: Context, additional: CustomLottieDialog.() -> Unit = {}) {
@@ -49,4 +63,5 @@ object Dialogs {
             .setNeutralButton(R.string.cancel, null)
             .show()
     }
+
 }

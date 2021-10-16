@@ -1,11 +1,14 @@
 package com.kpstv.xclipper.ui.helpers.extensions
 
 import android.content.Context
+import android.widget.TextView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.extensions.SimpleFunction
 import com.kpstv.xclipper.extensions.colorFrom
+import com.kpstv.xclipper.extensions.drawableFrom
+import com.kpstv.xclipper.extensions.toDp
 
 data class ExtensionItem(
     override val title: String,
@@ -47,5 +50,16 @@ object AddOnsHelper {
             .setPositiveButton(R.string.activate) { _, _ -> onClick() }
             .setNegativeButton(R.string.cancel, null)
             .show()
+    }
+
+    fun addPremiumIcon(textView: TextView) {
+        val drawable = textView.context.drawableFrom(R.drawable.ic_crown_colored)
+        drawable!!.setBounds(0, 0, textView.height, textView.height)
+        textView.setCompoundDrawables(null, null, drawable, null)
+        textView.compoundDrawablePadding = textView.context.toDp(10)
+    }
+
+    fun removePremiumIcon(textView: TextView) {
+        textView.setCompoundDrawables(null, null, null, null)
     }
 }

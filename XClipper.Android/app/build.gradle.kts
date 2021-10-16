@@ -54,7 +54,7 @@ android {
 tasks.register("checkForChangelog") {
     doFirst {
         val versionCode = project.android.defaultConfig.versionCode
-                val file = File("$rootDir\\fastlane\\metadata\\android\\en-US\\changelogs\\${versionCode}.txt")
+        val file = File("$rootDir\\fastlane\\metadata\\android\\en-US\\changelogs\\${versionCode}.txt")
         if (!file.exists()) {
             throw BuildCancelledException("Error: Please define a changelog for the versionCode $versionCode at \"fastlane\\metadata\\android\\en-US\\changelogs\"")
         }

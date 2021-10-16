@@ -8,8 +8,12 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.doOnLayout
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.*
@@ -47,9 +51,12 @@ import com.kpstv.xclipper.ui.dialogs.MultiSelectDialogBuilder
 import com.kpstv.xclipper.ui.dialogs.MultiSelectModel3
 import com.kpstv.xclipper.ui.helpers.AppSettings
 import com.kpstv.pin_lock.PinLockHelper
+import com.kpstv.xclipper.extensions.drawableFrom
+import com.kpstv.xclipper.extensions.toDp
 import com.kpstv.xclipper.ui.fragments.Settings
 import com.kpstv.xclipper.ui.helpers.extensions.AddOns
 import com.kpstv.xclipper.ui.helpers.extensions.AddOnsHelper
+import com.kpstv.xclipper.ui.helpers.extensions.ExtensionHelper
 import com.kpstv.xclipper.ui.viewmodels.SettingNavViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
@@ -144,11 +151,16 @@ class GeneralPreference : AbstractPreferenceFragment() {
         pinLockPreference = findPreference(PIN_LOCK_PREF)
         pinLockPreference?.setOnPreferenceChangeListener call@{ _, newValue ->
             if (pinLockExtensionHelper.isActive()) {
-                val value = newValue as Boolean // TODO: Add a dialog to tell about this feature then Yes or OK to create a pin
+                val value = newValue as Boolean
                 if (value && !PinLockHelper.isPinLockEnabled()) {
                     // trying to create a new pin
-                    PinLockHelper.createANewPinLock(requireContext())
-                    rememberToCheckForPinLock = true
+                    Dialogs.showPinLockInfoDialog(
+                        context = requireContext(),
+                        onPositive = {
+                            PinLockHelper.createANewPinLock(requireContext())
+                            rememberToCheckForPinLock = true
+                        }
+                    )
                 } else if (!value && PinLockHelper.isPinLockEnabled()) {
                     // trying to disable it
                     PinLockHelper.disablePinLock(requireActivity())
@@ -158,7 +170,6 @@ class GeneralPreference : AbstractPreferenceFragment() {
                     return@call true
                 }
             } else {
-                // TODO: Show a dialog & then navigate to upgrade fragment respectively...
                 AddOnsHelper.showExtensionDialog(
                     context = requireContext(),
                     onClick = {
@@ -211,6 +222,18 @@ class GeneralPreference : AbstractPreferenceFragment() {
         if (hasKeyArgs<Args>()) {
             val args = getKeyArgs<Args>()
             if (args.highlightImproveDetection) highlightItemWithTitle(getString(R.string.adb_mode_title))
+        }
+
+        pinLockExtensionHelper.observePurchaseComplete().asLiveData().observe(viewLifecycleOwner) { unlock ->
+            val preference = pinLockPreference ?: return@observe
+            observeOnPreferenceInvalidate(preference) {
+                val titleView = preference.titleView!!
+                if (!unlock) {
+                    AddOnsHelper.addPremiumIcon(titleView)
+                } else {
+                    AddOnsHelper.removePremiumIcon(titleView)
+                }
+            }
         }
     }
 

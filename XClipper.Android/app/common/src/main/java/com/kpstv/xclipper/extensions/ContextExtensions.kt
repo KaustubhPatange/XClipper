@@ -30,6 +30,8 @@ fun Context.hasThemeColorAttribute(@AttrRes id: Int): Boolean {
         .getColor(0, -1) != -1
 }
 
+fun Context.toDp(px: Int) : Int = (resources.displayMetrics.density * px).toInt()
+
 @ColorInt
 fun Context.getColorAttr(@AttrRes id: Int, @ColorInt fallbackColor: Int = 0): Int {
     if (theme == null) {
