@@ -3,6 +3,7 @@ package com.kpstv.xclipper.ui.helpers.extensions
 import android.content.Context
 import android.widget.TextView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.kpstv.pin_lock.PinLockHelper
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.extensions.SimpleFunction
@@ -61,5 +62,19 @@ object AddOnsHelper {
 
     fun removePremiumIcon(textView: TextView) {
         textView.setCompoundDrawables(null, null, null, null)
+    }
+
+    suspend fun verifyExtensions(context: Context, preferenceProvider: PreferenceProvider) {
+        val lists = AddOns.getAllExtensions(context)
+        lists.forEach { item ->
+            val helper = ExtensionHelper.BillingHelper(context, preferenceProvider, item.sku)
+            helper.init() // auto check for validation.
+
+            when(item) {
+                AddOns.getPinExtension(context) -> {
+                    PinLockHelper.internalRemoveAppLock()
+                }
+            }
+        }
     }
 }

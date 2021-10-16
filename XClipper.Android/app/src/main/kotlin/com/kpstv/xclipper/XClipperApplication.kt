@@ -109,7 +109,9 @@ class XClipperApplication : Application(), Configuration.Provider {
 
         /** Initialize workers */
         AccessibilityWorker.schedule(this)
+
         ExtensionWorker.schedule(this)
+        ExtensionWorker.scheduleForOnce(this)
     }
 
     override fun getWorkManagerConfiguration() =

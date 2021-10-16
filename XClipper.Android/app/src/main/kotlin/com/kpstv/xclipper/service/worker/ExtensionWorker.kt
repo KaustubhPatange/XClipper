@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.hilt.work.HiltWorker
 import androidx.work.*
 import com.kpstv.xclipper.data.provider.PreferenceProvider
-import com.kpstv.xclipper.ui.helpers.extensions.AddOns
-import com.kpstv.xclipper.ui.helpers.extensions.ExtensionHelper
+import com.kpstv.xclipper.ui.helpers.AppSettings
+import com.kpstv.xclipper.ui.helpers.extensions.AddOnsHelper
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import java.util.concurrent.TimeUnit
@@ -14,28 +14,43 @@ import java.util.concurrent.TimeUnit
 class ExtensionWorker @AssistedInject constructor(
     @Assisted private val appContext: Context,
     @Assisted workerParams: WorkerParameters,
-    private val preferenceProvider: PreferenceProvider
+    private val preferenceProvider: PreferenceProvider,
 ) : CoroutineWorker(appContext, workerParams) {
 
     override suspend fun doWork(): Result {
-        val lists = AddOns.getAllExtensions(appContext)
-        lists.forEach { item ->
-            val helper = ExtensionHelper.BillingHelper(appContext, preferenceProvider, item.sku)
-            helper.init() // auto check for validation.
-        }
-
+        AddOnsHelper.verifyExtensions(appContext, preferenceProvider)
         return Result.success()
     }
 
     companion object {
-        private const val UNIQUE_ID = "xclipper_extension_worker"
+        private const val UNIQUE_PERIODIC_ID = "xclipper_extension_worker"
+        private const val UNIQUE_ID = "xclipper_extension_onetime_worker"
         fun schedule(context: Context) {
+            val constraints = Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .setRequiresBatteryNotLow(true)
+                .build()
+
             val request = PeriodicWorkRequestBuilder<ExtensionWorker>(
                 10, TimeUnit.HOURS, 10, TimeUnit.MINUTES
-            ).build()
+            ).setConstraints(constraints).build()
 
             WorkManager.getInstance(context)
-                .enqueueUniquePeriodicWork(UNIQUE_ID, ExistingPeriodicWorkPolicy.REPLACE, request)
+                .enqueueUniquePeriodicWork(UNIQUE_PERIODIC_ID, ExistingPeriodicWorkPolicy.REPLACE, request)
+        }
+
+        fun scheduleForOnce(context: Context) {
+            val constraints = Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .setRequiresBatteryNotLow(true)
+                .build()
+
+            val request = OneTimeWorkRequestBuilder<ExtensionWorker>()
+                .setConstraints(constraints)
+                .build()
+
+            WorkManager.getInstance(context)
+                .enqueueUniqueWork(UNIQUE_ID, ExistingWorkPolicy.REPLACE, request)
         }
     }
 }

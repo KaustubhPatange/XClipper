@@ -268,7 +268,7 @@ class GeneralPreference : AbstractPreferenceFragment() {
             rememberToCheckOverlaySwitch = false
             showSuggestion = true
         }
-        if (rememberToCheckForPinLock) {
+        if (rememberToCheckForPinLock || !pinLockExtensionHelper.isActive()) {
             pinLockPreference?.isChecked = PinLockHelper.isPinLockEnabled()
         }
     }

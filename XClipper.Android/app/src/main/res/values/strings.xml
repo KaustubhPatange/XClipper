@@ -257,6 +257,6 @@
     <string name="extension_message">This is an add-on extension that unlocks certain capabilities of the app which requires a small purchase to unlock.</string>
 
     <string name="pin_lock_dialog_title">Secure with App lock</string>
-    <string name="pin_lock_dialog_text">Unlock the app with fingerprint or pin code.\n\nTap \"Create Password\" to create &amp; set the lock.</string>
+    <string name="pin_lock_dialog_text">Unlock the app with fingerprint or pin code. Remember, if you forgot the password then the only way to recover is clear the app data.\n\nTap \"Create Password\" to create &amp; set the lock.</string>
     <string name="pin_lock_dialog_positive">Create Password</string>
 </resources>

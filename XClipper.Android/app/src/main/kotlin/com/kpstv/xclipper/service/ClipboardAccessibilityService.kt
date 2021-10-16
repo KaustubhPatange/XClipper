@@ -37,7 +37,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class ClipboardAccessibilityService : AccessibilityService() {
+class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl(), AccessibilityService() {
 
     @Inject
     lateinit var firebaseUtils: FirebaseUtils
@@ -174,9 +174,10 @@ class ClipboardAccessibilityService : AccessibilityService() {
         clipboardProvider.observeClipboardChange()
 
         keyboardVisibility.observeForever { visible ->
+            updateMemory()
             /** A safe check to make sure we should check permission if we
              *  are using service related to it. */
-            if (isSystemOverlayEnabled(applicationContext) && showSuggestion) {
+            if (isSystemOverlayEnabled(applicationContext) && showSuggestion && !deviceRunningLowMemory) {
                 if (visible)
                     try {
                         startService(Intent(applicationContext, BubbleService::class.java))
@@ -209,6 +210,10 @@ class ClipboardAccessibilityService : AccessibilityService() {
     }
 
     override fun onInterrupt() {}
+
+    override fun onTrimMemory(level: Int) {
+        onTrimMemoryLevel(level)
+    }
 
     private fun registerClipboardLogDetector() {
         clipboardLogDetector.registerListener(object : ClipboardLogDetector.Listener {

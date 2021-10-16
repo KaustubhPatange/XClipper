@@ -167,6 +167,11 @@ class BubbleService : FloatingBubbleService() {
         super.onDestroy()
     }
 
+    override fun onLowMemory() {
+        // We are low on memory stop allocating anything.
+        stopSelf()
+    }
+
     object Actions {
         fun sendCloseState(context: Context) {
             context.broadcastManager().sendBroadcast(Intent(ACTION_VIEW_CLOSE))

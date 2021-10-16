@@ -77,11 +77,11 @@ class ExtensionHelper(private val context: Context, preferenceProvider: Preferen
                         })
                     } else {
                         errorListener?.invoke(BillingSetupFinishedFailedException(billingResult.debugMessage))
+                        onError()
                     }
                 }
                 override fun onBillingServiceDisconnected() {
                     errorListener?.invoke(BillingServiceDisconnectedException())
-                    onError.invoke()
                 }
             })
         }

@@ -12,12 +12,7 @@ object PinLockHelper {
         return lockManager.appLock.isPasscodeSet
     }
     fun checkPinLock(context: Context) {
-        val lockManager = LockManager.getInstance()
-        lockManager.enableAppLock(context, CustomPinLockActivity::class.java)
-        lockManager.appLock.disable()
-        lockManager.appLock.setShouldShowForgot(false)
-        lockManager.appLock.logoId = R.drawable.pin_lock_ic_logo
-
+        internalSetPinLock(context)
         if (isPinLockEnabled()) {
             val intent = CustomPinLockActivity.createIntentForLockVerification(context).apply {
                 if (context !is Activity) flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -32,5 +27,18 @@ object PinLockHelper {
     }
     fun createANewPinLock(context: Context) = with(context) {
         startActivity(CustomPinLockActivity.createIntentForCreatingPinLock(context))
+    }
+
+    fun internalRemoveAppLock() {
+        val lockManager = LockManager.getInstance()
+        lockManager.appLock.setPasscode(null)
+    }
+
+    private fun internalSetPinLock(context: Context) {
+        val lockManager = LockManager.getInstance()
+        lockManager.enableAppLock(context, CustomPinLockActivity::class.java)
+        lockManager.appLock.disable()
+        lockManager.appLock.setShouldShowForgot(false)
+        lockManager.appLock.logoId = R.drawable.pin_lock_ic_logo
     }
 }
