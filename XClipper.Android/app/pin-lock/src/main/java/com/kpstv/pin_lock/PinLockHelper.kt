@@ -29,16 +29,19 @@ object PinLockHelper {
         startActivity(CustomPinLockActivity.createIntentForCreatingPinLock(context))
     }
 
-    fun internalRemoveAppLock() {
+    fun internalRemoveAppLock(context: Context) {
+        internalSetPinLock(context)
         val lockManager = LockManager.getInstance()
         lockManager.appLock.setPasscode(null)
     }
 
     private fun internalSetPinLock(context: Context) {
         val lockManager = LockManager.getInstance()
-        lockManager.enableAppLock(context, CustomPinLockActivity::class.java)
-        lockManager.appLock.disable()
-        lockManager.appLock.setShouldShowForgot(false)
-        lockManager.appLock.logoId = R.drawable.pin_lock_ic_logo
+        if (lockManager.appLock == null) {
+            lockManager.enableAppLock(context, CustomPinLockActivity::class.java)
+            lockManager.appLock.disable()
+            lockManager.appLock.setShouldShowForgot(false)
+            lockManager.appLock.logoId = R.drawable.pin_lock_ic_logo
+        }
     }
 }

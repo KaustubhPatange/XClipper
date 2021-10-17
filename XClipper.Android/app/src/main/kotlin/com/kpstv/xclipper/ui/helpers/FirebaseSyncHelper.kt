@@ -9,8 +9,7 @@ import com.google.firebase.ktx.Firebase
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.BuildConfig
 import com.kpstv.xclipper.R
-import com.kpstv.xclipper.data.provider.FirebaseProvider
-import com.kpstv.xclipper.data.provider.PreferenceProvider
+import com.kpstv.xclipper.di.CommonReusableEntryPoints
 import com.kpstv.xclipper.extensions.utils.Utils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,7 +26,10 @@ object FirebaseSyncHelper {
     private const val MIGRATE_EXIST_PREF = "fb_migrate_pref"
 
     // Migrate existing FirebaseApp to new APP_NAME
-    fun migrate(context: Context, preferenceProvider: PreferenceProvider, firebaseProvider: FirebaseProvider) {
+    fun migrate(context: Context) {
+        val preferenceProvider = CommonReusableEntryPoints.get(context).preferenceProvider()
+        val firebaseProvider = CommonReusableEntryPoints.get(context).firebaseProvider()
+
         CoroutineScope(Dispatchers.Main).launch {
             if (BuildConfig.VERSION_CODE == MIGRATION_FROM_VERSION && isRegistered(context)
                 && !preferenceProvider.getBooleanKey(MIGRATE_EXIST_PREF, false)

@@ -13,9 +13,10 @@ import java.util.*
 
 class SyncDialogHelper(
     private val activity: FragmentActivity,
-    private val preferenceProvider: PreferenceProvider,
-    private val dbConnectionProvider: DBConnectionProvider
 ) : AbstractFragmentHelper<Home>(activity, Home::class) {
+
+    private val preferenceProvider : PreferenceProvider = hiltCommonEntryPoints.preferenceProvider()
+    private val dbConnectionProvider : DBConnectionProvider = hiltCommonEntryPoints.dbConnectionProvider()
 
     override fun onFragmentViewCreated() {
         attach()

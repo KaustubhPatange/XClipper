@@ -5,7 +5,6 @@ import android.widget.TextView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.kpstv.pin_lock.PinLockHelper
 import com.kpstv.xclipper.R
-import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.extensions.SimpleFunction
 import com.kpstv.xclipper.extensions.colorFrom
 import com.kpstv.xclipper.extensions.drawableFrom
@@ -39,8 +38,8 @@ object AddOns {
 }
 
 object AddOnsHelper {
-    fun getHelperForPinLock(context: Context, preferenceProvider: PreferenceProvider) : ExtensionHelper {
-        return ExtensionHelper(context, preferenceProvider, context.getString(R.string.pin_sku))
+    fun getHelperForPinLock(context: Context) : ExtensionHelper {
+        return ExtensionHelper(context, context.getString(R.string.pin_sku))
     }
 
     fun showExtensionDialog(context: Context, onClick: SimpleFunction) {
@@ -64,15 +63,15 @@ object AddOnsHelper {
         textView.setCompoundDrawables(null, null, null, null)
     }
 
-    suspend fun verifyExtensions(context: Context, preferenceProvider: PreferenceProvider) {
+    suspend fun verifyExtensions(context: Context) {
         val lists = AddOns.getAllExtensions(context)
         lists.forEach { item ->
-            val helper = ExtensionHelper.BillingHelper(context, preferenceProvider, item.sku)
+            val helper = ExtensionHelper.BillingHelper(context, item.sku)
             helper.init() // auto check for validation.
 
             when(item) {
                 AddOns.getPinExtension(context) -> {
-                    PinLockHelper.internalRemoveAppLock()
+                    PinLockHelper.internalRemoveAppLock(context)
                 }
             }
         }

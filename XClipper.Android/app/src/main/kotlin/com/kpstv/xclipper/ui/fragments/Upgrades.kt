@@ -75,7 +75,7 @@ class Upgrades : AnimateFragment(R.layout.fragment_upgrade) {
         val adapter = ExtensionAdapter(
             items = items.map { it.toAdapterItem() },
             viewLifecycleOwner = viewLifecycleOwner,
-            provideExtensionHelper = { ExtensionHelper(requireContext(), preferenceProvider, it.sku) },
+            provideExtensionHelper = { ExtensionHelper(requireContext(), it.sku) },
             itemClickListener = { position ->
                 val args = items[position].toExtensionBottomSheetArgs()
                 getSimpleNavigator().show(ExtensionBottomSheet::class, args)

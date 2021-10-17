@@ -14,11 +14,10 @@ import java.util.concurrent.TimeUnit
 class ExtensionWorker @AssistedInject constructor(
     @Assisted private val appContext: Context,
     @Assisted workerParams: WorkerParameters,
-    private val preferenceProvider: PreferenceProvider,
 ) : CoroutineWorker(appContext, workerParams) {
 
     override suspend fun doWork(): Result {
-        AddOnsHelper.verifyExtensions(appContext, preferenceProvider)
+        AddOnsHelper.verifyExtensions(appContext)
         return Result.success()
     }
 

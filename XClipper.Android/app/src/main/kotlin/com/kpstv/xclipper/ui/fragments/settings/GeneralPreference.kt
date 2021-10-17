@@ -8,12 +8,9 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.View
-import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
-import androidx.core.view.doOnLayout
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
-import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.*
@@ -51,12 +48,8 @@ import com.kpstv.xclipper.ui.dialogs.MultiSelectDialogBuilder
 import com.kpstv.xclipper.ui.dialogs.MultiSelectModel3
 import com.kpstv.xclipper.ui.helpers.AppSettings
 import com.kpstv.pin_lock.PinLockHelper
-import com.kpstv.xclipper.extensions.drawableFrom
-import com.kpstv.xclipper.extensions.toDp
-import com.kpstv.xclipper.ui.fragments.Settings
 import com.kpstv.xclipper.ui.helpers.extensions.AddOns
 import com.kpstv.xclipper.ui.helpers.extensions.AddOnsHelper
-import com.kpstv.xclipper.ui.helpers.extensions.ExtensionHelper
 import com.kpstv.xclipper.ui.viewmodels.SettingNavViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
@@ -90,7 +83,7 @@ class GeneralPreference : AbstractPreferenceFragment() {
     private var rememberToCheckOverlaySwitch = false
     private var rememberToCheckForPinLock = false
 
-    private val pinLockExtensionHelper by lazy { AddOnsHelper.getHelperForPinLock(requireContext(), preferenceProvider) }
+    private val pinLockExtensionHelper by lazy { AddOnsHelper.getHelperForPinLock(requireContext()) }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.general_pref, rootKey)

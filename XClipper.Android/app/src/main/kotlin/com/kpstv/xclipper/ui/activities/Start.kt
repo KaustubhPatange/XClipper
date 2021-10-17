@@ -9,13 +9,11 @@ import androidx.lifecycle.ViewModel
 import com.kpstv.navigation.*
 import com.kpstv.pin_lock.PinLockHelper
 import com.kpstv.xclipper.App
-import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.databinding.ActivityStartBinding
 import com.kpstv.xclipper.extensions.FragClazz
 import com.kpstv.xclipper.extensions.applyEdgeToEdgeMode
-import com.kpstv.xclipper.extensions.utils.RetrofitUtils
 import com.kpstv.xclipper.extensions.viewBinding
 import com.kpstv.xclipper.ui.fragments.Home
 import com.kpstv.xclipper.ui.fragments.Settings
@@ -37,15 +35,9 @@ class Start : AppCompatActivity(), FragmentNavigator.Transmitter {
     private lateinit var navigator: FragmentNavigator
 
     @Inject
-    lateinit var dbConnectionProvider: DBConnectionProvider
-    @Inject
     lateinit var preferenceProvider: PreferenceProvider
-    @Inject
-    lateinit var firebaseProvider: FirebaseProvider
-    @Inject
-    lateinit var retrofitUtils: RetrofitUtils
 
-    val updateHelper by lazy { UpdateHelper(this, retrofitUtils) }
+    val updateHelper by lazy { UpdateHelper(this) }
     private val intentHelper by lazy { ActivityIntentHelper(this) }
 
     override fun getNavigator(): FragmentNavigator = navigator
@@ -69,14 +61,14 @@ class Start : AppCompatActivity(), FragmentNavigator.Transmitter {
 
         intentHelper.handle(intent)
 
-        FirebaseSyncHelper.migrate(this, preferenceProvider, firebaseProvider)
+        FirebaseSyncHelper.migrate(this)
     }
 
     private fun registerHelpers() {
         updateHelper.register()
-        SyncDialogHelper(this, preferenceProvider, dbConnectionProvider).register()
-        ReviewHelper(this, preferenceProvider).register()
-        ImproveDetectionHelper(this, preferenceProvider).register()
+        SyncDialogHelper(this).register()
+        ReviewHelper(this).register()
+        ImproveDetectionHelper(this).register()
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -91,7 +83,7 @@ class Start : AppCompatActivity(), FragmentNavigator.Transmitter {
 
     // Needed for scanning QRs
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        ConnectionHelper(this, mainViewModel, dbConnectionProvider)
+        ConnectionHelper(this, mainViewModel)
             .parse(requestCode, resultCode, data)
         super.onActivityResult(requestCode, resultCode, data)
     }

@@ -11,9 +11,9 @@ import java.util.*
 
 class ReviewHelper(
     private val activity: FragmentActivity,
-    private val preferenceProvider: PreferenceProvider
 ) : AbstractFragmentHelper<Home>(activity, Home::class) {
 
+    private val preferenceProvider : PreferenceProvider = hiltCommonEntryPoints.preferenceProvider()
     private val manager = ReviewManagerFactory.create(activity)
 
     override fun onFragmentViewCreated() {

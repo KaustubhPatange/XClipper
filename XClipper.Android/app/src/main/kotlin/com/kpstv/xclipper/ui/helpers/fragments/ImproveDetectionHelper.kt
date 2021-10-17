@@ -1,22 +1,28 @@
 package com.kpstv.xclipper.ui.helpers.fragments
 
+import android.content.Context
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.provider.PreferenceProvider
+import com.kpstv.xclipper.di.CommonReusableEntryPoints
 import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.service.ClipboardAccessibilityService
 import com.kpstv.xclipper.service.helper.ClipboardLogDetector
 import com.kpstv.xclipper.ui.dialogs.Dialogs
 import com.kpstv.xclipper.ui.fragments.Home
 import com.kpstv.xclipper.ui.helpers.AppSettings
+import dagger.hilt.android.EntryPointAccessors
+import dagger.hilt.components.SingletonComponent
 import java.util.*
 
 class ImproveDetectionHelper(
     private val activity: FragmentActivity,
-    private val preferenceProvider: PreferenceProvider
 ) : AbstractFragmentHelper<Home>(activity, Home::class) {
+
+    private val preferenceProvider : PreferenceProvider = hiltCommonEntryPoints.preferenceProvider()
+    private val appSettings : AppSettings = hiltCommonEntryPoints.appSettings()
 
     override fun onFragmentViewCreated() {
         attach()
@@ -32,7 +38,8 @@ class ImproveDetectionHelper(
             }
             val oldDate = dateString.toLong()
             val newDate = Calendar.getInstance().time.getFormattedDate().toLong()
-            if (newDate >= oldDate) {
+            val shouldShowTip = canShowQuickTip(activity, preferenceProvider, appSettings)
+            if (newDate >= oldDate && shouldShowTip) {
                 updateDate()
                 // TODO: Add logic like improve tip to show on certain times.
                 Dialogs.showImproveDetectionDialog(activity) {
@@ -58,16 +65,15 @@ class ImproveDetectionHelper(
 
         fun addQuickTip(
             container: ViewGroup,
-            preferenceProvider: PreferenceProvider,
-            appSettings: AppSettings,
             doOnAction: SimpleFunction
         ) {
-            // TODO: Fix the issue where if Improve detection is enabled but clipboard service is disabled in such case don't show.
             val context = container.context
-            val showQuickTip = !preferenceProvider.getBooleanKey(QUICK_TIP_SHOWN, false) xnor
-                    ClipboardAccessibilityService.isRunning(context) xnor
-                    ClipboardLogDetector.isDetectionVersionCompatible(context) xnor
-                    if (ClipboardLogDetector.isDetectionCompatible(context)) { !appSettings.isImproveDetectionEnabled() } else true
+
+            val entryPoints = CommonReusableEntryPoints.get(context)
+            val preferenceProvider = entryPoints.preferenceProvider()
+            val appSettings = entryPoints.appSettings()
+
+            val showQuickTip = canShowQuickTip(context, preferenceProvider, appSettings)
 
             if (showQuickTip) {
                 val tipView = QuickTip(container).run {
@@ -86,6 +92,15 @@ class ImproveDetectionHelper(
                 }
                 container.addView(tipView)
             }
+        }
+
+        private fun canShowQuickTip(context: Context, preferenceProvider: PreferenceProvider, appSettings: AppSettings) : Boolean {
+            // TODO: Fix the issue where if Improve detection is enabled but clipboard service is disabled in such case don't show.
+
+            return !preferenceProvider.getBooleanKey(QUICK_TIP_SHOWN, false) xnor
+                    ClipboardAccessibilityService.isRunning(context) xnor
+                    ClipboardLogDetector.isDetectionVersionCompatible(context) xnor
+                    if (ClipboardLogDetector.isDetectionCompatible(context)) { !appSettings.isImproveDetectionEnabled() } else true
         }
     }
 }

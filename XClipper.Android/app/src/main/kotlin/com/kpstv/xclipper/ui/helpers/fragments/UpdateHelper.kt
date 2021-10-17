@@ -34,8 +34,10 @@ import kotlinx.coroutines.launch
  */
 class UpdateHelper(
     private val activity: FragmentActivity,
-    private val retrofitUtils: RetrofitUtils
 ) : AbstractFragmentHelper<Home>(activity, Home::class) {
+
+    private val retrofitUtils: RetrofitUtils = hiltCommonEntryPoints.retrofitUtils()
+
     companion object {
         const val SETTINGS_URL = "https://github.com/KaustubhPatange/XClipper/raw/master/XClipper.Android/settings.json"
         private const val REPO_OWNER = "KaustubhPatange"

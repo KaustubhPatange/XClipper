@@ -14,6 +14,7 @@ import com.kpstv.navigation.hasKeyArgs
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.databinding.BottomSheetExtensionBinding
+import com.kpstv.xclipper.di.CommonReusableEntryPoints
 import com.kpstv.xclipper.extensions.ErrorFunction
 import com.kpstv.xclipper.extensions.SimpleFunction
 import com.kpstv.xclipper.extensions.elements.CustomRoundedBottomSheetFragment
@@ -25,20 +26,25 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import javax.inject.Inject
 import kotlin.coroutines.resume
 
-class ExtensionHelper(private val context: Context, preferenceProvider: PreferenceProvider, sku: String) {
+class ExtensionHelper(private val context: Context, sku: String) {
     // TODO: Add work manager to also make sure if extensions are not expired.
 
     companion object {
         fun observePurchaseComplete(preferenceProvider: PreferenceProvider, sku: String) = preferenceProvider.observeBooleanKeyAsFlow(sku, false)
     }
 
-    private val billingHelper = BillingHelper(context, preferenceProvider, sku)
+    private val billingHelper = BillingHelper(context, sku)
 
     fun isActive() = billingHelper.isActive()
 
     fun observePurchaseComplete() = billingHelper.observeActiveness()
 
     internal class BillingHelper(context: Context, private val preferenceProvider: PreferenceProvider, private val sku: String) {
+        constructor(context: Context, sku: String) : this(
+            context = context,
+            preferenceProvider = CommonReusableEntryPoints.get(context).preferenceProvider(),
+            sku = sku
+        )
         private var skuDetails: SkuDetails? = null
         private var errorListener: ErrorFunction? = null
         private var purchaseCompleteListener: SimpleFunction? = null
