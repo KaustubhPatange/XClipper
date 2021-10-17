@@ -41,7 +41,6 @@ class ImproveDetectionHelper(
             val shouldShowTip = canShowQuickTip(activity, preferenceProvider, appSettings)
             if (newDate >= oldDate && shouldShowTip) {
                 updateDate()
-                // TODO: Add logic like improve tip to show on certain times.
                 Dialogs.showImproveDetectionDialog(activity) {
                     setNeutralButton(R.string.do_not_show) {
                         preferenceProvider.putBooleanKey(SHOW_DIALOG, false)
@@ -95,11 +94,9 @@ class ImproveDetectionHelper(
         }
 
         private fun canShowQuickTip(context: Context, preferenceProvider: PreferenceProvider, appSettings: AppSettings) : Boolean {
-            // TODO: Fix the issue where if Improve detection is enabled but clipboard service is disabled in such case don't show.
-
-            return !preferenceProvider.getBooleanKey(QUICK_TIP_SHOWN, false) xnor
-                    ClipboardAccessibilityService.isRunning(context) xnor
-                    ClipboardLogDetector.isDetectionVersionCompatible(context) xnor
+            return !preferenceProvider.getBooleanKey(QUICK_TIP_SHOWN, false) &&
+                    ClipboardAccessibilityService.isRunning(context) &&
+                    ClipboardLogDetector.isDetectionVersionCompatible(context) &&
                     if (ClipboardLogDetector.isDetectionCompatible(context)) { !appSettings.isImproveDetectionEnabled() } else true
         }
     }

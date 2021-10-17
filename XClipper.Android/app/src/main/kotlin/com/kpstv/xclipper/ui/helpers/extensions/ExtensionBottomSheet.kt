@@ -28,8 +28,6 @@ class ExtensionBottomSheet : CustomRoundedBottomSheetFragment(R.layout.bottom_sh
     private val binding by viewBinding(BottomSheetExtensionBinding::bind)
     private val viewModel by viewModels<ExtensionBottomSheetViewModel>()
 
-    @Inject lateinit var preferenceProvider: PreferenceProvider
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (hasKeyArgs<Args>()) {
