@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.kpstv.pin_lock">
+
+    <application>
+        <activity android:theme="@style/PinModuleTheme" android:name=".CustomPinLockActivity"/>
+    </application>
+</manifest>

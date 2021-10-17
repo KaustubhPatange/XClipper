@@ -9,6 +9,8 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.view.View
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.*
@@ -22,6 +24,7 @@ import com.kpstv.xclipper.App.BLACKLIST_PREF
 import com.kpstv.xclipper.App.DICTIONARY_LANGUAGE
 import com.kpstv.xclipper.App.IMAGE_MARKDOWN_PREF
 import com.kpstv.xclipper.App.LANG_PREF
+import com.kpstv.xclipper.App.PIN_LOCK_PREF
 import com.kpstv.xclipper.App.SERVICE_PREF
 import com.kpstv.xclipper.App.SUGGESTION_PREF
 import com.kpstv.xclipper.App.SWIPE_DELETE_PREF
@@ -44,6 +47,10 @@ import com.kpstv.xclipper.ui.dialogs.Dialogs
 import com.kpstv.xclipper.ui.dialogs.MultiSelectDialogBuilder
 import com.kpstv.xclipper.ui.dialogs.MultiSelectModel3
 import com.kpstv.xclipper.ui.helpers.AppSettings
+import com.kpstv.pin_lock.PinLockHelper
+import com.kpstv.xclipper.ui.helpers.extensions.AddOns
+import com.kpstv.xclipper.ui.helpers.extensions.AddOnsHelper
+import com.kpstv.xclipper.ui.viewmodels.SettingNavViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import kotlinx.android.parcel.Parcelize
@@ -59,9 +66,12 @@ class GeneralPreference : AbstractPreferenceFragment() {
     private var checkPreference: SwitchPreferenceCompat? = null
     private var improveDetectPreference: SwitchPreferenceCompat? = null
     private var overlayPreference: SwitchPreferenceCompat? = null
+    private var pinLockPreference: SwitchPreferenceCompat? = null
 
     @Inject lateinit var preferenceProvider: PreferenceProvider
     @Inject lateinit var appSettings: AppSettings
+
+    private val settingsNavViewModel by viewModels<SettingNavViewModel>(ownerProducer = ::requireParentFragment)
 
     private var appsDialog: AlertDialog? = null
 
@@ -71,6 +81,9 @@ class GeneralPreference : AbstractPreferenceFragment() {
      * will set the preference.
      */
     private var rememberToCheckOverlaySwitch = false
+    private var rememberToCheckForPinLock = false
+
+    private val pinLockExtensionHelper by lazy { AddOnsHelper.getHelperForPinLock(requireContext()) }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.general_pref, rootKey)
@@ -127,6 +140,41 @@ class GeneralPreference : AbstractPreferenceFragment() {
             true
         }
 
+        /** Pin Lock preference */
+        pinLockPreference = findPreference(PIN_LOCK_PREF)
+        pinLockPreference?.setOnPreferenceChangeListener call@{ _, newValue ->
+            if (pinLockExtensionHelper.isActive()) {
+                val value = newValue as Boolean
+                if (value && !PinLockHelper.isPinLockEnabled()) {
+                    // trying to create a new pin
+                    Dialogs.showPinLockInfoDialog(
+                        context = requireContext(),
+                        onPositive = {
+                            PinLockHelper.createANewPinLock(requireContext())
+                            rememberToCheckForPinLock = true
+                        }
+                    )
+                } else if (!value && PinLockHelper.isPinLockEnabled()) {
+                    // trying to disable it
+                    PinLockHelper.disablePinLock(requireActivity())
+                    rememberToCheckForPinLock = true
+                } else if (value && PinLockHelper.isPinLockEnabled()) {
+                    // must be error from our side so we should just set pin lock
+                    return@call true
+                }
+            } else {
+                AddOnsHelper.showExtensionDialog(
+                    context = requireContext(),
+                    onClick = {
+                        settingsNavViewModel.goToUpgradeWithArgs {
+                            setHighlightExtensionPosition(requireContext(), AddOns.getPinExtension(requireContext()))
+                        }
+                    }
+                )
+            }
+            false
+        }
+
         /** Swipe to delete preference */
         findPreference<SwitchPreferenceCompat>(SWIPE_DELETE_PREF)?.setOnPreferenceChangeListener { _, newValue ->
             swipeToDelete = newValue as Boolean
@@ -168,6 +216,18 @@ class GeneralPreference : AbstractPreferenceFragment() {
             val args = getKeyArgs<Args>()
             if (args.highlightImproveDetection) highlightItemWithTitle(getString(R.string.adb_mode_title))
         }
+
+        pinLockExtensionHelper.observePurchaseComplete().asLiveData().observe(viewLifecycleOwner) { unlock ->
+            val preference = pinLockPreference ?: return@observe
+            observeOnPreferenceInvalidate(preference) {
+                val titleView = preference.titleView!!
+                if (!unlock) {
+                    AddOnsHelper.addPremiumIcon(titleView)
+                } else {
+                    AddOnsHelper.removePremiumIcon(titleView)
+                }
+            }
+        }
     }
 
     override fun onStart() {
@@ -200,6 +260,9 @@ class GeneralPreference : AbstractPreferenceFragment() {
             overlayPreference?.isChecked = isSystemOverlayEnabled(requireContext())
             rememberToCheckOverlaySwitch = false
             showSuggestion = true
+        }
+        if (rememberToCheckForPinLock || !pinLockExtensionHelper.isActive()) {
+            pinLockPreference?.isChecked = PinLockHelper.isPinLockEnabled()
         }
     }
 

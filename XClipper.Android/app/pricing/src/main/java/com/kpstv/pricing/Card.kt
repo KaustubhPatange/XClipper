@@ -2,10 +2,12 @@ package com.kpstv.pricing
 
 import android.content.Context
 import android.content.res.ColorStateList
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
+import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.price_item.view.*
 
@@ -20,7 +22,6 @@ class Card @JvmOverloads constructor(
         inflate()
         initStyle(attrs, defStyleAttr)
     }
-
 
     private fun inflate() {
         LayoutInflater.from(context).inflate(R.layout.price_item, this, true)
@@ -82,6 +83,13 @@ class Card @JvmOverloads constructor(
                 )
             )
 
+        if (typedArray.hasValue(R.styleable.Card_purchaseButtonDrawable))
+            purchase_button.setIcon(
+                typedArray.getDrawable(
+                    R.styleable.Card_purchaseButtonDrawable
+                )
+            )
+
         if (typedArray.hasValue(R.styleable.Card_purchaseButtonColor))
             purchase_button.backgroundTintList = ColorStateList.valueOf(
                 typedArray.getColor(
@@ -112,4 +120,16 @@ class Card @JvmOverloads constructor(
     fun setButtonClickListener(block: OnClickListener?) = purchase_button.setOnClickListener(block)
 
     fun setButtonClickListener(block: (View?) -> Unit) = purchase_button.setOnClickListener(block)
+
+    fun setButtonText(text: String) {
+        purchase_button.text = text
+    }
+
+    fun setButtonColor(@ColorInt color: Int) {
+        purchase_button.backgroundTintList = ColorStateList.valueOf(color)
+    }
+
+    fun setButtonIcon(icon: Drawable?) {
+        purchase_button.icon = icon
+    }
 }

@@ -13,5 +13,6 @@
         <attr name="purchaseButtonText" format="string"/>
         <attr name="purchaseButtonTextColor" format="color"/>
         <attr name="purchaseButtonColor" format="color"/>
+        <attr name="purchaseButtonDrawable" format="reference"/>
     </declare-styleable>
 </resources>

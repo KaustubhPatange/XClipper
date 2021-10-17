@@ -9,8 +9,8 @@
             app:title="@string/service_title" />
 
         <SwitchPreferenceCompat
-            app:key="adb_mode_pref"
             android:dependency="service_pref"
+            app:key="adb_mode_pref"
             app:summary="@string/adb_mode_summary"
             app:title="@string/adb_mode_title" />
 
@@ -25,6 +25,15 @@
             app:key="suggestion_pref"
             app:summary="@string/suggest_summary"
             app:title="@string/suggest_title" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="Security">
+
+        <SwitchPreferenceCompat
+            app:icon="@drawable/ic_lock_outline"
+            app:key="pin_lock_pref"
+            app:title="@string/pin_lock_title" />
 
     </PreferenceCategory>
 

@@ -5,9 +5,10 @@ import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceFragmentCompat
 import androidx.transition.TransitionInflater
+import com.kpstv.navigation.ValueFragment
 import com.kpstv.xclipper.R
 
-open class AnimateFragment(@LayoutRes resId: Int) : Fragment(resId) {
+open class AnimateFragment(@LayoutRes resId: Int) : ValueFragment(resId) {
     open val toAnimate: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,6 +21,7 @@ open class AnimateFragment(@LayoutRes resId: Int) : Fragment(resId) {
     }
 }
 
+@Deprecated("Navigator supports transitions")
 open class AnimatePreferenceFragment : PreferenceFragmentCompat() {
     open val toAnimate: Boolean = true
 

@@ -43,13 +43,18 @@ android {
             applicationIdSuffix = ".debug"
             isDebuggable = true
         }
+        create(BuildType.IAP) {
+            initWith(getByName(BuildType.DEBUG))
+            setMatchingFallbacks(BuildType.DEBUG)
+            applicationIdSuffix = applicationIdSuffix?.removePrefix(".debug")
+        }
     }
 }
 
 tasks.register("checkForChangelog") {
     doFirst {
         val versionCode = project.android.defaultConfig.versionCode
-                val file = File("$rootDir\\fastlane\\metadata\\android\\en-US\\changelogs\\${versionCode}.txt")
+        val file = File("$rootDir\\fastlane\\metadata\\android\\en-US\\changelogs\\${versionCode}.txt")
         if (!file.exists()) {
             throw BuildCancelledException("Error: Please define a changelog for the versionCode $versionCode at \"fastlane\\metadata\\android\\en-US\\changelogs\"")
         }
@@ -79,6 +84,7 @@ dependencies {
     implementation(LibraryDependency.ROOM_RUNTIME)
     implementation(LibraryDependency.OKHTTP)
 
+    implementation(LibraryDependency.BILLING)
     implementation(LibraryDependency.FIREBASE_REALTIME_DATABASE)
     implementation(LibraryDependency.FIREBASE_AUTH)
     implementation(LibraryDependency.FIREBASE_CRASHLYTICS)
@@ -114,6 +120,7 @@ dependencies {
     implementation(LibraryDependency.AUTO_BINDINGS)
     implementation(LibraryDependency.REALTIME_EXTENSIONS)
     implementation(LibraryDependency.TIMBER)
+    implementation(LibraryDependency.PINLOCK)
 
     implementation(LibraryDependency.NAVIGATOR)
     implementation(LibraryDependency.NAVIGATOR_EXTENSIONS)

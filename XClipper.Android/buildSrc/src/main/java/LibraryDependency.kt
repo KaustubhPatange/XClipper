@@ -48,6 +48,8 @@ private object LibraryVersion {
     const val NAVIGATOR_EXTENSIONS = "0.7"
     const val WEBKIT = "1.2.0"
     const val TIMBER = "5.0.1"
+    const val PINLOCK = "1.2"
+    const val BILLING = "4.0.0"
 }
 
 object LibraryDependency {
@@ -127,4 +129,7 @@ object LibraryDependency {
     const val WEBKIT = "androidx.webkit:webkit:${LibraryVersion.WEBKIT}"
 
     const val TIMBER = "com.jakewharton.timber:timber:${LibraryVersion.TIMBER}"
+    const val PINLOCK = "io.github.kaustubhpatange:pin-lock:${LibraryVersion.PINLOCK}"
+
+    const val BILLING = "com.android.billingclient:billing-ktx:${LibraryVersion.BILLING}"
 }

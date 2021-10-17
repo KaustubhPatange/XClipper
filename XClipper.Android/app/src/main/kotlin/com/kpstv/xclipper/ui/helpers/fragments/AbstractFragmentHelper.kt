@@ -7,12 +7,16 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import com.kpstv.xclipper.di.CommonReusableEntryPoints
+import dagger.hilt.android.EntryPointAccessors
 import kotlin.reflect.KClass
 
 abstract class AbstractFragmentHelper<T: Fragment>(
     private val activity: FragmentActivity,
     clazz: KClass<T>
 ) {
+    val hiltCommonEntryPoints = CommonReusableEntryPoints.get(activity)
+
     protected abstract fun onFragmentViewCreated()
     open fun onFragmentResumed() { }
     open fun onFragmentDestroyed() { }

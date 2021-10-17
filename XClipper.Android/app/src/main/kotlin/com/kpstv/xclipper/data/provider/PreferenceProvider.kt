@@ -1,6 +1,7 @@
 package com.kpstv.xclipper.data.provider
 
 import android.content.SharedPreferences
+import kotlinx.coroutines.flow.Flow
 
 interface PreferenceProvider {
     fun putStringKey(key: String, value: String?)
@@ -21,4 +22,6 @@ interface PreferenceProvider {
     fun removeKey(key: String)
 
     fun observePreference(block: (SharedPreferences, String) -> Unit)
+
+    fun observeBooleanKeyAsFlow(key: String, default: Boolean) : Flow<Boolean>
 }

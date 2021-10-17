@@ -8,6 +8,7 @@ object ModuleDependency {
     const val LINK_PREVIEW = ":app:link-preview"
     const val COMMON = ":app:common"
     const val UPDATE = ":app:update"
+    const val PIN_LOCK = ":app:pin-lock"
 
     fun getAllModules(): Set<String> = ModuleDependency::class.memberProperties
         .filter { it.isConst }

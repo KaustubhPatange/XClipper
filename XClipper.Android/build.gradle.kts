@@ -1,8 +1,9 @@
 buildscript {
-    val kotlin_version by extra("1.5.20")
+    val kotlin_version by extra("1.5.0")
     repositories {
         google()
         jcenter()
+        mavenCentral()
     }
     dependencies {
         classpath(GradleDependency.GRADLE_BUILD_TOOLS)
@@ -21,9 +22,8 @@ allprojects {
         mavenCentral()
         mavenLocal()
         maven { url = uri("https://jitpack.io")}
-        maven {
-            url = uri("https://oss.sonatype.org/content/repositories/snapshots")
-        }
+        maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
+        maven { url = uri("https://github.com/omadahealth/omada-nexus/raw/master/release") }
 
     }
 
