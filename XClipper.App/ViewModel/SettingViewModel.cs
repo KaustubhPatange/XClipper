@@ -106,6 +106,48 @@ namespace Components
 
         #endregion
 
+        #region Public Methods
+
+        public bool VerifyUnsavedSettings()
+        {
+            var aresame = true;
+            aresame &= StartOnSystemStartup == SASS;
+            aresame &= CheckApplicationUpdates == CAU;
+            aresame &= TotalClipLength == TCL;
+            aresame &= DisplayStartNotification == DSN;
+            aresame &= PlayNoticationSound == PNS;
+            aresame &= ShowDataChangeNotification == SDCN;
+            aresame &= WhatToStore == WTS;
+            aresame &= AppDisplayLocation == ADL;
+            aresame &= IsCtrl == KEY_IC;
+            aresame &= IsAlt == KEY_IA;
+            aresame &= IsShift == KEY_IS;
+            aresame &= HotKey == KEY_HK;
+            aresame &= CurrentAppLanguage == CAL;
+            aresame &= UseCustomPassword == UCP;
+            aresame &= CustomPassword == CP;
+            aresame &= DatabaseEncryptPassword == FDP;
+            aresame &= BindDatabase == BTD;
+            aresame &= BindDelete == BFD;
+            aresame &= BindImage == BIU;
+            aresame &= EnableCopyBuffer == ECB;
+            aresame &= CopyBuffer1 == DefaultSettings.CopyBuffer1;
+            aresame &= CopyBuffer2 == DefaultSettings.CopyBuffer2;
+
+            if (!aresame)
+            {
+                var result = MessageBox.Show(Translation.SETTINGS_UNSAVED, Translation.MSG_WARNING, MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
+                if (result == MessageBoxResult.Yes)
+                {
+                    SaveButtonClicked();
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        #endregion
+
         #region Method Events
 
         public void IgnoreClicked()

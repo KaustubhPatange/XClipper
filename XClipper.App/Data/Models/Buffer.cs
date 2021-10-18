@@ -1,10 +1,13 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Windows.Forms;
 using System.Xml.Linq;
 
 namespace Components
 {
-    public class Buffer : INotifyPropertyChanged
+    public class Buffer : INotifyPropertyChanged, IEquatable<Buffer>
     {
         public Buffer()
         {
@@ -58,9 +61,24 @@ namespace Components
             
             return buff;
         }
+
+        public override bool Equals(object obj) => obj is Buffer buffer && Copy.Equals(buffer.Copy) && Paste.Equals(buffer.Paste) && Cut.Equals(buffer.Cut) && PlaySound == buffer.PlaySound && Data == buffer.Data;
+
+        public override int GetHashCode()
+        {
+            int hashCode = 222168374;
+            hashCode = hashCode * -1521134295 + EqualityComparer<Keymap>.Default.GetHashCode(Copy);
+            hashCode = hashCode * -1521134295 + EqualityComparer<Keymap>.Default.GetHashCode(Paste);
+            hashCode = hashCode * -1521134295 + EqualityComparer<Keymap>.Default.GetHashCode(Cut);
+            hashCode = hashCode * -1521134295 + PlaySound.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Data);
+            return hashCode;
+        }
+
+        public bool Equals(Buffer other) => Equals(other as object);
     }
 
-    public class Keymap : INotifyPropertyChanged
+    public class Keymap : INotifyPropertyChanged, IEquatable<Keymap>
     {
         public event PropertyChangedEventHandler PropertyChanged;
         public bool IsAlt { get; set; }
@@ -87,5 +105,19 @@ namespace Components
             keymap.IsShift = t.Element(nameof(IsShift)).Value.ToBool();
             return keymap;
         }
+
+        public override bool Equals(object obj) => obj is Keymap keymap && IsAlt == keymap.IsAlt && IsCtrl == keymap.IsCtrl && IsShift == keymap.IsShift && HotKey == keymap.HotKey;
+
+        public override int GetHashCode()
+        {
+            int hashCode = 1609328514;
+            hashCode = hashCode * -1521134295 + IsAlt.GetHashCode();
+            hashCode = hashCode * -1521134295 + IsCtrl.GetHashCode();
+            hashCode = hashCode * -1521134295 + IsShift.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(HotKey);
+            return hashCode;
+        }
+
+        public bool Equals(Keymap other) => Equals(other as object);
     }
 }

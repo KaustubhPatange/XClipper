@@ -83,6 +83,7 @@ namespace Components
 		public static string SETTINGS_IGNORE_TOOLTIP => GetString("settings_ignore_tooltip");
 		public static string SETTINGS_CAU_TOOLTIP => GetString("settings_cau_tooltip");
 		public static string SETTINGS_ENABLE_FEATURE => GetString("settings_enable_feature");
+		public static string SETTINGS_UNSAVED => GetString("settings_unsaved");
 		public static string FILTER_HEADER => GetString("filter_header");
 		public static string FILTER_TITLE => GetString("filter_title");
 		public static string FILTER_INDEX => GetString("filter_index");

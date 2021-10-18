@@ -7,16 +7,20 @@ namespace Components
     /// </summary>
     public partial class SettingWindow : Window
     {
+        private SettingViewModel viewModel = new SettingViewModel();
         public SettingWindow(ISettingEventBinder binder = null)
         {
             InitializeComponent();
 
-            DataContext = new SettingViewModel().Also((v) => { v.SetSettingBinder(binder); });
+            viewModel.SetSettingBinder(binder);
+            DataContext = viewModel;
 
             Closing += (o, e) =>
             {
-                e.Cancel = true;
-                Hide();
+                if (!viewModel.VerifyUnsavedSettings())
+                {
+                    e.Cancel = true;
+                }
             };
         }
     }
