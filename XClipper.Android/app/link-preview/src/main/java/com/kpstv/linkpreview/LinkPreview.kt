@@ -1,25 +1,23 @@
 package com.kpstv.linkpreview
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
+import android.net.Uri
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
-import android.webkit.WebViewClient
 import android.widget.FrameLayout
 import androidx.core.content.withStyledAttributes
 import androidx.core.graphics.ColorUtils
+import com.google.android.material.shape.ShapeAppearanceModel
 import com.kpstv.linkpreview.databinding.LayoutPreviewBinding
 import com.kpstv.xclipper.extensions.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.launch
-import okhttp3.*
 
 class LinkPreview @JvmOverloads constructor(
     context: Context,
@@ -47,8 +45,6 @@ class LinkPreview @JvmOverloads constructor(
 
     private val binding: LayoutPreviewBinding = LayoutPreviewBinding.inflate(context.layoutInflater(), this, true).also { it.root.collapse() }
 
-    private val webView = WebView(context)
-    private var lifecycleScope: CoroutineScope? = null
     private var currentUrl: String = ""
         set(value) {
             if (value != field) {
@@ -57,18 +53,10 @@ class LinkPreview @JvmOverloads constructor(
         }
 
     init {
-        webView.settings.javaScriptEnabled = true
-        webView.addJavascriptInterface(this, "HTMLOUT")
-        webView.webViewClient = object : WebViewClient() {
-            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-                super.onPageStarted(view, url, favicon)
-                if (url != null) currentUrl = url
-            }
-
-            override fun onPageFinished(view: WebView?, url: String?) {
-                webView.loadUrl("javascript:window.HTMLOUT.processHTML('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
-            }
-        }
+        val appearanceModel = ShapeAppearanceModel.builder()
+            .setAllCornerSizes(resources.getDimension(R.dimen.corner_radius))
+            .build()
+        binding.imageView.shapeAppearanceModel = appearanceModel
 
         context.withStyledAttributes(attrs, R.styleable.LinkPreview, defStyle) {
             if (hasValue(R.styleable.LinkPreview_imgSrc)) {
@@ -79,6 +67,9 @@ class LinkPreview @JvmOverloads constructor(
             }
             if (hasValue(R.styleable.LinkPreview_subtitleTextColor)) {
                 binding.tvSubtitle.setTextColor(getColorStateList(R.styleable.LinkPreview_subtitleTextColor)?.defaultColor!!)
+            }
+            if (hasValue(R.styleable.LinkPreview_urlTextColor)) {
+                binding.tvHost.setTextColor(getColorStateList(R.styleable.LinkPreview_urlTextColor)?.defaultColor!!)
             }
         }
     }
@@ -92,8 +83,18 @@ class LinkPreview @JvmOverloads constructor(
         binding.tvSubtitle.text = value.replace("&amp;", "&")
     }
 
-    fun setImage(url: String) {
-        binding.imageView.load(url)
+    fun setHostUrl(url: String) {
+        val host = Uri.parse(url).host
+        binding.tvHost.text = host
+    }
+
+    fun setImage(url: String?) {
+        if (url != null) {
+            binding.imageView.show()
+            binding.imageView.load(url)
+        } else {
+            binding.imageView.collapse()
+        }
     }
 
     fun onClick(block: () -> Unit) {
@@ -102,33 +103,23 @@ class LinkPreview @JvmOverloads constructor(
 
     private val TAG = javaClass.simpleName
 
-    fun showPreview(url: String, lifecycleScope: CoroutineScope) {
-        this.lifecycleScope = lifecycleScope
-        webView.loadUrl(url)
-    }
-
-    @Suppress("unused")
-    @JavascriptInterface
-    fun processHTML(html: String) {
-        val scope = lifecycleScope ?: return
-        loadContent(html, scope)
-    }
-
-    private fun loadContent(body: String, lifecycleScope: CoroutineScope) {
+    fun loadPreview(url: String, lifecycleScope: CoroutineScope) {
         lifecycleScope.launch {
-            ensureActive()
+            val data = LinkUtils.fetchUrl(url)
 
-            val title = Regex(REGEX_TITLE).find(body)?.groups?.get(1)?.value
-            val subtitle = Regex(REGEX_DESCRIPTION).find(body)?.groups?.get(1)?.value
-            val imageUrl = Regex(REGEX_IMAGE).find(body)?.groups?.get(1)?.value
+            val title = data?.title
+            val subtitle = data?.description
+            val imageUrl = data?.imageUrl
 
             if (title != null) setTitle(title)
-            if (subtitle != null) setSubtitle(subtitle)
-            if (imageUrl != null) {
-                setImage(imageUrl)
-            }
+            if (subtitle != null)
+                setSubtitle(subtitle)
+            else if (title != null)
+                setSubtitle(title)
+            setHostUrl(url)
+            setImage(imageUrl)
 
-            if (title == null) {
+            if (title.isNullOrEmpty()) {
                 binding.root.collapse()
             } else {
                 loadCompleteListener?.onLoadComplete(title, subtitle, imageUrl)
@@ -147,11 +138,5 @@ class LinkPreview @JvmOverloads constructor(
             }
             setBackground(gradientDrawable)
         }
-    }
-
-    companion object {
-        private const val REGEX_TITLE = "property=\"og:title\"\\s?content=\"(.*?)\""
-        private const val REGEX_DESCRIPTION = "property=\"og:description\"\\s?content=\"(.*?)\""
-        private const val REGEX_IMAGE = "property=\"og:image\"\\s?content=\"(.*?)\""
     }
 }

@@ -376,11 +376,15 @@ class SpecialHelper(
                 val model = linkPreviewDao.getFromUrl(topUrl)
                 if (model != null) {
                     link_preview.setTitle(model.title)
-                    if (model.subtitle != null) link_preview.setSubtitle(model.subtitle)
+                    link_preview.setHostUrl(topUrl)
+                    if (model.subtitle != null)
+                        link_preview.setSubtitle(model.subtitle)
+                    else {
+                        link_preview.setSubtitle(model.title)
+                    }
                     if (model.imageUrl != null) link_preview.setImage(model.imageUrl)
-
                 } else {
-                    link_preview.showPreview(topUrl, lifecycleScope)
+                    link_preview.loadPreview(topUrl, lifecycleScope)
                     link_preview.loadCompleteListener =
                         LinkPreview.LinkPreviewListener { title, subtitle, imageUrl ->
                             lifecycleScope.launch {

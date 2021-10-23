@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -58,25 +58,26 @@
             android:textSize="18sp" />
 
         <TextView
-            android:layout_marginHorizontal="30dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="30dp"
             android:layout_marginTop="3dp"
             android:text="@string/premium_extension_footnotes"
             android:textColor="?colorTextSecondary"
             android:textSize="12sp" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:paddingStart="20dp"
-            android:clipToPadding="false"
             android:id="@+id/rv_extension"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:clipToPadding="false"
             android:orientation="horizontal"
+            android:overScrollMode="never"
+            android:paddingStart="20dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/item_extension"
-            tools:ignore="RtlSymmetry" />
+            tools:ignore="RtlSymmetry"
+            tools:listitem="@layout/item_extension" />
 
     </LinearLayout>
 

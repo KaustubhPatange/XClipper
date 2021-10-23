@@ -60,6 +60,7 @@
         android:id="@+id/link_preview"
         app:titleTextColor="?colorTextSecondaryLight"
         app:subtitleTextColor="?colorTextSecondary"
+        app:urlTextColor="?colorSeparator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

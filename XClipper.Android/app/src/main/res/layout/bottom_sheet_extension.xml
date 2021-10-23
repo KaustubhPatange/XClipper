@@ -51,18 +51,19 @@
                 tools:text="Extension : Pin Lock" />
 
             <androidx.cardview.widget.CardView
-                app:cardBackgroundColor="?colorForeground"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
-                app:cardCornerRadius="10dp">
+                app:cardBackgroundColor="?colorForeground"
+                app:cardCornerRadius="10dp"
+                app:cardUseCompatPadding="true">
 
                 <TextView
-                    android:textColor="?colorTextSecondaryLight"
                     android:id="@+id/tv_desc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
+                    android:textColor="?colorTextSecondaryLight"
                     tools:text="@string/testStringSmall" />
 
             </androidx.cardview.widget.CardView>
