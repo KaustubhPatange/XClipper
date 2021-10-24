@@ -45,13 +45,6 @@ class LinkPreview @JvmOverloads constructor(
 
     private val binding: LayoutPreviewBinding = LayoutPreviewBinding.inflate(context.layoutInflater(), this, true).also { it.root.collapse() }
 
-    private var currentUrl: String = ""
-        set(value) {
-            if (value != field) {
-                field = value
-            }
-        }
-
     init {
         val appearanceModel = ShapeAppearanceModel.builder()
             .setAllCornerSizes(resources.getDimension(R.dimen.corner_radius))

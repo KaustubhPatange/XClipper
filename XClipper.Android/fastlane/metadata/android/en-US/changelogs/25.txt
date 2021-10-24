@@ -1,0 +1,5 @@
+Added: New method for monitoring clipboard activity (requires ADB configuration).
+Added: Pin/Biometric app lock support.
+Added: Add-on extensions that can be unlocked through one-time in-app purchases.
+Improved: Link preview logic.
+Fixed: Unexpected crash during setup when moving through welcome screen.
