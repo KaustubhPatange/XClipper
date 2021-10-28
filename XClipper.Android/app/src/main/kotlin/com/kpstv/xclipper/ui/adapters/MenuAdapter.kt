@@ -4,13 +4,14 @@ import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.SpecialMenu
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.getDataFromAttr
-import kotlinx.android.synthetic.main.item_special.view.*
 
 class MenuAdapter(
     val list: ArrayList<SpecialMenu>,
@@ -27,31 +28,33 @@ class MenuAdapter(
         holder.bind(list[position])
     }
 
-    private fun MenuHolder.bind(item: SpecialMenu) = with(itemView) {
-        is_text.text = item.title
-        is_image.setImageDrawable(ContextCompat.getDrawable(context, item.image))
-
-        val defaultThemeColor = getDataFromAttr(
-            context = context,
-            attr = R.attr.colorTextSecondaryLight
-        )
-
-        if (item.imageTint == -1)
-            is_image.imageTintList = ColorStateList.valueOf(defaultThemeColor)
-        else
-            is_image.imageTintList =
-                ColorStateList.valueOf(ContextCompat.getColor(context, item.imageTint))
-
-        if (item.textColor == -1)
-            is_text.setTextColor(defaultThemeColor)
-        else
-            is_text.setTextColor(ContextCompat.getColor(context, item.textColor))
-
-        mainLayout.setOnClickListener { item.onClick.invoke() }
-    }
-
-
     override fun getItemCount() = list.size
 
-    class MenuHolder(view: View) : RecyclerView.ViewHolder(view)
+    class MenuHolder(private val view: View) : RecyclerView.ViewHolder(view) {
+        private val textView = view.findViewById<TextView>(R.id.is_text)
+        private val imageView = view.findViewById<ImageView>(R.id.is_image)
+
+        fun bind(item: SpecialMenu) {
+            textView.text = item.title
+            imageView.setImageDrawable(ContextCompat.getDrawable(view.context, item.image))
+
+            val defaultThemeColor = getDataFromAttr(
+                context = view.context,
+                attr = R.attr.colorTextSecondaryLight
+            )
+
+            if (item.imageTint == -1)
+                imageView.imageTintList = ColorStateList.valueOf(defaultThemeColor)
+            else
+                imageView.imageTintList =
+                    ColorStateList.valueOf(ContextCompat.getColor(view.context, item.imageTint))
+
+            if (item.textColor == -1)
+                textView.setTextColor(defaultThemeColor)
+            else
+                textView.setTextColor(ContextCompat.getColor(view.context, item.textColor))
+
+            view.setOnClickListener { item.onClick.invoke() }
+        }
+    }
 }

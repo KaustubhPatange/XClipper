@@ -4,23 +4,25 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.kpstv.xclipper.App
 import com.kpstv.xclipper.App.STAGGERED_SPAN_COUNT
 import com.kpstv.xclipper.App.STAGGERED_SPAN_COUNT_MIN
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.Clip
-import com.kpstv.xclipper.extensions.Coroutines
+import com.kpstv.xclipper.databinding.DialogEditLayoutBinding
 import com.kpstv.xclipper.extensions.clone
 import com.kpstv.xclipper.extensions.drawableFrom
 import com.kpstv.xclipper.extensions.listeners.RepositoryListener
 import com.kpstv.xclipper.extensions.utils.ThemeUtils
+import com.kpstv.xclipper.extensions.viewBinding
 import com.kpstv.xclipper.ui.adapters.EditAdapter
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
-import kotlinx.android.synthetic.main.dialog_edit_layout.*
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class EditDialog : AppCompatActivity() {
@@ -30,6 +32,7 @@ class EditDialog : AppCompatActivity() {
         const val STATE_TAG_RECYCLERVIEW = "state_tag_recyclerview"
     }
 
+    private val binding by viewBinding(DialogEditLayoutBinding::inflate)
     private val mainViewModel: MainViewModel by viewModels()
 
     private var spanCount = 2
@@ -43,10 +46,10 @@ class EditDialog : AppCompatActivity() {
 
         ThemeUtils.setDialogTheme(this)
 
-        setContentView(R.layout.dialog_edit_layout)
+        setContentView(binding.root)
 
-        toolbar.navigationIcon = drawableFrom(R.drawable.ic_close)
-        toolbar.setNavigationOnClickListener {
+        binding.toolbar.navigationIcon = drawableFrom(R.drawable.ic_close)
+        binding.toolbar.setNavigationOnClickListener {
             finish()
         }
 
@@ -58,8 +61,8 @@ class EditDialog : AppCompatActivity() {
 
             clip = mainViewModel.editManager.getClip()!!
 
-            de_editText.setText(clip.data)
-            tv_bottomText.text = clip.getFullFormattedDate()
+            binding.etMain.setText(clip.data)
+            binding.tvBottomText.text = clip.getFullFormattedDate()
 
             EDType.Edit
         } else {
@@ -74,14 +77,14 @@ class EditDialog : AppCompatActivity() {
 
         /** A Timeout on binding creates a cool effect */
 
-        Coroutines.main {
+        lifecycleScope.launch {
             delay(App.DELAY_SPAN)
             bindUI()
         }
     }
 
     fun saveClick(view: View) {
-        val text = de_editText.text.toString()
+        val text = binding.etMain.text.toString()
 
         if (text.isNotBlank()) {
             if (edType == EDType.Edit) {
@@ -142,7 +145,7 @@ class EditDialog : AppCompatActivity() {
 
         refreshRecyclerView(spanCount)
 
-        del_recyclerView.adapter = adapter
+        binding.recyclerView.adapter = adapter
     }
 
     private fun bindUI() {
@@ -160,7 +163,7 @@ class EditDialog : AppCompatActivity() {
     }
 
     private fun refreshRecyclerView(span: Int) {
-        del_recyclerView.layoutManager =
+        binding.recyclerView.layoutManager =
             StaggeredGridLayoutManager(span, StaggeredGridLayoutManager.HORIZONTAL)
     }
 
@@ -168,14 +171,14 @@ class EditDialog : AppCompatActivity() {
         val previousData = savedInstanceState?.getString(STATE_DIALOG_TEXT_FIELD)
 
         if (previousData?.isNotEmpty() == true)
-            de_editText.setText(previousData)
+            binding.etMain.setText(previousData)
     }
 
     override fun onStop() {
         val bundle = Bundle().apply {
-            if (de_editText.text.length < 1000)
-                putString(STATE_DIALOG_TEXT_FIELD, de_editText.text.toString())
-            putParcelable(STATE_TAG_RECYCLERVIEW, del_recyclerView.layoutManager?.onSaveInstanceState())
+            if (binding.etMain.text.length < 1000)
+                putString(STATE_DIALOG_TEXT_FIELD, binding.etMain.text.toString())
+            putParcelable(STATE_TAG_RECYCLERVIEW, binding.recyclerView.layoutManager?.onSaveInstanceState())
         }
         onSaveInstanceState(bundle)
         super.onStop()

@@ -435,7 +435,7 @@ class FirebaseProviderImpl @Inject constructor(
                         if (bindDelete) {
                             val userDataClips = userClips.map { it.data }
                             val firebaseDataClips = firebaseClips.map { it.data }
-                            userDataClips.minus(firebaseDataClips).let { if (it.isNotEmpty()) mainThread { removed.invoke(it) } }
+                            userDataClips.minus(firebaseDataClips).let { if (it.isNotEmpty()) launchInMain { removed.invoke(it) } }
                             if (firebaseDataClips.isEmpty() && userDataClips.isNotEmpty()) {
                                 removedAll.invoke()
                             }
@@ -475,7 +475,7 @@ class FirebaseProviderImpl @Inject constructor(
             // which makes the tree inconsistent.
             if (clip == null) {
                 HVLog.d(m = "Inconsistent data detected")
-                mainThread { inconsistentDataListener?.invoke() }
+                launchInMain { inconsistentDataListener?.invoke() }
                 return false
             }
         }
@@ -492,7 +492,7 @@ class FirebaseProviderImpl @Inject constructor(
     }
 
     override fun removeDataObservation() {
-       Coroutines.io {
+       launchInIO {
            HVLog.d()
            if (isObservingChanges()) {
                job?.cancel()

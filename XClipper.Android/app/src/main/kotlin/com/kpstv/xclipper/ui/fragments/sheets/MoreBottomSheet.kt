@@ -14,7 +14,10 @@ import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.provider.PreferenceProvider
+import com.kpstv.xclipper.databinding.BottomSheetMoreBinding
+import com.kpstv.xclipper.extensions.elements.CustomRoundedBottomSheetFragment
 import com.kpstv.xclipper.extensions.utils.Utils
+import com.kpstv.xclipper.extensions.viewBinding
 import com.kpstv.xclipper.ui.helpers.specials.SpecialHelper
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -23,25 +26,19 @@ class MoreBottomSheet(
     private val supportFragmentManager: FragmentManager,
     private val onClose: () -> Unit = {},
     private val clip: Clip
-) : RoundedBottomSheetDialogFragment() {
+) : CustomRoundedBottomSheetFragment(R.layout.bottom_sheet_more) {
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        with(inflater.inflate(R.layout.bottom_sheet_more, container, false)) {
+    private val binding by viewBinding(BottomSheetMoreBinding::bind)
 
-            SpecialHelper(
-                context = requireContext(),
-                supportFragmentManager = supportFragmentManager,
-                lifecycleScope = viewLifecycleOwner.lifecycleScope,
-                clip = clip
-            ).setActions(this) {
-                dismiss()
-            }
-
-            return this
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        SpecialHelper(
+            context = requireContext(),
+            supportFragmentManager = supportFragmentManager,
+            lifecycleScope = viewLifecycleOwner.lifecycleScope,
+            clip = clip
+        ).setActions(binding) {
+            dismiss()
         }
     }
 

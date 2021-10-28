@@ -20,6 +20,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.ferfalk.simplesearchview.SimpleSearchView
 import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
@@ -35,6 +36,7 @@ import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
+import com.kpstv.xclipper.databinding.FragmentHomeBinding
 import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.extensions.enumerations.FirebaseState
 import com.kpstv.xclipper.extensions.listeners.StatusListener
@@ -43,7 +45,6 @@ import com.kpstv.xclipper.extensions.recyclerview.SwipeToDeleteCallback
 import com.kpstv.xclipper.extensions.utils.FirebaseUtils
 import com.kpstv.xclipper.extensions.utils.ThemeUtils
 import com.kpstv.xclipper.extensions.utils.ThemeUtils.Companion.registerForThemeChange
-import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.openAccessibility
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.shareText
 import com.kpstv.xclipper.service.ChangeClipboardActivity
@@ -60,8 +61,6 @@ import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import com.zhuinden.livedatacombinetuplekt.combineTuple
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
-import kotlinx.android.synthetic.main.fragment_home.*
-import kotlinx.android.synthetic.main.layout_empty.*
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -76,6 +75,8 @@ class Home : ValueFragment(R.layout.fragment_home) {
     private lateinit var adapter: CIAdapter
     private var undoSnackBar: Snackbar? = null
 
+    private val binding by viewBinding(FragmentHomeBinding::bind)
+
     private val navViewModel by activityViewModels<NavViewModel>()
     private val mainViewModel: MainViewModel by viewModels()
     private val recyclerViewScrollHelper = RecyclerViewScrollHelper()
@@ -89,13 +90,12 @@ class Home : ValueFragment(R.layout.fragment_home) {
     }
 
     override val forceBackPress: Boolean
-        get() = mainViewModel.stateManager.isMultiSelectionStateActive() || searchView?.isSearchOpen == true || mainViewModel.searchManager.anyFilterApplied()
+        get() = mainViewModel.stateManager.isMultiSelectionStateActive() || binding.searchView.isSearchOpen || mainViewModel.searchManager.anyFilterApplied()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         registerForThemeChange()
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -110,7 +110,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
 
         setGoTopButton()
 
-        emptyLayout.setOnClickListener(fabListener)
+        binding.layoutEmptyParent.emptyLayout.setOnClickListener(fabListener)
 
         bindUI()
 
@@ -129,7 +129,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
                 mainViewModel.stateManager.setToolbarState(ToolbarState.NormalViewState)
                 return true
             }
-            searchView?.onBackPressed() == true -> return true
+            binding.searchView.onBackPressed() -> return true
             mainViewModel.searchManager.anyFilterApplied() -> {
                 mainViewModel.searchManager.clearAll()
                 return true
@@ -139,15 +139,15 @@ class Home : ValueFragment(R.layout.fragment_home) {
     }
 
     private fun setGoTopButton() {
-        btn_go_up.applyBottomInsets(merge = true)
-        btn_go_up.setOnClickListener {
+        binding.btnGoUp.applyBottomInsets(merge = true)
+        binding.btnGoUp.setOnClickListener {
             recyclerViewScrollHelper.reset()
         }
     }
 
     private fun setFloatingButton() {
-        fab_addItem.applyBottomInsets(merge = true)
-        fab_addItem.setOnClickListener(fabListener)
+        binding.fabAddItem.applyBottomInsets(merge = true)
+        binding.fabAddItem.setOnClickListener(fabListener)
     }
 
     private val fabListener = View.OnClickListener {
@@ -158,23 +158,23 @@ class Home : ValueFragment(R.layout.fragment_home) {
     private fun bindUI() {
         mainViewModel.clipLiveData.observe(viewLifecycleOwner) { clips ->
             if (clips?.isEmpty() == true && !mainViewModel.searchManager.anyFilterApplied())
-                layout_empty_parent.show()
+                binding.layoutEmptyParent.root.show()
             else
-                layout_empty_parent.collapse()
+                binding.layoutEmptyParent.root.collapse()
             if (clips != null) adapter.submitList(clips)
             mainViewModel.stateManager.clearSelectedItem()
         }
         mainViewModel.stateManager.toolbarState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 ToolbarState.NormalViewState -> {
-                    fab_addItem.show()
+                    binding.fabAddItem.show()
                     setNormalToolbar()
                     mainViewModel.stateManager.clearSelectedList()
-                    swipeToDeleteItemTouch.attachToRecyclerView(ci_recyclerView)
+                    swipeToDeleteItemTouch.attachToRecyclerView(binding.ciRecyclerView)
                 }
                 ToolbarState.MultiSelectionState -> {
                     setSelectedToolbar()
-                    fab_addItem.hide()
+                    binding.fabAddItem.hide()
                     swipeToDeleteItemTouch.attachToRecyclerView(null)
                 }
                 else -> {
@@ -243,27 +243,29 @@ class Home : ValueFragment(R.layout.fragment_home) {
             }
         }
 
-        ci_recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        ci_recyclerView.recycledViewPool.setMaxRecycledViews(0, 15)
-        ci_recyclerView.adapter = adapter
+        with(binding) {
+            ciRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+            ciRecyclerView.recycledViewPool.setMaxRecycledViews(0, 15)
+            ciRecyclerView.adapter = adapter
 
-        /** Swipe to delete item */
+            /** Swipe to delete item */
 
-        if (swipeToDelete)
-            swipeToDeleteItemTouch.attachToRecyclerView(ci_recyclerView)
+            if (swipeToDelete)
+                swipeToDeleteItemTouch.attachToRecyclerView(ciRecyclerView)
 
-        RecyclerViewInsetHelper().attach(ci_recyclerView, RecyclerViewInsetHelper.InsetType.BOTTOM, true)
-        recyclerViewScrollHelper.attach(
-            ci_recyclerView,
-            onScrollDown = {
-                fab_addItem.hide()
-                btn_go_up.animate().translationY(0f).start()
-            },
-            onScrollUp = {
-                fab_addItem.show()
-                btn_go_up.animate().translationY(500f).start()
-            }
-        )
+            RecyclerViewInsetHelper().attach(ciRecyclerView, RecyclerViewInsetHelper.InsetType.BOTTOM, true)
+            recyclerViewScrollHelper.attach(
+                ciRecyclerView,
+                onScrollDown = {
+                    binding.fabAddItem.hide()
+                    binding.btnGoUp.animate().translationY(0f).start()
+                },
+                onScrollUp = {
+                    binding.fabAddItem.show()
+                    binding.btnGoUp.animate().translationY(500f).start()
+                }
+            )
+        }
     }
 
     /**
@@ -271,7 +273,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
      */
     private fun setToolbarCommonStuff() {
         setNormalToolbar()
-        toolbar.setOnMenuItemClickListener { item ->
+        binding.toolbar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.action_selectAll -> {
                     mainViewModel.stateManager.addAllToSelectedList(ArrayList(adapter.currentList))
@@ -283,7 +285,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
                     deleteAllWithUndo()
                 }
                 R.id.action_search -> {
-                    searchView.showSearch(true)
+                    binding.searchView.showSearch(true)
                 }
                 R.id.action_tag -> {
                     val intent = Intent(requireContext(), TagDialog::class.java)
@@ -294,10 +296,10 @@ class Home : ValueFragment(R.layout.fragment_home) {
         }
 
         mainViewModel.stateManager.selectedItemClips.observe(viewLifecycleOwner) {
-            if (it.size > 0)
-                toolbar.subtitle = "${it.size} ${getString(R.string.selected)}"
+            if (it.isNotEmpty())
+                binding.toolbar.subtitle = "${it.size} ${getString(R.string.selected)}"
             else
-                toolbar.subtitle = App.BLANK_STRING
+                binding.toolbar.subtitle = App.BLANK_STRING
         }
     }
 
@@ -326,7 +328,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
         }
 
         Snackbar.make(
-            ci_recyclerView,
+            binding.ciRecyclerView,
             "${itemsToRemove.size} ${getString(R.string.item_delete)}",
             Snackbar.LENGTH_INDEFINITE
         ).apply {
@@ -341,7 +343,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
         }
     }
 
-    private fun setSearchViewListener() {
+    private fun setSearchViewListener() = with(binding) {
         searchView.setOnQueryTextListener(
             onSubmit = { query ->
                 searchView.onBackPressed()
@@ -355,15 +357,17 @@ class Home : ValueFragment(R.layout.fragment_home) {
                 mainViewModel.searchManager.clearSearch()
             }
         )
-        searchView.setOnSearchCloseListener {
-            mainViewModel.searchManager.clearSearch()
-        }
+        searchView.setOnSearchViewListener(object : SimpleSearchView.SearchViewListener by DelegatedSearchViewListener {
+            override fun onSearchViewClosed() {
+                mainViewModel.searchManager.clearSearch()
+            }
+        })
     }
 
     private fun updateSearchAndTagFilters(searches: List<String>, tags: List<Tag>) {
-        ci_chip_group.removeAllViews()
+        binding.ciChipGroup.removeAllViews()
         searches.forEach { query ->
-            ci_chip_group.addView(
+            binding.ciChipGroup.addView(
                 Chip(requireContext()).apply {
                     text = query
                     isCloseIconVisible = true
@@ -374,7 +378,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
             )
         }
         for (tag in tags) {
-            ci_chip_group.addView(
+            binding.ciChipGroup.addView(
                 Chip(requireContext()).apply {
                     text = tag.name
                     setTag(App.TAG_FILTER_CHIP)
@@ -391,7 +395,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
     /**
      * Call this function when ToolbarMultiSelection state is enabled.
      */
-    private fun setSelectedToolbar() {
+    private fun setSelectedToolbar() = with(binding) {
         toolbar.menu.clear()
         toolbar.setBackgroundColor(ThemeUtils.CARD_SELECTED_COLOR)
         toolbar.inflateMenu(R.menu.selected_menu)
@@ -405,7 +409,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
     /**
      * Call this function when ToolbarNormalState state is enabled.
      */
-    private fun setNormalToolbar() {
+    private fun setNormalToolbar() = with(binding) {
         appbarLayout.applyTopInsets()
         toolbar.navigationIcon = null
         toolbar.setNavigationOnClickListener(null)
@@ -466,7 +470,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
      * This will automatically trigger data validation by clicking on toolbar
      * sync button.
      */
-    private fun autoValidateOnStartup() {
+    private fun autoValidateOnStartup() = with(binding) {
         if (runAutoSync)
             toolbar.menu.findItem(R.id.action_sync).actionView?.performClick()
     }
@@ -506,7 +510,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
     private fun checkForAccessibilityService() {
         if (!ClipboardAccessibilityService.isRunning(requireContext())) {
             Snackbar.make(
-                ci_recyclerView,
+                binding.ciRecyclerView,
                 "Accessibility service not running",
                 Snackbar.LENGTH_LONG
             )
@@ -526,10 +530,5 @@ class Home : ValueFragment(R.layout.fragment_home) {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK
         }
         startActivity(intent)
-    }
-
-    override fun onDestroyView() {
-        ci_recyclerView.adapter = null
-        super.onDestroyView()
     }
 }

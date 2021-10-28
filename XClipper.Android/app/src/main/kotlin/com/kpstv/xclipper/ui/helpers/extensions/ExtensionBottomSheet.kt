@@ -11,7 +11,6 @@ import com.kpstv.navigation.BaseArgs
 import com.kpstv.navigation.getKeyArgs
 import com.kpstv.navigation.hasKeyArgs
 import com.kpstv.xclipper.R
-import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.databinding.BottomSheetExtensionBinding
 import com.kpstv.xclipper.extensions.DelegatedAnimator
 import com.kpstv.xclipper.extensions.elements.CustomRoundedBottomSheetFragment
@@ -20,8 +19,7 @@ import com.kpstv.xclipper.extensions.show
 import com.kpstv.xclipper.extensions.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
-import kotlinx.android.parcel.Parcelize
-import javax.inject.Inject
+import kotlinx.parcelize.Parcelize
 
 @AndroidEntryPoint
 class ExtensionBottomSheet : CustomRoundedBottomSheetFragment(R.layout.bottom_sheet_extension) {

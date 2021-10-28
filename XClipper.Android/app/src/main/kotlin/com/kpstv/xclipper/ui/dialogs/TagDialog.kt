@@ -17,16 +17,14 @@ import com.kpstv.xclipper.App.DELAY_SPAN
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.DialogState
 import com.kpstv.xclipper.data.model.Tag
+import com.kpstv.xclipper.databinding.DialogCreateTagBinding
 import com.kpstv.xclipper.extensions.collapse
-import com.kpstv.xclipper.extensions.listeners.StatusListener
 import com.kpstv.xclipper.extensions.show
 import com.kpstv.xclipper.extensions.utils.ThemeUtils
+import com.kpstv.xclipper.extensions.viewBinding
 import com.kpstv.xclipper.ui.adapters.TagAdapter
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import es.dmoral.toasty.Toasty
-import kotlinx.android.synthetic.main.dialog_create_tag.*
-import kotlinx.android.synthetic.main.dialog_create_tag.view.*
 import kotlinx.coroutines.delay
 
 @AndroidEntryPoint
@@ -34,10 +32,12 @@ class TagDialog : AppCompatActivity() {
 
     private val TAG = javaClass.simpleName
 
+    private val binding by viewBinding(DialogCreateTagBinding::inflate)
     private val mainViewModel: MainViewModel by viewModels()
 
     private lateinit var adapter: TagAdapter
     private lateinit var switchCompat: SwitchCompat
+
 
     companion object {
         const val RESULT_CODE = 1
@@ -49,13 +49,13 @@ class TagDialog : AppCompatActivity() {
 
         ThemeUtils.setDialogTheme(this)
 
-        setContentView(R.layout.dialog_create_tag)
+        setContentView(binding.root)
 
         setToolbar()
 
         setRecyclerView()
 
-        dct_editText.setOnEditorActionListener(object : TextView.OnEditorActionListener {
+        binding.etCreate.setOnEditorActionListener(object : TextView.OnEditorActionListener {
             override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
                 if (actionId == EditorInfo.IME_ACTION_SEND) {
                     sendButton()
@@ -65,21 +65,21 @@ class TagDialog : AppCompatActivity() {
             }
 
         })
-        btn_send.setOnClickListener {
+        binding.btnSend.setOnClickListener {
             sendButton()
         }
 
         lifecycleScope.launchWhenStarted {
             delay(DELAY_SPAN)
             bindUI()
-            linearLayout1.minimumHeight = resources.getDimension(R.dimen.dimen170).toInt()
+            binding.lvTagContainer.minimumHeight = resources.getDimension(R.dimen.dimen170).toInt()
         }
     }
 
     private fun sendButton() {
-        if (dct_editText.text.isNotBlank()) {
-            mainViewModel.postToTagRepository(Tag.from(dct_editText.text.trim().toString()))
-            dct_editText.text.clear()
+        if (binding.etCreate.text.isNotBlank()) {
+            mainViewModel.postToTagRepository(Tag.from(binding.etCreate.text.trim().toString()))
+            binding.etCreate.text.clear()
         }
     }
 
@@ -92,17 +92,17 @@ class TagDialog : AppCompatActivity() {
         mainViewModel.stateManager.dialogState.observe(this, { state ->
             when (state) {
                 DialogState.Normal -> {
-                    filter_tags.text = getString(R.string.custom_tags)
-                    dct_editLayout.dct_editText.text.clear()
-                    dct_editLayout.collapse()
+                    binding.tvFilterTags.text = getString(R.string.custom_tags)
+                    binding.etCreate.text.clear()
+                    binding.editLayout.collapse()
                     switchCompat.isChecked = false
                 }
                 DialogState.Edit -> {
-                    filter_tags.text = getString(R.string.add_remove_tags)
-                    dct_editLayout.isEnabled = true
-                    dct_editLayout.show()
+                    binding.tvFilterTags.text = getString(R.string.add_remove_tags)
+                    binding.editLayout.isEnabled = true
+                    binding.editLayout.show()
                     switchCompat.isChecked = true
-                    dct_editText.requestFocus()
+                    binding.etCreate.requestFocus()
                 }
                 else -> {
                     // When exhaustive
@@ -111,7 +111,7 @@ class TagDialog : AppCompatActivity() {
         })
     }
 
-    private fun setToolbar() {
+    private fun setToolbar() = with(binding) {
         toolbar.setNavigationIcon(R.drawable.ic_close)
         toolbar.setNavigationOnClickListener {
             finish()
@@ -120,7 +120,7 @@ class TagDialog : AppCompatActivity() {
         toolbar.inflateMenu(R.menu.dct_menu)
 
         switchCompat =
-            LayoutInflater.from(this).inflate(R.layout.switch_layout, null) as SwitchCompat
+            LayoutInflater.from(this@TagDialog).inflate(R.layout.switch_layout, null) as SwitchCompat
         switchCompat.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked)
                 mainViewModel.stateManager.setDialogState(DialogState.Edit)
@@ -135,7 +135,7 @@ class TagDialog : AppCompatActivity() {
         val layoutManager = FlexboxLayoutManager(this)
         layoutManager.flexDirection = FlexDirection.ROW
         layoutManager.justifyContent = JustifyContent.FLEX_START
-        dct_recycler_view.layoutManager = layoutManager
+        binding.recyclerView.layoutManager = layoutManager
 
         adapter = TagAdapter(
             lifecycleOwner = this,
@@ -168,7 +168,7 @@ class TagDialog : AppCompatActivity() {
                 finish()
             }
         )
-        dct_recycler_view.adapter = adapter
+        binding.recyclerView.adapter = adapter
     }
 
     override fun onDestroy() {

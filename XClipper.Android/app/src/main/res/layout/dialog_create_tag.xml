@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_marginStart="20dp"
-    android:layout_marginEnd="20dp"
+    android:paddingStart="20dp"
+    android:paddingEnd="20dp"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
@@ -15,7 +15,7 @@
         android:background="?colorPrimary" />
 
     <LinearLayout
-        android:id="@+id/linearLayout1"
+        android:id="@+id/lv_tag_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?colorForeground"
@@ -24,7 +24,7 @@
         android:padding="10dp">
 
         <TextView
-            android:id="@+id/filter_tags"
+            android:id="@+id/tv_filter_tags"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/custom_tags"
@@ -38,7 +38,7 @@
             android:layout_height="1dp"/>
 
         <com.kpstv.xclipper.extensions.elements.CustomRecyclerView
-            android:id="@+id/dct_recycler_view"
+            android:id="@+id/recycler_view"
             android:overScrollMode="never"
             android:orientation="horizontal"
             app:maxHeight="380dp"
@@ -51,7 +51,7 @@
     </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/dct_editLayout"
+        android:id="@+id/editLayout"
         android:minHeight="40dp"
         android:visibility="gone"
         android:background="?colorSelected"
@@ -67,7 +67,7 @@
             android:textCursorDrawable="@null"
             android:backgroundTint="@color/colorCustomBlue"
             android:fontFamily="@font/google_sans_regular"
-            android:id="@+id/dct_editText"
+            android:id="@+id/et_create"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -88,7 +88,7 @@
             android:focusable="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/dct_editText"
+            app:layout_constraintStart_toEndOf="@id/et_create"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

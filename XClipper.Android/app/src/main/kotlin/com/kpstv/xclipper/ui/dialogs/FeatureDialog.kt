@@ -14,11 +14,11 @@ import com.kpstv.xclipper.R
 import com.kpstv.xclipper.databinding.DialogFeatureBinding
 import com.kpstv.xclipper.extensions.hasThemeColorAttribute
 import com.kpstv.xclipper.extensions.layoutInflater
-import kotlinx.android.parcel.Parcelize
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.parcelize.Parcelize
 
 class FeatureDialog(ctx: Context) {
     val context = if (!ctx.hasThemeColorAttribute(R.attr.colorTextPrimary))

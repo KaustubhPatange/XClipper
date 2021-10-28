@@ -1,20 +1,18 @@
 package com.kpstv.xclipper.ui.adapters
 
 import android.annotation.SuppressLint
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.DialogState
 import com.kpstv.xclipper.data.model.ClipTag
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.data.model.TagMap
-import kotlinx.android.synthetic.main.item_tag_chip.view.*
+import com.kpstv.xclipper.databinding.ItemTagChipBinding
+import com.kpstv.xclipper.extensions.layoutInflater
 
 class TagAdapter(
     private val lifecycleOwner: LifecycleOwner,
@@ -36,9 +34,7 @@ class TagAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TagHolder =
-        TagHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.item_tag_chip, parent, false)
-        )
+        TagHolder(ItemTagChipBinding.inflate(parent.context.layoutInflater(), parent, false))
 
     override fun onBindViewHolder(holder: TagHolder, position: Int) {
         holder.bind(getItem(position))
@@ -48,35 +44,36 @@ class TagAdapter(
         return position
     }
 
-    @SuppressLint("SetTextI18n")
-    private fun TagHolder.bind(tag: Tag) = with(itemView) {
-        chip.text = tag.name
+    inner class TagHolder(private val binding: ItemTagChipBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        dialogState.observe(lifecycleOwner) {
-            if (it == DialogState.Edit) {
-                chip.isCloseIconVisible = ClipTag.fromValue(tag.name) == null
+        @SuppressLint("SetTextI18n")
+        fun bind(tag: Tag) = with(binding) {
+            chip.text = tag.name
+
+            dialogState.observe(lifecycleOwner) {
+                if (it == DialogState.Edit) {
+                    chip.isCloseIconVisible = ClipTag.fromValue(tag.name) == null
+                }
+                else if (it == DialogState.Normal)
+                    chip.isCloseIconVisible = false
             }
-            else if (it == DialogState.Normal)
-                chip.isCloseIconVisible = false
-        }
 
-        tagMapData.observe(lifecycleOwner) { list ->
-            val find = list.find { it.name == tag.name }
-            if (find?.count != null) {
-                chip.text = "${tag.name} (${find.count})"
-                chip.tag = find.count
+            tagMapData.observe(lifecycleOwner) { list ->
+                val find = list.find { it.name == tag.name }
+                if (find?.count != null) {
+                    chip.text = "${tag.name} (${find.count})"
+                    chip.tag = find.count
+                }
             }
-        }
 
-        tagFilter.observe(lifecycleOwner) { list ->
-            chip.isChipIconVisible = list.any { it.name == tag.name }
-        }
+            tagFilter.observe(lifecycleOwner) { list ->
+                chip.isChipIconVisible = list.any { it.name == tag.name }
+            }
 
-        chip.setOnCloseIconClickListener { v ->
-            onCloseClick.invoke(tag, v.tag as? Int ?: 0, layoutPosition)
+            chip.setOnCloseIconClickListener { v ->
+                onCloseClick.invoke(tag, v.tag as? Int ?: 0, layoutPosition)
+            }
+            chip.setOnClickListener { onClick.invoke(tag, layoutPosition) }
         }
-        chip.setOnClickListener { onClick.invoke(tag, layoutPosition) }
     }
-
-    class TagHolder(view: View) : RecyclerView.ViewHolder(view)
 }

@@ -6,7 +6,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.provider.Settings
 import androidx.annotation.RequiresApi
-import com.kpstv.xclipper.extensions.mainThread
+import com.kpstv.xclipper.extensions.launchInMain
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlin.coroutines.CoroutineContext
@@ -78,7 +78,7 @@ private class ClipboardLogDetector29Impl(private val context: Context) : Clipboa
                     val timeMillis = System.currentTimeMillis()
                     if ((timeMillis - currentTime) > 500) {
                         currentTime = timeMillis
-                        mainThread { listener?.onClipboardEventDetected() }
+                        launchInMain { listener?.onClipboardEventDetected() }
                     }
                 }
             }

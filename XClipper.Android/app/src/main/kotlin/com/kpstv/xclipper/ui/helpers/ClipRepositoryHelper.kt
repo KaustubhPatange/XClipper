@@ -6,8 +6,8 @@ import com.kpstv.xclipper.BuildConfig
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.repository.MainRepository
-import com.kpstv.xclipper.extensions.Coroutines
-import com.kpstv.xclipper.extensions.mainThread
+import com.kpstv.xclipper.extensions.launchInIO
+import com.kpstv.xclipper.extensions.launchInMain
 import com.kpstv.xclipper.extensions.toInt
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
@@ -58,7 +58,7 @@ class ClipRepositoryHelper @Inject constructor(
      *                     notifications.
      */
     fun insertOrUpdateClip(clips: List<Clip>, toFirebase: Boolean = true, toNotify: Boolean = true, notifyOffset: Int = 5) {
-        Coroutines.io {
+        launchInIO {
             val singleNotify = clips.size <= notifyOffset
             var addedClips = 0
             clips.forEach { clip ->
@@ -77,7 +77,7 @@ class ClipRepositoryHelper @Inject constructor(
     }
 
     fun deleteClip(clipData: List<String>?) {
-        Coroutines.io {
+        launchInIO {
             clipData?.forEach { repository.deleteClip(it) }
         }
     }
@@ -87,7 +87,7 @@ class ClipRepositoryHelper @Inject constructor(
     }
 
     private fun sendClipNotification(data: String, withAction: Boolean = true) {
-        mainThread {
+        launchInMain {
             Notifications.pushNotification(context, data, withAction)
         }
     }

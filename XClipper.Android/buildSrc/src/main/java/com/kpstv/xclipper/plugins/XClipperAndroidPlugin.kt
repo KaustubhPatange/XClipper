@@ -1,4 +1,4 @@
-package com.kpstv.xclipper
+package com.kpstv.xclipper.plugins
 
 
 import AndroidConfig

@@ -1,6 +1,6 @@
 private object GradlePluginVersion {
     const val KOTLIN = CoreVersion.KOTLIN
-    const val ANDROID_GRADLE = "4.1.1"
+    const val ANDROID_GRADLE = "4.2.0"
     const val GOOGLE_SERVICE = "4.3.10"
     const val SAFE_ARGS = CoreVersion.JETPACK_NAVIGATION
     const val HILT = "2.28-alpha"
@@ -8,11 +8,12 @@ private object GradlePluginVersion {
 }
 
 object GradlePluginId {
-    const val XCLIPPER_ANDROID = "com.kpstv.xclipper"
+    const val XCLIPPER_ANDROID = "com.kpstv.xclipper.plugins"
     const val ANDROID_APPLICATION = "com.android.application"
     const val ANDROID_LIBRARY = "com.android.library"
     const val ANDROID_KTX = "android"
     const val ANDROID_EXTENSIONS_KTX = "android.extensions"
+    const val PARCELIZE = "parcelize"
     const val KAPT = "kapt"
     const val GOOGLE_SERVICE = "com.google.gms.google-services"
     const val SAFE_ARGS = "androidx.navigation.safeargs.kotlin"

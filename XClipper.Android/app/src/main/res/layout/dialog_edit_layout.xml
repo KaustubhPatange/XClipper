@@ -4,8 +4,8 @@
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_marginStart="20dp"
-    android:layout_marginEnd="20dp"
+    android:paddingStart="20dp"
+    android:paddingEnd="20dp"
     android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
@@ -23,7 +23,7 @@
             android:padding="10dp"
             android:clipToPadding="false"
             android:orientation="horizontal"
-            android:id="@+id/del_recyclerView"
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
@@ -35,7 +35,7 @@
         <EditText
             android:hint="@string/write_here"
             android:layout_marginTop="10dp"
-            android:id="@+id/de_editText"
+            android:id="@+id/et_main"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
@@ -72,7 +72,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:id="@+id/saveButton"
+            android:id="@+id/btn_save"
             android:onClick="saveClick"
             android:textAllCaps="false"
             android:textColor="?colorPrimary"

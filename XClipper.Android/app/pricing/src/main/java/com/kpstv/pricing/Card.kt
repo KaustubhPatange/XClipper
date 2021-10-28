@@ -4,38 +4,35 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
-import kotlinx.android.synthetic.main.price_item.view.*
-
+import com.kpstv.pricing.databinding.PriceItemBinding
+import com.kpstv.pricing.databinding.PriceItemBinding.*
+import com.kpstv.xclipper.extensions.layoutInflater
 
 class Card @JvmOverloads constructor(
-    context: Context?,
+    context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : FrameLayout(context!!, attrs, defStyleAttr) {
+) : FrameLayout(context, attrs, defStyleAttr) {
+
+    private val binding: PriceItemBinding = inflate(context.layoutInflater(), this, true)
 
     init {
-        inflate()
         initStyle(attrs, defStyleAttr)
     }
 
-    private fun inflate() {
-        LayoutInflater.from(context).inflate(R.layout.price_item, this, true)
-    }
-
-    private fun initStyle(attrs: AttributeSet?, defStyleAttr: Int) {
+    private fun initStyle(attrs: AttributeSet?, defStyleAttr: Int) = with(binding) {
         val typedArray =
             context.obtainStyledAttributes(attrs, R.styleable.Card, defStyleAttr, 0)
 
         if (typedArray.hasValue(R.styleable.Card_purchaseType))
-            purchase_type.text = typedArray.getString(R.styleable.Card_purchaseType)
+            purchaseType.text = typedArray.getString(R.styleable.Card_purchaseType)
 
         if (typedArray.hasValue(R.styleable.Card_purchaseTypeColor))
-            purchase_type.setTextColor(
+            purchaseType.setTextColor(
                 typedArray.getColor(
                     R.styleable.Card_purchaseTypeColor,
                     ContextCompat.getColor(context, R.color.white)
@@ -51,10 +48,10 @@ class Card @JvmOverloads constructor(
             )
 
         if (typedArray.hasValue(R.styleable.Card_purchaseAmount))
-            purchase_amount.text = typedArray.getString(R.styleable.Card_purchaseAmount)
+            purchaseAmount.text = typedArray.getString(R.styleable.Card_purchaseAmount)
 
         if (typedArray.hasValue(R.styleable.Card_purchaseAmountColor))
-            purchase_amount.setTextColor(
+            purchaseAmount.setTextColor(
                 typedArray.getColor(
                     R.styleable.Card_purchaseAmountColor,
                     ContextCompat.getColor(context, R.color.white)
@@ -62,10 +59,10 @@ class Card @JvmOverloads constructor(
             )
 
         if (typedArray.hasValue(R.styleable.Card_purchaseDescription))
-            purchase_description.text = typedArray.getString(R.styleable.Card_purchaseDescription)
+            purchaseDescription.text = typedArray.getString(R.styleable.Card_purchaseDescription)
 
         if (typedArray.hasValue(R.styleable.Card_purchaseDescriptionColor))
-            purchase_description.setTextColor(
+            purchaseDescription.setTextColor(
                 typedArray.getColor(
                     R.styleable.Card_purchaseDescriptionColor,
                     ContextCompat.getColor(context, R.color.white)
@@ -73,10 +70,10 @@ class Card @JvmOverloads constructor(
             )
 
         if (typedArray.hasValue(R.styleable.Card_purchaseButtonText))
-            purchase_button.text = typedArray.getString(R.styleable.Card_purchaseButtonText)
+            purchaseButton.text = typedArray.getString(R.styleable.Card_purchaseButtonText)
 
         if (typedArray.hasValue(R.styleable.Card_purchaseButtonTextColor))
-            purchase_button.setTextColor(
+            purchaseButton.setTextColor(
                 typedArray.getColor(
                     R.styleable.Card_purchaseButtonTextColor,
                     ContextCompat.getColor(context, R.color.white)
@@ -84,14 +81,14 @@ class Card @JvmOverloads constructor(
             )
 
         if (typedArray.hasValue(R.styleable.Card_purchaseButtonDrawable))
-            purchase_button.setIcon(
+            purchaseButton.setIcon(
                 typedArray.getDrawable(
                     R.styleable.Card_purchaseButtonDrawable
                 )
             )
 
         if (typedArray.hasValue(R.styleable.Card_purchaseButtonColor))
-            purchase_button.backgroundTintList = ColorStateList.valueOf(
+            purchaseButton.backgroundTintList = ColorStateList.valueOf(
                 typedArray.getColor(
                     R.styleable.Card_purchaseButtonColor,
                     ContextCompat.getColor(context, R.color.white)
@@ -114,22 +111,22 @@ class Card @JvmOverloads constructor(
     }
 
     fun setPurchaseAmount(amount: String) {
-        purchase_amount.text = amount
+        binding.purchaseAmount.text = amount
     }
 
-    fun setButtonClickListener(block: OnClickListener?) = purchase_button.setOnClickListener(block)
+    fun setButtonClickListener(block: OnClickListener?) = binding.purchaseButton.setOnClickListener(block)
 
-    fun setButtonClickListener(block: (View?) -> Unit) = purchase_button.setOnClickListener(block)
+    fun setButtonClickListener(block: (View?) -> Unit) = binding.purchaseButton.setOnClickListener(block)
 
     fun setButtonText(text: String) {
-        purchase_button.text = text
+        binding.purchaseButton.text = text
     }
 
     fun setButtonColor(@ColorInt color: Int) {
-        purchase_button.backgroundTintList = ColorStateList.valueOf(color)
+        binding.purchaseButton.backgroundTintList = ColorStateList.valueOf(color)
     }
 
     fun setButtonIcon(icon: Drawable?) {
-        purchase_button.icon = icon
+        binding.purchaseButton.icon = icon
     }
 }

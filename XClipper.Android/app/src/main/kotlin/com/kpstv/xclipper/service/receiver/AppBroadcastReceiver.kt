@@ -13,7 +13,7 @@ import com.kpstv.xclipper.App.NOTIFICATION_CODE
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.extensions.AbstractBroadcastReceiver
-import com.kpstv.xclipper.extensions.Coroutines
+import com.kpstv.xclipper.extensions.launchInIO
 import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.service.worker.GithubUpdateWorker
 import com.kpstv.xclipper.ui.activities.SpecialActions
@@ -64,7 +64,7 @@ class AppBroadcastReceiver : AbstractBroadcastReceiver() {
                 dismissNotification(context, notifyId)
             }
             ACTION_DELETE -> {
-                Coroutines.io {
+                launchInIO {
                     repository.deleteClip(data)
                 }
 

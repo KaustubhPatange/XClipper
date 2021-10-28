@@ -1,7 +1,5 @@
 package com.kpstv.xclipper.ui.adapters
 
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.DrawableRes
@@ -17,13 +15,13 @@ import com.kpstv.xclipper.App
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.converters.DateFormatConverter
 import com.kpstv.xclipper.data.model.Clip
+import com.kpstv.xclipper.databinding.ItemClipBinding
 import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.extensions.utils.ThemeUtils.Companion.CARD_CLICK_COLOR
 import com.kpstv.xclipper.extensions.utils.ThemeUtils.Companion.CARD_COLOR
 import com.kpstv.xclipper.extensions.utils.ThemeUtils.Companion.CARD_SELECTED_COLOR
 import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.getDataFromAttr
-import kotlinx.android.synthetic.main.item_clip.view.*
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -56,59 +54,57 @@ class CIAdapter(
     override fun getItemViewType(position: Int) = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainHolder =
-        MainHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.item_clip, parent, false)
-        )
+        MainHolder(ItemClipBinding.inflate(parent.context.layoutInflater(), parent, false))
 
-    override fun onBindViewHolder(holder: MainHolder, position: Int) {
+    override fun onBindViewHolder(holder: MainHolder, position: Int) = with(holder.binding) {
         val clip = getItem(position)
 
-        holder.itemView.ci_textView.text = if (App.trimClipText) clip.data.trim() else clip.data
-        holder.itemView.tag = clip.id // used for unsubscribing.
+        ciTextView.text = if (App.trimClipText) clip.data.trim() else clip.data
+        root.tag = clip.id // used for unsubscribing.
 
         if (clip.isPinned) {
-            holder.itemView.ic_pinView.show()
+            icPinView.show()
         } else {
-            holder.itemView.ic_pinView.hide()
+            icPinView.hide()
         }
 
         if (App.LoadImageMarkdownText)
             renderImageMarkdown(holder, clip.data, position)
 
-        holder.itemView.ci_timeText.text = DateFormatConverter.getFormattedDate(clip.time)
+        ciTimeText.text = DateFormatConverter.getFormattedDate(clip.time)
 
         setPinMovements(clip, holder)
 
-        setTags(holder.itemView, clip)
+        setTags(holder, clip)
 
-        holder.itemView.mainCard.setOnClickListener { onClick.invoke(clip, position) }
-        holder.itemView.mainCard.setOnLongClickListener {
+        mainCard.setOnClickListener { onClick.invoke(clip, position) }
+        mainCard.setOnLongClickListener {
             onLongClick.invoke(clip, position)
             true
         }
-        holder.itemView.ci_copyButton.setOnClickListener { copyClick.invoke(clip, position) }
-        holder.itemView.ci_btn_edit.setOnClickListener {
+        ciCopyButton.setOnClickListener { copyClick.invoke(clip, position) }
+        ciBtnEdit.setOnClickListener {
             menuClick.invoke(
                 clip,
                 position,
                 MENU_TYPE.Edit
             )
         }
-        holder.itemView.ci_btn_pin.setOnClickListener {
+        ciBtnPin.setOnClickListener {
             menuClick.invoke(
                 clip,
                 position,
                 MENU_TYPE.Pin
             )
         }
-        holder.itemView.ci_btn_special.setOnClickListener {
+        ciBtnSpecial.setOnClickListener {
             menuClick.invoke(
                 clip,
                 position,
                 MENU_TYPE.Special
             )
         }
-        holder.itemView.ci_btn_share.setOnClickListener {
+        ciBtnShare.setOnClickListener {
             menuClick.invoke(
                 clip,
                 position,
@@ -117,50 +113,54 @@ class CIAdapter(
         }
 
         val selectedDataObserver: Observer<String> = Observer { current ->
-            if (holder.itemView.ci_textView.text == current)
-                holder.itemView.ci_textView.setTextColor(
+            if (ciTextView.text == current)
+                ciTextView.setTextColor(
                     getDataFromAttr(holder.itemView.context, R.attr.colorCurrentClip)
                 )
-            else holder.itemView.ci_textView.setTextColor(
+            else ciTextView.setTextColor(
                 getDataFromAttr(holder.itemView.context, R.attr.colorTextPrimary)
             )
         }
         val selectedItemObserver: Observer<Clip> = Observer { selectedClip ->
             setPinMovements(clip, holder)
             if (selectedClip == clip) {
-                holder.itemView.hiddenLayout.show()
-                holder.itemView.mainCard.setCardBackgroundColor(CARD_CLICK_COLOR)
-                holder.itemView.mainCard.cardElevation = Utils.dpToPixel(holder.itemView.context, 3f)
+                hiddenLayout.show()
+                mainCard.setCardBackgroundColor(CARD_CLICK_COLOR)
+                mainCard.cardElevation = Utils.dpToPixel(holder.itemView.context, 3f)
             } else {
-                holder.itemView.mainCard.setCardBackgroundColor(CARD_COLOR)
-                holder.itemView.mainCard.cardElevation = Utils.dpToPixel(holder.itemView.context, 0f)
-                holder.itemView.hiddenLayout.collapse()
+                mainCard.setCardBackgroundColor(CARD_COLOR)
+                mainCard.cardElevation = Utils.dpToPixel(holder.itemView.context, 0f)
+                hiddenLayout.collapse()
             }
         }
         val multiSelectionObserver: Observer<Boolean> = Observer { state ->
             if (state) {
-                holder.itemView.ci_copyButton.hide()
-                holder.itemView.ci_timeText.hide()
-                holder.itemView.ci_tagLayout.hide()
+                ciCopyButton.hide()
+                ciTimeText.hide()
+                ciTagLayout.hide()
             } else {
-                holder.itemView.ci_copyButton.show()
-                holder.itemView.ci_timeText.show()
-                holder.itemView.ci_tagLayout.show()
+                ciCopyButton.show()
+                ciTimeText.show()
+                ciTagLayout.show()
             }
         }
         val selectedClipsObserver: Observer<List<Clip>> = Observer { clips ->
             if (clips == null) return@Observer
             when {
                 clips.contains(clip) -> {
-                    holder.itemView.mainCard.setCardBackgroundColor(CARD_SELECTED_COLOR)
+                    mainCard.setCardBackgroundColor(CARD_SELECTED_COLOR)
                 }
                 else -> {
                     /**
                      * We are also checking if selected item is this clip. Since for large item set
                      * it kinda forgets about it due to recreation of whole list.
                      */
+                    /**
+                     * We are also checking if selected item is this clip. Since for large item set
+                     * it kinda forgets about it due to recreation of whole list.
+                     */
                     if (selectedItem.value != clip)
-                        holder.itemView.mainCard.setCardBackgroundColor(CARD_COLOR)
+                        mainCard.setCardBackgroundColor(CARD_COLOR)
                 }
             }
         }
@@ -173,64 +173,57 @@ class CIAdapter(
         selectedClips.observe(lifecycleOwner, selectedClipsObserver).also { selectedClipsObservers[clip.id] = selectedClipsObserver }
     }
 
-    private fun renderImageMarkdown(holder: MainHolder, data: String?, position: Int) {
+    private fun renderImageMarkdown(holder: MainHolder, data: String?, position: Int) = with(holder.binding) {
         val result = App.MARKDOWN_IMAGE_ONLY_REGEX.toRegex().matchEntire(data ?: "")
         if (result != null) {
             val imageUrl = result.groups[5]?.value
 
-            holder.itemView.ci_imageView.show()
+            ciImageView.show()
 
-            holder.itemView.ci_imageView.load(
+            ciImageView.load(
                 uri = imageUrl,
                 onSuccess = {
-                    holder.itemView.ci_textView.hide()
+                    ciTextView.hide()
                 },
                 onError = {
-                    holder.itemView.ci_imageView.collapse()
-                    holder.itemView.ci_textView.show()
+                    ciImageView.collapse()
+                    ciTextView.show()
                 }
             )
         } else {
-            holder.itemView.ci_textView.show()
-            holder.itemView.ci_imageView.collapse()
+            ciTextView.show()
+            ciImageView.collapse()
         }
     }
 
     private fun setPinMovements(
         clip: Clip,
         holder: MainHolder
-    ) {
+    ) = with(holder.binding) {
         if (clip.isPinned) {
-            setButtonDrawable(
-                holder.itemView,
-                R.drawable.ic_unpin
-            )
-            holder.itemView.ci_btn_pin.text = holder.itemView.context.getString(R.string.unpin)
-            holder.itemView.ci_pinImage.show()
+            setButtonDrawable(ciBtnPin, R.drawable.ic_unpin)
+            ciBtnPin.text = holder.itemView.context.getString(R.string.unpin)
+            ciPinImage.show()
         } else {
-            setButtonDrawable(
-                holder.itemView,
-                R.drawable.ic_pin
-            )
-            holder.itemView.ci_btn_pin.text = holder.itemView.context.getString(R.string.pin)
-            holder.itemView.ci_pinImage.collapse()
+            setButtonDrawable(ciBtnPin, R.drawable.ic_pin)
+            ciBtnPin.text = holder.itemView.context.getString(R.string.pin)
+            ciPinImage.collapse()
         }
     }
 
-    private fun setButtonDrawable(view: View, @DrawableRes imageId: Int) {
-        view.ci_btn_pin.setCompoundDrawablesWithIntrinsicBounds(
+    private fun setButtonDrawable(view: TextView, @DrawableRes imageId: Int) {
+        view.setCompoundDrawablesWithIntrinsicBounds(
             null,
-            ContextCompat.getDrawable(view.ci_btn_pin.context, imageId),
+            ContextCompat.getDrawable(view.context, imageId),
             null, null
         )
     }
 
-    private fun setTags(view: View, clip: Clip) {
-        view.ci_tagLayout.removeAllViews()
+    private fun setTags(holder: MainHolder, clip: Clip) = with(holder.binding) {
+        ciTagLayout.removeAllViews()
         clip.tags?.keys()?.forEach mainLoop@{ key ->
             if (key.isNotBlank()) {
-                val textView = LayoutInflater.from(view.ci_btn_pin.context)
-                    .inflate(R.layout.item_tag, null) as TextView
+                val textView = root.context.layoutInflater().inflate(R.layout.item_tag, null) as TextView
                 val layoutParams = FlexboxLayout.LayoutParams(
                     FlexboxLayout.LayoutParams.WRAP_CONTENT,
                     FlexboxLayout.LayoutParams.WRAP_CONTENT
@@ -243,7 +236,7 @@ class CIAdapter(
                 textView.layoutParams = layoutParams
                 textView.text = key
 
-                view.ci_tagLayout.addView(textView)
+                ciTagLayout.addView(textView)
             }
         }
     }
@@ -263,6 +256,6 @@ class CIAdapter(
         Edit, Pin, Special, Share
     }
 
-    class MainHolder(view: View) : RecyclerView.ViewHolder(view)
+    class MainHolder(val binding: ItemClipBinding) : RecyclerView.ViewHolder(binding.root)
 }
 

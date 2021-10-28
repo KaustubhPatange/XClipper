@@ -6,9 +6,6 @@ import android.content.Context
 import android.content.Context.CLIPBOARD_SERVICE
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import com.kpstv.xclipper.App
-import com.kpstv.xclipper.data.repository.MainRepository
-import com.kpstv.xclipper.extensions.Coroutines
 import com.kpstv.xclipper.extensions.SimpleFunction
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.isPackageBlacklisted
 import com.kpstv.xclipper.service.ClipboardAccessibilityService.Companion.currentPackage

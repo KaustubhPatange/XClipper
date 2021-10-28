@@ -9,8 +9,8 @@ import com.kpstv.xclipper.App.APP_CLIP_DATA
 import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.data.repository.MainRepository
-import com.kpstv.xclipper.extensions.ioThread
-import com.kpstv.xclipper.extensions.mainThread
+import com.kpstv.xclipper.extensions.launchInIO
+import com.kpstv.xclipper.extensions.launchInMain
 import com.kpstv.xclipper.extensions.utils.ThemeUtils
 import com.kpstv.xclipper.ui.fragments.sheets.MoreBottomSheet
 import com.kpstv.xclipper.ui.helpers.DictionaryApiHelper
@@ -42,17 +42,17 @@ class SpecialActions : AppCompatActivity() {
 
         ThemeUtils.setDialogTheme(this)
 
-        ioThread {
+        launchInIO {
             val clip = repository.getData(data)
 
             if (clip == null) {
-                mainThread { finish() }
-                return@ioThread
+                launchInMain { finish() }
+                return@launchInIO
             }
 
-            mainThread {
+            launchInMain {
                 MoreBottomSheet.show(
-                    activity = this,
+                    activity = this@SpecialActions,
                     onClose = ::finish,
                     clip = clip,
                     preferenceProvider = preferenceProvider

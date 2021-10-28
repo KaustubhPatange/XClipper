@@ -9,8 +9,10 @@ import com.google.firebase.database.DataSnapshot
 import com.google.gson.annotations.SerializedName
 import com.kpstv.xclipper.App.STANDARD_DATE_FORMAT
 import com.kpstv.xclipper.BuildConfig
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asExecutor
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.reflect.KClass
@@ -44,34 +46,6 @@ fun SimpleSearchView.setOnQueryTextListener(
             onClear?.invoke()
             return true
         }
-    })
-}
-
-fun ioThread(block: suspend (() -> Unit)) {
-    Coroutines.io { block.invoke() }
-}
-
-fun mainThread(block: suspend (() -> Unit)) {
-    Coroutines.main { block.invoke() }
-}
-
-fun SimpleSearchView.setOnSearchCloseListener(block: SimpleFunction) {
-    setOnSearchViewListener(object : SimpleSearchView.SearchViewListener {
-        override fun onSearchViewShownAnimation() {
-
-        }
-
-        override fun onSearchViewClosed() {
-            block.invoke()
-        }
-
-        override fun onSearchViewClosedAnimation() {
-        }
-
-        override fun onSearchViewShown() {
-
-        }
-
     })
 }
 

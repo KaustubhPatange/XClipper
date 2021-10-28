@@ -1,19 +1,16 @@
 package com.kpstv.xclipper.ui.adapters
 
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.kpstv.xclipper.R
 import com.kpstv.xclipper.extensions.ClipTagMap
 import com.kpstv.xclipper.data.model.Tag
+import com.kpstv.xclipper.databinding.ItemTagChipBinding
 import com.kpstv.xclipper.extensions.containsKey
-import kotlinx.android.synthetic.main.item_tag_chip.view.*
-
+import com.kpstv.xclipper.extensions.layoutInflater
 
 class EditAdapter(
     private val viewLifecycleOwner: LifecycleOwner,
@@ -32,24 +29,22 @@ class EditAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        EditHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.item_tag_chip, parent, false)
-        )
+        EditHolder(ItemTagChipBinding.inflate(parent.context.layoutInflater(), parent, false))
 
     override fun onBindViewHolder(holder: EditHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
-    private fun EditHolder.bind(tag: Tag) = with(itemView) {
-        chip.isCloseIconVisible = false
-        chip.text = tag.name
+    inner class EditHolder(private val binding: ItemTagChipBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(tag: Tag) = with(binding) {
+            chip.isCloseIconVisible = false
+            chip.text = tag.name
 
-        chip.setOnClickListener{ onClick.invoke(tag, layoutPosition) }
+            chip.setOnClickListener{ onClick.invoke(tag, layoutPosition) }
 
-        selectedTags.observe(viewLifecycleOwner, {
-            chip.isChipIconVisible = it?.containsKey(tag.name) == true
-        })
+            selectedTags.observe(viewLifecycleOwner, {
+                chip.isChipIconVisible = it?.containsKey(tag.name) == true
+            })
+        }
     }
-
-    class EditHolder(view: View) : RecyclerView.ViewHolder(view)
 }

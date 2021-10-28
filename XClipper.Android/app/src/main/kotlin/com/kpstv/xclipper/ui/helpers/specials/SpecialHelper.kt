@@ -10,7 +10,6 @@ import android.os.Bundle
 import android.provider.CalendarContract
 import android.provider.ContactsContract
 import android.util.Log
-import android.view.View
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,6 +22,7 @@ import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.ClipTag
 import com.kpstv.xclipper.data.model.Preview
 import com.kpstv.xclipper.data.model.SpecialMenu
+import com.kpstv.xclipper.databinding.BottomSheetMoreBinding
 import com.kpstv.xclipper.di.SpecialEntryPoints
 import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
@@ -32,7 +32,6 @@ import com.kpstv.xclipper.ui.fragments.sheets.MoreChooserSheet
 import com.kpstv.xclipper.ui.fragments.sheets.ShortenUriSheet
 import com.kpstv.xclipper.ui.helpers.DictionaryApiHelper
 import es.dmoral.toasty.Toasty
-import kotlinx.android.synthetic.main.bottom_sheet_more.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.*
@@ -57,7 +56,8 @@ class SpecialHelper(
     private lateinit var onItemClick: SimpleFunction
 
     private val data = clip.data
-    fun setActions(view: View, onItemClick: SimpleFunction) = with(view) {
+
+    fun setActions(binding: BottomSheetMoreBinding, onItemClick: SimpleFunction) = with(binding) {
         this@SpecialHelper.onItemClick = onItemClick
 
         setDefineTag(this)
@@ -400,14 +400,14 @@ class SpecialHelper(
      * This will set the define text below "Specials" text. It will perform some checks
      * before setting the define.
      */
-    private fun setDefineTag(view: View) = with(view) {
+    private fun setDefineTag(binding: BottomSheetMoreBinding) = with(binding) {
         App.SINGLE_WORD_PATTERN_REGEX.toRegex().let {
             if (it.containsMatchIn(data))
                 dictionaryApiHelper.define(
                     it.find(data)?.value!!, ResponseListener(
                         complete = { definition ->
-                            edit_define_word.text = "$data:"
-                            edit_define.text = HtmlCompat.fromHtml(
+                            editDefineWord.text = "$data:"
+                            editDefine.text = HtmlCompat.fromHtml(
                                 """
                                     <i>${definition.define} </i>
                                 """.trimIndent().trim(), HtmlCompat.FROM_HTML_MODE_LEGACY
@@ -420,31 +420,31 @@ class SpecialHelper(
         }
     }
 
-    private fun setRecyclerView(view: View) = with(view) {
-        bsm_recyclerView.layoutManager = LinearLayoutManager(context)
+    private fun setRecyclerView(binding: BottomSheetMoreBinding) = with(binding) {
+        bsmRecyclerView.layoutManager = LinearLayoutManager(context)
         adapter = MenuAdapter(specialList, R.layout.item_special)
-        bsm_recyclerView.adapter = adapter
-        bsm_recyclerView.setHasFixedSize(true)
+        bsmRecyclerView.adapter = adapter
+        bsmRecyclerView.setHasFixedSize(true)
     }
 
-    private fun setLinkPreview(view: View) = with(view) {
+    private fun setLinkPreview(binding: BottomSheetMoreBinding) = with(binding) {
         lifecycleScope.launch {
             val urlData = clip.tags?.containsKey(ClipTag.URL.small())
             if (urlData == true) {
                 val topUrl = clip.tags?.firstValue(ClipTag.URL.small()) ?: return@launch
                 val model = linkPreviewDao.getFromUrl(topUrl)
                 if (model != null) {
-                    link_preview.setTitle(model.title)
-                    link_preview.setHostUrl(topUrl)
+                    linkPreview.setTitle(model.title)
+                    linkPreview.setHostUrl(topUrl)
                     if (model.subtitle != null)
-                        link_preview.setSubtitle(model.subtitle)
+                        linkPreview.setSubtitle(model.subtitle)
                     else {
-                        link_preview.setSubtitle(model.title)
+                        linkPreview.setSubtitle(model.title)
                     }
-                    if (model.imageUrl != null) link_preview.setImage(model.imageUrl)
+                    if (model.imageUrl != null) linkPreview.setImage(model.imageUrl)
                 } else {
-                    link_preview.loadPreview(topUrl, lifecycleScope)
-                    link_preview.loadCompleteListener =
+                    linkPreview.loadPreview(topUrl, lifecycleScope)
+                    linkPreview.loadCompleteListener =
                         LinkPreview.LinkPreviewListener { title, subtitle, imageUrl ->
                             lifecycleScope.launch {
                                 val previewModel = Preview(
@@ -457,8 +457,8 @@ class SpecialHelper(
                             }
                         }
                 }
-                link_preview.onClick {
-                    Utils.commonUrlLaunch(view.context, topUrl)
+                linkPreview.onClick {
+                    Utils.commonUrlLaunch(context, topUrl)
                 }
             }
         }

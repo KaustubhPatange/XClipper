@@ -23,7 +23,7 @@ import com.kpstv.xclipper.ui.fragments.settings.*
 import com.kpstv.xclipper.ui.helpers.specials.fragments.SpecialActionFragment
 import com.kpstv.xclipper.ui.viewmodels.SettingNavViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import kotlin.reflect.KClass
 
 @AndroidEntryPoint

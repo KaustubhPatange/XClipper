@@ -8,7 +8,7 @@ import com.kpstv.xclipper.data.converters.DateConverter
 import com.kpstv.xclipper.data.converters.TagConverter
 import com.kpstv.xclipper.data.localized.dao.*
 import com.kpstv.xclipper.data.model.*
-import com.kpstv.xclipper.extensions.Coroutines
+import com.kpstv.xclipper.extensions.launchInIO
 import com.kpstv.xclipper.extensions.small
 import javax.inject.Inject
 import javax.inject.Provider
@@ -52,7 +52,7 @@ abstract class MainDatabase : RoomDatabase() {
 
             val clipTagDao = database.get().clipTagDao()
 
-            Coroutines.io {
+            launchInIO {
                 ClipTag.values().forEach {
                     clipTagDao.insert(Tag.from(it.small()))
                 }

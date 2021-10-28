@@ -7,7 +7,7 @@ gradlePlugin {
     plugins {
         create("xclipperAndroid") {
             id = "com.kpstv.xclipper"
-            implementationClass = "com.kpstv.xclipper.XClipperAndroidPlugin"
+            implementationClass = "com.kpstv.xclipper.plugins.XClipperAndroidPlugin"
         }
     }
 }

@@ -7,7 +7,6 @@ import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import androidx.core.view.doOnLayout
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.kpstv.navigation.BaseArgs
@@ -25,8 +24,8 @@ import com.kpstv.xclipper.ui.helpers.extensions.ExtensionBottomSheet.Args.Compan
 import com.kpstv.xclipper.ui.viewmodels.UpgradeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
-import kotlinx.android.parcel.Parcelize
 import kotlinx.coroutines.flow.collect
+import kotlinx.parcelize.Parcelize
 import javax.inject.Inject
 
 @AndroidEntryPoint
