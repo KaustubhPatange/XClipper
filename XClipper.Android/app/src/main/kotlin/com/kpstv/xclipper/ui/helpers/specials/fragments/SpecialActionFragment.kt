@@ -1,0 +1,108 @@
+package com.kpstv.xclipper.ui.helpers.specials.fragments
+
+import android.os.Bundle
+import com.kpstv.xclipper.R
+import com.kpstv.xclipper.ui.helpers.specials.SpecialAction
+import com.kpstv.xclipper.ui.helpers.specials.common.ActionFragment
+import com.kpstv.xclipper.ui.helpers.specials.common.ActionItem
+
+class SpecialActionFragment : ActionFragment() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        /* Search on Map */
+        setCheckedItem(
+            title = getString(R.string.search_query_action),
+            message = getString(R.string.search_query_action_text),
+            icon = R.drawable.ic_search,
+            action = SpecialAction.SEARCH_QUERY
+        )
+
+        /* Search on Map */
+        setCheckedItem(
+            title = getString(R.string.search_map_action),
+            message = getString(R.string.search_map_action_text),
+            icon = R.drawable.ic_map,
+            action = SpecialAction.SEARCH_MAP
+        )
+
+        /* Open link */
+        setCheckedItem(
+            title = getString(R.string.open_link_action),
+            message = getString(R.string.open_link_action_text),
+            icon = R.drawable.ic_link,
+            action = SpecialAction.OPEN_LINK
+        )
+
+        /* Shorten link */
+        setCheckedItem(
+            title = getString(R.string.shorten_link_action),
+            message = getString(R.string.shorten_link_action_text),
+            icon = R.drawable.ic_cut,
+            action = SpecialAction.SHORTEN_LINK
+        )
+
+        /* Open link in private */
+        setCheckedItem(
+            title = getString(R.string.open_link_private_action),
+            message = getString(R.string.open_link_private_action_text),
+            icon = R.drawable.ic_incognito,
+            action = SpecialAction.OPEN_PRIVATE
+        )
+
+        /* Create contact action */
+        setCheckedItem(
+            title = getString(R.string.create_contact_action),
+            message = getString(R.string.create_contact_action_text),
+            icon = R.drawable.ic_person_add,
+            action = SpecialAction.CREATE_CONTACT
+        )
+
+        /* Create calender event */
+        setCheckedItem(
+            title = getString(R.string.calender_events_action),
+            message = getString(R.string.calender_events_action_text),
+            icon = R.drawable.ic_calender,
+            action = SpecialAction.SET_CALENDER_EVENT
+        )
+
+        /* Call Number action */
+        setCheckedItem(
+            title = getString(R.string.call_number_action),
+            message = getString(R.string.call_number_action_text),
+            icon = R.drawable.ic_call,
+            action = SpecialAction.PHONE_CALL
+        )
+
+        /* Text Number action */
+        setCheckedItem(
+            title = getString(R.string.send_text_message_action),
+            message = getString(R.string.send_text_message_action_text),
+            icon = R.drawable.ic_message,
+            action = SpecialAction.TEXT_NUMBER
+        )
+
+        /* Whatsapp action */
+        setCheckedItem(
+            title = getString(R.string.send_whatsapp_action),
+            message = getString(R.string.send_whatsapp_action_text),
+            icon = R.drawable.ic_whatsapp,
+            action = SpecialAction.TEXT_WHATSAPP
+        )
+
+        /* Send an email action */
+        setCheckedItem(
+            title = getString(R.string.send_email_action),
+            message = getString(R.string.send_email_action_text),
+            icon = R.drawable.ic_mail,
+            action = SpecialAction.SEND_MAIL
+        )
+    }
+
+    override fun getItemClickListener(item: ActionItem, position: Int) {
+        /*when(item.title ==  getString(R.string.shorten_link_action)) {
+
+        }*/
+        // TODO: Implement this
+    }
+}

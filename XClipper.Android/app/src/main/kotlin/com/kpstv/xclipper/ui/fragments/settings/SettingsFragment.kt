@@ -50,6 +50,13 @@ class SettingsFragment : ValueFragment(R.layout.fragment_settings_main) {
             }
         )
 
+          /** Action Setting */
+        list.add(
+            SpecialMenu(title = getString(R.string.actions), image = R.drawable.ic_extension) {
+                navViewModel.navigateTo(Settings.Screen.ACTIONS)
+            }
+        )
+
         /** Backup Setting */
         list.add(
             SpecialMenu(title = getString(R.string.backup), image = R.drawable.ic_backup) {

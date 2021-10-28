@@ -1,4 +1,4 @@
-package com.kpstv.xclipper.ui.helpers
+package com.kpstv.xclipper.ui.helpers.specials
 
 import android.annotation.SuppressLint
 import android.app.SearchManager
@@ -23,17 +23,17 @@ import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.ClipTag
 import com.kpstv.xclipper.data.model.Preview
 import com.kpstv.xclipper.data.model.SpecialMenu
+import com.kpstv.xclipper.di.SpecialEntryPoints
 import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
 import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.ui.adapters.MenuAdapter
 import com.kpstv.xclipper.ui.fragments.sheets.MoreChooserSheet
 import com.kpstv.xclipper.ui.fragments.sheets.ShortenUriSheet
+import com.kpstv.xclipper.ui.helpers.DictionaryApiHelper
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.bottom_sheet_more.view.*
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.ArrayList
@@ -41,12 +41,15 @@ import kotlin.collections.ArrayList
 @SuppressLint("SetTextI18n")
 class SpecialHelper(
     private val context: Context,
-    private val dictionaryApiHelper: DictionaryApiHelper,
-    private val linkPreviewDao: PreviewDao,
     private val supportFragmentManager: FragmentManager,
     private val lifecycleScope: CoroutineScope,
     private val clip: Clip,
 ) {
+    private val dictionaryApiHelper: DictionaryApiHelper = SpecialEntryPoints.get(context).dictionaryApiHelper()
+    private val linkPreviewDao: PreviewDao = SpecialEntryPoints.get(context).linkPreviewDao()
+
+    private val enabledActions: List<SpecialAction> = SpecialSettings(context).getAllSetting()
+
     private val TAG = javaClass.simpleName
     private lateinit var adapter: MenuAdapter
     private val specialList = ArrayList<SpecialMenu>()
@@ -61,7 +64,7 @@ class SpecialHelper(
 
         setLinkPreview(this)
 
-        setSearchButton()
+        setCommonOptions()
 
         setForEmail()
 
@@ -86,32 +89,39 @@ class SpecialHelper(
         sheet.show(supportFragmentManager, "")
     }
 
-    /** A common set of options that would appear in these section */
-    private fun setSearchButton() {
-        specialList.add(
-            SpecialMenu(
-                image = R.drawable.ic_search,
-                title = context.getString(R.string.search_web)
-            ) {
-                val intent = Intent(Intent.ACTION_WEB_SEARCH)
-                intent.putExtra(SearchManager.QUERY, data)
+    private fun getAllTagValues(tagName: String) : List<String> {
+        return clip.tags?.filter { it.key == tagName }?.map { it.value }?.distinct() ?: emptyList()
+    }
 
-                runAction(intent)
-            }
-        )
+    /** A common set of options that would appear in these section */
+    private fun setCommonOptions() {
+        if (enabledActions.contains(SpecialAction.SEARCH_QUERY)) {
+            specialList.add(
+                SpecialMenu(
+                    image = R.drawable.ic_search,
+                    title = context.getString(R.string.search_web)
+                ) {
+                    val intent = Intent(Intent.ACTION_WEB_SEARCH)
+                    intent.putExtra(SearchManager.QUERY, data)
+
+                    runAction(intent)
+                }
+            )
+        }
     }
 
     /** A set of options when map tag is available */
     private fun setForMap() {
+        /** Show search in maps menu */
+
         val checkForTag = clip.tags?.containsKey(ClipTag.MAP.small())
+        val shouldBeAdded = clip.tags?.containsKey(ClipTag.URL.small()) == false && clip.tags?.containsKey(ClipTag.DATE.small()) == false
 
-        if (checkForTag == true) {
-
-            /** Show search in maps menu */
-            val showMapMenu = SpecialMenu(
-                image = R.drawable.ic_map,
-                title = context.getString(R.string.search_map)
-            ) {
+        val showMapMenu = SpecialMenu(
+            image = R.drawable.ic_map,
+            title = context.getString(R.string.search_map)
+        ) {
+            if (checkForTag == true) {
                 createChooser(ClipTag.MAP.small()) { data ->
                     /** Search for coordinates */
                     val intent = Intent(Intent.ACTION_VIEW).apply {
@@ -121,8 +131,17 @@ class SpecialHelper(
 
                     runAction(intent)
                 }
+            } else {
+                /* Search as text */
+                val intent = Intent(Intent.ACTION_VIEW).apply {
+                    setData(Uri.parse("geo:0,0?q=${clip.data.replace("\\s+".toRegex(), "+")}"))
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                }
+                runAction(intent)
             }
+        }
 
+        if (shouldBeAdded && enabledActions.contains(SpecialAction.SEARCH_MAP)) {
             specialList.add(showMapMenu)
         }
     }
@@ -132,7 +151,7 @@ class SpecialHelper(
         if (clip.tags?.containsKey(ClipTag.DATE.small()) == false) return
 
         val createCalenderMenu =
-            SpecialMenu(title = "Set a calender event", image = R.drawable.ic_calender) {
+            SpecialMenu(title = context.getString(R.string.set_calender_event), image = R.drawable.ic_calender) {
                 createChooser(ClipTag.DATE.small()) { data ->
                     /** Parse the date now */
                     val dateValues = data.split("/", ".", "-", " ")
@@ -160,7 +179,9 @@ class SpecialHelper(
                 }
             }
 
-        specialList.add(createCalenderMenu)
+        if (enabledActions.contains(SpecialAction.SET_CALENDER_EVENT)) {
+            specialList.add(createCalenderMenu)
+        }
     }
 
     /** This will set options if Email tag exist */
@@ -183,16 +204,19 @@ class SpecialHelper(
                 }
             }
 
-            specialList.add(sendEmail)
+            if (enabledActions.contains(SpecialAction.SEND_MAIL)) {
+                specialList.add(sendEmail)
+            }
         }
     }
 
     /** This will set function for phone number */
     private fun setPhoneNumber() {
 
-        val urlData = clip.tags?.containsKey(ClipTag.PHONE.small())
+        val phoneData = clip.tags?.containsKey(ClipTag.PHONE.small())
+        val emailData = clip.tags?.containsKey(ClipTag.EMAIL.small())
 
-        if (urlData == true) {
+        if (phoneData == true) {
 
             /** Make a phone call */
             val makeACallMenu = SpecialMenu(
@@ -203,22 +227,6 @@ class SpecialHelper(
                     val intent = Intent(Intent.ACTION_VIEW).apply {
                         setData(Uri.parse("tel:$data"))
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    }
-
-                    runAction(intent)
-                }
-            }
-
-            /** Add to contacts */
-            val addToContactsMenu = SpecialMenu(
-                image = R.drawable.ic_person_add,
-                title = context.getString(R.string.canc)
-            ) {
-                createChooser(ClipTag.PHONE.small()) { data ->
-                    val intent = Intent(Intent.ACTION_INSERT).apply {
-                        type = ContactsContract.Contacts.CONTENT_TYPE
-
-                        putExtra(ContactsContract.Intents.Insert.PHONE, data)
                     }
 
                     runAction(intent)
@@ -240,14 +248,13 @@ class SpecialHelper(
                 }
             }
 
-            specialList.add(makeACallMenu)
-            specialList.add(addToContactsMenu)
-            specialList.add(sendSMSMenu)
+            if (enabledActions.contains(SpecialAction.PHONE_CALL)) specialList.add(makeACallMenu)
+            if (enabledActions.contains(SpecialAction.TEXT_NUMBER)) specialList.add(sendSMSMenu)
 
             /** Send a whatsapp message */
             if (Utils.isPackageInstalled(context, "com.whatsapp")) {
                 val whatsAppTextMenu =
-                    SpecialMenu(image = R.drawable.ic_whatsapp, title = "WhatsApp this number") {
+                    SpecialMenu(image = R.drawable.ic_whatsapp, title = context.getString(R.string.send_whatsapp)) {
                         createChooser(ClipTag.PHONE.small()) { data ->
                             val numberToWhatsApp = when (data.length) {
                                 10 -> "+${Utils.getCountryDialCode(context)} $data"
@@ -262,8 +269,61 @@ class SpecialHelper(
                         }
                     }
 
-                specialList.add(whatsAppTextMenu)
+                if (enabledActions.contains(SpecialAction.TEXT_WHATSAPP)) specialList.add(whatsAppTextMenu)
             }
+        }
+
+        if (phoneData == true || emailData == true) {
+            /** Add to contacts */
+            val addToContactsMenu = SpecialMenu(
+                image = R.drawable.ic_person_add,
+                title = context.getString(R.string.canc)
+            ) {
+                val phoneNumbers = getAllTagValues(ClipTag.PHONE.small())
+                val emailAddresses = getAllTagValues(ClipTag.EMAIL.small())
+
+                if (phoneNumbers.isNotEmpty() && (phoneNumbers.size == emailAddresses.size)) {
+                    val intent = Intent(Intent.ACTION_INSERT).apply {
+                        type = ContactsContract.Contacts.CONTENT_TYPE
+
+                        val phoneContracts = listOf(ContactsContract.Intents.Insert.PHONE, ContactsContract.Intents.Insert.SECONDARY_PHONE, ContactsContract.Intents.Insert.TERTIARY_PHONE)
+                        val emailContracts = listOf(ContactsContract.Intents.Insert.EMAIL, ContactsContract.Intents.Insert.SECONDARY_EMAIL, ContactsContract.Intents.Insert.TERTIARY_EMAIL)
+
+                        for (i in 0..minOf(phoneNumbers.lastIndex, 2)) {
+                            putExtra(phoneContracts[0], phoneNumbers[0])
+                        }
+                        for (i in 0..minOf(emailAddresses.lastIndex, 2)) {
+                            putExtra(emailContracts[0], emailAddresses[0])
+                        }
+                    }
+                    runAction(intent)
+                }
+
+                if (phoneData == true) {
+                    createChooser(ClipTag.PHONE.small()) { data ->
+                        val intent = Intent(Intent.ACTION_INSERT).apply {
+                            type = ContactsContract.Contacts.CONTENT_TYPE
+
+                            putExtra(ContactsContract.Intents.Insert.PHONE, data)
+                        }
+
+                        runAction(intent)
+                    }
+                }
+
+                if (emailData == true) {
+                    createChooser(ClipTag.EMAIL.small()) { data ->
+                        val intent = Intent(Intent.ACTION_INSERT).apply {
+                            type = ContactsContract.Contacts.CONTENT_TYPE
+
+                            putExtra(ContactsContract.Intents.Insert.EMAIL, data)
+                        }
+
+                        runAction(intent)
+                    }
+                }
+            }
+            if (enabledActions.contains(SpecialAction.CREATE_CONTACT)) specialList.add(addToContactsMenu)
         }
     }
 
@@ -318,9 +378,9 @@ class SpecialHelper(
                     }
                 }
 
-            specialList.add(openLinkMenu)
-            specialList.add(openLinkPrivateMenu)
-            specialList.add(shortenUrl)
+            if (enabledActions.contains(SpecialAction.OPEN_LINK)) specialList.add(openLinkMenu)
+            if (enabledActions.contains(SpecialAction.OPEN_PRIVATE)) specialList.add(openLinkPrivateMenu)
+            if (enabledActions.contains(SpecialAction.SHORTEN_LINK)) specialList.add(shortenUrl)
         }
     }
 
@@ -359,7 +419,6 @@ class SpecialHelper(
                 )
         }
     }
-
 
     private fun setRecyclerView(view: View) = with(view) {
         bsm_recyclerView.layoutManager = LinearLayoutManager(context)

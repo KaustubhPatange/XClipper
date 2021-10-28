@@ -20,6 +20,7 @@ import com.kpstv.xclipper.extensions.viewBinding
 import com.kpstv.xclipper.ui.activities.NavViewModel
 import com.kpstv.xclipper.ui.activities.Start
 import com.kpstv.xclipper.ui.fragments.settings.*
+import com.kpstv.xclipper.ui.helpers.specials.fragments.SpecialActionFragment
 import com.kpstv.xclipper.ui.viewmodels.SettingNavViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.parcel.Parcelize
@@ -93,6 +94,7 @@ class Settings : ValueFragment(R.layout.activity_settings), FragmentNavigator.Tr
         GENERAL(GeneralPreference::class, R.string.service),
         ACCOUNT(AccountPreference::class, R.string.account),
         LOOK_FEEL(LookFeelPreference::class, R.string.look_feel),
+        ACTIONS(SpecialActionFragment::class, R.string.actions),
         BACKUP(BackupPreference::class, R.string.backup),
         UPGRADE(Upgrades::class, R.string.upgrade),
         ABOUT(AboutPreference::class, R.string.about);

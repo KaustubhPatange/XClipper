@@ -42,4 +42,9 @@ fun Context.getColorAttr(@AttrRes id: Int, @ColorInt fallbackColor: Int = 0): In
     return typedValue.data
 }
 
+fun Context.getAttrResourceId(@AttrRes id: Int, typedValue: TypedValue = TypedValue()) : Int {
+    theme?.resolveAttribute(id, typedValue, true)
+    return typedValue.resourceId
+}
+
 fun Context.broadcastManager() = LocalBroadcastManager.getInstance(this)
