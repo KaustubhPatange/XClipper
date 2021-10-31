@@ -120,6 +120,7 @@ dependencies {
     implementation(LibraryDependency.AUTO_BINDINGS)
     implementation(LibraryDependency.REALTIME_EXTENSIONS)
     implementation(LibraryDependency.TIMBER)
+    implementation(LibraryDependency.MARKWON)
     implementation(LibraryDependency.PINLOCK)
 
     implementation(LibraryDependency.NAVIGATOR)

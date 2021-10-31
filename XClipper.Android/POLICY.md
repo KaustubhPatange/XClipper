@@ -1,6 +1,8 @@
 ## **Privacy Policy**
 
-Kaustubh Patange built the XClipper app as an Open Source app. This SERVICE is provided by Kaustubh Patange at no cost and is intended for use as is.
+<!-- Updated: 31/10/2021 -->
+
+Kaustubh Patange built the XClipper app as an Open Source app. This SERVICE is provided as freemium with premium contents that can unlocked through the offical website & within the app itself.
 
 This page is used to inform visitors regarding my policies with the collection, use, and disclosure of Personal Information if anyone decided to use my Service.
 
@@ -67,7 +69,7 @@ These Services do not address anyone under the age of 13. I do not knowingly col
 
 I may update our Privacy Policy from time to time. Thus, you are advised to review this page periodically for any changes. I will notify you of any changes by posting the new Privacy Policy on this page.
 
-This policy is effective as of 2021-08-12
+This policy is effective as of 2021-08-12.
 
 ## **Contact Us**
 

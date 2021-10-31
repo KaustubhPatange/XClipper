@@ -290,4 +290,11 @@
     <string name="search_query_action_text">Install browsers like DuckDuckGo, Firefox to customize your search query.</string>
     <string name="shorten_link_action">Shorten link</string>
     <string name="shorten_link_action_text">Create a short link using tinyurl.com.</string>
+    <string name="terms_decline">Decline</string>
+    <string name="terms_agree">Accept</string>
+    <string name="terms_check_privacy_policy"><![CDATA[I agree with the <b>Privacy Policy</b>]]></string>
+    <string name="terms_title">Disclosure Agreement</string>
+    <string name="terms_last_updated">Updated: %1$s</string>
+    <string name="terms_check_agreement"><![CDATA[I agree with the <b>Agreement</b>]]></string>
+    <string name="err_privacy_policy">Invalid privacy policy</string>
 </resources>

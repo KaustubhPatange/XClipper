@@ -17,12 +17,10 @@ import com.kpstv.xclipper.extensions.applyEdgeToEdgeMode
 import com.kpstv.xclipper.extensions.viewBinding
 import com.kpstv.xclipper.ui.fragments.Home
 import com.kpstv.xclipper.ui.fragments.Settings
+import com.kpstv.xclipper.ui.fragments.sheets.DisclosureSheet
 import com.kpstv.xclipper.ui.fragments.welcome.*
 import com.kpstv.xclipper.ui.helpers.*
-import com.kpstv.xclipper.ui.helpers.fragments.ImproveDetectionHelper
-import com.kpstv.xclipper.ui.helpers.fragments.ReviewHelper
-import com.kpstv.xclipper.ui.helpers.fragments.SyncDialogHelper
-import com.kpstv.xclipper.ui.helpers.fragments.UpdateHelper
+import com.kpstv.xclipper.ui.helpers.fragments.*
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -69,6 +67,7 @@ class Start : AppCompatActivity(), FragmentNavigator.Transmitter {
         SyncDialogHelper(this).register()
         ReviewHelper(this).register()
         ImproveDetectionHelper(this).register()
+        DisclosureHelper(this, navViewModel).register()
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -101,7 +100,10 @@ class Start : AppCompatActivity(), FragmentNavigator.Transmitter {
 
         /* Main screens */
         HOME(Home::class),
-        SETTING(Settings::class);
+        SETTING(Settings::class),
+
+        /* Sheets */
+        DISCLOSURE(DisclosureSheet::class);
     }
 }
 
