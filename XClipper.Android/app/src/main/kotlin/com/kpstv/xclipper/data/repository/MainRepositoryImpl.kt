@@ -5,8 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.paging.PagedList
 import androidx.paging.toLiveData
 import androidx.sqlite.db.SupportSQLiteQuery
-import com.kpstv.xclipper.App.LOCAL_MAX_ITEM_STORAGE
-import com.kpstv.xclipper.App.MAX_CHARACTER_TO_STORE
 import com.kpstv.xclipper.data.localized.dao.ClipDataDao
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.PartialClipTagMap
@@ -22,6 +20,11 @@ class MainRepositoryImpl @Inject constructor(
     private val clipDao: ClipDataDao,
     private val firebaseProvider: FirebaseProvider
 ) : MainRepository {
+
+    private companion object {
+        private const val LOCAL_MAX_ITEM_STORAGE = 200
+        private const val MAX_CHARACTER_TO_STORE = 10_000
+    }
 
     private val TAG = javaClass.simpleName
 

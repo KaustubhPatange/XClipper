@@ -3,12 +3,9 @@ package com.kpstv.xclipper.ui.viewmodels.managers
 import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.kpstv.xclipper.App.EMPTY_STRING
-import com.kpstv.xclipper.App.STAGGERED_SPAN_COUNT
 import com.kpstv.xclipper.data.localized.dao.TagDao
 import com.kpstv.xclipper.data.model.*
 import com.kpstv.xclipper.extensions.ClipTagMap
-import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
@@ -21,7 +18,7 @@ import javax.inject.Singleton
 class MainEditManager @Inject constructor(
     tagRepository: TagDao
 ) {
-    private val _spanCount = MutableLiveData(STAGGERED_SPAN_COUNT)
+    private val _spanCount = MutableLiveData(-1)
     private val _clip = MutableLiveData<Clip>()
     private val _tagFixedLiveData = MutableLiveData<List<Tag>>()
     private val _selectedTags = MutableLiveData<List<ClipTagMap>>(listOf())
@@ -90,5 +87,9 @@ class MainEditManager @Inject constructor(
                 })
             }
         }
+    }
+
+    private companion object {
+        private const val EMPTY_STRING = ""
     }
 }

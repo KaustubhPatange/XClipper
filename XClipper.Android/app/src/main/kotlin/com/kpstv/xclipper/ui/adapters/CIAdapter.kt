@@ -17,13 +17,12 @@ import com.kpstv.xclipper.data.converters.DateFormatConverter
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.databinding.ItemClipBinding
 import com.kpstv.xclipper.extensions.*
-import com.kpstv.xclipper.extensions.utils.ThemeUtils.Companion.CARD_CLICK_COLOR
-import com.kpstv.xclipper.extensions.utils.ThemeUtils.Companion.CARD_COLOR
-import com.kpstv.xclipper.extensions.utils.ThemeUtils.Companion.CARD_SELECTED_COLOR
+import com.kpstv.xclipper.extensions.utils.ClipUtils
+import com.kpstv.xclipper.ui.helpers.AppThemeHelper.Companion.CARD_CLICK_COLOR
+import com.kpstv.xclipper.ui.helpers.AppThemeHelper.Companion.CARD_COLOR
+import com.kpstv.xclipper.ui.helpers.AppThemeHelper.Companion.CARD_SELECTED_COLOR
 import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.getDataFromAttr
-import java.util.*
-import kotlin.collections.HashMap
 
 class CIAdapter(
     private val lifecycleOwner: LifecycleOwner,
@@ -34,6 +33,7 @@ class CIAdapter(
     private val onLongClick: (Clip, Int) -> Unit,
     private val selectedClips: LiveData<List<Clip>>
 ) : ListAdapter<Clip, CIAdapter.MainHolder>(DiffCallback.asConfig()) {
+
     private object DiffCallback : DiffUtil.ItemCallback<Clip>() {
         override fun areItemsTheSame(oldItem: Clip, newItem: Clip): Boolean =
             oldItem.data == newItem.data
@@ -69,7 +69,7 @@ class CIAdapter(
         }
 
         if (App.LoadImageMarkdownText)
-            renderImageMarkdown(holder, clip.data, position)
+            renderImageMarkdown(holder, clip.data)
 
         ciTimeText.text = DateFormatConverter.getFormattedDate(clip.time)
 
@@ -173,10 +173,9 @@ class CIAdapter(
         selectedClips.observe(lifecycleOwner, selectedClipsObserver).also { selectedClipsObservers[clip.id] = selectedClipsObserver }
     }
 
-    private fun renderImageMarkdown(holder: MainHolder, data: String?, position: Int) = with(holder.binding) {
-        val result = App.MARKDOWN_IMAGE_ONLY_REGEX.toRegex().matchEntire(data ?: "")
-        if (result != null) {
-            val imageUrl = result.groups[5]?.value
+    private fun renderImageMarkdown(holder: MainHolder, data: String) : Unit = with(holder.binding) {
+        if (ClipUtils.isMarkdownImage(data)) {
+            val imageUrl = ClipUtils.getMarkdownImageUrl(data)
 
             ciImageView.show()
 

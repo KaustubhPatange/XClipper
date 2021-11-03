@@ -2,6 +2,7 @@ package com.kpstv.xclipper.ui.helpers
 
 import androidx.annotation.StringDef
 import com.kpstv.xclipper.data.provider.PreferenceProvider
+import com.kpstv.xclipper.ui.helpers.AppSettingKeys.Keys.IMAGE_MARKDOWN
 import com.kpstv.xclipper.ui.helpers.AppSettingKeys.Keys.IMPROVE_DETECTION
 import com.kpstv.xclipper.ui.helpers.AppSettingKeys.Keys.POLICY_DISCLOSURE
 import javax.inject.Inject
@@ -28,6 +29,12 @@ class AppSettings @Inject constructor(
         notifyListeners(POLICY_DISCLOSURE, value)
     }
 
+    fun canRenderMarkdownImage() : Boolean = preferenceProvider.getBooleanKey(IMAGE_MARKDOWN, true)
+    fun setRenderMarkdownImage(value: Boolean) {
+        preferenceProvider.putBooleanKey(IMAGE_MARKDOWN, value)
+        notifyListeners(IMAGE_MARKDOWN, value)
+    }
+
     fun registerListener(listener: Listener) {
         listeners.add(listener)
     }
@@ -41,11 +48,12 @@ class AppSettings @Inject constructor(
     }
 }
 
-@StringDef(IMPROVE_DETECTION, POLICY_DISCLOSURE)
+@StringDef(IMPROVE_DETECTION, POLICY_DISCLOSURE, IMAGE_MARKDOWN)
 @Retention(AnnotationRetention.SOURCE)
 annotation class AppSettingKeys {
     companion object Keys {
         const val IMPROVE_DETECTION = "improve_detection"
         const val POLICY_DISCLOSURE = "policy_disclosure"
+        const val IMAGE_MARKDOWN = "render_image_markdown"
     }
 }

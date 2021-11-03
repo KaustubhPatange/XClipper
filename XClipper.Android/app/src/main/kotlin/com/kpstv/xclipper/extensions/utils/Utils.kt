@@ -191,17 +191,21 @@ class Utils {
             showAccessibilityDialog(context) { }
         }
 
+
+        private const val EXTRA_FRAGMENT_ARG_KEY = ":settings:fragment_args_key"
+        private const val EXTRA_SHOW_FRAGMENT_ARGUMENTS = ":settings:show_fragment_args"
+
         fun openAccessibility(context: Context) = with(context) {
             val bundle = Bundle()
             val componentName = ComponentName(
                 BuildConfig.APPLICATION_ID,
                 ClipboardAccessibilityService::class.java.name
             ).flattenToString()
-            bundle.putString(App.EXTRA_FRAGMENT_ARG_KEY, componentName)
+            bundle.putString(EXTRA_FRAGMENT_ARG_KEY, componentName)
             val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS).apply {
                 flags = FLAG_ACTIVITY_NEW_TASK
-                putExtra(App.EXTRA_FRAGMENT_ARG_KEY, componentName)
-                putExtra(App.EXTRA_SHOW_FRAGMENT_ARGUMENTS, bundle)
+                putExtra(EXTRA_FRAGMENT_ARG_KEY, componentName)
+                putExtra(EXTRA_SHOW_FRAGMENT_ARGUMENTS, bundle)
             }
             startActivity(intent)
         }

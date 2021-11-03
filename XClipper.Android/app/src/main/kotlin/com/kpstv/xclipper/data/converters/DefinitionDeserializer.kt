@@ -3,8 +3,6 @@ package com.kpstv.xclipper.data.converters
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
-import com.kpstv.xclipper.App.DICTIONARY_DEFINITION_PATTERN_REGEX
-import com.kpstv.xclipper.App.DICTIONARY_WORD_PATTERN_REGEX
 import com.kpstv.xclipper.data.model.Definition
 import java.lang.reflect.Type
 
@@ -24,5 +22,10 @@ class DefinitionDeserializer : JsonDeserializer<Definition> {
             return Definition.from(word, define)
         }
         return Definition.returnNull()
+    }
+
+    private companion object {
+        private const val DICTIONARY_WORD_PATTERN_REGEX = "\"word\":[\\s]?\".*?\""
+        private const val DICTIONARY_DEFINITION_PATTERN_REGEX = "\"definition\":[\\s]?\".*?\""
     }
 }

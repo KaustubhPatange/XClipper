@@ -27,7 +27,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.kpstv.navigation.AnimationDefinition
 import com.kpstv.navigation.FragmentNavigator
 import com.kpstv.navigation.ValueFragment
-import com.kpstv.xclipper.App
 import com.kpstv.xclipper.App.runAutoSync
 import com.kpstv.xclipper.App.swipeToDelete
 import com.kpstv.xclipper.R
@@ -43,8 +42,8 @@ import com.kpstv.xclipper.extensions.listeners.StatusListener
 import com.kpstv.xclipper.extensions.recyclerview.RecyclerViewInsetHelper
 import com.kpstv.xclipper.extensions.recyclerview.SwipeToDeleteCallback
 import com.kpstv.xclipper.extensions.utils.FirebaseUtils
-import com.kpstv.xclipper.extensions.utils.ThemeUtils
-import com.kpstv.xclipper.extensions.utils.ThemeUtils.Companion.registerForThemeChange
+import com.kpstv.xclipper.ui.helpers.AppThemeHelper
+import com.kpstv.xclipper.ui.helpers.AppThemeHelper.Companion.registerForThemeChange
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.openAccessibility
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.shareText
 import com.kpstv.xclipper.service.ChangeClipboardActivity
@@ -61,7 +60,6 @@ import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import com.zhuinden.livedatacombinetuplekt.combineTuple
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
-import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
@@ -299,7 +297,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
             if (it.isNotEmpty())
                 binding.toolbar.subtitle = "${it.size} ${getString(R.string.selected)}"
             else
-                binding.toolbar.subtitle = App.BLANK_STRING
+                binding.toolbar.subtitle = BLANK_STRING // requires to show empty subtitle
         }
     }
 
@@ -381,7 +379,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
             binding.ciChipGroup.addView(
                 Chip(requireContext()).apply {
                     text = tag.name
-                    setTag(App.TAG_FILTER_CHIP)
+                    setTag(TAG_FILTER_CHIP)
                     chipIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_tag)
                     isCloseIconVisible = true
                     setOnCloseIconClickListener {
@@ -397,7 +395,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
      */
     private fun setSelectedToolbar() = with(binding) {
         toolbar.menu.clear()
-        toolbar.setBackgroundColor(ThemeUtils.CARD_SELECTED_COLOR)
+        toolbar.setBackgroundColor(AppThemeHelper.CARD_SELECTED_COLOR)
         toolbar.inflateMenu(R.menu.selected_menu)
         toolbar.navigationIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_close)
         toolbar.setNavigationOnClickListener {
@@ -530,5 +528,11 @@ class Home : ValueFragment(R.layout.fragment_home) {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK
         }
         startActivity(intent)
+    }
+
+    private companion object {
+        private const val BLANK_STRING = " "
+        private const val TAG_FILTER_CHIP = "com.kpstv.xclipper.tag"
+
     }
 }

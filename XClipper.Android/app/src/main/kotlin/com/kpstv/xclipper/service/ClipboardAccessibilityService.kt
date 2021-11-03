@@ -14,10 +14,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.kpstv.hvlog.HVLog
 import com.kpstv.xclipper.App
-import com.kpstv.xclipper.App.ACTION_DISABLE_IMPROVE_DETECTION
-import com.kpstv.xclipper.App.ACTION_DISABLE_SERVICE
-import com.kpstv.xclipper.App.ACTION_ENABLE_IMPROVE_DETECTION
-import com.kpstv.xclipper.App.ACTION_INSERT_TEXT
 import com.kpstv.xclipper.App.showSuggestion
 import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.extensions.Logger
@@ -53,6 +49,12 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
     companion object {
         private const val EXTRA_SERVICE_TEXT = "com.kpstv.xclipper.service_text"
         private const val EXTRA_SERVICE_TEXT_LENGTH = "com.kpstv.xclipper.service_text_word_length"
+
+        private const val ACTION_INSERT_TEXT = "com.kpstv.xclipper.insert_text"
+        private const val ACTION_DISABLE_SERVICE = "com.kpstv.xclipper.disable_service"
+        private const val ACTION_ENABLE_IMPROVE_DETECTION = "com.kpstv.xclipper.action_enable_improve_detection"
+        private const val ACTION_DISABLE_IMPROVE_DETECTION = "com.kpstv.xclipper.action_disable_improve_detection"
+
         @Volatile
         var currentPackage: CharSequence? = null
 

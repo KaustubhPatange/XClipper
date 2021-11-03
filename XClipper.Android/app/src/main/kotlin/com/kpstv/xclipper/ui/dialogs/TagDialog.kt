@@ -13,14 +13,13 @@ import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.kpstv.xclipper.App.DELAY_SPAN
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.DialogState
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.databinding.DialogCreateTagBinding
 import com.kpstv.xclipper.extensions.collapse
 import com.kpstv.xclipper.extensions.show
-import com.kpstv.xclipper.extensions.utils.ThemeUtils
+import com.kpstv.xclipper.ui.helpers.AppThemeHelper
 import com.kpstv.xclipper.extensions.viewBinding
 import com.kpstv.xclipper.ui.adapters.TagAdapter
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
@@ -40,14 +39,13 @@ class TagDialog : AppCompatActivity() {
 
 
     companion object {
-        const val RESULT_CODE = 1
-        const val TAG_DATA = "tag_data"
+        private const val DELAY_SPAN: Long = 20
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        ThemeUtils.setDialogTheme(this)
+        AppThemeHelper.applyDialogTheme(this)
 
         setContentView(binding.root)
 
@@ -84,12 +82,12 @@ class TagDialog : AppCompatActivity() {
     }
 
     private fun bindUI() {
-        mainViewModel.tagLiveData.observe(this, {
+        mainViewModel.tagLiveData.observe(this) {
             if (it.isEmpty()) mainViewModel.stateManager.setDialogState(DialogState.Edit)
             adapter.submitList(it)
-        })
+        }
 
-        mainViewModel.stateManager.dialogState.observe(this, { state ->
+        mainViewModel.stateManager.dialogState.observe(this) { state ->
             when (state) {
                 DialogState.Normal -> {
                     binding.tvFilterTags.text = getString(R.string.custom_tags)
@@ -108,7 +106,7 @@ class TagDialog : AppCompatActivity() {
                     // When exhaustive
                 }
             }
-        })
+        }
     }
 
     private fun setToolbar() = with(binding) {

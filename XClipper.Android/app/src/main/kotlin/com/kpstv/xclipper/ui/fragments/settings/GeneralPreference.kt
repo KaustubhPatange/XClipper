@@ -13,19 +13,18 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.preference.*
+import androidx.preference.ListPreference
+import androidx.preference.Preference
+import androidx.preference.SwitchPreferenceCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.kpstv.navigation.BaseArgs
 import com.kpstv.navigation.getKeyArgs
 import com.kpstv.navigation.hasKeyArgs
+import com.kpstv.pin_lock.PinLockHelper
 import com.kpstv.xclipper.App
-import com.kpstv.xclipper.App.ACTIVE_ADB_MODE_PREF
 import com.kpstv.xclipper.App.BLACKLIST_PREF
 import com.kpstv.xclipper.App.DICTIONARY_LANGUAGE
-import com.kpstv.xclipper.App.IMAGE_MARKDOWN_PREF
 import com.kpstv.xclipper.App.LANG_PREF
-import com.kpstv.xclipper.App.PIN_LOCK_PREF
-import com.kpstv.xclipper.App.SERVICE_PREF
 import com.kpstv.xclipper.App.SUGGESTION_PREF
 import com.kpstv.xclipper.App.SWIPE_DELETE_PREF
 import com.kpstv.xclipper.App.TRIM_CLIP_PREF
@@ -47,7 +46,6 @@ import com.kpstv.xclipper.ui.dialogs.Dialogs
 import com.kpstv.xclipper.ui.dialogs.MultiSelectDialogBuilder
 import com.kpstv.xclipper.ui.dialogs.MultiSelectModel3
 import com.kpstv.xclipper.ui.helpers.AppSettings
-import com.kpstv.pin_lock.PinLockHelper
 import com.kpstv.xclipper.ui.helpers.extensions.AddOns
 import com.kpstv.xclipper.ui.helpers.extensions.AddOnsHelper
 import com.kpstv.xclipper.ui.viewmodels.SettingNavViewModel
@@ -189,7 +187,7 @@ class GeneralPreference : AbstractPreferenceFragment() {
             true
         }
 
-        /** Language code preference */
+        /** Language code preference */ // TODO: Move this setting to Special Actions
         findPreference<ListPreference>(LANG_PREF)?.setOnPreferenceChangeListener { _, newValue ->
             DICTIONARY_LANGUAGE = newValue as String
             true
@@ -205,7 +203,7 @@ class GeneralPreference : AbstractPreferenceFragment() {
 
         /** Experimental Image loading */
         findPreference<SwitchPreferenceCompat>(IMAGE_MARKDOWN_PREF)?.setOnPreferenceChangeListener { _, newValue ->
-            App.LoadImageMarkdownText = newValue as Boolean
+            appSettings.setRenderMarkdownImage(newValue as Boolean)
             true
         }
     }
@@ -312,6 +310,10 @@ class GeneralPreference : AbstractPreferenceFragment() {
         const val RESET_PREF = "reset_intro_pref"
 
         private const val TEMP_CHECK_IMPROVE_ON_START = "temp_check_improve_on_start"
+        private const val PIN_LOCK_PREF = "pin_lock_pref"
+        private const val ACTIVE_ADB_MODE_PREF = "adb_mode_pref"
+        private const val IMAGE_MARKDOWN_PREF = "image_markdown_pref"
+        private const val SERVICE_PREF = "service_pref"
 
         fun checkImproveSettingsOnStart(context: Context, appSettings: AppSettings, preferenceProvider: PreferenceProvider) {
             val checkImprove = preferenceProvider.getBooleanKey(TEMP_CHECK_IMPROVE_ON_START, false)

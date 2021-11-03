@@ -401,7 +401,7 @@ class SpecialHelper(
      * before setting the define.
      */
     private fun setDefineTag(binding: BottomSheetMoreBinding) = with(binding) {
-        App.SINGLE_WORD_PATTERN_REGEX.toRegex().let {
+        SINGLE_WORD_PATTERN_REGEX.toRegex().let {
             if (it.containsMatchIn(data))
                 dictionaryApiHelper.define(
                     it.find(data)?.value!!, ResponseListener(
@@ -462,5 +462,9 @@ class SpecialHelper(
                 }
             }
         }
+    }
+
+    private companion object {
+        private const val SINGLE_WORD_PATTERN_REGEX = "^[^https?][^\\s\\W]+\$"
     }
 }

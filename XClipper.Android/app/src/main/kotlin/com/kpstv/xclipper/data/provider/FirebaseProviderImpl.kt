@@ -412,9 +412,7 @@ class FirebaseProviderImpl @Inject constructor(
 
                         checkForUserDetailsAndUpdateLocal()
 
-                        validDevice = (firebaseUser.Devices ?: mutableListOf()).count {
-                            it.id == DeviceID
-                        } > 0
+                        validDevice = (firebaseUser.Devices ?: mutableListOf()).count { it.id == DeviceID } > 0
 
                         if (!validDevice) {
                             deviceValidated.invoke(validDevice)

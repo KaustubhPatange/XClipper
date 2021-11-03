@@ -9,8 +9,6 @@ import com.kpstv.hvlog.HVLog
 import com.kpstv.xclipper.App.AUTO_SYNC_PREF
 import com.kpstv.xclipper.App.BIND_DELETE_PREF
 import com.kpstv.xclipper.App.BIND_PREF
-import com.kpstv.xclipper.App.DARK_PREF
-import com.kpstv.xclipper.App.DARK_THEME
 import com.kpstv.xclipper.App.DICTIONARY_LANGUAGE
 import com.kpstv.xclipper.App.DeviceID
 import com.kpstv.xclipper.App.LANG_PREF
@@ -29,6 +27,7 @@ import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.extensions.Logger
+import com.kpstv.xclipper.ui.helpers.AppThemeHelper
 import com.kpstv.xclipper.extensions.utils.FirebaseUtils
 import com.kpstv.xclipper.service.helper.ClipboardLogDetector
 import com.kpstv.xclipper.service.worker.AccessibilityWorker
@@ -89,7 +88,7 @@ class XClipperApplication : Application(), Configuration.Provider {
             firebaseUtils.get().observeDatabaseChangeEvents()
         }
 
-        DARK_THEME = preferenceProvider.getBooleanKey(DARK_PREF, true)
+        AppThemeHelper.loadTheme(this)
         showSuggestion = preferenceProvider.getBooleanKey(SUGGESTION_PREF, false)
         runAutoSync = preferenceProvider.getBooleanKey(AUTO_SYNC_PREF, false)
         swipeToDelete = preferenceProvider.getBooleanKey(SWIPE_DELETE_PREF, true)

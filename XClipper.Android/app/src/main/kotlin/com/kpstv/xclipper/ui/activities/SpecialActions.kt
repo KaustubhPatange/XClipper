@@ -5,13 +5,12 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.kpstv.xclipper.App.APP_CLIP_DATA
 import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.extensions.launchInIO
 import com.kpstv.xclipper.extensions.launchInMain
-import com.kpstv.xclipper.extensions.utils.ThemeUtils
+import com.kpstv.xclipper.ui.helpers.AppThemeHelper
 import com.kpstv.xclipper.ui.fragments.sheets.MoreBottomSheet
 import com.kpstv.xclipper.ui.helpers.DictionaryApiHelper
 import com.kpstv.xclipper.ui.helpers.TinyUrlApiHelper
@@ -40,7 +39,7 @@ class SpecialActions : AppCompatActivity() {
             return
         }
 
-        ThemeUtils.setDialogTheme(this)
+        AppThemeHelper.applyDialogTheme(this)
 
         launchInIO {
             val clip = repository.getData(data)
@@ -62,6 +61,7 @@ class SpecialActions : AppCompatActivity() {
     }
 
     companion object {
+        private const val APP_CLIP_DATA = "com.kpstv.xclipper.clip_data"
         fun launch(context: Context, clipData: String) {
             val newIntent = Intent(context, SpecialActions::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK

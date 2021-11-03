@@ -27,7 +27,7 @@ class UpgradeViewModel @Inject constructor(
                 onSuccess = { response ->
                     if (!response.isSuccessful) throw Exception()
                     val body = response.asString()
-                    val amount = App.PREMIUM_PRICE_REGEX.toRegex().find(body!!)?.groups?.get(1)?.value!!
+                    val amount = PREMIUM_PRICE_REGEX.toRegex().find(body!!)?.groups?.get(1)?.value!!
 
                     emit(ResponseResult.complete(amount))
                 },
@@ -36,5 +36,9 @@ class UpgradeViewModel @Inject constructor(
         }catch (e: Exception) {
             emit(ResponseResult.error<String>(Exception(context.getString(R.string.premium_latest))))
         }
+    }
+
+    private companion object {
+        private const val PREMIUM_PRICE_REGEX = "id=\\\"premium-card-amount\\\">(.*?)<"
     }
 }

@@ -10,10 +10,6 @@ import com.kpstv.xclipper.App
 import com.kpstv.xclipper.App.AUTO_SYNC_PREF
 import com.kpstv.xclipper.App.BIND_DELETE_PREF
 import com.kpstv.xclipper.App.BIND_PREF
-import com.kpstv.xclipper.App.CONNECT_PREF
-import com.kpstv.xclipper.App.FORCE_REMOVE_PREF
-import com.kpstv.xclipper.App.HELP_PREF
-import com.kpstv.xclipper.App.LOGOUT_PREF
 import com.kpstv.xclipper.App.UID
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.provider.DBConnectionProvider
@@ -169,5 +165,12 @@ class AccountPreference : PreferenceFragmentCompat() {
             bindPreference?.isChecked = App.bindToFirebase
             autoSyncPreference?.isChecked = App.runAutoSync
         }
+    }
+
+    private companion object {
+        private const val HELP_PREF = "help_pref"
+        private const val FORCE_REMOVE_PREF = "forceRemove_pref"
+        private const val LOGOUT_PREF = "logout_pref"
+        private const val CONNECT_PREF = "connect_pref"
     }
 }

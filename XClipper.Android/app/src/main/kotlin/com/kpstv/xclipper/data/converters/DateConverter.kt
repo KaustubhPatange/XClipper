@@ -2,12 +2,13 @@ package com.kpstv.xclipper.data.converters
 
 import android.annotation.SuppressLint
 import androidx.room.TypeConverter
-import com.kpstv.xclipper.App.STANDARD_DATE_FORMAT
 import java.text.SimpleDateFormat
 import java.util.*
 
 @SuppressLint("SimpleDateFormat")
 object DateConverter {
+    private const val STANDARD_DATE_FORMAT = "yyyyMMddHHmmss"
+
     @TypeConverter
     @JvmStatic
     fun fromDateToString(date: Date?): String? {

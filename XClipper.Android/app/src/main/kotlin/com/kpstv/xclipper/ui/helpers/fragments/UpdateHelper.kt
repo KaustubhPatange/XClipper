@@ -42,6 +42,7 @@ class UpdateHelper(
         const val SETTINGS_URL = "https://github.com/KaustubhPatange/XClipper/raw/master/XClipper.Android/settings.json"
         private const val REPO_OWNER = "KaustubhPatange"
         private const val REPO_NAME = "XClipper"
+        private const val UPDATE_REQUEST_CODE = 555
 
         fun createUpdater() : Updater {
             return Updater.Builder()
@@ -107,7 +108,7 @@ class UpdateHelper(
                         appUpdateInfo,
                         AppUpdateType.FLEXIBLE,
                         this,
-                        com.kpstv.xclipper.App.UPDATE_REQUEST_CODE
+                        UPDATE_REQUEST_CODE
                     )
                 } catch (e: IntentSender.SendIntentException) {
                     Logger.w(e, "In-app updates workflow did not succeed")

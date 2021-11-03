@@ -5,15 +5,10 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.content.Intent.ACTION_DELETE
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
-import com.kpstv.xclipper.App.ACTION_OPEN_APP
-import com.kpstv.xclipper.App.ACTION_SMART_OPTIONS
-import com.kpstv.xclipper.App.APP_CLIP_DATA
-import com.kpstv.xclipper.App.NOTIFICATION_CODE
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.extensions.colorFrom
 import com.kpstv.xclipper.extensions.utils.Utils
@@ -61,10 +56,7 @@ object Notifications {
         val openIntent = PendingIntent.getBroadcast(
             context,
             getRandomPendingCode(),
-            Intent(context, AppBroadcastReceiver::class.java).apply {
-                action = ACTION_OPEN_APP
-                putExtra(NOTIFICATION_CODE, randomCode)
-             },
+            AppBroadcastReceiver.createOpenAppAction(context, randomCode),
             0
         )
 
@@ -86,23 +78,13 @@ object Notifications {
         val openIntent = PendingIntent.getBroadcast(
             context,
             getRandomPendingCode(),
-            Intent(context, AppBroadcastReceiver::class.java).apply {
-                action = ACTION_OPEN_APP
-                putExtra(NOTIFICATION_CODE, randomCode)
-            },
+            AppBroadcastReceiver.createOpenAppAction(this, randomCode),
             0
         )
 
-        val deleteIntent = Intent(context, AppBroadcastReceiver::class.java).apply {
-            putExtra(APP_CLIP_DATA, text)
-            putExtra(NOTIFICATION_CODE, randomCode)
-            action = ACTION_DELETE
-        }
+        val deleteIntent = AppBroadcastReceiver.createDeleteAction(context, text, randomCode)
 
-        val specialIntent = Intent(context, AppBroadcastReceiver::class.java).apply {
-            putExtra(APP_CLIP_DATA, text)
-            action = ACTION_SMART_OPTIONS
-        }
+        val specialIntent = AppBroadcastReceiver.createSmartOptionsAction(this, text)
 
         val notificationBuilder = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_clip)

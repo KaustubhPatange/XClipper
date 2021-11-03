@@ -6,8 +6,6 @@ import android.os.Bundle
 import androidx.fragment.app.viewModels
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import com.kpstv.xclipper.App.EXPORT_PREF
-import com.kpstv.xclipper.App.IMPORT_PREF
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.extensions.getFormattedDate
 import com.kpstv.xclipper.ui.viewmodels.BackupViewModel
@@ -21,6 +19,9 @@ class BackupPreference : PreferenceFragmentCompat() {
     companion object {
         private const val EXPORT_RESULT_CODE = 110
         private const val IMPORT_RESULT_CODE = 111
+
+        private const val EXPORT_PREF = "export_pref"
+        private const val IMPORT_PREF = "import_pref"
     }
 
     private val backupViewModel: BackupViewModel by viewModels()

@@ -6,10 +6,6 @@ import android.content.Intent
 import android.content.Intent.*
 import android.widget.Toast
 import com.kpstv.update.Updater
-import com.kpstv.xclipper.App.ACTION_OPEN_APP
-import com.kpstv.xclipper.App.ACTION_SMART_OPTIONS
-import com.kpstv.xclipper.App.APP_CLIP_DATA
-import com.kpstv.xclipper.App.NOTIFICATION_CODE
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.extensions.AbstractBroadcastReceiver
@@ -39,11 +35,38 @@ class AppBroadcastReceiver : AbstractBroadcastReceiver() {
 
         private const val ACTION_OPEN_URL = "com.kpstv.action_open_url"
         private const val ARGUMENT_OPEN_URL_LINK = "com.kpstv.action_open_url:arg_link"
+        private const val APP_CLIP_DATA = "com.kpstv.xclipper.clip_data"
+        private const val ACTION_SMART_OPTIONS = "com.kpstv.xclipper.smart_options"
+        private const val NOTIFICATION_CODE = "com.kpstv.xclipper.notification_code"
+        private const val ACTION_OPEN_APP = "com.kpstv.xclipper.open_app"
+
 
         fun createOpenUrlAction(context: Context, url: String) : Intent {
             return Intent(context, AppBroadcastReceiver::class.java).apply {
                 action = ACTION_OPEN_URL
                 putExtra(ARGUMENT_OPEN_URL_LINK, url)
+            }
+        }
+
+        fun createSmartOptionsAction(context: Context, data: String) : Intent {
+            return Intent(context, AppBroadcastReceiver::class.java).apply {
+                putExtra(APP_CLIP_DATA, data)
+                action = ACTION_SMART_OPTIONS
+            }
+        }
+
+        fun createDeleteAction(context: Context, data: String, notificationId: Int) : Intent {
+            return Intent(context, AppBroadcastReceiver::class.java).apply {
+                putExtra(APP_CLIP_DATA, data)
+                putExtra(NOTIFICATION_CODE, notificationId)
+                action = ACTION_DELETE
+            }
+        }
+
+        fun createOpenAppAction(context: Context, notificationId: Int) : Intent {
+            return Intent(context, AppBroadcastReceiver::class.java).apply {
+                action = ACTION_OPEN_APP
+                putExtra(NOTIFICATION_CODE, notificationId)
             }
         }
     }

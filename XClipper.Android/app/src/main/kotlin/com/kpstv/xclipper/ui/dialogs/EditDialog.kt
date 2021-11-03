@@ -6,16 +6,13 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.kpstv.xclipper.App
-import com.kpstv.xclipper.App.STAGGERED_SPAN_COUNT
-import com.kpstv.xclipper.App.STAGGERED_SPAN_COUNT_MIN
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.databinding.DialogEditLayoutBinding
 import com.kpstv.xclipper.extensions.clone
 import com.kpstv.xclipper.extensions.drawableFrom
 import com.kpstv.xclipper.extensions.listeners.RepositoryListener
-import com.kpstv.xclipper.extensions.utils.ThemeUtils
+import com.kpstv.xclipper.ui.helpers.AppThemeHelper
 import com.kpstv.xclipper.extensions.viewBinding
 import com.kpstv.xclipper.ui.adapters.EditAdapter
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
@@ -30,6 +27,10 @@ class EditDialog : AppCompatActivity() {
     companion object {
         const val STATE_DIALOG_TEXT_FIELD = "state_dialog_text_field"
         const val STATE_TAG_RECYCLERVIEW = "state_tag_recyclerview"
+
+        private const val STAGGERED_SPAN_COUNT = 2
+        private const val STAGGERED_SPAN_COUNT_MIN = 1
+        private const val DELAY_SPAN: Long = 20
     }
 
     private val binding by viewBinding(DialogEditLayoutBinding::inflate)
@@ -44,7 +45,7 @@ class EditDialog : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        ThemeUtils.setDialogTheme(this)
+        AppThemeHelper.applyDialogTheme(this)
 
         setContentView(binding.root)
 
@@ -78,7 +79,7 @@ class EditDialog : AppCompatActivity() {
         /** A Timeout on binding creates a cool effect */
 
         lifecycleScope.launch {
-            delay(App.DELAY_SPAN)
+            delay(DELAY_SPAN)
             bindUI()
         }
     }
@@ -149,17 +150,18 @@ class EditDialog : AppCompatActivity() {
     }
 
     private fun bindUI() {
-        mainViewModel.editManager.spanCount.observe(this, {
-            refreshRecyclerView(it)
-        })
+        mainViewModel.editManager.spanCount.observe(this) { span ->
+            val finalSpanCount = if (span == -1) STAGGERED_SPAN_COUNT else span
+            refreshRecyclerView(finalSpanCount)
+        }
 
-        mainViewModel.editManager.tagFixedLiveData.observe(this, {
+        mainViewModel.editManager.tagFixedLiveData.observe(this) {
             if (it.size > 3)
                 mainViewModel.editManager.postSpanCount(STAGGERED_SPAN_COUNT)
             else
                 mainViewModel.editManager.postSpanCount(STAGGERED_SPAN_COUNT_MIN)
             adapter.submitList(it)
-        })
+        }
     }
 
     private fun refreshRecyclerView(span: Int) {
