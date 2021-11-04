@@ -18,9 +18,9 @@ import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.databinding.ItemClipBinding
 import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.extensions.utils.ClipUtils
-import com.kpstv.xclipper.ui.helpers.AppThemeHelper.Companion.CARD_CLICK_COLOR
-import com.kpstv.xclipper.ui.helpers.AppThemeHelper.Companion.CARD_COLOR
-import com.kpstv.xclipper.ui.helpers.AppThemeHelper.Companion.CARD_SELECTED_COLOR
+import com.kpstv.xclipper.ui.helpers.AppThemeHelper.CARD_CLICK_COLOR
+import com.kpstv.xclipper.ui.helpers.AppThemeHelper.CARD_COLOR
+import com.kpstv.xclipper.ui.helpers.AppThemeHelper.CARD_SELECTED_COLOR
 import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.getDataFromAttr
 
@@ -50,6 +50,16 @@ class CIAdapter(
     private val selectedItemObservers = HashMap<Int, Observer<Clip>>()
     private val multiSelectionObservers = HashMap<Int, Observer<Boolean>>()
     private val selectedClipsObservers = HashMap<Int, Observer<List<Clip>>>()
+    private var trimClipText : Boolean = false
+    private var loadImageMarkdownText : Boolean = true
+
+    fun setTextTrimmingEnabled(value : Boolean) {
+        trimClipText = value
+    }
+
+    fun setIsLoadingMarkdownEnabled(value: Boolean) {
+        loadImageMarkdownText = value
+    }
 
     override fun getItemViewType(position: Int) = 0
 
@@ -59,7 +69,7 @@ class CIAdapter(
     override fun onBindViewHolder(holder: MainHolder, position: Int) = with(holder.binding) {
         val clip = getItem(position)
 
-        ciTextView.text = if (App.trimClipText) clip.data.trim() else clip.data
+        ciTextView.text = if (trimClipText) clip.data.trim() else clip.data
         root.tag = clip.id // used for unsubscribing.
 
         if (clip.isPinned) {
@@ -68,7 +78,7 @@ class CIAdapter(
             icPinView.hide()
         }
 
-        if (App.LoadImageMarkdownText)
+        if (loadImageMarkdownText)
             renderImageMarkdown(holder, clip.data)
 
         ciTimeText.text = DateFormatConverter.getFormattedDate(clip.time)

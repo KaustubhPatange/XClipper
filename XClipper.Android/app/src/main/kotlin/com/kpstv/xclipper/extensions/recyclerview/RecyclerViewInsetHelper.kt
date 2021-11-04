@@ -11,9 +11,10 @@ class RecyclerViewInsetHelper : RecyclerView.ItemDecoration() {
     private var insetType: InsetType = InsetType.NONE
     private var gap: Int = 0
 
+    @Suppress("DEPRECATION")
     fun attach(recyclerView: RecyclerView, type: InsetType, extra: Boolean = false) {
         insetType = type
-        recyclerView.setOnApplyWindowInsetsListener { v, insets ->
+        recyclerView.setOnApplyWindowInsetsListener { _, insets ->
             gap = when(type) {
                 InsetType.TOP -> insets.systemWindowInsetTop
                 InsetType.BOTTOM -> insets.systemWindowInsetBottom

@@ -7,7 +7,11 @@ import com.kpstv.xclipper.extensions.SimpleFunction
 interface ClipboardProvider {
     fun isObserving(): Boolean
     fun startObserving()
-    fun observeClipboardChange()
+
+    /**
+     * @param action perform action with the data.
+     */
+    fun observeClipboardChange(action: (data: String) -> Boolean)
     fun removeClipboardObserver()
     fun setClipboard(item: ClipData?)
     fun getClipboard(): ClipData?

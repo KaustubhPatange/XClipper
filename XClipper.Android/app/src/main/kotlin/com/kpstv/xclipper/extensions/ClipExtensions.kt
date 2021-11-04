@@ -79,7 +79,7 @@ fun Clip.encrypt(): Clip {
 
 /** Converts name to lowercase name */
 fun ClipTag.small(): String {
-    return name.toLowerCase(Locale.ROOT)
+    return name.lowercase(Locale.ROOT)
 }
 
 operator fun Collection<ClipTagMap>.plus(elements: Collection<ClipTagMap>): List<ClipTagMap> {

@@ -1,7 +1,6 @@
 package com.kpstv.xclipper.extensions.utils
 
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
-import com.kpstv.xclipper.App.gson
 import com.kpstv.xclipper.extensions.await
 import com.kpstv.xclipper.extensions.utils.interceptors.NetworkConnectionInterceptor
 import com.kpstv.xclipper.extensions.utils.interceptors.NoInternetException
@@ -31,9 +30,7 @@ class RetrofitUtils @Inject constructor(
     fun getRetrofitBuilder(): Retrofit.Builder {
         return retrofitBuilder ?: Retrofit.Builder().apply {
             addCallAdapterFactory(CoroutineCallAdapterFactory())
-            addConverterFactory(
-                GsonConverterFactory.create(gson)
-            )
+            addConverterFactory(GsonConverterFactory.create(GsonUtils.get()))
             client(getHttpClient())
         }.also { retrofitBuilder = it }
     }

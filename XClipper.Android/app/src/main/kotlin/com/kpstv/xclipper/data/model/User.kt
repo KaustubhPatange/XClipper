@@ -4,10 +4,10 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.kpstv.bindings.AutoGenerateConverter
 import com.kpstv.bindings.ConverterType
-import com.kpstv.xclipper.App
-import com.kpstv.xclipper.App.gson
 import com.kpstv.xclipper.extensions.LicenseType
 import com.kpstv.xclipper.extensions.mapToClass
+import com.kpstv.xclipper.extensions.utils.GsonUtils
+import com.kpstv.xclipper.extensions.utils.SyncUtils
 
 data class User(
     val IsLicensed: Boolean,
@@ -21,8 +21,8 @@ data class User(
         fun parse(userDomain: UserDomain): User {
             return User(
                 IsLicensed = userDomain.IsLicensed ?: false,
-                TotalConnection = userDomain.TotalConnection ?: App.getMaxConnection(false),
-                MaxItemStorage = userDomain.MaxItemStorage ?: App.getMaxStorage(false),
+                TotalConnection = userDomain.TotalConnection ?: SyncUtils.getMaxConnection(false),
+                MaxItemStorage = userDomain.MaxItemStorage ?: SyncUtils.getMaxStorage(false),
                 LicenseStrategy = userDomain.LicenseStrategy ?: LicenseType.Invalid,
                 Clips = userDomain.Clips?.filterNotNull(),
                 Devices = userDomain.Devices?.filterNotNull()
@@ -30,7 +30,7 @@ data class User(
         }
         fun parse(userEntity: UserEntity): User = mapToClass(userEntity)
         fun from(json: String): User {
-            return gson.fromJson(json, UserDomain::class.java).toUser()
+            return GsonUtils.get().fromJson(json, UserDomain::class.java).toUser()
         }
     }
 }

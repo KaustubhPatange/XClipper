@@ -34,6 +34,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.PrintWriter
 import java.io.StringWriter
 
+@Suppress("DEPRECATION")
 class Crash : AppCompatActivity() {
     companion object {
         private const val CRASH_TRACE = "crash_trace"

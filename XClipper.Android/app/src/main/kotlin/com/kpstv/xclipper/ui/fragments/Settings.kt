@@ -15,7 +15,7 @@ import com.kpstv.xclipper.R
 import com.kpstv.xclipper.databinding.ActivitySettingsBinding
 import com.kpstv.xclipper.extensions.applyTopInsets
 import com.kpstv.xclipper.extensions.drawableFrom
-import com.kpstv.xclipper.ui.helpers.AppThemeHelper.Companion.registerForThemeChange
+import com.kpstv.xclipper.ui.helpers.AppThemeHelper.registerForThemeChange
 import com.kpstv.xclipper.extensions.viewBinding
 import com.kpstv.xclipper.ui.activities.NavViewModel
 import com.kpstv.xclipper.ui.activities.Start

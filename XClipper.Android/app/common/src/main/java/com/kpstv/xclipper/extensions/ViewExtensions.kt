@@ -75,6 +75,7 @@ fun View.findViewByText(text: String, ignoreCase: Boolean = true) : TextView? {
 }
 
 inline fun <reified T: ViewGroup> View.findParent(identifier: Int = -1) : T? = findParent(T::class, identifier)
+@Suppress("UNCHECKED_CAST")
 fun <T: ViewGroup> View.findParent(clazz: KClass<T>, identifier: Int = -1) : T? {
     val parent = parent
     if (parent != null && parent is View) {

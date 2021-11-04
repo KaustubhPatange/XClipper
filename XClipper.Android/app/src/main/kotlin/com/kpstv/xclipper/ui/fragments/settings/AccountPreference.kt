@@ -6,11 +6,6 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.kpstv.xclipper.App
-import com.kpstv.xclipper.App.AUTO_SYNC_PREF
-import com.kpstv.xclipper.App.BIND_DELETE_PREF
-import com.kpstv.xclipper.App.BIND_PREF
-import com.kpstv.xclipper.App.UID
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
@@ -19,6 +14,7 @@ import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.logoutFromDatabase
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showConnectDialog
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showConnectionDialog
+import com.kpstv.xclipper.ui.helpers.AppSettings
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
@@ -27,11 +23,9 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class AccountPreference : PreferenceFragmentCompat() {
 
-    @Inject
-    lateinit var preferenceProvider: PreferenceProvider
-
-    @Inject
-    lateinit var dbConnectionProvider: DBConnectionProvider
+    @Inject lateinit var preferenceProvider: PreferenceProvider
+    @Inject lateinit var dbConnectionProvider: DBConnectionProvider
+    @Inject lateinit var appSettings: AppSettings
 
     private val mainViewModel: MainViewModel by viewModels()
 
@@ -40,6 +34,10 @@ class AccountPreference : PreferenceFragmentCompat() {
     private var bindDeletePreference: SwitchPreferenceCompat? = null
     private var logPreference: Preference? = null
     private var connectPreference: Preference? = null
+
+    private val connectionUID : String? by lazy {
+        dbConnectionProvider.optionsProvider()?.uid
+    }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.account_pref, rootKey)
@@ -76,7 +74,7 @@ class AccountPreference : PreferenceFragmentCompat() {
         /** Connect Preference */
         connectPreference = findPreference(CONNECT_PREF)
         connectPreference?.setOnPreferenceClickListener {
-            if (UID.isBlank())
+            if (connectionUID.isNullOrBlank())
                 showConnectDialog(requireActivity())
             else
                 Toasty.info(requireContext(), getString(R.string.connection_exist)).show()
@@ -86,14 +84,14 @@ class AccountPreference : PreferenceFragmentCompat() {
         /** Database binding preference */
         bindPreference = findPreference(BIND_PREF)
         bindPreference?.setOnPreferenceChangeListener { _, newValue ->
-            App.bindToFirebase = newValue as Boolean
+            appSettings.setDatabaseBindingEnabled(newValue as Boolean)
             true
         }
 
         /** Auto sync preference */
         autoSyncPreference = findPreference(AUTO_SYNC_PREF)
         autoSyncPreference?.setOnPreferenceChangeListener { _, newValue ->
-            App.runAutoSync = newValue as Boolean
+            appSettings.setDatabaseAutoSyncEnabled(newValue as Boolean)
             true
         }
 
@@ -106,7 +104,7 @@ class AccountPreference : PreferenceFragmentCompat() {
                     .setCancelable(false)
                     .setMessage(getString(R.string.bind_delete_warning))
                     .setPositiveButton(R.string.ok) { _, _ ->
-                        App.bindDelete = newValue as Boolean
+                        appSettings.setDatabaseDeleteBindingEnabled(newValue as Boolean)
                     }
                     .setNeutralButton(R.string.cancel) { _, _ ->
                         bindDeletePreference?.isChecked = false
@@ -120,7 +118,7 @@ class AccountPreference : PreferenceFragmentCompat() {
         findPreference<Preference>(FORCE_REMOVE_PREF)?.setOnPreferenceClickListener {
             logoutFromDatabase(
                 context = requireContext(),
-                preferenceProvider = preferenceProvider,
+                appSettings = appSettings,
                 dbConnectionProvider = dbConnectionProvider
             )
             Toasty.info(requireContext(), getString(R.string.force_logout_text)).show()
@@ -141,13 +139,13 @@ class AccountPreference : PreferenceFragmentCompat() {
 
     private fun bindUI() {
         preferenceProvider.observePreference()
-        { _, s ->
+        { _, _ ->
             checkForPreferenceChanged()
         }
     }
 
     private fun checkForPreferenceChanged() {
-        if (UID.isBlank()) {
+        if (connectionUID.isNullOrBlank()) {
             connectPreference?.isEnabled = true
             logPreference?.isEnabled = false
             bindPreference?.isEnabled = false
@@ -162,8 +160,8 @@ class AccountPreference : PreferenceFragmentCompat() {
             autoSyncPreference?.isEnabled = true
             bindDeletePreference?.isEnabled = true
 
-            bindPreference?.isChecked = App.bindToFirebase
-            autoSyncPreference?.isChecked = App.runAutoSync
+            bindPreference?.isChecked = appSettings.isDatabaseBindingEnabled()
+            autoSyncPreference?.isChecked = appSettings.isDatabaseAutoSyncEnabled()
         }
     }
 
@@ -172,5 +170,8 @@ class AccountPreference : PreferenceFragmentCompat() {
         private const val FORCE_REMOVE_PREF = "forceRemove_pref"
         private const val LOGOUT_PREF = "logout_pref"
         private const val CONNECT_PREF = "connect_pref"
+        private const val AUTO_SYNC_PREF = "autoSync_pref"
+        private const val BIND_PREF = "bind_pref"
+        private const val BIND_DELETE_PREF = "bindDelete_pref"
     }
 }

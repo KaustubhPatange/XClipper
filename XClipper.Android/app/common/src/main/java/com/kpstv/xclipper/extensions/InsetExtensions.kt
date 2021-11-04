@@ -4,6 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.*
 
+@Suppress("DEPRECATION")
 fun View.applyBottomInsets(to: View = this, merge: Boolean = false, pad: Boolean = false, extra: Int = 0) {
     val marginBottom = to.marginBottom
     val paddingBottom = to.paddingBottom
@@ -19,6 +20,7 @@ fun View.applyBottomInsets(to: View = this, merge: Boolean = false, pad: Boolean
     }
 }
 
+@Suppress("DEPRECATION")
 fun View.applyTopInsets(to: View = this, merge: Boolean = false, pad: Boolean = false, extra: Int = 0) {
     val marginTop = to.marginTop
     val paddingTop = to.paddingTop

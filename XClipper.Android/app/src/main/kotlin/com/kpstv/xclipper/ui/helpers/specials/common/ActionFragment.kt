@@ -1,6 +1,5 @@
 package com.kpstv.xclipper.ui.helpers.specials.common
 
-import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.navigation.ValueFragment
 import com.kpstv.xclipper.extensions.SimpleFunction
 import com.kpstv.xclipper.extensions.getAttrResourceId
-import com.kpstv.xclipper.extensions.getColorAttr
 import com.kpstv.xclipper.extensions.layoutInflater
 import com.kpstv.xclipper.ui.helpers.specials.SpecialAction
 import com.kpstv.xclipper.ui.helpers.specials.SpecialSettings
@@ -75,10 +73,8 @@ abstract class ActionFragment : ValueFragment() {
             val item = items[position]
 
             holder.bind(
-                item = item,
-                position = position,
-                onClickListener = { itemClickListener(item, position) }
-            )
+                item = item
+            ) { itemClickListener(item, position) }
         }
 
         override fun getItemCount(): Int = items.size
@@ -100,7 +96,7 @@ abstract class ActionFragment : ValueFragment() {
                 view.setBackgroundResource(resourceId)
             }
 
-            fun bind(item: ActionItem, position: Int, onClickListener: SimpleFunction) {
+            fun bind(item: ActionItem, onClickListener: SimpleFunction) {
                 title.text = item.title
                 message.text = item.message
                 icon.setImageResource(item.icon)

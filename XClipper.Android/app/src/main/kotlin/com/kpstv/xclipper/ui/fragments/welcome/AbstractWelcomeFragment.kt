@@ -3,11 +3,9 @@ package com.kpstv.xclipper.ui.fragments.welcome
 import android.animation.ValueAnimator
 import android.content.res.ColorStateList
 import android.os.Bundle
-import android.text.Spannable
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.Spanned
-import android.text.style.ForegroundColorSpan
 import android.view.View
 import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
@@ -17,15 +15,14 @@ import com.kpstv.navigation.AnimationDefinition
 import com.kpstv.navigation.HistoryOptions
 import com.kpstv.navigation.NavAnimation
 import com.kpstv.navigation.ValueFragment
-import com.kpstv.xclipper.App
 import com.kpstv.xclipper.R
-import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.databinding.FragmentWelcomeBinding
 import com.kpstv.xclipper.extensions.SimpleFunction
 import com.kpstv.xclipper.extensions.applyBottomInsets
 import com.kpstv.xclipper.extensions.viewBinding
 import com.kpstv.xclipper.ui.activities.NavViewModel
 import com.kpstv.xclipper.ui.activities.Start
+import com.kpstv.xclipper.ui.helpers.AppSettings
 import javax.inject.Inject
 
 abstract class AbstractWelcomeFragment : ValueFragment(R.layout.fragment_welcome) {
@@ -53,7 +50,7 @@ abstract class AbstractWelcomeFragment : ValueFragment(R.layout.fragment_welcome
     private val navViewModel by activityViewModels<NavViewModel>()
 
     @Inject
-    lateinit var preferenceProvider: PreferenceProvider
+    lateinit var appSettings: AppSettings
 
     protected abstract fun getConfigurations() : Configuration
 
@@ -85,7 +82,7 @@ abstract class AbstractWelcomeFragment : ValueFragment(R.layout.fragment_welcome
             previousPaletteColor = palette
 
             if (configs.isLastScreen) {
-                preferenceProvider.putBooleanKey(App.TUTORIAL_PREF, true)
+                appSettings.setOnBoardingScreensShowed(true)
             }
 
             if (configs.directions != null)

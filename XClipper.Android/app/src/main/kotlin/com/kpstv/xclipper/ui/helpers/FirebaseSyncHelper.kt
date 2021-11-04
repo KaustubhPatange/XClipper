@@ -10,6 +10,7 @@ import com.kpstv.xclipper.App
 import com.kpstv.xclipper.BuildConfig
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.di.CommonReusableEntryPoints
+import com.kpstv.xclipper.extensions.utils.DeviceUtils
 import com.kpstv.xclipper.extensions.utils.Utils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -34,7 +35,7 @@ object FirebaseSyncHelper {
             if (BuildConfig.VERSION_CODE == MIGRATION_FROM_VERSION && isRegistered(context)
                 && !preferenceProvider.getBooleanKey(MIGRATE_EXIST_PREF, false)
             ) {
-                firebaseProvider.removeDevice(App.DeviceID)
+                firebaseProvider.removeDevice(DeviceUtils.getDeviceId(context))
                 FirebaseApp.getApps(context).forEach { app ->
                     Firebase.auth(app).signOut()
                     app.delete()

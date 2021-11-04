@@ -27,6 +27,7 @@ class NetworkConnectionInterceptor @Inject constructor(
         return chain.proceed(chain.request())
     }
 
+    @Suppress("DEPRECATION")
     private fun isOnline(): Boolean {
         val connectivityManager = appContext.getSystemService(Context.CONNECTIVITY_SERVICE)
                 as ConnectivityManager

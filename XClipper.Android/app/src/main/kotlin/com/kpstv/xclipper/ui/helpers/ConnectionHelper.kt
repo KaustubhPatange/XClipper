@@ -51,7 +51,7 @@ class ConnectionHelper(
     private fun makeAConnectionRequest(options: FBOptions) {
         val dialog = Utils.showConnectionDialog(activity)
 
-        mainViewModel.updateDeviceConnection(options, ResponseListener(
+        mainViewModel.updateDeviceConnection(activity.applicationContext, options, ResponseListener(
             complete = {
                 Toasty.info(activity, activity.getString(R.string.connect_success)).show()
                 dialog.dismiss()

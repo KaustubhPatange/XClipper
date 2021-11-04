@@ -9,6 +9,7 @@ object LanguageDetector {
         return baseMap.getOrElse(lang) { "Copy" }
     }
 
+    @Suppress("DEPRECATION")
     fun find(context: Context): String {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             context.resources.configuration.locales[0].language

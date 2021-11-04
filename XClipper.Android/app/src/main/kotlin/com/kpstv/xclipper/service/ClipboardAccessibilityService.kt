@@ -13,8 +13,6 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.MutableLiveData
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.kpstv.hvlog.HVLog
-import com.kpstv.xclipper.App
-import com.kpstv.xclipper.App.showSuggestion
 import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.extensions.Logger
 import com.kpstv.xclipper.extensions.broadcastManager
@@ -29,6 +27,7 @@ import com.kpstv.xclipper.service.helper.LanguageDetector
 import com.kpstv.xclipper.ui.fragments.settings.GeneralPreference
 import com.kpstv.xclipper.ui.helpers.AppSettingKeys
 import com.kpstv.xclipper.ui.helpers.AppSettings
+import com.kpstv.xclipper.ui.helpers.ClipRepositoryHelper
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -41,6 +40,8 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
     lateinit var clipboardProvider: ClipboardProvider
     @Inject
     lateinit var appSettings: AppSettings
+    @Inject
+    lateinit var clipboardRepositoryHelper: ClipRepositoryHelper
 
     private lateinit var clipboardDetector: ClipboardDetection
     private lateinit var clipboardLogDetector: ClipboardLogDetector
@@ -54,9 +55,6 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
         private const val ACTION_DISABLE_SERVICE = "com.kpstv.xclipper.disable_service"
         private const val ACTION_ENABLE_IMPROVE_DETECTION = "com.kpstv.xclipper.action_enable_improve_detection"
         private const val ACTION_DISABLE_IMPROVE_DETECTION = "com.kpstv.xclipper.action_disable_improve_detection"
-
-        @Volatile
-        var currentPackage: CharSequence? = null
 
         @RequiresApi(Build.VERSION_CODES.N)
         fun disableService(context: Context) {
@@ -75,6 +73,8 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
     private lateinit var powerManager: PowerManager
 
     private var nodeInfo: AccessibilityNodeInfo? = null
+    private var currentPackage: CharSequence? = null
+    private var blackListedApps: Set<String> = emptySet()
     private var editableNode: AccessibilityNodeInfo? = null
 
     /**
@@ -91,7 +91,7 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
     private val screenInteraction = MutableLiveData(true)
 
     private var runForNextEventAlso = false
-    private val TAG = javaClass.simpleName
+    private val TAG = "ClipboardAccessibilityService"
 
     override fun onCreate() {
         super.onCreate()
@@ -173,13 +173,21 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
         serviceInfo = info
 
         firebaseUtils.observeDatabaseChangeEvents()
-        clipboardProvider.observeClipboardChange()
+        clipboardProvider.observeClipboardChange(
+            action = { data ->
+                return@observeClipboardChange if (!isPackageBlacklisted(currentPackage)) {
+                    clipboardRepositoryHelper.insertOrUpdateClip(data)
+                    true
+                } else false
+            }
+        )
 
         keyboardVisibility.observeForever { visible ->
             updateMemory()
+            val canShowSuggestions = appSettings.canShowClipboardSuggestions()
             /** A safe check to make sure we should check permission if we
              *  are using service related to it. */
-            if (isSystemOverlayEnabled(applicationContext) && showSuggestion && !deviceRunningLowMemory) {
+            if (isSystemOverlayEnabled(applicationContext) && canShowSuggestions && !deviceRunningLowMemory) {
                 if (visible)
                     try {
                         startService(Intent(applicationContext, BubbleService::class.java))
@@ -220,7 +228,7 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
     private fun registerClipboardLogDetector() {
         clipboardLogDetector.registerListener(object : ClipboardLogDetector.Listener {
             override fun onClipboardEventDetected() {
-                if (!runForNextEventAlso && !ChangeClipboardActivity.isRunning(applicationContext)) {
+                if (!runForNextEventAlso && !ChangeClipboardActivity.isRunning(applicationContext) && !isPackageBlacklisted(currentPackage)) {
                     runChangeClipboardActivity()
                 }
             }
@@ -233,6 +241,7 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
             clipboardLogDetector.startDetecting()
     }
 
+    @Suppress("UNCHECKED_CAST")
     private val settingsListener = AppSettings.Listener { key, value ->
         if (key == AppSettingKeys.IMPROVE_DETECTION && value is Boolean) {
             if (value) {
@@ -240,6 +249,9 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
             } else {
                 Actions.sendImproveDetectionDisable(applicationContext)
             }
+        }
+        if (key == AppSettingKeys.CLIPBOARD_BLACKLIST_APPS) {
+            blackListedApps = value as Set<String>
         }
     }
 
@@ -337,8 +349,7 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
     /**
      * Returns true if the current package name is not part of blacklist app list.
      */
-    private fun isPackageBlacklisted(pkg: CharSequence?) =
-        App.blackListedApps?.contains(pkg) == true
+    private fun isPackageBlacklisted(pkg: CharSequence?) = blackListedApps.contains(pkg)
 
     private val lock = Any()
     private fun runChangeClipboardActivity() = synchronized(lock) {

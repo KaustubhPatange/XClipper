@@ -16,21 +16,19 @@ import com.kpstv.firebase.extensions.singleValueEvent
 import com.kpstv.firebase.extensions.valueEventFlow
 import com.kpstv.hvlog.HVLog
 import com.kpstv.license.Encryption.Decrypt
-import com.kpstv.xclipper.App.APP_MAX_DEVICE
-import com.kpstv.xclipper.App.APP_MAX_ITEM
-import com.kpstv.xclipper.App.DeviceID
-import com.kpstv.xclipper.App.UID
-import com.kpstv.xclipper.App.bindDelete
-import com.kpstv.xclipper.App.bindToFirebase
-import com.kpstv.xclipper.App.getMaxConnection
-import com.kpstv.xclipper.App.getMaxStorage
-import com.kpstv.xclipper.App.gson
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.FBOptions
 import com.kpstv.xclipper.data.localized.dao.UserEntityDao
-import com.kpstv.xclipper.data.model.*
+import com.kpstv.xclipper.data.model.Clip
+import com.kpstv.xclipper.data.model.Device
+import com.kpstv.xclipper.data.model.User
+import com.kpstv.xclipper.data.model.UserEntity
 import com.kpstv.xclipper.extensions.*
-import com.kpstv.xclipper.extensions.listeners.*
+import com.kpstv.xclipper.extensions.listeners.ResponseResult
+import com.kpstv.xclipper.extensions.utils.DeviceUtils
+import com.kpstv.xclipper.extensions.utils.GsonUtils
+import com.kpstv.xclipper.extensions.utils.SyncUtils
+import com.kpstv.xclipper.ui.helpers.AppSettings
 import com.kpstv.xclipper.ui.helpers.FirebaseSyncHelper
 import dagger.hilt.android.qualifiers.ApplicationContext
 import es.dmoral.toasty.Toasty
@@ -41,6 +39,7 @@ import javax.inject.Inject
 class FirebaseProviderImpl @Inject constructor(
     @ApplicationContext private val context: Context,
     private val dbConnectionProvider: DBConnectionProvider,
+    private val appSettings: AppSettings,
     private val currentUserRepository: UserEntityDao
 ) : FirebaseProvider {
 
@@ -48,6 +47,9 @@ class FirebaseProviderImpl @Inject constructor(
         private const val USER_REF = "users"
         private const val CLIP_REF = "Clips"
         private const val DEVICE_REF = "Devices"
+
+        private var APP_MAX_DEVICE = SyncUtils.getMaxConnection(false)
+        private var APP_MAX_ITEM = SyncUtils.getMaxStorage(false)
     }
 
     private val TAG = javaClass.simpleName
@@ -57,6 +59,10 @@ class FirebaseProviderImpl @Inject constructor(
     private var validDevice: Boolean = false
     private var licenseStrategy = MutableLiveData(LicenseType.Invalid)
     private lateinit var database: FirebaseDatabase
+
+    private var gson = GsonUtils.get()
+
+    private fun getUID() : String? = dbConnectionProvider.optionsProvider()?.uid
 
     override fun isInitialized() = isInitialized
 
@@ -116,7 +122,7 @@ class FirebaseProviderImpl @Inject constructor(
 
         checkForUserDetailsAndUpdateLocal()
 
-        /** For some reasons [DeviceID] already exist in the database
+        /** For some reasons DeviceId already exist in the database
          *  we will post success response.
          */
         if (list.any { it.id == DeviceId }) {
@@ -174,13 +180,13 @@ class FirebaseProviderImpl @Inject constructor(
         uploadStatus: UploadStatus
     ): ResponseResult<Unit> {
         HVLog.d()
-
-        if (UID.isBlank()) return ResponseResult.error("Error: Invalid UID")
+        val uid = getUID()
+        if (uid.isNullOrBlank()) return ResponseResult.error("Error: Invalid UID")
 
         Log.e(TAG, "ListSize: ${list.size}, List: $list")
 
         /** Must pass toList to firebase otherwise it add list as linear data. */
-        val result: DataResponse<DatabaseReference> = database.getReference(USER_REF).child(UID).child(DEVICE_REF).setValueAsync(list.toList())
+        val result: DataResponse<DatabaseReference> = database.getReference(USER_REF).child(uid).child(DEVICE_REF).setValueAsync(list.toList())
 
         currentUserRepository.updateDevices(list)
 
@@ -292,7 +298,11 @@ class FirebaseProviderImpl @Inject constructor(
      */
     private suspend fun pushDataToFirebase(list: ArrayList<Clip>) {
         HVLog.d()
-        val result = database.getReference(USER_REF).child(UID).child(CLIP_REF).setValueAsync(list.cloneToEntries())
+        val uid = getUID() ?: run {
+            Log.e(TAG, "Error: UID not initialized")
+            return
+        }
+        val result = database.getReference(USER_REF).child(uid).child(CLIP_REF).setValueAsync(list.cloneToEntries())
         when(result) {
             is DataResponse.Complete -> {
                 currentUserRepository.updateClips(list)
@@ -330,7 +340,7 @@ class FirebaseProviderImpl @Inject constructor(
          * This check will make sure that user can only update firebase database
          *  when following criteria satisfies
          */
-        if (validationContext == ValidationContext.Default && !bindToFirebase || !dbConnectionProvider.isValidData()) {
+        if (validationContext == ValidationContext.Default && !appSettings.isDatabaseBindingEnabled() || !dbConnectionProvider.isValidData()) {
             HVLog.d("Returning false - 1")
             return false
         }
@@ -348,7 +358,11 @@ class FirebaseProviderImpl @Inject constructor(
 
         if (!currentUserRepository.isExist() || validationContext == ValidationContext.ForceInvoke) {
             HVLog.d("Getting user for first time or a force invoke?")
-            val result = database.getReference(USER_REF).child(UID).singleValueEvent()
+            val uid = getUID() ?: run {
+                Log.e(TAG, "Error: UID is empty")
+                return false
+            }
+            val result = database.getReference(USER_REF).child(uid).singleValueEvent()
             return when(result) {
                 is DataResponse.Complete -> {
                     val json = gson.toJson(result.data.value)
@@ -384,6 +398,9 @@ class FirebaseProviderImpl @Inject constructor(
         job?.cancel()
         job = SupervisorJob()
         HVLog.d()
+
+        val uid = getUID()
+
         if (!dbConnectionProvider.isValidData()) {
             HVLog.d("Invalid account preference")
             error.invoke(Exception("Invalid account preference"))
@@ -394,7 +411,7 @@ class FirebaseProviderImpl @Inject constructor(
         if (isInitialized.value == false)
             initialize(dbConnectionProvider.optionsProvider())
 
-        if (UID.isEmpty()) {
+        if (uid.isNullOrBlank()) {
             HVLog.d("Empty UID")
             return
         }
@@ -402,7 +419,7 @@ class FirebaseProviderImpl @Inject constructor(
         inconsistentDataListener = inconsistentData
 
         CoroutineScope(Dispatchers.Main + job!!).launch {
-            database.getReference(USER_REF).child(UID).valueEventFlow().collect { result ->
+            database.getReference(USER_REF).child(uid).valueEventFlow().collect { result ->
                 job?.ensureActive()
                 when(result) {
                     is ValueEventResponse.Changed -> {
@@ -412,7 +429,7 @@ class FirebaseProviderImpl @Inject constructor(
 
                         checkForUserDetailsAndUpdateLocal()
 
-                        validDevice = (firebaseUser.Devices ?: mutableListOf()).count { it.id == DeviceID } > 0
+                        validDevice = (firebaseUser.Devices ?: mutableListOf()).count { it.id == DeviceUtils.getDeviceId(context) } > 0
 
                         if (!validDevice) {
                             deviceValidated.invoke(validDevice)
@@ -430,7 +447,7 @@ class FirebaseProviderImpl @Inject constructor(
 
                         firebaseClips.minus(userClips).let { if (it.isNotEmpty()) changed.invoke(it) }
 
-                        if (bindDelete) {
+                        if (appSettings.isDatabaseDeleteBindingEnabled()) {
                             val userDataClips = userClips.map { it.data }
                             val firebaseDataClips = firebaseClips.map { it.data }
                             userDataClips.minus(firebaseDataClips).let { if (it.isNotEmpty()) launchInMain { removed.invoke(it) } }
@@ -457,8 +474,8 @@ class FirebaseProviderImpl @Inject constructor(
     private suspend fun checkForUserDetailsAndUpdateLocal() {
         HVLog.d()
         val user = currentUserRepository.get()
-        APP_MAX_DEVICE = user?.TotalConnection ?: getMaxConnection(isLicensed())
-        APP_MAX_ITEM = user?.MaxItemStorage ?: getMaxStorage(isLicensed())
+        APP_MAX_DEVICE = user?.TotalConnection ?: SyncUtils.getMaxConnection(isLicensed())
+        APP_MAX_ITEM = user?.MaxItemStorage ?: SyncUtils.getMaxStorage(isLicensed())
         user?.LicenseStrategy?.let { licenseStrategy.postValue(it) }
     }
 
@@ -485,8 +502,8 @@ class FirebaseProviderImpl @Inject constructor(
         val user = currentUserRepository.get()
         currentUserRepository.remove()
         licenseStrategy.postValue(LicenseType.Invalid)
-        APP_MAX_DEVICE = user?.TotalConnection ?: getMaxConnection(isLicensed())
-        APP_MAX_ITEM = user?.MaxItemStorage ?: getMaxStorage(isLicensed())
+        APP_MAX_DEVICE = user?.TotalConnection ?: SyncUtils.getMaxConnection(isLicensed())
+        APP_MAX_ITEM = user?.MaxItemStorage ?: SyncUtils.getMaxStorage(isLicensed())
     }
 
     override fun removeDataObservation() {

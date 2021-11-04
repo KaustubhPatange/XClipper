@@ -120,6 +120,6 @@ enum class ClipTag {
 
     companion object {
         fun fromValue(text: String) =
-            enumValueOrNull<ClipTag>(text.toUpperCase(Locale.ROOT))
+            enumValueOrNull<ClipTag>(text.uppercase(Locale.ROOT))
     }
 }

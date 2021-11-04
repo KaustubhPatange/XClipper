@@ -30,10 +30,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.zxing.integration.android.IntentIntegrator
-import com.kpstv.xclipper.App
-import com.kpstv.xclipper.App.AUTO_SYNC_PREF
-import com.kpstv.xclipper.App.BIND_DELETE_PREF
-import com.kpstv.xclipper.App.BIND_PREF
 import com.kpstv.xclipper.BuildConfig
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.FBOptions
@@ -47,6 +43,7 @@ import com.kpstv.xclipper.extensions.SimpleFunction
 import com.kpstv.xclipper.extensions.layoutInflater
 import com.kpstv.xclipper.service.ClipboardAccessibilityService
 import com.kpstv.xclipper.ui.dialogs.FeatureDialog
+import com.kpstv.xclipper.ui.helpers.AppSettings
 import com.kpstv.xclipper.ui.helpers.AuthenticationHelper
 import com.kpstv.xclipper.ui.helpers.FirebaseSyncHelper
 import es.dmoral.toasty.Toasty
@@ -59,6 +56,7 @@ import kotlin.reflect.KClass
 
 class Utils {
     companion object {
+        @Suppress("DEPRECATION")
         fun isActivityRunning(ctx: Context, clazz: KClass<out Activity>): Boolean {
             val activityManager = ctx.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
             return activityManager.getRunningTasks(Int.MAX_VALUE).any {
@@ -98,7 +96,7 @@ class Utils {
             var contryDialCode: String? = null
             val telephonyMngr =
                 context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-            val countryId = telephonyMngr.simCountryIso.toUpperCase(Locale.ROOT)
+            val countryId = telephonyMngr.simCountryIso.uppercase(Locale.ROOT)
             val arrContryCode: Array<String> =
                 context.resources.getStringArray(R.array.DialingCountryCode)
             for (i in arrContryCode.indices) {
@@ -123,13 +121,6 @@ class Utils {
                 false
             }
         }
-
-
-        /**
-         * Returns true if the current package name is not part of blacklist app list.
-         */
-        fun isPackageBlacklisted(pkg: CharSequence?) =
-            App.blackListedApps?.contains(pkg) == true
 
         /**
          * This will check if accessibility service is enabled or not.
@@ -307,7 +298,7 @@ class Utils {
 
         fun logoutFromDatabase(
             context: Context,
-            preferenceProvider: PreferenceProvider,
+            appSettings: AppSettings,
             dbConnectionProvider: DBConnectionProvider
         ) {
             dbConnectionProvider.optionsProvider()?.apply {
@@ -319,24 +310,21 @@ class Utils {
                 }
             }
             dbConnectionProvider.detachDataFromAll()
-            preferenceProvider.putBooleanKey(BIND_PREF, false)
-            preferenceProvider.putBooleanKey(AUTO_SYNC_PREF, false)
-            preferenceProvider.putBooleanKey(BIND_DELETE_PREF, false)
-            App.bindToFirebase = false
-            App.runAutoSync = false
-            App.bindDelete = false
+
+            appSettings.setDatabaseDeleteBindingEnabled(false)
+            appSettings.setDatabaseBindingEnabled(false)
+            appSettings.setDatabaseAutoSyncEnabled(false)
         }
 
         fun loginToDatabase(
-            preferenceProvider: PreferenceProvider,
+            appSettings: AppSettings,
             dbConnectionProvider: DBConnectionProvider,
             options: FBOptions
         ) {
             dbConnectionProvider.saveOptionsToAll(options)
-            preferenceProvider.putBooleanKey(BIND_PREF, true)
-            preferenceProvider.putBooleanKey(AUTO_SYNC_PREF, true)
-            App.bindToFirebase = true
-            App.runAutoSync = true
+
+            appSettings.setDatabaseBindingEnabled(true)
+            appSettings.setDatabaseAutoSyncEnabled(true)
         }
 
         fun isValidSQLite(stream: InputStream?): Boolean {
@@ -362,6 +350,7 @@ class Utils {
             return value * (resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
         }
 
+        @Suppress("DEPRECATION")
         fun vibrateDevice(context: Context) {
             val m = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -371,14 +360,14 @@ class Utils {
             }
         }
 
-        fun showSearchFeatureDialog(context: Context, preferenceProvider: PreferenceProvider): Boolean {
-            if (preferenceProvider.getBooleanKey(App.SHOW_SEARCH_FEATURE, true)) {
+        fun showSearchFeatureDialog(context: Context, appSettings: AppSettings): Boolean {
+            if (!appSettings.isBubbleOnBoardingDialogShown()) {
                 FeatureDialog(context)
                     .setResourceId(R.drawable.feature_suggestion_search)
                     .setTitle(R.string.search_title)
                     .setSubtitle(R.string.search_subtitle)
                     .show()
-                preferenceProvider.putBooleanKey(App.SHOW_SEARCH_FEATURE, false)
+                appSettings.setBubbleOnBoardingDialogShown(true)
                 return true
             }
             return false

@@ -27,6 +27,7 @@ import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showSearchFeatureDialog
 import com.kpstv.xclipper.ui.activities.SpecialActions
+import com.kpstv.xclipper.ui.helpers.AppSettings
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import javax.inject.Inject
@@ -37,7 +38,7 @@ class BubbleService : FloatingBubbleService() {
     @Inject
     lateinit var repository: MainRepository
     @Inject
-    lateinit var preferenceProvider: PreferenceProvider
+    lateinit var appSettings: AppSettings
     @Inject
     lateinit var clipboardProvider: ClipboardProvider
 
@@ -131,7 +132,7 @@ class BubbleService : FloatingBubbleService() {
     override fun getTouchListener(): FloatingBubbleTouchListener {
         return object : DefaultFloatingBubbleTouchListener() {
             override fun onTap(expanded: Boolean) {
-                if (!showSearchFeatureDialog(context, preferenceProvider)) {
+                if (!showSearchFeatureDialog(context, appSettings)) {
                     if (expanded && shouldResubscribe) subscribeSuggestions()
                 } else {
                     setState(false)

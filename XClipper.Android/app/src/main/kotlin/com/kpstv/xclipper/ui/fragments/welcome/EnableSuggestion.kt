@@ -9,7 +9,9 @@ import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.isSystemOverlayEnabled
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showOverlayDialog
 import com.kpstv.xclipper.ui.activities.Start
+import com.kpstv.xclipper.ui.helpers.AppSettings
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class EnableSuggestion : AbstractWelcomeFragment() {
@@ -37,8 +39,7 @@ class EnableSuggestion : AbstractWelcomeFragment() {
 
     override fun onResume() {
         super.onResume()
-        App.showSuggestion = isSystemOverlayEnabled(requireContext())
-        preferenceProvider.putBooleanKey(App.SUGGESTION_PREF, isSystemOverlayEnabled(requireContext()))
+        appSettings.setShowClipboardSuggestions(isSystemOverlayEnabled(requireContext()))
     }
 
     private fun navigateToNextScreen() {

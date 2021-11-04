@@ -27,8 +27,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.kpstv.navigation.AnimationDefinition
 import com.kpstv.navigation.FragmentNavigator
 import com.kpstv.navigation.ValueFragment
-import com.kpstv.xclipper.App.runAutoSync
-import com.kpstv.xclipper.App.swipeToDelete
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.ToolbarState
 import com.kpstv.xclipper.data.model.Clip
@@ -43,7 +41,7 @@ import com.kpstv.xclipper.extensions.recyclerview.RecyclerViewInsetHelper
 import com.kpstv.xclipper.extensions.recyclerview.SwipeToDeleteCallback
 import com.kpstv.xclipper.extensions.utils.FirebaseUtils
 import com.kpstv.xclipper.ui.helpers.AppThemeHelper
-import com.kpstv.xclipper.ui.helpers.AppThemeHelper.Companion.registerForThemeChange
+import com.kpstv.xclipper.ui.helpers.AppThemeHelper.registerForThemeChange
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.openAccessibility
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.shareText
 import com.kpstv.xclipper.service.ChangeClipboardActivity
@@ -55,6 +53,8 @@ import com.kpstv.xclipper.ui.dialogs.TagDialog
 import com.kpstv.xclipper.ui.fragments.sheets.MoreBottomSheet
 import com.kpstv.xclipper.extensions.recyclerview.RecyclerViewScrollHelper
 import com.kpstv.xclipper.service.ClipboardAccessibilityService
+import com.kpstv.xclipper.ui.helpers.AppSettingKeys
+import com.kpstv.xclipper.ui.helpers.AppSettings
 import com.kpstv.xclipper.ui.helpers.fragments.SyncDialogHelper
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import com.zhuinden.livedatacombinetuplekt.combineTuple
@@ -68,6 +68,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
 
     @Inject lateinit var clipboardProvider: ClipboardProvider
     @Inject lateinit var preferenceProvider: PreferenceProvider
+    @Inject lateinit var appSettings: AppSettings
     @Inject lateinit var firebaseUtils: FirebaseUtils
 
     private lateinit var adapter: CIAdapter
@@ -211,6 +212,24 @@ class Home : ValueFragment(R.layout.fragment_home) {
             }
         )
 
+        // Adapter settings
+
+        appSettings.observeChanges(
+            key = AppSettingKeys.CLIP_TEXT_TRIMMING, // text trimming
+            default = appSettings.isTextTrimmingEnabled()
+        ).observe(viewLifecycleOwner) { enabled ->
+            adapter.setTextTrimmingEnabled(enabled)
+            if (binding.ciRecyclerView.adapter != null) binding.ciRecyclerView.adapter = adapter
+        }
+
+        appSettings.observeChanges(
+            key = AppSettingKeys.IMAGE_MARKDOWN, // clip image markdown
+            default = appSettings.canRenderMarkdownImage()
+        ).observe(viewLifecycleOwner) { enabled ->
+            adapter.setIsLoadingMarkdownEnabled(enabled)
+            if (binding.ciRecyclerView.adapter != null) binding.ciRecyclerView.adapter = adapter
+        }
+
         adapter.setCopyClick { clip, _ ->
             clipboardProvider.setClipboard(ClipData.newPlainText(null, clip.data))
             Toasty.info(requireContext(), getString(R.string.ctc)).show()
@@ -247,9 +266,15 @@ class Home : ValueFragment(R.layout.fragment_home) {
             ciRecyclerView.adapter = adapter
 
             /** Swipe to delete item */
-
-            if (swipeToDelete)
-                swipeToDeleteItemTouch.attachToRecyclerView(ciRecyclerView)
+            appSettings.observeChanges(
+                key = AppSettingKeys.SWIPE_DELETE_CLIP_ITEM,
+                default = appSettings.isSwipeDeleteEnabledForClipItem()
+            ).observe(viewLifecycleOwner) { canSwipeDelete ->
+                if (canSwipeDelete)
+                    swipeToDeleteItemTouch.attachToRecyclerView(ciRecyclerView)
+                else
+                    swipeToDeleteItemTouch.attachToRecyclerView(null)
+            }
 
             RecyclerViewInsetHelper().attach(ciRecyclerView, RecyclerViewInsetHelper.InsetType.BOTTOM, true)
             recyclerViewScrollHelper.attach(
@@ -469,7 +494,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
      * sync button.
      */
     private fun autoValidateOnStartup() = with(binding) {
-        if (runAutoSync)
+        if (appSettings.isDatabaseAutoSyncEnabled())
             toolbar.menu.findItem(R.id.action_sync).actionView?.performClick()
     }
 

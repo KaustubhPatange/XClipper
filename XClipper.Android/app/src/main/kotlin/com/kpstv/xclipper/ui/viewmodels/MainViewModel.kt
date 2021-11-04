@@ -2,7 +2,6 @@ package com.kpstv.xclipper.ui.viewmodels
 
 import android.content.Context
 import androidx.lifecycle.*
-import com.kpstv.xclipper.App
 import com.kpstv.xclipper.data.localized.FBOptions
 import com.kpstv.xclipper.data.localized.dao.ClipDataDao
 import com.kpstv.xclipper.data.localized.dao.TagDao
@@ -19,9 +18,12 @@ import com.kpstv.xclipper.extensions.listeners.RepositoryListener
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
 import com.kpstv.xclipper.extensions.listeners.ResponseResult
 import com.kpstv.xclipper.extensions.listeners.StatusListener
+import com.kpstv.xclipper.extensions.utils.DeviceUtils
 import com.kpstv.xclipper.extensions.utils.FirebaseUtils
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.loginToDatabase
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.logoutFromDatabase
+import com.kpstv.xclipper.ui.helpers.AppSettings
+import com.kpstv.xclipper.ui.helpers.ClipRepositoryHelper
 import com.kpstv.xclipper.ui.helpers.TinyUrlApiHelper
 import com.kpstv.xclipper.ui.viewmodels.managers.MainEditManager
 import com.kpstv.xclipper.ui.viewmodels.managers.MainSearchManager
@@ -37,12 +39,14 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     firebaseUtils: FirebaseUtils,
+    clipRepositoryHelper: ClipRepositoryHelper,
     private val mainRepository: MainRepository,
     private val tagRepository: TagDao,
     private val preferenceProvider: PreferenceProvider,
     private val firebaseProvider: FirebaseProvider,
     private val clipboardProvider: ClipboardProvider,
     private val dbConnectionProvider: DBConnectionProvider,
+    private val appSettings: AppSettings,
     val tinyUrlApiHelper: TinyUrlApiHelper,
     val editManager: MainEditManager,
     val searchManager: MainSearchManager,
@@ -128,14 +132,14 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun updateDeviceConnection(options: FBOptions, responseListener: ResponseListener<Unit>) {
+    fun updateDeviceConnection(context: Context, options: FBOptions, responseListener: ResponseListener<Unit>) {
         viewModelScope.launch {
             dbConnectionProvider.saveOptionsToAll(options)
-            val result = firebaseProvider.addDevice(App.DeviceID)
+            val result = firebaseProvider.addDevice(DeviceUtils.getDeviceId(context))
             when (result) {
                 is ResponseResult.Complete -> {
                     loginToDatabase(
-                        preferenceProvider = preferenceProvider,
+                        appSettings = appSettings,
                         dbConnectionProvider = dbConnectionProvider,
                         options = options
                     )
@@ -151,12 +155,12 @@ class MainViewModel @Inject constructor(
 
     fun removeDeviceConnection(context: Context, responseListener: ResponseListener<Unit>) {
         viewModelScope.launch {
-            val result = firebaseProvider.removeDevice(App.DeviceID)
+            val result = firebaseProvider.removeDevice(DeviceUtils.getDeviceId(context))
             when (result) {
                 is ResponseResult.Complete -> {
                     logoutFromDatabase(
                         context = context,
-                        preferenceProvider = preferenceProvider,
+                        appSettings = appSettings,
                         dbConnectionProvider = dbConnectionProvider
                     )
                     responseListener.onComplete(Unit)
@@ -164,7 +168,7 @@ class MainViewModel @Inject constructor(
                 is ResponseResult.Error -> {
                     logoutFromDatabase(
                         context = context,
-                        preferenceProvider = preferenceProvider,
+                        appSettings = appSettings,
                         dbConnectionProvider = dbConnectionProvider
                     )
                     responseListener.onError(result.error)
@@ -189,6 +193,11 @@ class MainViewModel @Inject constructor(
 
         /** Methods optimized to invoke only once regardless of calling from multiple sites. */
         firebaseUtils.observeDatabaseInitialization()
-        clipboardProvider.observeClipboardChange()
+        clipboardProvider.observeClipboardChange(
+            action = { data ->
+                clipRepositoryHelper.insertOrUpdateClip(data)
+                return@observeClipboardChange true
+            }
+        )
     }
 }

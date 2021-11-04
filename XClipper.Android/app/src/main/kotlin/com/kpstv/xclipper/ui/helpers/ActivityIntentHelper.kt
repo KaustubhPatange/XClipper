@@ -15,7 +15,7 @@ class ActivityIntentHelper(private val activity: Start) {
      */
     fun handle(intent: Intent?): Boolean {
         if (intent == null) return false
-        val data: Uri? = intent.data
+//        val data: Uri? = intent.data
         if (intent.action == ACTION_FORCE_CHECK_UPDATE) {
             activity.lifecycleScope.launch {
                 activity.updateHelper.checkForUpdatesFromGithub()

@@ -31,7 +31,7 @@ interface ClipboardLogDetector {
             else
                 ClipboardLogDetector21Impl()
         }
-        fun isDetectionVersionCompatible(context: Context) : Boolean {
+        fun isDetectionVersionCompatible(): Boolean {
             return Build.VERSION.SDK_INT >= 29
         }
         fun isDetectionCompatible(context: Context) : Boolean {

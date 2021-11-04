@@ -8,9 +8,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.kpstv.navigation.*
 import com.kpstv.pin_lock.PinLockHelper
-import com.kpstv.xclipper.App
-import com.kpstv.xclipper.data.provider.FirebaseProvider
-import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.databinding.ActivityStartBinding
 import com.kpstv.xclipper.extensions.FragClazz
 import com.kpstv.xclipper.extensions.applyEdgeToEdgeMode
@@ -19,7 +16,10 @@ import com.kpstv.xclipper.ui.fragments.Home
 import com.kpstv.xclipper.ui.fragments.Settings
 import com.kpstv.xclipper.ui.fragments.sheets.DisclosureSheet
 import com.kpstv.xclipper.ui.fragments.welcome.*
-import com.kpstv.xclipper.ui.helpers.*
+import com.kpstv.xclipper.ui.helpers.ActivityIntentHelper
+import com.kpstv.xclipper.ui.helpers.AppSettings
+import com.kpstv.xclipper.ui.helpers.ConnectionHelper
+import com.kpstv.xclipper.ui.helpers.FirebaseSyncHelper
 import com.kpstv.xclipper.ui.helpers.fragments.*
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -33,7 +33,7 @@ class Start : AppCompatActivity(), FragmentNavigator.Transmitter {
     private lateinit var navigator: FragmentNavigator
 
     @Inject
-    lateinit var preferenceProvider: PreferenceProvider
+    lateinit var appSettings: AppSettings
 
     val updateHelper by lazy { UpdateHelper(this) }
     private val intentHelper by lazy { ActivityIntentHelper(this) }
@@ -46,7 +46,7 @@ class Start : AppCompatActivity(), FragmentNavigator.Transmitter {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        val startScreen = if (preferenceProvider.getBooleanKey(App.TUTORIAL_PREF, false)) Screen.HOME.clazz else Screen.GREET.clazz
+        val startScreen = if (appSettings.isOnBoardingScreensShowed()) Screen.HOME.clazz else Screen.GREET.clazz
         navigator = FragmentNavigator.with(this, savedInstanceState)
             .initialize(binding.root, Destination.of(startScreen))
         navigator.autoChildElevation()

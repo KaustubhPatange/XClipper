@@ -22,15 +22,8 @@ import com.kpstv.navigation.getKeyArgs
 import com.kpstv.navigation.hasKeyArgs
 import com.kpstv.pin_lock.PinLockHelper
 import com.kpstv.xclipper.App
-import com.kpstv.xclipper.App.BLACKLIST_PREF
 import com.kpstv.xclipper.App.DICTIONARY_LANGUAGE
 import com.kpstv.xclipper.App.LANG_PREF
-import com.kpstv.xclipper.App.SUGGESTION_PREF
-import com.kpstv.xclipper.App.SWIPE_DELETE_PREF
-import com.kpstv.xclipper.App.TRIM_CLIP_PREF
-import com.kpstv.xclipper.App.showSuggestion
-import com.kpstv.xclipper.App.swipeToDelete
-import com.kpstv.xclipper.App.trimClipText
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.databinding.DialogProgressBinding
@@ -105,7 +98,7 @@ class GeneralPreference : AbstractPreferenceFragment() {
 
                 return@setOnPreferenceChangeListener false
             }
-            showSuggestion = newValue as Boolean
+            appSettings.setShowClipboardSuggestions(newValue as Boolean)
             true
         }
 
@@ -175,15 +168,13 @@ class GeneralPreference : AbstractPreferenceFragment() {
 
         /** Swipe to delete preference */
         findPreference<SwitchPreferenceCompat>(SWIPE_DELETE_PREF)?.setOnPreferenceChangeListener { _, newValue ->
-            swipeToDelete = newValue as Boolean
-            Toasty.info(requireContext(), getString(R.string.settings_restart)).show()
+            appSettings.setSwipeDeleteEnabledForClipItem(newValue as Boolean)
             true
         }
 
         /** Text trimming while displaying */
         findPreference<SwitchPreferenceCompat>(TRIM_CLIP_PREF)?.setOnPreferenceChangeListener { _, newValue ->
-            trimClipText = newValue as Boolean
-            Toasty.info(requireContext(), getString(R.string.settings_restart)).show()
+            appSettings.setTextTrimmingEnabled(newValue as Boolean)
             true
         }
 
@@ -195,8 +186,8 @@ class GeneralPreference : AbstractPreferenceFragment() {
 
         /** Reset onboarding screens **/
         findPreference<Preference>(RESET_PREF)?.setOnPreferenceClickListener {
-            preferenceProvider.putBooleanKey(App.SHOW_SEARCH_FEATURE, true) // bubble search feature
-            preferenceProvider.putBooleanKey(App.TUTORIAL_PREF, false)
+            appSettings.setBubbleOnBoardingDialogShown(false)
+            appSettings.setOnBoardingScreensShowed(false)
             Toasty.info(requireContext(), getString(R.string.onboard_screens_reset)).show()
             true
         }
@@ -257,7 +248,7 @@ class GeneralPreference : AbstractPreferenceFragment() {
         if (rememberToCheckOverlaySwitch) {
             overlayPreference?.isChecked = isSystemOverlayEnabled(requireContext())
             rememberToCheckOverlaySwitch = false
-            showSuggestion = true
+            appSettings.setShowClipboardSuggestions(true)
         }
         if (rememberToCheckForPinLock || !pinLockExtensionHelper.isActive()) {
             pinLockPreference?.isChecked = PinLockHelper.isPinLockEnabled()
@@ -268,6 +259,7 @@ class GeneralPreference : AbstractPreferenceFragment() {
         val job = SupervisorJob()
         CoroutineScope(Dispatchers.IO + job).launch {
             val apps = retrievePackageList(requireContext())
+            val currentBlackListApps = appSettings.getClipboardMonitoringBlackListApps()
             lifecycleScope.launch {
                 appsDialog?.dismiss()
                 appsDialog = MultiSelectDialogBuilder(
@@ -275,8 +267,7 @@ class GeneralPreference : AbstractPreferenceFragment() {
                     itemsCheckedState = { itemsCheckedState ->
                         val packages = itemsCheckedState.filter { it.value }.map { apps[it.key].packageName?.toString() }
                             .filterNotNull().toSet()
-                        App.blackListedApps = packages
-                        preferenceProvider.setStringSet(BLACKLIST_PREF, packages)
+                        appSettings.setClipboardMonitoringBlackListApps(packages)
                     }
                 ).apply {
                     setTitle(getString(R.string.blacklist_apps))
@@ -284,7 +275,7 @@ class GeneralPreference : AbstractPreferenceFragment() {
                         MultiSelectModel3(
                             title = pkg.label.toString(),
                             subtitle = pkg.packageName.toString(),
-                            isChecked = App.blackListedApps?.contains(pkg.packageName) ?: false
+                            isChecked = currentBlackListApps.contains(pkg.packageName)
                         )
                     })
                 }.create()
@@ -307,13 +298,17 @@ class GeneralPreference : AbstractPreferenceFragment() {
 
     companion object {
         const val ACTION_CHECK_PREFERENCES = "com.kpstv.xclipper.action_check_preferences"
-        const val RESET_PREF = "reset_intro_pref"
 
+        private const val RESET_PREF = "reset_intro_pref"
         private const val TEMP_CHECK_IMPROVE_ON_START = "temp_check_improve_on_start"
         private const val PIN_LOCK_PREF = "pin_lock_pref"
         private const val ACTIVE_ADB_MODE_PREF = "adb_mode_pref"
         private const val IMAGE_MARKDOWN_PREF = "image_markdown_pref"
         private const val SERVICE_PREF = "service_pref"
+        private const val SUGGESTION_PREF = "suggestion_pref"
+        private const val SWIPE_DELETE_PREF = "swipe_delete_pref"
+        private const val TRIM_CLIP_PREF = "trim_clip_pref"
+        private const val BLACKLIST_PREF = "blacklist_pref"
 
         fun checkImproveSettingsOnStart(context: Context, appSettings: AppSettings, preferenceProvider: PreferenceProvider) {
             val checkImprove = preferenceProvider.getBooleanKey(TEMP_CHECK_IMPROVE_ON_START, false)

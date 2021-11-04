@@ -38,6 +38,7 @@ object AppThemeHelper {
     fun setTheme(context: Context, style: AppTheme) {
         context.getSharedPreferences("theme", Context.MODE_PRIVATE).edit {
             putBoolean(IS_DARK_THEME, style == AppTheme.DARK)
+            DARK_THEME = style == AppTheme.DARK
         }
     }
 

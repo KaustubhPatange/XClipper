@@ -11,6 +11,7 @@ import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.extensions.enumerations.FirebaseState
+import com.kpstv.xclipper.ui.helpers.AppSettings
 import com.kpstv.xclipper.ui.helpers.ClipRepositoryHelper
 import com.kpstv.xclipper.ui.helpers.Notifications
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -25,6 +26,7 @@ class FirebaseUtils @Inject constructor(
     private val clipRepositoryHelper: ClipRepositoryHelper,
     private val firebaseProvider: FirebaseProvider,
     private val preferenceProvider: PreferenceProvider,
+    private val appSettings: AppSettings,
     private val dbConnectionProvider: DBConnectionProvider,
 ) {
     private val TAG = FirebaseUtils::class.simpleName
@@ -60,7 +62,7 @@ class FirebaseUtils @Inject constructor(
 
                         Utils.logoutFromDatabase(
                             context = context,
-                            preferenceProvider = preferenceProvider,
+                            appSettings = appSettings,
                             dbConnectionProvider = dbConnectionProvider
                         )
 
