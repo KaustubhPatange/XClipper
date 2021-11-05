@@ -13,7 +13,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.SwitchPreferenceCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -21,9 +20,6 @@ import com.kpstv.navigation.BaseArgs
 import com.kpstv.navigation.getKeyArgs
 import com.kpstv.navigation.hasKeyArgs
 import com.kpstv.pin_lock.PinLockHelper
-import com.kpstv.xclipper.App
-import com.kpstv.xclipper.App.DICTIONARY_LANGUAGE
-import com.kpstv.xclipper.App.LANG_PREF
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.databinding.DialogProgressBinding
@@ -175,12 +171,6 @@ class GeneralPreference : AbstractPreferenceFragment() {
         /** Text trimming while displaying */
         findPreference<SwitchPreferenceCompat>(TRIM_CLIP_PREF)?.setOnPreferenceChangeListener { _, newValue ->
             appSettings.setTextTrimmingEnabled(newValue as Boolean)
-            true
-        }
-
-        /** Language code preference */ // TODO: Move this setting to Special Actions
-        findPreference<ListPreference>(LANG_PREF)?.setOnPreferenceChangeListener { _, newValue ->
-            DICTIONARY_LANGUAGE = newValue as String
             true
         }
 

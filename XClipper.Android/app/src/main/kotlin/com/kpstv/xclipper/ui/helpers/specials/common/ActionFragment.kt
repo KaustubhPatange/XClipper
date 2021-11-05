@@ -11,15 +11,13 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.navigation.ValueFragment
-import com.kpstv.xclipper.extensions.SimpleFunction
-import com.kpstv.xclipper.extensions.getAttrResourceId
-import com.kpstv.xclipper.extensions.layoutInflater
+import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.ui.helpers.specials.SpecialAction
 import com.kpstv.xclipper.ui.helpers.specials.SpecialSettings
 
 abstract class ActionFragment : ValueFragment() {
 
-    private val specialSettings by lazy { SpecialSettings(requireContext()) }
+    internal val specialSettings by lazy { SpecialSettings(requireContext()) }
     private val items = arrayListOf<ActionItem>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -99,7 +97,12 @@ abstract class ActionFragment : ValueFragment() {
             fun bind(item: ActionItem, onClickListener: SimpleFunction) {
                 title.text = item.title
                 message.text = item.message
-                icon.setImageResource(item.icon)
+                if (item.icon == -1) {
+                    icon.collapse()
+                } else {
+                    icon.show()
+                    icon.setImageResource(item.icon)
+                }
 
                 if (item is CheckableItem) {
                     switch.isChecked = item.isChecked

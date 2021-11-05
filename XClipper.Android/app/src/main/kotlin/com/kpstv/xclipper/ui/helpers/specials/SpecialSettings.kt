@@ -14,6 +14,11 @@ internal class SpecialSettings(context: Context) {
         return preference.getBoolean(item.name, true)
     }
 
+    fun getDictionaryLang() : String = preference.getString(DICTIONARY_LANG, DictionaryLanguage) ?: DictionaryLanguage
+    fun setDictionaryLang(value: String) {
+        preference.edit { putString(DICTIONARY_LANG, value) }
+    }
+
     fun getAllSetting() : List<SpecialAction> {
         return SpecialAction.all().filter { item ->
             preference.getBoolean(item.name, true)
@@ -22,5 +27,8 @@ internal class SpecialSettings(context: Context) {
 
     companion object {
         private const val PREF_NAME = "special_settings"
+        private const val DICTIONARY_LANG = "dictionary_lang"
+
+        private const val DictionaryLanguage = "en"
     }
 }

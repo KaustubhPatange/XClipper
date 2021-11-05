@@ -1,12 +1,9 @@
 package com.kpstv.xclipper.ui.fragments.welcome
 
 import com.kpstv.navigation.AnimationDefinition
-import com.kpstv.xclipper.App
 import com.kpstv.xclipper.R
-import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.ui.activities.Start
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class WindowApp : AbstractWelcomeFragment() {

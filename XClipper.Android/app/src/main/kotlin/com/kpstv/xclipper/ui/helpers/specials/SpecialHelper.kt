@@ -15,7 +15,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kpstv.cwt.CWT
 import com.kpstv.linkpreview.LinkPreview
-import com.kpstv.xclipper.App
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.dao.PreviewDao
 import com.kpstv.xclipper.data.model.Clip
@@ -48,6 +47,7 @@ class SpecialHelper(
     private val linkPreviewDao: PreviewDao = SpecialEntryPoints.get(context).linkPreviewDao()
 
     private val enabledActions: List<SpecialAction> = SpecialSettings(context).getAllSetting()
+    private val specialSettings = SpecialSettings(context)
 
     private val TAG = javaClass.simpleName
     private lateinit var adapter: MenuAdapter
@@ -404,7 +404,9 @@ class SpecialHelper(
         SINGLE_WORD_PATTERN_REGEX.toRegex().let {
             if (it.containsMatchIn(data))
                 dictionaryApiHelper.define(
-                    it.find(data)?.value!!, ResponseListener(
+                    word = it.find(data)?.value!!,
+                    langCode = specialSettings.getDictionaryLang(),
+                    responseListener = ResponseListener(
                         complete = { definition ->
                             editDefineWord.text = "$data:"
                             editDefine.text = HtmlCompat.fromHtml(

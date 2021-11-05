@@ -4,8 +4,6 @@ import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import com.kpstv.hvlog.HVLog
-import com.kpstv.xclipper.App.DICTIONARY_LANGUAGE
-import com.kpstv.xclipper.App.LANG_PREF
 import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
@@ -55,9 +53,6 @@ class XClipperApplication : Application(), Configuration.Provider {
         HVLog.Config.init(this, reportWhenApplicationCrashed = false)
         HVLog.Config.writeToFile = false
         HVLog.Config.compactClassName = true
-
-        /** Load settings here */
-        DICTIONARY_LANGUAGE = preferenceProvider.getStringKey(LANG_PREF, "en")!!
 
         /** This will load firebase config setting */
         if (dbConnectionProvider.isValidData()) { // implicit loadDataFromPreference();

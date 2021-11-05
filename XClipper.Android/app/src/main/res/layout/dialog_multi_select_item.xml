@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:minHeight="50dp"
     android:background="?selectableItemBackground"
     android:clickable="true"
     android:focusable="true"
@@ -28,6 +29,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/checkbox"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tv_subtitle"
         tools:text="Title" />
 
     <TextView
@@ -38,6 +40,7 @@
         android:layout_marginTop="3dp"
         android:textColor="?colorTextSecondary"
         android:textSize="13sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/checkbox"
         app:layout_constraintTop_toBottomOf="@id/tv_title"

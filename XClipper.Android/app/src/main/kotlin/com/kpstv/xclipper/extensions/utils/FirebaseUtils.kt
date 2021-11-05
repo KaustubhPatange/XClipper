@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.Observer
 import com.kpstv.hvlog.HVLog
-import com.kpstv.xclipper.App
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.provider.DBConnectionProvider
@@ -35,13 +34,10 @@ class FirebaseUtils @Inject constructor(
 
     fun observeDatabaseChangeEvents(): Unit = with(context) {
             if (firebaseProvider.isObservingChanges()) return@with
-            if (!App.observeFirebase) return@with
             HVLog.d("Attached")
             firebaseProvider.observeDataChange(
                 changed = { clips -> // Unencrypted data
-                    if (App.observeFirebase) {
-                        insertAllClips(clips)
-                    }
+                    insertAllClips(clips)
                 },
                 removed = { items -> // Unencrypted listOf data
                     clipRepositoryHelper.deleteClip(items)

@@ -2,16 +2,13 @@ package com.kpstv.xclipper.ui.fragments.welcome
 
 import android.annotation.SuppressLint
 import android.os.Build
-import com.kpstv.xclipper.App
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.databinding.ItemGifviewBinding
 import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.isSystemOverlayEnabled
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showOverlayDialog
 import com.kpstv.xclipper.ui.activities.Start
-import com.kpstv.xclipper.ui.helpers.AppSettings
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class EnableSuggestion : AbstractWelcomeFragment() {

@@ -2,7 +2,6 @@ package com.kpstv.xclipper.ui.viewmodels
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
-import com.kpstv.xclipper.App
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.extensions.listeners.ResponseResult
 import com.kpstv.xclipper.extensions.utils.RetrofitUtils

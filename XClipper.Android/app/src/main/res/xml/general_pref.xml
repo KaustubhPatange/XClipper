@@ -51,14 +51,6 @@
             app:summary="@string/trim_summary"
             app:title="@string/trim_title" />
 
-        <ListPreference
-            android:summary="@string/lang_summary"
-            app:defaultValue="en"
-            app:entries="@array/lang_entries"
-            app:entryValues="@array/lang_values"
-            app:key="lang_pref"
-            app:title="@string/lang_title" />
-
         <Preference
             app:key="reset_intro_pref"
             app:summary="This also includes the dialogs that are shown to demonstrate a particular feature."

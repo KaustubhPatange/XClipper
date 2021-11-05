@@ -2,6 +2,8 @@ package com.kpstv.xclipper.ui.helpers.specials.fragments
 
 import android.os.Bundle
 import com.kpstv.xclipper.R
+import com.kpstv.xclipper.ui.dialogs.SingleSelectDialogBuilder
+import com.kpstv.xclipper.ui.dialogs.SingleSelectModel2
 import com.kpstv.xclipper.ui.helpers.specials.SpecialAction
 import com.kpstv.xclipper.ui.helpers.specials.common.ActionFragment
 import com.kpstv.xclipper.ui.helpers.specials.common.ActionItem
@@ -97,12 +99,31 @@ class SpecialActionFragment : ActionFragment() {
             icon = R.drawable.ic_mail,
             action = SpecialAction.SEND_MAIL
         )
+
+        /* Set Lang code for define */ // TODO: Later move into separate setting fragment where you can enable & disable it
+        setCommonItem(
+            title = getString(R.string.lang_title),
+            message = getString(R.string.lang_summary),
+            icon = -1
+        )
     }
 
     override fun getItemClickListener(item: ActionItem, position: Int) {
-        /*when(item.title ==  getString(R.string.shorten_link_action)) {
-
-        }*/
+        if (item.title == getString(R.string.lang_title)) {
+            val currentLang = specialSettings.getDictionaryLang()
+            val entries = resources.getStringArray(R.array.lang_entries).filterNotNull().toList()
+            val values = resources.getStringArray(R.array.lang_values).filterNotNull().toList()
+            val items = entries.zip(values).map { SingleSelectModel2(it.first, it.second) }
+            SingleSelectDialogBuilder(
+                context = requireContext(),
+                onSelect = { specialSettings.setDictionaryLang(values[it]) }
+            ).run {
+                setTitle(getString(R.string.lang_dialog_title))
+                setItems(items)
+                highLightItemPosition(values.indexOf(currentLang))
+                show()
+            }
+        }
         // TODO: Implement this
     }
 }

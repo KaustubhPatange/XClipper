@@ -1,6 +1,5 @@
 package com.kpstv.xclipper.ui.helpers
 
-import com.kpstv.xclipper.App.DICTIONARY_LANGUAGE
 import com.kpstv.xclipper.data.api.GoogleDictionaryApi
 import com.kpstv.xclipper.data.localized.dao.DefineDao
 import com.kpstv.xclipper.data.model.Definition
@@ -16,13 +15,13 @@ class DictionaryApiHelper @Inject constructor(
     private val defineRepository: DefineDao
 ) {
     private val TAG = javaClass.simpleName
-    fun define(word: String, responseListener: ResponseListener<Definition>) {
+    fun define(word: String, langCode: String, responseListener: ResponseListener<Definition>) {
         launchInIO {
             try {
                 val data = defineRepository.getWord(word)
                 if (data == null) {
                     val definition =
-                        googleDictionaryApi.defineAsync(DICTIONARY_LANGUAGE, word)?.await()
+                        googleDictionaryApi.defineAsync(langCode, word)?.await()
                     if (definition?.define != null) {
                         /** Save data to database */
                         defineRepository.insert(definition)

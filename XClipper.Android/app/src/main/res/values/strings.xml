@@ -61,6 +61,7 @@
     <string name="settings">Settings</string>
     <string name="service_summary">Make sure it is turned on to detect clipboard changes (require accessibility service)</string>
     <string name="service_title">Clipboard Service</string>
+    <string name="lang_dialog_title">Select dictionary language</string>
     <string name="lang_title">Language Code</string>
     <string name="lang_summary">Define language for finding definition of word (usually seen in special actions)</string>
     <string name="cancel">Cancel</string>

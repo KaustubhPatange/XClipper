@@ -23,6 +23,7 @@ data class MultiSelectModel3(val title: String, val subtitle: String?, val isChe
 }
 
 data class MultiSelectModel2(val title: String, val isChecked: Boolean)
+
 class MultiSelectDialogBuilder(context: Context, private val itemsCheckedState: (Map<Int, Boolean>) -> Unit) : AlertDialog.Builder(context) {
     private val binding = DialogMultiSelectBinding.inflate(context.layoutInflater())
     private var adapter: MultiSelectAdapter3? = null
@@ -45,6 +46,7 @@ class MultiSelectDialogBuilder(context: Context, private val itemsCheckedState: 
     fun setItems(items: List<MultiSelectModel3>) {
         adapter = MultiSelectAdapter3(items)
     }
+
     override fun setTitle(titleId: Int): AlertDialog.Builder {
         binding.spacerTop.show()
         return super.setTitle(titleId)

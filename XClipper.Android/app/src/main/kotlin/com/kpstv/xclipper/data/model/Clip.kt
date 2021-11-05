@@ -6,7 +6,6 @@ import androidx.room.PrimaryKey
 import com.google.gson.JsonElement
 import com.kpstv.bindings.AutoGenerateListConverter
 import com.kpstv.bindings.ConverterType
-import com.kpstv.xclipper.App
 import com.kpstv.xclipper.data.converters.DateConverter
 import com.kpstv.xclipper.data.converters.DateFormatConverter
 import com.kpstv.xclipper.extensions.ClipTagMap
@@ -16,7 +15,6 @@ import com.kpstv.xclipper.extensions.plus
 import com.kpstv.xclipper.extensions.utils.ClipUtils
 import org.json.JSONObject
 import java.text.SimpleDateFormat
-import java.time.format.DateTimeFormatter
 import java.util.*
 
 @Entity(tableName = "table_clip")
