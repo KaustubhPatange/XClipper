@@ -1,6 +1,7 @@
 *.iml
 *.apk
 .gradle
+/modules/core-private/
 /local.properties
 /gradle.properties
 google-services.json

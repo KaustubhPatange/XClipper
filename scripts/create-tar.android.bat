@@ -2,17 +2,17 @@
 setlocal enabledelayedexpansion
 
 md Work
-md Work\_tmp\XClipper.Android\app\library_utils
+md Work\_tmp\XClipper.Android\modules\core-private
 
 SET parent=%~dp0
 FOR %%a IN ("%parent:~0,-1%") DO SET grandparent=%%~dpa
 
-xcopy "%grandparent%XClipper.Android\app\library_utils" "%parent%Work\_tmp\XClipper.Android\app\library_utils" /E
-rd /s /q "%parent%Work\_tmp\XClipper.Android\app\library_utils\build"
-rd /s /q "%parent%Work\_tmp\XClipper.Android\app\library_utils\src\androidTest"
-rd /s /q "%parent%Work\_tmp\XClipper.Android\app\library_utils\src\test"
-del "%parent%Work\_tmp\XClipper.Android\app\library_utils\consumer-rules.pro"
-del "%parent%Work\_tmp\XClipper.Android\app\library_utils\license.iml"
+xcopy "%grandparent%XClipper.Android\modules\core-private" "%parent%Work\_tmp\XClipper.Android\modules\core-private" /E
+rd /s /q "%parent%Work\_tmp\XClipper.Android\modules\core-private\build"
+rd /s /q "%parent%Work\_tmp\XClipper.Android\modules\core-private\src\androidTest"
+rd /s /q "%parent%Work\_tmp\XClipper.Android\modules\core-private\src\test"
+del "%parent%Work\_tmp\XClipper.Android\modules\core-private\consumer-rules.pro"
+del "%parent%Work\_tmp\XClipper.Android\modules\core-private\license.iml"
 tar -C Work\_tmp -cvzf Work\library_utils.tar.gz *
 rd /s /q Work\_tmp
 
