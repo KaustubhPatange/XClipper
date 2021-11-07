@@ -67,7 +67,7 @@ class SingleSelectDialogBuilder(context: Context, onSelect: (position: Int) -> U
     override fun setPositiveButton(textId: Int, listener: DialogInterface.OnClickListener?): AlertDialog.Builder = this
 }
 
-private class SingleSelectAdapter(private val items: List<SingleSelectModel>, private val onSelect: (position: Int) -> Unit)
+private class SingleSelectAdapter(items: List<SingleSelectModel>, private val onSelect: (position: Int) -> Unit)
     : SingleSelectAdapter2(items.map { SingleSelectModel2(it.title) }, onSelect)
 private open class SingleSelectAdapter2(private val items: List<SingleSelectModel2>, private val onSelect: (position: Int) -> Unit) : RecyclerView.Adapter<SingleSelectHolder>() {
     private val highlightItemPositions = arrayListOf<Int>()

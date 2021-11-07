@@ -10,6 +10,7 @@ buildscript {
         classpath(GradleDependency.DAGGER_HILT)
         classpath(GradleDependency.CRASHLYTICS)
         classpath(GradleDependency.GOOGLE_SERVICE)
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.31")
     }
 }
 

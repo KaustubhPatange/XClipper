@@ -16,11 +16,13 @@ android {
 
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
+
+    implementation(project(ModuleDependency.CORE_EXTENSIONS))
+
     implementation(LibraryDependency.CORE_KTX)
     implementation(LibraryDependency.APP_COMPAT)
     implementation(LibraryDependency.MATERIAL)
     implementation(LibraryDependency.CONSTRAINT_LAYOUT)
     implementation(LibraryDependency.OKHTTP)
     implementation(LibraryDependency.COROUTINES_ANDROID)
-    implementation(project(ModuleDependency.COMMON))
 }

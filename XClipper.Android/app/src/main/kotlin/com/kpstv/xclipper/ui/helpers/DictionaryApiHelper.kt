@@ -24,6 +24,7 @@ class DictionaryApiHelper @Inject constructor(
                         googleDictionaryApi.defineAsync(langCode, word)?.await()
                     if (definition?.define != null) {
                         /** Save data to database */
+                        /** Save data to database */
                         defineRepository.insert(definition)
                         launchInMain { responseListener.onComplete(definition) }
                     } else

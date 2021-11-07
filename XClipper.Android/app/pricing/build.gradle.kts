@@ -18,5 +18,5 @@ dependencies {
     implementation(LibraryDependency.MATERIAL)
     implementation(LibraryDependency.CONSTRAINT_LAYOUT)
 
-    implementation(project(ModuleDependency.COMMON))
+    implementation(project(ModuleDependency.CORE_EXTENSIONS))
 }
