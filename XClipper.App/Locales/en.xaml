@@ -77,7 +77,7 @@
     <system:String x:Key="settings_reset">Settings Reset complete! If it didn't try restarting the application</system:String>
     <system:String x:Key="settings_save">Settings applied! If it didn't try restarting the application</system:String>
     <system:String x:Key="settings_save_warning">Some settings didn't apply correctly! Try to enable them again.</system:String>
-    <system:String x:Key="settings_fb_password">This will delete all existing data on firebase (if exist) since migration operations are costly.</system:String>
+    <system:String x:Key="settings_fb_password">This will migrate all the existing encrypted data to the new one. During this process you will loose all of the connected devices.</system:String>
     <system:String x:Key="settings_copy_scripts">Copy scripts</system:String>
     <system:String x:Key="settings_paste_scripts">Paste scripts</system:String>
     <system:String x:Key="settings_ignore_tooltip">Ignore certain text pattern that should not be stored in the database.</system:String>

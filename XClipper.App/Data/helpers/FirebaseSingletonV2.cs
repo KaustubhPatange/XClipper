@@ -134,7 +134,7 @@ namespace Components
 
         #region Configuration methods
 
-        public void Initialize()
+        public async Task Initialize()
         {
             UID = UniqueID;
 
@@ -161,12 +161,12 @@ namespace Components
                 else if (NeedToRefreshToken())
                 {
                     Log("We need to refresh token");
-                    CheckForAccessTokenValidity(); // PS: I don't care.
+                    await CheckForAccessTokenValidity();
                     return;
                 }
             }
 
-            CreateNewClient();
+            await CreateNewClient();
         }
 
         public void Deinitialize()
@@ -207,6 +207,22 @@ namespace Components
         public async Task MigrateClipData(MigrateAction action, Action? onSuccess = null, Action? onError = null)
         {
             Log();
+
+            await UpdateEncryptedPassword(
+                originalPassword: DatabaseEncryptPassword,
+                newPassword: action == MigrateAction.Encrypt ? DatabaseEncryptPassword : null,
+                onSuccess: onSuccess,
+                onError: onError
+            );
+        }
+
+        /// <summary>
+        /// Update the encrypted password. Providing <see cref="newPassword"/> null will decrypt them.
+        /// </summary>
+        public async Task UpdateEncryptedPassword(string originalPassword, string? newPassword, Action? onSuccess = null,
+            Action? onError = null)
+        {
+            Log();
             if (user == null)
             {
                 Log("Migration failed: User is null");
@@ -215,24 +231,40 @@ namespace Components
                 return;
             }
 
-            if (user.Clips == null) user.Clips = new List<Clip>();
+            var clips = user.Clips;
 
-            var isDataAlreadyEncrypted = FirebaseCurrent.IsEncrypted;
+            if (clips == null) clips = new List<Clip>();
+            
             if (user.Clips.Count > 0)
             {
-                isDataAlreadyEncrypted = user.Clips.FirstOrDefault().data.IsBase64Encrypted(DatabaseEncryptPassword);
+                var isEncrypted = user.Clips.FirstOrDefault().data.IsBase64Encrypted(originalPassword);
+                if (isEncrypted)
+                {
+                    if (originalPassword == newPassword)
+                    {
+                        Log("No need for migration");
+                        
+                        if (onSuccess != null)
+                            Dispatcher.CurrentDispatcher.Invoke(onSuccess);
+                        
+                        return; // no need to proceed.
+                    }
+                    
+                    // it is already encrypted, we need to decrypt it.
+                    for (int i = 0; i < clips.Count; i++)
+                    {
+                        clips[i].data = Core.DecryptBase64(clips[i].data, originalPassword);
+                    }
+                }
             }
 
-            var clips = user.Clips.Select(s =>
-               new Clip
-               {
-                   time = s.time,
-                   data = action == MigrateAction.Encrypt ?
-                            isDataAlreadyEncrypted ? s.data : Core.EncryptBase64(s.data, DatabaseEncryptPassword)
-                          : 
-                            !isDataAlreadyEncrypted ? s.data : Core.DecryptBase64(s.data, DatabaseEncryptPassword)
-               }
-          ).ToList();
+            if (newPassword != null)
+            {
+                for (int i = 0; i < clips.Count; i++)
+                {
+                    clips[i].data = Core.EncryptBase64(clips[i].data, newPassword);
+                }
+            }
 
             user.Clips = clips;
             user.Devices = null;
@@ -243,7 +275,7 @@ namespace Components
 
             if (onSuccess != null)
                 Dispatcher.CurrentDispatcher.Invoke(onSuccess);
-        }
+        } 
              
         /// <summary>
         /// Determines whether it is necessary to refresh current access token.
@@ -342,7 +374,7 @@ namespace Components
                 Log("Need to refresh token");
                 if (await FirebaseHelper.RefreshAccessToken(FirebaseCurrent).ConfigureAwait(false))
                 {
-                    CreateNewClient();
+                    await CreateNewClient();
                     return true;
                 }
             }
@@ -371,7 +403,7 @@ namespace Components
                 File.Delete(UserStateFile);
         }
 
-        private void CreateNewClient()
+        private async Task CreateNewClient()
         {
             Log();
             IFirebaseConfig config;
@@ -393,14 +425,14 @@ namespace Components
             if (client != null) client.Dispose();
             client = new FirebaseClient(config);
 
-            SetUserCallback();
+            await SetUserCallback();
         }
 
         /// <summary>
         /// This sets call back to the binder events with an attached interface.<br/>
         /// Must be used after <see cref="FirebaseSingleton.BindUI(IFirebaseBinder)"/>
         /// </summary>
-        private async void SetUserCallback()
+        private async Task SetUserCallback()
         {
             isClientInitialized = false;
 
@@ -418,7 +450,7 @@ namespace Components
             await FixEncryptedDatabase().ConfigureAwait(false);
 
             if (user != null) fparser.SetUser(user);
-            if (user?.Clips != null) binder?.OnClipItemAdded(user.Clips.Select(c => c.data).ToList());
+            if (user?.Clips != null) binder?.OnClipItemAdded(user.Clips.Select(c => c.data.DecryptBase64(DatabaseEncryptPassword)).ToList());
             
             Log();
             try
@@ -503,7 +535,7 @@ namespace Components
                 {
                     if (await FirebaseHelper.RefreshAccessToken(FirebaseCurrent).ConfigureAwait(false))
                     {
-                        CreateNewClient();
+                        await CreateNewClient();
                     }
                     else MsgBoxHelper.ShowError(ex.Message);
                 }

@@ -32,7 +32,7 @@ namespace Components
         /// It will create a new instance after verifying <see cref="BindDatabase"/><br/>
         /// Must be called after <see cref="LoadFirebaseSetting"/><br/>
         /// </summary>
-        public static void InitializeService(IFirebaseBinderV2? binder = null)
+        public static async Task InitializeService(IFirebaseBinderV2? binder = null)
         {
             if (binder != null)
                 FirebaseSingletonV2.GetInstance.BindUI(binder);
@@ -46,7 +46,7 @@ namespace Components
                     binder?.OnResetFirebaseConfig();
                 })) return;
 
-                FirebaseSingletonV2.GetInstance.Initialize();
+                await FirebaseSingletonV2.GetInstance.Initialize();
                 MainHelper.ToggleCurrentQRData();
             } else DeInitializeService();
         }

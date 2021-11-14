@@ -18,6 +18,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 
 #nullable enable
 
@@ -58,6 +59,9 @@ namespace Components
         public ICommand ConnectedCommand { get; set; }
         public ICommand ResetDataCommand { get; set; }
         public RelayCommand<KeyEventArgs> KeyDownCommand { get; set; }
+        
+        public bool ProgressiveWork { get; set; } = false;
+        
         public bool SASS { get; set; } = StartOnSystemStartup;
         public bool CAU { get; set; } = CheckApplicationUpdates;
         public bool DSN { get; set; } = DisplayStartNotification;
@@ -233,8 +237,10 @@ namespace Components
         /// <summary>
         /// This event will be raised when Save Button is Clicked.
         /// </summary>
-        private void SaveButtonClicked()
+        private async void SaveButtonClicked()
         {
+            ProgressiveWork = true;
+            
             StartOnSystemStartup = SASS;
             CheckApplicationUpdates = CAU;
             DisplayStartNotification = DSN;
@@ -255,13 +261,13 @@ namespace Components
             EnableCopyBuffer = ECB;
             SetAppStartupEntry();
 
-            var isBindApplied = ToggleBindDatabase();
+            var isBindApplied = await ToggleBindDatabase();
 
             ToggleCustomPassword();
 
             ToggleSecureSqlDatabase();
 
-            ToggleFirebasePassword();
+            await ToggleFirebasePassword();
 
             WriteSettings();
 
@@ -269,9 +275,11 @@ namespace Components
                 MsgBoxHelper.ShowWarning(Translation.SETTINGS_SAVE_WARNING);
             else
                 MsgBoxHelper.ShowInfo(Translation.SETTINGS_SAVE);
+
+            ProgressiveWork = false;
         }
 
-        private bool ToggleBindDatabase()
+        private async Task<bool> ToggleBindDatabase()
         {
             if (!FirebaseHelper.PerformSafetyChecks(doOnNoConfigurationFile: () =>
             {
@@ -284,26 +292,35 @@ namespace Components
 
             BindDatabase = BTD;
             if (BindDatabase == BTD == true)
-                FirebaseHelper.InitializeService();
+                await FirebaseHelper.InitializeService();
             return true;
         }
 
         /// <summary>
         /// This method will change the current firebase password to new one.
         /// </summary>
-        private void ToggleFirebasePassword()
+        private async Task ToggleFirebasePassword()
         {
             if (DatabaseEncryptPassword != FDP)
             {
                 var result = MessageBox.Show(Translation.SETTINGS_FB_PASSWORD, Translation.MSG_INFO, MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
                 if (result == MessageBoxResult.Yes)
                 {
-                    ToggleCurrentQRData();
-                    
-                    // Remove the user from firebase TODO: Provide a safe migration to data but remove all devices...
-                    FirebaseSingletonV2.GetInstance.ResetUser().RunAsync();
-
-                    DatabaseEncryptPassword = FDP;
+                    await FirebaseSingletonV2.GetInstance.UpdateEncryptedPassword(
+                        originalPassword: DatabaseEncryptPassword,
+                        newPassword: FDP,
+                        onSuccess: () =>
+                        {
+                            DatabaseEncryptPassword = FDP;
+                            ToggleCurrentQRData();
+                            WriteFirebaseSetting();
+                        },
+                        onError: () =>
+                        {
+                            FDP = DatabaseEncryptPassword;
+                            MsgBoxHelper.ShowError(Translation.MSG_ENCRYPT_DATABASE_FAILED);
+                        }
+                    );
                 }
             }
         }

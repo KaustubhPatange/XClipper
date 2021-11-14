@@ -31,7 +31,7 @@
         <ProgressBar
             Height="3"
             BorderThickness="0"
-            IsIndeterminate="{Binding Path=(local:DefaultSettings.IsCheckingForLicense)}" />
+            IsIndeterminate="{c:Binding 'ProgressiveWork or local:DefaultSettings.IsCheckingForLicense'}" />
         <Border Padding="5">
             <StackPanel Orientation="Vertical">
                 <TabControl Height="auto">

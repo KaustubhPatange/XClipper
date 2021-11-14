@@ -777,7 +777,7 @@ namespace Components
             authWindow = new OAuthWindow(Id, secret);
             if (authWindow.ShowDialog() == true)
             {
-                FirebaseSingletonV2.GetInstance.Initialize();
+                FirebaseSingletonV2.GetInstance.Initialize().RunAsync();
             }
         }
 
