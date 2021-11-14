@@ -207,13 +207,15 @@ namespace Components
         public async Task MigrateClipData(MigrateAction action, Action? onSuccess = null, Action? onError = null)
         {
             Log();
-            if (user == null || user.Clips == null)
+            if (user == null)
             {
                 Log("Migration failed: User is null");
                 if (onError != null)
                     Dispatcher.CurrentDispatcher.Invoke(onError);
                 return;
             }
+
+            if (user.Clips == null) user.Clips = new List<Clip>();
 
             var isDataAlreadyEncrypted = FirebaseCurrent.IsEncrypted;
             if (user.Clips.Count > 0)
@@ -616,6 +618,8 @@ namespace Components
             if (user == null)
             {
                 var localUser = new User();
+                localUser.Clips = new List<Clip>();
+                localUser.Devices = new List<Device>();
                 await SetCommonUserInfo(localUser).ConfigureAwait(false);
                 this.user = localUser;
                 await PushUser().ConfigureAwait(false);

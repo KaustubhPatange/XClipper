@@ -87,11 +87,15 @@ namespace Components
                         {
                             ProgressiveWork = false;
                             FirebaseCurrent.IsEncrypted = EFD;
+                            
+                            MainHelper.ToggleCurrentQRData();
+                            
                             WriteFirebaseSetting();
                             MsgBoxHelper.ShowInfo(Translation.MSG_ENCRYPT_DATABASE_SUCCESS);
                         },
                         onError: () =>
                         {
+                            ProgressiveWork = false;
                             EFD = FirebaseCurrent.IsEncrypted;
                             MsgBoxHelper.ShowError(Translation.MSG_ENCRYPT_DATABASE_FAILED);
                         }

@@ -82,6 +82,7 @@ namespace Components
         public bool BIU { get; set; } = BindImage;
         public bool BFD { get; set; } = BindDelete;
         public bool ECB { get; set; } = EnableCopyBuffer;
+        public bool ShowFirebasePassword { get; set; } = false;
         public bool ISDB
         {
             get { return is_secure_db; }
@@ -297,7 +298,9 @@ namespace Components
                 var result = MessageBox.Show(Translation.SETTINGS_FB_PASSWORD, Translation.MSG_INFO, MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
                 if (result == MessageBoxResult.Yes)
                 {
-                    // Remove the user from firebase
+                    ToggleCurrentQRData();
+                    
+                    // Remove the user from firebase TODO: Provide a safe migration to data but remove all devices...
                     FirebaseSingletonV2.GetInstance.ResetUser().RunAsync();
 
                     DatabaseEncryptPassword = FDP;

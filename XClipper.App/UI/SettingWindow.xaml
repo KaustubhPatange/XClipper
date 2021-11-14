@@ -14,6 +14,7 @@
     xmlns:media="clr-namespace:System.Windows.Media;assembly=PresentationCore"
     xmlns:setting="clr-namespace:Components.Controls.Settings"
     xmlns:ui="clr-namespace:System.Windows;assembly=PresentationCore"
+    xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
     Title="{DynamicResource app_settings}"
     Width="370"
     Icon="pack://application:,,,/Resources/clipboard.png"
@@ -273,16 +274,34 @@
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="auto" />
                                         <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="auto" />
                                     </Grid.ColumnDefinitions>
                                     <TextBlock
                                         Grid.Column="0"
                                         Foreground="{c:Binding 'local:DefaultSettings.IsPurchaseDone ? media:Brushes.Black : media:Brushes.Gray'}"
                                         Text="{DynamicResource settings_ete}" />
-                                    <TextBox
+
+                                    <StackPanel
                                         Grid.Column="1"
                                         Margin="20,0,0,0"
-                                        IsEnabled="{Binding Path=(local:DefaultSettings.IsPurchaseDone)}"
-                                        Text="{Binding FDP, UpdateSourceTrigger=PropertyChanged}" />
+                                        IsEnabled="{Binding Path=(local:DefaultSettings.IsPurchaseDone)}">
+                                        <TextBox
+                                            x:Name="_fbPasswordTextBox"
+                                            IsEnabled="{Binding Path=(local:DefaultSettings.IsPurchaseDone)}"
+                                            Text="{Binding FDP, UpdateSourceTrigger=PropertyChanged}" />
+                                        <PasswordBox x:Name="_fbPasswordBox" />
+                                    </StackPanel>
+
+                                    <ToggleButton
+                                        x:Name="_togglefbPasswordChange"
+                                        Grid.Column="2"
+                                        Height="18"
+                                        Margin="7,0,0,0"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        IsChecked="{Binding ShowFirebasePassword, UpdateSourceTrigger=PropertyChanged}">
+                                        <Image Source="pack://application:,,,/Resources/eye.png" />
+                                    </ToggleButton>
                                 </Grid>
 
                                 <Grid Margin="0,10,0,0" IsEnabled="{c:Binding 'local:DefaultSettings.BindDatabase'}">
