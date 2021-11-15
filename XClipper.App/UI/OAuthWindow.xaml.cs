@@ -37,7 +37,6 @@ namespace Components.UI
         {
             RemoveAuthEvents();
             MsgBoxHelper.ShowError(args.GetException().Message);
-            DialogResult = false;
             Close();
         }
 

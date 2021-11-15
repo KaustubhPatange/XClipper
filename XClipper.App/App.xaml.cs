@@ -779,6 +779,14 @@ namespace Components
             {
                 FirebaseSingletonV2.GetInstance.Initialize().RunAsync();
             }
+            else
+            {
+                // disable bind database
+                BindDatabase = false;
+                WriteSettings();
+                FirebaseHelper.DeInitializeService();
+                MsgBoxHelper.ShowError(Translation.MSG_AUTH_SIGNIN_FAILED);
+            }
         }
 
         private void CallBuyWindow()

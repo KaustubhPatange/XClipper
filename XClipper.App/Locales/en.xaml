@@ -131,6 +131,7 @@
     <system:String x:Key="msg_firebase_unknown_err">Unknown error with the Firebase Client. Report me if you get this message.</system:String>
     <system:String x:Key="msg_need_auth">In order to connect with the database you first need to Sign-In.</system:String>
     <system:String x:Key="msg_wrong_signin">Account credentials are not valid for this account. You need to sign-In again</system:String>
+    <system:String x:Key="msg_auth_signin_failed">OAuth sign-in failed due to which "Database Binding" is disabled. Enable it from Settings > Connect.</system:String>
     <system:String x:Key="msg_unknown_err">An unknown error occurred. Report me if you get this message.</system:String>
     <system:String x:Key="msg_license_check">License validation is completed.</system:String>
     <system:String x:Key="msg_license_check_err">No license is associated with this UID.</system:String>

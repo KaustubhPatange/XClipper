@@ -126,6 +126,7 @@ namespace Components
 		public static string MSG_FIREBASE_UNKNOWN_ERR => GetString("msg_firebase_unknown_err");
 		public static string MSG_NEED_AUTH => GetString("msg_need_auth");
 		public static string MSG_WRONG_SIGNIN => GetString("msg_wrong_signin");
+		public static string MSG_AUTH_SIGNIN_FAILED => GetString("msg_auth_signin_failed");
 		public static string MSG_UNKNOWN_ERR => GetString("msg_unknown_err");
 		public static string MSG_LICENSE_CHECK => GetString("msg_license_check");
 		public static string MSG_LICENSE_CHECK_ERR => GetString("msg_license_check_err");
