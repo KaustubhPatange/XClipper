@@ -4,3 +4,4 @@
 - Added: Custom toggle visibility for viewing password in settings.
 - Improved: Clean migration when changing end-to-end password & improved more concurrency.
 - Fixed: Incorrect setting of end to end password.
+- Fixed: Sync service not deinitializing when authentication is failed.
