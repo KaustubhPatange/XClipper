@@ -35,9 +35,7 @@ class AccountPreference : PreferenceFragmentCompat() {
     private var logPreference: Preference? = null
     private var connectPreference: Preference? = null
 
-    private val connectionUID : String? by lazy {
-        dbConnectionProvider.optionsProvider()?.uid
-    }
+    private val connectionUID : String? get() = dbConnectionProvider.optionsProvider()?.uid
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.account_pref, rootKey)
