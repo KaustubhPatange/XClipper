@@ -3,14 +3,11 @@ package com.kpstv.xclipper.ui.fragments.sheets
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
-import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.provider.PreferenceProvider

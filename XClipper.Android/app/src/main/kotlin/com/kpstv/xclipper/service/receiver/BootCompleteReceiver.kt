@@ -2,7 +2,7 @@ package com.kpstv.xclipper.service.receiver
 
 import android.content.Context
 import android.content.Intent
-import com.kpstv.xclipper.extensions.AbstractBroadcastReceiver
+import com.kpstv.xclipper.extensions.elements.AbstractBroadcastReceiver
 import com.kpstv.xclipper.service.helper.ClipboardLogDetector
 import com.kpstv.xclipper.ui.helpers.AppSettings
 import com.kpstv.xclipper.ui.helpers.Notifications

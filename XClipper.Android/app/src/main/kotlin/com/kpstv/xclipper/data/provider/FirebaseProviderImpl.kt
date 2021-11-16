@@ -26,6 +26,7 @@ import com.kpstv.xclipper.data.model.Device
 import com.kpstv.xclipper.data.model.User
 import com.kpstv.xclipper.data.model.UserEntity
 import com.kpstv.xclipper.extensions.*
+import com.kpstv.xclipper.extensions.enumerations.LicenseType
 import com.kpstv.xclipper.extensions.listeners.ResponseResult
 import com.kpstv.xclipper.extensions.utils.DeviceUtils
 import com.kpstv.xclipper.extensions.utils.GsonUtils
@@ -188,7 +189,9 @@ class FirebaseProviderImpl @Inject constructor(
         Log.e(TAG, "ListSize: ${list.size}, List: $list")
 
         /** Must pass toList to firebase otherwise it add list as linear data. */
-        val result: DataResponse<DatabaseReference> = database.getReference(USER_REF).child(uid).child(DEVICE_REF).setValueAsync(list.toList())
+        val result: DataResponse<DatabaseReference> = database.getReference(USER_REF).child(uid).child(
+            DEVICE_REF
+        ).setValueAsync(list.toList())
 
         currentUserRepository.updateDevices(list)
 

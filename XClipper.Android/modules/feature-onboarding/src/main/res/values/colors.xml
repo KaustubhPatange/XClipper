@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="palette1">#A6418B</color>
+    <color name="palette_android">#43A88C</color>
+    <color name="palette2">#2A5998</color>
+    <color name="palette_improve">#857547</color>
+    <color name="palette3">#4F97B3</color>
+    <color name="palette4">#D6B16A</color>
+    <color name="palette5">#F26F63</color>
+    <color name="palette6">#2F5373</color>
+    <color name="palette7">#787B8C</color>
+    <color name="palette8">#353535</color>
+</resources>

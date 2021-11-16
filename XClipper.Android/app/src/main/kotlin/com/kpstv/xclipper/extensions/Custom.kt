@@ -18,10 +18,7 @@ import kotlin.reflect.KProperty1
 import kotlin.reflect.KVisibility
 import kotlin.reflect.full.memberProperties
 
-typealias SimpleFunction = () -> Unit
-typealias ErrorFunction = (Exception?) -> Unit
 typealias FirebaseFunction = (DataSnapshot) -> Unit
-typealias FragClazz = KClass<out Fragment>
 
 fun SimpleSearchView.setOnQueryTextListener(
     onSubmit: ((String) -> Unit)? = null,
@@ -61,25 +58,6 @@ fun Boolean.toInt(): Int = if (this) 1 else 0
 private const val STANDARD_DATE_FORMAT = "yyyyMMddHHmmss"
 fun Date.getFormattedDate(): String =
     SimpleDateFormat(STANDARD_DATE_FORMAT, Locale.US).format(this)
-
-enum class LicenseType {
-    @SerializedName("0")
-    Standard,
-    @SerializedName("1")
-    Premium,
-    @SerializedName("2")
-    Invalid
-}
-
-/**
- * Basically checks if string is an enum of a particular class.
- * If yes then returns the enum else null.
- *
- * Source: https://stackoverflow.com/a/41855007/10133501
- */
-inline fun <reified T : Enum<T>> enumValueOrNull(name: String): T? {
-    return enumValues<T>().find { it.name == name }
-}
 
 fun String.toLines(): List<String> {
     return this.split("[\n|\r]".toRegex())

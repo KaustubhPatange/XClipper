@@ -12,6 +12,7 @@ import com.kpstv.xclipper.extensions.hide
 import com.kpstv.xclipper.extensions.layoutInflater
 import com.kpstv.xclipper.extensions.show
 import com.kpstv.xclipper.extensions.utils.Utils
+import com.kpstv.xclipper.utils.LaunchUtils
 
 class CustomLottieDialog(private val context: Context) {
     private val builder: AlertDialog.Builder = AlertDialog.Builder(context)
@@ -38,7 +39,7 @@ class CustomLottieDialog(private val context: Context) {
 
     fun setLottieResCredits(url: String) : CustomLottieDialog {
         binding.lottieView.setOnLongClickListener {
-            Utils.commonUrlLaunch(binding.root.context, url)
+            LaunchUtils.commonUrlLaunch(binding.root.context, url)
             true
         }
         return this

@@ -7,16 +7,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.kpstv.navigation.ValueFragment
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.SpecialMenu
-import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.databinding.FragmentSettingsMainBinding
 import com.kpstv.xclipper.extensions.viewBinding
 import com.kpstv.xclipper.ui.adapters.MenuAdapter
 import com.kpstv.xclipper.ui.fragments.Settings
-import com.kpstv.xclipper.ui.helpers.AppSettings
 import com.kpstv.xclipper.ui.helpers.fragments.ImproveDetectionHelper
 import com.kpstv.xclipper.ui.viewmodels.SettingNavViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class SettingsFragment : ValueFragment(R.layout.fragment_settings_main) {

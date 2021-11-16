@@ -8,7 +8,7 @@ import android.widget.Toast
 import com.kpstv.update.Updater
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.repository.MainRepository
-import com.kpstv.xclipper.extensions.AbstractBroadcastReceiver
+import com.kpstv.xclipper.extensions.elements.AbstractBroadcastReceiver
 import com.kpstv.xclipper.extensions.launchInIO
 import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.service.worker.GithubUpdateWorker

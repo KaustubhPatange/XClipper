@@ -76,7 +76,7 @@ class ImproveDetectionHelper(
                     setTitleText(R.string.adb_mode_title)
                     setSubText(R.string.adb_mode_summary)
                     setIcon(R.drawable.ic_increase)
-                    applyColor(context.colorFrom(R.color.palette_android))
+                    applyColor(context.colorFrom(R.color.android))
                     hideButtonPanel()
                     setOnClick(doOnAction)
                     setOnLongClick {

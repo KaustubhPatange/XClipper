@@ -9,6 +9,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.extensions.setPadding
 import com.kpstv.xclipper.extensions.utils.Utils
+import com.kpstv.xclipper.utils.LaunchUtils
 
 object Dialogs {
 
@@ -58,7 +59,7 @@ object Dialogs {
             .setTitle(R.string.adb_dialog_title)
             .setView(textView)
             .setPositiveButton(R.string.learn_more) { _, _ ->
-                Utils.commonUrlLaunch(context, context.getString(R.string.app_docs_improve_detect))
+                LaunchUtils.commonUrlLaunch(context, context.getString(R.string.app_docs_improve_detect))
             }
             .setNeutralButton(R.string.cancel, null)
             .show()

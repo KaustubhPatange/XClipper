@@ -6,18 +6,19 @@ import androidx.preference.PreferenceFragmentCompat
 import com.kpstv.xclipper.BuildConfig
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.extensions.utils.Utils
+import com.kpstv.xclipper.utils.LaunchUtils
 
 class AboutPreference : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.about_pref, rootKey)
 
         findPreference<Preference>("author_pref")?.setOnPreferenceClickListener {
-            Utils.commonUrlLaunch(requireContext(), getString(R.string.author_link))
+            LaunchUtils.commonUrlLaunch(requireContext(), getString(R.string.author_link))
             true
         }
 
         findPreference<Preference>("mail_pref")?.setOnPreferenceClickListener {
-            Utils.commonUrlLaunch(requireContext(), "mailto:${getString(R.string.author_mail)}")
+            LaunchUtils.commonUrlLaunch(requireContext(), "mailto:${getString(R.string.author_mail)}")
             true
         }
 
@@ -28,18 +29,18 @@ class AboutPreference : PreferenceFragmentCompat() {
         findPreference<Preference>("website_pref")?.apply {
             summary = getString(R.string.app_website)
             setOnPreferenceClickListener {
-                Utils.commonUrlLaunch(requireContext(), getString(R.string.app_website))
+                LaunchUtils.commonUrlLaunch(requireContext(), getString(R.string.app_website))
                 true
             }
         }
 
         findPreference<Preference>("report_pref")?.setOnPreferenceClickListener {
-            Utils.commonUrlLaunch(requireContext(), getString(R.string.app_github_issues))
+            LaunchUtils.commonUrlLaunch(requireContext(), getString(R.string.app_github_issues))
             true
         }
 
         findPreference<Preference>("privacy_pref")?.setOnPreferenceClickListener {
-            Utils.commonUrlLaunch(requireContext(), getString(R.string.app_privacy_policy))
+            LaunchUtils.commonUrlLaunch(requireContext(), getString(R.string.app_privacy_policy))
             true
         }
     }

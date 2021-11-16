@@ -6,9 +6,9 @@ import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.extensions.getFormattedDate
-import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.ui.dialogs.CustomLottieDialog
 import com.kpstv.xclipper.ui.fragments.Home
+import com.kpstv.xclipper.utils.LaunchUtils
 import java.util.*
 
 class SyncDialogHelper(
@@ -58,7 +58,7 @@ class SyncDialogHelper(
                 .setMessage(R.string.synchronize_text)
                 .setNeutralButton(R.string.later)
                 .setPositiveButton(R.string.learn_more) {
-                    Utils.commonUrlLaunch(this, getString(R.string.app_docs_sync))
+                    LaunchUtils.commonUrlLaunch(this, getString(R.string.app_docs_sync))
                 }
                 .show()
         }

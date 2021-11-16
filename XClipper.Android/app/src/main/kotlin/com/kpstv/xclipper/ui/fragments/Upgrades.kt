@@ -17,6 +17,7 @@ import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.databinding.FragmentUpgradeBinding
 import com.kpstv.xclipper.extensions.*
+import com.kpstv.xclipper.extensions.enumerations.LicenseType
 import com.kpstv.xclipper.extensions.listeners.ResponseResult
 import com.kpstv.xclipper.ui.helpers.extensions.*
 import com.kpstv.xclipper.ui.helpers.extensions.ExtensionAdapterItem.Companion.toAdapterItem

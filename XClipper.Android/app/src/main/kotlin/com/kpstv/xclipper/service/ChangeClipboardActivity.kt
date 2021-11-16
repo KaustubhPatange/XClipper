@@ -1,11 +1,9 @@
 package com.kpstv.xclipper.service
 
-import android.app.ActivityManager
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import androidx.core.app.ActivityManagerCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import com.kpstv.xclipper.data.provider.ClipboardProvider

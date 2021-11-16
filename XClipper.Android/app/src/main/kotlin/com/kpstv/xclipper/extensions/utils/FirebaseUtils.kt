@@ -43,6 +43,7 @@ class FirebaseUtils @Inject constructor(
                     clipRepositoryHelper.deleteClip(items)
                 },
                 removedAll = {
+
                     Notifications.sendNotification(
                         context = context,
                         title = getString(R.string.app_name),

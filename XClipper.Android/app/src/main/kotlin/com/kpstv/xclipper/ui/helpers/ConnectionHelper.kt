@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import com.google.zxing.integration.android.IntentIntegrator
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.FBOptions
-import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.di.CommonReusableEntryPoints
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
 import com.kpstv.xclipper.extensions.utils.Utils

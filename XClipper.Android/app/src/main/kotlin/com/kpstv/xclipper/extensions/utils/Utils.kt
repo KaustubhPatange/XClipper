@@ -36,7 +36,6 @@ import com.kpstv.xclipper.data.localized.FBOptions
 import com.kpstv.xclipper.data.model.AppPkg
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.provider.DBConnectionProvider
-import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.databinding.DialogConnectBinding
 import com.kpstv.xclipper.databinding.DialogProgressViewBinding
 import com.kpstv.xclipper.extensions.SimpleFunction
@@ -214,15 +213,6 @@ class Utils {
                 .show()
         }
 
-        fun isSystemOverlayEnabled(context: Context): Boolean = with(context) {
-            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                Settings.canDrawOverlays(this)
-            } else true
-        }
-
-        fun isAndroid10orUp() =
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
-
         @RequiresApi(Build.VERSION_CODES.M)
         fun openSystemOverlay(context: Context) = with(context) {
             val myIntent =
@@ -332,18 +322,6 @@ class Utils {
             stream?.bufferedReader()?.read(buffer, 0, 16)
             val str = String(buffer)
             return str == "SQLite format 3\u0000"
-        }
-
-        fun commonUrlLaunch(context: Context, url: String): Unit = with(context) {
-            val intent = Intent(Intent.ACTION_VIEW).apply {
-                data = Uri.parse(url)
-                flags = FLAG_ACTIVITY_NEW_TASK
-            }
-            try {
-                startActivity(intent)
-            }catch (e: Exception) {
-                Toasty.error(this, R.string.err_action).show()
-            }
         }
 
         fun dpToPixel(context: Context, value: Float): Float = with(context) {

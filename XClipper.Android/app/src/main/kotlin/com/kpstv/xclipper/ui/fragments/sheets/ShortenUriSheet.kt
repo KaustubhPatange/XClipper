@@ -14,9 +14,9 @@ import com.kpstv.xclipper.extensions.elements.CustomRoundedBottomSheetFragment
 import com.kpstv.xclipper.extensions.hide
 import com.kpstv.xclipper.extensions.listeners.ResponseResult
 import com.kpstv.xclipper.extensions.show
-import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.extensions.viewBinding
 import com.kpstv.xclipper.ui.helpers.TinyUrlApiHelper
+import com.kpstv.xclipper.utils.LaunchUtils
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.CoroutineScope
@@ -74,7 +74,7 @@ class ShortenUriSheet(
             dismiss()
         }
         binding.ivOpenUrl.setOnClickListener {
-            Utils.commonUrlLaunch(requireContext(), urlInfo.shortUrl)
+            LaunchUtils.commonUrlLaunch(requireContext(), urlInfo.shortUrl)
 
             onClick.invoke()
             dismiss()

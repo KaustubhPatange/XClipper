@@ -2,28 +2,12 @@ package com.kpstv.xclipper.ui.helpers.extensions
 
 import android.app.Activity
 import android.content.Context
-import android.content.res.ColorStateList
-import android.graphics.Color
-import android.os.Bundle
-import android.view.View
-import androidx.core.graphics.ColorUtils
 import com.android.billingclient.api.*
-import com.kpstv.navigation.BaseArgs
-import com.kpstv.navigation.getKeyArgs
-import com.kpstv.navigation.hasKeyArgs
-import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.provider.PreferenceProvider
-import com.kpstv.xclipper.databinding.BottomSheetExtensionBinding
 import com.kpstv.xclipper.di.CommonReusableEntryPoints
 import com.kpstv.xclipper.extensions.ErrorFunction
 import com.kpstv.xclipper.extensions.SimpleFunction
-import com.kpstv.xclipper.extensions.elements.CustomRoundedBottomSheetFragment
-import com.kpstv.xclipper.extensions.viewBinding
-import dagger.hilt.android.AndroidEntryPoint
-import es.dmoral.toasty.Toasty
-import kotlinx.android.parcel.Parcelize
 import kotlinx.coroutines.suspendCancellableCoroutine
-import javax.inject.Inject
 import kotlin.coroutines.resume
 
 class ExtensionHelper(private val context: Context, sku: String) {

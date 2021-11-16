@@ -9,8 +9,14 @@ object ModuleDependency {
 
     const val UPDATER = ":updater"
 
+    const val CORE = ":modules:core"
     const val CORE_PRIVATE = ":modules:core-private"
     const val CORE_EXTENSIONS = ":modules:core-extension"
+    const val CORE_CLIPBOARD = ":modules:core-clipboard"
+
+    const val FEATURE_ONBOARDING = ":modules:feature-onboarding"
+    const val FEATURE_XCOPY = ":modules:feature-xcopy"
+    const val FEATURE_SYNC = ":modules:feature-sync"
 
     fun getAllModules(): Set<String> = ModuleDependency::class.memberProperties
         .filter { it.isConst }

@@ -1,55 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#e32581</color>
-    <color name="colorPrimaryDark">#B11F66</color>
-    <color name="colorAccent">#03DAC5</color>
-
-    <color name="colorCustomBlue">#05c1fd</color>
-
-    <color name="colorClickCard">#313235</color>
-    <color name="colorCard">#121212</color>
-    <color name="colorCard_Light">#FFFFFF</color>
-    <color name="colorClickCard_Light">#cecdca</color>
-
-    <color name="colorSelectedClip">#FBFF87</color>
-    <color name="colorSelectedClip_Light">#80833D</color>
-
-    <color name="colorPinnedClip">#36B37E</color>
-    <color name="colorPinnedClip_Light">#019E72</color>
-
-    <color name="colorSelected">#404040</color>
-    <color name="colorSelected_Light">#bfbfbf</color>
-
-    <color name="colorBackground">#202124</color>
-    <color name="colorBackground_Light">#dfdedb</color>
-
-    <color name="colorSeparator">#676666</color>
-    <color name="colorSeparator_Light">#989999</color>
-
-    <color name="colorTextSecondary">#9F9F9F</color>
-    <color name="colorTextSecondary_Light">#606060</color>
-
-    <color name="colorTextSecondaryLight">#C3C2C2</color>
-    <color name="colorTextSecondaryLight_Light">#3c3d3d</color>
-
-    <color name="colorTextPrimary">#F1EEEE</color>
-    <color name="colorTextPrimary_Light">#0e1111</color>
-
     <color name="roundedBottomSheetPrimaryBackground">?background</color>
     <color name="roundedBottomSheetPrimaryNavigationBarColor">#202124</color>
 
     <color name="support">#FF5656</color>
 
+    <color name="android">#43A88C</color>
+
+    <color name="golden_yellow">#D6B16A</color>
+    <color name="light_red">#F26F63</color>
+
     <color name="activated">#00A17A</color>
 
-    <color name="palette1">#A6418B</color>
-    <color name="palette_android">#43A88C</color>
-    <color name="palette2">#2A5998</color>
-    <color name="palette_improve">#857547</color>
-    <color name="palette3">#4F97B3</color>
-    <color name="palette4">#D6B16A</color>
-    <color name="palette5">#F26F63</color>
-    <color name="palette6">#2F5373</color>
-    <color name="palette7">#787B8C</color>
-    <color name="palette8">#353535</color>
+
 </resources>

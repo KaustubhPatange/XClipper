@@ -10,7 +10,7 @@ import com.kpstv.xclipper.BuildConfig
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.di.CommonReusableEntryPoints
 import com.kpstv.xclipper.extensions.utils.DeviceUtils
-import com.kpstv.xclipper.extensions.utils.Utils
+import com.kpstv.xclipper.utils.LaunchUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -44,7 +44,7 @@ object FirebaseSyncHelper {
                     .setMessage(R.string.sync_register_text)
                     .setPositiveButton(R.string.alright, null)
                     .setNeutralButton(R.string.learn_more) { _, _ ->
-                        Utils.commonUrlLaunch(context, context.getString(R.string.app_docs_device_add))
+                        LaunchUtils.commonUrlLaunch(context, context.getString(R.string.app_docs_device_add))
                     }
                     .setCancelable(false)
                     .show()

@@ -1,11 +1,9 @@
 package com.kpstv.xclipper
 
-import com.kpstv.xclipper.data.model.Clip
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.receiveAsFlow
 import org.junit.Assert
 import org.junit.Test

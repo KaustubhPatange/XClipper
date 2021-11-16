@@ -34,6 +34,7 @@ class DBConnectionProviderImpl @Inject constructor(
                 val hasBinded = firebaseConfigs[6].toBoolean()
 
                 if (!hasBinded) {
+                    // TODO: Create a string
                     responseListener.onError(Exception("Enable & apply \"Database binding\" from desktop application."))
                     return
                 }

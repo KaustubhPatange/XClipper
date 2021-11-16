@@ -19,7 +19,6 @@ import com.bsk.floatingbubblelib.FloatingBubbleTouchListener
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.provider.ClipboardProvider
-import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.databinding.BubbleViewBinding
 import com.kpstv.xclipper.databinding.ItemBubbleServiceBinding

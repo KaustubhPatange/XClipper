@@ -7,15 +7,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.kpstv.navigation.*
+import com.kpstv.onboarding.OnBoardingFragment
 import com.kpstv.pin_lock.PinLockHelper
-import com.kpstv.xclipper.databinding.ActivityStartBinding
 import com.kpstv.xclipper.extensions.FragClazz
 import com.kpstv.xclipper.extensions.applyEdgeToEdgeMode
-import com.kpstv.xclipper.extensions.viewBinding
 import com.kpstv.xclipper.ui.fragments.Home
 import com.kpstv.xclipper.ui.fragments.Settings
 import com.kpstv.xclipper.ui.fragments.sheets.DisclosureSheet
-import com.kpstv.xclipper.ui.fragments.welcome.*
 import com.kpstv.xclipper.ui.helpers.ActivityIntentHelper
 import com.kpstv.xclipper.ui.helpers.AppSettings
 import com.kpstv.xclipper.ui.helpers.ConnectionHelper
@@ -27,7 +25,6 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class Start : AppCompatActivity(), FragmentNavigator.Transmitter {
-    private val binding by viewBinding(ActivityStartBinding::inflate)
     private val navViewModel by viewModels<NavViewModel>()
     private val mainViewModel by viewModels<MainViewModel>()
     private lateinit var navigator: FragmentNavigator
@@ -44,11 +41,10 @@ class Start : AppCompatActivity(), FragmentNavigator.Transmitter {
         PinLockHelper.checkPinLock(this)
         applyEdgeToEdgeMode()
         super.onCreate(savedInstanceState)
-        setContentView(binding.root)
 
-        val startScreen = if (appSettings.isOnBoardingScreensShowed()) Screen.HOME.clazz else Screen.GREET.clazz
+        val startScreen = if (appSettings.isOnBoardingScreensShowed()) Screen.HOME.clazz else Screen.ONBOARDING.clazz
         navigator = FragmentNavigator.with(this, savedInstanceState)
-            .initialize(binding.root, Destination.of(startScreen))
+            .initialize(findViewById(android.R.id.content), Destination.of(startScreen))
         navigator.autoChildElevation()
 
         navViewModel.navigation.observe(this) { options ->
@@ -88,17 +84,8 @@ class Start : AppCompatActivity(), FragmentNavigator.Transmitter {
     }
 
     enum class Screen(val clazz: FragClazz) {
-        /* Introduction screens */
-        GREET(Greeting::class),
-        ANDROID10(Android10::class),
-        TURN_ON_SERVICE(TurnOnService::class),
-        IMPROVE_DETECTION(ImproveDetection::class),
-        ENABLE_SUGGESTIONS(EnableSuggestion::class),
-        STANDARD_COPY(StandardCopy::class),
-        QUICK_SETTING_TITLE(QuickSettingTitle::class),
-        WINDOWS_APP(WindowApp::class),
-
         /* Main screens */
+        ONBOARDING(OnBoardingFragment::class),
         HOME(Home::class),
         SETTING(Settings::class),
 

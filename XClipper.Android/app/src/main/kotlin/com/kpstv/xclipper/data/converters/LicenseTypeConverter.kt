@@ -1,8 +1,9 @@
 package com.kpstv.xclipper.data.converters
 
 import androidx.room.TypeConverter
-import com.kpstv.xclipper.extensions.LicenseType
+import com.kpstv.xclipper.extensions.enumerations.LicenseType
 
+@Deprecated("AutoBindings automatically generates a type converter when used in a declaration")
 object LicenseTypeConverter {
     @TypeConverter
     @JvmStatic

@@ -2,7 +2,6 @@ package com.kpstv.xclipper.ui.fragments.sheets
 
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
-import android.text.method.ScrollingMovementMethod
 import android.view.View
 import androidx.core.graphics.ColorUtils
 import androidx.core.text.HtmlCompat

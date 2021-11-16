@@ -30,6 +30,7 @@ import com.kpstv.xclipper.ui.adapters.MenuAdapter
 import com.kpstv.xclipper.ui.fragments.sheets.MoreChooserSheet
 import com.kpstv.xclipper.ui.fragments.sheets.ShortenUriSheet
 import com.kpstv.xclipper.ui.helpers.DictionaryApiHelper
+import com.kpstv.xclipper.utils.LaunchUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -115,7 +116,8 @@ class SpecialHelper(
         /** Show search in maps menu */
 
         val checkForTag = clip.tags?.containsKey(ClipTag.MAP.small())
-        val shouldBeAdded = clip.tags?.containsKey(ClipTag.URL.small()) == false && clip.tags?.containsKey(ClipTag.DATE.small()) == false
+        val shouldBeAdded = clip.tags?.containsKey(ClipTag.URL.small()) == false && clip.tags?.containsKey(
+            ClipTag.DATE.small()) == false
 
         val showMapMenu = SpecialMenu(
             image = R.drawable.ic_map,
@@ -460,7 +462,7 @@ class SpecialHelper(
                         }
                 }
                 linkPreview.onClick {
-                    Utils.commonUrlLaunch(context, topUrl)
+                    LaunchUtils.commonUrlLaunch(context, topUrl)
                 }
             }
         }

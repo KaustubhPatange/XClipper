@@ -24,7 +24,7 @@ import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.databinding.DialogProgressBinding
 import com.kpstv.xclipper.extensions.layoutInflater
-import com.kpstv.xclipper.extensions.utils.Utils.Companion.isSystemOverlayEnabled
+import com.kpstv.xclipper.utils.CoreUtils.isSystemOverlayEnabled
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.retrievePackageList
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showAccessibilityDialog
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showDisableAccessibilityDialog

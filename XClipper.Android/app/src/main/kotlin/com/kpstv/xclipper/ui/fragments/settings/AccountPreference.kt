@@ -10,12 +10,12 @@ import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
-import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.logoutFromDatabase
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showConnectDialog
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showConnectionDialog
 import com.kpstv.xclipper.ui.helpers.AppSettings
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
+import com.kpstv.xclipper.utils.LaunchUtils
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import javax.inject.Inject
@@ -125,7 +125,7 @@ class AccountPreference : PreferenceFragmentCompat() {
 
         /** Help Preference */
         findPreference<Preference>(HELP_PREF)?.setOnPreferenceClickListener {
-            Utils.commonUrlLaunch(requireContext(), getString(R.string.app_docs_sync))
+            LaunchUtils.commonUrlLaunch(requireContext(), getString(R.string.app_docs_sync))
             true
         }
     }

@@ -20,7 +20,7 @@ import com.kpstv.xclipper.extensions.logger
 import com.kpstv.xclipper.extensions.utils.FirebaseUtils
 import com.kpstv.xclipper.extensions.utils.KeyboardUtils.Companion.isKeyboardVisible
 import com.kpstv.xclipper.extensions.utils.Utils
-import com.kpstv.xclipper.extensions.utils.Utils.Companion.isSystemOverlayEnabled
+import com.kpstv.xclipper.utils.CoreUtils.isSystemOverlayEnabled
 import com.kpstv.xclipper.service.helper.ClipboardDetection
 import com.kpstv.xclipper.service.helper.ClipboardLogDetector
 import com.kpstv.xclipper.service.helper.LanguageDetector

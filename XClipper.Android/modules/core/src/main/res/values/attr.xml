@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="colorTextPrimary" format="reference|color"/>
+    <attr name="colorTextSecondary" format="reference|color"/>
+    <attr name="colorTextSecondaryLight" format="reference|color"/>
+    <attr name="colorForeground" format="reference|color"/>
+    <attr name="colorSeparator" format="reference|color"/>
+    <attr name="colorSelected" format="reference|color"/>
+    <attr name="colorBackground" format="reference|color" />
+    <attr name="colorCurrentClip" format="reference|color"/>
+    <attr name="colorPinnedClip" format="reference|color"/>
+
+</resources>

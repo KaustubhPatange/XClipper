@@ -23,11 +23,11 @@
                 app:cardBackgroundColor="?colorForeground"
                 app:cardElevation="3dp"
                 app:purchaseAmount="$20"
-                app:purchaseButtonColor="@color/palette4"
+                app:purchaseButtonColor="@color/golden_yellow"
                 app:purchaseButtonText="@string/purchase"
                 app:purchaseDescription="@string/premium_pricing"
                 app:purchaseType="Premium"
-                app:purchaseTypeColor="@color/palette5"
+                app:purchaseTypeColor="@color/light_red"
                 app:separatorColor="?background" />
 
             <TextView
