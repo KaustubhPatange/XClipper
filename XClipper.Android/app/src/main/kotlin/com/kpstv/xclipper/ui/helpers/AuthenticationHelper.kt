@@ -85,10 +85,16 @@ class AuthenticationHelper(
 
         googleSignInClient = GoogleSignIn.getClient(this, defaultGoogleSignInOptions(clientId))
 
-        auth = Firebase.auth(app)
+        fun performSignIn() {
+            auth = Firebase.auth(app)
 
-        val signInIntent = googleSignInClient.signInIntent
-        getResult.launch(signInIntent)
+            val signInIntent = googleSignInClient.signInIntent
+            getResult.launch(signInIntent)
+        }
+
+        if (GoogleSignIn.getLastSignedInAccount(this) != null) {
+            googleSignInClient.signOut().addOnCompleteListener { performSignIn() }
+        } else performSignIn()
     }
 
     private fun firebaseAuthWithGoogle(idToken: String) = with(activity) {

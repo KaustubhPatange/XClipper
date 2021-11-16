@@ -5,9 +5,9 @@ object ModuleDependency {
     const val APP = ":app"
     const val PRICING_CARDS = ":app:pricing"
     const val LINK_PREVIEW = ":app:link-preview"
-    const val UPDATE = ":app:update"
     const val PIN_LOCK = ":app:pin-lock"
 
+    const val UPDATER = ":updater"
 
     const val CORE_PRIVATE = ":modules:core-private"
     const val CORE_EXTENSIONS = ":modules:core-extension"
