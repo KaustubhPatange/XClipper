@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.CalendarContract
 import android.provider.ContactsContract
+import android.telephony.TelephonyManager
 import android.util.Log
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.FragmentManager
@@ -25,7 +26,7 @@ import com.kpstv.xclipper.databinding.BottomSheetMoreBinding
 import com.kpstv.xclipper.di.SpecialEntryPoints
 import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
-import com.kpstv.xclipper.extensions.utils.Utils
+import com.kpstv.xclipper.extensions.utils.PackageUtils
 import com.kpstv.xclipper.ui.adapters.MenuAdapter
 import com.kpstv.xclipper.ui.fragments.sheets.MoreChooserSheet
 import com.kpstv.xclipper.ui.fragments.sheets.ShortenUriSheet
@@ -254,12 +255,12 @@ class SpecialHelper(
             if (enabledActions.contains(SpecialAction.TEXT_NUMBER)) specialList.add(sendSMSMenu)
 
             /** Send a whatsapp message */
-            if (Utils.isPackageInstalled(context, "com.whatsapp")) {
+            if (PackageUtils.isPackageInstalled(context, "com.whatsapp")) {
                 val whatsAppTextMenu =
                     SpecialMenu(image = R.drawable.ic_whatsapp, title = context.getString(R.string.send_whatsapp)) {
                         createChooser(ClipTag.PHONE.small()) { data ->
                             val numberToWhatsApp = when (data.length) {
-                                10 -> "+${Utils.getCountryDialCode(context)} $data"
+                                10 -> "+${getCountryDialCode(context)} $data"
                                 else -> data
                             }
                             val intent = Intent(Intent.ACTION_VIEW).apply {
@@ -440,8 +441,9 @@ class SpecialHelper(
                 if (model != null) {
                     linkPreview.setTitle(model.title)
                     linkPreview.setHostUrl(topUrl)
-                    if (model.subtitle != null)
-                        linkPreview.setSubtitle(model.subtitle)
+                    val subtitle = model.subtitle
+                    if (subtitle != null)
+                        linkPreview.setSubtitle(subtitle)
                     else {
                         linkPreview.setSubtitle(model.title)
                     }
@@ -466,6 +468,24 @@ class SpecialHelper(
                 }
             }
         }
+    }
+
+    private fun getCountryDialCode(context: Context): String? {
+        var countryDialCode: String? = null
+        val telephonyMngr =
+            context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+        val countryId = telephonyMngr.simCountryIso.uppercase(Locale.ROOT)
+        val arrCountryCode: Array<String> =
+            context.resources.getStringArray(R.array.DialingCountryCode)
+        for (i in arrCountryCode.indices) {
+            val arrDial =
+                arrCountryCode[i].split(",").toTypedArray()
+            if (arrDial[1].trim { it <= ' ' } == countryId.trim()) {
+                countryDialCode = arrDial[0]
+                break
+            }
+        }
+        return countryDialCode
     }
 
     private companion object {

@@ -12,12 +12,10 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 @HiltViewModel
-class UpgradeViewModel @Inject constructor(
-    private val retrofitUtils: RetrofitUtils
-) : ViewModel() {
+class UpgradeViewModel @Inject constructor() : ViewModel() {
 
     suspend fun fetchLatestPrice(context: Context): Flow<ResponseResult<String>> = flow {
-        val result = retrofitUtils.fetch(
+        val result = RetrofitUtils.fetch(
             context.getString(R.string.app_website)
         )
 

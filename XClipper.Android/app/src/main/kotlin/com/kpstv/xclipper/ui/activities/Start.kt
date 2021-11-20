@@ -16,17 +16,17 @@ import com.kpstv.xclipper.ui.fragments.Settings
 import com.kpstv.xclipper.ui.fragments.sheets.DisclosureSheet
 import com.kpstv.xclipper.ui.helpers.ActivityIntentHelper
 import com.kpstv.xclipper.ui.helpers.AppSettings
-import com.kpstv.xclipper.ui.helpers.ConnectionHelper
+import com.kpstv.xclipper.ui.helpers.connection.ConnectionHelper
 import com.kpstv.xclipper.ui.helpers.FirebaseSyncHelper
+import com.kpstv.xclipper.ui.helpers.connection.ConnectionViewModel
 import com.kpstv.xclipper.ui.helpers.fragments.*
-import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class Start : AppCompatActivity(), FragmentNavigator.Transmitter {
     private val navViewModel by viewModels<NavViewModel>()
-    private val mainViewModel by viewModels<MainViewModel>()
+    private val connectionViewModel by viewModels<ConnectionViewModel>()
     private lateinit var navigator: FragmentNavigator
 
     @Inject
@@ -77,11 +77,11 @@ class Start : AppCompatActivity(), FragmentNavigator.Transmitter {
     }
 
     // Needed for scanning QRs
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        ConnectionHelper(this, mainViewModel)
-            .parse(requestCode, resultCode, data)
-        super.onActivityResult(requestCode, resultCode, data)
-    }
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        ConnectionHelper(this, connectionViewModel)
+//            .parse(requestCode, resultCode, data)
+//        super.onActivityResult(requestCode, resultCode, data)
+//    }
 
     enum class Screen(val clazz: FragClazz) {
         /* Main screens */

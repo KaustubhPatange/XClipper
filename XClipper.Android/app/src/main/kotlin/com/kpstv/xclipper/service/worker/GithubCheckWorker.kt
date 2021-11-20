@@ -17,13 +17,12 @@ import java.util.concurrent.TimeUnit
 class GithubCheckWorker @AssistedInject constructor(
     @Assisted private val appContext: Context,
     @Assisted workerParams: WorkerParameters,
-    private val retrofitUtils: RetrofitUtils,
 ) : CoroutineWorker(appContext, workerParams) {
 
     private val githubUpdater = UpdateHelper.createUpdater()
 
     override suspend fun doWork(): Result {
-        val responseString = retrofitUtils.fetch(UpdateHelper.SETTINGS_URL).getOrNull()?.asString()
+        val responseString = RetrofitUtils.fetch(UpdateHelper.SETTINGS_URL).getOrNull()?.asString()
         val webSettings = WebSettingsConverter.fromStringToWebSettings(responseString) ?: WebSettings()
 
         if (webSettings.useNewUpdater) {

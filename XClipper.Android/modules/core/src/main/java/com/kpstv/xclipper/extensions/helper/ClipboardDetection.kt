@@ -1,12 +1,12 @@
-package com.kpstv.xclipper.service.helper
+package com.kpstv.xclipper.extensions.helper
 
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.Toast
 import androidx.annotation.VisibleForTesting
-import com.kpstv.hvlog.HVLog
+import com.kpstv.xclipper.extensions.Logger
 import com.kpstv.xclipper.extensions.StripArrayList
-import com.kpstv.xclipper.service.helper.ClipboardDetection.AEvent.Companion.copyKeyWords
+import com.kpstv.xclipper.extensions.helper.ClipboardDetection.AEvent.Companion.copyKeyWords
 import java.util.*
 
 typealias Predicate = (ClipboardDetection.AEvent) -> Boolean
@@ -60,7 +60,7 @@ class ClipboardDetection(
                     || event.ContentDescription == "Cut" || event.ContentDescription == copyWord)
         ) {
             if (enableLogging)
-                HVLog.d("Copy captured - 2")
+                Logger.d("Copy captured - 2")
             else
                 println("Copy captured - 2")
             return true
@@ -80,7 +80,7 @@ class ClipboardDetection(
                 typeViewSelectionChangeEvent.clear()
                 if (success) {
                     if (enableLogging)
-                        HVLog.d("Copy captured - 3")
+                        Logger.d("Copy captured - 3")
                     else
                         println("Copy captured - 3")
                     return true
@@ -98,7 +98,7 @@ class ClipboardDetection(
                 && (previousEvent.Text?.toString()?.contains(copyWord, true) == true
                 || previousEvent.ContentDescription?.contains(copyWord, true) == true)) {
                 if (enableLogging)
-                    HVLog.d("Copy captured - 1.1")
+                    Logger.d("Copy captured - 1.1")
                 else
                     println("Copy captured - 1.1")
                 return true
@@ -116,7 +116,7 @@ class ClipboardDetection(
         if (event.EventType == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED && event.ClassName == "${Toast::class.qualifiedName}\$TN"
             && event.Text != null && event.Text?.toString()?.contains(copyKeyWords) == true) {
             if (enableLogging)
-                HVLog.d("Copy captured - 1.2")
+                Logger.d("Copy captured - 1.2")
             else
                 println("Copy captured - 1.2")
             return true

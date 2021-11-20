@@ -3,7 +3,7 @@ package com.kpstv.xclipper.extensions.elements
 import android.content.Context
 import android.util.AttributeSet
 import androidx.recyclerview.widget.RecyclerView
-import com.kpstv.xclipper.R
+import com.kpstv.core.R
 
 /**
  * A class created generally to avoid the "unsupported scrolling to absolute position"

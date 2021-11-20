@@ -43,7 +43,6 @@ import com.kpstv.xclipper.extensions.utils.FirebaseUtils
 import com.kpstv.xclipper.ui.helpers.AppThemeHelper
 import com.kpstv.xclipper.ui.helpers.AppThemeHelper.registerForThemeChange
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.openAccessibility
-import com.kpstv.xclipper.extensions.utils.Utils.Companion.shareText
 import com.kpstv.xclipper.service.ChangeClipboardActivity
 import com.kpstv.xclipper.ui.activities.NavViewModel
 import com.kpstv.xclipper.ui.activities.Start
@@ -52,6 +51,7 @@ import com.kpstv.xclipper.ui.dialogs.EditDialog
 import com.kpstv.xclipper.ui.dialogs.TagDialog
 import com.kpstv.xclipper.ui.fragments.sheets.MoreBottomSheet
 import com.kpstv.xclipper.extensions.recyclerview.RecyclerViewScrollHelper
+import com.kpstv.xclipper.extensions.utils.ShareUtils
 import com.kpstv.xclipper.service.ClipboardAccessibilityService
 import com.kpstv.xclipper.ui.helpers.AppSettingKeys
 import com.kpstv.xclipper.ui.helpers.AppSettings
@@ -255,7 +255,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
                     )
                 }
                 CIAdapter.MENU_TYPE.Share -> {
-                    shareText(requireActivity(), clip)
+                    ShareUtils.shareText(requireActivity(), clip)
                 }
             }
         }

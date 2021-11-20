@@ -11,7 +11,7 @@ interface FirebaseProvider {
     /** Property will expose database initialization live data */
     fun isInitialized(): LiveData<Boolean>
 
-    fun initialize(options: com.kpstv.xclipper.data.localized.FBOptions?, notifyInitialization: Boolean = true)
+    fun initialize(options: FBOptions?, notifyInitialization: Boolean = true)
     fun uninitialized()
     suspend fun isLicensed(): Boolean
     fun isValidDevice(): Boolean

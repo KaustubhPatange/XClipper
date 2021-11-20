@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.extensions.utils.Utils
+import com.kpstv.xclipper.extensions.utils.VibrateUtils
 
 /**
  * A class which will manage the swipe to delete feature
@@ -71,7 +72,7 @@ class SwipeToDeleteCallback(
         background.draw(c)
 
         readyToBeRemoved = if ((itemView.left + dX.toInt()) >= ((itemView.width + 50) / 2)) {
-            if (!readyToBeRemoved) Utils.vibrateDevice(itemView.context)
+            if (!readyToBeRemoved) VibrateUtils.vibrateDevice(itemView.context)
             deleteIconForever?.setBounds(deleteIconLeft, deleteIconTop, deleteIconRight, deleteIconBottom)
             deleteIconForever?.draw(c)
             true

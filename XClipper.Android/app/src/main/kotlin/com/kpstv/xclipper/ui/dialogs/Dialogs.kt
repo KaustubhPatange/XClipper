@@ -1,14 +1,18 @@
 package com.kpstv.xclipper.ui.dialogs
 
 import android.content.Context
+import android.os.Build
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.BackgroundColorSpan
 import android.widget.TextView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.kpstv.xclipper.R
+import com.kpstv.xclipper.extensions.SimpleFunction
+import com.kpstv.xclipper.extensions.getColorAttr
 import com.kpstv.xclipper.extensions.setPadding
 import com.kpstv.xclipper.extensions.utils.Utils
+import com.kpstv.xclipper.service.ClipboardAccessibilityService
 import com.kpstv.xclipper.utils.LaunchUtils
 
 object Dialogs {
@@ -42,7 +46,7 @@ object Dialogs {
             .show()
     }
     private fun improveDetectionAdbDialog(context: Context) {
-        val color = Utils.getDataFromAttr(context, R.attr.colorSeparator)
+        val color = context.getColorAttr(R.attr.colorSeparator)
 
         val spannableString = SpannableStringBuilder()
         spannableString.append(context.getString(R.string.adb_dialog_message1))
@@ -64,5 +68,36 @@ object Dialogs {
             .setNeutralButton(R.string.cancel, null)
             .show()
     }
+
+    /* Accessibility Dialogs */
+
+    fun showAccessibilityDialog(context: Context, block: SimpleFunction): Unit = with(context) {
+        MaterialAlertDialogBuilder(this)
+            .setTitle(getString(R.string.accessibility_service))
+            .setMessage(context.getString(R.string.accessibility_capture))
+            .setPositiveButton(getString(R.string.ok)) { _, _ ->
+                Utils.openAccessibility(this)
+                block.invoke()
+            }
+            .setCancelable(false)
+            .setNegativeButton(getString(R.string.cancel)) { _, _ -> block.invoke() }
+            .show()
+    }
+
+    fun showDisableAccessibilityDialog(context: Context, block: SimpleFunction): Unit = with(context) {
+        MaterialAlertDialogBuilder(this)
+            .setTitle(getString(R.string.accessibility_service_disable))
+            .setMessage(getString(R.string.accessibility_disable_text))
+            .setCancelable(false)
+            .setPositiveButton(R.string.ok) { _, _ ->
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    ClipboardAccessibilityService.disableService(context)
+                } else Utils.openAccessibility(context)
+                block.invoke()
+            }
+            .setNegativeButton(R.string.cancel) { _, _ -> block.invoke() }
+            .show()
+    }
+
 
 }

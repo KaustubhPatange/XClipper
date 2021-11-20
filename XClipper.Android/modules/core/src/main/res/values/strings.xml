@@ -2,4 +2,8 @@
 <resources>
     <string name="learn_more">Learn more</string>
     <string name="err_action_web">Couldn\'t find any browser for supporting this action</string>
+
+
+    <string name="ok">OK</string>
+    <string name="share">Share</string>
 </resources>

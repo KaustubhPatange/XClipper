@@ -4,10 +4,12 @@ import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.provider.PreferenceProvider
@@ -17,6 +19,7 @@ import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.extensions.viewBinding
 import com.kpstv.xclipper.ui.helpers.specials.SpecialHelper
 import dagger.hilt.android.AndroidEntryPoint
+import es.dmoral.toasty.Toasty
 
 @AndroidEntryPoint
 class MoreBottomSheet(
@@ -71,7 +74,7 @@ class MoreBottomSheet(
             }
 
             if (!preferenceProvider.isDialogShown()) {
-                Utils.showDisclosureDialog(
+                showDisclosureDialog(
                     context = context,
                     message = R.string.dictionary_disclosure,
                     onAccept = {
@@ -83,6 +86,19 @@ class MoreBottomSheet(
             } else {
                 showSheet()
             }
+        }
+
+        private fun showDisclosureDialog(context: Context, @StringRes message: Int, onAccept: () -> Unit, onDeny: () -> Unit = {}) {
+            MaterialAlertDialogBuilder(context)
+                .setTitle(R.string.disclosure)
+                .setMessage(message)
+                .setPositiveButton(R.string.accept) { _, _ -> onAccept()}
+                .setNegativeButton(R.string.deny) { _, _ ->
+                    Toasty.error(context, context.getString(R.string.disclosure_deny)).show()
+                    onDeny()
+                }
+                .setCancelable(false)
+                .show()
         }
     }
 }

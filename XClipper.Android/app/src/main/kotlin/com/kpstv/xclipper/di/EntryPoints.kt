@@ -5,7 +5,6 @@ import com.kpstv.xclipper.data.localized.dao.PreviewDao
 import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
-import com.kpstv.xclipper.extensions.utils.RetrofitUtils
 import com.kpstv.xclipper.ui.helpers.AppSettings
 import com.kpstv.xclipper.ui.helpers.DictionaryApiHelper
 import dagger.hilt.EntryPoint
@@ -19,7 +18,6 @@ interface CommonReusableEntryPoints {
     fun appSettings() : AppSettings
     fun preferenceProvider() : PreferenceProvider
     fun dbConnectionProvider() : DBConnectionProvider
-    fun retrofitUtils() : RetrofitUtils
     fun firebaseProvider() : FirebaseProvider
 
     companion object {

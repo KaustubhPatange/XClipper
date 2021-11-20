@@ -1,4 +1,4 @@
-package com.kpstv.xclipper.ui.helpers
+package com.kpstv.xclipper.data.helper
 
 import android.content.Context
 import android.util.Log
@@ -9,6 +9,7 @@ import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.extensions.launchInIO
 import com.kpstv.xclipper.extensions.launchInMain
 import com.kpstv.xclipper.extensions.toInt
+import com.kpstv.xclipper.ui.helpers.Notifications
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

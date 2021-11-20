@@ -8,11 +8,11 @@ import android.graphics.drawable.ColorDrawable
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.annotation.IdRes
 import androidx.annotation.Px
 import androidx.cardview.widget.CardView
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.children
+import com.kpstv.xclipper.extensions.ColorExUtils.isDarkColor
 import kotlin.reflect.KClass
 
 fun View.globalVisibleRect(): Rect {
@@ -35,7 +35,7 @@ fun View.runBlinkEffect(color: Int = -1, times: Int = 3) {
 
     var finalColor = if (color == -1) Color.WHITE else color
     if (fromColor != 0 && color == -1) {
-        finalColor = if (ColorUtils.calculateLuminance(fromColor) < 0.5) {
+        finalColor = if (isDarkColor(fromColor)) {
             ColorUtils.blendARGB(fromColor, Color.WHITE, 0.5f)
         } else {
             ColorUtils.blendARGB(fromColor, Color.BLACK, 0.5f)

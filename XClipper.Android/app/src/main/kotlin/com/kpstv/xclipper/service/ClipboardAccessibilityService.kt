@@ -18,16 +18,16 @@ import com.kpstv.xclipper.extensions.Logger
 import com.kpstv.xclipper.extensions.broadcastManager
 import com.kpstv.xclipper.extensions.logger
 import com.kpstv.xclipper.extensions.utils.FirebaseUtils
-import com.kpstv.xclipper.extensions.utils.KeyboardUtils.Companion.isKeyboardVisible
 import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.utils.CoreUtils.isSystemOverlayEnabled
-import com.kpstv.xclipper.service.helper.ClipboardDetection
-import com.kpstv.xclipper.service.helper.ClipboardLogDetector
-import com.kpstv.xclipper.service.helper.LanguageDetector
+import com.kpstv.xclipper.extensions.helper.ClipboardDetection
+import com.kpstv.xclipper.extensions.helper.ClipboardLogDetector
+import com.kpstv.xclipper.extensions.helper.LanguageDetector
 import com.kpstv.xclipper.ui.fragments.settings.GeneralPreference
 import com.kpstv.xclipper.ui.helpers.AppSettingKeys
 import com.kpstv.xclipper.ui.helpers.AppSettings
-import com.kpstv.xclipper.ui.helpers.ClipRepositoryHelper
+import com.kpstv.xclipper.data.helper.ClipRepositoryHelper
+import com.kpstv.xclipper.extensions.utils.KeyboardUtils
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -113,7 +113,7 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
                 clipboardDetector.addEvent(event.eventType)
 
             if (event?.eventType != AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED)
-                postKeyboardValue(isKeyboardVisible(applicationContext))
+                postKeyboardValue(KeyboardUtils.isKeyboardVisible(applicationContext))
 
             val source = event?.source
             if (source != null) {

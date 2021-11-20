@@ -12,9 +12,8 @@ import android.widget.LinearLayout
 import androidx.annotation.*
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.updatePadding
-import com.kpstv.xclipper.R
-import com.kpstv.xclipper.databinding.CustomQuickTipBinding
-import com.kpstv.xclipper.extensions.utils.Utils
+import com.kpstv.core.R
+import com.kpstv.core.databinding.CustomQuickTipBinding
 
 private const val QUICK_TIP_TAG = "quick_tip_layout"
 
@@ -80,8 +79,8 @@ class QuickTip(private val containerView: ViewGroup) {
 
     // Apply color as tint to icon & set background color according to it
     fun applyColor(@ColorInt color: Int) {
-        val backgroundColor = Utils.getDataFromAttr(context, R.attr.background)
-        if (ColorUtils.calculateLuminance(backgroundColor) < 0.5) {
+        val backgroundColor = context.getColorAttr(R.attr.background)
+        if (ColorExUtils.isDarkColor(backgroundColor)) {
             setIconTint(color)
             setTipColor(ColorUtils.blendARGB(color, Color.BLACK, 0.6f)) // dark
         } else {

@@ -14,43 +14,24 @@ import android.content.pm.ServiceInfo
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.VibrationEffect
-import android.os.Vibrator
 import android.provider.Settings
-import android.telephony.TelephonyManager
-import android.util.DisplayMetrics
-import android.util.TypedValue
 import android.view.accessibility.AccessibilityManager
-import androidx.annotation.AttrRes
 import androidx.annotation.RequiresApi
-import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ShareCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.google.zxing.integration.android.IntentIntegrator
 import com.kpstv.xclipper.BuildConfig
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.FBOptions
-import com.kpstv.xclipper.data.model.AppPkg
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.provider.DBConnectionProvider
-import com.kpstv.xclipper.databinding.DialogConnectBinding
-import com.kpstv.xclipper.databinding.DialogProgressViewBinding
-import com.kpstv.xclipper.extensions.SimpleFunction
-import com.kpstv.xclipper.extensions.layoutInflater
 import com.kpstv.xclipper.service.ClipboardAccessibilityService
-import com.kpstv.xclipper.ui.dialogs.FeatureDialog
 import com.kpstv.xclipper.ui.helpers.AppSettings
 import com.kpstv.xclipper.ui.helpers.AuthenticationHelper
 import com.kpstv.xclipper.ui.helpers.FirebaseSyncHelper
-import es.dmoral.toasty.Toasty
 import java.io.InputStream
-import java.text.DecimalFormat
-import java.util.*
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 import kotlin.reflect.KClass
 
 class Utils {
@@ -61,64 +42,6 @@ class Utils {
             return activityManager.getRunningTasks(Int.MAX_VALUE).any {
                     it.topActivity?.className == clazz.qualifiedName
                 }
-        }
-
-        fun shareText(context: Activity, clip: Clip) {
-            val intent = ShareCompat.IntentBuilder.from(context)
-                .setChooserTitle(context.getString(R.string.share))
-                .setType("text/plain")
-                .setText(clip.data)
-                .intent
-            val shareIntent = Intent.createChooser(intent, null)
-            context.startActivity(shareIntent)
-        }
-
-        /**
-         * Always pass this@Activity as context.
-         * Else it won't resolve theme
-         */
-        fun getDataFromAttr(
-            context: Context,
-            @AttrRes attr: Int,
-            typedValue: TypedValue = TypedValue(),
-            resolveRefs: Boolean = true
-        ): Int {
-            context.theme.resolveAttribute(attr, typedValue, resolveRefs)
-            return typedValue.data
-        }
-
-        /** I am too lazy to write my own code.
-         *
-         *  Source: https://stackoverflow.com/a/31583695/10133501
-         */
-        fun getCountryDialCode(context: Context): String? {
-            var contryDialCode: String? = null
-            val telephonyMngr =
-                context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-            val countryId = telephonyMngr.simCountryIso.uppercase(Locale.ROOT)
-            val arrContryCode: Array<String> =
-                context.resources.getStringArray(R.array.DialingCountryCode)
-            for (i in arrContryCode.indices) {
-                val arrDial =
-                    arrContryCode[i].split(",").toTypedArray()
-                if (arrDial[1].trim { it <= ' ' } == countryId.trim()) {
-                    contryDialCode = arrDial[0]
-                    break
-                }
-            }
-            return contryDialCode
-        }
-
-        fun isPackageInstalled(
-            context: Context,
-            packageName: String
-        ): Boolean {
-            return try {
-                context.packageManager.getPackageInfo(packageName, 0)
-                true
-            } catch (e: PackageManager.NameNotFoundException) {
-                false
-            }
         }
 
         /**
@@ -144,43 +67,6 @@ class Utils {
             if (accessibilityPrefs?.contains("${context.packageName}/${service.canonicalName}") == true) return true
             return false
         }
-
-        /**
-         * This will create and show dialog to user to enable accessibility service
-         * to make clipboard capturing work even for the Android 10.
-         */
-        fun showAccessibilityDialog(context: Context, block: SimpleFunction): Unit = with(context) {
-            MaterialAlertDialogBuilder(this)
-                .setTitle(getString(R.string.accessibility_service))
-                .setMessage(context.getString(R.string.accessibility_capture))
-                .setPositiveButton(getString(R.string.ok)) { _, _ ->
-                    openAccessibility(this)
-                    block.invoke()
-                }
-                .setCancelable(false)
-                .setNegativeButton(getString(R.string.cancel)) { _, _ -> block.invoke() }
-                .show()
-        }
-
-        fun showDisableAccessibilityDialog(context: Context, block: SimpleFunction): Unit = with(context) {
-            MaterialAlertDialogBuilder(this)
-                .setTitle(getString(R.string.accessibility_service_disable))
-                .setMessage(getString(R.string.accessibility_disable_text))
-                .setCancelable(false)
-                .setPositiveButton(R.string.ok) { _, _ ->
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        ClipboardAccessibilityService.disableService(context)
-                    } else openAccessibility(context)
-                    block.invoke()
-                }
-                .setNegativeButton(R.string.cancel) { _, _ -> block.invoke() }
-                .show()
-        }
-
-        fun showAccessibilityDialog(context: Context) {
-            showAccessibilityDialog(context) { }
-        }
-
 
         private const val EXTRA_FRAGMENT_ARG_KEY = ":settings:fragment_args_key"
         private const val EXTRA_SHOW_FRAGMENT_ARGUMENTS = ":settings:show_fragment_args"
@@ -225,67 +111,6 @@ class Utils {
             startActivity(myIntent)
         }
 
-        /**
-         * Call this function whenever you want to work with installed apps.
-         */
-        suspend fun retrievePackageList(context: Context): List<AppPkg> = with(context) {
-            suspendCoroutine { r ->
-                val result = packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
-                    .asSequence()
-                    .filter {
-                        it.flags != ApplicationInfo.FLAG_SYSTEM
-                    }
-                    .mapNotNull {
-                        AppPkg(
-                            it.loadLabel(packageManager),
-                            it.packageName
-                        )
-                    }
-                    .filter { it.label != null && !it.label.contains(".") && it.packageName != null }
-                    .sortedBy { it.label.toString() }
-                    .distinctBy { it.label.toString() }.toList()
-                r.resume(result)
-            }
-        }
-
-        /**
-         * This will show connection dialog and from there we can initiate QR scanning.
-         */
-        fun showConnectDialog(activity: Activity): Unit = with(activity) {
-            val binding = DialogConnectBinding.inflate(layoutInflater)
-
-            val alert = AlertDialog.Builder(this)
-                .setView(binding.root)
-                .show()
-
-            binding.btnScanConnect.setOnClickListener {
-                IntentIntegrator(this)
-                    .setDesiredBarcodeFormats(IntentIntegrator.QR_CODE)
-                    .setOrientationLocked(false)
-                    .setBeepEnabled(false)
-                    .setPrompt(getString(R.string.scan_code))
-                    .setBarcodeImageEnabled(false)
-                    .initiateScan()
-
-                alert.dismiss()
-            }
-        }
-
-        fun showConnectionDialog(context: Context): AlertDialog = with(context) {
-            val binding = DialogProgressViewBinding.inflate(layoutInflater())
-
-            val dialog = AlertDialog.Builder(this)
-                .setCancelable(false)
-                .setView(binding.root)
-                .show()
-
-            binding.btnCancel.setOnClickListener {
-                dialog.dismiss()
-            }
-
-            return dialog
-        }
-
         fun logoutFromDatabase(
             context: Context,
             appSettings: AppSettings,
@@ -316,73 +141,5 @@ class Utils {
             appSettings.setDatabaseBindingEnabled(true)
             appSettings.setDatabaseAutoSyncEnabled(true)
         }
-
-        fun isValidSQLite(stream: InputStream?): Boolean {
-            val buffer = CharArray(16)
-            stream?.bufferedReader()?.read(buffer, 0, 16)
-            val str = String(buffer)
-            return str == "SQLite format 3\u0000"
-        }
-
-        fun dpToPixel(context: Context, value: Float): Float = with(context) {
-            return value * (resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
-        }
-
-        @Suppress("DEPRECATION")
-        fun vibrateDevice(context: Context) {
-            val m = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                m.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE))
-            } else {
-                m.vibrate(50)
-            }
-        }
-
-        fun showSearchFeatureDialog(context: Context, appSettings: AppSettings): Boolean {
-            if (!appSettings.isBubbleOnBoardingDialogShown()) {
-                FeatureDialog(context)
-                    .setResourceId(R.drawable.feature_suggestion_search)
-                    .setTitle(R.string.search_title)
-                    .setSubtitle(R.string.search_subtitle)
-                    .show()
-                appSettings.setBubbleOnBoardingDialogShown(true)
-                return true
-            }
-            return false
-        }
-
-        fun showDisclosureDialog(context: Context, @StringRes message: Int, onAccept: () -> Unit, onDeny: () -> Unit = {}) {
-            MaterialAlertDialogBuilder(context)
-                .setTitle(R.string.disclosure)
-                .setMessage(message)
-                .setPositiveButton(R.string.accept) { _, _ -> onAccept()}
-                .setNegativeButton(R.string.deny) { _, _ ->
-                    Toasty.error(context, context.getString(R.string.disclosure_deny)).show()
-                    onDeny()
-                }
-                .setCancelable(false)
-                .show()
-        }
-
-        fun getSizePretty(size: Long?, addPrefix: Boolean = true): String? {
-            val df = DecimalFormat("0.00")
-            val sizeKb = 1024.0f
-            val sizeMb = sizeKb * sizeKb
-            val sizeGb = sizeMb * sizeKb
-            val sizeTerra = sizeGb * sizeKb
-            return if (size != null) {
-                when {
-                    size < sizeMb -> df.format(size / sizeKb)
-                        .toString() + if (addPrefix) " KB" else ""
-                    size < sizeGb -> df.format(
-                        size / sizeMb
-                    ).toString() + " MB"
-                    size < sizeTerra -> df.format(size / sizeGb)
-                        .toString() + if (addPrefix) " GB" else ""
-                    else -> ""
-                }
-            } else "0" + if (addPrefix) " B" else ""
-        }
-
     }
 }

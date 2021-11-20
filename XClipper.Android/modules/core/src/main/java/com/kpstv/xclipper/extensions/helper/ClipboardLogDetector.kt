@@ -1,4 +1,4 @@
-package com.kpstv.xclipper.service.helper
+package com.kpstv.xclipper.extensions.helper
 
 import android.Manifest
 import android.content.Context

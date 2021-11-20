@@ -93,9 +93,7 @@ class DisclosureSheet : CustomRoundedBottomSheetFragment(R.layout.bottom_sheet_d
 }
 
 @HiltViewModel
-class DisclosureSheetViewModel @Inject constructor(
-    private val retrofitUtils: RetrofitUtils
-) : ViewModel() {
+class DisclosureSheetViewModel @Inject constructor() : ViewModel() {
     val privacyCheckedMutableState = MutableStateFlow(false)
     val agreementCheckedMutableState = MutableStateFlow(false)
 
@@ -103,7 +101,7 @@ class DisclosureSheetViewModel @Inject constructor(
         privacyCheckedMutableState.combine(agreementCheckedMutableState) { a, b -> a && b}
 
     internal fun fetchPolicy() : Flow<DisclosureState> = flow {
-        val result = retrofitUtils.fetch(POLICY)
+        val result = RetrofitUtils.fetch(POLICY_URL)
         result.onFailure { emit(DisclosureState.EmptyPolicy) }
         result.onSuccess {
             val body = it.body?.string() ?: run { emit(DisclosureState.EmptyPolicy); return@onSuccess }
@@ -119,7 +117,7 @@ class DisclosureSheetViewModel @Inject constructor(
     private companion object {
         private const val UPDATED_DATE_PATTERN = "Updated:\\s?([\\d]{2}/[\\d]{2}/[\\d]{2,4})"
 
-        private const val POLICY = "https://raw.githubusercontent.com/KaustubhPatange/XClipper/master/XClipper.Android/POLICY.md"
+        private const val POLICY_URL = "https://raw.githubusercontent.com/KaustubhPatange/XClipper/master/XClipper.Android/POLICY.md"
     }
 }
 

@@ -21,7 +21,6 @@ import com.kpstv.xclipper.ui.helpers.AppThemeHelper.CARD_CLICK_COLOR
 import com.kpstv.xclipper.ui.helpers.AppThemeHelper.CARD_COLOR
 import com.kpstv.xclipper.ui.helpers.AppThemeHelper.CARD_SELECTED_COLOR
 import com.kpstv.xclipper.extensions.utils.Utils
-import com.kpstv.xclipper.extensions.utils.Utils.Companion.getDataFromAttr
 
 class CIAdapter(
     private val lifecycleOwner: LifecycleOwner,
@@ -124,10 +123,10 @@ class CIAdapter(
         val selectedDataObserver: Observer<String> = Observer { current ->
             if (ciTextView.text == current)
                 ciTextView.setTextColor(
-                    getDataFromAttr(holder.itemView.context, R.attr.colorCurrentClip)
+                    holder.itemView.context.getColorAttr(R.attr.colorCurrentClip)
                 )
             else ciTextView.setTextColor(
-                getDataFromAttr(holder.itemView.context, R.attr.colorTextPrimary)
+                holder.itemView.context.getColorAttr(R.attr.colorTextPrimary)
             )
         }
         val selectedItemObserver: Observer<Clip> = Observer { selectedClip ->
@@ -135,10 +134,10 @@ class CIAdapter(
             if (selectedClip == clip) {
                 hiddenLayout.show()
                 mainCard.setCardBackgroundColor(CARD_CLICK_COLOR)
-                mainCard.cardElevation = Utils.dpToPixel(holder.itemView.context, 3f)
+                mainCard.cardElevation = holder.itemView.context.toPx(3)
             } else {
                 mainCard.setCardBackgroundColor(CARD_COLOR)
-                mainCard.cardElevation = Utils.dpToPixel(holder.itemView.context, 0f)
+                mainCard.cardElevation = holder.itemView.context.toPx(0)
                 hiddenLayout.collapse()
             }
         }

@@ -7,7 +7,10 @@ plugins {
 }
 
 android {
-    buildFeatures.buildConfig = false
+    buildFeatures {
+        buildConfig = false
+        viewBinding = true
+    }
     buildTypes {
         getByName(BuildType.DEBUG) {
             isMinifyEnabled = false
@@ -50,6 +53,9 @@ dependencies {
     implementation(LibraryDependency.FIREBASE_CRASHLYTICS)
     implementation(LibraryDependency.FIREBASE_ANALYTICS)
     implementation(LibraryDependency.PAGING)
+    implementation(LibraryDependency.ROUND_BOTTOM_SHEET)
+
+    implementation(kotlin("reflect"))
 
     implementation(LibraryDependency.HILT_ANDROID)
     kapt(LibraryDependency.HILT_COMPILER)

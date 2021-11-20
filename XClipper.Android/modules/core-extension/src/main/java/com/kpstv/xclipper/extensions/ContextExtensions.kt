@@ -11,6 +11,7 @@ import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.google.android.material.color.MaterialColors
 
 fun Context.layoutInflater(): LayoutInflater = LayoutInflater.from(this)
 
@@ -30,21 +31,21 @@ fun Context.hasThemeColorAttribute(@AttrRes id: Int): Boolean {
         .getColor(0, -1) != -1
 }
 
-fun Context.toDp(px: Int) : Int = (resources.displayMetrics.density * px).toInt()
+fun Context.toPx(dp: Int) : Float = (resources.displayMetrics.density * dp)
 
 @ColorInt
 fun Context.getColorAttr(@AttrRes id: Int, @ColorInt fallbackColor: Int = 0): Int {
-    if (theme == null) {
-        return fallbackColor
-    }
-    val typedValue = TypedValue()
-    theme?.resolveAttribute(id, typedValue, true)
-    return typedValue.data
+    return MaterialColors.getColor(this, id, fallbackColor)
 }
 
 fun Context.getAttrResourceId(@AttrRes id: Int, typedValue: TypedValue = TypedValue()) : Int {
     theme?.resolveAttribute(id, typedValue, true)
     return typedValue.resourceId
+}
+
+fun Context.getRawDataAttr(@AttrRes id: Int, typedValue: TypedValue = TypedValue(), resolveRefs: Boolean = true) : Int {
+    theme.resolveAttribute(id, typedValue, resolveRefs)
+    return typedValue.data
 }
 
 fun Context.broadcastManager() = LocalBroadcastManager.getInstance(this)

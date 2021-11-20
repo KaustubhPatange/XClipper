@@ -11,11 +11,11 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.extensions.colorFrom
-import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.service.receiver.AppBroadcastReceiver
 import com.kpstv.xclipper.ui.activities.Start
 import java.io.File
 import java.util.*
+import com.kpstv.xclipper.extensions.utils.SizeUtils
 
 object Notifications {
     const val CHANNEL_ID = "my_channel_01"
@@ -146,7 +146,7 @@ object Notifications {
         val pendingIntent = PendingIntent.getBroadcast(this, cancelRequestCode, cancelIntent, getMutableFlags())
         val notification = NotificationCompat.Builder(this, CHANNEL_UPDATE)
             .setContentTitle(fileName)
-            .setContentText("${Utils.getSizePretty(currentBytes, false)} / ${Utils.getSizePretty(totalBytes)}")
+            .setContentText("${SizeUtils.getSizePretty(currentBytes, false)} / ${SizeUtils.getSizePretty(totalBytes)}")
             .setSmallIcon(android.R.drawable.stat_sys_download)
             .setOngoing(true)
             .setProgress(

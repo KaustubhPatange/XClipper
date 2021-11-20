@@ -9,7 +9,7 @@ import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.extensions.Logger
 import com.kpstv.xclipper.extensions.utils.FirebaseUtils
-import com.kpstv.xclipper.service.helper.ClipboardLogDetector
+import com.kpstv.xclipper.extensions.helper.ClipboardLogDetector
 import com.kpstv.xclipper.service.worker.AccessibilityWorker
 import com.kpstv.xclipper.service.worker.ExtensionWorker
 import com.kpstv.xclipper.ui.fragments.settings.GeneralPreference

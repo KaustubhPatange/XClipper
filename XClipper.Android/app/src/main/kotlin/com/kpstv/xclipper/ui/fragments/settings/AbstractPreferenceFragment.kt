@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.extensions.findParent
 import com.kpstv.xclipper.extensions.findViewByText
+import com.kpstv.xclipper.extensions.getColorAttr
 import com.kpstv.xclipper.extensions.runBlinkEffect
 import com.kpstv.xclipper.extensions.utils.Utils
 
@@ -23,7 +24,7 @@ abstract class AbstractPreferenceFragment : PreferenceFragmentCompat() {
      */
     fun highlightItemWithTitle(title: String) {
         val view = view ?: throw IllegalStateException("Cannot highlight item when the view is null")
-        val color = Utils.getDataFromAttr(requireContext(), R.attr.colorTextSecondary)
+        val color = requireContext().getColorAttr(R.attr.colorTextSecondary)
         view.doOnNextLayout {
             val itemView = (view as ViewGroup).findViewByText(title)?.findParent<LinearLayout>()
             itemView?.findParent<RecyclerView>()?.let { recyclerView ->

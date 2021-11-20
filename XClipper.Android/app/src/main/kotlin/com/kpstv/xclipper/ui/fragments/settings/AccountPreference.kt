@@ -1,7 +1,6 @@
 package com.kpstv.xclipper.ui.fragments.settings
 
 import android.os.Bundle
-import androidx.fragment.app.viewModels
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
@@ -9,12 +8,9 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
-import com.kpstv.xclipper.extensions.listeners.ResponseListener
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.logoutFromDatabase
-import com.kpstv.xclipper.extensions.utils.Utils.Companion.showConnectDialog
-import com.kpstv.xclipper.extensions.utils.Utils.Companion.showConnectionDialog
 import com.kpstv.xclipper.ui.helpers.AppSettings
-import com.kpstv.xclipper.ui.viewmodels.MainViewModel
+import com.kpstv.xclipper.ui.helpers.connection.ConnectionHelper
 import com.kpstv.xclipper.utils.LaunchUtils
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
@@ -27,8 +23,6 @@ class AccountPreference : PreferenceFragmentCompat() {
     @Inject lateinit var dbConnectionProvider: DBConnectionProvider
     @Inject lateinit var appSettings: AppSettings
 
-    private val mainViewModel: MainViewModel by viewModels()
-
     private var autoSyncPreference: SwitchPreferenceCompat? = null
     private var bindPreference: SwitchPreferenceCompat? = null
     private var bindDeletePreference: SwitchPreferenceCompat? = null
@@ -37,32 +31,21 @@ class AccountPreference : PreferenceFragmentCompat() {
 
     private val connectionUID : String? get() = dbConnectionProvider.optionsProvider()?.uid
 
+    private val connectionHelper : ConnectionHelper by lazy { ConnectionHelper(this) }
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.account_pref, rootKey)
 
         bindUI()
 
+        /** Logout Preference */
         logPreference = findPreference(LOGOUT_PREF)
         logPreference?.setOnPreferenceClickListener {
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle(getString(R.string.alert))
                 .setMessage(getString(R.string.logout_msg))
                 .setPositiveButton(getString(R.string.yes)) { _, _ ->
-
-                    val dialog = showConnectionDialog(requireContext())
-
-                    mainViewModel.removeDeviceConnection(requireContext(), ResponseListener(
-                        complete = {
-                            dialog.dismiss()
-                            bindPreference?.isChecked = false
-                            autoSyncPreference?.isChecked = false
-                            Toasty.info(requireContext(), getString(R.string.logout_success)).show()
-                        },
-                        error = {
-                            dialog.dismiss()
-                            Toasty.error(requireContext(), it.message!!).show()
-                        }
-                    ))
+                    connectionHelper.startDisconnectRequest()
                 }
                 .setNegativeButton(getString(R.string.cancel), null)
                 .show()
@@ -72,10 +55,12 @@ class AccountPreference : PreferenceFragmentCompat() {
         /** Connect Preference */
         connectPreference = findPreference(CONNECT_PREF)
         connectPreference?.setOnPreferenceClickListener {
-            if (connectionUID.isNullOrBlank())
-                showConnectDialog(requireActivity())
-            else
+            if (connectionUID.isNullOrBlank()) {
+                connectionHelper.startConnectionRequest()
+            }
+            else {
                 Toasty.info(requireContext(), getString(R.string.connection_exist)).show()
+            }
             true
         }
 
@@ -136,10 +121,7 @@ class AccountPreference : PreferenceFragmentCompat() {
     }
 
     private fun bindUI() {
-        preferenceProvider.observePreference()
-        { _, _ ->
-            checkForPreferenceChanged()
-        }
+        preferenceProvider.observePreference { _, _ -> checkForPreferenceChanged() }
     }
 
     private fun checkForPreferenceChanged() {
@@ -149,6 +131,9 @@ class AccountPreference : PreferenceFragmentCompat() {
             bindPreference?.isEnabled = false
             autoSyncPreference?.isEnabled = false
             bindDeletePreference?.isEnabled = false
+
+            bindPreference?.isChecked = false
+            autoSyncPreference?.isChecked = false
         } else {
             // Do not add bindDeletePreference as an auto property
             // since it will cause issues for non-paid users.

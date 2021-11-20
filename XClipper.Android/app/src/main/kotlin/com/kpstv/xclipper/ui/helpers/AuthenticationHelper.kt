@@ -4,6 +4,7 @@ import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
 import androidx.activity.ComponentActivity
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -48,18 +49,6 @@ class AuthenticationHelper(
             }
         }
 
-    private val getResult =
-        activity.activityResultRegistry.register("myContract_1", customContract) { task ->
-            try {
-                val account = task?.getResult(ApiException::class.java)!!
-                firebaseAuthWithGoogle(account.idToken!!)
-            } catch (e: Exception) {
-                unregister()
-                responseListener.onError(e)
-            }
-            return@register
-        }
-
     /**
      * Start the auth process.
      * @param options FBOptions that [DBConnectionProvider] provides.
@@ -86,6 +75,12 @@ class AuthenticationHelper(
         googleSignInClient = GoogleSignIn.getClient(this, defaultGoogleSignInOptions(clientId))
 
         fun performSignIn() {
+            var getResult : ActivityResultLauncher<Intent?>? = null
+            getResult = activity.activityResultRegistry.register("myContract_1", customContract) { task ->
+                getResult?.unregister()
+                parseActivityResultForTask(task)
+            }
+
             auth = Firebase.auth(app)
 
             val signInIntent = googleSignInClient.signInIntent
@@ -95,6 +90,16 @@ class AuthenticationHelper(
         if (GoogleSignIn.getLastSignedInAccount(this) != null) {
             googleSignInClient.signOut().addOnCompleteListener { performSignIn() }
         } else performSignIn()
+    }
+
+    private fun parseActivityResultForTask(task: Task<GoogleSignInAccount>?) {
+        try {
+            val account = task?.getResult(ApiException::class.java)!!
+            firebaseAuthWithGoogle(account.idToken!!)
+        } catch (e: Exception) {
+            unregister()
+            responseListener.onError(e)
+        }
     }
 
     private fun firebaseAuthWithGoogle(idToken: String) = with(activity) {

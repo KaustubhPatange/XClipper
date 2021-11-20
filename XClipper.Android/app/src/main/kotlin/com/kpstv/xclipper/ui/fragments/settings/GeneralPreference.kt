@@ -25,12 +25,10 @@ import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.databinding.DialogProgressBinding
 import com.kpstv.xclipper.extensions.layoutInflater
 import com.kpstv.xclipper.utils.CoreUtils.isSystemOverlayEnabled
-import com.kpstv.xclipper.extensions.utils.Utils.Companion.retrievePackageList
-import com.kpstv.xclipper.extensions.utils.Utils.Companion.showAccessibilityDialog
-import com.kpstv.xclipper.extensions.utils.Utils.Companion.showDisableAccessibilityDialog
 import com.kpstv.xclipper.extensions.utils.Utils.Companion.showOverlayDialog
 import com.kpstv.xclipper.service.ClipboardAccessibilityService
-import com.kpstv.xclipper.service.helper.ClipboardLogDetector
+import com.kpstv.xclipper.extensions.helper.ClipboardLogDetector
+import com.kpstv.xclipper.extensions.utils.PackageUtils
 import com.kpstv.xclipper.ui.dialogs.Dialogs
 import com.kpstv.xclipper.ui.dialogs.MultiSelectDialogBuilder
 import com.kpstv.xclipper.ui.dialogs.MultiSelectModel3
@@ -104,9 +102,9 @@ class GeneralPreference : AbstractPreferenceFragment() {
             checkPreference?.summary = "[BETA] ${checkPreference?.summary}"
         checkPreference?.setOnPreferenceChangeListener { _, newValue ->
             if (newValue as Boolean) {
-                showAccessibilityDialog(requireContext()) { checkForService() }
+                Dialogs.showAccessibilityDialog(requireContext()) { checkForService() }
             } else {
-                showDisableAccessibilityDialog(requireContext()) { checkForService() }
+                Dialogs.showDisableAccessibilityDialog(requireContext()) { checkForService() }
             }
             true
         }
@@ -248,7 +246,7 @@ class GeneralPreference : AbstractPreferenceFragment() {
     private fun showBlacklistAppDialog() {
         val job = SupervisorJob()
         CoroutineScope(Dispatchers.IO + job).launch {
-            val apps = retrievePackageList(requireContext())
+            val apps = PackageUtils.retrievePackageList(requireContext())
             val currentBlackListApps = appSettings.getClipboardMonitoringBlackListApps()
             lifecycleScope.launch {
                 appsDialog?.dismiss()

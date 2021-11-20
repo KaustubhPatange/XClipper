@@ -36,8 +36,6 @@ class UpdateHelper(
     private val activity: FragmentActivity,
 ) : AbstractFragmentHelper<Home>(activity, Home::class) {
 
-    private val retrofitUtils: RetrofitUtils = hiltCommonEntryPoints.retrofitUtils()
-
     companion object {
         const val SETTINGS_URL = "https://github.com/KaustubhPatange/XClipper/raw/master/XClipper.Android/settings.json"
         private const val REPO_OWNER = "KaustubhPatange"
@@ -72,7 +70,7 @@ class UpdateHelper(
     }
 
     private suspend fun initialize() {
-        val responseString = retrofitUtils.fetch(SETTINGS_URL).getOrNull()?.asString()
+        val responseString = RetrofitUtils.fetch(SETTINGS_URL).getOrNull()?.asString()
         val webSettings = WebSettingsConverter.fromStringToWebSettings(responseString) ?: WebSettings()
 
         if (webSettings.useNewUpdater) {

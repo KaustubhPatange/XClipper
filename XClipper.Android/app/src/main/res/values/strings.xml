@@ -8,7 +8,6 @@
     <string name="timeString">2 days ago</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
-    <string name="share">Share</string>
     <string name="undo">Undo</string>
     <string name="selected">selected</string>
     <string name="ctc">Copied to clipboard</string>
@@ -17,7 +16,6 @@
     <string name="select_all">Select All</string>
     <string name="select_none">Deselect All</string>
     <string name="save">Save</string>
-    <string name="ok">OK</string>
     <string name="edit_success">Changes saved!</string>
     <string name="error_empty_text">Empty text to update</string>
     <string name="search">Search</string>

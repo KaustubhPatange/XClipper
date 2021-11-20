@@ -13,19 +13,19 @@ import javax.inject.Singleton
 object NetworkModules {
 
     @[Provides Singleton]
-    fun provideDictionaryApi(retrofitUtils: RetrofitUtils): GoogleDictionaryApi {
-        return retrofitUtils.getRetrofitBuilder()
+    fun provideDictionaryApi(): GoogleDictionaryApi {
+        return RetrofitUtils.getRetrofitBuilder()
             .baseUrl(GoogleDictionaryApi.BASE_URL)
-            .client(retrofitUtils.getHttpBuilder().build())
+            .client(RetrofitUtils.getHttpBuilder().build())
             .build()
             .create(GoogleDictionaryApi::class.java)
     }
 
     @[Provides Singleton]
-    fun provideTinyUrlApi(retrofitUtils: RetrofitUtils): TinyUrlApi {
-        return retrofitUtils.getRetrofitBuilder()
+    fun provideTinyUrlApi(): TinyUrlApi {
+        return RetrofitUtils.getRetrofitBuilder()
             .baseUrl(TinyUrlApi.BASE_URL)
-            .client(retrofitUtils.getHttpBuilder().build())
+            .client(RetrofitUtils.getHttpBuilder().build())
             .build()
             .create(TinyUrlApi::class.java)
     }

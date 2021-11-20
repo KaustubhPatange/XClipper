@@ -15,7 +15,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.kpstv.xclipper.R
-import com.kpstv.xclipper.extensions.utils.Utils
+import com.kpstv.xclipper.extensions.getColorAttr
 
 enum class AppTheme(@StyleRes val style: Int) {
     DARK(R.style.AppTheme_Dark),
@@ -62,7 +62,7 @@ object AppThemeHelper {
             activity.window.statusBarColor = Color.BLACK
             activity.window.navigationBarColor = Color.BLACK
         } else if (Build.VERSION.SDK_INT >= 23) {
-            val color = Utils.getDataFromAttr(activity, R.attr.colorPrimary)
+            val color = activity.getColorAttr(R.attr.colorPrimary)
             activity.window.statusBarColor = color
 
             if (isLightVariant()) {
@@ -72,7 +72,7 @@ object AppThemeHelper {
             }
         }
 
-        val color = Utils.getDataFromAttr(activity, R.attr.colorBackground)
+        val color = activity.getColorAttr(R.attr.colorBackground)
         activity.window.setBackgroundDrawable(ColorDrawable(color))
     }
 

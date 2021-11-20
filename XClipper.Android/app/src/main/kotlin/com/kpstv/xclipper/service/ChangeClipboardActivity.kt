@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.extensions.utils.Utils
-import com.kpstv.xclipper.ui.helpers.ClipRepositoryHelper
+import com.kpstv.xclipper.data.helper.ClipRepositoryHelper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import javax.inject.Inject

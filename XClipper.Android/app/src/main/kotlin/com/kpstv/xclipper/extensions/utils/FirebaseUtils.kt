@@ -11,7 +11,7 @@ import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.extensions.enumerations.FirebaseState
 import com.kpstv.xclipper.ui.helpers.AppSettings
-import com.kpstv.xclipper.ui.helpers.ClipRepositoryHelper
+import com.kpstv.xclipper.data.helper.ClipRepositoryHelper
 import com.kpstv.xclipper.ui.helpers.Notifications
 import dagger.hilt.android.qualifiers.ApplicationContext
 import es.dmoral.toasty.Toasty

@@ -1,8 +1,10 @@
 package com.kpstv.xclipper.ui.viewmodels
 
-import android.content.Context
-import androidx.lifecycle.*
-import com.kpstv.xclipper.data.localized.FBOptions
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
+import com.kpstv.xclipper.data.helper.ClipRepositoryHelper
 import com.kpstv.xclipper.data.localized.dao.ClipDataDao
 import com.kpstv.xclipper.data.localized.dao.TagDao
 import com.kpstv.xclipper.data.model.Clip
@@ -11,20 +13,12 @@ import com.kpstv.xclipper.data.model.TagMap
 import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.FirebaseProvider
-import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.extensions.enumerations.FilterType
 import com.kpstv.xclipper.extensions.listeners.RepositoryListener
-import com.kpstv.xclipper.extensions.listeners.ResponseListener
-import com.kpstv.xclipper.extensions.listeners.ResponseResult
 import com.kpstv.xclipper.extensions.listeners.StatusListener
-import com.kpstv.xclipper.extensions.utils.DeviceUtils
 import com.kpstv.xclipper.extensions.utils.FirebaseUtils
-import com.kpstv.xclipper.extensions.utils.Utils.Companion.loginToDatabase
-import com.kpstv.xclipper.extensions.utils.Utils.Companion.logoutFromDatabase
 import com.kpstv.xclipper.ui.helpers.AppSettings
-import com.kpstv.xclipper.ui.helpers.ClipRepositoryHelper
-import com.kpstv.xclipper.ui.helpers.TinyUrlApiHelper
 import com.kpstv.xclipper.ui.viewmodels.managers.MainEditManager
 import com.kpstv.xclipper.ui.viewmodels.managers.MainSearchManager
 import com.kpstv.xclipper.ui.viewmodels.managers.MainStateManager
@@ -42,12 +36,8 @@ class MainViewModel @Inject constructor(
     clipRepositoryHelper: ClipRepositoryHelper,
     private val mainRepository: MainRepository,
     private val tagRepository: TagDao,
-    private val preferenceProvider: PreferenceProvider,
     private val firebaseProvider: FirebaseProvider,
     private val clipboardProvider: ClipboardProvider,
-    private val dbConnectionProvider: DBConnectionProvider,
-    private val appSettings: AppSettings,
-    val tinyUrlApiHelper: TinyUrlApiHelper,
     val editManager: MainEditManager,
     val searchManager: MainSearchManager,
     val stateManager: MainStateManager
@@ -129,51 +119,6 @@ class MainViewModel @Inject constructor(
     fun deleteFromTagRepository(tag: Tag) {
         viewModelScope.launch {
             tagRepository.delete(tag)
-        }
-    }
-
-    fun updateDeviceConnection(context: Context, options: FBOptions, responseListener: ResponseListener<Unit>) {
-        viewModelScope.launch {
-            dbConnectionProvider.saveOptionsToAll(options)
-            val result = firebaseProvider.addDevice(DeviceUtils.getDeviceId(context))
-            when (result) {
-                is ResponseResult.Complete -> {
-                    loginToDatabase(
-                        appSettings = appSettings,
-                        dbConnectionProvider = dbConnectionProvider,
-                        options = options
-                    )
-                    responseListener.onComplete(Unit)
-                }
-                is ResponseResult.Error -> {
-                    dbConnectionProvider.detachDataFromAll()
-                    responseListener.onError(result.error)
-                }
-            }
-        }
-    }
-
-    fun removeDeviceConnection(context: Context, responseListener: ResponseListener<Unit>) {
-        viewModelScope.launch {
-            val result = firebaseProvider.removeDevice(DeviceUtils.getDeviceId(context))
-            when (result) {
-                is ResponseResult.Complete -> {
-                    logoutFromDatabase(
-                        context = context,
-                        appSettings = appSettings,
-                        dbConnectionProvider = dbConnectionProvider
-                    )
-                    responseListener.onComplete(Unit)
-                }
-                is ResponseResult.Error -> {
-                    logoutFromDatabase(
-                        context = context,
-                        appSettings = appSettings,
-                        dbConnectionProvider = dbConnectionProvider
-                    )
-                    responseListener.onError(result.error)
-                }
-            }
         }
     }
 

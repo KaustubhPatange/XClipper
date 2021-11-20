@@ -16,7 +16,7 @@ object ModuleDependency {
 
     const val FEATURE_ONBOARDING = ":modules:feature-onboarding"
     const val FEATURE_XCOPY = ":modules:feature-xcopy"
-    const val FEATURE_SYNC = ":modules:feature-sync"
+    const val CORE_SYNC = ":modules:core-sync"
 
     fun getAllModules(): Set<String> = ModuleDependency::class.memberProperties
         .filter { it.isConst }

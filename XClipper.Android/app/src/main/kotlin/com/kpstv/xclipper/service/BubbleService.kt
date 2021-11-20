@@ -23,9 +23,8 @@ import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.databinding.BubbleViewBinding
 import com.kpstv.xclipper.databinding.ItemBubbleServiceBinding
 import com.kpstv.xclipper.extensions.*
-import com.kpstv.xclipper.extensions.utils.Utils
-import com.kpstv.xclipper.extensions.utils.Utils.Companion.showSearchFeatureDialog
 import com.kpstv.xclipper.ui.activities.SpecialActions
+import com.kpstv.xclipper.ui.dialogs.FeatureDialog
 import com.kpstv.xclipper.ui.helpers.AppSettings
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
@@ -117,7 +116,7 @@ class BubbleService : FloatingBubbleService() {
             filter
         )
 
-        val actionBarSize = Utils.getDataFromAttr(context, android.R.attr.actionBarSize).run {
+        val actionBarSize = context.getRawDataAttr(android.R.attr.actionBarSize).run {
             TypedValue.complexToDimensionPixelSize(this, resources.displayMetrics)
         }
         return FloatingBubbleConfig.Builder()
@@ -170,6 +169,19 @@ class BubbleService : FloatingBubbleService() {
     override fun onLowMemory() {
         // We are low on memory stop allocating anything.
         stopSelf()
+    }
+
+    private fun showSearchFeatureDialog(context: Context, appSettings: AppSettings): Boolean {
+        if (!appSettings.isBubbleOnBoardingDialogShown()) {
+            FeatureDialog(context)
+                .setResourceId(R.drawable.feature_suggestion_search)
+                .setTitle(R.string.search_title)
+                .setSubtitle(R.string.search_subtitle)
+                .show()
+            appSettings.setBubbleOnBoardingDialogShown(true)
+            return true
+        }
+        return false
     }
 
     object Actions {
