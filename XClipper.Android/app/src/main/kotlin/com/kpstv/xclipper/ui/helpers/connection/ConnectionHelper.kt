@@ -8,6 +8,7 @@ import com.kpstv.xclipper.data.localized.FBOptions
 import com.kpstv.xclipper.di.CommonReusableEntryPoints
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
 import com.kpstv.xclipper.extensions.utils.Utils
+import com.kpstv.xclipper.ui.dialogs.ConnectionDialogs
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
 import es.dmoral.toasty.Toasty
 
@@ -48,7 +49,7 @@ class ConnectionHelper(
     }
 
     private fun makeAConnectionRequest(options: FBOptions) {
-        val dialog = Utils.showConnectionDialog(activity)
+        val dialog = ConnectionDialogs.showConnectionDialog(activity)
 
         mainViewModel.updateDeviceConnection(activity.applicationContext, options, ResponseListener(
             complete = {
