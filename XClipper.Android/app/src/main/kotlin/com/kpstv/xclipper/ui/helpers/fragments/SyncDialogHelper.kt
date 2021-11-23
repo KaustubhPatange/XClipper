@@ -8,7 +8,7 @@ import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.extensions.getFormattedDate
 import com.kpstv.xclipper.ui.dialogs.CustomLottieDialog
 import com.kpstv.xclipper.ui.fragments.Home
-import com.kpstv.xclipper.utils.LaunchUtils
+import com.kpstv.xclipper.ui.utils.LaunchUtils
 import java.util.*
 
 class SyncDialogHelper(

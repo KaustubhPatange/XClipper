@@ -19,7 +19,6 @@ import com.kpstv.xclipper.extensions.broadcastManager
 import com.kpstv.xclipper.extensions.logger
 import com.kpstv.xclipper.extensions.utils.FirebaseUtils
 import com.kpstv.xclipper.extensions.utils.Utils
-import com.kpstv.xclipper.utils.CoreUtils.isSystemOverlayEnabled
 import com.kpstv.xclipper.extensions.helper.ClipboardDetection
 import com.kpstv.xclipper.extensions.helper.ClipboardLogDetector
 import com.kpstv.xclipper.extensions.helper.LanguageDetector
@@ -28,6 +27,8 @@ import com.kpstv.xclipper.ui.helpers.AppSettingKeys
 import com.kpstv.xclipper.ui.helpers.AppSettings
 import com.kpstv.xclipper.data.helper.ClipRepositoryHelper
 import com.kpstv.xclipper.extensions.utils.KeyboardUtils
+import com.kpstv.xclipper.extensions.utils.SystemUtils
+import com.kpstv.xclipper.extensions.utils.SystemUtils.isSystemOverlayEnabled
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -61,7 +62,7 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
             LocalBroadcastManager.getInstance(context).sendBroadcast(Intent(ACTION_DISABLE_SERVICE))
         }
 
-        fun isRunning(context: Context): Boolean = Utils.isAccessibilityServiceEnabled(context, ClipboardAccessibilityService::class.java)
+        fun isRunning(context: Context): Boolean = SystemUtils.isAccessibilityServiceEnabled(context, ClipboardAccessibilityService::class.java)
     }
 
     private val keyboardVisibility: MutableLiveData<Boolean> = MutableLiveData()

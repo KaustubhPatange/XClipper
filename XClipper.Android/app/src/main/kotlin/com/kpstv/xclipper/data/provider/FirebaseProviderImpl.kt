@@ -28,7 +28,7 @@ import com.kpstv.xclipper.data.model.UserEntity
 import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.extensions.enumerations.LicenseType
 import com.kpstv.xclipper.extensions.listeners.ResponseResult
-import com.kpstv.xclipper.extensions.utils.DeviceUtils
+import com.kpstv.xclipper.extensions.utils.SystemUtils
 import com.kpstv.xclipper.extensions.utils.GsonUtils
 import com.kpstv.xclipper.extensions.utils.SyncUtils
 import com.kpstv.xclipper.ui.helpers.AppSettings
@@ -434,7 +434,7 @@ class FirebaseProviderImpl @Inject constructor(
 
                         checkForUserDetailsAndUpdateLocal()
 
-                        validDevice = (firebaseUser.Devices ?: mutableListOf()).count { it.id == DeviceUtils.getDeviceId(context) } > 0
+                        validDevice = (firebaseUser.Devices ?: mutableListOf()).count { it.id == SystemUtils.getDeviceId(context) } > 0
 
                         if (!validDevice) {
                             deviceValidated.invoke(validDevice)

@@ -13,6 +13,7 @@ import com.kpstv.xclipper.extensions.enumerations.FirebaseState
 import com.kpstv.xclipper.ui.helpers.AppSettings
 import com.kpstv.xclipper.data.helper.ClipRepositoryHelper
 import com.kpstv.xclipper.ui.helpers.Notifications
+import com.kpstv.xclipper.ui.helpers.connection.ConnectionHelper
 import dagger.hilt.android.qualifiers.ApplicationContext
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.*
@@ -24,7 +25,6 @@ class FirebaseUtils @Inject constructor(
     @ApplicationContext private val context: Context,
     private val clipRepositoryHelper: ClipRepositoryHelper,
     private val firebaseProvider: FirebaseProvider,
-    private val preferenceProvider: PreferenceProvider,
     private val appSettings: AppSettings,
     private val dbConnectionProvider: DBConnectionProvider,
 ) {
@@ -57,7 +57,7 @@ class FirebaseUtils @Inject constructor(
                 deviceValidated = { isValidated ->
                     if (!isValidated) {
 
-                        Utils.logoutFromDatabase(
+                        ConnectionHelper.logoutFromDatabase(
                             context = context,
                             appSettings = appSettings,
                             dbConnectionProvider = dbConnectionProvider
@@ -65,14 +65,11 @@ class FirebaseUtils @Inject constructor(
 
                         if (!shownToast) {
                             shownToast = true
-                            Toasty.error(
-                                this,
-                                getString(R.string.err_device_validate),
-                                Toasty.LENGTH_LONG
-                            ).show()
+                            Toasty.error(this, getString(R.string.err_device_validate), Toasty.LENGTH_LONG).show()
                         }
-                    } else
+                    } else {
                         shownToast = false
+                    }
                 },
                 inconsistentData = {
                     Toasty.error(context, getString(R.string.inconsistent_data), Toasty.LENGTH_LONG).show()

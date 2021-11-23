@@ -11,8 +11,7 @@ import com.kpstv.xclipper.extensions.SimpleFunction
 import com.kpstv.xclipper.extensions.hide
 import com.kpstv.xclipper.extensions.layoutInflater
 import com.kpstv.xclipper.extensions.show
-import com.kpstv.xclipper.extensions.utils.Utils
-import com.kpstv.xclipper.utils.LaunchUtils
+import com.kpstv.xclipper.ui.utils.LaunchUtils
 
 class CustomLottieDialog(private val context: Context) {
     private val builder: AlertDialog.Builder = AlertDialog.Builder(context)

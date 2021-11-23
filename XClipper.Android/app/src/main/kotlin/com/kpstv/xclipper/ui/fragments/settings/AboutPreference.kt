@@ -5,8 +5,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.kpstv.xclipper.BuildConfig
 import com.kpstv.xclipper.R
-import com.kpstv.xclipper.extensions.utils.Utils
-import com.kpstv.xclipper.utils.LaunchUtils
+import com.kpstv.xclipper.ui.utils.LaunchUtils
 
 class AboutPreference : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {

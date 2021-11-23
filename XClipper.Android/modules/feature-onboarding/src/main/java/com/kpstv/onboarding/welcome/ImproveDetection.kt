@@ -8,7 +8,7 @@ import com.kpstv.onboarding.internals.OnBoardingRoutes
 import com.kpstv.welcome.R
 import com.kpstv.welcome.databinding.FragmentImproveDetectionBinding
 import com.kpstv.xclipper.extensions.colorFrom
-import com.kpstv.xclipper.utils.LaunchUtils
+import com.kpstv.xclipper.ui.utils.LaunchUtils
 
 internal class ImproveDetection : AbstractWelcomeFragment() {
     override fun getConfigurations(): Configuration {

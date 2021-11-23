@@ -103,7 +103,7 @@ class AppBroadcastReceiver : AbstractBroadcastReceiver() {
                 collapseStatusBar(context)
             }
             ACTION_OPEN_ACCESSIBILITY -> {
-                Utils.openAccessibility(context)
+                Utils.openClipboardServiceAccessibility(context)
                 Toast.makeText(context, context.getString(R.string.open_accessibility), Toast.LENGTH_SHORT).show()
             }
             ACTION_STOP_UPDATE -> {

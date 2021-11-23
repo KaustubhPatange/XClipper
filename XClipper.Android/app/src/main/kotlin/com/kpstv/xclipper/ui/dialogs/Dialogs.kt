@@ -6,14 +6,17 @@ import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.BackgroundColorSpan
 import android.widget.TextView
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.extensions.SimpleFunction
 import com.kpstv.xclipper.extensions.getColorAttr
 import com.kpstv.xclipper.extensions.setPadding
+import com.kpstv.xclipper.extensions.utils.SystemUtils
 import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.service.ClipboardAccessibilityService
-import com.kpstv.xclipper.utils.LaunchUtils
+import com.kpstv.xclipper.ui.utils.LaunchUtils
 
 object Dialogs {
 
@@ -76,7 +79,7 @@ object Dialogs {
             .setTitle(getString(R.string.accessibility_service))
             .setMessage(context.getString(R.string.accessibility_capture))
             .setPositiveButton(getString(R.string.ok)) { _, _ ->
-                Utils.openAccessibility(this)
+                Utils.openClipboardServiceAccessibility(this)
                 block.invoke()
             }
             .setCancelable(false)
@@ -92,12 +95,26 @@ object Dialogs {
             .setPositiveButton(R.string.ok) { _, _ ->
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     ClipboardAccessibilityService.disableService(context)
-                } else Utils.openAccessibility(context)
+                } else Utils.openClipboardServiceAccessibility(context)
                 block.invoke()
             }
             .setNegativeButton(R.string.cancel) { _, _ -> block.invoke() }
             .show()
     }
 
+    /* Suggestion dialog */
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    fun showOverlayDialog(context: Context): AlertDialog = with(context) {
+        MaterialAlertDialogBuilder(this)
+            .setTitle(getString(com.kpstv.core.R.string.suggestion_title))
+            .setMessage(getString(com.kpstv.core.R.string.suggestion_capture))
+            .setPositiveButton(getString(com.kpstv.core.R.string.ok)) { _, _ ->
+                SystemUtils.openSystemOverlaySettings(this)
+            }
+            .setCancelable(false)
+            .setNegativeButton(getString(android.R.string.cancel), null)
+            .show()
+    }
 
 }

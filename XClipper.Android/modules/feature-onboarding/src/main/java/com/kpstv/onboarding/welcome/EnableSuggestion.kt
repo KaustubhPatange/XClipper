@@ -6,7 +6,7 @@ import com.kpstv.onboarding.internals.OnBoardingRoutes
 import com.kpstv.onboarding.utils.OnBoardUtils
 import com.kpstv.welcome.R
 import com.kpstv.welcome.databinding.ItemGifviewBinding
-import com.kpstv.xclipper.utils.CoreUtils
+import com.kpstv.xclipper.extensions.utils.SystemUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -23,7 +23,7 @@ internal class EnableSuggestion : AbstractWelcomeFragment() {
             textId = R.string.palette3_text,
             nextTextId = if (OnBoardUtils.isAndroid10orUp()) R.string.next_5 else R.string.nextd_3,
             action = {
-                if (!CoreUtils.isSystemOverlayEnabled(requireContext())) {
+                if (!SystemUtils.isSystemOverlayEnabled(requireContext())) {
                     //TODO:showOverlayDialog(requireContext())
                 } else {
                     navigateToNextScreen()
@@ -35,7 +35,7 @@ internal class EnableSuggestion : AbstractWelcomeFragment() {
 
     override fun onResume() {
         super.onResume()
-        appSettings.setShowClipboardSuggestions(CoreUtils.isSystemOverlayEnabled(requireContext()))
+        appSettings.setShowClipboardSuggestions(SystemUtils.isSystemOverlayEnabled(requireContext()))
     }
 
     private fun navigateToNextScreen() {

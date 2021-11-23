@@ -16,7 +16,6 @@ import com.kpstv.xclipper.ui.fragments.Settings
 import com.kpstv.xclipper.ui.fragments.sheets.DisclosureSheet
 import com.kpstv.xclipper.ui.helpers.ActivityIntentHelper
 import com.kpstv.xclipper.ui.helpers.AppSettings
-import com.kpstv.xclipper.ui.helpers.connection.ConnectionHelper
 import com.kpstv.xclipper.ui.helpers.FirebaseSyncHelper
 import com.kpstv.xclipper.ui.helpers.connection.ConnectionViewModel
 import com.kpstv.xclipper.ui.helpers.fragments.*
@@ -75,13 +74,6 @@ class Start : AppCompatActivity(), FragmentNavigator.Transmitter {
         if (navigator.canFinish())
             super.onBackPressed()
     }
-
-    // Needed for scanning QRs
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        ConnectionHelper(this, connectionViewModel)
-//            .parse(requestCode, resultCode, data)
-//        super.onActivityResult(requestCode, resultCode, data)
-//    }
 
     enum class Screen(val clazz: FragClazz) {
         /* Main screens */

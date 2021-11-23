@@ -1,7 +1,10 @@
 package com.kpstv.onboarding.welcome
 
+import com.kpstv.onboarding.internals.OnBoardingRoutes
 import com.kpstv.onboarding.utils.OnBoardUtils.isAndroid10orUp
 import com.kpstv.welcome.R
+import com.kpstv.xclipper.extensions.helper.ClipboardLogDetector
+
 // TODO: Fix the dialogs & stuff
 internal class TurnOnService : AbstractWelcomeFragment() {
 
@@ -23,15 +26,15 @@ internal class TurnOnService : AbstractWelcomeFragment() {
     }
 
     private fun conditionalNavigation() {
-//        if (ClipboardLogDetector.isDetectionCompatible(requireContext())) {
-//            navigateTo(OnBoardingRoutes.ENABLE_SUGGESTIONS)
-//        } else {
-//            navigateTo(OnBoardingRoutes.IMPROVE_DETECTION)
-//        }
+        if (ClipboardLogDetector.isDetectionCompatible(requireContext())) {
+            navigateTo(OnBoardingRoutes.ENABLE_SUGGESTIONS)
+        } else {
+            navigateTo(OnBoardingRoutes.IMPROVE_DETECTION)
+        }
     }
 
     private fun conditionalNavigationPalette() : Int {
-        return if (/*ClipboardLogDetector.isDetectionCompatible(requireContext())*/true) {
+        return if (ClipboardLogDetector.isDetectionCompatible(requireContext())) {
             R.color.palette3
         } else {
             R.color.palette_improve

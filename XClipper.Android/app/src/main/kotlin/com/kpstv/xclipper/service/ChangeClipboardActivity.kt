@@ -7,8 +7,8 @@ import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import com.kpstv.xclipper.data.provider.ClipboardProvider
-import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.data.helper.ClipRepositoryHelper
+import com.kpstv.xclipper.extensions.utils.ActivityUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import javax.inject.Inject
@@ -68,7 +68,7 @@ class ChangeClipboardActivity : FragmentActivity() {
             startActivity(intent)
         }
         fun isRunning(context: Context) : Boolean {
-            return Utils.isActivityRunning(context, ChangeClipboardActivity::class)
+            return ActivityUtils.isActivityRunning(context, ChangeClipboardActivity::class)
         }
     }
 }

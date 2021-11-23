@@ -8,8 +8,7 @@ import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
 import com.kpstv.xclipper.extensions.listeners.ResponseResult
-import com.kpstv.xclipper.extensions.utils.DeviceUtils
-import com.kpstv.xclipper.extensions.utils.Utils
+import com.kpstv.xclipper.extensions.utils.SystemUtils
 import com.kpstv.xclipper.ui.helpers.AppSettings
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -24,13 +23,13 @@ class ConnectionViewModel @Inject constructor(
     fun updateDeviceConnection(context: Context, options: FBOptions, responseListener: ResponseListener<Unit>) {
         viewModelScope.launch {
             dbConnectionProvider.saveOptionsToAll(options)
-            val result = firebaseProvider.addDevice(DeviceUtils.getDeviceId(context))
+            val result = firebaseProvider.addDevice(SystemUtils.getDeviceId(context))
             when (result) {
                 is ResponseResult.Complete -> {
-                    Utils.loginToDatabase(
+                    ConnectionHelper.loginToDatabase(
+                        options = options,
                         appSettings = appSettings,
-                        dbConnectionProvider = dbConnectionProvider,
-                        options = options
+                        dbConnectionProvider = dbConnectionProvider
                     )
                     responseListener.onComplete(Unit)
                 }
@@ -44,10 +43,10 @@ class ConnectionViewModel @Inject constructor(
 
     fun removeDeviceConnection(context: Context, responseListener: ResponseListener<Unit>) {
         viewModelScope.launch {
-            val result = firebaseProvider.removeDevice(DeviceUtils.getDeviceId(context))
+            val result = firebaseProvider.removeDevice(SystemUtils.getDeviceId(context))
             when (result) {
                 is ResponseResult.Complete -> {
-                    Utils.logoutFromDatabase(
+                    ConnectionHelper.logoutFromDatabase(
                         context = context,
                         appSettings = appSettings,
                         dbConnectionProvider = dbConnectionProvider
@@ -55,7 +54,7 @@ class ConnectionViewModel @Inject constructor(
                     responseListener.onComplete(Unit)
                 }
                 is ResponseResult.Error -> {
-                    Utils.logoutFromDatabase(
+                    ConnectionHelper.logoutFromDatabase(
                         context = context,
                         appSettings = appSettings,
                         dbConnectionProvider = dbConnectionProvider

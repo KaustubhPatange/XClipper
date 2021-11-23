@@ -7,15 +7,20 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.google.zxing.integration.android.IntentIntegrator
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.FBOptions
+import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.databinding.DialogConnectBinding
 import com.kpstv.xclipper.databinding.DialogProgressViewBinding
 import com.kpstv.xclipper.di.CommonReusableEntryPoints
 import com.kpstv.xclipper.extensions.layoutInflater
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
+import com.kpstv.xclipper.ui.helpers.AppSettings
 import com.kpstv.xclipper.ui.helpers.AuthenticationHelper
+import com.kpstv.xclipper.ui.helpers.FirebaseSyncHelper
 import es.dmoral.toasty.Toasty
 
 class ConnectionHelper(
@@ -67,6 +72,15 @@ class ConnectionHelper(
                 Toasty.error(requireContext(), it.message!!).show()
             }
         ))
+    }
+
+    fun forceDisconnect() {
+        val entryPoints = CommonReusableEntryPoints.get(context)
+        logoutFromDatabase(
+            context = context,
+            appSettings = entryPoints.appSettings(),
+            dbConnectionProvider = entryPoints.dbConnectionProvider()
+        )
     }
 
     private fun parse(resultCode: Int, data: Intent?) {
@@ -128,5 +142,30 @@ class ConnectionHelper(
         }
 
         return dialog
+    }
+
+    companion object {
+        fun loginToDatabase(options: FBOptions, appSettings: AppSettings, dbConnectionProvider: DBConnectionProvider) {
+            dbConnectionProvider.saveOptionsToAll(options)
+
+            appSettings.setDatabaseBindingEnabled(true)
+            appSettings.setDatabaseAutoSyncEnabled(true)
+        }
+
+        fun logoutFromDatabase(context: Context, appSettings: AppSettings, dbConnectionProvider: DBConnectionProvider) {
+            dbConnectionProvider.optionsProvider()?.apply {
+                if (isAuthNeeded) {
+                    FirebaseSyncHelper.get()?.let { app ->
+                        Firebase.auth(app).signOut()
+                    }
+                    AuthenticationHelper.signOutGoogle(context, authClientId)
+                }
+            }
+            dbConnectionProvider.detachDataFromAll()
+
+            appSettings.setDatabaseDeleteBindingEnabled(false)
+            appSettings.setDatabaseBindingEnabled(false)
+            appSettings.setDatabaseAutoSyncEnabled(false)
+        }
     }
 }

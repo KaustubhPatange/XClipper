@@ -6,4 +6,8 @@
 
     <string name="ok">OK</string>
     <string name="share">Share</string>
+
+    <string name="suggestion_title">Suggestions [BETA]</string>
+    <string name="suggestion_capture">You need to enable System overlay permission.\n\n1. Click OK to open Display Overlay settings.\n2. Enable \"Allow display over other apps\".</string>
+
 </resources>

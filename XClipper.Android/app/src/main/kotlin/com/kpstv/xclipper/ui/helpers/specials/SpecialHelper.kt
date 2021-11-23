@@ -31,7 +31,7 @@ import com.kpstv.xclipper.ui.adapters.MenuAdapter
 import com.kpstv.xclipper.ui.fragments.sheets.MoreChooserSheet
 import com.kpstv.xclipper.ui.fragments.sheets.ShortenUriSheet
 import com.kpstv.xclipper.ui.helpers.DictionaryApiHelper
-import com.kpstv.xclipper.utils.LaunchUtils
+import com.kpstv.xclipper.ui.utils.LaunchUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch

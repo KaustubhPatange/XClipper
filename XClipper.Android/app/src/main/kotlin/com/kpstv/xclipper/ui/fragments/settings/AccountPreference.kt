@@ -8,10 +8,9 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
-import com.kpstv.xclipper.extensions.utils.Utils.Companion.logoutFromDatabase
 import com.kpstv.xclipper.ui.helpers.AppSettings
 import com.kpstv.xclipper.ui.helpers.connection.ConnectionHelper
-import com.kpstv.xclipper.utils.LaunchUtils
+import com.kpstv.xclipper.ui.utils.LaunchUtils
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import javax.inject.Inject
@@ -99,11 +98,7 @@ class AccountPreference : PreferenceFragmentCompat() {
 
         /** Force logout preference */
         findPreference<Preference>(FORCE_REMOVE_PREF)?.setOnPreferenceClickListener {
-            logoutFromDatabase(
-                context = requireContext(),
-                appSettings = appSettings,
-                dbConnectionProvider = dbConnectionProvider
-            )
+            connectionHelper.forceDisconnect()
             Toasty.info(requireContext(), getString(R.string.force_logout_text)).show()
             true
         }

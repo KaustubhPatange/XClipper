@@ -16,7 +16,7 @@ import com.kpstv.xclipper.extensions.listeners.ResponseResult
 import com.kpstv.xclipper.extensions.show
 import com.kpstv.xclipper.extensions.viewBinding
 import com.kpstv.xclipper.ui.helpers.TinyUrlApiHelper
-import com.kpstv.xclipper.utils.LaunchUtils
+import com.kpstv.xclipper.ui.utils.LaunchUtils
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.CoroutineScope

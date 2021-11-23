@@ -42,7 +42,7 @@ import com.kpstv.xclipper.extensions.recyclerview.SwipeToDeleteCallback
 import com.kpstv.xclipper.extensions.utils.FirebaseUtils
 import com.kpstv.xclipper.ui.helpers.AppThemeHelper
 import com.kpstv.xclipper.ui.helpers.AppThemeHelper.registerForThemeChange
-import com.kpstv.xclipper.extensions.utils.Utils.Companion.openAccessibility
+import com.kpstv.xclipper.extensions.utils.Utils.Companion.openClipboardServiceAccessibility
 import com.kpstv.xclipper.service.ChangeClipboardActivity
 import com.kpstv.xclipper.ui.activities.NavViewModel
 import com.kpstv.xclipper.ui.activities.Start
@@ -538,7 +538,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
                 Snackbar.LENGTH_LONG
             )
                 .setAction("Enable") {
-                    openAccessibility(requireContext())
+                    openClipboardServiceAccessibility(requireContext())
                 }.show()
         }
     }

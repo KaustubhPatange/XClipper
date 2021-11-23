@@ -24,11 +24,10 @@ import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.databinding.DialogProgressBinding
 import com.kpstv.xclipper.extensions.layoutInflater
-import com.kpstv.xclipper.utils.CoreUtils.isSystemOverlayEnabled
-import com.kpstv.xclipper.extensions.utils.Utils.Companion.showOverlayDialog
 import com.kpstv.xclipper.service.ClipboardAccessibilityService
 import com.kpstv.xclipper.extensions.helper.ClipboardLogDetector
 import com.kpstv.xclipper.extensions.utils.PackageUtils
+import com.kpstv.xclipper.extensions.utils.SystemUtils.isSystemOverlayEnabled
 import com.kpstv.xclipper.ui.dialogs.Dialogs
 import com.kpstv.xclipper.ui.dialogs.MultiSelectDialogBuilder
 import com.kpstv.xclipper.ui.dialogs.MultiSelectModel3
@@ -86,7 +85,7 @@ class GeneralPreference : AbstractPreferenceFragment() {
         overlayPreference?.setOnPreferenceChangeListener { _, newValue ->
 
             if (!isSystemOverlayEnabled(requireContext()) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                showOverlayDialog(requireContext())
+                Dialogs.showOverlayDialog(requireContext())
 
                 if (newValue == true) rememberToCheckOverlaySwitch = true
 

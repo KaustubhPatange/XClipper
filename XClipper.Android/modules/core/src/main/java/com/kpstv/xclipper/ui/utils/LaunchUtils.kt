@@ -1,4 +1,4 @@
-package com.kpstv.xclipper.utils
+package com.kpstv.xclipper.ui.utils
 
 import android.content.Context
 import android.content.Intent

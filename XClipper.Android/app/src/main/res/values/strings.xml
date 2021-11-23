@@ -82,7 +82,6 @@
     <string name="quick_settings_save_clip">Save Clip</string>
     <string name="connect_success">Connected successfully!</string>
     <string name="accessibility_capture">In order to monitor clipboard you need to enable the accessibility service from settings.\n\n1. Click OK to open accessibility settings.\n2. Click on Installed Services (Samsung).\n3. Search for XClipper.\n4. Click and enable it.</string>
-    <string name="suggestion_capture">You need to enable System overlay permission.\n\n1. Click OK to open Display Overlay settings.\n2. Enable \"Allow display over other apps\".</string>
     <string name="synchronize_text">You can synchronize your clipboard data between this device &#38; a desktop companion app. Click on \"Learn more\" to know about it.</string>
     <string name="scan_code">Scan the app code</string>
     <string name="connect_request">Attempting to make a connection with database…</string>
