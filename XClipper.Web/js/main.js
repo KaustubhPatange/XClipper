@@ -117,6 +117,12 @@ function openScreenShots() {
   window.open("https://imgur.com/a/n0KJd3Q");
 }
 
+function openPrivacyPolicy() {
+  let href = window.location.href;
+  href = href.replace(/#(.*)/g, "").replace("index.html", "");
+  window.open(href + "policy" + (href.includes(":") ? ".html" : ""));
+}
+
 function openDocs() {
   let href = window.location.href;
   href = href.replace(/#(.*)/g, "").replace("index.html", "");
