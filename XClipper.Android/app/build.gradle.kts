@@ -10,6 +10,7 @@ plugins {
     id(GradlePluginId.DAGGER_HILT)
     id(GradlePluginId.GOOGLE_SERVICE)
     id(GradlePluginId.CRASHLYTICS)
+    id(GradlePluginId.KSP) version GradlePluginVersion.KSP
 }
 
 android {
@@ -133,9 +134,9 @@ dependencies {
     kapt(LibraryDependency.AUTO_BINDINGS_COMPILER)
 
     kapt(LibraryDependency.GLIDE_COMPILER)
-    kapt(LibraryDependency.ROOM_COMPILER_KAPT)
+    ksp(LibraryDependency.ROOM_COMPILER_KAPT)
 
-    debugImplementation(TestLibraryDependency.ANDROID_DEBUG_DB)
+//    debugImplementation(TestLibraryDependency.ANDROID_DEBUG_DB)
     testImplementation(TestLibraryDependency.JUNIT)
     androidTestImplementation(TestLibraryDependency.JUNIT_TEST_EXT)
     androidTestImplementation(TestLibraryDependency.ESPRESSO_CORE)

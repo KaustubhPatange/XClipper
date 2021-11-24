@@ -29,8 +29,8 @@ class XClipperAndroidPlugin : Plugin<Project> {
 
             defaultConfig {
                 vectorDrawables.useSupportLibrary = true
-                minSdkVersion(AndroidConfig.MIN_SDK_VERSION)
-                targetSdkVersion(AndroidConfig.TARGET_SDK_VERSION)
+                minSdk = AndroidConfig.MIN_SDK_VERSION
+                targetSdk = AndroidConfig.TARGET_SDK_VERSION
                 versionCode = AndroidConfig.VERSION_CODE
                 versionName = AndroidConfig.VERSION_NAME
 
