@@ -4,11 +4,11 @@ import android.content.Context
 import androidx.hilt.work.HiltWorker
 import androidx.work.*
 import com.kpstv.xclipper.data.model.WebSettings
-import com.kpstv.xclipper.data.model.WebSettingsConverter
 import com.kpstv.xclipper.extensions.utils.RetrofitUtils
+import com.kpstv.xclipper.data.model.WebSettingsConverter
 import com.kpstv.xclipper.extensions.utils.asString
-import com.kpstv.xclipper.ui.helpers.Notifications
-import com.kpstv.xclipper.ui.helpers.fragments.UpdateHelper
+import com.kpstv.xclipper.ui.helpers.GithubUpdater
+import com.kpstv.xclipper.ui.helpers.UpdaterNotifications
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import java.util.concurrent.TimeUnit
@@ -19,16 +19,16 @@ class GithubCheckWorker @AssistedInject constructor(
     @Assisted workerParams: WorkerParameters,
 ) : CoroutineWorker(appContext, workerParams) {
 
-    private val githubUpdater = UpdateHelper.createUpdater()
+    private val githubUpdater = GithubUpdater.createUpdater()
 
     override suspend fun doWork(): Result {
-        val responseString = RetrofitUtils.fetch(UpdateHelper.SETTINGS_URL).getOrNull()?.asString()
+        val responseString = RetrofitUtils.fetch(GithubUpdater.SETTINGS_URL).getOrNull()?.asString()
         val webSettings = WebSettingsConverter.fromStringToWebSettings(responseString) ?: WebSettings()
 
         if (webSettings.useNewUpdater) {
             githubUpdater.fetch(
                 onUpdateAvailable = {
-                    Notifications.sendUpdateAvailableNotification(appContext)
+                    UpdaterNotifications.sendUpdateAvailableNotification(appContext)
                 }
             )
         }

@@ -63,7 +63,6 @@ tasks.register("checkForChangelog") {
 }
 
 dependencies {
-    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     for (moduleId in ModuleDependency.getAllModules().filterNot { it == ModuleDependency.APP })
         implementation(project(moduleId))
     implementation(LibraryDependency.APP_COMPAT)
@@ -117,7 +116,6 @@ dependencies {
     implementation(LibraryDependency.HVLOG)
     implementation(LibraryDependency.GLIDE)
     implementation(LibraryDependency.CWT)
-    implementation(LibraryDependency.AUTO_BINDINGS)
     implementation(LibraryDependency.REALTIME_EXTENSIONS)
     implementation(LibraryDependency.TIMBER)
     implementation(LibraryDependency.MARKWON)
@@ -131,12 +129,9 @@ dependencies {
 
     kapt(LibraryDependency.HILT_COMPILER)
     kapt(LibraryDependency.HILT_WORK_MANAGER_COMPILER)
-    kapt(LibraryDependency.AUTO_BINDINGS_COMPILER)
 
-    kapt(LibraryDependency.GLIDE_COMPILER)
-    ksp(LibraryDependency.ROOM_COMPILER_KAPT)
+    kapt(LibraryDependency.ROOM_COMPILER_KAPT)
 
-//    debugImplementation(TestLibraryDependency.ANDROID_DEBUG_DB)
     testImplementation(TestLibraryDependency.JUNIT)
     androidTestImplementation(TestLibraryDependency.JUNIT_TEST_EXT)
     androidTestImplementation(TestLibraryDependency.ESPRESSO_CORE)

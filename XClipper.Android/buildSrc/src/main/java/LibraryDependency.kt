@@ -129,4 +129,6 @@ object LibraryDependency {
     const val MARKWON = "io.noties.markwon:core:${LibraryVersion.MARKWON}"
 
     const val BILLING = "com.android.billingclient:billing-ktx:${LibraryVersion.BILLING}"
+
+    const val LOCAL_BROADCAST_MANAGER = "androidx.localbroadcastmanager:localbroadcastmanager:1.0.0"
 }

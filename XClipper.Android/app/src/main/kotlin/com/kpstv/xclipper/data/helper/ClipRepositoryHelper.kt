@@ -89,7 +89,7 @@ class ClipRepositoryHelper @Inject constructor(
 
     private fun sendClipNotification(data: String, withAction: Boolean = true) {
         launchInMain {
-            Notifications.pushNotification(context, data, withAction)
+            Notifications.sendClipboardCopiedNotification(context, data, withAction)
         }
     }
 }

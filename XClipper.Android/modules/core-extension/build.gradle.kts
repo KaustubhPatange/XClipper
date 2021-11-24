@@ -17,7 +17,6 @@ android {
 }
 
 dependencies {
-    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     implementation(LibraryDependency.CORE_KTX)
     implementation(LibraryDependency.APP_COMPAT)
     implementation(LibraryDependency.MATERIAL)
@@ -27,7 +26,7 @@ dependencies {
     implementation(LibraryDependency.LIFECYCLE_COMMON)
     implementation(LibraryDependency.ACTIVITY_KTX)
     implementation(LibraryDependency.GLIDE)
-    implementation("androidx.localbroadcastmanager:localbroadcastmanager:1.0.0")
+    implementation(LibraryDependency.LOCAL_BROADCAST_MANAGER)
 
     kapt(LibraryDependency.GLIDE_COMPILER)
 }

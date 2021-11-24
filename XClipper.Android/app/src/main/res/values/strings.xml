@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">XClipper</string>
-    <string name="app_name_full">XClipper - Smart clipboard manager</string>
 
     <string name="accessibility_service_description">This will let XClipper to monitor clipboard &amp; will able to capture some of known strategies if system detects any copy/cut action.\n\n\nThis feature is still in BETA for Android 10+ users and may not work always.</string>
 
@@ -45,7 +44,6 @@
     <string name="send_mail">Send a mail</string>
     <string name="search_map">Search on map</string>
     <string name="channel_name">Notification channel</string>
-    <string name="channel_update">Update channel</string>
     <string name="more_actions">Special actions</string>
     <string name="clip_content">Clipboard content</string>
     <string name="title_activity_settings">Settings</string>
@@ -123,10 +121,6 @@
     <string name="standard_pricing">Get a standard pricing model with maximum server storage you can get.</string>
     <string name="premium_pricing">Synchronize your clipboard activity with PC securely for lifetime.</string>
     <string name="awesome">You are awesome!</string>
-    <string name="update_download_complete">Update downloaded</string>
-    <string name="update_download_install">Click OK to apply update!</string>
-    <string name="update_download_install2">Click \"Install\" to apply the update!</string>
-    <string name="update_download_install_button">Install</string>
     <string name="item_removed">Item removed permanently</string>
     <string name="swipe_title">Swipe to delete</string>
     <string name="swipe_summary">Swiping item to right will delete it permanently</string>
@@ -184,12 +178,6 @@
     <string name="read_guide_text">Read this step by step tutorial on how to setup synchronization across multiple devices.</string>
     <string name="privacy_policy">Privacy Policy</string>
 
-    <string name="update_available">Update available</string>
-    <string name="update_available_text">Click "Update" to start downloading it.</string>
-    <string name="update_button">Update</string>
-    <string name="update_downloading_title">Downloading XClipper %1$s</string>
-    <string name="update_message">A new update is available to download.</string>
-    <string name="update_error">Error while updating the app</string>
     <string name="load_apps">Loading apps metadata…</string>
     <string name="alright">Alright</string>
     <string name="blacklist_apps">Select blacklist apps</string>
@@ -270,4 +258,6 @@
     <string name="terms_last_updated">Updated: %1$s</string>
     <string name="terms_check_agreement"><![CDATA[I agree with the <b>Agreement</b>]]></string>
     <string name="err_privacy_policy">Invalid privacy policy</string>
+    <string name="improve_detection_notify_title">Improve clipboard detection disabled</string>
+    <string name="improve_detection_notify_text">It looks like the system has disabled the improve clipboard detection mechanism. You need to again configure it using ADB</string>
 </resources>

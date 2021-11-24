@@ -93,7 +93,7 @@
         </service>
         <service
             android:name=".service.TileService"
-            android:icon="@drawable/ic_clip"
+            android:icon="@drawable/ic_logo_white"
             android:label="@string/quick_settings_save_clip"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
@@ -103,6 +103,7 @@
         <service android:name=".service.BubbleService" />
 
         <receiver android:name=".service.receiver.AppBroadcastReceiver" />
+        <receiver android:name=".service.receiver.SpecialActionsReceiver" />
         <receiver
             android:name=".service.receiver.BootCompleteReceiver"
             android:enabled="true"

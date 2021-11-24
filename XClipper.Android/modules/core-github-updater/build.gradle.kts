@@ -6,9 +6,8 @@ plugins {
 }
 
 android {
-    buildFeatures {
-        buildConfig = false
-        viewBinding = true
+    defaultConfig {
+        buildConfigField("String", AndroidConfig::VERSION_NAME.name, "\"${AndroidConfig.VERSION_NAME}\"")
     }
     buildTypes {
         getByName(BuildType.DEBUG) {
@@ -29,13 +28,18 @@ android {
 dependencies {
     implementation(project(ModuleDependency.CORE))
     implementation(project(ModuleDependency.CORE_EXTENSIONS))
+    implementation(project(ModuleDependency.UPDATER))
 
     implementation(LibraryDependency.CORE_KTX)
-    implementation(LibraryDependency.CONSTRAINT_LAYOUT)
-    implementation(LibraryDependency.MATERIAL)
-    implementation(LibraryDependency.LIFECYCLE_KTX)
-    implementation(LibraryDependency.FRAGMENT_KTX)
-    implementation(LibraryDependency.NAVIGATOR)
+    implementation(LibraryDependency.APP_COMPAT)
+    implementation(LibraryDependency.OKHTTP)
+    implementation(LibraryDependency.TOASTY)
+    implementation(LibraryDependency.WORK_MANAGER)
+    implementation(LibraryDependency.GSON)
     implementation(LibraryDependency.HILT_ANDROID)
-    implementation(LibraryDependency.GIF_DRAWABLE)
+    implementation(LibraryDependency.HILT_WORK_MANAGER)
+    implementation(LibraryDependency.AUTO_BINDINGS)
+    compileOnly(LibraryDependency.AUTO_BINDINGS_ROOM_NOOP)
+
+    kapt(LibraryDependency.AUTO_BINDINGS_COMPILER)
 }

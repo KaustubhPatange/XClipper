@@ -110,7 +110,7 @@ class TagDialog : AppCompatActivity() {
     }
 
     private fun setToolbar() = with(binding) {
-        toolbar.setNavigationIcon(R.drawable.ic_close)
+        toolbar.setNavigationIcon(R.drawable.ic_cross)
         toolbar.setNavigationOnClickListener {
             finish()
         }

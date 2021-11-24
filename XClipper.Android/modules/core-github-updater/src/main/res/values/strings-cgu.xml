@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="channel_update_progress">Update progress channel</string>
+    <string name="channel_update">Update progress channel</string>
+
+    <string name="update_available">Update available</string>
+    <string name="update_available_text">Click "Update" to start downloading it.</string>
+    <string name="update_button">Update</string>
+    <string name="update_downloading_title">Downloading XClipper %1$s</string>
+    <string name="update_message">A new update is available to download.</string>
+    <string name="update_error">Error while updating the app</string>
+    <string name="update_download_complete">Update downloaded</string>
+    <string name="update_download_install">Click OK to apply update!</string>
+    <string name="update_download_install2">Click \"Install\" to apply the update!</string>
+    <string name="update_download_install_button">Install</string>
+</resources>

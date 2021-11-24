@@ -13,10 +13,7 @@ import com.kpstv.xclipper.extensions.helper.ClipboardLogDetector
 import com.kpstv.xclipper.service.worker.AccessibilityWorker
 import com.kpstv.xclipper.service.worker.ExtensionWorker
 import com.kpstv.xclipper.ui.fragments.settings.GeneralPreference
-import com.kpstv.xclipper.ui.helpers.AppSettings
-import com.kpstv.xclipper.ui.helpers.AppThemeHelper
-import com.kpstv.xclipper.ui.helpers.CrashHelper
-import com.kpstv.xclipper.ui.helpers.Notifications
+import com.kpstv.xclipper.ui.helpers.*
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 
@@ -38,6 +35,7 @@ class XClipperApplication : Application(), Configuration.Provider {
         init()
 
         Notifications.initialize(this)
+        UpdaterNotifications.initialize(this)
 
         Logger.init(BuildConfig.DEBUG)
 

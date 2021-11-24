@@ -23,6 +23,5 @@ android {
 }
 
 dependencies {
-    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     implementation(LibraryDependency.CORE_KTX)
 }

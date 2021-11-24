@@ -36,7 +36,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
                     android:background="@android:color/transparent"
-                    tools:src="@drawable/ic_clip"
+                    tools:src="@drawable/ic_logo"
                     tools:tint="#D6B16A" />
 
             </androidx.cardview.widget.CardView>
