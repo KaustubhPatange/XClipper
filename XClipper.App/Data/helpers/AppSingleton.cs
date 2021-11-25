@@ -173,7 +173,8 @@ namespace Components.viewModels
             if (model == null) return;
             
             var list = ClipData;
-            
+
+            bool insertToLocalDatabase = true;
             foreach (var c in list)
             {
                 if (c.ContentType == model.ContentType)
@@ -181,33 +182,55 @@ namespace Components.viewModels
                     switch (model.ContentType)
                     {
                         case ContentType.Text:
-                            if (model.Text == c.Text) return;
+                            if (model.Text == c.Text)
+                            { 
+                                insertToLocalDatabase = false;
+                                goto insertActualContent;
+                            }
                             break;
                         case ContentType.Image:
-                            if (model.ImagePath == c.ImagePath) return;
+                            if (model.ImagePath == c.ImagePath)
+                            {
+                                insertToLocalDatabase = false;
+                                goto insertActualContent;
+                            }
                             break;
                         case ContentType.Files:
-                            if (model.LongText == c.LongText) return;
+                            if (model.LongText == c.LongText)
+                            {
+                                insertToLocalDatabase = false;
+                                goto insertActualContent;
+                            }
                             break;
                     }
                 }
             }
 
-            // Implementation of setting TotalClipLength 
-            if (list.Count >= TotalClipLength)
-            {
-                var lastItem = list[list.Count - 1];
-                dataDB.Delete(lastItem);
-                FirebaseSingletonV2.GetInstance.RemoveImage(Path.GetFileName(lastItem.ImagePath)).RunAsync(); // TODO: See if you really want to delete the clip from online database as well.
-            }
+            insertActualContent:
             
-            dataDB.Insert(model);
+            if (insertToLocalDatabase)
+            {
+                // Implementation of setting TotalClipLength 
+                if (list.Count >= TotalClipLength)
+                {
+                    var lastItem = list[list.Count - 1];
+                    dataDB.Delete(lastItem);
+                    FirebaseSingletonV2.GetInstance.RemoveImage(Path.GetFileName(lastItem.ImagePath)).RunAsync(); // TODO: See if you really want to delete the clip from online database as well.
+                }
+            
+                dataDB.Insert(model);   
+            }
 
             if (pushToDatabase)
             {
-                if (model.ContentType == ContentType.Text && model.RawText != null) FirebaseHelper.AddContent(model.RawText);
-                FirebaseSingletonV2.GetInstance.AddImage(model.ContentType == ContentType.Image ? model.ImagePath : null).RunAsync();
+                InsertDirectFirebase(model);
             }
+        }
+
+        public void InsertDirectFirebase(TableCopy model)
+        {
+            if (model.ContentType == ContentType.Text && model.RawText != null) FirebaseHelper.AddContent(model.RawText);
+            FirebaseSingletonV2.GetInstance.AddImage(model.ContentType == ContentType.Image ? model.ImagePath : null).RunAsync();
         }
 
         public void InsertTextClipNoUpdate(string UnEncryptedText)

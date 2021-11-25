@@ -5,6 +5,8 @@ using System.Xml.Linq;
 using FireSharp.Core.Interfaces;
 using System.Collections.Generic;
 using System;
+using System.Collections;
+using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using FireSharp.Core.Config;
 using FireSharp.Core;
@@ -889,13 +891,19 @@ namespace Components
                 // Remove clip if greater than item
                 if (clips.Count > DatabaseMaxItem)
                     clips.RemoveAt(0);
-
-                // Add data from current [Text]
-                clips.Add(new Clip { data = Text.EncryptBase64(DatabaseEncryptPassword), time = DateTime.Now.ToFormattedDateTime(false) });
-
+                
+                addStack.Insert(0, Text);
+                
+                // Find if duplicate exists (if yes then skip else add the current text)
+                var decryptedClips = clips.Select(c => c.data.DecryptBase64(DatabaseEncryptPassword)).ToList();
+               
                 // Also add data from stack
                 foreach (var stackText in addStack)
-                    clips.Add(new Clip { data = stackText.EncryptBase64(DatabaseEncryptPassword), time = DateTime.Now.ToFormattedDateTime(false) });
+                {
+                    bool duplicateExists = decryptedClips.Any(c => c == stackText);
+                    if (!duplicateExists)
+                        clips.Add(new Clip { data = stackText.EncryptBase64(DatabaseEncryptPassword), time = DateTime.Now.ToFormattedDateTime(false) });   
+                }
 
                 // Clear the stack after adding them all.
                 addStack.Clear();
