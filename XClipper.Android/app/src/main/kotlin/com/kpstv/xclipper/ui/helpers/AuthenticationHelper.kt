@@ -36,14 +36,12 @@ class AuthenticationHelper(
     private lateinit var auth: FirebaseAuth
 
     private val customContract =
-        object : ActivityResultContract<Intent, Task<GoogleSignInAccount>?>() {
+        object : ActivityResultContract<Intent, Task<GoogleSignInAccount>>() {
             override fun createIntent(context: Context, input: Intent?): Intent {
                 return input!!
             }
 
-            override fun parseResult(resultCode: Int, intent: Intent?): Task<GoogleSignInAccount>? {
-                if (resultCode != RESULT_OK)
-                    return null
+            override fun parseResult(resultCode: Int, intent: Intent?): Task<GoogleSignInAccount> {
                 return GoogleSignIn.getSignedInAccountFromIntent(intent)
             }
         }
@@ -51,13 +49,12 @@ class AuthenticationHelper(
     private val getResult =
         activity.activityResultRegistry.register("myContract_1", customContract) { task ->
             try {
-                val account = task?.getResult(ApiException::class.java)!!
+                val account = task.getResult(ApiException::class.java)!!
                 firebaseAuthWithGoogle(account.idToken!!)
-            } catch (e: Exception) {
+            } catch (e : Exception) {
                 unregister()
-                responseListener.onError(e)
+                responseListener.onError(task.exception ?: Exception("Unexpected getResult error"))
             }
-            return@register
         }
 
     /**
@@ -85,10 +82,17 @@ class AuthenticationHelper(
 
         googleSignInClient = GoogleSignIn.getClient(this, defaultGoogleSignInOptions(clientId))
 
-        auth = Firebase.auth(app)
+        fun performSignIn() {
+            auth = Firebase.auth(app)
 
-        val signInIntent = googleSignInClient.signInIntent
-        getResult.launch(signInIntent)
+            val signInIntent = googleSignInClient.signInIntent
+
+            getResult.launch(signInIntent)
+        }
+
+        if (GoogleSignIn.getLastSignedInAccount(this) != null) {
+            googleSignInClient.signOut().addOnCompleteListener { performSignIn() }
+        } else performSignIn()
     }
 
     private fun firebaseAuthWithGoogle(idToken: String) = with(activity) {

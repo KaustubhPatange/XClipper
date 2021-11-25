@@ -217,6 +217,8 @@ namespace Components
             DatabaseMaxConnection = DMC;
 
             FirebaseCurrent = newData;
+            MobileAuth = mobileAuth;
+            DesktopAuth = desktopAuth;
 
             WriteFirebaseSetting();
 

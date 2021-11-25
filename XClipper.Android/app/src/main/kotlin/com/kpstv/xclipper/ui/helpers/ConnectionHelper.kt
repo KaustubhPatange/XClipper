@@ -7,6 +7,7 @@ import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.FBOptions
 import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.di.CommonReusableEntryPoints
+import com.kpstv.xclipper.extensions.Logger
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
 import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.ui.viewmodels.MainViewModel
@@ -32,8 +33,10 @@ class ConnectionHelper(
                                     /** Here we will make a connection request to the database.*/
                                     makeAConnectionRequest(options)
                                 },
-                                error = {
-                                    Toasty.error(activity, "Error: ${it.message}", Toasty.LENGTH_LONG).show()
+                                error = { exception ->
+                                    exception.printStackTrace()
+                                    Logger.w(exception, "Google sign-in failed")
+                                    Toasty.error(activity, "Error: ${exception.message}", Toasty.LENGTH_LONG).show()
                                 }
                             ))
                     } else {
