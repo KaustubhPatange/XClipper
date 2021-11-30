@@ -34,7 +34,7 @@
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/is_image"
+        app:layout_constraintStart_toEndOf="@id/menu_image"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="text" />
 </androidx.constraintlayout.widget.ConstraintLayout>
