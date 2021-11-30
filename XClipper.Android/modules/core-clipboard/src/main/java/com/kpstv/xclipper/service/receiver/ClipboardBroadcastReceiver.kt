@@ -6,36 +6,30 @@ import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.widget.Toast
-import com.kpstv.xclipper.R
+import com.kpstv.xclipper.core_clipboard.R
 import com.kpstv.xclipper.extensions.elements.AbstractBroadcastReceiver
-import com.kpstv.xclipper.extensions.utils.Utils
-import com.kpstv.xclipper.ui.activities.Start
-import com.kpstv.xclipper.ui.utils.LaunchUtils
+import com.kpstv.xclipper.extensions.utils.ClipboardUtils
 
-class AppBroadcastReceiver : AbstractBroadcastReceiver() {
+class ClipboardBroadcastReceiver : AbstractBroadcastReceiver() {
 
     private val TAG = javaClass.simpleName
 
     companion object {
-        const val ACTION_OPEN_ACCESSIBILITY = "com.kpstv.action_open_accessibility"
+        private const val ACTION_OPEN_ACCESSIBILITY = "com.kpstv.action_open_accessibility"
 
-        private const val ACTION_OPEN_URL = "com.kpstv.action_open_url"
-        private const val ARGUMENT_OPEN_URL_LINK = "com.kpstv.action_open_url:arg_link"
         private const val ACTION_OPEN_APP = "com.kpstv.xclipper.open_app"
         private const val NOTIFICATION_CODE = "com.kpstv.xclipper.abr.notification_code"
 
-
-        fun createOpenUrlAction(context: Context, url: String) : Intent {
-            return Intent(context, AppBroadcastReceiver::class.java).apply {
-                action = ACTION_OPEN_URL
-                putExtra(ARGUMENT_OPEN_URL_LINK, url)
+        fun createOpenAppAction(context: Context, notificationId: Int) : Intent {
+            return Intent(context, ClipboardBroadcastReceiver::class.java).apply {
+                action = ACTION_OPEN_APP
+                putExtra(NOTIFICATION_CODE, notificationId)
             }
         }
 
-        fun createOpenAppAction(context: Context, notificationId: Int) : Intent {
-            return Intent(context, AppBroadcastReceiver::class.java).apply {
-                action = ACTION_OPEN_APP
-                putExtra(NOTIFICATION_CODE, notificationId)
+        fun createAccessibilityServiceOpenAction(context: Context) : Intent {
+            return Intent(context, ClipboardBroadcastReceiver::class.java).apply {
+                action = ACTION_OPEN_ACCESSIBILITY
             }
         }
     }
@@ -47,23 +41,15 @@ class AppBroadcastReceiver : AbstractBroadcastReceiver() {
 
         when (intent.action) {
             ACTION_OPEN_APP -> {
-                context.startActivity(
-                    Intent(context, Start::class.java).apply {
-                        flags = FLAG_ACTIVITY_BROUGHT_TO_FRONT or FLAG_ACTIVITY_NEW_TASK
-                    }
-                )
+                val launchIntent = context.packageManager.getLaunchIntentForPackage(context.packageName)?.apply {
+                    flags = FLAG_ACTIVITY_BROUGHT_TO_FRONT or FLAG_ACTIVITY_NEW_TASK
+                }
+                context.startActivity(launchIntent)
                 dismissNotification(context, notifyId)
             }
-
             ACTION_OPEN_ACCESSIBILITY -> {
-                Utils.openClipboardServiceAccessibility(context)
+                ClipboardUtils.openServiceAccessibilitySetting(context)
                 Toast.makeText(context, context.getString(R.string.open_accessibility), Toast.LENGTH_SHORT).show()
-            }
-            ACTION_OPEN_URL -> {
-                val url = intent.getStringExtra(ARGUMENT_OPEN_URL_LINK)
-                if (url != null) {
-                    LaunchUtils.commonUrlLaunch(context, url)
-                }
             }
         }
     }

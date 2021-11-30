@@ -43,7 +43,6 @@
     <string name="search_web">Search as a query</string>
     <string name="send_mail">Send a mail</string>
     <string name="search_map">Search on map</string>
-    <string name="channel_name">Notification channel</string>
     <string name="more_actions">Special actions</string>
     <string name="clip_content">Clipboard content</string>
     <string name="title_activity_settings">Settings</string>
@@ -138,8 +137,6 @@
     <string name="private_browse">Open in private</string>
     <string name="private_browse1">Privately browsing :)</string>
     <string name="premium_latest">Couldn\'t fetch the latest data</string>
-    <string name="clipboard_disabled_text">Clipboard monitoring is disabled</string>
-    <string name="clipboard_disabled_content">Accessibility service is not started, click to enable it.</string>
     <string name="image_render_summary">[BETA] This will render image in the list. Note that it can have some side effects!</string>
     <string name="image_render_title">Render Image</string>
     <string name="copy">Copy</string>
@@ -155,7 +152,6 @@
     <string name="trim_title">Text trimming</string>
     <string name="trim_summary">This will trim whitespaces from the clip data while displaying.</string>
     <string name="invalid_url">No url passed for shortening.</string>
-    <string name="error_shorten">Requested url cannot be shorten</string>
     <string name="accessibility_service">Accessibility Service</string>
     <string name="show_stacktrace">Show stacktrace</string>
     <string name="crash_text_sending">Hang on, we are sending this report to my server…</string>

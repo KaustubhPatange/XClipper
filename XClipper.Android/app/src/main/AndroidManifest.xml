@@ -102,8 +102,9 @@
         </service>
         <service android:name=".service.BubbleService" />
 
-        <receiver android:name=".service.receiver.AppBroadcastReceiver" />
+        <receiver android:name=".service.receiver.ClipboardBroadcastReceiver" />
         <receiver android:name=".service.receiver.SpecialActionsReceiver" />
+        <receiver android:name=".service.receiver.ImproveDetectionReceiver" />
         <receiver
             android:name=".service.receiver.BootCompleteReceiver"
             android:enabled="true"

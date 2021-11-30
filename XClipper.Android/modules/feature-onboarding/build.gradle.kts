@@ -10,20 +10,6 @@ android {
         buildConfig = false
         viewBinding = true
     }
-    buildTypes {
-        getByName(BuildType.DEBUG) {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
-            )
-        }
-        getByName(BuildType.RELEASE) {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
-            )
-        }
-    }
 }
 
 dependencies {

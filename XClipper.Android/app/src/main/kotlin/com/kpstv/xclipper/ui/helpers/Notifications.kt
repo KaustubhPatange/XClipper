@@ -1,39 +1,28 @@
 package com.kpstv.xclipper.ui.helpers
 
-import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
-import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.extensions.colorFrom
 import com.kpstv.xclipper.extensions.utils.NotificationUtils
-import com.kpstv.xclipper.service.receiver.AppBroadcastReceiver
+import com.kpstv.xclipper.service.receiver.ClipboardBroadcastReceiver
+import com.kpstv.xclipper.service.receiver.ImproveDetectionReceiver
 import com.kpstv.xclipper.service.receiver.SpecialActionsReceiver
 import java.util.*
 
 object Notifications {
-    private const val CHANNEL_ID = "my_channel_01"
+    private const val CHANNEL_ID = CoreNotifications.CHANNEL_ID
 
-    private const val ACCESSIBILITY_NOTIFICATION_ID = 34
+
     private const val IMPROVE_DETECTION_DISABLED_NOTIFICATION_ID = 35
 
     private lateinit var manager: NotificationManager
 
     fun initialize(context: Context) = with(context) {
         manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            manager.createNotificationChannel(
-                NotificationChannel(
-                    CHANNEL_ID,
-                    getString(R.string.channel_name),
-                    NotificationManager.IMPORTANCE_HIGH
-                )
-            )
-        }
     }
 
     fun sendNotification(context: Context, title: String, message: String): Unit = with(context) {
@@ -41,7 +30,7 @@ object Notifications {
         val openIntent = PendingIntent.getBroadcast(
             context,
             getRandomPendingCode(),
-            AppBroadcastReceiver.createOpenAppAction(context, randomCode),
+            ClipboardBroadcastReceiver.createOpenAppAction(context, randomCode),
             NotificationUtils.getPendingIntentFlags()
         )
 
@@ -63,7 +52,7 @@ object Notifications {
         val openIntent = PendingIntent.getBroadcast(
             context,
             getRandomPendingCode(),
-            AppBroadcastReceiver.createOpenAppAction(this, randomCode),
+            ClipboardBroadcastReceiver.createOpenAppAction(this, randomCode),
             NotificationUtils.getPendingIntentFlags()
         )
 
@@ -96,30 +85,8 @@ object Notifications {
         manager.notify(randomCode, notificationBuilder.build())
     }
 
-    fun sendAccessibilityDisabledNotification(context: Context): Unit = with(context) {
-        val openIntent = PendingIntent.getBroadcast(
-            this,
-            NotificationUtils.getRandomCode(),
-            Intent(this, AppBroadcastReceiver::class.java).apply {
-                action = AppBroadcastReceiver.ACTION_OPEN_ACCESSIBILITY
-            },
-            NotificationUtils.getPendingIntentFlags()
-        )
-        val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_logo_white)
-            .setContentTitle(getString(R.string.clipboard_disabled_text))
-            .setContentText(getString(R.string.clipboard_disabled_content))
-            .setAutoCancel(true)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
-            .setContentIntent(openIntent)
-            .build()
-
-        manager.notify(ACCESSIBILITY_NOTIFICATION_ID, notification)
-    }
-
     fun sendImproveDetectionDisabled(context: Context) = with(context) {
-        val learnMoreIntent = AppBroadcastReceiver.createOpenUrlAction(this, getString(R.string.app_docs_improve_detect))
+        val learnMoreIntent = ImproveDetectionReceiver.createOpenUrlAction(this, getString(R.string.app_docs_improve_detect))
 
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle(getString(R.string.improve_detection_notify_title))

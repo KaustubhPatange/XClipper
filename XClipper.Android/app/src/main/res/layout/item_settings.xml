@@ -14,7 +14,7 @@
     android:paddingBottom="17dp">
 
     <ImageView
-        android:id="@+id/is_image"
+        android:id="@+id/menu_image"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginStart="10dp"
@@ -25,7 +25,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/is_text"
+        android:id="@+id/menu_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="25dp"

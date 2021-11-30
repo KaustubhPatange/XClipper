@@ -6,10 +6,10 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kpstv.navigation.ValueFragment
 import com.kpstv.xclipper.R
-import com.kpstv.xclipper.data.model.SpecialMenu
+import com.kpstv.xclipper.data.model.SingleMenuItem
 import com.kpstv.xclipper.databinding.FragmentSettingsMainBinding
 import com.kpstv.xclipper.extensions.viewBinding
-import com.kpstv.xclipper.ui.adapters.MenuAdapter
+import com.kpstv.xclipper.ui.adapters.SingleMenuAdapter
 import com.kpstv.xclipper.ui.fragments.Settings
 import com.kpstv.xclipper.ui.helpers.fragments.ImproveDetectionHelper
 import com.kpstv.xclipper.ui.viewmodels.SettingNavViewModel
@@ -24,46 +24,46 @@ class SettingsFragment : ValueFragment(R.layout.fragment_settings_main) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val list = ArrayList<SpecialMenu>()
+        val list = ArrayList<SingleMenuItem>()
 
         /** General Setting */
         list.add(
-            SpecialMenu(title = getString(R.string.service), image = R.drawable.ic_service) {
+            SingleMenuItem(title = getString(R.string.service), image = R.drawable.ic_service) {
                 navViewModel.navigateTo(Settings.Screen.GENERAL)
             }
         )
 
         /** Sync Setting */
         list.add(
-            SpecialMenu(title = getString(R.string.account), image = R.drawable.ic_sync) {
+            SingleMenuItem(title = getString(R.string.account), image = R.drawable.ic_sync) {
                 navViewModel.navigateTo(Settings.Screen.ACCOUNT)
             }
         )
 
         /** Look & Feel Setting */
         list.add(
-            SpecialMenu(title = getString(R.string.look_feel), image = R.drawable.ic_looks) {
+            SingleMenuItem(title = getString(R.string.look_feel), image = R.drawable.ic_looks) {
                 navViewModel.navigateTo(Settings.Screen.LOOK_FEEL)
             }
         )
 
           /** Action Setting */
         list.add(
-            SpecialMenu(title = getString(R.string.actions), image = R.drawable.ic_extension) {
+            SingleMenuItem(title = getString(R.string.actions), image = R.drawable.ic_extension) {
                 navViewModel.navigateTo(Settings.Screen.ACTIONS)
             }
         )
 
         /** Backup Setting */
         list.add(
-            SpecialMenu(title = getString(R.string.backup), image = R.drawable.ic_backup) {
+            SingleMenuItem(title = getString(R.string.backup), image = R.drawable.ic_backup) {
                 navViewModel.navigateTo(Settings.Screen.BACKUP)
             }
         )
 
         /** Upgrade Menu */
         list.add(
-            SpecialMenu(
+            SingleMenuItem(
                 title = getString(R.string.upgrade),
                 image = R.drawable.ic_upgrade,
                 imageTint = R.color.palette5,
@@ -73,13 +73,13 @@ class SettingsFragment : ValueFragment(R.layout.fragment_settings_main) {
 
         /** About Menu */
         list.add(
-            SpecialMenu(title = getString(R.string.about), image = R.drawable.ic_info) {
+            SingleMenuItem(title = getString(R.string.about), image = R.drawable.ic_info) {
                 navViewModel.navigateTo(Settings.Screen.ABOUT)
             }
         )
 
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerView.adapter = MenuAdapter(list, R.layout.item_settings)
+        binding.recyclerView.adapter = SingleMenuAdapter(list, R.layout.item_settings)
         binding.recyclerView.setHasFixedSize(true)
 
         setUpQuickTips()

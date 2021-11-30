@@ -43,8 +43,6 @@ class AuthenticationHelper(
             }
 
             override fun parseResult(resultCode: Int, intent: Intent?): Task<GoogleSignInAccount>? {
-                if (resultCode != RESULT_OK)
-                    return null
                 return GoogleSignIn.getSignedInAccountFromIntent(intent)
             }
         }

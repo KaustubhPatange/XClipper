@@ -7,6 +7,8 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.kpstv.xclipper.data.converters.DateConverter
 import com.kpstv.xclipper.data.converters.TagConverter
 import com.kpstv.xclipper.data.localized.dao.*
+import com.kpstv.xclipper.data.model.Definition
+import com.kpstv.xclipper.data.model.Preview
 import com.kpstv.xclipper.data.model.*
 import com.kpstv.xclipper.extensions.launchInIO
 import com.kpstv.xclipper.extensions.small

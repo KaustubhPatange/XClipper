@@ -20,10 +20,8 @@ class DictionaryApiHelper @Inject constructor(
             try {
                 val data = defineRepository.getWord(word)
                 if (data == null) {
-                    val definition =
-                        googleDictionaryApi.defineAsync(langCode, word)?.await()
+                    val definition = googleDictionaryApi.defineAsync(langCode, word)?.await()
                     if (definition?.define != null) {
-                        /** Save data to database */
                         /** Save data to database */
                         defineRepository.insert(definition)
                         launchInMain { responseListener.onComplete(definition) }

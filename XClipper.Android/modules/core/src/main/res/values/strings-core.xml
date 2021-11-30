@@ -11,4 +11,8 @@
     <string name="suggestion_title">Suggestions [BETA]</string>
     <string name="suggestion_capture">You need to enable System overlay permission.\n\n1. Click OK to open Display Overlay settings.\n2. Enable \"Allow display over other apps\".</string>
 
+    <string name="channel_name">Notification channel</string>
+
+    <string name="clipboard_disabled_text">Clipboard monitoring is disabled</string>
+    <string name="clipboard_disabled_content">Accessibility service is not started, click to enable it.</string>
 </resources>

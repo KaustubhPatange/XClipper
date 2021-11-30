@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.hilt.work.HiltWorker
 import androidx.work.*
 import com.kpstv.xclipper.service.ClipboardAccessibilityService
-import com.kpstv.xclipper.ui.helpers.Notifications
+import com.kpstv.xclipper.ui.helper.ClipboardNotifications
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import java.util.concurrent.TimeUnit
@@ -17,7 +17,7 @@ class AccessibilityWorker @AssistedInject constructor(
 
     override fun doWork(): Result {
         if (!ClipboardAccessibilityService.isRunning(appContext)) {
-            Notifications.sendAccessibilityDisabledNotification(appContext)
+            ClipboardNotifications.sendAccessibilityDisabledNotification(appContext)
         }
         return Result.success()
     }

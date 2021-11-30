@@ -16,7 +16,6 @@ object RetrofitUtils {
     fun getRetrofitBuilder(): Retrofit.Builder {
         return Retrofit.Builder().apply {
             addCallAdapterFactory(CoroutineCallAdapterFactory())
-            addConverterFactory(GsonConverterFactory.create(GsonUtils.get()))
             client(getHttpClient())
         }
     }

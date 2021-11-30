@@ -10,6 +10,8 @@ class GithubUpdater {
         private const val REPO_NAME = "XClipper"
         private const val UPDATE_REQUEST_CODE = 555
 
+        const val ACTION_FORCE_CHECK_UPDATE = "action_force_check_update"
+
         fun createUpdater() : Updater {
             return Updater.Builder()
                 .setCurrentAppVersion(BuildConfig.VERSION_NAME)

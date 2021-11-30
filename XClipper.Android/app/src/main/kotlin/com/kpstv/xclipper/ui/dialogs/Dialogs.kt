@@ -13,8 +13,8 @@ import com.kpstv.xclipper.R
 import com.kpstv.xclipper.extensions.SimpleFunction
 import com.kpstv.xclipper.extensions.getColorAttr
 import com.kpstv.xclipper.extensions.setPadding
+import com.kpstv.xclipper.extensions.utils.ClipboardUtils
 import com.kpstv.xclipper.extensions.utils.SystemUtils
-import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.service.ClipboardAccessibilityService
 import com.kpstv.xclipper.ui.utils.LaunchUtils
 
@@ -79,7 +79,7 @@ object Dialogs {
             .setTitle(getString(R.string.accessibility_service))
             .setMessage(context.getString(R.string.accessibility_capture))
             .setPositiveButton(getString(R.string.ok)) { _, _ ->
-                Utils.openClipboardServiceAccessibility(this)
+                ClipboardUtils.openServiceAccessibilitySetting(this)
                 block.invoke()
             }
             .setCancelable(false)
@@ -95,7 +95,7 @@ object Dialogs {
             .setPositiveButton(R.string.ok) { _, _ ->
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     ClipboardAccessibilityService.disableService(context)
-                } else Utils.openClipboardServiceAccessibility(context)
+                } else ClipboardUtils.openServiceAccessibilitySetting(context)
                 block.invoke()
             }
             .setNegativeButton(R.string.cancel) { _, _ -> block.invoke() }

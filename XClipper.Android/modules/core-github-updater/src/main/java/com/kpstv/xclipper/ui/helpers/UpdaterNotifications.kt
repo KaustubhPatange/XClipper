@@ -11,6 +11,7 @@ import com.kpstv.xclipper.extensions.colorFrom
 import com.kpstv.xclipper.extensions.utils.NotificationUtils
 import com.kpstv.xclipper.extensions.utils.SizeUtils
 import com.kpstv.xclipper.service.receiver.GithubUpdateReceiver
+import com.kpstv.xclipper.ui.helpers.CoreNotifications.getNotificationManager
 import java.io.File
 
 object UpdaterNotifications {
@@ -95,7 +96,7 @@ object UpdaterNotifications {
 
     fun sendUpdateAvailableNotification(context: Context) = with(context) {
         val updateIntent = packageManager.getLaunchIntentForPackage(packageName)?.apply {
-           // action = ActivityIntentHelper.ACTION_FORCE_CHECK_UPDATE
+            action = GithubUpdater.ACTION_FORCE_CHECK_UPDATE
         }
         val pendingIntent = PendingIntent.getActivity(
             this,

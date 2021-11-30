@@ -15,7 +15,6 @@ import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.databinding.BottomSheetMoreBinding
 import com.kpstv.xclipper.extensions.elements.CustomRoundedBottomSheetFragment
-import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.extensions.viewBinding
 import com.kpstv.xclipper.ui.helpers.specials.SpecialHelper
 import dagger.hilt.android.AndroidEntryPoint

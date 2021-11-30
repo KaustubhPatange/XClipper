@@ -3,13 +3,11 @@ package com.kpstv.xclipper.extensions.recyclerview
 import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.ColorDrawable
-import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.xclipper.R
-import com.kpstv.xclipper.extensions.utils.Utils
 import com.kpstv.xclipper.extensions.utils.VibrateUtils
 
 /**

@@ -20,7 +20,6 @@ import com.kpstv.xclipper.extensions.utils.ClipUtils
 import com.kpstv.xclipper.ui.helpers.AppThemeHelper.CARD_CLICK_COLOR
 import com.kpstv.xclipper.ui.helpers.AppThemeHelper.CARD_COLOR
 import com.kpstv.xclipper.ui.helpers.AppThemeHelper.CARD_SELECTED_COLOR
-import com.kpstv.xclipper.extensions.utils.Utils
 
 class CIAdapter(
     private val lifecycleOwner: LifecycleOwner,

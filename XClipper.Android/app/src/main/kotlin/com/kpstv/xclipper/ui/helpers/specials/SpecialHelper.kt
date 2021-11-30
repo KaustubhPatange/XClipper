@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
-import android.content.Intent.ACTION_EDIT
 import android.net.Uri
 import android.os.Bundle
 import android.provider.CalendarContract
@@ -21,13 +20,13 @@ import com.kpstv.xclipper.data.localized.dao.PreviewDao
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.ClipTag
 import com.kpstv.xclipper.data.model.Preview
-import com.kpstv.xclipper.data.model.SpecialMenu
+import com.kpstv.xclipper.data.model.SingleMenuItem
 import com.kpstv.xclipper.databinding.BottomSheetMoreBinding
 import com.kpstv.xclipper.di.SpecialEntryPoints
 import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
 import com.kpstv.xclipper.extensions.utils.PackageUtils
-import com.kpstv.xclipper.ui.adapters.MenuAdapter
+import com.kpstv.xclipper.ui.adapters.SingleMenuAdapter
 import com.kpstv.xclipper.ui.fragments.sheets.MoreChooserSheet
 import com.kpstv.xclipper.ui.fragments.sheets.ShortenUriSheet
 import com.kpstv.xclipper.ui.helpers.DictionaryApiHelper
@@ -52,8 +51,8 @@ class SpecialHelper(
     private val specialSettings = SpecialSettings(context)
 
     private val TAG = javaClass.simpleName
-    private lateinit var adapter: MenuAdapter
-    private val specialList = ArrayList<SpecialMenu>()
+    private lateinit var adapter: SingleMenuAdapter
+    private val specialList = ArrayList<SingleMenuItem>()
 
     private lateinit var onItemClick: SimpleFunction
 
@@ -99,7 +98,7 @@ class SpecialHelper(
     private fun setCommonOptions() {
         if (enabledActions.contains(SpecialAction.SEARCH_QUERY)) {
             specialList.add(
-                SpecialMenu(
+                SingleMenuItem(
                     image = R.drawable.ic_search,
                     title = context.getString(R.string.search_web)
                 ) {
@@ -120,12 +119,13 @@ class SpecialHelper(
         val shouldBeAdded = clip.tags?.containsKey(ClipTag.URL.small()) == false && clip.tags?.containsKey(
             ClipTag.DATE.small()) == false
 
-        val showMapMenu = SpecialMenu(
+        val showMapMenu = SingleMenuItem(
             image = R.drawable.ic_map,
             title = context.getString(R.string.search_map)
         ) {
             if (checkForTag == true) {
                 createChooser(ClipTag.MAP.small()) { data ->
+                    /** Search for coordinates */
                     /** Search for coordinates */
                     val intent = Intent(Intent.ACTION_VIEW).apply {
                         setData(Uri.parse("geo:$data"))
@@ -154,8 +154,9 @@ class SpecialHelper(
         if (clip.tags?.containsKey(ClipTag.DATE.small()) == false) return
 
         val createCalenderMenu =
-            SpecialMenu(title = context.getString(R.string.set_calender_event), image = R.drawable.ic_calender) {
+            SingleMenuItem(title = context.getString(R.string.set_calender_event), image = R.drawable.ic_calender) {
                 createChooser(ClipTag.DATE.small()) { data ->
+                    /** Parse the date now */
                     /** Parse the date now */
                     val dateValues = data.split("/", ".", "-", " ")
 
@@ -166,7 +167,7 @@ class SpecialHelper(
 
                     val eventTime = Calendar.getInstance()
                     eventTime.set(year.toInt(), month.toInt(), day.toInt())
-                    val intent = Intent(ACTION_EDIT).apply {
+                    val intent = Intent(Intent.ACTION_EDIT).apply {
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK
                         type = "vnd.android.cursor.item/event"
                         putExtra(
@@ -193,7 +194,7 @@ class SpecialHelper(
 
         if (checkForTag == true) {
             /** Send an email */
-            val sendEmail = SpecialMenu(
+            val sendEmail = SingleMenuItem(
                 image = R.drawable.ic_mail,
                 title = context.getString(R.string.send_mail)
             ) {
@@ -222,7 +223,7 @@ class SpecialHelper(
         if (phoneData == true) {
 
             /** Make a phone call */
-            val makeACallMenu = SpecialMenu(
+            val makeACallMenu = SingleMenuItem(
                 image = R.drawable.ic_call,
                 title = context.getString(R.string.phone_call)
             ) {
@@ -237,7 +238,7 @@ class SpecialHelper(
             }
 
             /** Send an sms */
-            val sendSMSMenu = SpecialMenu(
+            val sendSMSMenu = SingleMenuItem(
                 image = R.drawable.ic_message,
                 title = context.getString(R.string.message_num)
             ) {
@@ -257,7 +258,7 @@ class SpecialHelper(
             /** Send a whatsapp message */
             if (PackageUtils.isPackageInstalled(context, "com.whatsapp")) {
                 val whatsAppTextMenu =
-                    SpecialMenu(image = R.drawable.ic_whatsapp, title = context.getString(R.string.send_whatsapp)) {
+                    SingleMenuItem(image = R.drawable.ic_whatsapp, title = context.getString(R.string.send_whatsapp)) {
                         createChooser(ClipTag.PHONE.small()) { data ->
                             val numberToWhatsApp = when (data.length) {
                                 10 -> "+${getCountryDialCode(context)} $data"
@@ -278,7 +279,7 @@ class SpecialHelper(
 
         if (phoneData == true || emailData == true) {
             /** Add to contacts */
-            val addToContactsMenu = SpecialMenu(
+            val addToContactsMenu = SingleMenuItem(
                 image = R.drawable.ic_person_add,
                 title = context.getString(R.string.canc)
             ) {
@@ -339,7 +340,7 @@ class SpecialHelper(
         if (urlData == true) {
 
             /** Add method for "Open link" */
-            val openLinkMenu = SpecialMenu(
+            val openLinkMenu = SingleMenuItem(
                 image = R.drawable.ic_link,
                 title = context.getString(R.string.open_link)
             ) {
@@ -353,7 +354,7 @@ class SpecialHelper(
             }
 
             /** Add method for "Open link privately" */
-            val openLinkPrivateMenu = SpecialMenu(
+            val openLinkPrivateMenu = SingleMenuItem(
                 image = R.drawable.ic_incognito,
                 title = context.getString(R.string.private_browse)
             ) {
@@ -366,13 +367,15 @@ class SpecialHelper(
                         .launch(data)
 
                     /** Dismiss the dialog */
+
+                    /** Dismiss the dialog */
                     onItemClick.invoke()
                 }
             }
 
             /** Add method for "Shorten link" */
             val shortenUrl =
-                SpecialMenu(R.drawable.ic_cut, context.getString(R.string.shorten_link)) {
+                SingleMenuItem(R.drawable.ic_cut, context.getString(R.string.shorten_link)) {
                     createChooser(ClipTag.URL.small()) { data ->
                         val sheet = ShortenUriSheet(onItemClick)
                         sheet.arguments =
@@ -427,7 +430,7 @@ class SpecialHelper(
 
     private fun setRecyclerView(binding: BottomSheetMoreBinding) = with(binding) {
         bsmRecyclerView.layoutManager = LinearLayoutManager(context)
-        adapter = MenuAdapter(specialList, R.layout.item_special)
+        adapter = SingleMenuAdapter(specialList, R.layout.item_special)
         bsmRecyclerView.adapter = adapter
         bsmRecyclerView.setHasFixedSize(true)
     }

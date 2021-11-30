@@ -1,7 +1,6 @@
 package com.kpstv.xclipper.ui.adapters
 
 import android.content.res.ColorStateList
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -9,20 +8,27 @@ import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.kpstv.xclipper.R
-import com.kpstv.xclipper.data.model.SpecialMenu
+import com.kpstv.core.R
+import com.kpstv.xclipper.data.model.SingleMenuItem
 import com.kpstv.xclipper.extensions.getColorAttr
+import com.kpstv.xclipper.extensions.layoutInflater
 
-class MenuAdapter(
-    val list: ArrayList<SpecialMenu>,
+/**
+ * A reusable Adapter!
+ *
+ * Supports a layout whose,
+ * 1. root layout is clickable & focusable
+ * 2. Has TextView with id (R.id.menu_text)
+ * 3. Has ImageView with id (R.id.menu_image)
+ */
+class SingleMenuAdapter(
+    val list: ArrayList<SingleMenuItem>,
     @LayoutRes
     val itemLayout: Int
-) : RecyclerView.Adapter<MenuAdapter.MenuHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        MenuHolder(
-            LayoutInflater.from(parent.context).inflate(itemLayout, parent, false)
-        )
+) : RecyclerView.Adapter<SingleMenuAdapter.MenuHolder>() {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = MenuHolder(parent.context.layoutInflater().inflate(itemLayout, parent, false))
 
     override fun onBindViewHolder(holder: MenuHolder, position: Int) {
         holder.bind(list[position])
@@ -31,10 +37,10 @@ class MenuAdapter(
     override fun getItemCount() = list.size
 
     class MenuHolder(private val view: View) : RecyclerView.ViewHolder(view) {
-        private val textView = view.findViewById<TextView>(R.id.is_text)
-        private val imageView = view.findViewById<ImageView>(R.id.is_image)
+        private val textView = view.findViewById<TextView>(R.id.menu_text)
+        private val imageView = view.findViewById<ImageView>(R.id.menu_image)
 
-        fun bind(item: SpecialMenu) {
+        fun bind(item: SingleMenuItem) {
             textView.text = item.title
             imageView.setImageDrawable(ContextCompat.getDrawable(view.context, item.image))
 

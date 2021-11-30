@@ -4,7 +4,7 @@ import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import com.kpstv.xclipper.extensions.SimpleFunction
 
-data class SpecialMenu (
+data class SingleMenuItem (
     @DrawableRes
     val image: Int,
     val title: String,

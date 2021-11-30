@@ -10,14 +10,15 @@ object ModuleDependency {
     const val UPDATER = ":updater"
 
     const val CORE = ":modules:core"
+    const val CORE_SYNC = ":modules:core-sync"
     const val CORE_PRIVATE = ":modules:core-private"
     const val CORE_EXTENSIONS = ":modules:core-extension"
     const val CORE_CLIPBOARD = ":modules:core-clipboard"
     const val CORE_GITHUB_UPDATER = ":modules:core-github-updater"
+    const val CORE_SPECIAL = ":modules:core-special"
 
     const val FEATURE_ONBOARDING = ":modules:feature-onboarding"
     const val FEATURE_XCOPY = ":modules:feature-xcopy"
-    const val CORE_SYNC = ":modules:core-sync"
 
     fun getAllModules(): Set<String> = ModuleDependency::class.memberProperties
         .filter { it.isConst }

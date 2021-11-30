@@ -1,11 +1,11 @@
 package com.kpstv.xclipper.ui.helpers
 
 import android.content.Context
-import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.api.TinyUrlApi
 import com.kpstv.xclipper.data.localized.dao.UrlDao
 import com.kpstv.xclipper.data.model.UrlInfo
 import com.kpstv.xclipper.extensions.listeners.ResponseResult
+import com.kpstv.xclipper.specials.R
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton

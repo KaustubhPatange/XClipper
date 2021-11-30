@@ -15,7 +15,6 @@ import com.kpstv.xclipper.extensions.findParent
 import com.kpstv.xclipper.extensions.findViewByText
 import com.kpstv.xclipper.extensions.getColorAttr
 import com.kpstv.xclipper.extensions.runBlinkEffect
-import com.kpstv.xclipper.extensions.utils.Utils
 
 abstract class AbstractPreferenceFragment : PreferenceFragmentCompat() {
 
