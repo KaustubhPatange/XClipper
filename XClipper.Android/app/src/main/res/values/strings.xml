@@ -9,7 +9,6 @@
     <string name="delete">Delete</string>
     <string name="undo">Undo</string>
     <string name="selected">selected</string>
-    <string name="ctc">Copied to clipboard</string>
     <string name="item_delete">item(s) deleted</string>
     <string name="delete_all">Delete All</string>
     <string name="select_all">Select All</string>
@@ -151,7 +150,6 @@
     <string name="bind_delete_warning">This may result into unexpected deletion of clips if your remote database has restriction on item limit.</string>
     <string name="trim_title">Text trimming</string>
     <string name="trim_summary">This will trim whitespaces from the clip data while displaying.</string>
-    <string name="invalid_url">No url passed for shortening.</string>
     <string name="accessibility_service">Accessibility Service</string>
     <string name="show_stacktrace">Show stacktrace</string>
     <string name="crash_text_sending">Hang on, we are sending this report to my server…</string>

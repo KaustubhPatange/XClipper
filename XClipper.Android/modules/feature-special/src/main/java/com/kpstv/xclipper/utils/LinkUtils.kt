@@ -1,4 +1,4 @@
-package com.kpstv.linkpreview
+package com.kpstv.xclipper.utils
 
 import com.kpstv.xclipper.extensions.await
 import okhttp3.OkHttpClient

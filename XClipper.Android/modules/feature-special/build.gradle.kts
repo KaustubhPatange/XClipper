@@ -6,23 +6,23 @@ plugins {
 
 android {
     buildFeatures {
+        buildConfig = false
         viewBinding = true
-    }
-
-    kotlinOptions {
-        jvmTarget = "1.8"
     }
 }
 
 dependencies {
-    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-
+    implementation(project(ModuleDependency.CORE))
     implementation(project(ModuleDependency.CORE_EXTENSIONS))
+    implementation(project(ModuleDependency.CORE_SPECIAL))
 
-    implementation(LibraryDependency.CORE_KTX)
     implementation(LibraryDependency.APP_COMPAT)
-    implementation(LibraryDependency.MATERIAL)
+    implementation(LibraryDependency.CORE_KTX)
     implementation(LibraryDependency.CONSTRAINT_LAYOUT)
-    implementation(LibraryDependency.OKHTTP)
+    implementation(LibraryDependency.MATERIAL)
     implementation(LibraryDependency.COROUTINES_ANDROID)
+    implementation(LibraryDependency.OKHTTP)
+    implementation(LibraryDependency.TOASTY)
+
+    implementation(LibraryDependency.HILT_ANDROID)
 }

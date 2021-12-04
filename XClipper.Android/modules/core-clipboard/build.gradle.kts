@@ -4,10 +4,6 @@ plugins {
     kotlin(GradlePluginId.ANDROID_KTX)
 }
 
-android {
-    buildFeatures.buildConfig = true
-}
-
 dependencies {
     implementation(project(ModuleDependency.CORE))
     implementation(LibraryDependency.CORE_KTX)

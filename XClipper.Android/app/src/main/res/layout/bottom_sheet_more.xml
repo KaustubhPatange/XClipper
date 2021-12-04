@@ -56,7 +56,7 @@
 
     </LinearLayout>
 
-    <com.kpstv.linkpreview.LinkPreview
+    <com.kpstv.xclipper.ui.elements.LinkPreview
         android:id="@+id/link_preview"
         app:titleTextColor="?colorTextSecondaryLight"
         app:subtitleTextColor="?colorTextSecondary"

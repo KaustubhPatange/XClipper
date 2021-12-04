@@ -14,7 +14,7 @@ import androidx.core.text.HtmlCompat
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kpstv.cwt.CWT
-import com.kpstv.linkpreview.LinkPreview
+import com.kpstv.xclipper.ui.elements.LinkPreview
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.dao.PreviewDao
 import com.kpstv.xclipper.data.model.Clip
@@ -454,7 +454,7 @@ class SpecialHelper(
                 } else {
                     linkPreview.loadPreview(topUrl, lifecycleScope)
                     linkPreview.loadCompleteListener =
-                        LinkPreview.LinkPreviewListener { title, subtitle, imageUrl ->
+                        com.kpstv.xclipper.ui.elements.LinkPreview.LinkPreviewListener { title, subtitle, imageUrl ->
                             lifecycleScope.launch {
                                 val previewModel = Preview(
                                     title = title,

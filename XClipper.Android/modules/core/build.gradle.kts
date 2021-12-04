@@ -7,8 +7,17 @@ plugins {
 
 android {
     buildFeatures {
-        buildConfig = false
+        buildConfig = true
         viewBinding = true
+    }
+    buildTypes {
+        defaultConfig {
+            var applicationId = AndroidConfig.ID
+            getByName(BuildType.DEBUG) {
+                applicationId += ".debug"
+            }
+            buildConfigField("String","APPLICATION_ID", "\"${applicationId}\"")
+        }
     }
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
@@ -38,7 +47,7 @@ dependencies {
     implementation(LibraryDependency.FIREBASE_CRASHLYTICS)
     implementation(LibraryDependency.FIREBASE_ANALYTICS)
     implementation(LibraryDependency.PAGING)
-    implementation(LibraryDependency.ROUND_BOTTOM_SHEET)
+    api(LibraryDependency.ROUND_BOTTOM_SHEET)
 
     implementation(kotlin("reflect"))
 

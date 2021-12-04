@@ -6,6 +6,7 @@ plugins {
 }
 
 android {
+    buildFeatures.buildConfig = true
     defaultConfig {
         buildConfigField("String", AndroidConfig::VERSION_NAME.name, "\"${AndroidConfig.VERSION_NAME}\"")
     }

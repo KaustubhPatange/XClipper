@@ -2,4 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.kpstv.xclipper.specials">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
 </manifest>

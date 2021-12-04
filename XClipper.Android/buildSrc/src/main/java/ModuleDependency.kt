@@ -4,7 +4,6 @@ import kotlin.reflect.full.memberProperties
 object ModuleDependency {
     const val APP = ":app"
     const val PRICING_CARDS = ":app:pricing"
-    const val LINK_PREVIEW = ":app:link-preview"
     const val PIN_LOCK = ":app:pin-lock"
 
     const val UPDATER = ":updater"
@@ -19,6 +18,7 @@ object ModuleDependency {
 
     const val FEATURE_ONBOARDING = ":modules:feature-onboarding"
     const val FEATURE_XCOPY = ":modules:feature-xcopy"
+    const val FEATURE_SPECIAL = ":modules:feature-special"
 
     fun getAllModules(): Set<String> = ModuleDependency::class.memberProperties
         .filter { it.isConst }

@@ -1,4 +1,4 @@
-package com.kpstv.linkpreview
+package com.kpstv.xclipper.ui.elements
 
 import android.content.Context
 import android.graphics.Color
@@ -7,16 +7,15 @@ import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.util.AttributeSet
 import android.view.View
-import android.webkit.JavascriptInterface
-import android.webkit.WebView
 import android.widget.FrameLayout
 import androidx.core.content.withStyledAttributes
 import androidx.core.graphics.ColorUtils
 import com.google.android.material.shape.ShapeAppearanceModel
-import com.kpstv.linkpreview.databinding.LayoutPreviewBinding
+import com.kpstv.xclipper.utils.LinkUtils
 import com.kpstv.xclipper.extensions.*
+import com.kpstv.xclipper.feature_special.R
+import com.kpstv.xclipper.feature_special.databinding.LayoutPreviewBinding
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.launch
 
 class LinkPreview @JvmOverloads constructor(

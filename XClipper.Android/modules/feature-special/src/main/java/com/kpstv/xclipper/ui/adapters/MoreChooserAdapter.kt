@@ -3,18 +3,18 @@ package com.kpstv.xclipper.ui.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.kpstv.xclipper.databinding.ItemSingleBinding
+import com.kpstv.xclipper.feature_special.databinding.ItemMoreChooserBinding
 
-class MoreChooserAdapter(
+internal class MoreChooserAdapter(
     private val items: List<String>,
     private val onClick: (String) -> Unit
 ) : RecyclerView.Adapter<MoreChooserAdapter.MoreChooserHolder>() {
 
-    class MoreChooserHolder(val binding: ItemSingleBinding) : RecyclerView.ViewHolder(binding.root)
+    class MoreChooserHolder(val binding: ItemMoreChooserBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MoreChooserHolder {
         return MoreChooserHolder(
-            ItemSingleBinding.inflate(
+            ItemMoreChooserBinding.inflate(
                 LayoutInflater.from(parent.context), parent, false
             )
         )
