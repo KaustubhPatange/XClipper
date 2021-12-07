@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.navigation.ValueFragment
 import com.kpstv.xclipper.extensions.*
-import com.kpstv.xclipper.ui.helpers.specials.SpecialAction
-import com.kpstv.xclipper.ui.helpers.specials.SpecialSettings
+import com.kpstv.xclipper.extensions.SpecialAction
+import com.kpstv.xclipper.ui.helpers.SpecialSettings
 
 abstract class ActionFragment : ValueFragment() {
 

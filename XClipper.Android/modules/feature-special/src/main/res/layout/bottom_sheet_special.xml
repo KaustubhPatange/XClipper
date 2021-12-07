@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:textColor="?colorTextPrimary"
             android:textSize="19sp"
-            android:text="@string/specials" />
+            android:text="@string/specials_title" />
 
         <LinearLayout
             android:visibility="gone"

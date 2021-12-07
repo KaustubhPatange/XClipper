@@ -2,4 +2,32 @@
 <resources>
     <string name="ctc">Copied to clipboard</string>
     <string name="invalid_url">No url passed for shortening.</string>
+
+    <string name="specials_title">Specials</string>
+    <string name="define"><b>Define:</b></string>
+
+    <!-- Actions -->
+    <string name="sp_search_web">Search as a query</string>
+    <string name="sp_search_map">Search on map</string>
+    <string name="sp_set_calender_event">Set a calender event</string>
+    <string name="sp_send_mail">Send a mail</string>
+    <string name="sp_phone_call">Make a phone call</string>
+    <string name="sp_send_message">Text this number</string>
+    <string name="sp_send_whatsapp">WhatsApp this number</string>
+    <string name="sp_create_contact">Create a new contact</string>
+    <string name="sp_open_link">Open with…</string>
+    <string name="sp_private_browse">Open in private</string>
+    <string name="sp_shorten_link">Shorten link</string>
+
+
+    <string name="err_action">Couldn\'t find the action</string>
+
+    <!-- Disclosure dialog -->
+
+    <string name="disclosure">Disclosure</string>
+    <string name="dictionary_disclosure"><b>XClipper</b> uses <a href="https://dictionaryapi.dev/">api.dictionaryapi.dev</a> API for retrieving meanings for the words in your clip. This service does not send any user\'s data, check privacy policy from app settings for more information.</string>
+    <string name="disclosure_deny">Cannot use this service without agreeing the policy.</string>
+    <string name="accept">Accept</string>
+    <string name="deny">Deny</string>
+
 </resources>

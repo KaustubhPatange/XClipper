@@ -10,24 +10,23 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.provider.PreferenceProvider
-import com.kpstv.xclipper.databinding.BottomSheetMoreBinding
+import com.kpstv.xclipper.di.CommonReusableEntryPoints
 import com.kpstv.xclipper.extensions.elements.CustomRoundedBottomSheetFragment
 import com.kpstv.xclipper.extensions.viewBinding
-import com.kpstv.xclipper.ui.helpers.specials.SpecialHelper
-import dagger.hilt.android.AndroidEntryPoint
+import com.kpstv.xclipper.feature_special.R
+import com.kpstv.xclipper.feature_special.databinding.BottomSheetSpecialBinding
+import com.kpstv.xclipper.ui.helpers.SpecialHelper
 import es.dmoral.toasty.Toasty
 
-@AndroidEntryPoint
-class MoreBottomSheet(
+class SpecialBottomSheet(
     private val supportFragmentManager: FragmentManager,
     private val onClose: () -> Unit = {},
     private val clip: Clip
-) : CustomRoundedBottomSheetFragment(R.layout.bottom_sheet_more) {
+) : CustomRoundedBottomSheetFragment(R.layout.bottom_sheet_special) {
 
-    private val binding by viewBinding(BottomSheetMoreBinding::bind)
+    private val binding by viewBinding(BottomSheetSpecialBinding::bind)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -55,17 +54,19 @@ class MoreBottomSheet(
             putBooleanKey(DICTIONARY_DIALOG, value)
         }
 
-        fun show(clip: Clip, activity: FragmentActivity, preferenceProvider: PreferenceProvider, onClose: () -> Unit = {}) {
-            show(clip, activity, activity.supportFragmentManager, preferenceProvider, onClose)
+        fun show(clip: Clip, activity: FragmentActivity, onClose: () -> Unit = {}) {
+            show(clip, activity, activity.supportFragmentManager, onClose)
         }
 
-        fun show(clip: Clip, fragment: Fragment, preferenceProvider: PreferenceProvider, onClose: () -> Unit = {}) {
-            show(clip, fragment.requireContext(), fragment.childFragmentManager, preferenceProvider, onClose)
+        fun show(clip: Clip, fragment: Fragment, onClose: () -> Unit = {}) {
+            show(clip, fragment.requireContext(), fragment.childFragmentManager, onClose)
         }
 
-        private fun show(clip: Clip, context: Context, fragmentManager: FragmentManager, preferenceProvider: PreferenceProvider, onClose: () -> Unit = {}) {
+        private fun show(clip: Clip, context: Context, fragmentManager: FragmentManager, onClose: () -> Unit = {}) {
+            val preferenceProvider = CommonReusableEntryPoints.get(context).preferenceProvider()
+
             fun showSheet() {
-               MoreBottomSheet(
+               SpecialBottomSheet(
                    supportFragmentManager = fragmentManager,
                    onClose = onClose,
                    clip = clip

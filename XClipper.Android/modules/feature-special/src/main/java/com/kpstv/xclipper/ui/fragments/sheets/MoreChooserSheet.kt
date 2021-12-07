@@ -6,15 +6,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.kpstv.xclipper.extensions.elements.CustomRoundedBottomSheetFragment
 import com.kpstv.xclipper.extensions.viewBinding
 import com.kpstv.xclipper.feature_special.R
-import com.kpstv.xclipper.feature_special.databinding.BottomSheetMoreChooserBinding
+import com.kpstv.xclipper.feature_special.databinding.BottomSheetSpecialChooserBinding
 import com.kpstv.xclipper.ui.adapters.MoreChooserAdapter
 
-class MoreChooserSheet(
+internal class MoreChooserSheet(
     private val items: List<String>,
     private val onItemSelected: (String) -> Unit
-) : CustomRoundedBottomSheetFragment(R.layout.bottom_sheet_more_chooser) {
+) : CustomRoundedBottomSheetFragment(R.layout.bottom_sheet_special_chooser) {
 
-    private val binding: BottomSheetMoreChooserBinding by viewBinding(BottomSheetMoreChooserBinding::bind)
+    private val binding: BottomSheetSpecialChooserBinding by viewBinding(BottomSheetSpecialChooserBinding::bind)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

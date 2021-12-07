@@ -48,11 +48,11 @@ import com.kpstv.xclipper.ui.activities.Start
 import com.kpstv.xclipper.ui.adapters.CIAdapter
 import com.kpstv.xclipper.ui.dialogs.EditDialog
 import com.kpstv.xclipper.ui.dialogs.TagDialog
-import com.kpstv.xclipper.ui.fragments.sheets.MoreBottomSheet
 import com.kpstv.xclipper.extensions.recyclerview.RecyclerViewScrollHelper
 import com.kpstv.xclipper.extensions.utils.ClipboardUtils
 import com.kpstv.xclipper.extensions.utils.ShareUtils
 import com.kpstv.xclipper.service.ClipboardAccessibilityService
+import com.kpstv.xclipper.ui.fragments.sheets.SpecialBottomSheet
 import com.kpstv.xclipper.ui.helpers.AppSettingKeys
 import com.kpstv.xclipper.ui.helpers.AppSettings
 import com.kpstv.xclipper.ui.helpers.fragments.SyncDialogHelper
@@ -67,7 +67,6 @@ import kotlin.collections.ArrayList
 class Home : ValueFragment(R.layout.fragment_home) {
 
     @Inject lateinit var clipboardProvider: ClipboardProvider
-    @Inject lateinit var preferenceProvider: PreferenceProvider
     @Inject lateinit var appSettings: AppSettings
     @Inject lateinit var firebaseUtils: FirebaseUtils
 
@@ -248,10 +247,9 @@ class Home : ValueFragment(R.layout.fragment_home) {
                     mainViewModel.changeClipPin(clip, !clip.isPinned)
                 }
                 CIAdapter.MENU_TYPE.Special -> {
-                    MoreBottomSheet.show(
+                    SpecialBottomSheet.show(
                         fragment = this,
-                        clip = clip,
-                        preferenceProvider = preferenceProvider
+                        clip = clip
                     )
                 }
                 CIAdapter.MENU_TYPE.Share -> {

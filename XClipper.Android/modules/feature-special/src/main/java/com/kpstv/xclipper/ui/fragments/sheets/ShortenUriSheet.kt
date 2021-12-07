@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class ShortenUriSheet(
+internal class ShortenUriSheet(
     private val onClick: SimpleFunction = {}
 ) : CustomRoundedBottomSheetFragment(R.layout.bottom_sheet_url) {
 

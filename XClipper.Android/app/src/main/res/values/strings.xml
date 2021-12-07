@@ -30,18 +30,11 @@
     <string name="write_here">Write here…</string>
     <string name="error_duplicate_data">Duplicate data insertion</string>
     <string name="error_tag_dependent">Some items are dependent on this tag</string>
-    <string name="specials">Specials</string>
-    <string name="define"><b>Define:</b></string>
     <string name="open_link">Open with…</string>
-    <string name="shorten_link">Shorten link</string>
-    <string name="err_action">Couldn\'t find the action</string>
+
     <string name="copy_name">Copy</string>
-    <string name="phone_call">Make a phone call</string>
-    <string name="canc">Create a new contact</string>
-    <string name="message_num">Text this number</string>
-    <string name="search_web">Search as a query</string>
-    <string name="send_mail">Send a mail</string>
-    <string name="search_map">Search on map</string>
+
+
     <string name="more_actions">Special actions</string>
     <string name="clip_content">Clipboard content</string>
     <string name="title_activity_settings">Settings</string>
@@ -133,7 +126,7 @@
     <string name="open_browser">Open in browser</string>
     <string name="desktop_site">Desktop site</string>
     <string name="force_dark">Force Dark</string>
-    <string name="private_browse">Open in private</string>
+
     <string name="private_browse1">Privately browsing :)</string>
     <string name="premium_latest">Couldn\'t fetch the latest data</string>
     <string name="image_render_summary">[BETA] This will render image in the list. Note that it can have some side effects!</string>
@@ -179,12 +172,9 @@
     <string name="sync_register_title">Re-register device</string>
     <string name="sync_register_text">Due to some changes in sync, you need to register this device again to enable clipboard synchronization.\n\nGo to Settings > Synchronization or click \"Learn more\".</string>
 
-    <string name="accept">Accept</string>
-    <string name="deny">Deny</string>
+
     <string name="enable">Enable</string>
-    <string name="dictionary_disclosure"><b>XClipper</b> uses <a href="https://dictionaryapi.dev/">api.dictionaryapi.dev</a> API for retrieving meanings for the words in your clip. This service does not send any user\'s data, check privacy policy from app settings for more information.</string>
-    <string name="disclosure_deny">Cannot use this service without agreeing the policy.</string>
-    <string name="disclosure">Disclosure</string>
+
     <string name="adb_mode_title">Improve detection</string>
     <string name="adb_mode_summary">Enhance clipboard detection logic by some additional configuration.</string>
     <string name="adb_mode_long_summary">Enhance clipboard detection logic through additional configuration which requires a PC &amp; some knowledge of using ADB.</string>
@@ -215,8 +205,8 @@
     <string name="pin_lock_dialog_title">Secure with App lock</string>
     <string name="pin_lock_dialog_text">Unlock the app with fingerprint or pin code. Remember, if you forgot the password then the only way to recover is clear the app data.\n\nTap \"Create Password\" to create &amp; set the lock.</string>
     <string name="pin_lock_dialog_positive">Create Password</string>
-    <string name="set_calender_event">Set a calender event</string>
-    <string name="send_whatsapp">WhatsApp this number</string>
+
+
 
 
 

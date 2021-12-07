@@ -1,9 +1,12 @@
-package com.kpstv.xclipper.ui.helpers.specials
+package com.kpstv.xclipper.ui.helpers
 
 import android.content.Context
 import androidx.core.content.edit
+import com.kpstv.xclipper.extensions.SpecialAction
 
-internal class SpecialSettings(context: Context) {
+
+// TODO: Make internal later
+class SpecialSettings(context: Context) {
     private val preference = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
 
     fun checkSetting(item: SpecialAction, value: Boolean) {

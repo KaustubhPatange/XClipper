@@ -8,7 +8,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.kpstv.xclipper.di.CommonReusableEntryPoints
-import dagger.hilt.android.EntryPointAccessors
 import kotlin.reflect.KClass
 
 abstract class AbstractFragmentHelper<T: Fragment>(

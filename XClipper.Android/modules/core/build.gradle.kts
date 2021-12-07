@@ -37,6 +37,7 @@ dependencies {
     implementation(LibraryDependency.TOASTY)
     implementation(LibraryDependency.COROUTINES_CORE)
     implementation(LibraryDependency.LIFECYCLE_KTX)
+    implementation(LibraryDependency.LIFECYCLE_COMMON)
 
     implementation(LibraryDependency.ROOM_KTX)
     implementation(LibraryDependency.RETROFIT)
@@ -52,6 +53,7 @@ dependencies {
     implementation(kotlin("reflect"))
 
     implementation(LibraryDependency.HILT_ANDROID)
+    kapt(LibraryDependency.HILT_COMPILER)
 
     implementation(LibraryDependency.AUTO_BINDINGS)
     kapt(LibraryDependency.AUTO_BINDINGS_COMPILER)

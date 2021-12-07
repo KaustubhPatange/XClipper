@@ -1,7 +1,6 @@
 package com.kpstv.xclipper.ui.dialogs
 
 import android.os.Bundle
-import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -53,6 +52,7 @@ class EditDialog : AppCompatActivity() {
         binding.toolbar.setNavigationOnClickListener {
             finish()
         }
+        binding.btnSave.setOnClickListener { saveClick() }
 
         setRecyclerView()
 
@@ -84,7 +84,7 @@ class EditDialog : AppCompatActivity() {
         }
     }
 
-    fun saveClick(view: View) {
+    fun saveClick() {
         val text = binding.etMain.text.toString()
 
         if (text.isNotBlank()) {

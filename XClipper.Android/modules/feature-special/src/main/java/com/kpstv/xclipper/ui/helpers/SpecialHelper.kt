@@ -1,4 +1,4 @@
-package com.kpstv.xclipper.ui.helpers.specials
+package com.kpstv.xclipper.ui.helpers
 
 import android.annotation.SuppressLint
 import android.app.SearchManager
@@ -14,14 +14,11 @@ import androidx.core.text.HtmlCompat
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kpstv.cwt.CWT
-import com.kpstv.xclipper.ui.elements.LinkPreview
-import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.dao.PreviewDao
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.ClipTag
 import com.kpstv.xclipper.data.model.Preview
 import com.kpstv.xclipper.data.model.SingleMenuItem
-import com.kpstv.xclipper.databinding.BottomSheetMoreBinding
 import com.kpstv.xclipper.di.SpecialEntryPoints
 import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
@@ -29,7 +26,9 @@ import com.kpstv.xclipper.extensions.utils.PackageUtils
 import com.kpstv.xclipper.ui.adapters.SingleMenuAdapter
 import com.kpstv.xclipper.ui.fragments.sheets.MoreChooserSheet
 import com.kpstv.xclipper.ui.fragments.sheets.ShortenUriSheet
-import com.kpstv.xclipper.ui.helpers.DictionaryApiHelper
+import com.kpstv.xclipper.extensions.SpecialAction
+import com.kpstv.xclipper.feature_special.R
+import com.kpstv.xclipper.feature_special.databinding.BottomSheetSpecialBinding
 import com.kpstv.xclipper.ui.utils.LaunchUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.CoroutineScope
@@ -38,7 +37,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 @SuppressLint("SetTextI18n")
-class SpecialHelper(
+internal class SpecialHelper(
     private val context: Context,
     private val supportFragmentManager: FragmentManager,
     private val lifecycleScope: CoroutineScope,
@@ -58,7 +57,7 @@ class SpecialHelper(
 
     private val data = clip.data
 
-    fun setActions(binding: BottomSheetMoreBinding, onItemClick: SimpleFunction) = with(binding) {
+    fun setActions(binding: BottomSheetSpecialBinding, onItemClick: SimpleFunction) = with(binding) {
         this@SpecialHelper.onItemClick = onItemClick
 
         setDefineTag(this)
@@ -99,8 +98,8 @@ class SpecialHelper(
         if (enabledActions.contains(SpecialAction.SEARCH_QUERY)) {
             specialList.add(
                 SingleMenuItem(
-                    image = R.drawable.ic_search,
-                    title = context.getString(R.string.search_web)
+                    image = R.drawable.sp_ic_search,
+                    title = context.getString(R.string.sp_search_web)
                 ) {
                     val intent = Intent(Intent.ACTION_WEB_SEARCH)
                     intent.putExtra(SearchManager.QUERY, data)
@@ -120,8 +119,8 @@ class SpecialHelper(
             ClipTag.DATE.small()) == false
 
         val showMapMenu = SingleMenuItem(
-            image = R.drawable.ic_map,
-            title = context.getString(R.string.search_map)
+            image = R.drawable.sp_ic_map,
+            title = context.getString(R.string.sp_search_map)
         ) {
             if (checkForTag == true) {
                 createChooser(ClipTag.MAP.small()) { data ->
@@ -154,7 +153,7 @@ class SpecialHelper(
         if (clip.tags?.containsKey(ClipTag.DATE.small()) == false) return
 
         val createCalenderMenu =
-            SingleMenuItem(title = context.getString(R.string.set_calender_event), image = R.drawable.ic_calender) {
+            SingleMenuItem(title = context.getString(R.string.sp_set_calender_event), image = R.drawable.sp_ic_calender) {
                 createChooser(ClipTag.DATE.small()) { data ->
                     /** Parse the date now */
                     /** Parse the date now */
@@ -195,8 +194,8 @@ class SpecialHelper(
         if (checkForTag == true) {
             /** Send an email */
             val sendEmail = SingleMenuItem(
-                image = R.drawable.ic_mail,
-                title = context.getString(R.string.send_mail)
+                image = R.drawable.sp_ic_send_mail,
+                title = context.getString(R.string.sp_send_mail)
             ) {
                 createChooser(ClipTag.EMAIL.small()) { data ->
                     val intent = Intent(Intent.ACTION_VIEW).apply {
@@ -224,8 +223,8 @@ class SpecialHelper(
 
             /** Make a phone call */
             val makeACallMenu = SingleMenuItem(
-                image = R.drawable.ic_call,
-                title = context.getString(R.string.phone_call)
+                image = R.drawable.sp_ic_call,
+                title = context.getString(R.string.sp_phone_call)
             ) {
                 createChooser(ClipTag.PHONE.small()) { data ->
                     val intent = Intent(Intent.ACTION_VIEW).apply {
@@ -239,8 +238,8 @@ class SpecialHelper(
 
             /** Send an sms */
             val sendSMSMenu = SingleMenuItem(
-                image = R.drawable.ic_message,
-                title = context.getString(R.string.message_num)
+                image = R.drawable.sp_ic_message,
+                title = context.getString(R.string.sp_send_message)
             ) {
                 createChooser(ClipTag.PHONE.small()) { data ->
                     val intent = Intent(Intent.ACTION_VIEW).apply {
@@ -258,7 +257,7 @@ class SpecialHelper(
             /** Send a whatsapp message */
             if (PackageUtils.isPackageInstalled(context, "com.whatsapp")) {
                 val whatsAppTextMenu =
-                    SingleMenuItem(image = R.drawable.ic_whatsapp, title = context.getString(R.string.send_whatsapp)) {
+                    SingleMenuItem(image = R.drawable.sp_ic_whatsapp, title = context.getString(R.string.sp_send_whatsapp)) {
                         createChooser(ClipTag.PHONE.small()) { data ->
                             val numberToWhatsApp = when (data.length) {
                                 10 -> "+${getCountryDialCode(context)} $data"
@@ -280,8 +279,8 @@ class SpecialHelper(
         if (phoneData == true || emailData == true) {
             /** Add to contacts */
             val addToContactsMenu = SingleMenuItem(
-                image = R.drawable.ic_person_add,
-                title = context.getString(R.string.canc)
+                image = R.drawable.sp_contact_add,
+                title = context.getString(R.string.sp_create_contact)
             ) {
                 val phoneNumbers = getAllTagValues(ClipTag.PHONE.small())
                 val emailAddresses = getAllTagValues(ClipTag.EMAIL.small())
@@ -342,7 +341,7 @@ class SpecialHelper(
             /** Add method for "Open link" */
             val openLinkMenu = SingleMenuItem(
                 image = R.drawable.ic_link,
-                title = context.getString(R.string.open_link)
+                title = context.getString(R.string.sp_open_link)
             ) {
                 createChooser(ClipTag.URL.small()) { data ->
                     val intent = Intent(Intent.ACTION_VIEW).apply {
@@ -355,8 +354,8 @@ class SpecialHelper(
 
             /** Add method for "Open link privately" */
             val openLinkPrivateMenu = SingleMenuItem(
-                image = R.drawable.ic_incognito,
-                title = context.getString(R.string.private_browse)
+                image = R.drawable.sp_ic_incognito,
+                title = context.getString(R.string.sp_private_browse)
             ) {
                 createChooser(ClipTag.URL.small()) { data ->
                     CWT.Builder(context)
@@ -375,7 +374,7 @@ class SpecialHelper(
 
             /** Add method for "Shorten link" */
             val shortenUrl =
-                SingleMenuItem(R.drawable.ic_cut, context.getString(R.string.shorten_link)) {
+                SingleMenuItem(R.drawable.sp_ic_cut, context.getString(R.string.sp_shorten_link)) {
                     createChooser(ClipTag.URL.small()) { data ->
                         val sheet = ShortenUriSheet(onItemClick)
                         sheet.arguments =
@@ -406,7 +405,7 @@ class SpecialHelper(
      * This will set the define text below "Specials" text. It will perform some checks
      * before setting the define.
      */
-    private fun setDefineTag(binding: BottomSheetMoreBinding) = with(binding) {
+    private fun setDefineTag(binding: BottomSheetSpecialBinding) = with(binding) {
         SINGLE_WORD_PATTERN_REGEX.toRegex().let {
             if (it.containsMatchIn(data))
                 dictionaryApiHelper.define(
@@ -428,14 +427,14 @@ class SpecialHelper(
         }
     }
 
-    private fun setRecyclerView(binding: BottomSheetMoreBinding) = with(binding) {
+    private fun setRecyclerView(binding: BottomSheetSpecialBinding) = with(binding) {
         bsmRecyclerView.layoutManager = LinearLayoutManager(context)
         adapter = SingleMenuAdapter(specialList, R.layout.item_special)
         bsmRecyclerView.adapter = adapter
         bsmRecyclerView.setHasFixedSize(true)
     }
 
-    private fun setLinkPreview(binding: BottomSheetMoreBinding) = with(binding) {
+    private fun setLinkPreview(binding: BottomSheetSpecialBinding) = with(binding) {
         lifecycleScope.launch {
             val urlData = clip.tags?.containsKey(ClipTag.URL.small())
             if (urlData == true) {

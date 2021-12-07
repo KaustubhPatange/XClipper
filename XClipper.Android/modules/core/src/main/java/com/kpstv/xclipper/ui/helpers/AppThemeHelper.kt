@@ -14,7 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import com.kpstv.xclipper.R
+import com.kpstv.core.R
 import com.kpstv.xclipper.extensions.getColorAttr
 
 enum class AppTheme(@StyleRes val style: Int) {

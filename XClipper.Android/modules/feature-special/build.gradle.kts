@@ -2,6 +2,8 @@ plugins {
     id(GradlePluginId.ANDROID_LIBRARY)
     id(GradlePluginId.XCLIPPER_ANDROID)
     kotlin(GradlePluginId.ANDROID_KTX)
+    kotlin(GradlePluginId.KAPT)
+    id(GradlePluginId.DAGGER_HILT)
 }
 
 android {
@@ -23,6 +25,10 @@ dependencies {
     implementation(LibraryDependency.COROUTINES_ANDROID)
     implementation(LibraryDependency.OKHTTP)
     implementation(LibraryDependency.TOASTY)
+    implementation(LibraryDependency.CWT)
+    implementation(LibraryDependency.FRAGMENT_KTX)
 
     implementation(LibraryDependency.HILT_ANDROID)
+
+    kapt(LibraryDependency.HILT_COMPILER)
 }
