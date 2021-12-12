@@ -6,7 +6,7 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.kpstv.xclipper.BuildConfig
+import com.kpstv.core.BuildConfig
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.di.CommonReusableEntryPoints
 import com.kpstv.xclipper.extensions.utils.SystemUtils

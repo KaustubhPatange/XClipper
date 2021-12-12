@@ -3,6 +3,7 @@ plugins {
     id(GradlePluginId.XCLIPPER_ANDROID)
     kotlin(GradlePluginId.ANDROID_KTX)
     kotlin(GradlePluginId.KAPT)
+    id(GradlePluginId.KOTLIN_PARCELIZE)
 }
 
 android {
@@ -17,6 +18,7 @@ android {
                 applicationId += ".debug"
             }
             buildConfigField("String","APPLICATION_ID", "\"${applicationId}\"")
+            buildConfigField("Integer","VERSION_CODE", "${AndroidConfig.VERSION_CODE}")
         }
     }
     kotlinOptions {
@@ -49,6 +51,7 @@ dependencies {
     implementation(LibraryDependency.FIREBASE_CRASHLYTICS)
     implementation(LibraryDependency.FIREBASE_ANALYTICS)
     implementation(LibraryDependency.PAGING)
+    implementation(LibraryDependency.GIF_DRAWABLE)
     api(LibraryDependency.ROUND_BOTTOM_SHEET)
 
     implementation(kotlin("reflect"))

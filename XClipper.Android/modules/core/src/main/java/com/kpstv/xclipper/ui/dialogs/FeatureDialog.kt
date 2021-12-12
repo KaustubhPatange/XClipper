@@ -10,8 +10,8 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ContextThemeWrapper
-import com.kpstv.xclipper.R
-import com.kpstv.xclipper.databinding.DialogFeatureBinding
+import com.kpstv.core.R
+import com.kpstv.core.databinding.DialogFeatureBinding
 import com.kpstv.xclipper.extensions.hasThemeColorAttribute
 import com.kpstv.xclipper.extensions.layoutInflater
 import kotlinx.coroutines.CoroutineScope

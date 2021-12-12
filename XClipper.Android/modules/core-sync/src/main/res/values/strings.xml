@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sync_scan_connect">Scan to connect</string>
+    <string name="sync_connect_request">Attempting to make a connection with database…</string>
+
+    <string name="auth_error_initialize_fb">Couldn\'t initialize Firebase</string>
+
+    <string name="sync_register_title">Re-register device</string>
+    <string name="sync_register_text">Due to some changes in sync, you need to register this device again to enable clipboard synchronization.\n\nGo to Settings > Synchronization or click \"Learn more\".</string>
+
+    <string name="connect_scan_code">Scan the app code</string>
+    <string name="connect_logout_success">Logged out successfully!</string>
+    <string name="connect_success">Connected successfully!</string>
+
+    <string name="fb_data_removed_all">All data from database are removed</string>
+    <string name="fb_err_device_validate">Session expired!</string>
+    <string name="fb_inconsistent_data">Inconsistent data detected, shutting down the service</string>
+</resources>

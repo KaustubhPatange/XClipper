@@ -4,15 +4,15 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.Observer
 import com.kpstv.hvlog.HVLog
-import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.helper.ClipRepositoryHelper
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.extensions.enumerations.FirebaseState
 import com.kpstv.xclipper.ui.helpers.AppSettings
-import com.kpstv.xclipper.ui.helpers.Notifications
-import com.kpstv.xclipper.ui.helpers.connection.ConnectionHelper
+import com.kpstv.xclipper.R
+import com.kpstv.xclipper.ui.helpers.ConnectionHelper
+import com.kpstv.xclipper.ui.helpers.CoreNotifications
 import dagger.hilt.android.qualifiers.ApplicationContext
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.*
@@ -21,11 +21,11 @@ import javax.inject.Singleton
 
 @Singleton
 class FirebaseUtils @Inject constructor(
-  @ApplicationContext private val context: Context,
-  private val clipRepositoryHelper: ClipRepositoryHelper,
-  private val firebaseProvider: FirebaseProvider,
-  private val appSettings: AppSettings,
-  private val dbConnectionProvider: DBConnectionProvider,
+    @ApplicationContext private val context: Context,
+    private val clipRepositoryHelper: ClipRepositoryHelper,
+    private val firebaseProvider: FirebaseProvider,
+    private val appSettings: AppSettings,
+    private val dbConnectionProvider: DBConnectionProvider,
 ) {
     private val TAG = FirebaseUtils::class.simpleName
 
@@ -42,11 +42,10 @@ class FirebaseUtils @Inject constructor(
                     clipRepositoryHelper.deleteClip(items)
                 },
                 removedAll = {
-
-                    Notifications.sendNotification(
+                    CoreNotifications.sendNotification(
                         context = context,
                         title = getString(R.string.app_name),
-                        message = getString(R.string.data_removed_all)
+                        message = getString(R.string.fb_data_removed_all)
                     )
                 },
                 error = {
@@ -64,14 +63,14 @@ class FirebaseUtils @Inject constructor(
 
                         if (!shownToast) {
                             shownToast = true
-                            Toasty.error(this, getString(R.string.err_device_validate), Toasty.LENGTH_LONG).show()
+                            Toasty.error(this, getString(R.string.fb_err_device_validate), Toasty.LENGTH_LONG).show()
                         }
                     } else {
                         shownToast = false
                     }
                 },
                 inconsistentData = {
-                    Toasty.error(context, getString(R.string.inconsistent_data), Toasty.LENGTH_LONG).show()
+                    Toasty.error(context, getString(R.string.fb_inconsistent_data), Toasty.LENGTH_LONG).show()
                 }
             )
         }

@@ -32,6 +32,6 @@ object ClipboardNotifications {
             .setContentIntent(openIntent)
             .build()
 
-        getNotificationManager(this).notify(ACCESSIBILITY_NOTIFICATION_ID, notification)
+        getNotificationManager().notify(ACCESSIBILITY_NOTIFICATION_ID, notification)
     }
 }

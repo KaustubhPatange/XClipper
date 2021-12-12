@@ -85,7 +85,7 @@ class FirebaseProviderImpl @Inject constructor(
         }
 
         val app = FirebaseSyncHelper.get() ?: run {
-            Toasty.error(context, context.getString(R.string.error_initialize_fb)).show()
+            Toasty.error(context, context.getString(R.string.auth_error_initialize_fb)).show()
             return
         }
 

@@ -419,7 +419,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
         toolbar.menu.clear()
         toolbar.setBackgroundColor(AppThemeHelper.CARD_SELECTED_COLOR)
         toolbar.inflateMenu(R.menu.selected_menu)
-        toolbar.navigationIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_cross)
+        toolbar.navigationIcon = ContextCompat.getDrawable(requireContext(), R.drawable.bubble_ic_cross)
         toolbar.setNavigationOnClickListener {
             mainViewModel.stateManager.setToolbarState(ToolbarState.NormalViewState)
         }

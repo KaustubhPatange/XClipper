@@ -1,6 +1,5 @@
 package com.kpstv.xclipper.ui.helpers
 
-import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
 import androidx.activity.ComponentActivity
@@ -28,7 +27,7 @@ import es.dmoral.toasty.Toasty
  * @param activity [ComponentActivity] to listen [ActivityResultContract]
  * @param clientId An authentication clientId provided by [FBOptions]
  */
-class AuthenticationHelper(
+internal class AuthenticationHelper(
     private val activity: ComponentActivity,
     private var clientId: String
 ) {
@@ -43,7 +42,9 @@ class AuthenticationHelper(
             }
 
             override fun parseResult(resultCode: Int, intent: Intent?): Task<GoogleSignInAccount>? {
-                return GoogleSignIn.getSignedInAccountFromIntent(intent)
+                return GoogleSignIn.getSignedInAccountFromIntent(
+                    intent
+                )
             }
         }
 
@@ -66,11 +67,14 @@ class AuthenticationHelper(
         }
 
         val app = FirebaseSyncHelper.get() ?: run {
-            Toasty.error(this, getString(R.string.error_initialize_fb)).show()
+            Toasty.error(this, getString(R.string.auth_error_initialize_fb)).show()
             return@with
         }
 
-        googleSignInClient = GoogleSignIn.getClient(this, defaultGoogleSignInOptions(clientId))
+        googleSignInClient = GoogleSignIn.getClient(
+            this,
+            defaultGoogleSignInOptions(clientId)
+        )
 
         fun performSignIn() {
             var getResult : ActivityResultLauncher<Intent?>? = null
@@ -129,7 +133,10 @@ class AuthenticationHelper(
         fun signOutGoogle(context: Context, clientId: String?): Boolean {
             if (clientId == null) return false
             val googleSignInClient =
-                GoogleSignIn.getClient(context, defaultGoogleSignInOptions(clientId))
+                GoogleSignIn.getClient(
+                    context,
+                    defaultGoogleSignInOptions(clientId)
+                )
             googleSignInClient.signOut()
             return true
         }

@@ -48,7 +48,7 @@ class EditDialog : AppCompatActivity() {
 
         setContentView(binding.root)
 
-        binding.toolbar.navigationIcon = drawableFrom(R.drawable.ic_cross)
+        binding.toolbar.navigationIcon = drawableFrom(R.drawable.bubble_ic_cross)
         binding.toolbar.setNavigationOnClickListener {
             finish()
         }

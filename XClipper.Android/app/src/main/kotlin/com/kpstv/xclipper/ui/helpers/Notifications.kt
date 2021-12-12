@@ -8,7 +8,6 @@ import androidx.core.content.ContextCompat
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.extensions.colorFrom
 import com.kpstv.xclipper.extensions.utils.NotificationUtils
-import com.kpstv.xclipper.service.receiver.ClipboardBroadcastReceiver
 import com.kpstv.xclipper.service.receiver.ImproveDetectionReceiver
 import com.kpstv.xclipper.service.receiver.SpecialActionsReceiver
 import com.kpstv.xclipper.ui.activities.SpecialActions
@@ -17,45 +16,12 @@ import java.util.*
 object Notifications {
     private const val CHANNEL_ID = CoreNotifications.CHANNEL_ID
 
-
     private const val IMPROVE_DETECTION_DISABLED_NOTIFICATION_ID = 35
 
-    private lateinit var manager: NotificationManager
-
-    fun initialize(context: Context) = with(context) {
-        manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-    }
-
-    fun sendNotification(context: Context, title: String, message: String): Unit = with(context) {
-        val randomCode = NotificationUtils.getRandomCode()
-        val openIntent = PendingIntent.getBroadcast(
-            context,
-            getRandomPendingCode(),
-            ClipboardBroadcastReceiver.createOpenAppAction(context, randomCode),
-            NotificationUtils.getPendingIntentFlags()
-        )
-
-        val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_logo_white)
-            .setContentTitle(title)
-            .setContentText(message)
-            .setAutoCancel(true)
-            .setContentIntent(openIntent)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
-            .build()
-
-        manager.notify(randomCode, notification)
-    }
+    private val manager: NotificationManager get() = CoreNotifications.getNotificationManager()
 
     fun sendClipboardCopiedNotification(context: Context, text: String, withSpecialActions: Boolean = true): Unit = with(context) {
         val randomCode = NotificationUtils.getRandomCode()
-        val openIntent = PendingIntent.getBroadcast(
-            context,
-            getRandomPendingCode(),
-            ClipboardBroadcastReceiver.createOpenAppAction(this, randomCode),
-            NotificationUtils.getPendingIntentFlags()
-        )
 
         val deleteIntent = SpecialActionsReceiver.createDeleteAction(context, text, randomCode)
 
@@ -68,13 +34,13 @@ object Notifications {
             .setAutoCancel(true)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
-            .setContentIntent(openIntent)
+            .setContentIntent(NotificationUtils.getAppLaunchPendingIntent(this))
 
         if (withSpecialActions) {
             notificationBuilder.addAction(
                 R.drawable.ic_delete_white,
                 context.getString(R.string.delete),
-                PendingIntent.getBroadcast(context, getRandomPendingCode(), deleteIntent, 0)
+                PendingIntent.getBroadcast(context, getRandomPendingCode(), deleteIntent, NotificationUtils.getPendingIntentFlags())
             )
             notificationBuilder.addAction(
                 R.drawable.ic_special,
@@ -100,13 +66,12 @@ object Notifications {
             .addAction(NotificationCompat.Action(
                 android.R.drawable.stat_sys_download_done,
                 getString(R.string.update_download_install_button),
-                PendingIntent.getBroadcast(context, getRandomPendingCode(), learnMoreIntent, 0)
+                PendingIntent.getBroadcast(context, getRandomPendingCode(), learnMoreIntent, NotificationUtils.getPendingIntentFlags())
             ))
             .build()
 
         manager.notify(IMPROVE_DETECTION_DISABLED_NOTIFICATION_ID, notification)
     }
-
 
     private fun getRandomPendingCode() = Random().nextInt(400) + 550
 }

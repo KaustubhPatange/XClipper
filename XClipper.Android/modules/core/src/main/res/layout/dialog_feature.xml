@@ -11,8 +11,7 @@
     <pl.droidsonroids.gif.GifImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:src="@drawable/feature_suggestion_search" />
+        android:layout_height="wrap_content" />
 
     <TextView
         android:id="@+id/title"
@@ -39,7 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
-        android:text="@string/got_it"
+        android:text="@string/dialog_feature_ok"
         android:textAllCaps="false"
         app:cornerRadius="20dp" />
 

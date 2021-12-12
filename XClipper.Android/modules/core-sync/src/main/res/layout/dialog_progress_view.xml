@@ -31,7 +31,7 @@
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
         android:padding="15dp"
-        android:text="@string/connect_request"
+        android:text="@string/sync_connect_request"
         android:textColor="?colorTextPrimary"
         android:textSize="17sp" />
 

@@ -23,7 +23,7 @@
         android:layout_marginTop="15dp"
         android:layout_marginBottom="-5dp"
         android:padding="10dp"
-        android:text="@string/stc"
+        android:text="@string/sync_scan_connect"
         android:textAlignment="center"
         android:textAllCaps="false"
         android:textColor="?colorTextPrimary"

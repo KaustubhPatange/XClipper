@@ -6,12 +6,11 @@ import android.app.PendingIntent
 import android.content.Context
 import android.os.Build
 import androidx.core.app.NotificationCompat
-import com.kpstv.xclipper.github_updater.R
 import com.kpstv.xclipper.extensions.colorFrom
 import com.kpstv.xclipper.extensions.utils.NotificationUtils
 import com.kpstv.xclipper.extensions.utils.SizeUtils
+import com.kpstv.xclipper.github_updater.R
 import com.kpstv.xclipper.service.receiver.GithubUpdateReceiver
-import com.kpstv.xclipper.ui.helpers.CoreNotifications.getNotificationManager
 import java.io.File
 
 object UpdaterNotifications {
@@ -67,7 +66,7 @@ object UpdaterNotifications {
                 false
             )
             .setShowWhen(false)
-            .addAction(R.drawable.ic_cross, getString(android.R.string.cancel), pendingIntent)
+            .addAction(R.drawable.updater_ic_cross, getString(android.R.string.cancel), pendingIntent)
             .build()
 
         manager.notify(UPDATE_PROGRESS_NOTIFICATION_ID, notification)

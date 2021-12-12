@@ -11,7 +11,7 @@
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scrollbarThumbVertical="@drawable/scrollbar_thumb"
+        android:scrollbarThumbVertical="@drawable/bubble_scrollbar_thumb"
         android:scrollbars="vertical"
         app:maxHeight="250dp" />
 
@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
             android:minHeight="10dp"
-            android:text="@string/clear"
+            android:text="@string/bubble_clear"
             android:textAllCaps="false"
             android:visibility="gone"
             app:backgroundTint="@color/colorTextSecondary"
@@ -68,7 +68,7 @@
             android:layout_height="42dp"
             android:layout_gravity="end"
             android:padding="10dp"
-            android:src="@drawable/ic_cross"
+            android:src="@drawable/bubble_ic_cross"
             android:tint="@color/colorTextSecondary"
             app:tint="@color/colorTextSecondary" />
     </androidx.constraintlayout.widget.ConstraintLayout>

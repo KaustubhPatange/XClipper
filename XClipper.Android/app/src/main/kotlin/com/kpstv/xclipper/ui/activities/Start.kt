@@ -17,7 +17,6 @@ import com.kpstv.xclipper.ui.fragments.sheets.DisclosureSheet
 import com.kpstv.xclipper.ui.helpers.ActivityIntentHelper
 import com.kpstv.xclipper.ui.helpers.AppSettings
 import com.kpstv.xclipper.ui.helpers.FirebaseSyncHelper
-import com.kpstv.xclipper.ui.helpers.connection.ConnectionViewModel
 import com.kpstv.xclipper.ui.helpers.fragments.*
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -25,7 +24,6 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class Start : AppCompatActivity(), FragmentNavigator.Transmitter {
     private val navViewModel by viewModels<NavViewModel>()
-    private val connectionViewModel by viewModels<ConnectionViewModel>()
     private lateinit var navigator: FragmentNavigator
 
     @Inject

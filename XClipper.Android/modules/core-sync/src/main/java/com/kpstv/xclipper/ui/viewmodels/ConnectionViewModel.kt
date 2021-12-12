@@ -1,4 +1,4 @@
-package com.kpstv.xclipper.ui.helpers.connection
+package com.kpstv.xclipper.ui.viewmodels
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
@@ -10,12 +10,13 @@ import com.kpstv.xclipper.extensions.listeners.ResponseListener
 import com.kpstv.xclipper.extensions.listeners.ResponseResult
 import com.kpstv.xclipper.extensions.utils.SystemUtils
 import com.kpstv.xclipper.ui.helpers.AppSettings
+import com.kpstv.xclipper.ui.helpers.ConnectionHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ConnectionViewModel @Inject constructor(
+internal class ConnectionViewModel @Inject constructor(
     private val appSettings: AppSettings,
     private val dbConnectionProvider: DBConnectionProvider,
     private val firebaseProvider: FirebaseProvider

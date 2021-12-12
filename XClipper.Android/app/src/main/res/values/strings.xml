@@ -50,9 +50,9 @@
     <string name="service_title">Clipboard Service</string>
 
 
-    <string name="stc">Scan to connect</string>
+
     <string name="connection_exist">Already connected to database!</string>
-    <string name="err_device_validate">Session expired!</string>
+
     <string name="account">Synchronization</string>
     <string name="bind_title">Database binding</string>
     <string name="bind_summary">Enable uploading of device data to the database</string>
@@ -64,13 +64,12 @@
     <string name="logout_msg">Are you sure you want to log out?</string>
     <string name="yes">Yes</string>
     <string name="close">Close</string>
-    <string name="logout_success">Logged out successfully!</string>
+
     <string name="err_uid">Not a valid UID</string>
-    <string name="connect_success">Connected successfully!</string>
     <string name="accessibility_capture">In order to monitor clipboard you need to enable the accessibility service from settings.\n\n1. Click OK to open accessibility settings.\n2. Click on Installed Services (Samsung).\n3. Search for XClipper.\n4. Click and enable it.</string>
     <string name="synchronize_text">You can synchronize your clipboard data between this device &#38; a desktop companion app. Click on \"Learn more\" to know about it.</string>
-    <string name="scan_code">Scan the app code</string>
-    <string name="connect_request">Attempting to make a connection with database…</string>
+
+
     <string name="dark_title">Dark Theme</string>
     <string name="dark_summary">Sometimes you might\'ve to restart the app for theme to get applied properly.</string>
     <string name="import_file">Import from file</string>
@@ -118,7 +117,7 @@
     <string name="dismiss">Dismiss</string>
     <string name="review">Review</string>
     <string name="review_text">Help us grow by reviewing the app :)</string>
-    <string name="inconsistent_data">Inconsistent data detected, shutting down the service</string>
+
     <string name="open_browser">Open in browser</string>
     <string name="desktop_site">Desktop site</string>
     <string name="force_dark">Force Dark</string>
@@ -133,7 +132,7 @@
     <string name="later">Later</string>
     <string name="rate_title">Enjoying the app?</string>
     <string name="rate_text">Kindly review the app on Google play which will help us reach more audience.</string>
-    <string name="data_removed_all">All data from database are removed</string>
+
     <string name="warning">Warning</string>
     <string name="bind_delete_warning">This may result into unexpected deletion of clips if your remote database has restriction on item limit.</string>
     <string name="trim_title">Text trimming</string>
@@ -146,11 +145,10 @@
     <string name="crash_text_sent_err">Failed to report crash to the service.</string>
     <string name="crash_title">We crashed,</string>
     <string name="go_top">Go top</string>
-    <string name="clear">Clear</string>
     <string name="open_accessibility">Opening accessibility</string>
     <string name="accessibility_service_disable">Disable Service?</string>
     <string name="accessibility_disable_text">This will stop the clipboard monitoring functionality.</string>
-    <string name="got_it">OK, I got it</string>
+
     <string name="search_title">Search suggestion</string>
     <string name="search_subtitle">XClipper can show you suggestions based on the last word from a search query.\nLong press item to show more options.</string>
     <string name="tag_delete_title">Delete \"%1$s\"</string>
@@ -162,9 +160,6 @@
 
     <string name="load_apps">Loading apps metadata…</string>
     <string name="blacklist_apps">Select blacklist apps</string>
-    <string name="error_initialize_fb">Couldn\'t initialize Firebase</string>
-    <string name="sync_register_title">Re-register device</string>
-    <string name="sync_register_text">Due to some changes in sync, you need to register this device again to enable clipboard synchronization.\n\nGo to Settings > Synchronization or click \"Learn more\".</string>
 
 
     <string name="enable">Enable</string>

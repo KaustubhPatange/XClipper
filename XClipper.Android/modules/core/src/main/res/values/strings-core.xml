@@ -20,4 +20,6 @@
     <string name="clipboard_disabled_content">Accessibility service is not started, click to enable it.</string>
 
     <string name="multi_clips_added">%1$s new clips are added</string>
+
+    <string name="dialog_feature_ok">OK, I got it</string>
 </resources>

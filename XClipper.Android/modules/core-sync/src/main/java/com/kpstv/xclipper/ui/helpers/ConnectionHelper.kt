@@ -1,4 +1,4 @@
-package com.kpstv.xclipper.ui.helpers.connection
+package com.kpstv.xclipper.ui.helpers
 
 import android.content.Context
 import android.content.Intent
@@ -18,9 +18,7 @@ import com.kpstv.xclipper.databinding.DialogProgressViewBinding
 import com.kpstv.xclipper.di.CommonReusableEntryPoints
 import com.kpstv.xclipper.extensions.layoutInflater
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
-import com.kpstv.xclipper.ui.helpers.AppSettings
-import com.kpstv.xclipper.ui.helpers.AuthenticationHelper
-import com.kpstv.xclipper.ui.helpers.FirebaseSyncHelper
+import com.kpstv.xclipper.ui.viewmodels.ConnectionViewModel
 import es.dmoral.toasty.Toasty
 
 class ConnectionHelper(
@@ -49,7 +47,7 @@ class ConnectionHelper(
                 .setDesiredBarcodeFormats(IntentIntegrator.QR_CODE)
                 .setOrientationLocked(false)
                 .setBeepEnabled(false)
-                .setPrompt(getString(R.string.scan_code))
+                .setPrompt(getString(R.string.connect_scan_code))
                 .setBarcodeImageEnabled(false)
                 .createScanIntent()
 
@@ -65,7 +63,7 @@ class ConnectionHelper(
         connectionViewModel.removeDeviceConnection(requireContext(), ResponseListener(
             complete = {
                 dialog.dismiss()
-                Toasty.info(requireContext(), getString(R.string.logout_success)).show()
+                Toasty.info(requireContext(), getString(R.string.connect_logout_success)).show()
             },
             error = {
                 dialog.dismiss()

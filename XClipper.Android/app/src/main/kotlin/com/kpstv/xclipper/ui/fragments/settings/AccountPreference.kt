@@ -9,7 +9,7 @@ import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.ui.helpers.AppSettings
-import com.kpstv.xclipper.ui.helpers.connection.ConnectionHelper
+import com.kpstv.xclipper.ui.helpers.ConnectionHelper
 import com.kpstv.xclipper.ui.utils.LaunchUtils
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
