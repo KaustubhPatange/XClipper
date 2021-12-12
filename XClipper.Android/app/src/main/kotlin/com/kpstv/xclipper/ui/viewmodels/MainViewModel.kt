@@ -11,14 +11,12 @@ import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.data.model.TagMap
 import com.kpstv.xclipper.data.provider.ClipboardProvider
-import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.extensions.enumerations.FilterType
 import com.kpstv.xclipper.extensions.listeners.RepositoryListener
 import com.kpstv.xclipper.extensions.listeners.StatusListener
 import com.kpstv.xclipper.extensions.utils.FirebaseUtils
-import com.kpstv.xclipper.ui.helpers.AppSettings
 import com.kpstv.xclipper.ui.viewmodels.managers.MainEditManager
 import com.kpstv.xclipper.ui.viewmodels.managers.MainSearchManager
 import com.kpstv.xclipper.ui.viewmodels.managers.MainStateManager

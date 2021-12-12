@@ -16,7 +16,7 @@
             android:layout_margin="20dp"
             android:orientation="vertical">
 
-            <com.kpstv.pricing.Card
+            <com.kpstv.xclipper.extensions.elements.PricingCardView
                 android:id="@+id/premiumCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

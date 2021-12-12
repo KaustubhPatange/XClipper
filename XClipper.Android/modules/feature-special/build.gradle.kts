@@ -8,7 +8,6 @@ plugins {
 
 android {
     buildFeatures {
-        buildConfig = false
         viewBinding = true
     }
 }
@@ -27,6 +26,7 @@ dependencies {
     implementation(LibraryDependency.TOASTY)
     implementation(LibraryDependency.CWT)
     implementation(LibraryDependency.FRAGMENT_KTX)
+    implementation(LibraryDependency.NAVIGATOR)
 
     implementation(LibraryDependency.HILT_ANDROID)
 

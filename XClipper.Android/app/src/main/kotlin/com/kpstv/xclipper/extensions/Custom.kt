@@ -53,8 +53,6 @@ fun logger(TAG: String, message: String, exception: Exception) {
         Log.e(TAG, message, exception)
 }
 
-fun Boolean.toInt(): Int = if (this) 1 else 0
-
 private const val STANDARD_DATE_FORMAT = "yyyyMMddHHmmss"
 fun Date.getFormattedDate(): String =
     SimpleDateFormat(STANDARD_DATE_FORMAT, Locale.US).format(this)

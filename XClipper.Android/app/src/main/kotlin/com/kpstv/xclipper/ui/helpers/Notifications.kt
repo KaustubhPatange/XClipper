@@ -11,6 +11,7 @@ import com.kpstv.xclipper.extensions.utils.NotificationUtils
 import com.kpstv.xclipper.service.receiver.ClipboardBroadcastReceiver
 import com.kpstv.xclipper.service.receiver.ImproveDetectionReceiver
 import com.kpstv.xclipper.service.receiver.SpecialActionsReceiver
+import com.kpstv.xclipper.ui.activities.SpecialActions
 import java.util.*
 
 object Notifications {
@@ -47,7 +48,7 @@ object Notifications {
         manager.notify(randomCode, notification)
     }
 
-    fun sendClipboardCopiedNotification(context: Context, text: String, withActions: Boolean = true): Unit = with(context) {
+    fun sendClipboardCopiedNotification(context: Context, text: String, withSpecialActions: Boolean = true): Unit = with(context) {
         val randomCode = NotificationUtils.getRandomCode()
         val openIntent = PendingIntent.getBroadcast(
             context,
@@ -58,7 +59,7 @@ object Notifications {
 
         val deleteIntent = SpecialActionsReceiver.createDeleteAction(context, text, randomCode)
 
-        val specialIntent = SpecialActionsReceiver.createSmartOptionsAction(this, text)
+        val specialIntent = SpecialActions.launchIntent(context, text)
 
         val notificationBuilder = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_logo_white)
@@ -69,7 +70,7 @@ object Notifications {
             .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
             .setContentIntent(openIntent)
 
-        if (withActions) {
+        if (withSpecialActions) {
             notificationBuilder.addAction(
                 R.drawable.ic_delete_white,
                 context.getString(R.string.delete),
@@ -78,7 +79,7 @@ object Notifications {
             notificationBuilder.addAction(
                 R.drawable.ic_special,
                 getString(R.string.more_actions),
-                PendingIntent.getBroadcast(context, getRandomPendingCode(), specialIntent, 0)
+                PendingIntent.getActivity(context, getRandomPendingCode(), specialIntent, NotificationUtils.getPendingIntentFlags())
             )
         }
 

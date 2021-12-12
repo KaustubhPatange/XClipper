@@ -1,7 +1,5 @@
 package com.kpstv.xclipper.ui.helper
 
-import android.annotation.SuppressLint
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import androidx.core.app.NotificationCompat

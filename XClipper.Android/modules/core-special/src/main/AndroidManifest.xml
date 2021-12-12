@@ -4,4 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
+    <application>
+        <receiver android:name="com.kpstv.xclipper.service.receiver.SpecialActionsReceiver" />
+    </application>
 </manifest>

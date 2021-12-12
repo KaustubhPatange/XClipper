@@ -5,13 +5,12 @@ import android.util.Log
 import androidx.lifecycle.Observer
 import com.kpstv.hvlog.HVLog
 import com.kpstv.xclipper.R
+import com.kpstv.xclipper.data.helper.ClipRepositoryHelper
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.FirebaseProvider
-import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.extensions.enumerations.FirebaseState
 import com.kpstv.xclipper.ui.helpers.AppSettings
-import com.kpstv.xclipper.data.helper.ClipRepositoryHelper
 import com.kpstv.xclipper.ui.helpers.Notifications
 import com.kpstv.xclipper.ui.helpers.connection.ConnectionHelper
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -22,11 +21,11 @@ import javax.inject.Singleton
 
 @Singleton
 class FirebaseUtils @Inject constructor(
-    @ApplicationContext private val context: Context,
-    private val clipRepositoryHelper: ClipRepositoryHelper,
-    private val firebaseProvider: FirebaseProvider,
-    private val appSettings: AppSettings,
-    private val dbConnectionProvider: DBConnectionProvider,
+  @ApplicationContext private val context: Context,
+  private val clipRepositoryHelper: ClipRepositoryHelper,
+  private val firebaseProvider: FirebaseProvider,
+  private val appSettings: AppSettings,
+  private val dbConnectionProvider: DBConnectionProvider,
 ) {
     private val TAG = FirebaseUtils::class.simpleName
 

@@ -32,7 +32,6 @@ import com.kpstv.xclipper.data.localized.ToolbarState
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.data.provider.ClipboardProvider
-import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.databinding.FragmentHomeBinding
 import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.extensions.enumerations.FirebaseState
@@ -42,7 +41,7 @@ import com.kpstv.xclipper.extensions.recyclerview.SwipeToDeleteCallback
 import com.kpstv.xclipper.extensions.utils.FirebaseUtils
 import com.kpstv.xclipper.ui.helpers.AppThemeHelper
 import com.kpstv.xclipper.ui.helpers.AppThemeHelper.registerForThemeChange
-import com.kpstv.xclipper.service.ChangeClipboardActivity
+import com.kpstv.xclipper.ui.activities.ChangeClipboardActivity
 import com.kpstv.xclipper.ui.activities.NavViewModel
 import com.kpstv.xclipper.ui.activities.Start
 import com.kpstv.xclipper.ui.adapters.CIAdapter

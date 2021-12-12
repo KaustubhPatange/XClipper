@@ -13,6 +13,7 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.MutableLiveData
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.kpstv.hvlog.HVLog
+import com.kpstv.xclipper.data.helper.ClipRepositoryHelper
 import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.extensions.Logger
 import com.kpstv.xclipper.extensions.broadcastManager
@@ -24,10 +25,10 @@ import com.kpstv.xclipper.extensions.helper.LanguageDetector
 import com.kpstv.xclipper.ui.fragments.settings.GeneralPreference
 import com.kpstv.xclipper.ui.helpers.AppSettingKeys
 import com.kpstv.xclipper.ui.helpers.AppSettings
-import com.kpstv.xclipper.data.helper.ClipRepositoryHelper
 import com.kpstv.xclipper.extensions.utils.KeyboardUtils
 import com.kpstv.xclipper.extensions.utils.SystemUtils
 import com.kpstv.xclipper.extensions.utils.SystemUtils.isSystemOverlayEnabled
+import com.kpstv.xclipper.ui.activities.ChangeClipboardActivity
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

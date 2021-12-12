@@ -38,6 +38,7 @@ dependencies {
     implementation(LibraryDependency.COROUTINES_CORE)
     implementation(LibraryDependency.LIFECYCLE_KTX)
     implementation(LibraryDependency.LIFECYCLE_COMMON)
+    implementation(LibraryDependency.CONSTRAINT_LAYOUT)
 
     implementation(LibraryDependency.ROOM_KTX)
     implementation(LibraryDependency.RETROFIT)
