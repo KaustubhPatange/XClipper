@@ -70,7 +70,7 @@
                 android:resource="@xml/clip_service" />
         </service>
 
-        <service android:name=".service.BubbleService" />
+        <service android:name="com.kpstv.xcipper.service.BubbleService" />
 
         <receiver android:name=".service.receiver.ClipboardBroadcastReceiver" />
 

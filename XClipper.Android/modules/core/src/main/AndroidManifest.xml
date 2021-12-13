@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="com.kpstv.core">
 
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -9,8 +8,5 @@
 
     <!-- For VibrateUtils -->
     <uses-permission android:name="android.permission.VIBRATE" />
-
-    <!-- Used for adb clipboard detection -->
-    <uses-permission android:name="android.permission.READ_LOGS" tools:ignore="ProtectedPermissions" />
 
 </manifest>

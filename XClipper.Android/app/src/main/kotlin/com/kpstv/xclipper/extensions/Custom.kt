@@ -61,10 +61,4 @@ fun String.toLines(): List<String> {
     return this.split("[\n|\r]".toRegex())
 }
 
-fun <T> DiffUtil.ItemCallback<T>.asConfig(): AsyncDifferConfig<T> {
-    return AsyncDifferConfig.Builder(this)
-        .setBackgroundThreadExecutor(Dispatchers.Default.asExecutor())
-        .build()
-}
-
 infix fun Boolean.xnor(other: Boolean): Boolean = (this xor other).not()

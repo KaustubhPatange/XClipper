@@ -14,7 +14,7 @@ android {
 
 dependencies {
     implementation(project(ModuleDependency.CORE))
-    implementation(project(ModuleDependency.CORE_CLIPBOARD))
+    implementation(project(ModuleDependency.CORE_CLIPBOARD)) // TODO: Try removing this & see if compiles then remove the dependency of FirebaseUtils from ClipboardAccessibilityService so that we can move it to core-clipboard.
     implementation(project(ModuleDependency.CORE_EXTENSIONS))
 
     implementation(LibraryDependency.CORE_KTX)

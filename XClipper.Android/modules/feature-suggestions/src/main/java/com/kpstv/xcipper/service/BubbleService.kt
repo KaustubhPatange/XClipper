@@ -1,33 +1,31 @@
-package com.kpstv.xclipper.service
+package com.kpstv.xcipper.service
 
-import android.content.*
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.util.TypedValue
-import android.view.View
-import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.paging.PagedList
-import androidx.paging.PagedListAdapter
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.bsk.floatingbubblelib.DefaultFloatingBubbleTouchListener
 import com.bsk.floatingbubblelib.FloatingBubbleConfig
 import com.bsk.floatingbubblelib.FloatingBubbleService
 import com.bsk.floatingbubblelib.FloatingBubbleTouchListener
+import com.kpstv.xcipper.di.action.ClipboardAccessibilityServiceActions
+import com.kpstv.xcipper.di.navigation.SpecialActionsLauncher
+import com.kpstv.xcipper.feature_suggestions.R
 import com.kpstv.xcipper.feature_suggestions.databinding.BubbleViewBinding
-import com.kpstv.xclipper.R
+import com.kpstv.xcipper.ui.adapters.PageClipAdapter
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.data.repository.MainRepository
-import com.kpstv.xclipper.databinding.ItemBubbleServiceBinding
 import com.kpstv.xclipper.extensions.*
-import com.kpstv.xclipper.ui.activities.SpecialActions
 import com.kpstv.xclipper.ui.dialogs.FeatureDialog
 import com.kpstv.xclipper.ui.helpers.AppSettings
 import dagger.hilt.android.AndroidEntryPoint
-import es.dmoral.toasty.Toasty
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -35,10 +33,18 @@ class BubbleService : FloatingBubbleService() {
 
     @Inject
     lateinit var repository: MainRepository
+
     @Inject
     lateinit var appSettings: AppSettings
+
     @Inject
     lateinit var clipboardProvider: ClipboardProvider
+
+    @Inject
+    lateinit var specialActionsLauncher: SpecialActionsLauncher
+
+    @Inject
+    lateinit var clipboardServiceActions: ClipboardAccessibilityServiceActions
 
     private val TAG = javaClass.simpleName
     private lateinit var adapter: PageClipAdapter
@@ -61,10 +67,17 @@ class BubbleService : FloatingBubbleService() {
         binding = BubbleViewBinding.inflate(applicationContext.layoutInflater())
 
         /** Setting adapter and onClick to send PASTE event. */
-        adapter = PageClipAdapter(clipboardProvider) { text ->
-            setState(false)
-            ClipboardAccessibilityService.Actions.sendClipboardInsertText(applicationContext, currentWord.length, text)
-        }
+        adapter = PageClipAdapter(
+            clipboardProvider = clipboardProvider,
+            specialActionsLauncher = specialActionsLauncher,
+            onClick = { text ->
+                setState(false)
+                clipboardServiceActions.sendClipboardInsertText(
+                    wordLength = currentWord.length,
+                    text = text
+                )
+            }
+        )
 
         subscribeSuggestions()
 
@@ -90,7 +103,7 @@ class BubbleService : FloatingBubbleService() {
             object : BroadcastReceiver() {
                 override fun onReceive(context: Context?, intent: Intent?) {
                     if (intent?.action == null) return
-                    when(intent.action) {
+                    when (intent.action) {
                         ACTION_VIEW_CLOSE -> setState(false)
                         ACTION_NODE_INFO -> {
                             val currentText = intent.getStringExtra(EXTRA_NODE_TEXT) ?: ""
@@ -136,6 +149,7 @@ class BubbleService : FloatingBubbleService() {
                     setState(false)
                 }
             }
+
             override fun onRemove() {
                 stopSelf()
             }
@@ -174,9 +188,9 @@ class BubbleService : FloatingBubbleService() {
     private fun showSearchFeatureDialog(context: Context, appSettings: AppSettings): Boolean {
         if (!appSettings.isBubbleOnBoardingDialogShown()) {
             FeatureDialog(context)
-                .setResourceId(R.drawable.feature_suggestion_search)
-                .setTitle(R.string.search_title)
-                .setSubtitle(R.string.search_subtitle)
+                .setResourceId(R.drawable.bubble_feature_suggestion_search)
+                .setTitle(R.string.bubble_search_title)
+                .setSubtitle(R.string.bubble_search_subtitle)
                 .show()
             appSettings.setBubbleOnBoardingDialogShown(true)
             return true
@@ -188,60 +202,12 @@ class BubbleService : FloatingBubbleService() {
         fun sendCloseState(context: Context) {
             context.broadcastManager().sendBroadcast(Intent(ACTION_VIEW_CLOSE))
         }
+
         fun sendNodeInfo(context: Context, nodeText: String, cursorPosition: Int) {
             context.broadcastManager().sendBroadcast(Intent(ACTION_NODE_INFO).apply {
                 putExtra(EXTRA_NODE_TEXT, nodeText)
                 putExtra(EXTRA_NODE_CURSOR, cursorPosition)
             })
-        }
-    }
-
-    class PageClipAdapter(private val clipboardProvider: ClipboardProvider, val onClick: (String) -> Unit) :
-        PagedListAdapter<Clip, PageClipAdapter.PageClipHolder>(DiffUtils.asConfig()) {
-
-        companion object {
-            private val DiffUtils = object : DiffUtil.ItemCallback<Clip>() {
-                override fun areItemsTheSame(oldItem: Clip, newItem: Clip) =
-                    oldItem.id == newItem.id
-
-                override fun areContentsTheSame(oldItem: Clip, newItem: Clip) =
-                    oldItem == newItem
-            }
-        }
-
-        class PageClipHolder(view: View) : RecyclerView.ViewHolder(view)
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-            PageClipHolder(ItemBubbleServiceBinding.inflate(parent.context.layoutInflater(), parent, false).root)
-
-        override fun onBindViewHolder(holder: PageClipHolder, position: Int) {
-            val clip = getItem(position)
-            with(ItemBubbleServiceBinding.bind(holder.itemView)) {
-
-                /** This will show a small line which indicates this is a pinned clip. */
-                if (clip?.isPinned == true)
-                    ibcPinView.show()
-                else
-                    ibcPinView.hide()
-
-                if (clipboardProvider.getCurrentClip().value == clip?.data)
-                    ibcTextView.setTextColor(ContextCompat.getColor(ibcTextView.context, R.color.colorSelectedClip))
-                else
-                    ibcTextView.setTextColor(ContextCompat.getColor(ibcTextView.context, R.color.white))
-
-                ibcTextView.text = clip?.data
-                ibcTextView.setOnClickListener {
-                    onClick.invoke(clip?.data!!)
-                }
-                ibcTextView.setOnLongClickListener {
-                    SpecialActions.launch(root.context, clip?.data!!)
-                    true
-                }
-                btnCopy.setOnClickListener {
-                    clipboardProvider.setClipboard(ClipData.newPlainText("Copied", clip?.data!!))
-                    Toasty.info(root.context, root.context.getString(R.string.ctc)).show()
-                }
-            }
         }
     }
 }

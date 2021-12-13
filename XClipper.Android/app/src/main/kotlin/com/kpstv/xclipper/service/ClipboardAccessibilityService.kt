@@ -15,6 +15,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.kpstv.hvlog.HVLog
 import com.kpstv.xclipper.data.helper.ClipRepositoryHelper
 import com.kpstv.xclipper.data.provider.ClipboardProvider
+import com.kpstv.xclipper.di.suggestions.SuggestionService
 import com.kpstv.xclipper.extensions.Logger
 import com.kpstv.xclipper.extensions.broadcastManager
 import com.kpstv.xclipper.extensions.logger
@@ -43,6 +44,8 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
     lateinit var appSettings: AppSettings
     @Inject
     lateinit var clipboardRepositoryHelper: ClipRepositoryHelper
+    @Inject
+    lateinit var suggestionService: SuggestionService
 
     private lateinit var clipboardDetector: ClipboardDetection
     private lateinit var clipboardLogDetector: ClipboardLogDetector
@@ -123,7 +126,7 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
                 with(node) {
                     if (isEditable) editableNode = this
                     if (textSelectionStart == textSelectionEnd && text != null) {
-                        BubbleService.Actions.sendNodeInfo(applicationContext, text.toString(), textSelectionEnd)
+                        suggestionService.broadcastNodeInfo(text.toString(), textSelectionEnd)
                     }
                 }
                 nodeInfo = node
@@ -135,8 +138,9 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
             } else
                 updateScreenInteraction(false)
 
-            if (event?.eventType == AccessibilityEvent.TYPE_VIEW_CLICKED && event.packageName != packageName)
-                BubbleService.Actions.sendCloseState(applicationContext)
+            if (event?.eventType == AccessibilityEvent.TYPE_VIEW_CLICKED && event.packageName != packageName) {
+                suggestionService.broadcastCloseState()
+            }
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
                 && clipboardDetector.getSupportedEventTypes(event) && !isPackageBlacklisted(event?.packageName)
@@ -191,13 +195,13 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
             if (isSystemOverlayEnabled(applicationContext) && canShowSuggestions && !deviceRunningLowMemory) {
                 if (visible)
                     try {
-                        startService(Intent(applicationContext, BubbleService::class.java))
+                        suggestionService.start()
                     } catch (e: Exception) {
                         logger(TAG, "Bubble launched failed", e)
                     }
                 else
                     try {
-                        stopService(Intent(applicationContext, BubbleService::class.java))
+                        suggestionService.stop()
                     } catch (e: Exception) {
                         logger(TAG, "Bubble launched failed", e)
                     }

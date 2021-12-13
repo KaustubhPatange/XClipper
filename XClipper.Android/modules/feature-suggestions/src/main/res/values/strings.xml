@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="bubble_clear">Clear</string>
+
+    <string name="bubble_search_title">Search suggestion</string>
+    <string name="bubble_search_subtitle">XClipper can show you suggestions based on the last word from a search query.\nLong press item to show more options.</string>
 </resources>

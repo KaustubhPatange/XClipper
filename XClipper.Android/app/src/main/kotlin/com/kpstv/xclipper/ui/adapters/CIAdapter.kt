@@ -29,7 +29,7 @@ class CIAdapter(
     private val onClick: (Clip, Int) -> Unit,
     private val onLongClick: (Clip, Int) -> Unit,
     private val selectedClips: LiveData<List<Clip>>
-) : ListAdapter<Clip, CIAdapter.MainHolder>(DiffCallback.asConfig()) {
+) : ListAdapter<Clip, CIAdapter.MainHolder>(DiffCallback.asConfig(isBackground = true)) {
 
     private object DiffCallback : DiffUtil.ItemCallback<Clip>() {
         override fun areItemsTheSame(oldItem: Clip, newItem: Clip): Boolean =
