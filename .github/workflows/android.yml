@@ -93,7 +93,6 @@ jobs:
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
-        if: github.ref == 'refs/heads/master'
         with:
           name: XClipper.apk-snapshot-${{ steps.vars.outputs.sha_short }}
           path: XClipper.Android/app/build/outputs/apk/release/
