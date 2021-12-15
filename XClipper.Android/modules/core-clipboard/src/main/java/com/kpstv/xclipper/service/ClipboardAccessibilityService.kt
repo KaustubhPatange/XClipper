@@ -14,12 +14,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.kpstv.hvlog.HVLog
 import com.kpstv.xclipper.data.helper.ClipRepositoryHelper
+import com.kpstv.xclipper.data.helper.FirebaseProviderHelper
 import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.di.suggestions.SuggestionService
 import com.kpstv.xclipper.extensions.Logger
 import com.kpstv.xclipper.extensions.broadcastManager
 import com.kpstv.xclipper.extensions.logger
-import com.kpstv.xclipper.extensions.utils.FirebaseUtils
 import com.kpstv.xclipper.extensions.helper.ClipboardDetection
 import com.kpstv.xclipper.extensions.helper.ClipboardLogDetector
 import com.kpstv.xclipper.extensions.helper.LanguageDetector
@@ -37,7 +37,7 @@ import javax.inject.Inject
 class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl(), AccessibilityService() {
 
     @Inject
-    lateinit var firebaseUtils: FirebaseUtils
+    lateinit var firebaseProviderHelper: FirebaseProviderHelper
     @Inject
     lateinit var clipboardProvider: ClipboardProvider
     @Inject
@@ -177,7 +177,7 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
 
         serviceInfo = info
 
-        firebaseUtils.observeDatabaseChangeEvents()
+        firebaseProviderHelper.observeDatabaseChangeEvents()
         clipboardProvider.observeClipboardChange(
             action = { data ->
                 return@observeClipboardChange if (!isPackageBlacklisted(currentPackage)) {
@@ -217,7 +217,7 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
         HVLog.d()
 
         /** Ensures that we remove database initialization observation. */
-        firebaseUtils.removeDatabaseInitializationObservation()
+        firebaseProviderHelper.removeDatabaseInitializationObservation()
         clipboardProvider.removeClipboardObserver()
         clipboardLogDetector.dispose()
         appSettings.unregisterListener(settingsListener)
@@ -282,7 +282,7 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
                         }
                         ACTION_DISABLE_SERVICE -> @RequiresApi(Build.VERSION_CODES.N) {
                             disableSelf()
-                            GeneralPreference.checkForSettings(context)
+                            GeneralPreference.refreshSettings(context)
                         }
                         ACTION_ENABLE_IMPROVE_DETECTION -> {
                             if (!clipboardLogDetector.isStarted()) clipboardLogDetector.startDetecting()

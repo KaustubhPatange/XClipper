@@ -11,6 +11,7 @@ import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.extensions.enumerations.FirebaseState
 import com.kpstv.xclipper.ui.helpers.AppSettings
 import com.kpstv.xclipper.R
+import com.kpstv.xclipper.data.helper.FirebaseProviderHelper
 import com.kpstv.xclipper.ui.helpers.ConnectionHelper
 import com.kpstv.xclipper.ui.helpers.CoreNotifications
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -20,18 +21,18 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class FirebaseUtils @Inject constructor(
+class FirebaseProviderHelperImpl @Inject constructor(
     @ApplicationContext private val context: Context,
     private val clipRepositoryHelper: ClipRepositoryHelper,
     private val firebaseProvider: FirebaseProvider,
     private val appSettings: AppSettings,
     private val dbConnectionProvider: DBConnectionProvider,
-) {
-    private val TAG = FirebaseUtils::class.simpleName
+) : FirebaseProviderHelper {
+    private val TAG = "FirebaseProviderHelper"
 
     private var shownToast = false
 
-    fun observeDatabaseChangeEvents(): Unit = with(context) {
+    override fun observeDatabaseChangeEvents(): Unit = with(context) {
             if (firebaseProvider.isObservingChanges()) return@with
             HVLog.d("Attached")
             firebaseProvider.observeDataChange(
@@ -105,19 +106,19 @@ class FirebaseUtils @Inject constructor(
             observeDatabaseChangeEvents()
     }
 
-    fun observeDatabaseInitialization() {
+    override fun observeDatabaseInitialization() {
         HVLog.d()
         if (!firebaseProvider.isInitialized().hasObservers())
             firebaseProvider.isInitialized().observeForever(databaseInitializationObserver)
     }
 
-    fun removeDatabaseInitializationObservation() {
+    override fun removeDatabaseInitializationObservation() {
         HVLog.d()
         firebaseProvider.isInitialized().removeObserver(databaseInitializationObserver)
         firebaseProvider.removeDataObservation()
     }
 
-    fun retrieveFirebaseStatus(): FirebaseState {
+    override fun retrieveFirebaseStatus(): FirebaseState {
         return if (firebaseProvider.isInitialized().value == false)
             FirebaseState.NOT_INITIALIZED
         else FirebaseState.UNKNOWN_ERROR
