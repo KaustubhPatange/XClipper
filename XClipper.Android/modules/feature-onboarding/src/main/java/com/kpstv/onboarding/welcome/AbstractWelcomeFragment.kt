@@ -92,8 +92,8 @@ internal abstract class AbstractWelcomeFragment : ValueFragment(R.layout.fragmen
         }
     }
 
-    fun navigateTo(screen: OnBoardingRoutes, popUpTo: Boolean = false, animation: NavAnimation? = null) {
-        val anim = animation ?: AnimationDefinition.Shared(
+    fun navigateTo(screen: OnBoardingRoutes) {
+        val anim = AnimationDefinition.Shared(
             mapOf(
                 binding.fwTextView to "paragraphText",
                 binding.fwInsertLayout to "insertLayout"
@@ -101,9 +101,9 @@ internal abstract class AbstractWelcomeFragment : ValueFragment(R.layout.fragmen
         )
         navViewModel.navigateTo(
             screen = screen,
-            remember = !popUpTo,
+            remember = true,
             animation = anim,
-            historyOptions = if (popUpTo) HistoryOptions.ClearHistory else HistoryOptions.None
+            historyOptions = HistoryOptions.None
         )
     }
 

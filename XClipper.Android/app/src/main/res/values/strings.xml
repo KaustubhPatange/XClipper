@@ -1,6 +1,4 @@
 <resources>
-    <string name="app_name">XClipper</string>
-
     <string name="accessibility_service_description">This will let XClipper to monitor clipboard &amp; will able to capture some of known strategies if system detects any copy/cut action.\n\n\nThis feature is still in BETA for Android 10+ users and may not work always.</string>
 
     <string name="testStringSmall">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries.</string>
@@ -66,7 +64,6 @@
     <string name="close">Close</string>
 
     <string name="err_uid">Not a valid UID</string>
-    <string name="accessibility_capture">In order to monitor clipboard you need to enable the accessibility service from settings.\n\n1. Click OK to open accessibility settings.\n2. Click on Installed Services (Samsung).\n3. Search for XClipper.\n4. Click and enable it.</string>
     <string name="synchronize_text">You can synchronize your clipboard data between this device &#38; a desktop companion app. Click on \"Learn more\" to know about it.</string>
 
 
@@ -137,7 +134,7 @@
     <string name="bind_delete_warning">This may result into unexpected deletion of clips if your remote database has restriction on item limit.</string>
     <string name="trim_title">Text trimming</string>
     <string name="trim_summary">This will trim whitespaces from the clip data while displaying.</string>
-    <string name="accessibility_service">Accessibility Service</string>
+
     <string name="show_stacktrace">Show stacktrace</string>
     <string name="crash_text_sending">Hang on, we are sending this report to my server…</string>
     <string name="crash_text_sent">And it has been reported to my server. So you don\'t need to perform any additional step.</string>
@@ -146,8 +143,7 @@
     <string name="crash_title">We crashed,</string>
     <string name="go_top">Go top</string>
     <string name="open_accessibility">Opening accessibility</string>
-    <string name="accessibility_service_disable">Disable Service?</string>
-    <string name="accessibility_disable_text">This will stop the clipboard monitoring functionality.</string>
+
 
 
     <string name="tag_delete_title">Delete \"%1$s\"</string>
@@ -194,22 +190,10 @@
     <string name="pin_lock_dialog_text">Unlock the app with fingerprint or pin code. Remember, if you forgot the password then the only way to recover is clear the app data.\n\nTap \"Create Password\" to create &amp; set the lock.</string>
     <string name="pin_lock_dialog_positive">Create Password</string>
 
-
-
-
-
     <!-- Actions -->
 
 
     <string name="search_query">Search Settings</string>
-
-
-
-
-
-
-
-
 
     <string name="terms_decline">Decline</string>
     <string name="terms_agree">Accept</string>
@@ -220,4 +204,6 @@
     <string name="err_privacy_policy">Invalid privacy policy</string>
     <string name="improve_detection_notify_title">Improve clipboard detection disabled</string>
     <string name="improve_detection_notify_text">It looks like the system has disabled the improve clipboard detection mechanism. You need to again configure it using ADB</string>
+
+    <string name="db_provider_enable_bind_setting">Enable &amp; apply \"Database binding\" from the desktop application.</string>
 </resources>

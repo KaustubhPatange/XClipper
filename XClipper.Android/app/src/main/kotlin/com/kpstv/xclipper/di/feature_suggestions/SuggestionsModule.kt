@@ -9,8 +9,7 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 
-@Module
-@InstallIn(SingletonComponent::class)
+@[Module InstallIn(SingletonComponent::class)]
 abstract class SuggestionsModule {
     @Binds
     abstract fun specialActionsLauncher(specialActionsLauncherImpl: SpecialActionsLauncherImpl): SpecialActionsLauncher

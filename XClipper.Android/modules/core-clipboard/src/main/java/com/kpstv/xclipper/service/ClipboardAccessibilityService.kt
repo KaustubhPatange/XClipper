@@ -6,31 +6,32 @@ import android.content.*
 import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
+import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import androidx.annotation.RequiresApi
 import androidx.core.os.bundleOf
 import androidx.lifecycle.MutableLiveData
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.kpstv.hvlog.HVLog
+import com.kpstv.core.BuildConfig
 import com.kpstv.xclipper.data.helper.ClipRepositoryHelper
 import com.kpstv.xclipper.data.helper.FirebaseProviderHelper
 import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.di.suggestions.SuggestionService
 import com.kpstv.xclipper.extensions.Logger
 import com.kpstv.xclipper.extensions.broadcastManager
-import com.kpstv.xclipper.extensions.logger
 import com.kpstv.xclipper.extensions.helper.ClipboardDetection
 import com.kpstv.xclipper.extensions.helper.ClipboardLogDetector
 import com.kpstv.xclipper.extensions.helper.LanguageDetector
-import com.kpstv.xclipper.ui.fragments.settings.GeneralPreference
 import com.kpstv.xclipper.ui.helpers.AppSettingKeys
 import com.kpstv.xclipper.ui.helpers.AppSettings
 import com.kpstv.xclipper.extensions.utils.KeyboardUtils
 import com.kpstv.xclipper.extensions.utils.SystemUtils
 import com.kpstv.xclipper.extensions.utils.SystemUtils.isSystemOverlayEnabled
+import com.kpstv.xclipper.ui.actions.SettingUIActions
 import com.kpstv.xclipper.ui.activities.ChangeClipboardActivity
 import dagger.hilt.android.AndroidEntryPoint
+import es.dmoral.toasty.Toasty
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -46,6 +47,8 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
     lateinit var clipboardRepositoryHelper: ClipRepositoryHelper
     @Inject
     lateinit var suggestionService: SuggestionService
+    @Inject
+    lateinit var settingUIActions: SettingUIActions
 
     private lateinit var clipboardDetector: ClipboardDetection
     private lateinit var clipboardLogDetector: ClipboardLogDetector
@@ -102,7 +105,6 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
         powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
         clipboardDetector = ClipboardDetection(LanguageDetector.getCopyForLocale(applicationContext))
         clipboardLogDetector = ClipboardLogDetector.newInstanceCompat(applicationContext)
-        HVLog.d()
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
@@ -146,13 +148,13 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
                 && clipboardDetector.getSupportedEventTypes(event) && !isPackageBlacklisted(event?.packageName)
             ) {
                 runForNextEventAlso = true
-                logger(TAG, "Running for first time")
+                logger("Running for first time")
                 runChangeClipboardActivity()
                 return
             }
 
             if (runForNextEventAlso) {
-                logger(TAG, "Running for second time")
+                logger("Running for second time")
                 runForNextEventAlso = false
                 runChangeClipboardActivity()
             }
@@ -163,9 +165,8 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
 
     override fun onServiceConnected() {
         super.onServiceConnected()
-        HVLog.d()
 
-        logger(TAG, "Service Connected")
+        logger("Service Connected")
         val info = AccessibilityServiceInfo()
 
         info.apply {
@@ -197,13 +198,13 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
                     try {
                         suggestionService.start()
                     } catch (e: Exception) {
-                        logger(TAG, "Bubble launched failed", e)
+                        logger("Bubble launched failed", e)
                     }
                 else
                     try {
                         suggestionService.stop()
                     } catch (e: Exception) {
-                        logger(TAG, "Bubble launched failed", e)
+                        logger("Bubble launched failed", e)
                     }
             }
         }
@@ -214,8 +215,6 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
     }
 
     override fun onDestroy() {
-        HVLog.d()
-
         /** Ensures that we remove database initialization observation. */
         firebaseProviderHelper.removeDatabaseInitializationObservation()
         clipboardProvider.removeClipboardObserver()
@@ -238,7 +237,7 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
                 }
             }
             override fun onPermissionNotGranted() {
-                es.dmoral.toasty.Toasty.error(applicationContext, "READ_LOGS Permission not granted").show()
+                Toasty.error(applicationContext, "READ_LOGS Permission not granted").show()
                 // TODO: Show a dialog
             }
         })
@@ -282,7 +281,7 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
                         }
                         ACTION_DISABLE_SERVICE -> @RequiresApi(Build.VERSION_CODES.N) {
                             disableSelf()
-                            GeneralPreference.refreshSettings(context)
+                            settingUIActions.refreshGeneralSettingsUI()
                         }
                         ACTION_ENABLE_IMPROVE_DETECTION -> {
                             if (!clipboardLogDetector.isStarted()) clipboardLogDetector.startDetecting()
@@ -317,7 +316,7 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
         }
 
         clipboardProvider.ignoreChange {
-            HVLog.d("Received ${::EXTRA_SERVICE_TEXT.name}, WordLength: ${wordLength}, Text: $pasteData")
+            logger("Received ${Companion::EXTRA_SERVICE_TEXT.name}, WordLength: ${wordLength}, Text: $pasteData")
 
             val currentClipText = clipboardProvider.getCurrentClip().value
 
@@ -359,6 +358,16 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
     private val lock = Any()
     private fun runChangeClipboardActivity() = synchronized(lock) {
         ChangeClipboardActivity.launch(applicationContext)
+    }
+
+    private fun logger(message: String) {
+        if (BuildConfig.DEBUG)
+            Log.e(TAG, message)
+    }
+
+    private fun logger(message: String, exception: Exception) {
+        if (BuildConfig.DEBUG)
+            Log.e(TAG, message, exception)
     }
 
     object Actions {

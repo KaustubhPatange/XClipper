@@ -9,6 +9,7 @@ import com.kpstv.xclipper.di.CommonReusableEntryPoints
 import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.service.ClipboardAccessibilityService
 import com.kpstv.xclipper.extensions.helper.ClipboardLogDetector
+import com.kpstv.xclipper.ui.dialogs.ClipboardServiceDialogs
 import com.kpstv.xclipper.ui.dialogs.Dialogs
 import com.kpstv.xclipper.ui.fragments.Home
 import com.kpstv.xclipper.ui.helpers.AppSettings

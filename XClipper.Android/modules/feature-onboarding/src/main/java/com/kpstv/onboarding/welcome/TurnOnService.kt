@@ -4,8 +4,9 @@ import com.kpstv.onboarding.internals.OnBoardingRoutes
 import com.kpstv.onboarding.utils.OnBoardUtils.isAndroid10orUp
 import com.kpstv.welcome.R
 import com.kpstv.xclipper.extensions.helper.ClipboardLogDetector
+import com.kpstv.xclipper.service.ClipboardAccessibilityService
+import com.kpstv.xclipper.ui.dialogs.ClipboardServiceDialogs
 
-// TODO: Fix the dialogs & stuff
 internal class TurnOnService : AbstractWelcomeFragment() {
 
     override fun getConfigurations(): Configuration = Configuration(
@@ -14,15 +15,15 @@ internal class TurnOnService : AbstractWelcomeFragment() {
         textId = R.string.palette2_text,
         nextTextId = if (isAndroid10orUp()) R.string.next_3 else R.string.nextd_2,
         action = {
-//            if (!ClipboardAccessibilityService.isRunning(requireContext())) {
-//                showAccessibilityDialog(requireContext())
-//            } else conditionalNavigation()
+            if (!ClipboardAccessibilityService.isRunning(requireContext())) {
+                ClipboardServiceDialogs.showAccessibilityDialog(requireContext())
+            } else conditionalNavigation()
         }
     )
 
     override fun onResume() {
         super.onResume()
-//        if (ClipboardAccessibilityService.isRunning(requireContext())) conditionalNavigation()
+        if (ClipboardAccessibilityService.isRunning(requireContext())) conditionalNavigation()
     }
 
     private fun conditionalNavigation() {

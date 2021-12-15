@@ -18,19 +18,18 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.system.measureTimeMillis
 
-@Singleton
-class ClipRepositoryHelper @Inject constructor(
+class ClipRepositoryHelperImpl @Inject constructor(
     @ApplicationContext private val context: Context,
     private val clipboardNotification: ClipboardNotification,
     private val repository: MainRepository,
-) {
+) : ClipRepositoryHelper {
     private val pendingClipData = ArrayDeque<String>()
 
-    fun insertOrUpdateClip(clip: Clip, toNotify: Boolean = true, toFirebase: Boolean = true) {
+    override fun insertOrUpdateClip(clip: Clip, toNotify: Boolean, toFirebase: Boolean) {
         insertOrUpdateClip(clip.data, toNotify, toFirebase)
     }
 
-    fun insertOrUpdateClip(data: String, toNotify: Boolean = true, toFirebase: Boolean = true) {
+    override fun insertOrUpdateClip(data: String, toNotify: Boolean, toFirebase: Boolean) {
         CoroutineScope(Dispatchers.IO).launch {
             internalInsertOrUpdateClip(data, toNotify, toFirebase)
         }
@@ -59,7 +58,7 @@ class ClipRepositoryHelper @Inject constructor(
      * @param notifyOffset An offset value to show combined (eg: x clips added) instead of individual
      *                     notifications.
      */
-    fun insertOrUpdateClip(clips: List<Clip>, toFirebase: Boolean = true, toNotify: Boolean = true, notifyOffset: Int = 5) {
+    override fun insertOrUpdateClip(clips: List<Clip>, toFirebase: Boolean, toNotify: Boolean, notifyOffset: Int) {
         launchInIO {
             val singleNotify = clips.size <= notifyOffset
             var addedClips = 0
@@ -78,7 +77,7 @@ class ClipRepositoryHelper @Inject constructor(
         }
     }
 
-    fun deleteClip(clipData: List<String>?) {
+    override fun deleteClip(clipData: List<String>?) {
         launchInIO {
             clipData?.forEach { repository.deleteClip(it) }
         }

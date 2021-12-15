@@ -1,12 +1,16 @@
 package com.kpstv.xclipper.data.provider
 
+import android.content.Context
 import com.kpstv.license.Encryption
 import com.kpstv.license.Encryption.DecryptPref
+import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.FBOptions
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 class DBConnectionProviderImpl @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val preferenceProvider: PreferenceProvider
 ) : DBConnectionProvider {
     /**
@@ -34,8 +38,7 @@ class DBConnectionProviderImpl @Inject constructor(
                 val hasBinded = firebaseConfigs[6].toBoolean()
 
                 if (!hasBinded) {
-                    // TODO: Create a string
-                    responseListener.onError(Exception("Enable & apply \"Database binding\" from desktop application."))
+                    responseListener.onError(Exception(context.getString(R.string.db_provider_enable_bind_setting)))
                     return
                 }
 

@@ -28,6 +28,6 @@ dependencies {
     implementation(LibraryDependency.ANDROIDX_PREFERENCES)
     implementation(LibraryDependency.HILT_ANDROID)
 
-    kapt(LibraryDependency.HILT_COMPILER) // TODO: Once everything settles try removing this
+    kapt(LibraryDependency.HILT_COMPILER)
     kapt(LibraryDependency.AUTO_BINDINGS_COMPILER)
 }

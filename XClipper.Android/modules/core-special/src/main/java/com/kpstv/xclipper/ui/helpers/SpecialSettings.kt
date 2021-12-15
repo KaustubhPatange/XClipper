@@ -4,8 +4,6 @@ import android.content.Context
 import androidx.core.content.edit
 import com.kpstv.xclipper.extensions.SpecialAction
 
-
-// TODO: Make internal later
 class SpecialSettings(context: Context) {
     private val preference = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
 

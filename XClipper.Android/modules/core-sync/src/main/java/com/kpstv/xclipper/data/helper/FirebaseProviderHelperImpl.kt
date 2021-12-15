@@ -1,26 +1,26 @@
-package com.kpstv.xclipper.extensions.utils
+package com.kpstv.xclipper.data.helper
 
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.Observer
 import com.kpstv.hvlog.HVLog
-import com.kpstv.xclipper.data.helper.ClipRepositoryHelper
+import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.extensions.enumerations.FirebaseState
 import com.kpstv.xclipper.ui.helpers.AppSettings
-import com.kpstv.xclipper.R
-import com.kpstv.xclipper.data.helper.FirebaseProviderHelper
 import com.kpstv.xclipper.ui.helpers.ConnectionHelper
 import com.kpstv.xclipper.ui.helpers.CoreNotifications
 import dagger.hilt.android.qualifiers.ApplicationContext
 import es.dmoral.toasty.Toasty
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Singleton
 class FirebaseProviderHelperImpl @Inject constructor(
     @ApplicationContext private val context: Context,
     private val clipRepositoryHelper: ClipRepositoryHelper,

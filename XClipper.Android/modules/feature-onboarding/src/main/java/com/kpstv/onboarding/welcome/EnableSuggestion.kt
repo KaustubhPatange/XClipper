@@ -7,6 +7,7 @@ import com.kpstv.onboarding.utils.OnBoardUtils
 import com.kpstv.welcome.R
 import com.kpstv.welcome.databinding.ItemGifviewBinding
 import com.kpstv.xclipper.extensions.utils.SystemUtils
+import com.kpstv.xclipper.ui.CoreDialogs
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -24,7 +25,7 @@ internal class EnableSuggestion : AbstractWelcomeFragment() {
             nextTextId = if (OnBoardUtils.isAndroid10orUp()) R.string.next_5 else R.string.nextd_3,
             action = {
                 if (!SystemUtils.isSystemOverlayEnabled(requireContext())) {
-                    //TODO:showOverlayDialog(requireContext())
+                    CoreDialogs.showSystemOverlayDialog(requireContext())
                 } else {
                     navigateToNextScreen()
                 }

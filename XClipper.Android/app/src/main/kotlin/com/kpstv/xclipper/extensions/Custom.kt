@@ -43,16 +43,6 @@ fun SimpleSearchView.setOnQueryTextListener(
     })
 }
 
-fun logger(TAG: String, message: String) {
-    if (BuildConfig.DEBUG)
-        Log.e(TAG, message)
-}
-
-fun logger(TAG: String, message: String, exception: Exception) {
-    if (BuildConfig.DEBUG)
-        Log.e(TAG, message, exception)
-}
-
 private const val STANDARD_DATE_FORMAT = "yyyyMMddHHmmss"
 fun Date.getFormattedDate(): String =
     SimpleDateFormat(STANDARD_DATE_FORMAT, Locale.US).format(this)

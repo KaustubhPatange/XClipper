@@ -3,6 +3,7 @@ plugins {
     id(GradlePluginId.XCLIPPER_ANDROID)
     kotlin(GradlePluginId.ANDROID_KTX)
     kotlin(GradlePluginId.KAPT)
+    id(GradlePluginId.DAGGER_HILT)
 }
 
 android {
@@ -25,4 +26,6 @@ dependencies {
     implementation(LibraryDependency.NAVIGATOR)
     implementation(LibraryDependency.HILT_ANDROID)
     implementation(LibraryDependency.GIF_DRAWABLE)
+
+    kapt(LibraryDependency.HILT_COMPILER)
 }

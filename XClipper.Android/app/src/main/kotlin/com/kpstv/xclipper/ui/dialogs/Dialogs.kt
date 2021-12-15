@@ -72,49 +72,4 @@ object Dialogs {
             .show()
     }
 
-    /* Accessibility Dialogs */
-
-    fun showAccessibilityDialog(context: Context, block: SimpleFunction): Unit = with(context) {
-        MaterialAlertDialogBuilder(this)
-            .setTitle(getString(R.string.accessibility_service))
-            .setMessage(context.getString(R.string.accessibility_capture))
-            .setPositiveButton(getString(R.string.ok)) { _, _ ->
-                ClipboardUtils.openServiceAccessibilitySetting(this)
-                block.invoke()
-            }
-            .setCancelable(false)
-            .setNegativeButton(getString(R.string.cancel)) { _, _ -> block.invoke() }
-            .show()
-    }
-
-    fun showDisableAccessibilityDialog(context: Context, block: SimpleFunction): Unit = with(context) {
-        MaterialAlertDialogBuilder(this)
-            .setTitle(getString(R.string.accessibility_service_disable))
-            .setMessage(getString(R.string.accessibility_disable_text))
-            .setCancelable(false)
-            .setPositiveButton(R.string.ok) { _, _ ->
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    ClipboardAccessibilityService.disableService(context)
-                } else ClipboardUtils.openServiceAccessibilitySetting(context)
-                block.invoke()
-            }
-            .setNegativeButton(R.string.cancel) { _, _ -> block.invoke() }
-            .show()
-    }
-
-    /* Suggestion dialog */
-
-    @RequiresApi(Build.VERSION_CODES.M)
-    fun showOverlayDialog(context: Context): AlertDialog = with(context) {
-        MaterialAlertDialogBuilder(this)
-            .setTitle(getString(com.kpstv.core.R.string.suggestion_title))
-            .setMessage(getString(com.kpstv.core.R.string.suggestion_capture))
-            .setPositiveButton(getString(com.kpstv.core.R.string.ok)) { _, _ ->
-                SystemUtils.openSystemOverlaySettings(this)
-            }
-            .setCancelable(false)
-            .setNegativeButton(getString(android.R.string.cancel), null)
-            .show()
-    }
-
 }

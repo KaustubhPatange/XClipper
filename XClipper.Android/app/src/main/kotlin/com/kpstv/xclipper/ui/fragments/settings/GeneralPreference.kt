@@ -28,6 +28,8 @@ import com.kpstv.xclipper.service.ClipboardAccessibilityService
 import com.kpstv.xclipper.extensions.helper.ClipboardLogDetector
 import com.kpstv.xclipper.extensions.utils.PackageUtils
 import com.kpstv.xclipper.extensions.utils.SystemUtils.isSystemOverlayEnabled
+import com.kpstv.xclipper.ui.CoreDialogs
+import com.kpstv.xclipper.ui.dialogs.ClipboardServiceDialogs
 import com.kpstv.xclipper.ui.dialogs.Dialogs
 import com.kpstv.xclipper.ui.dialogs.MultiSelectDialogBuilder
 import com.kpstv.xclipper.ui.dialogs.MultiSelectModel3
@@ -85,7 +87,7 @@ class GeneralPreference : AbstractPreferenceFragment() {
         overlayPreference?.setOnPreferenceChangeListener { _, newValue ->
 
             if (!isSystemOverlayEnabled(requireContext()) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                Dialogs.showOverlayDialog(requireContext())
+                CoreDialogs.showSystemOverlayDialog(requireContext())
 
                 if (newValue == true) rememberToCheckOverlaySwitch = true
 
@@ -101,9 +103,9 @@ class GeneralPreference : AbstractPreferenceFragment() {
             checkPreference?.summary = "[BETA] ${checkPreference?.summary}"
         checkPreference?.setOnPreferenceChangeListener { _, newValue ->
             if (newValue as Boolean) {
-                Dialogs.showAccessibilityDialog(requireContext()) { checkForService() }
+                ClipboardServiceDialogs.showAccessibilityDialog(requireContext()) { checkForService() }
             } else {
-                Dialogs.showDisableAccessibilityDialog(requireContext()) { checkForService() }
+                ClipboardServiceDialogs.showDisableAccessibilityDialog(requireContext()) { checkForService() }
             }
             true
         }
@@ -309,7 +311,7 @@ class GeneralPreference : AbstractPreferenceFragment() {
             }
         }
 
-        fun checkForSettings(context: Context) {
+        fun refreshSettings(context: Context) {
             LocalBroadcastManager.getInstance(context).sendBroadcast(Intent(ACTION_CHECK_PREFERENCES))
         }
     }

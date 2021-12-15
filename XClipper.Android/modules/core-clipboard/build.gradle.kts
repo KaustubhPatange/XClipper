@@ -13,6 +13,8 @@ dependencies {
     implementation(LibraryDependency.CORE_KTX)
     implementation(LibraryDependency.COROUTINES_ANDROID)
     implementation(LibraryDependency.ACTIVITY_KTX)
+    implementation(LibraryDependency.LOCAL_BROADCAST_MANAGER)
+    implementation(LibraryDependency.TOASTY)
 
     implementation(LibraryDependency.HILT_ANDROID)
     kapt(LibraryDependency.HILT_COMPILER)

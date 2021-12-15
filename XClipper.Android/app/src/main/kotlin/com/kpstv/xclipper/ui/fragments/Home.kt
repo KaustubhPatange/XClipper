@@ -28,6 +28,7 @@ import com.kpstv.navigation.AnimationDefinition
 import com.kpstv.navigation.FragmentNavigator
 import com.kpstv.navigation.ValueFragment
 import com.kpstv.xclipper.R
+import com.kpstv.xclipper.data.helper.FirebaseProviderHelper
 import com.kpstv.xclipper.data.localized.ToolbarState
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.Tag
@@ -38,7 +39,6 @@ import com.kpstv.xclipper.extensions.enumerations.FirebaseState
 import com.kpstv.xclipper.extensions.listeners.StatusListener
 import com.kpstv.xclipper.extensions.recyclerview.RecyclerViewInsetHelper
 import com.kpstv.xclipper.extensions.recyclerview.SwipeToDeleteCallback
-import com.kpstv.xclipper.extensions.utils.FirebaseUtils
 import com.kpstv.xclipper.ui.helpers.AppThemeHelper
 import com.kpstv.xclipper.ui.helpers.AppThemeHelper.registerForThemeChange
 import com.kpstv.xclipper.ui.activities.ChangeClipboardActivity
@@ -67,7 +67,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
 
     @Inject lateinit var clipboardProvider: ClipboardProvider
     @Inject lateinit var appSettings: AppSettings
-    @Inject lateinit var firebaseUtils: FirebaseUtils
+    @Inject lateinit var firebaseProviderHelper: FirebaseProviderHelper
 
     private lateinit var adapter: CIAdapter
     private var undoSnackBar: Snackbar? = null
@@ -457,7 +457,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
                         Toasty.info(requireContext(), getString(R.string.sync_complete)).show()
                     },
                     onError = {
-                        val message = when (firebaseUtils.retrieveFirebaseStatus()) {
+                        val message = when (firebaseProviderHelper.retrieveFirebaseStatus()) {
                             FirebaseState.NOT_INITIALIZED -> {
                                 SyncDialogHelper.showDialog(requireContext())
                                 getString(R.string.error_sync_uninitialized)

@@ -4,11 +4,11 @@ import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import com.kpstv.hvlog.HVLog
+import com.kpstv.xclipper.data.helper.FirebaseProviderHelper
 import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.extensions.Logger
-import com.kpstv.xclipper.extensions.utils.FirebaseUtils
 import com.kpstv.xclipper.extensions.helper.ClipboardLogDetector
 import com.kpstv.xclipper.service.worker.AccessibilityWorker
 import com.kpstv.xclipper.service.worker.ExtensionWorker
@@ -26,7 +26,7 @@ class XClipperApplication : Application(), Configuration.Provider {
     @Inject lateinit var firebaseProvider: FirebaseProvider
     @Inject lateinit var dbConnectionProvider: DBConnectionProvider
     @Inject lateinit var appSettings: AppSettings
-    @Inject lateinit var firebaseUtils: dagger.Lazy<FirebaseUtils>
+    @Inject lateinit var firebaseProviderHelper: dagger.Lazy<FirebaseProviderHelper>
 
     override fun onCreate() {
         super.onCreate()
@@ -54,7 +54,7 @@ class XClipperApplication : Application(), Configuration.Provider {
 
         /** This will load firebase config setting */
         if (dbConnectionProvider.isValidData()) { // implicit loadDataFromPreference();
-            firebaseUtils.get().observeDatabaseChangeEvents()
+            firebaseProviderHelper.get().observeDatabaseChangeEvents()
         }
 
         val options = dbConnectionProvider.optionsProvider()

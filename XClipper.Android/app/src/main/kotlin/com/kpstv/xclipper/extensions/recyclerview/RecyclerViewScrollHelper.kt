@@ -2,7 +2,6 @@ package com.kpstv.xclipper.extensions.recyclerview
 
 import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.xclipper.extensions.SimpleFunction
-import com.kpstv.xclipper.extensions.logger
 
 class RecyclerViewScrollHelper : RecyclerView.OnScrollListener() {
 
