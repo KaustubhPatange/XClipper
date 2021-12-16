@@ -29,33 +29,33 @@ import com.kpstv.navigation.FragmentNavigator
 import com.kpstv.navigation.ValueFragment
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.helper.FirebaseProviderHelper
-import com.kpstv.xclipper.data.localized.ToolbarState
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.data.provider.ClipboardProvider
-import com.kpstv.xclipper.databinding.FragmentHomeBinding
 import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.extensions.enumerations.FirebaseState
-import com.kpstv.xclipper.extensions.listeners.StatusListener
-import com.kpstv.xclipper.extensions.recyclerview.RecyclerViewInsetHelper
-import com.kpstv.xclipper.extensions.recyclerview.SwipeToDeleteCallback
+import com.kpstv.xclipper.extension.listener.StatusListener
+import com.kpstv.xclipper.extension.recyclerview.RecyclerViewInsetHelper
+import com.kpstv.xclipper.extension.recyclerview.SwipeToDeleteCallback
 import com.kpstv.xclipper.ui.helpers.AppThemeHelper
 import com.kpstv.xclipper.ui.helpers.AppThemeHelper.registerForThemeChange
 import com.kpstv.xclipper.ui.activities.ChangeClipboardActivity
 import com.kpstv.xclipper.ui.activities.NavViewModel
 import com.kpstv.xclipper.ui.activities.Start
-import com.kpstv.xclipper.ui.adapters.CIAdapter
+import com.kpstv.xclipper.ui.adapter.CIAdapter
 import com.kpstv.xclipper.ui.dialogs.EditDialog
 import com.kpstv.xclipper.ui.dialogs.TagDialog
-import com.kpstv.xclipper.extensions.recyclerview.RecyclerViewScrollHelper
+import com.kpstv.xclipper.extension.recyclerview.RecyclerViewScrollHelper
 import com.kpstv.xclipper.extensions.utils.ClipboardUtils
 import com.kpstv.xclipper.extensions.utils.ShareUtils
+import com.kpstv.xclipper.feature_home.databinding.FragmentHomeBinding
 import com.kpstv.xclipper.service.ClipboardAccessibilityService
+import com.kpstv.xclipper.extension.enumeration.ToolbarState
 import com.kpstv.xclipper.ui.fragments.sheets.SpecialBottomSheet
 import com.kpstv.xclipper.ui.helpers.AppSettingKeys
 import com.kpstv.xclipper.ui.helpers.AppSettings
 import com.kpstv.xclipper.ui.helpers.fragments.SyncDialogHelper
-import com.kpstv.xclipper.ui.viewmodels.MainViewModel
+import com.kpstv.xclipper.ui.viewmodel.MainViewModel
 import com.zhuinden.livedatacombinetuplekt.combineTuple
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
@@ -75,7 +75,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
     private val binding by viewBinding(FragmentHomeBinding::bind)
 
     private val navViewModel by activityViewModels<NavViewModel>()
-    private val mainViewModel: MainViewModel by viewModels()
+    private val mainViewModel by viewModels<MainViewModel>()
     private val recyclerViewScrollHelper = RecyclerViewScrollHelper()
     private val swipeToDeleteItemTouch: ItemTouchHelper by lazy {
         ItemTouchHelper(
@@ -235,23 +235,24 @@ class Home : ValueFragment(R.layout.fragment_home) {
 
         adapter.setMenuItemClick { clip, _, menuType ->
             when (menuType) {
-                CIAdapter.MENU_TYPE.Edit -> {
+                CIAdapter.MenuType.Edit -> {
                     /** This will ensure that we are editing the clip */
                     mainViewModel.editManager.postClip(clip)
 
                     val intent = Intent(requireContext(), EditDialog::class.java)
                     startActivity(intent)
                 }
-                CIAdapter.MENU_TYPE.Pin -> {
+                CIAdapter.MenuType.Pin -> {
                     mainViewModel.changeClipPin(clip, !clip.isPinned)
                 }
-                CIAdapter.MENU_TYPE.Special -> {
+                CIAdapter.MenuType.Special -> {
+                    // TODO: Hilt to feature-special
                     SpecialBottomSheet.show(
                         fragment = this,
                         clip = clip
                     )
                 }
-                CIAdapter.MENU_TYPE.Share -> {
+                CIAdapter.MenuType.Share -> {
                     ShareUtils.shareText(requireActivity(), clip)
                 }
             }

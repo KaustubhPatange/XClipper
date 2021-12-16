@@ -20,6 +20,7 @@ object ModuleDependency {
     const val FEATURE_SPECIAL = ":modules:feature-special"
     const val FEATURE_QUICKSETTINGS = ":modules:feature-quicksettings"
     const val FEATURE_SUGGESTIONS = ":modules:feature-suggestions"
+    const val FEATURE_HOME = ":modules:feature-home"
 
     fun getAllModules(): Set<String> = ModuleDependency::class.memberProperties
         .filter { it.isConst }

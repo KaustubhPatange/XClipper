@@ -7,7 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.kpstv.xclipper.data.localized.DialogState
+import com.kpstv.xclipper.extension.enumeration.DialogState
 import com.kpstv.xclipper.data.model.ClipTag
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.data.model.TagMap

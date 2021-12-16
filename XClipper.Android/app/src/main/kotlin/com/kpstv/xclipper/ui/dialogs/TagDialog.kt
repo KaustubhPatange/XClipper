@@ -14,7 +14,7 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.kpstv.xclipper.R
-import com.kpstv.xclipper.data.localized.DialogState
+import com.kpstv.xclipper.extension.enumeration.DialogState
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.databinding.DialogCreateTagBinding
 import com.kpstv.xclipper.extensions.collapse
@@ -22,7 +22,7 @@ import com.kpstv.xclipper.extensions.show
 import com.kpstv.xclipper.ui.helpers.AppThemeHelper
 import com.kpstv.xclipper.extensions.viewBinding
 import com.kpstv.xclipper.ui.adapters.TagAdapter
-import com.kpstv.xclipper.ui.viewmodels.MainViewModel
+import com.kpstv.xclipper.ui.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 

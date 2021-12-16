@@ -18,9 +18,7 @@ internal class WindowApp : AbstractWelcomeFragment() {
         nextTextId = R.string.next_8,
         isLastScreen = true, // last screen must add @AndroidEntryPoint annotation
         action = {
-            // TODO: Add here the hilt magic
             onBoardingNavigation.goToNext()
-//            navigateTo(OnBoardingRoutes.HOME, true, AnimationDefinition.CircularReveal())
         }
     )
 }

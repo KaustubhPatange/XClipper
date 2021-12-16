@@ -5,6 +5,7 @@ import androidx.room.PrimaryKey
 import com.kpstv.bindings.AutoGenerateListConverter
 import com.kpstv.bindings.ConverterType
 
+// TODO: Move to Feature Home
 @Entity(tableName = "table_tag")
 @AutoGenerateListConverter(using = ConverterType.GSON)
 data class Tag(

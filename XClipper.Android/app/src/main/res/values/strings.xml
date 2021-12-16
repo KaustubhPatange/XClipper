@@ -1,27 +1,21 @@
 <resources>
     <string name="accessibility_service_description">This will let XClipper to monitor clipboard &amp; will able to capture some of known strategies if system detects any copy/cut action.\n\n\nThis feature is still in BETA for Android 10+ users and may not work always.</string>
 
-    <string name="testStringSmall">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries.</string>
-    <string name="timeString">2 days ago</string>
-    <string name="edit">Edit</string>
+
     <string name="delete">Delete</string>
     <string name="undo">Undo</string>
     <string name="selected">selected</string>
     <string name="item_delete">item(s) deleted</string>
-    <string name="delete_all">Delete All</string>
-    <string name="select_all">Select All</string>
-    <string name="select_none">Deselect All</string>
+
     <string name="save">Save</string>
     <string name="edit_success">Changes saved!</string>
     <string name="error_empty_text">Empty text to update</string>
-    <string name="search">Search</string>
     <string name="sync">Sync</string>
     <string name="sync_complete">Data synchronization complete</string>
     <string name="error_sync">Couldn\'t validate data</string>
     <string name="error_sync_uninitialized">Device is not connected to a database</string>
     <string name="help">Help</string>
     <string name="faqs">FAQs</string>
-    <string name="more">More</string>
     <string name="tag">Filter Tag</string>
     <string name="custom_tags">Filter Tags</string>
     <string name="add_remove_tags">Edit Tags</string>
@@ -82,8 +76,6 @@
     <string name="suggest_title">Suggestions</string>
     <string name="suggest_summary">[BETA] Show a small bubble whenever keyboard pops out containing your latest clips</string>
 
-    <string name="pin">Pin</string>
-    <string name="unpin">Unpin</string>
     <string name="ask_suggestion">Show overlay suggestion</string>
     <string name="err_database">Invalid backup structure</string>
     <string name="author_title">Owner</string>
@@ -94,7 +86,6 @@
     <string name="upgrade">Upgrades</string>
     <string name="about">About</string>
     <string name="auto_sync_title">Automatic synchronization</string>
-    <string name="layout_empty_text">Copy text or click to create a new empty paste</string>
     <string name="auto_sync_summary">Retrieve data from database when app is launched</string>
     <string name="bind_delete_title">Capture Delete</string>
     <string name="bind_delete_summary">Enable local removal of item if it is being deleted across device</string>
@@ -141,7 +132,6 @@
     <string name="crash_text_sent_second_try">Oops! Failed to report but we trying one last time.</string>
     <string name="crash_text_sent_err">Failed to report crash to the service.</string>
     <string name="crash_title">We crashed,</string>
-    <string name="go_top">Go top</string>
     <string name="open_accessibility">Opening accessibility</string>
 
 

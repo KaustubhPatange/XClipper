@@ -10,11 +10,11 @@ import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.databinding.DialogEditLayoutBinding
 import com.kpstv.xclipper.extensions.clone
 import com.kpstv.xclipper.extensions.drawableFrom
-import com.kpstv.xclipper.extensions.listeners.RepositoryListener
+import com.kpstv.xclipper.extension.listener.RepositoryListener
 import com.kpstv.xclipper.ui.helpers.AppThemeHelper
 import com.kpstv.xclipper.extensions.viewBinding
 import com.kpstv.xclipper.ui.adapters.EditAdapter
-import com.kpstv.xclipper.ui.viewmodels.MainViewModel
+import com.kpstv.xclipper.ui.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.delay
@@ -106,6 +106,7 @@ class EditDialog : AppCompatActivity() {
             notFound = {
                 mainViewModel.postUpdateToRepository(
                     clip,
+                    /** In the second parameter we are also supplying the tags as well. */
                     /** In the second parameter we are also supplying the tags as well. */
                     clip.clone(text, mainViewModel.editManager.getSelectedTags())
                 )

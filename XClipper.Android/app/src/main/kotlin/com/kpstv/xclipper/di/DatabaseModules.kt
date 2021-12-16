@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.kpstv.xclipper.data.db.MainDatabase
+import com.kpstv.xclipper.data.localized.TagDao
 import com.kpstv.xclipper.data.localized.dao.*
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.repository.MainRepository

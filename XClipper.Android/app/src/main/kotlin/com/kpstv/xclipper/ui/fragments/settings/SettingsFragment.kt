@@ -66,8 +66,8 @@ class SettingsFragment : ValueFragment(R.layout.fragment_settings_main) {
             SingleMenuItem(
                 title = getString(R.string.upgrade),
                 image = R.drawable.ic_upgrade,
-                imageTint = R.color.palette5,
-                textColor = R.color.palette5
+                imageTint = R.color.swipe_background,
+                textColor = R.color.swipe_background
             ) { navViewModel.navigateTo(Settings.Screen.UPGRADE) }
         )
 
