@@ -14,4 +14,20 @@
     <string name="select_all">Select All</string>
     <string name="select_none">Deselect All</string>
 
+    <string name="custom_tags">Filter Tags</string>
+    <string name="add_remove_tags">Edit Tags</string>
+
+    <string name="tag_delete_title">Delete \"%1$s\"</string>
+    <string name="tag_delete_message">%1$d clip(s) are dependent on this tag. Do you still want to still remove it?</string>
+
+    <string name="error_empty_text">Empty text to update</string>
+    <string name="error_duplicate_data">Duplicate data insertion</string>
+    <string name="edit_success">Changes saved!</string>
+
+    <string name="sync_complete">Data synchronization complete</string>
+    <string name="error_sync_uninitialized">Device is not connected to a database</string>
+    <string name="error_sync">Couldn\'t validate data</string>
+
+    <string name="accessibility_not_running">Accessibility service not running</string>
+    <string name="enable">Enable</string>
 </resources>

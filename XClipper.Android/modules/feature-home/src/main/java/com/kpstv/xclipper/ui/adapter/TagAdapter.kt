@@ -1,4 +1,4 @@
-package com.kpstv.xclipper.ui.adapters
+package com.kpstv.xclipper.ui.adapter
 
 import android.annotation.SuppressLint
 import android.view.ViewGroup
@@ -11,8 +11,8 @@ import com.kpstv.xclipper.extension.enumeration.DialogState
 import com.kpstv.xclipper.data.model.ClipTag
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.data.model.TagMap
-import com.kpstv.xclipper.databinding.ItemTagChipBinding
 import com.kpstv.xclipper.extensions.layoutInflater
+import com.kpstv.xclipper.feature_home.databinding.ItemTagChipBinding
 
 class TagAdapter(
     private val lifecycleOwner: LifecycleOwner,

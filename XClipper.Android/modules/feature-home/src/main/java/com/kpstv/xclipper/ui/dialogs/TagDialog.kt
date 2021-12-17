@@ -13,15 +13,15 @@ import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.kpstv.xclipper.R
 import com.kpstv.xclipper.extension.enumeration.DialogState
 import com.kpstv.xclipper.data.model.Tag
-import com.kpstv.xclipper.databinding.DialogCreateTagBinding
 import com.kpstv.xclipper.extensions.collapse
 import com.kpstv.xclipper.extensions.show
 import com.kpstv.xclipper.ui.helpers.AppThemeHelper
 import com.kpstv.xclipper.extensions.viewBinding
-import com.kpstv.xclipper.ui.adapters.TagAdapter
+import com.kpstv.xclipper.feature_home.R
+import com.kpstv.xclipper.feature_home.databinding.DialogCreateTagBinding
+import com.kpstv.xclipper.ui.adapter.TagAdapter
 import com.kpstv.xclipper.ui.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -32,7 +32,7 @@ class TagDialog : AppCompatActivity() {
     private val TAG = javaClass.simpleName
 
     private val binding by viewBinding(DialogCreateTagBinding::inflate)
-    private val mainViewModel: MainViewModel by viewModels()
+    private val mainViewModel by viewModels<MainViewModel>()
 
     private lateinit var adapter: TagAdapter
     private lateinit var switchCompat: SwitchCompat
@@ -110,7 +110,7 @@ class TagDialog : AppCompatActivity() {
     }
 
     private fun setToolbar() = with(binding) {
-        toolbar.setNavigationIcon(R.drawable.bubble_ic_cross)
+        toolbar.setNavigationIcon(R.drawable.ic_cross)
         toolbar.setNavigationOnClickListener {
             finish()
         }

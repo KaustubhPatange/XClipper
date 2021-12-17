@@ -316,9 +316,9 @@ class Home : ValueFragment(R.layout.fragment_home) {
             true
         }
 
-        mainViewModel.stateManager.selectedItemClips.observe(viewLifecycleOwner) {
-            if (it.isNotEmpty())
-                binding.toolbar.subtitle = "${it.size} ${getString(R.string.selected)}"
+        mainViewModel.stateManager.selectedItemClips.observe(viewLifecycleOwner) { clips ->
+            if (clips.isNotEmpty())
+                binding.toolbar.subtitle = "${clips.size} ${getString(R.string.selected)}"
             else
                 binding.toolbar.subtitle = BLANK_STRING // requires to show empty subtitle
         }
@@ -342,7 +342,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
         tweakItems.removeAll(itemsToRemove)
         adapter.submitList(tweakItems)
 
-        val snackbarCallback = object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
+        val snackBarCallback = object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                 mainViewModel.deleteMultipleFromRepository(itemsToRemove)
             }
@@ -354,11 +354,11 @@ class Home : ValueFragment(R.layout.fragment_home) {
             Snackbar.LENGTH_INDEFINITE
         ).apply {
             setAction(getString(R.string.undo)) {
-                removeCallback(snackbarCallback)
+                removeCallback(snackBarCallback)
                 adapter.submitList(clonedItems)
                 adapter.notifyDataSetChanged()
             }
-            addCallback(snackbarCallback)
+            addCallback(snackBarCallback)
             show()
             undoSnackBar = this
         }
@@ -420,7 +420,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
         toolbar.menu.clear()
         toolbar.setBackgroundColor(AppThemeHelper.CARD_SELECTED_COLOR)
         toolbar.inflateMenu(R.menu.selected_menu)
-        toolbar.navigationIcon = ContextCompat.getDrawable(requireContext(), R.drawable.bubble_ic_cross)
+        toolbar.navigationIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_cross)
         toolbar.setNavigationOnClickListener {
             mainViewModel.stateManager.setToolbarState(ToolbarState.NormalViewState)
         }
@@ -532,10 +532,10 @@ class Home : ValueFragment(R.layout.fragment_home) {
         if (!ClipboardAccessibilityService.isRunning(requireContext())) {
             Snackbar.make(
                 binding.ciRecyclerView,
-                "Accessibility service not running",
+                getString(R.string.accessibility_not_running),
                 Snackbar.LENGTH_LONG
             )
-                .setAction("Enable") {
+                .setAction(getString(R.string.enable)) {
                     ClipboardUtils.openServiceAccessibilitySetting(requireContext())
                 }.show()
         }

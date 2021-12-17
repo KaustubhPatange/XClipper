@@ -5,15 +5,15 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.model.Clip
-import com.kpstv.xclipper.databinding.DialogEditLayoutBinding
 import com.kpstv.xclipper.extensions.clone
 import com.kpstv.xclipper.extensions.drawableFrom
 import com.kpstv.xclipper.extension.listener.RepositoryListener
 import com.kpstv.xclipper.ui.helpers.AppThemeHelper
 import com.kpstv.xclipper.extensions.viewBinding
-import com.kpstv.xclipper.ui.adapters.EditAdapter
+import com.kpstv.xclipper.feature_home.R
+import com.kpstv.xclipper.feature_home.databinding.DialogEditLayoutBinding
+import com.kpstv.xclipper.ui.adapter.EditAdapter
 import com.kpstv.xclipper.ui.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
@@ -48,7 +48,7 @@ class EditDialog : AppCompatActivity() {
 
         setContentView(binding.root)
 
-        binding.toolbar.navigationIcon = drawableFrom(R.drawable.bubble_ic_cross)
+        binding.toolbar.navigationIcon = drawableFrom(R.drawable.ic_cross)
         binding.toolbar.setNavigationOnClickListener {
             finish()
         }

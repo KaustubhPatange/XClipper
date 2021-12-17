@@ -1,4 +1,4 @@
-package com.kpstv.xclipper.ui.adapters
+package com.kpstv.xclipper.ui.adapter
 
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
@@ -8,9 +8,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.xclipper.extensions.ClipTagMap
 import com.kpstv.xclipper.data.model.Tag
-import com.kpstv.xclipper.databinding.ItemTagChipBinding
 import com.kpstv.xclipper.extensions.containsKey
 import com.kpstv.xclipper.extensions.layoutInflater
+import com.kpstv.xclipper.feature_home.databinding.ItemTagChipBinding
 
 class EditAdapter(
     private val viewLifecycleOwner: LifecycleOwner,
@@ -42,9 +42,9 @@ class EditAdapter(
 
             chip.setOnClickListener{ onClick.invoke(tag, layoutPosition) }
 
-            selectedTags.observe(viewLifecycleOwner, {
+            selectedTags.observe(viewLifecycleOwner) {
                 chip.isChipIconVisible = it?.containsKey(tag.name) == true
-            })
+            }
         }
     }
 }

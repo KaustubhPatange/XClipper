@@ -16,6 +16,8 @@ dependencies {
     implementation(project(ModuleDependency.CORE))
     implementation(project(ModuleDependency.CORE_EXTENSIONS))
 
+    implementation(LibraryDependency.ACTIVITY_KTX)
+    implementation(LibraryDependency.MATERIAL)
     implementation(LibraryDependency.RECYCLERVIEW)
     implementation(LibraryDependency.CONSTRAINT_LAYOUT)
     implementation(LibraryDependency.FLEXBOX)
@@ -24,6 +26,7 @@ dependencies {
     implementation(LibraryDependency.LIFECYCLE_VIEWMODEL)
     implementation(LibraryDependency.NAVIGATOR)
     implementation(LibraryDependency.LIVEDATA_COMBINE_UTIL)
+    implementation(LibraryDependency.TOASTY)
 
     implementation(LibraryDependency.ROOM_KTX)
     kapt(LibraryDependency.ROOM_COMPILER_KAPT)

@@ -8,19 +8,14 @@
     <string name="item_delete">item(s) deleted</string>
 
     <string name="save">Save</string>
-    <string name="edit_success">Changes saved!</string>
-    <string name="error_empty_text">Empty text to update</string>
+
     <string name="sync">Sync</string>
-    <string name="sync_complete">Data synchronization complete</string>
-    <string name="error_sync">Couldn\'t validate data</string>
-    <string name="error_sync_uninitialized">Device is not connected to a database</string>
     <string name="help">Help</string>
     <string name="faqs">FAQs</string>
     <string name="tag">Filter Tag</string>
-    <string name="custom_tags">Filter Tags</string>
-    <string name="add_remove_tags">Edit Tags</string>
+
     <string name="write_here">Write here…</string>
-    <string name="error_duplicate_data">Duplicate data insertion</string>
+
     <string name="error_tag_dependent">Some items are dependent on this tag</string>
     <string name="open_link">Open with…</string>
 
@@ -136,8 +131,7 @@
 
 
 
-    <string name="tag_delete_title">Delete \"%1$s\"</string>
-    <string name="tag_delete_message">%1$d clip(s) are dependent on this tag. Do you still want to still remove it?</string>
+
     <string name="onboard_screens_reset">All onboarding screens has been reset!</string>
     <string name="read_guide">Need help?</string>
     <string name="read_guide_text">Read this step by step tutorial on how to setup synchronization across multiple devices.</string>
@@ -146,8 +140,6 @@
     <string name="load_apps">Loading apps metadata…</string>
     <string name="blacklist_apps">Select blacklist apps</string>
 
-
-    <string name="enable">Enable</string>
 
     <string name="adb_mode_title">Improve detection</string>
     <string name="adb_mode_summary">Enhance clipboard detection logic by some additional configuration.</string>
