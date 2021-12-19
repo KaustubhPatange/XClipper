@@ -1,4 +1,4 @@
-package com.kpstv.xclipper.ui.helpers
+package com.kpstv.xclipper.ui.helper
 
 import android.app.Application
 import android.content.Context
@@ -12,7 +12,7 @@ class CrashHelper {
        private var application: Application? = null
 
        fun inject(context: Context) {
-           this.application = context.applicationContext as Application
+           application = context.applicationContext as Application
 
            val oldHandler = Thread.getDefaultUncaughtExceptionHandler()
            Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->

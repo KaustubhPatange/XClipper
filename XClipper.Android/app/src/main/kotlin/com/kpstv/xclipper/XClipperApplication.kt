@@ -13,6 +13,7 @@ import com.kpstv.xclipper.extensions.helper.ClipboardLogDetector
 import com.kpstv.xclipper.service.worker.ClipboardServiceNotifyWorker
 import com.kpstv.xclipper.service.worker.ExtensionWorker
 import com.kpstv.xclipper.ui.fragments.settings.GeneralPreference
+import com.kpstv.xclipper.ui.helper.CrashHelper
 import com.kpstv.xclipper.ui.helpers.*
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject

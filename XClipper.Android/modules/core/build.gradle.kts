@@ -19,6 +19,7 @@ android {
             }
             buildConfigField("String","APPLICATION_ID", "\"${applicationId}\"")
             buildConfigField("Integer","VERSION_CODE", "${AndroidConfig.VERSION_CODE}")
+            buildConfigField("String","VERSION_NAME", "\"${AndroidConfig.VERSION_NAME}\"")
         }
     }
     kotlinOptions {
@@ -53,6 +54,7 @@ dependencies {
     implementation(LibraryDependency.FIREBASE_ANALYTICS)
     implementation(LibraryDependency.PAGING)
     implementation(LibraryDependency.GIF_DRAWABLE)
+    implementation(LibraryDependency.SENTRY)
     api(LibraryDependency.ROUND_BOTTOM_SHEET)
 
     implementation(kotlin("reflect"))

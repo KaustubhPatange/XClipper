@@ -7,16 +7,15 @@
     android:orientation="vertical">
 
     <com.airbnb.lottie.LottieAnimationView
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
         android:id="@+id/lottieView"
         android:layout_width="match_parent"
         android:layout_height="160dp"
         android:background="?colorForeground"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
         app:lottie_autoPlay="true"
         app:lottie_enableMergePathsForKitKatAndAbove="true"
-        app:lottie_loop="true"
-        app:lottie_rawRes="@raw/heart" />
+        app:lottie_loop="true" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -30,8 +29,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="?colorTextPrimary"
-            tools:text="Demo Title"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            tools:text="Demo Title" />
 
         <TextView
             android:id="@+id/message"
@@ -63,7 +62,9 @@
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible"
+            tools:text="Neutral"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_close"
@@ -87,7 +88,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="RelativeOverlap" />
+            tools:ignore="RelativeOverlap"
+            tools:text="Positive"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

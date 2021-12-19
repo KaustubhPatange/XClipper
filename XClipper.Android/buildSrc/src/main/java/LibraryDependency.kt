@@ -50,6 +50,7 @@ private object LibraryVersion {
     const val PINLOCK = "1.2"
     const val BILLING = "4.0.0"
     const val MARKWON = "4.6.2"
+    const val SENTRY = "5.5.1"
 }
 
 object LibraryDependency {
@@ -131,4 +132,6 @@ object LibraryDependency {
     const val BILLING = "com.android.billingclient:billing-ktx:${LibraryVersion.BILLING}"
 
     const val LOCAL_BROADCAST_MANAGER = "androidx.localbroadcastmanager:localbroadcastmanager:1.0.0"
+
+    const val SENTRY = "io.sentry:sentry-android:${LibraryVersion.SENTRY}"
 }

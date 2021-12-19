@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.kpstv.xclipper.feature_crash_report">
+
+    <application>
+
+        <meta-data
+            android:name="io.sentry.dsn"
+            android:value="${sentry_dsn_value}" />
+
+        <!-- Disable the default uncaught exception, we will handle it manually
+             in Crash Activity.
+         -->
+        <meta-data
+            android:name="io.sentry.uncaught-exception-handler.enable"
+            android:value="false"/>
+    </application>
+</manifest>

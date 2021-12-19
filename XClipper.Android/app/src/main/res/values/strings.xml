@@ -46,7 +46,6 @@
     <string name="alert">Alert</string>
     <string name="logout_msg">Are you sure you want to log out?</string>
     <string name="yes">Yes</string>
-    <string name="close">Close</string>
 
     <string name="err_uid">Not a valid UID</string>
 
@@ -114,12 +113,7 @@
     <string name="trim_title">Text trimming</string>
     <string name="trim_summary">This will trim whitespaces from the clip data while displaying.</string>
 
-    <string name="show_stacktrace">Show stacktrace</string>
-    <string name="crash_text_sending">Hang on, we are sending this report to my server…</string>
-    <string name="crash_text_sent">And it has been reported to my server. So you don\'t need to perform any additional step.</string>
-    <string name="crash_text_sent_second_try">Oops! Failed to report but we trying one last time.</string>
-    <string name="crash_text_sent_err">Failed to report crash to the service.</string>
-    <string name="crash_title">We crashed,</string>
+
     <string name="open_accessibility">Opening accessibility</string>
 
 

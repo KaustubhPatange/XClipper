@@ -75,7 +75,6 @@ dependencies {
     implementation(LibraryDependency.PLAY_CORE)
     implementation(LibraryDependency.PLAY_CORE_KTX)
     implementation(LibraryDependency.COROUTINES_CORE)
-    implementation(LibraryDependency.COROUTINES_TASKS)
     implementation(LibraryDependency.COROUTINES_ANDROID)
     implementation(LibraryDependency.WORK_MANAGER)
     implementation(LibraryDependency.GSON)

@@ -1,6 +1,7 @@
 package com.kpstv.xclipper.di
 
 import android.content.Context
+import com.kpstv.xclipper.data.provider.ClipboardServiceHelper
 import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
@@ -16,6 +17,7 @@ interface CommonReusableEntryPoints {
     fun appSettings() : AppSettings
     fun preferenceProvider() : PreferenceProvider
     fun dbConnectionProvider() : DBConnectionProvider
+    fun clipboardServiceHelper() : ClipboardServiceHelper
     fun firebaseProvider() : FirebaseProvider
 
     companion object {

@@ -3,6 +3,7 @@ package com.kpstv.xclipper.extensions
 import android.content.Context
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.kpstv.xclipper.ui.helpers.CrashReport
 import org.jetbrains.annotations.NonNls
 import timber.log.Timber
 
@@ -64,7 +65,8 @@ object Logger {
     override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
       if (t != null) {
         val final = Exception("[$tag] - $message", t)
-        FirebaseCrashlytics.getInstance().recordException(final) // records non-fatal exceptions
+        FirebaseCrashlytics.getInstance().recordException(final) // record non-fatal exceptions
+        CrashReport.sendNonFatalException(context = null, throwable = final) // record non-fatal exceptions
       } else {
         FirebaseCrashlytics.getInstance().log("[$tag] - $message")
       }

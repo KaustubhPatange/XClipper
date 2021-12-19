@@ -27,6 +27,7 @@ dependencies {
     implementation(LibraryDependency.ACTIVITY_KTX)
     implementation(LibraryDependency.GLIDE)
     implementation(LibraryDependency.LOCAL_BROADCAST_MANAGER)
+    api(LibraryDependency.COROUTINES_TASKS)
 
     kapt(LibraryDependency.GLIDE_COMPILER)
 }

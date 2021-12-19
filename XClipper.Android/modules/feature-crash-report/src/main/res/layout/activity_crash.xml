@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.activities.Crash">
+    tools:context="com.kpstv.xclipper.ui.activities.Crash">
 
     <TextView
         android:id="@+id/tv_top"
@@ -62,7 +62,7 @@
         android:layout_width="match_parent"
         android:layout_height="55dp"
         android:layout_margin="15dp"
-        android:text="@string/show_stacktrace"
+        android:text="@string/btn_show_stacktrace"
         android:textAllCaps="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
