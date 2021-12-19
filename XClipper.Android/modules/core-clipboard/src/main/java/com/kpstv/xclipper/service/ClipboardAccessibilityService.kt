@@ -12,14 +12,12 @@ import android.view.accessibility.AccessibilityNodeInfo
 import androidx.annotation.RequiresApi
 import androidx.core.os.bundleOf
 import androidx.lifecycle.MutableLiveData
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.kpstv.core.BuildConfig
 import com.kpstv.xclipper.data.helper.ClipRepositoryHelper
 import com.kpstv.xclipper.data.helper.FirebaseProviderHelper
 import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.di.suggestions.SuggestionService
 import com.kpstv.xclipper.extensions.Logger
-import com.kpstv.xclipper.extensions.broadcastManager
 import com.kpstv.xclipper.extensions.helper.ClipboardDetection
 import com.kpstv.xclipper.extensions.helper.ClipboardLogDetector
 import com.kpstv.xclipper.extensions.helper.LanguageDetector
@@ -64,8 +62,11 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
         private const val ACTION_DISABLE_IMPROVE_DETECTION = "com.kpstv.xclipper.action_disable_improve_detection"
 
         @RequiresApi(Build.VERSION_CODES.N)
-        fun disableService(context: Context) {
-            LocalBroadcastManager.getInstance(context).sendBroadcast(Intent(ACTION_DISABLE_SERVICE))
+        fun disableService(context: Context) = with(context) {
+            val intent = Intent(this, ClipboardAccessibilityService::class.java).apply {
+                action = ACTION_DISABLE_SERVICE
+            }
+            startService(intent)
         }
 
         fun isRunning(context: Context): Boolean = SystemUtils.isAccessibilityServiceEnabled(context, ClipboardAccessibilityService::class.java)
@@ -112,9 +113,9 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
             if (event?.packageName != packageName)
                 currentPackage = event?.packageName
 
-            // logger(TAG, "$event")
-            //  logger(TAG, "SourceText: ${event?.source}; Text is null: ${event?.text.isNullOrEmpty()}; $event")
-            //   logger(TAG, "Actions: ${ClipboardDetection.ignoreSourceActions(event?.source?.actionList)}, List: ${event?.source?.actionList}")
+//             logger("$event")
+//              logger("SourceText: ${event?.source}; Text is null: ${event?.text.isNullOrEmpty()}; $event")
+            //   logger("Actions: ${ClipboardDetection.ignoreSourceActions(event?.source?.actionList)}, List: ${event?.source?.actionList}")
             if (event?.eventType != null)
                 clipboardDetector.addEvent(event.eventType)
 
@@ -209,9 +210,32 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
             }
         }
 
-        registerLocalBroadcast()
         registerClipboardLogDetector()
         appSettings.registerListener(settingsListener)
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        when(intent?.action) {
+            ACTION_INSERT_TEXT -> {
+                val editableNode = editableNode
+                val nodeInfo = nodeInfo
+                if (editableNode != null)
+                    actionInsertText(editableNode, intent)
+                else if (nodeInfo != null)
+                    actionInsertText(nodeInfo, intent)
+            }
+            ACTION_DISABLE_SERVICE -> @RequiresApi(Build.VERSION_CODES.N) {
+                disableSelf()
+                settingUIActions.refreshGeneralSettingsUI()
+            }
+            ACTION_ENABLE_IMPROVE_DETECTION -> {
+                if (!clipboardLogDetector.isStarted()) clipboardLogDetector.startDetecting()
+            }
+            ACTION_DISABLE_IMPROVE_DETECTION -> {
+                if (clipboardLogDetector.isStarted()) clipboardLogDetector.stopDetecting()
+            }
+        }
+        return super.onStartCommand(intent, flags, startId)
     }
 
     override fun onDestroy() {
@@ -257,41 +281,6 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
         if (key == AppSettingKeys.CLIPBOARD_BLACKLIST_APPS) {
             blackListedApps = value as Set<String>
         }
-    }
-
-    private fun registerLocalBroadcast() {
-        val actions = IntentFilter().apply {
-            addAction(ACTION_INSERT_TEXT)
-            addAction(ACTION_DISABLE_SERVICE)
-            addAction(ACTION_ENABLE_IMPROVE_DETECTION)
-            addAction(ACTION_DISABLE_IMPROVE_DETECTION)
-        }
-        applicationContext.broadcastManager()
-            .registerReceiver(object : BroadcastReceiver() {
-                override fun onReceive(context: Context?, intent: Intent?) {
-                    if (context == null) return
-                    when (intent?.action) {
-                        ACTION_INSERT_TEXT -> {
-                            val editableNode = editableNode
-                            val nodeInfo = nodeInfo
-                            if (editableNode != null)
-                                actionInsertText(editableNode, intent)
-                            else if (nodeInfo != null)
-                                actionInsertText(nodeInfo, intent)
-                        }
-                        ACTION_DISABLE_SERVICE -> @RequiresApi(Build.VERSION_CODES.N) {
-                            disableSelf()
-                            settingUIActions.refreshGeneralSettingsUI()
-                        }
-                        ACTION_ENABLE_IMPROVE_DETECTION -> {
-                            if (!clipboardLogDetector.isStarted()) clipboardLogDetector.startDetecting()
-                        }
-                        ACTION_DISABLE_IMPROVE_DETECTION -> {
-                            if (clipboardLogDetector.isStarted()) clipboardLogDetector.stopDetecting()
-                        }
-                    }
-                }
-            }, actions)
     }
 
     private fun actionInsertText(node: AccessibilityNodeInfo, intent: Intent) = with(node) {
@@ -371,18 +360,25 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
     }
 
     object Actions {
-        fun sendImproveDetectionEnable(context: Context) {
-            context.broadcastManager().sendBroadcast(Intent(ACTION_ENABLE_IMPROVE_DETECTION))
+        fun sendImproveDetectionEnable(context: Context) : Unit = with(context) {
+            val intent = Intent(this, ClipboardAccessibilityService::class.java).apply {
+                action = ACTION_ENABLE_IMPROVE_DETECTION
+            }
+            startService(intent)
         }
-        fun sendImproveDetectionDisable(context: Context) {
-            context.broadcastManager().sendBroadcast(Intent(ACTION_DISABLE_IMPROVE_DETECTION))
+        fun sendImproveDetectionDisable(context: Context) : Unit = with(context) {
+            val intent = Intent(this, ClipboardAccessibilityService::class.java).apply {
+                action = ACTION_DISABLE_IMPROVE_DETECTION
+            }
+            startService(intent)
         }
-        fun sendClipboardInsertText(context: Context, wordLength: Int, text: String) {
-            val sendIntent = Intent(ACTION_INSERT_TEXT).apply {
+        fun sendClipboardInsertText(context: Context, wordLength: Int, text: String) : Unit = with(context) {
+            val sendIntent = Intent(this, ClipboardAccessibilityService::class.java).apply {
+                action = ACTION_INSERT_TEXT
                 putExtra(EXTRA_SERVICE_TEXT_LENGTH, wordLength)
                 putExtra(EXTRA_SERVICE_TEXT, text)
             }
-            context.broadcastManager().sendBroadcast(sendIntent)
+            startService(sendIntent)
         }
     }
 }

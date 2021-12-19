@@ -37,7 +37,7 @@ class ClipRepositoryHelperImpl @Inject constructor(
 
     // A concurrent way to inserting clips into database.
     private suspend fun internalInsertOrUpdateClip(data: String?, toNotify: Boolean = true, toFirebase: Boolean = true) {
-        if (data == null) return
+        if (data == null || data.isBlank()) return
         if (pendingClipData.contains(data)) return
         pendingClipData.addLast(data)
         if (pendingClipData.size > 1) return

@@ -95,7 +95,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: XClipper.apk-snapshot-${{ steps.vars.outputs.sha_short }}
-          path: XClipper.Android/app/build/outputs/apk/release/
+          path: XClipper.Android/app/build/outputs/apk/
 
   draft_remove:
     runs-on: ubuntu-latest

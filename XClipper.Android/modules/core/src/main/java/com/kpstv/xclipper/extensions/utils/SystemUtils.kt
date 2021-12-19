@@ -3,6 +3,8 @@ package com.kpstv.xclipper.extensions.utils
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityServiceInfo
 import android.annotation.SuppressLint
+import android.app.ActivityManager
+import android.app.Service
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -67,5 +69,10 @@ object SystemUtils {
         val accessibilityPrefs = Settings.Secure.getString(context.contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES)
         if (accessibilityPrefs?.contains("${context.packageName}/${service.canonicalName}") == true) return true
         return false
+    }
+
+    fun isServiceRunning(context: Context, service: Class<out Service>): Boolean {
+        val am = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        return am.getRunningServices(Int.MAX_VALUE).any { it.service.className == service.canonicalName }
     }
 }
