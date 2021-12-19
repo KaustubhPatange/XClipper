@@ -6,7 +6,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.kpstv.xclipper.data.helper.ClipRepositoryHelper
 import com.kpstv.xclipper.data.helper.FirebaseProviderHelper
-import com.kpstv.xclipper.data.localized.dao.ClipDataDao
+import com.kpstv.xclipper.data.localized.ClipDataDao
 import com.kpstv.xclipper.data.localized.TagDao
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.Tag

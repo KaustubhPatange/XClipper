@@ -6,6 +6,7 @@ import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.kpstv.xclipper.data.converters.DateConverter
 import com.kpstv.xclipper.data.converters.TagConverter
+import com.kpstv.xclipper.data.localized.ClipDataDao
 import com.kpstv.xclipper.data.localized.TagDao
 import com.kpstv.xclipper.data.localized.dao.*
 import com.kpstv.xclipper.data.model.Definition

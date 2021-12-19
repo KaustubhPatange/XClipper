@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.paging.PagedList
 import androidx.paging.toLiveData
 import androidx.sqlite.db.SupportSQLiteQuery
-import com.kpstv.xclipper.data.localized.dao.ClipDataDao
+import com.kpstv.xclipper.data.localized.ClipDataDao
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.PartialClipTagMap
 import com.kpstv.xclipper.data.model.TagMap

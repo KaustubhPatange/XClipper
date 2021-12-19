@@ -32,20 +32,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.dialogs.TagDialog"
-            android:excludeFromRecents="true"
-            android:theme="@style/CustomDialogStyle.Dark" />
 
-        <activity
-            android:name=".ui.dialogs.EditDialog"
-            android:excludeFromRecents="true"
-            android:theme="@style/CustomDialogStyle.Dark" />
 
-        <activity
-            android:name=".ui.dialogs.FeatureDialog$DialogActivity"
-            android:launchMode="singleInstance"
-            android:theme="@style/Theme.AppCompat.Translucent" />
+
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="portrait"
@@ -56,23 +45,9 @@
             android:authorities="com.kpstv.xclipper.workmanager-init"
             tools:node="remove" />
 
-        <service
-            android:name=".service.ClipboardAccessibilityService"
-            android:enabled="true"
-            android:exported="false"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
-            <intent-filter>
-                <action android:name="android.accessibilityservice.AccessibilityService" />
-            </intent-filter>
 
-            <meta-data
-                android:name="android.accessibilityservice"
-                android:resource="@xml/clip_service" />
-        </service>
 
-        <service android:name="com.kpstv.xcipper.service.BubbleService" />
 
-        <receiver android:name=".service.receiver.ClipboardBroadcastReceiver" />
 
         <receiver android:name=".service.receiver.ImproveDetectionReceiver" />
         <receiver

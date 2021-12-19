@@ -1,7 +1,6 @@
 package com.kpstv.xclipper
 
 import android.view.accessibility.AccessibilityEvent
-import com.kpstv.xclipper.extensions.toLines
 import com.kpstv.xclipper.extensions.helper.ClipboardDetection
 import org.junit.Assert.assertEquals
 import org.junit.Test

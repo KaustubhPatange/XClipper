@@ -1,4 +1,4 @@
-package com.kpstv.xclipper.data.localized.dao
+package com.kpstv.xclipper.data.localized
 
 import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
@@ -74,6 +74,7 @@ interface ClipDataDao {
     @RawQuery(observedEntities = [Clip::class])
     fun getData(query: SupportSQLiteQuery): List<Clip>
 
+    // TODO: Unused method
     @RawQuery(observedEntities = [Clip::class])
     fun getObservableDataSource(query: SupportSQLiteQuery): DataSource.Factory<Int, Clip>
 

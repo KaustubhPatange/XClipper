@@ -2,7 +2,6 @@ package com.kpstv.xclipper
 
 import com.kpstv.xclipper.data.model.ClipTag
 import com.kpstv.xclipper.extensions.small
-import com.kpstv.xclipper.extensions.toLines
 import com.kpstv.xclipper.extensions.utils.ClipUtils
 import org.junit.Assert.assertEquals
 import org.junit.Test

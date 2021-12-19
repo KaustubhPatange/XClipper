@@ -2,4 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.kpstv.xclipper.feature_home">
 
+    <application>
+        <activity
+            android:name="com.kpstv.xclipper.ui.dialogs.TagDialog"
+            android:excludeFromRecents="true"
+            android:theme="@style/CustomDialogStyle.Dark" />
+
+        <activity
+            android:name="com.kpstv.xclipper.ui.dialogs.EditDialog"
+            android:excludeFromRecents="true"
+            android:theme="@style/CustomDialogStyle.Dark" />
+    </application>
 </manifest>

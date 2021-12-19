@@ -41,6 +41,7 @@ dependencies {
     implementation(LibraryDependency.LIFECYCLE_KTX)
     implementation(LibraryDependency.LIFECYCLE_COMMON)
     implementation(LibraryDependency.CONSTRAINT_LAYOUT)
+    implementation(LibraryDependency.LOTTIE)
 
     implementation(LibraryDependency.ROOM_KTX)
     implementation(LibraryDependency.RETROFIT)

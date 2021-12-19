@@ -131,7 +131,7 @@ class Crash : AppCompatActivity() {
         updateMessage(getString(R.string.crash_text_sent))
     }
 
-    internal fun Int.dp() = this * resources.displayMetrics.density
+    private fun Int.dp() = this * resources.displayMetrics.density
 
     override fun onDestroy() {
         job.cancel()

@@ -10,7 +10,7 @@ import dagger.assisted.AssistedInject
 import java.util.concurrent.TimeUnit
 
 @HiltWorker
-class AccessibilityWorker @AssistedInject constructor(
+class ClipboardServiceNotifyWorker @AssistedInject constructor(
     @Assisted private val appContext: Context,
     @Assisted workerParams: WorkerParameters,
 ) : Worker(appContext, workerParams) {
@@ -25,7 +25,7 @@ class AccessibilityWorker @AssistedInject constructor(
     companion object {
         private const val UNIQUE_ID = "xclipper_accessibility_worker"
         fun schedule(context: Context) {
-            val request = PeriodicWorkRequestBuilder<AccessibilityWorker>(
+            val request = PeriodicWorkRequestBuilder<ClipboardServiceNotifyWorker>(
                 20, TimeUnit.MINUTES, 5, TimeUnit.MINUTES
             ).build()
 

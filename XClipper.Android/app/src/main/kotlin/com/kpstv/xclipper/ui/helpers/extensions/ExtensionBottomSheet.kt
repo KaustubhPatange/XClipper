@@ -12,7 +12,7 @@ import com.kpstv.navigation.getKeyArgs
 import com.kpstv.navigation.hasKeyArgs
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.databinding.BottomSheetExtensionBinding
-import com.kpstv.xclipper.extensions.DelegatedAnimator
+import com.kpstv.xclipper.extension.DelegatedAnimator
 import com.kpstv.xclipper.extensions.elements.CustomRoundedBottomSheetFragment
 import com.kpstv.xclipper.extensions.hide
 import com.kpstv.xclipper.extensions.show

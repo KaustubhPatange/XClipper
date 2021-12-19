@@ -26,6 +26,7 @@ import com.kpstv.xclipper.service.worker.GithubCheckWorker
 import com.kpstv.xclipper.service.worker.GithubUpdateWorker
 import com.kpstv.xclipper.ui.dialogs.CustomLottieDialog
 import com.kpstv.xclipper.ui.fragments.Home
+import com.kpstv.xclipper.ui.helpers.AbstractFragmentHelper
 import kotlinx.coroutines.launch
 
 /**

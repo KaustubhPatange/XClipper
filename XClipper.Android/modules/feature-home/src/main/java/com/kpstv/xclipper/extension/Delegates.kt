@@ -1,4 +1,4 @@
-package com.kpstv.xclipper.extensions
+package com.kpstv.xclipper.extension
 
 import android.animation.Animator
 import com.ferfalk.simplesearchview.SimpleSearchView

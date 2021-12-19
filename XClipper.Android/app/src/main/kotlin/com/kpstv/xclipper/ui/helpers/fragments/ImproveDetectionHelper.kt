@@ -6,12 +6,13 @@ import androidx.fragment.app.FragmentActivity
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.di.CommonReusableEntryPoints
+import com.kpstv.xclipper.extension.getFormattedDate
 import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.service.ClipboardAccessibilityService
 import com.kpstv.xclipper.extensions.helper.ClipboardLogDetector
-import com.kpstv.xclipper.ui.dialogs.ClipboardServiceDialogs
 import com.kpstv.xclipper.ui.dialogs.Dialogs
 import com.kpstv.xclipper.ui.fragments.Home
+import com.kpstv.xclipper.ui.helpers.AbstractFragmentHelper
 import com.kpstv.xclipper.ui.helpers.AppSettings
 import java.util.*
 

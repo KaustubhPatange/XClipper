@@ -9,6 +9,7 @@ import com.kpstv.xclipper.ui.helpers.Notifications
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+// TODO: Move to improve detection feature
 @AndroidEntryPoint
 class BootCompleteReceiver : AbstractBroadcastReceiver() {
 

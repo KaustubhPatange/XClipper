@@ -11,7 +11,7 @@ class ImproveDetectionReceiver : AbstractBroadcastReceiver() {
         private const val ARGUMENT_OPEN_URL_LINK = "com.kpstv.action_open_url:arg_link"
 
         fun createOpenUrlAction(context: Context, url: String) : Intent {
-            return Intent(context, ClipboardBroadcastReceiver::class.java).apply {
+            return Intent(context, ImproveDetectionReceiver::class.java).apply {
                 action = ACTION_OPEN_URL
                 putExtra(ARGUMENT_OPEN_URL_LINK, url)
             }

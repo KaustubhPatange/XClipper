@@ -7,7 +7,7 @@ import com.kpstv.xclipper.core_clipboard.R
 import com.kpstv.xclipper.extensions.elements.AbstractBroadcastReceiver
 import com.kpstv.xclipper.extensions.utils.ClipboardUtils
 
-class ClipboardBroadcastReceiver : AbstractBroadcastReceiver() {
+internal class ClipboardBroadcastReceiver : AbstractBroadcastReceiver() {
 
     private val TAG = javaClass.simpleName
 

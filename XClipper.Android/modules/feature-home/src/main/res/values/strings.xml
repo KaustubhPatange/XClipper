@@ -30,4 +30,14 @@
 
     <string name="accessibility_not_running">Accessibility service not running</string>
     <string name="enable">Enable</string>
+
+    <string name="selected">selected</string>
+    <string name="item_delete">item(s) deleted</string>
+
+    <string name="undo">Undo</string>
+
+    <string name="synchronize">Synchronization</string>
+    <string name="synchronize_text">You can synchronize your clipboard data between this device &#38; a desktop companion app. Click on \"Learn more\" to know about it.</string>
+    <string name="later">Later</string>
+
 </resources>

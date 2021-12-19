@@ -1,21 +1,14 @@
 package com.kpstv.xclipper.ui.dialogs
 
 import android.content.Context
-import android.os.Build
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.BackgroundColorSpan
 import android.widget.TextView
-import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AlertDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.kpstv.xclipper.R
-import com.kpstv.xclipper.extensions.SimpleFunction
 import com.kpstv.xclipper.extensions.getColorAttr
 import com.kpstv.xclipper.extensions.setPadding
-import com.kpstv.xclipper.extensions.utils.ClipboardUtils
-import com.kpstv.xclipper.extensions.utils.SystemUtils
-import com.kpstv.xclipper.service.ClipboardAccessibilityService
 import com.kpstv.xclipper.ui.utils.LaunchUtils
 
 object Dialogs {

@@ -28,9 +28,9 @@ internal class TurnOnService : AbstractWelcomeFragment() {
 
     private fun conditionalNavigation() {
         if (ClipboardLogDetector.isDetectionCompatible(requireContext())) {
-            navigateTo(OnBoardingRoutes.ENABLE_SUGGESTIONS)
-        } else {
             navigateTo(OnBoardingRoutes.IMPROVE_DETECTION)
+        } else {
+            navigateTo(OnBoardingRoutes.ENABLE_SUGGESTIONS)
         }
     }
 

@@ -7,7 +7,7 @@ import androidx.fragment.app.viewModels
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.kpstv.xclipper.R
-import com.kpstv.xclipper.extensions.getFormattedDate
+import com.kpstv.xclipper.extension.getFormattedDate
 import com.kpstv.xclipper.ui.viewmodels.BackupViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty

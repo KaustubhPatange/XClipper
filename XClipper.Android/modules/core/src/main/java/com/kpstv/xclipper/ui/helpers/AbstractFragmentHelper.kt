@@ -1,4 +1,4 @@
-package com.kpstv.xclipper.ui.helpers.fragments
+package com.kpstv.xclipper.ui.helpers
 
 import android.os.Bundle
 import android.view.View

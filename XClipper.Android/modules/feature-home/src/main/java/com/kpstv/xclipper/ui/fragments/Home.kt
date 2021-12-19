@@ -15,7 +15,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,14 +23,14 @@ import com.ferfalk.simplesearchview.SimpleSearchView
 import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
-import com.kpstv.navigation.AnimationDefinition
-import com.kpstv.navigation.FragmentNavigator
 import com.kpstv.navigation.ValueFragment
-import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.helper.FirebaseProviderHelper
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.data.provider.ClipboardProvider
+import com.kpstv.xclipper.di.navigation.SettingsNavigation
+import com.kpstv.xclipper.di.navigation.SpecialSheetNavigation
+import com.kpstv.xclipper.extension.DelegatedSearchViewListener
 import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.extensions.enumerations.FirebaseState
 import com.kpstv.xclipper.extension.listener.StatusListener
@@ -40,8 +39,6 @@ import com.kpstv.xclipper.extension.recyclerview.SwipeToDeleteCallback
 import com.kpstv.xclipper.ui.helpers.AppThemeHelper
 import com.kpstv.xclipper.ui.helpers.AppThemeHelper.registerForThemeChange
 import com.kpstv.xclipper.ui.activities.ChangeClipboardActivity
-import com.kpstv.xclipper.ui.activities.NavViewModel
-import com.kpstv.xclipper.ui.activities.Start
 import com.kpstv.xclipper.ui.adapter.CIAdapter
 import com.kpstv.xclipper.ui.dialogs.EditDialog
 import com.kpstv.xclipper.ui.dialogs.TagDialog
@@ -51,7 +48,8 @@ import com.kpstv.xclipper.extensions.utils.ShareUtils
 import com.kpstv.xclipper.feature_home.databinding.FragmentHomeBinding
 import com.kpstv.xclipper.service.ClipboardAccessibilityService
 import com.kpstv.xclipper.extension.enumeration.ToolbarState
-import com.kpstv.xclipper.ui.fragments.sheets.SpecialBottomSheet
+import com.kpstv.xclipper.extension.setOnQueryTextListener
+import com.kpstv.xclipper.feature_home.R
 import com.kpstv.xclipper.ui.helpers.AppSettingKeys
 import com.kpstv.xclipper.ui.helpers.AppSettings
 import com.kpstv.xclipper.ui.helpers.fragments.SyncDialogHelper
@@ -69,12 +67,14 @@ class Home : ValueFragment(R.layout.fragment_home) {
     @Inject lateinit var appSettings: AppSettings
     @Inject lateinit var firebaseProviderHelper: FirebaseProviderHelper
 
+    @Inject lateinit var settingsNavigation: SettingsNavigation
+    @Inject lateinit var specialSheetNavigation: SpecialSheetNavigation
+
     private lateinit var adapter: CIAdapter
     private var undoSnackBar: Snackbar? = null
 
     private val binding by viewBinding(FragmentHomeBinding::bind)
 
-    private val navViewModel by activityViewModels<NavViewModel>()
     private val mainViewModel by viewModels<MainViewModel>()
     private val recyclerViewScrollHelper = RecyclerViewScrollHelper()
     private val swipeToDeleteItemTouch: ItemTouchHelper by lazy {
@@ -246,9 +246,8 @@ class Home : ValueFragment(R.layout.fragment_home) {
                     mainViewModel.changeClipPin(clip, !clip.isPinned)
                 }
                 CIAdapter.MenuType.Special -> {
-                    // TODO: Hilt to feature-special
-                    SpecialBottomSheet.show(
-                        fragment = this,
+                    specialSheetNavigation.navigate(
+                        parentFragment = this,
                         clip = clip
                     )
                 }
@@ -475,12 +474,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
 
         val settingImage = LayoutInflater.from(requireContext()).inflate(R.layout.imageview_menu_setting, null) as ImageView
         settingImage.setOnClickListener {
-            navViewModel.navigateTo(
-                screen = Start.Screen.SETTING,
-                animation = AnimationDefinition.Fade,
-                transactionType = FragmentNavigator.TransactionType.ADD,
-                remember = true,
-            )
+            settingsNavigation.navigate()
         }
 
         toolbar.menu.findItem(R.id.action_sync).actionView = syncImage

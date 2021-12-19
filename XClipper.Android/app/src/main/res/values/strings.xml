@@ -1,11 +1,7 @@
 <resources>
-    <string name="accessibility_service_description">This will let XClipper to monitor clipboard &amp; will able to capture some of known strategies if system detects any copy/cut action.\n\n\nThis feature is still in BETA for Android 10+ users and may not work always.</string>
 
 
     <string name="delete">Delete</string>
-    <string name="undo">Undo</string>
-    <string name="selected">selected</string>
-    <string name="item_delete">item(s) deleted</string>
 
     <string name="save">Save</string>
 
@@ -53,7 +49,6 @@
     <string name="close">Close</string>
 
     <string name="err_uid">Not a valid UID</string>
-    <string name="synchronize_text">You can synchronize your clipboard data between this device &#38; a desktop companion app. Click on \"Learn more\" to know about it.</string>
 
 
     <string name="dark_title">Dark Theme</string>
@@ -111,8 +106,6 @@
     <string name="image_render_title">Render Image</string>
     <string name="copy">Copy</string>
     <string name="set_current_clip">Set at current clipboard</string>
-    <string name="synchronize">Synchronization</string>
-    <string name="later">Later</string>
     <string name="rate_title">Enjoying the app?</string>
     <string name="rate_text">Kindly review the app on Google play which will help us reach more audience.</string>
 

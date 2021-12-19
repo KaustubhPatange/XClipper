@@ -10,7 +10,7 @@ import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.extensions.Logger
 import com.kpstv.xclipper.extensions.helper.ClipboardLogDetector
-import com.kpstv.xclipper.service.worker.AccessibilityWorker
+import com.kpstv.xclipper.service.worker.ClipboardServiceNotifyWorker
 import com.kpstv.xclipper.service.worker.ExtensionWorker
 import com.kpstv.xclipper.ui.fragments.settings.GeneralPreference
 import com.kpstv.xclipper.ui.helpers.*
@@ -72,7 +72,7 @@ class XClipperApplication : Application(), Configuration.Provider {
         firebaseProvider.initialize(dbConnectionProvider.optionsProvider())
 
         /** Initialize workers */
-        AccessibilityWorker.schedule(this)
+        ClipboardServiceNotifyWorker.schedule(this)
 
         ExtensionWorker.schedule(this)
         ExtensionWorker.scheduleForOnce(this)

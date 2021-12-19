@@ -9,4 +9,7 @@
     <!-- Accessibility service disable dialog -->
     <string name="accessibility_service_disable">Disable Service?</string>
     <string name="accessibility_disable_text">This will stop the clipboard monitoring functionality.</string>
+
+    <!-- Accessibility settings description -->
+    <string name="accessibility_service_description">This will let XClipper to monitor clipboard &amp; will able to capture some of known strategies if system detects any copy/cut action.\n\n\nThis feature is still in BETA for Android 10+ users and may not work always.</string>
 </resources>

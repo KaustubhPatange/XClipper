@@ -6,7 +6,7 @@ import android.content.Context
 import androidx.annotation.RawRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
-import com.kpstv.xclipper.databinding.DialogLottieBinding
+import com.kpstv.core.databinding.DialogLottieBinding
 import com.kpstv.xclipper.extensions.SimpleFunction
 import com.kpstv.xclipper.extensions.hide
 import com.kpstv.xclipper.extensions.layoutInflater
