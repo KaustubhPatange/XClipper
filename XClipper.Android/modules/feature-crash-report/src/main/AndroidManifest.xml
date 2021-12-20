@@ -14,5 +14,7 @@
         <meta-data
             android:name="io.sentry.uncaught-exception-handler.enable"
             android:value="false"/>
+
+        <activity android:name="com.kpstv.xclipper.ui.activities.Crash" />
     </application>
 </manifest>

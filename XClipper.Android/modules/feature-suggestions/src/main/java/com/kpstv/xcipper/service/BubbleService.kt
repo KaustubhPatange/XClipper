@@ -99,35 +99,7 @@ class BubbleService : FloatingBubbleService() {
             addAction(ACTION_VIEW_CLOSE)
             addAction(ACTION_NODE_INFO)
         }
-        LocalBroadcastManager.getInstance(this).registerReceiver(
-            object : BroadcastReceiver() {
-                override fun onReceive(context: Context?, intent: Intent?) {
-                    if (intent?.action == null) return
-                    when (intent.action) {
-                        ACTION_VIEW_CLOSE -> setState(false)
-                        ACTION_NODE_INFO -> {
-                            val currentText = intent.getStringExtra(EXTRA_NODE_TEXT) ?: ""
-                            val currentPosition = intent.getIntExtra(EXTRA_NODE_CURSOR, -1)
-
-                            if (currentPosition <= 0 || currentText.length < currentPosition) {
-                                clearFilters()
-                            } else {
-                                // 6th pos
-                                // this is| an example
-                                val compiled = "\\s+".toRegex()
-                                val upto = currentText.substring(0, currentPosition)
-                                currentWord = upto.split(compiled).last()
-                                binding.tvQuery.text = "Query: $currentWord"
-                                binding.btnClear.show()
-
-                                shouldResubscribe = true
-                            }
-                        }
-                    }
-                }
-            },
-            filter
-        )
+        LocalBroadcastManager.getInstance(this).registerReceiver(bubbleBroadcastReceiver, filter)
 
         val actionBarSize = context.getRawDataAttr(android.R.attr.actionBarSize).run {
             TypedValue.complexToDimensionPixelSize(this, resources.displayMetrics)
@@ -138,6 +110,33 @@ class BubbleService : FloatingBubbleService() {
             .physicsEnabled(true)
             .bubbleYOffset(actionBarSize)
             .build()
+    }
+
+    private val bubbleBroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == null) return
+            when (intent.action) {
+                ACTION_VIEW_CLOSE -> setState(false)
+                ACTION_NODE_INFO -> {
+                    val currentText = intent.getStringExtra(EXTRA_NODE_TEXT) ?: ""
+                    val currentPosition = intent.getIntExtra(EXTRA_NODE_CURSOR, -1)
+
+                    if (currentPosition <= 0 || currentText.length < currentPosition) {
+                        clearFilters()
+                    } else {
+                        // 6th pos
+                        // this is| an example
+                        val compiled = "\\s+".toRegex()
+                        val upto = currentText.substring(0, currentPosition)
+                        currentWord = upto.split(compiled).last()
+                        binding.tvQuery.text = "Query: $currentWord"
+                        binding.btnClear.show()
+
+                        shouldResubscribe = true
+                    }
+                }
+            }
+        }
     }
 
     override fun getTouchListener(): FloatingBubbleTouchListener {
@@ -176,6 +175,7 @@ class BubbleService : FloatingBubbleService() {
     }
 
     override fun onDestroy() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(bubbleBroadcastReceiver)
         repository.getDataSource().removeObserver(pageObserver)
         super.onDestroy()
     }
