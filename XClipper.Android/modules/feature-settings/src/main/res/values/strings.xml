@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- About Preference -->
+    <string name="author_title">Owner</string>
+    <string name="mail_title">Send me an email</string>
+    <string name="mail_summary">Want to give feedback or a quick chat just hit me up</string>
+    <string name="version_title">Version</string>
+    <string name="package_title">Package</string>
+    <string name="website_title">Official Website</string>
+    <string name="report_title">Report a bug</string>
+    <string name="report_summary">Create a Github issue in the official repository</string>
+    <string name="privacy_policy">Privacy Policy</string>
+
+    <!-- Account Preference -->
+    <string name="connect_summary">Initialize a connection to an online database for cross platform syncing</string>
+    <string name="connect_title">Connect to database</string>
+    <string name="bind_title">Database binding</string>
+    <string name="bind_summary">Enable uploading of device data to the database</string>
+    <string name="logout_summary">Remove all connection with the database</string>
+    <string name="logout_title">Logout</string>
+    <string name="auto_sync_title">Automatic synchronization</string>
+    <string name="auto_sync_summary">Retrieve data from database when app is launched</string>
+    <string name="bind_delete_title">Capture Delete</string>
+    <string name="bind_delete_summary">Enable local removal of item if it is being deleted across device</string>
+    <string name="force_logout_title">Force logout</string>
+    <string name="force_logout_summary">Sometimes logout doesn\'t succeed as expected. Use this to forcefully remove the credentials</string>
+    <string name="force_logout_text">Silently send a logout request</string>
+    <string name="read_guide">Need help?</string>
+    <string name="read_guide_text">Read this step by step tutorial on how to setup synchronization across multiple devices.</string>
+
+    <!-- Backup Preference -->
+    <string name="import_file">Import from file</string>
+    <string name="import_summary">Retrieve all the data from an exported local database</string>
+    <string name="export_file">Export to file</string>
+    <string name="export_summary">Save all the data to a local database</string>
+
+    <!-- Look Preference-->
+    <string name="dark_title">Dark Theme</string>
+    <string name="dark_summary">Sometimes you might\'ve to restart the app for theme to get applied properly.</string>
+
+    <!-- General Preference -->
+
+
+</resources>

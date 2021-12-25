@@ -19,7 +19,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.kpstv.navigation.BaseArgs
 import com.kpstv.navigation.getKeyArgs
 import com.kpstv.navigation.hasKeyArgs
-import com.kpstv.pin_lock.PinLockHelper
+import com.kpstv.xclipper.PinLockHelper
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.databinding.DialogProgressBinding
@@ -33,6 +33,7 @@ import com.kpstv.xclipper.ui.dialogs.ClipboardServiceDialogs
 import com.kpstv.xclipper.ui.dialogs.Dialogs
 import com.kpstv.xclipper.ui.dialogs.MultiSelectDialogBuilder
 import com.kpstv.xclipper.ui.dialogs.MultiSelectModel3
+import com.kpstv.xclipper.ui.fragments.custom.AbstractPreferenceFragment
 import com.kpstv.xclipper.ui.helpers.AppSettings
 import com.kpstv.xclipper.ui.helpers.extensions.AddOns
 import com.kpstv.xclipper.ui.helpers.extensions.AddOnsHelper

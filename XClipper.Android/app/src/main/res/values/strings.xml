@@ -37,12 +37,8 @@
     <string name="connection_exist">Already connected to database!</string>
 
     <string name="account">Synchronization</string>
-    <string name="bind_title">Database binding</string>
-    <string name="bind_summary">Enable uploading of device data to the database</string>
-    <string name="logout_summary">Remove all connection with the database</string>
-    <string name="logout_title">Logout</string>
-    <string name="connect_summary">Initialize a connection to an online database for cross platform syncing</string>
-    <string name="connect_title">Connect to database</string>
+
+
     <string name="alert">Alert</string>
     <string name="logout_msg">Are you sure you want to log out?</string>
     <string name="yes">Yes</string>
@@ -50,10 +46,8 @@
     <string name="err_uid">Not a valid UID</string>
 
 
-    <string name="dark_title">Dark Theme</string>
-    <string name="dark_summary">Sometimes you might\'ve to restart the app for theme to get applied properly.</string>
-    <string name="import_file">Import from file</string>
-    <string name="import_summary">Retrieve all the data from an exported local database</string>
+
+
     <string name="database_export">Database has been exported!</string>
     <string name="database_import">Database has been imported!</string>
     <string name="err_database_export">Error in exporting the database</string>
@@ -67,20 +61,11 @@
 
     <string name="ask_suggestion">Show overlay suggestion</string>
     <string name="err_database">Invalid backup structure</string>
-    <string name="author_title">Owner</string>
-    <string name="mail_title">Send me an email</string>
-    <string name="mail_summary">Want to give feedback or a quick chat just hit me up</string>
-    <string name="version_title">Version</string>
-    <string name="package_title">Package</string>
+
+
     <string name="upgrade">Upgrades</string>
     <string name="about">About</string>
-    <string name="auto_sync_title">Automatic synchronization</string>
-    <string name="auto_sync_summary">Retrieve data from database when app is launched</string>
-    <string name="bind_delete_title">Capture Delete</string>
-    <string name="bind_delete_summary">Enable local removal of item if it is being deleted across device</string>
-    <string name="force_logout_title">Force logout</string>
-    <string name="force_logout_summary">Sometimes logout doesn\'t succeed as expected. Use this to forcefully remove the credentials</string>
-    <string name="force_logout_text">Silently send a logout request</string>
+
     <string name="standard_pricing">Get a standard pricing model with maximum server storage you can get.</string>
     <string name="premium_pricing">Synchronize your clipboard activity with PC securely for lifetime.</string>
     <string name="awesome">You are awesome!</string>
@@ -88,9 +73,7 @@
     <string name="swipe_title">Swipe to delete</string>
     <string name="swipe_summary">Swiping item to right will delete it permanently</string>
     <string name="settings_restart">Restart needed to apply changes</string>
-    <string name="website_title">Official Website</string>
-    <string name="report_title">Report a bug</string>
-    <string name="report_summary">Create a Github issue in the official repository</string>
+
     <string name="dismiss">Dismiss</string>
     <string name="review">Review</string>
     <string name="review_text">Help us grow by reviewing the app :)</string>
@@ -103,7 +86,6 @@
     <string name="premium_latest">Couldn\'t fetch the latest data</string>
     <string name="image_render_summary">[BETA] This will render image in the list. Note that it can have some side effects!</string>
     <string name="image_render_title">Render Image</string>
-    <string name="copy">Copy</string>
     <string name="set_current_clip">Set at current clipboard</string>
     <string name="rate_title">Enjoying the app?</string>
     <string name="rate_text">Kindly review the app on Google play which will help us reach more audience.</string>
@@ -120,9 +102,6 @@
 
 
     <string name="onboard_screens_reset">All onboarding screens has been reset!</string>
-    <string name="read_guide">Need help?</string>
-    <string name="read_guide_text">Read this step by step tutorial on how to setup synchronization across multiple devices.</string>
-    <string name="privacy_policy">Privacy Policy</string>
 
     <string name="load_apps">Loading apps metadata…</string>
     <string name="blacklist_apps">Select blacklist apps</string>

@@ -24,7 +24,6 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-            ~/vpn/build
           key: ${{ runner.os }}-${{ github.job }}-${{ hashFiles('**/*.gradle.kts*') }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
 
       - name: Extract required files
@@ -44,6 +43,7 @@ jobs:
         run: |
           md XClipper.Android/.gradle
           echo SERVER_URI=${{ secrets.SERVER_URI }} >> "${{github.workspace}}\XClipper.Android\.gradle\gradle.properties"
+          echo SENTRY_DSN=${{ secrets.SENTRY_DSN }} >> "${{github.workspace}}\XClipper.Android\.gradle\gradle.properties"
           echo keyAlias=${{ secrets.KEY_ALIAS }} >> "${{github.workspace}}\XClipper.Android\.gradle\gradle.properties"
           echo keyPassword=${{ secrets.KEY_PASSWORD }} >> "${{github.workspace}}\XClipper.Android\.gradle\gradle.properties"
           echo storePassword=${{ secrets.STORE_PASSWORD }} >> "${{github.workspace}}\XClipper.Android\.gradle\gradle.properties"
@@ -58,11 +58,8 @@ jobs:
       - run: |
           cd XClipper.Android
           chmod +x gradlew
-      - name: Assemble release & run Tests
-        run: |
-          cd XClipper.Android
-          ./gradlew app:assembleRelease --stacktrace
-          ./gradlew app:test
+      - name: Assemble release
+        run: cd XClipper.Android && ./gradlew app:assembleRelease --stacktrace
 
       - name: Draft Release
         id: create_release
@@ -95,7 +92,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: XClipper.apk-snapshot-${{ steps.vars.outputs.sha_short }}
-          path: XClipper.Android/app/build/outputs/apk/
+          path: XClipper.Android/app/build/outputs/apk/release
 
   draft_remove:
     runs-on: ubuntu-latest

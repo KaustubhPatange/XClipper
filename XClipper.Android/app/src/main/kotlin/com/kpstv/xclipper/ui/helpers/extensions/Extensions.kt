@@ -3,7 +3,7 @@ package com.kpstv.xclipper.ui.helpers.extensions
 import android.content.Context
 import android.widget.TextView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.kpstv.pin_lock.PinLockHelper
+import com.kpstv.xclipper.PinLockHelper
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.extensions.SimpleFunction
 import com.kpstv.xclipper.extensions.colorFrom

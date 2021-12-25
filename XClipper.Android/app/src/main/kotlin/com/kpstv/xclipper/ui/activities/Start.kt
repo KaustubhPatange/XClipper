@@ -8,7 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.kpstv.navigation.*
 import com.kpstv.onboarding.OnBoardingFragment
-import com.kpstv.pin_lock.PinLockHelper
+import com.kpstv.xclipper.PinLockHelper
 import com.kpstv.xclipper.extensions.FragClazz
 import com.kpstv.xclipper.extensions.applyEdgeToEdgeMode
 import com.kpstv.xclipper.ui.fragments.Home
