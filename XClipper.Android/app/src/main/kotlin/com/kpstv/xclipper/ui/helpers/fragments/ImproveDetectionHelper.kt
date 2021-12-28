@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentActivity
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.di.CommonReusableEntryPoints
-import com.kpstv.xclipper.extension.getFormattedDate
+import com.kpstv.xclipper.extensions.getFormattedDate
 import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.service.ClipboardAccessibilityService
 import com.kpstv.xclipper.extensions.helper.ClipboardLogDetector

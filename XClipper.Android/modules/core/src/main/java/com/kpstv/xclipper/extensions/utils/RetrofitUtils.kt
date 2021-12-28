@@ -26,7 +26,7 @@ object RetrofitUtils {
 
         return OkHttpClient.Builder()
             //.addInterceptor(networkConnectionInterceptor)
-            // .addInterceptor(loggingInterceptor)  // TODO: Uncomment this interceptor when needed for debugging
+            // .addInterceptor(loggingInterceptor)  // Uncomment this interceptor when needed for debugging
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
     }

@@ -45,7 +45,6 @@ dependencies {
     implementation(LibraryDependency.LOTTIE)
 
     implementation(LibraryDependency.ROOM_KTX)
-    implementation(LibraryDependency.RETROFIT)
     implementation(LibraryDependency.RETROFIT_COROUTINES_ADAPTER)
     implementation(LibraryDependency.RETROFIT_GSON_CONVERTER)
     implementation(LibraryDependency.OKHTTP_LOGGING_INTERCEPTOR)
@@ -55,6 +54,7 @@ dependencies {
     implementation(LibraryDependency.PAGING)
     implementation(LibraryDependency.GIF_DRAWABLE)
     implementation(LibraryDependency.SENTRY)
+    api(LibraryDependency.RETROFIT)
     api(LibraryDependency.ROUND_BOTTOM_SHEET)
 
     implementation(kotlin("reflect"))

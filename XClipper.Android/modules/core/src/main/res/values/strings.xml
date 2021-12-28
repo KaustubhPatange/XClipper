@@ -15,6 +15,11 @@
     <string name="alright">Alright</string>
     <string name="cancel">Cancel</string>
 
+    <string name="activate">Activate</string>
+    <string name="dismiss">Dismiss</string>
+
+    <string name="subscribed">Subscribed</string>
+
     <string name="suggestion_title">Suggestions [BETA]</string>
     <string name="suggestion_capture">You need to enable System overlay permission.\n\n1. Click OK to open Display Overlay settings.\n2. Enable \"Allow display over other apps\".</string>
 
@@ -26,4 +31,7 @@
     <string name="multi_clips_added">%1$s new clips are added</string>
 
     <string name="dialog_feature_ok">OK, I got it</string>
+
+    <string name="adb_detection_instruction">adb -d shell pm grant %1$s android.permission.READ_LOGS;\n\nadb -d shell appops set %1$s SYSTEM_ALERT_WINDOW allow;\n\nadb -d shell am force-stop %1$s;</string>
+
 </resources>

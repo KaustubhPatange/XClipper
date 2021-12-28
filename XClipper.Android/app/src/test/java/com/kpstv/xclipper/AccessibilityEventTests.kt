@@ -7,8 +7,6 @@ import org.junit.Test
 
 class AccessibilityEventTests {
 
-    // TODO: Add more tests
-
     @Test
     fun `Webview's in-window textarea`() {
         val string = """

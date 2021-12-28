@@ -22,59 +22,36 @@
     <string name="clip_content">Clipboard content</string>
     <string name="title_activity_settings">Settings</string>
     <string name="set_service">service_pref</string>
-    <string name="service">General</string>
-    <string name="look_feel"><![CDATA[Look & Feel]]></string>
     <string name="set_look">look_pref</string>
     <string name="set_backup">backup_pref</string>
-    <string name="backup">Backup</string>
-    <string name="actions">Actions</string>
-    <string name="settings">Settings</string>
-    <string name="service_summary">Make sure it is turned on to detect clipboard changes (require accessibility service)</string>
-    <string name="service_title">Clipboard Service</string>
 
 
 
-    <string name="connection_exist">Already connected to database!</string>
-
-    <string name="account">Synchronization</string>
 
 
-    <string name="alert">Alert</string>
-    <string name="logout_msg">Are you sure you want to log out?</string>
-    <string name="yes">Yes</string>
+
+
 
     <string name="err_uid">Not a valid UID</string>
 
 
 
 
-    <string name="database_export">Database has been exported!</string>
-    <string name="database_import">Database has been imported!</string>
-    <string name="err_database_export">Error in exporting the database</string>
     <string name="err_import_database">Couldn\'t resolve the input stream</string>
     <string name="restart_app">Restart App</string>
     <string name="restart_summary">You need to restart the app in order to apply changes!</string>
-    <string name="blacklist_summary">Apps in which clipboard tracking is disabled</string>
-    <string name="blacklist_title">Ignored Apps</string>
-    <string name="suggest_title">Suggestions</string>
-    <string name="suggest_summary">[BETA] Show a small bubble whenever keyboard pops out containing your latest clips</string>
+
 
     <string name="ask_suggestion">Show overlay suggestion</string>
-    <string name="err_database">Invalid backup structure</string>
 
 
-    <string name="upgrade">Upgrades</string>
-    <string name="about">About</string>
 
     <string name="standard_pricing">Get a standard pricing model with maximum server storage you can get.</string>
-    <string name="premium_pricing">Synchronize your clipboard activity with PC securely for lifetime.</string>
     <string name="awesome">You are awesome!</string>
     <string name="item_removed">Item removed permanently</string>
-    <string name="swipe_title">Swipe to delete</string>
-    <string name="swipe_summary">Swiping item to right will delete it permanently</string>
+
     <string name="settings_restart">Restart needed to apply changes</string>
 
-    <string name="dismiss">Dismiss</string>
     <string name="review">Review</string>
     <string name="review_text">Help us grow by reviewing the app :)</string>
 
@@ -83,17 +60,12 @@
     <string name="force_dark">Force Dark</string>
 
     <string name="private_browse1">Privately browsing :)</string>
-    <string name="premium_latest">Couldn\'t fetch the latest data</string>
-    <string name="image_render_summary">[BETA] This will render image in the list. Note that it can have some side effects!</string>
-    <string name="image_render_title">Render Image</string>
+
     <string name="set_current_clip">Set at current clipboard</string>
     <string name="rate_title">Enjoying the app?</string>
     <string name="rate_text">Kindly review the app on Google play which will help us reach more audience.</string>
 
-    <string name="warning">Warning</string>
-    <string name="bind_delete_warning">This may result into unexpected deletion of clips if your remote database has restriction on item limit.</string>
-    <string name="trim_title">Text trimming</string>
-    <string name="trim_summary">This will trim whitespaces from the clip data while displaying.</string>
+
 
 
     <string name="open_accessibility">Opening accessibility</string>
@@ -101,42 +73,18 @@
 
 
 
-    <string name="onboard_screens_reset">All onboarding screens has been reset!</string>
-
-    <string name="load_apps">Loading apps metadata…</string>
-    <string name="blacklist_apps">Select blacklist apps</string>
 
 
-    <string name="adb_mode_title">Improve detection</string>
-    <string name="adb_mode_summary">Enhance clipboard detection logic by some additional configuration.</string>
-    <string name="adb_mode_long_summary">Enhance clipboard detection logic through additional configuration which requires a PC &amp; some knowledge of using ADB.</string>
 
-    <string name="adb_dialog_title">Android Q+ Copy detection</string>
-    <string name="adb_dialog_message1">The solution requires some configuration to be done via a PC. Run the following ADB commands on your terminal with this device connected &amp; USB debugging enabled.</string>
+
 
     <string name="do_not_show">Do not show</string>
-    <string name="pin_lock_title">Pin Lock (Biometric)</string>
     <string name="billing_disconnected">Billing service disconnected</string>
-    <string name="err_billing_not_ready">Billing client not ready, Try again</string>
-    <string name="err_billing_disconnect">Billing service disconnected</string>
-    <string name="err_billing_unfinished">Error: %1$s</string>
-    <string name="err_purchase_failed">Purchase failed</string>
-    <string name="err_purchase_no_item">Could not find the In-App item</string>
-    <string name="err_billing_unknown">Unknown error</string>
-    <string name="purchase">\tPurchase</string>
-    <string name="subscribed">Subscribed</string>
-    <string name="thank_support">Thank you for supporting :)</string>
-    <string name="premium_inactive_footnotes">Will be active when you connect to a database to enable synchronization.</string>
-    <string name="premium_extension_footnotes">One time purchases to unlock additional app capabilities.</string>
 
-    <string name="upgrades_extensions">Extensions (add-ons)</string>
-    <string name="activate">Activate</string>
-    <string name="extension_title">Add-on Extension</string>
-    <string name="extension_message">This is an add-on extension that unlocks certain capabilities of the app which requires a small purchase to unlock.</string>
 
-    <string name="pin_lock_dialog_title">Secure with App lock</string>
-    <string name="pin_lock_dialog_text">Unlock the app with fingerprint or pin code. Remember, if you forgot the password then the only way to recover is clear the app data.\n\nTap \"Create Password\" to create &amp; set the lock.</string>
-    <string name="pin_lock_dialog_positive">Create Password</string>
+
+
+
 
     <!-- Actions -->
 

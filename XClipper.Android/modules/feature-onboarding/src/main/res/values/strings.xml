@@ -25,5 +25,4 @@
 
     <string name="next_8">Finish</string>
 
-    <string name="adb_dialog_message2">adb -d shell pm grant %1$s android.permission.READ_LOGS;\n\nadb -d shell appops set %1$s SYSTEM_ALERT_WINDOW allow;\n\nadb -d shell am force-stop %1$s;</string>
 </resources>

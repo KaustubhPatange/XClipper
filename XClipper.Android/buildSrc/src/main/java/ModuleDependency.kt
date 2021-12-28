@@ -13,7 +13,7 @@ object ModuleDependency {
     const val CORE_GITHUB_UPDATER = ":modules:core-github-updater"
     const val CORE_SPECIAL = ":modules:core-special"
     const val CORE_PINLOCK = ":modules:core-pinlock"
-    const val CORE_IMPROVE_DETECTION = ":modules:core-improve-detection"
+    const val CORE_ADDONS = ":modules:core-addons"
 
     const val FEATURE_ONBOARDING = ":modules:feature-onboarding"
     const val FEATURE_XCOPY = ":modules:feature-xcopy"

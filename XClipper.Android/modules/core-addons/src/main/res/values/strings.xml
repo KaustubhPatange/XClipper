@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Pin Lock -->
+    <string name="pin_title">Pin Lock</string>
+    <string name="pin_short_desc">Pin &amp; Biometric app lock support</string>
+    <string name="pin_full_desc">App lock support providing unlocking with pin or fingerprint. You should not use any 3rd party app lockers as they cause the app to malfunction.\n\nEnable: Settings > General > Pin Lock (Biometric).</string>
+    <string name="pin_sku">extension_pin_lock</string>
+
+    <string name="extension_title">Add-on Extension</string>
+    <string name="extension_message">This is an add-on extension that unlocks certain capabilities of the app which requires a small purchase to unlock.</string>
+
+    <!-- Billing client error -->
+    <string name="err_billing_not_ready">Billing client not ready, Try again</string>
+    <string name="err_billing_disconnect">Billing service disconnected</string>
+    <string name="err_billing_unfinished">Error: %1$s</string>
+    <string name="err_purchase_failed">Purchase failed</string>
+    <string name="err_purchase_no_item">Could not find the In-App item</string>
+    <string name="err_billing_unknown">Unknown error</string>
+</resources>

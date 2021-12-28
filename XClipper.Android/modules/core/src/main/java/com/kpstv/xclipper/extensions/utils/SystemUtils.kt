@@ -58,9 +58,13 @@ object SystemUtils {
     }
 
     // TODO: Make this work for all accessibility service & not limited to app's accessibility services.
-    fun isAccessibilityServiceEnabled(context: Context, service: Class<out AccessibilityService?>): Boolean {
+    fun isAccessibilityServiceEnabled(
+        context: Context,
+        service: Class<out AccessibilityService?>,
+        feedbackTypeFlags: Int = AccessibilityServiceInfo.FEEDBACK_ALL_MASK
+    ): Boolean {
         val am = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
-        val enabledServices = am.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK)
+        val enabledServices = am.getEnabledAccessibilityServiceList(feedbackTypeFlags)
         for (enabledService in enabledServices) {
             val enabledServiceInfo: ServiceInfo = enabledService.resolveInfo.serviceInfo
             if (enabledServiceInfo.packageName == context.packageName && enabledServiceInfo.name == service.name)

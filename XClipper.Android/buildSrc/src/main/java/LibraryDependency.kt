@@ -51,6 +51,7 @@ private object LibraryVersion {
     const val BILLING = "4.0.0"
     const val MARKWON = "4.6.2"
     const val SENTRY = "5.5.1"
+    const val SWIPE_REFRESH_LAYOUT = "1.1.0"
 }
 
 object LibraryDependency {
@@ -134,4 +135,5 @@ object LibraryDependency {
     const val LOCAL_BROADCAST_MANAGER = "androidx.localbroadcastmanager:localbroadcastmanager:1.0.0"
 
     const val SENTRY = "io.sentry:sentry-android:${LibraryVersion.SENTRY}"
+    const val SWIPE_REFRESH_LAYOUT = "androidx.swiperefreshlayout:swiperefreshlayout:${LibraryVersion.SWIPE_REFRESH_LAYOUT}"
 }

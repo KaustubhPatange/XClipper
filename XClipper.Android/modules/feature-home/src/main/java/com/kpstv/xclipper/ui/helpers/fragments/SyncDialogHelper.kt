@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.fragment.app.FragmentActivity
 import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
-import com.kpstv.xclipper.extension.getFormattedDate
+import com.kpstv.xclipper.extensions.getFormattedDate
 import com.kpstv.xclipper.feature_home.R
 import com.kpstv.xclipper.ui.dialogs.CustomLottieDialog
 import com.kpstv.xclipper.ui.fragments.Home

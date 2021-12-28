@@ -18,7 +18,7 @@ internal class ImproveDetection : AbstractWelcomeFragment() {
 
         val fromTextLength = spannableString.length
 
-        spannableString.append(getString(R.string.adb_dialog_message2, requireContext().packageName), ForegroundColorSpan(requireContext().colorFrom(R.color.colorTextSecondaryLight)), Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+        spannableString.append(getString(R.string.adb_detection_instruction, requireContext().packageName), ForegroundColorSpan(requireContext().colorFrom(R.color.colorTextSecondaryLight)), Spannable.SPAN_INCLUSIVE_INCLUSIVE)
         spannableString.setSpan(RelativeSizeSpan(0.9f), fromTextLength, spannableString.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 
         val binding = FragmentImproveDetectionBinding.inflate(layoutInflater)

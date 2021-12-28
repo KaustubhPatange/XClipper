@@ -51,7 +51,7 @@
         android:text="@string/go_top"
         android:textAllCaps="false"
         android:textColor="?background"
-        android:translationY="100dp"
+        android:translationY="150dp"
         app:cornerRadius="20dp"
         tools:translationY="0dp" />
 

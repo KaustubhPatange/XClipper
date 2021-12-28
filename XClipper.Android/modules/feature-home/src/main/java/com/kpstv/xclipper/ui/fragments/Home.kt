@@ -30,7 +30,7 @@ import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.di.navigation.SettingsNavigation
 import com.kpstv.xclipper.di.navigation.SpecialSheetNavigation
-import com.kpstv.xclipper.extension.DelegatedSearchViewListener
+import com.kpstv.xclipper.extension.DefaultSearchViewListener
 import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.extensions.enumerations.FirebaseState
 import com.kpstv.xclipper.extension.listener.StatusListener
@@ -174,9 +174,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
                     binding.fabAddItem.hide()
                     swipeToDeleteItemTouch.attachToRecyclerView(null)
                 }
-                else -> {
-                    // TODO: When exhaustive
-                }
+                else -> { /* no-op */}
             }
         }
         mainViewModel.stateManager.selectedItemClips.observeForever { clips ->
@@ -377,7 +375,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
                 mainViewModel.searchManager.clearSearch()
             }
         )
-        searchView.setOnSearchViewListener(object : SimpleSearchView.SearchViewListener by DelegatedSearchViewListener {
+        searchView.setOnSearchViewListener(object : SimpleSearchView.SearchViewListener by DefaultSearchViewListener {
             override fun onSearchViewClosed() {
                 mainViewModel.searchManager.clearSearch()
             }
