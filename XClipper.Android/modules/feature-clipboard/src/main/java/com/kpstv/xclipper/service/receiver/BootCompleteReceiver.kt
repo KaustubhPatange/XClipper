@@ -5,11 +5,10 @@ import android.content.Intent
 import com.kpstv.xclipper.extensions.elements.AbstractBroadcastReceiver
 import com.kpstv.xclipper.extensions.helper.ClipboardLogDetector
 import com.kpstv.xclipper.ui.helpers.AppSettings
-import com.kpstv.xclipper.ui.helpers.Notifications
+import com.kpstv.xclipper.ui.helpers.FeatureClipboardNotifications
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-// TODO: Move to improve detection feature
 @AndroidEntryPoint
 class BootCompleteReceiver : AbstractBroadcastReceiver() {
 
@@ -22,7 +21,7 @@ class BootCompleteReceiver : AbstractBroadcastReceiver() {
             val canDetect = ClipboardLogDetector.isDetectionCompatible(context)
             if (!canDetect) {
                 appSettings.setImproveDetectionEnabled(false)
-                Notifications.sendImproveDetectionDisabled(context)
+                FeatureClipboardNotifications.sendImproveDetectionDisabled(context)
             }
         }
     }

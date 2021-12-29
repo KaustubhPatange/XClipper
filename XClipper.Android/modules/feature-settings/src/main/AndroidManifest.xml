@@ -2,4 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.kpstv.xclipper.feature_settings">
 
+    <!-- Required for blacklist apps feature where will will show list of apps to select from. -->
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+
 </manifest>

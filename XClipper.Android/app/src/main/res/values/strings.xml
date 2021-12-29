@@ -98,8 +98,6 @@
     <string name="terms_last_updated">Updated: %1$s</string>
     <string name="terms_check_agreement"><![CDATA[I agree with the <b>Agreement</b>]]></string>
     <string name="err_privacy_policy">Invalid privacy policy</string>
-    <string name="improve_detection_notify_title">Improve clipboard detection disabled</string>
-    <string name="improve_detection_notify_text">It looks like the system has disabled the improve clipboard detection mechanism. You need to again configure it using ADB</string>
 
     <string name="db_provider_enable_bind_setting">Enable &amp; apply \"Database binding\" from the desktop application.</string>
 </resources>

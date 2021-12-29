@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="improve_detection_notify_title">Improve clipboard detection disabled</string>
+    <string name="improve_detection_notify_text">It looks like the system has disabled the improve clipboard detection mechanism. You need to again configure it using ADB</string>
+</resources>

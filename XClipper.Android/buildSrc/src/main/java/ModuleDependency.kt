@@ -23,6 +23,7 @@ object ModuleDependency {
     const val FEATURE_HOME = ":modules:feature-home"
     const val FEATURE_CRASH_REPORT = ":modules:feature-crash-report"
     const val FEATURE_SETTINGS = ":modules:feature-settings"
+    const val FEATURE_CLIPBOARD = ":modules:feature-clipboard"
 
     fun getAllModules(): Set<String> = ModuleDependency::class.memberProperties
         .filter { it.isConst }

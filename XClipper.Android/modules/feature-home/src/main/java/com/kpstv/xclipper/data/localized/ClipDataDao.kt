@@ -82,7 +82,7 @@ interface ClipDataDao {
         fun createQuery(searchFilter: ArrayList<String>?, tagFilter: ArrayList<Tag>?, searchText: String?): SimpleSQLiteQuery {
             val builder = StringBuilder("select * from table_clip")
             val params = mutableListOf<Any>()
-            if (searchText?.isNotEmpty() == true || searchFilter?.size ?: 0 > 0 || tagFilter?.size ?: 0 > 0) builder.append(" where ")
+            if (searchText?.isNotEmpty() == true || (searchFilter?.size ?: 0) > 0 || (tagFilter?.size ?: 0) > 0) builder.append(" where ")
             if (searchText != null && searchText.isNotEmpty()) {
                 params.add("%$searchText%")
                 builder.append("data like ? and ")
