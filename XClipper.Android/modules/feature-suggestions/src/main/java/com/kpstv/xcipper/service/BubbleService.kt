@@ -23,6 +23,7 @@ import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.extensions.*
+import com.kpstv.xclipper.extensions.utils.ToastyUtils
 import com.kpstv.xclipper.ui.dialogs.FeatureDialog
 import com.kpstv.xclipper.ui.helpers.AppSettings
 import dagger.hilt.android.AndroidEntryPoint
@@ -172,6 +173,17 @@ class BubbleService : FloatingBubbleService() {
 
     override fun onGetIntent(intent: Intent): Boolean {
         return true
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        return try {
+            super.onStartCommand(intent, flags, startId)
+        } catch (e: OutOfMemoryError) {
+            ToastyUtils.showWarning(this, getString(R.string.bubble_oom_error))
+            Logger.w(e, "Non-fatal: Out of memory issue in BubbleService")
+            stopSelf()
+            START_NOT_STICKY
+        }
     }
 
     override fun onDestroy() {

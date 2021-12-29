@@ -16,6 +16,7 @@ import com.kpstv.xclipper.extensions.getColorAttr
 import com.kpstv.xclipper.extensions.hide
 import com.kpstv.xclipper.extensions.show
 import com.kpstv.xclipper.extensions.utils.RetrofitUtils
+import com.kpstv.xclipper.extensions.utils.asString
 import com.kpstv.xclipper.extensions.viewBinding
 import com.kpstv.xclipper.ui.helpers.AppSettings
 import dagger.hilt.android.AndroidEntryPoint
@@ -101,16 +102,13 @@ class DisclosureSheetViewModel @Inject constructor() : ViewModel() {
         privacyCheckedMutableState.combine(agreementCheckedMutableState) { a, b -> a && b}
 
     internal fun fetchPolicy() : Flow<DisclosureState> = flow {
-        val result = RetrofitUtils.fetch(POLICY_URL)
-        result.onFailure { emit(DisclosureState.EmptyPolicy) }
-        result.onSuccess {
-            val body = it.body?.string() ?: run { emit(DisclosureState.EmptyPolicy); return@onSuccess }
-            val date = UPDATED_DATE_PATTERN.toRegex().find(body)?.groupValues?.get(1)
-            if (date != null) {
-                emit(DisclosureState.UpdatePolicy(body, date))
-            } else {
-                emit(DisclosureState.UpdatePolicy(body))
-            }
+        val body = RetrofitUtils.fetch(POLICY_URL).getOrNull()?.asString()
+            ?: run { emit(DisclosureState.EmptyPolicy); return@flow }
+        val date = UPDATED_DATE_PATTERN.toRegex().find(body)?.groupValues?.get(1)
+        if (date != null) {
+            emit(DisclosureState.UpdatePolicy(body, date))
+        } else {
+            emit(DisclosureState.UpdatePolicy(body))
         }
     }
 

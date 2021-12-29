@@ -1,13 +1,14 @@
 package com.kpstv.xclipper.extensions.utils
 
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
+import com.kpstv.xclipper.extensions.Logger
 import com.kpstv.xclipper.extensions.await
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import java.io.IOException
 import java.net.UnknownHostException
 import java.util.concurrent.TimeUnit
 
@@ -43,7 +44,12 @@ object RetrofitUtils {
 }
 
 fun Response.asString() : String? {
-    val data = body?.string()
-    close()
-    return data
+    return try {
+        val data = body?.string()
+        close()
+        data
+    } catch (e: IOException) {
+        Logger.w(e, "Error: Failed to convert response.asString()")
+        null
+    }
 }

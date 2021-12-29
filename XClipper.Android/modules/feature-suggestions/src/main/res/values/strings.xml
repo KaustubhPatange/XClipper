@@ -4,4 +4,6 @@
 
     <string name="bubble_search_title">Search suggestion</string>
     <string name="bubble_search_subtitle">XClipper can show you suggestions based on the last word from a search query.\nLong press item to show more options.</string>
+
+    <string name="bubble_oom_error">"Could not show suggestions due to low memory"</string>
 </resources>
