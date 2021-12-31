@@ -1,103 +1,24 @@
 <resources>
 
-
-    <string name="delete">Delete</string>
-
-    <string name="save">Save</string>
-
-    <string name="sync">Sync</string>
-    <string name="help">Help</string>
-    <string name="faqs">FAQs</string>
-    <string name="tag">Filter Tag</string>
-
-    <string name="write_here">Write here…</string>
-
-    <string name="error_tag_dependent">Some items are dependent on this tag</string>
-    <string name="open_link">Open with…</string>
-
-    <string name="copy_name">Copy</string>
-
-
+    <!-- Notifications -->
     <string name="more_actions">Special actions</string>
     <string name="clip_content">Clipboard content</string>
-    <string name="title_activity_settings">Settings</string>
-    <string name="set_service">service_pref</string>
-    <string name="set_look">look_pref</string>
-    <string name="set_backup">backup_pref</string>
 
-
-
-
-
-
-
-
-    <string name="err_uid">Not a valid UID</string>
-
-
-
-
-    <string name="err_import_database">Couldn\'t resolve the input stream</string>
-    <string name="restart_app">Restart App</string>
-    <string name="restart_summary">You need to restart the app in order to apply changes!</string>
-
-
-    <string name="ask_suggestion">Show overlay suggestion</string>
-
-
-
-    <string name="standard_pricing">Get a standard pricing model with maximum server storage you can get.</string>
-    <string name="awesome">You are awesome!</string>
-    <string name="item_removed">Item removed permanently</string>
-
-    <string name="settings_restart">Restart needed to apply changes</string>
-
+    <!-- Review Helper -->
     <string name="review">Review</string>
-    <string name="review_text">Help us grow by reviewing the app :)</string>
-
-    <string name="open_browser">Open in browser</string>
-    <string name="desktop_site">Desktop site</string>
-    <string name="force_dark">Force Dark</string>
-
-    <string name="private_browse1">Privately browsing :)</string>
-
-    <string name="set_current_clip">Set at current clipboard</string>
     <string name="rate_title">Enjoying the app?</string>
     <string name="rate_text">Kindly review the app on Google play which will help us reach more audience.</string>
 
+    <!-- DB Connection Provider -->
+    <string name="db_provider_enable_bind_setting">Enable &amp; apply \"Database binding\" from the desktop application.</string>
 
-
-
-    <string name="open_accessibility">Opening accessibility</string>
-
-
-
-
-
-
-
-
-
-    <string name="do_not_show">Do not show</string>
-    <string name="billing_disconnected">Billing service disconnected</string>
-
-
-
-
-
-
-    <!-- Actions -->
-
-
-    <string name="search_query">Search Settings</string>
-
+    <!-- Disclosure/Agreement -->
     <string name="terms_decline">Decline</string>
     <string name="terms_agree">Accept</string>
     <string name="terms_check_privacy_policy"><![CDATA[I agree with the <b>Privacy Policy</b>]]></string>
     <string name="terms_title">Disclosure Agreement</string>
     <string name="terms_last_updated">Updated: %1$s</string>
     <string name="terms_check_agreement"><![CDATA[I agree with the <b>Agreement</b>]]></string>
-    <string name="err_privacy_policy">Invalid privacy policy</string>
+    <string name="err_privacy_policy">Couldn\'t fetch latest privacy policy</string>
 
-    <string name="db_provider_enable_bind_setting">Enable &amp; apply \"Database binding\" from the desktop application.</string>
 </resources>

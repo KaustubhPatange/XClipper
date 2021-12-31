@@ -3,7 +3,7 @@
     <string name="app_name">XClipper</string>
     <string name="app_name_full">XClipper - Smart clipboard manager</string>
 
-    <string name="ctc">Copied to clipboard</string>
+    <string name="copy_to_clipboard">Copied to clipboard</string>
 
     <string name="learn_more">Learn more</string>
     <string name="err_action_web">Couldn\'t find any browser for supporting this action</string>
@@ -18,7 +18,10 @@
     <string name="activate">Activate</string>
     <string name="dismiss">Dismiss</string>
 
+    <string name="delete">Delete</string>
+
     <string name="subscribed">Subscribed</string>
+    <string name="do_not_show">Do not show</string>
 
     <string name="suggestion_title">Suggestions [BETA]</string>
     <string name="suggestion_capture">You need to enable System overlay permission.\n\n1. Click OK to open Display Overlay settings.\n2. Enable \"Allow display over other apps\".</string>

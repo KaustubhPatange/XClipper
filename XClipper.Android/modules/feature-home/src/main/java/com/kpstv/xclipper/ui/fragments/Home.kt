@@ -228,7 +228,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
 
         adapter.setCopyClick { clip, _ ->
             clipboardProvider.setClipboard(ClipData.newPlainText(null, clip.data))
-            Toasty.info(requireContext(), getString(R.string.ctc)).show()
+            Toasty.info(requireContext(), getString(R.string.copy_to_clipboard)).show()
         }
 
         adapter.setMenuItemClick { clip, _, menuType ->

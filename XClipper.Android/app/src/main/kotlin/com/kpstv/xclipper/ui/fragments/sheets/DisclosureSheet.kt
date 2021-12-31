@@ -7,7 +7,6 @@ import androidx.core.graphics.ColorUtils
 import androidx.core.text.HtmlCompat
 import androidx.core.text.buildSpannedString
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.databinding.BottomSheetDisclosureBinding
@@ -15,12 +14,11 @@ import com.kpstv.xclipper.extensions.elements.CustomRoundedBottomSheetFragment
 import com.kpstv.xclipper.extensions.getColorAttr
 import com.kpstv.xclipper.extensions.hide
 import com.kpstv.xclipper.extensions.show
-import com.kpstv.xclipper.extensions.utils.RetrofitUtils
-import com.kpstv.xclipper.extensions.utils.asString
 import com.kpstv.xclipper.extensions.viewBinding
 import com.kpstv.xclipper.ui.helpers.AppSettings
+import com.kpstv.xclipper.ui.viewmodel.DisclosureSheetViewModel
+import com.kpstv.xclipper.ui.viewmodel.DisclosureState
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.lifecycle.HiltViewModel
 import es.dmoral.toasty.Toasty
 import io.noties.markwon.Markwon
 import kotlinx.coroutines.flow.*
@@ -75,54 +73,27 @@ class DisclosureSheet : CustomRoundedBottomSheetFragment(R.layout.bottom_sheet_d
                 }
                 when(state) {
                     DisclosureState.EmptyPolicy -> {
+                        // show cached raw privacy policy
+                        val policyText = resources.openRawResource(R.raw.policy).bufferedReader().readText()
+                        update(policyText = policyText)
                         Toasty.error(requireContext(), getString(R.string.err_privacy_policy)).show()
                     }
                     is DisclosureState.UpdatePolicy -> {
-                        val spanned = Markwon.create(requireContext()).toMarkdown(state.data)
-                        binding.tvAgreement.text = buildSpannedString {
-                            appendLine()
-                            append(spanned)
-                            repeat(10) { appendLine() }
-                        }
-                        binding.tvUpdate.text = getString(R.string.terms_last_updated, state.lastUpdated)
+                        update(state.data, state.lastUpdated)
                     }
                     else -> {}
                 }
             }
         }
     }
-}
 
-@HiltViewModel
-class DisclosureSheetViewModel @Inject constructor() : ViewModel() {
-    val privacyCheckedMutableState = MutableStateFlow(false)
-    val agreementCheckedMutableState = MutableStateFlow(false)
-
-    val acceptState: Flow<Boolean> =
-        privacyCheckedMutableState.combine(agreementCheckedMutableState) { a, b -> a && b}
-
-    internal fun fetchPolicy() : Flow<DisclosureState> = flow {
-        val body = RetrofitUtils.fetch(POLICY_URL).getOrNull()?.asString()
-            ?: run { emit(DisclosureState.EmptyPolicy); return@flow }
-        val date = UPDATED_DATE_PATTERN.toRegex().find(body)?.groupValues?.get(1)
-        if (date != null) {
-            emit(DisclosureState.UpdatePolicy(body, date))
-        } else {
-            emit(DisclosureState.UpdatePolicy(body))
+    private fun update(policyText: String, lastUpdated: String = "unknown") {
+        val spanned = Markwon.create(requireContext()).toMarkdown(policyText)
+        binding.tvAgreement.text = buildSpannedString {
+            appendLine()
+            append(spanned)
+            repeat(10) { appendLine() }
         }
+        binding.tvUpdate.text = getString(R.string.terms_last_updated, lastUpdated)
     }
-
-    private companion object {
-        private const val UPDATED_DATE_PATTERN = "Updated:\\s?([\\d]{2}/[\\d]{2}/[\\d]{2,4})"
-
-        private const val POLICY_URL = "https://raw.githubusercontent.com/KaustubhPatange/XClipper/master/XClipper.Android/POLICY.md"
-    }
-}
-
-internal sealed class DisclosureState {
-    object Loading : DisclosureState()
-    data class UpdatePolicy(val data: String, val lastUpdated: String) : DisclosureState() {
-        constructor(data: String) : this(data = data, lastUpdated = "unknown")
-    }
-    object EmptyPolicy : DisclosureState()
 }

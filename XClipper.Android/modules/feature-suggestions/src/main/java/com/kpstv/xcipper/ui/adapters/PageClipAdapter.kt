@@ -81,7 +81,7 @@ class PageClipAdapter(
             }
             btnCopy.setOnClickListener {
                 clipboardProvider.setClipboard(ClipData.newPlainText("Copied", clip?.data!!))
-                Toasty.info(root.context, root.context.getString(R.string.ctc)).show()
+                Toasty.info(root.context, root.context.getString(R.string.copy_to_clipboard)).show()
             }
         }
     }
