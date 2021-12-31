@@ -58,7 +58,7 @@ class ExtensionHelper(private val context: Context, sku: String) {
          * Initialize before purchase
          */
         fun init(onComplete: () -> Unit = {}, onError: () -> Unit= {}) {
-            billingClient.startConnection(object : BillingClientStateListener {
+            val connection = object : BillingClientStateListener {
                 override fun onBillingSetupFinished(billingResult: BillingResult) {
                     if (billingResult.responseCode ==  BillingClient.BillingResponseCode.OK) {
                         querySkuDetails(onComplete = { skuDetails ->
@@ -66,21 +66,25 @@ class ExtensionHelper(private val context: Context, sku: String) {
                             validatePurchase(onComplete = onComplete)
                         })
                     } else {
+                        billingClient.endConnection()
                         errorListener?.invoke(BillingSetupFinishedFailedException(billingResult.debugMessage))
                         onError()
                     }
                 }
                 override fun onBillingServiceDisconnected() {
+                    billingClient.endConnection()
                     errorListener?.invoke(BillingServiceDisconnectedException())
                 }
-            })
+            }
+            billingClient.startConnection(connection)
         }
 
-        suspend fun init() : Unit = suspendCancellableCoroutine { continuation ->
+        suspend fun init() : Boolean = suspendCancellableCoroutine { continuation ->
             init(
-                onComplete = { continuation.resume(Unit) },
-                onError = { continuation.resume(Unit) }
+                onComplete = { continuation.resume(true) },
+                onError = { continuation.resume(false) }
             )
+            continuation.invokeOnCancellation { billingClient.endConnection() }
         }
 
         /** Launch the billing flow for purchasing */

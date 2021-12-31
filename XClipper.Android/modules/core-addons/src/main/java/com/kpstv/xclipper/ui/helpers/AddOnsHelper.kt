@@ -40,11 +40,11 @@ object AddOnsHelper {
         val lists = AddOns.getAllExtensions(context)
         lists.forEach { item ->
             val helper = ExtensionHelper.BillingHelper(context, item.sku)
-            helper.init() // auto check for validation.
-
-            when(item) {
-                AddOns.getPinExtension(context) -> {
-                    PinLockHelper.internalRemoveAppLock(context)
+            if (helper.init()) { // auto check for validation.
+                when(item) {
+                    AddOns.getPinExtension(context) -> {
+                        PinLockHelper.internalRemoveAppLock(context)
+                    }
                 }
             }
         }
