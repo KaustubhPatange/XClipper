@@ -1,14 +1,16 @@
 package com.kpstv.xclipper.data.provider
 
+import android.content.Context
 import com.kpstv.license.Encryption
 import com.kpstv.license.Encryption.DecryptPref
-import com.kpstv.xclipper.App
-import com.kpstv.xclipper.App.EMPTY_STRING
+import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.localized.FBOptions
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 class DBConnectionProviderImpl @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val preferenceProvider: PreferenceProvider
 ) : DBConnectionProvider {
     /**
@@ -19,7 +21,7 @@ class DBConnectionProviderImpl @Inject constructor(
             responseListener.onError(Exception("Data is null"))
             return
         }
-        App.UID_PATTERN_REGEX.toRegex().let {
+        UID_PATTERN_REGEX.toRegex().let {
             if (it.containsMatchIn(data)) {
 
                 /** Here we will parse the data */
@@ -36,7 +38,7 @@ class DBConnectionProviderImpl @Inject constructor(
                 val hasBinded = firebaseConfigs[6].toBoolean()
 
                 if (!hasBinded) {
-                    responseListener.onError(Exception("Enable & apply \"Database binding\" from desktop application."))
+                    responseListener.onError(Exception(context.getString(R.string.db_provider_enable_bind_setting)))
                     return
                 }
 
@@ -59,31 +61,31 @@ class DBConnectionProviderImpl @Inject constructor(
 
     override fun isValidData(): Boolean {
         loadDataFromPreference()
-        return !(App.FB_API_KEY.isEmpty() && App.FB_APP_ID.isEmpty() && App.FB_ENDPOINT.isEmpty())
+        return !(FB_API_KEY.isEmpty() && FB_APP_ID.isEmpty() && FB_ENDPOINT.isEmpty())
     }
 
     override fun loadDataFromPreference() {
-        App.FB_API_KEY = preferenceProvider.getEncryptString(
-            App.FB_API_KEY_PREF,
+        FB_API_KEY = preferenceProvider.getEncryptString(
+            FB_API_KEY_PREF,
             EMPTY_STRING
         ) ?: EMPTY_STRING
-        App.FB_APP_ID = preferenceProvider.getEncryptString(
-            App.FB_APP_ID_PREF,
+        FB_APP_ID = preferenceProvider.getEncryptString(
+            FB_APP_ID_PREF,
             EMPTY_STRING
         ) ?: EMPTY_STRING
-        App.FB_ENDPOINT = preferenceProvider.getEncryptString(
-            App.FB_ENDPOINT_PREF,
+        FB_ENDPOINT = preferenceProvider.getEncryptString(
+            FB_ENDPOINT_PREF,
             EMPTY_STRING
         ) ?: EMPTY_STRING
-        App.AUTH_NEEDED = preferenceProvider.getBooleanKey(
-            App.AUTH_NEEDED_PREF,
+        AUTH_NEEDED = preferenceProvider.getBooleanKey(
+            AUTH_NEEDED_PREF,
             false
         )
-        App.UID = preferenceProvider.getStringKey(App.UID_PREF, EMPTY_STRING) ?: EMPTY_STRING
+        UID = preferenceProvider.getStringKey(UID_PREF, EMPTY_STRING) ?: EMPTY_STRING
 
         /** This will initialize a password */
         val fbPassword = preferenceProvider.getEncryptString(
-            App.FB_PASSWORD_PREF,
+            FB_PASSWORD_PREF,
             EMPTY_STRING
         ) ?: EMPTY_STRING
         Encryption.setPassword(fbPassword)
@@ -91,50 +93,68 @@ class DBConnectionProviderImpl @Inject constructor(
 
     override fun saveOptionsToAll(options: FBOptions) {
         preferenceProvider.putEncryptString(
-            App.FB_API_KEY_PREF, options.apiKey
+            FB_API_KEY_PREF, options.apiKey
         )
         preferenceProvider.putEncryptString(
-            App.FB_ENDPOINT_PREF, options.endpoint
+            FB_ENDPOINT_PREF, options.endpoint
         )
         preferenceProvider.putEncryptString(
-            App.FB_APP_ID_PREF, options.appId
+            FB_APP_ID_PREF, options.appId
         )
         preferenceProvider.putEncryptString(
-            App.FB_PASSWORD_PREF, options.password
+            FB_PASSWORD_PREF, options.password
         )
         preferenceProvider.putStringKey(
-            App.UID_PREF, options.uid
+            UID_PREF, options.uid
         )
         preferenceProvider.putBooleanKey(
-            App.AUTH_NEEDED_PREF, options.isAuthNeeded
+            AUTH_NEEDED_PREF, options.isAuthNeeded
         )
 
-        /** This will load the data to App.kt properties */
+        /** This will update the credentials */
         loadDataFromPreference()
     }
 
     override fun optionsProvider(): FBOptions? {
         return if (isValidData()) {
             FBOptions.Builder().apply {
-                setUID(App.UID)
-                setApiKey(App.FB_API_KEY)
-                setAppId(App.FB_APP_ID)
-                setEndPoint(App.FB_ENDPOINT)
+                setUID(UID)
+                setApiKey(FB_API_KEY)
+                setAppId(FB_APP_ID)
+                setEndPoint(FB_ENDPOINT)
                 setPassword(Encryption.getPassword())
-                setIsAuthNeeded(App.AUTH_NEEDED)
+                setIsAuthNeeded(AUTH_NEEDED)
             }.build()
         } else
             null
     }
 
     override fun detachDataFromAll() {
-        preferenceProvider.removeKey(App.FB_ENDPOINT_PREF)
-        preferenceProvider.removeKey(App.FB_APP_ID_PREF)
-        preferenceProvider.removeKey(App.FB_API_KEY_PREF)
-        preferenceProvider.removeKey(App.FB_PASSWORD_PREF)
-        preferenceProvider.removeKey(App.UID_PREF)
-        preferenceProvider.removeKey(App.AUTH_NEEDED_PREF)
+        preferenceProvider.removeKey(FB_ENDPOINT_PREF)
+        preferenceProvider.removeKey(FB_APP_ID_PREF)
+        preferenceProvider.removeKey(FB_API_KEY_PREF)
+        preferenceProvider.removeKey(FB_PASSWORD_PREF)
+        preferenceProvider.removeKey(UID_PREF)
+        preferenceProvider.removeKey(AUTH_NEEDED_PREF)
 
         loadDataFromPreference()
+    }
+
+    private companion object {
+        private const val EMPTY_STRING = ""
+        private const val UID_PATTERN_REGEX = "([\\w\\d]+)-([\\w\\d]+)-([\\w\\d]+)-([\\w\\d]+)"
+
+        private const val UID_PREF = "uid_key"
+        private const val FB_API_KEY_PREF = "apiKey_pref"
+        private const val FB_APP_ID_PREF = "appId_pref"
+        private const val FB_PASSWORD_PREF = "password_pref"
+        private const val FB_ENDPOINT_PREF = "endpoint_pref"
+        private const val AUTH_NEEDED_PREF = "authNeed_pref"
+
+        @Volatile private var FB_ENDPOINT: String = ""
+        @Volatile private var FB_API_KEY: String = ""
+        @Volatile private var FB_APP_ID: String = ""
+        @Volatile private var AUTH_NEEDED: Boolean = false
+        @Volatile private var UID: String = ""
     }
 }

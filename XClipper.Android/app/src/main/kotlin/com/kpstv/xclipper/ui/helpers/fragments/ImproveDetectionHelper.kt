@@ -3,18 +3,17 @@ package com.kpstv.xclipper.ui.helpers.fragments
 import android.content.Context
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
-import com.kpstv.xclipper.App
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.di.CommonReusableEntryPoints
+import com.kpstv.xclipper.extensions.getFormattedDate
 import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.service.ClipboardAccessibilityService
-import com.kpstv.xclipper.service.helper.ClipboardLogDetector
+import com.kpstv.xclipper.extensions.helper.ClipboardLogDetector
 import com.kpstv.xclipper.ui.dialogs.Dialogs
 import com.kpstv.xclipper.ui.fragments.Home
+import com.kpstv.xclipper.ui.helpers.AbstractFragmentHelper
 import com.kpstv.xclipper.ui.helpers.AppSettings
-import dagger.hilt.android.EntryPointAccessors
-import dagger.hilt.components.SingletonComponent
 import java.util.*
 
 class ImproveDetectionHelper(
@@ -79,7 +78,7 @@ class ImproveDetectionHelper(
                     setTitleText(R.string.adb_mode_title)
                     setSubText(R.string.adb_mode_summary)
                     setIcon(R.drawable.ic_increase)
-                    applyColor(context.colorFrom(R.color.palette_android))
+                    applyColor(context.colorFrom(R.color.android))
                     hideButtonPanel()
                     setOnClick(doOnAction)
                     setOnLongClick {
@@ -96,7 +95,7 @@ class ImproveDetectionHelper(
         private fun canShowQuickTip(context: Context, preferenceProvider: PreferenceProvider, appSettings: AppSettings) : Boolean {
             return !preferenceProvider.getBooleanKey(QUICK_TIP_SHOWN, false) &&
                     ClipboardAccessibilityService.isRunning(context) &&
-                    ClipboardLogDetector.isDetectionVersionCompatible(context) &&
+                    ClipboardLogDetector.isDetectionVersionCompatible() &&
                     if (ClipboardLogDetector.isDetectionCompatible(context)) { !appSettings.isImproveDetectionEnabled() } else true
         }
     }

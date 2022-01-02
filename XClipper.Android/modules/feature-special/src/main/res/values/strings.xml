@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="invalid_url">No url passed for shortening.</string>
+
+    <string name="specials_title">Specials</string>
+    <string name="define"><b>Define:</b></string>
+
+    <!-- Actions -->
+    <string name="sp_search_web">Search as a query</string>
+    <string name="sp_search_map">Search on map</string>
+    <string name="sp_set_calender_event">Set a calender event</string>
+    <string name="sp_send_mail">Send a mail</string>
+    <string name="sp_phone_call">Make a phone call</string>
+    <string name="sp_send_message">Text this number</string>
+    <string name="sp_send_whatsapp">WhatsApp this number</string>
+    <string name="sp_create_contact">Create a new contact</string>
+    <string name="sp_open_link">Open with…</string>
+    <string name="sp_private_browse">Open in private</string>
+    <string name="sp_shorten_link">Shorten link</string>
+
+
+    <string name="err_action">Couldn\'t find the action</string>
+
+    <!-- Disclosure dialog -->
+
+    <string name="disclosure">Disclosure</string>
+    <string name="dictionary_disclosure"><b>XClipper</b> uses <a href="https://dictionaryapi.dev/">api.dictionaryapi.dev</a> API for retrieving meanings for the words in your clip. This service does not send any user\'s data, check privacy policy from app settings for more information.</string>
+    <string name="disclosure_deny">Cannot use this service without agreeing the policy.</string>
+    <string name="accept">Accept</string>
+    <string name="deny">Deny</string>
+
+    <!-- Special Action Fragment -->
+
+    <string name="search_query_action">Search query on browser</string>
+    <string name="search_query_action_text">Install browsers like DuckDuckGo, Firefox to customize your search query.</string>
+    <string name="search_map_action">Search on map</string>
+    <string name="search_map_action_text">Shows the location from coordinates or address on the map.</string>
+    <string name="open_link_action">Open link</string>
+    <string name="open_link_action_text"><![CDATA[Filters a url & opens it in the browser from intent.]]></string>
+    <string name="shorten_link_action">Shorten link</string>
+    <string name="shorten_link_action_text">Create a short link using tinyurl.com.</string>
+    <string name="open_link_private_action">Open link in private</string>
+    <string name="open_link_private_action_text">Launch a url in an incognito mode within the app.</string>
+    <string name="create_contact_action">Create contact</string>
+    <string name="create_contact_action_text">Create or add to contacts from the phone number or email address.</string>
+    <string name="calender_events_action">Create calender event</string>
+    <string name="calender_events_action_text"><![CDATA[[Experimental] Detect dates in neutral language (English only) & creates a new calender event.]]></string>
+    <string name="call_number_action">Call number</string>
+    <string name="call_number_action_text"><![CDATA[Filter a phone number from a text & dial it to call.]]></string>
+    <string name="send_text_message_action">Send text message (DM)</string>
+    <string name="send_text_message_action_text">Directly DM a phone number</string>
+    <string name="send_whatsapp_action">Send WhatsApp message</string>
+    <string name="send_whatsapp_action_text">Directly DM the number without adding it to your contacts.</string>
+    <string name="send_email_action">Send an email</string>
+    <string name="send_email_action_text"><![CDATA[Filter an email address & adds it as a recipient to a new email.]]></string>
+    <string name="lang_title">Language Code</string>
+    <string name="lang_summary">Define language for finding definition of word (usually seen in special actions)</string>
+    <string name="lang_dialog_title">Select dictionary language</string>
+
+</resources>

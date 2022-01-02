@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.kpstv.xclipper.core_clipboard">
+
+    <!-- Used for adb clipboard detection -->
+    <uses-permission android:name="android.permission.READ_LOGS" tools:ignore="ProtectedPermissions" />
+
+    <application>
+        <activity
+            android:name="com.kpstv.xclipper.ui.activities.ChangeClipboardActivity"
+            android:excludeFromRecents="true"
+            android:launchMode="singleInstance"
+            android:theme="@style/Theme.AppCompat.Translucent" />
+
+        <service
+            android:name="com.kpstv.xclipper.service.ClipboardAccessibilityService"
+            android:enabled="true"
+            android:exported="false"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/clip_service" />
+        </service>
+
+        <receiver android:name="com.kpstv.xclipper.service.receiver.ClipboardBroadcastReceiver" />
+
+    </application>
+</manifest>

@@ -36,4 +36,9 @@ abstract class ProviderModule {
     abstract fun bindBackupProvider(
         backupProviderImpl: BackupProviderImpl
     ): BackupProvider
+
+    @[Binds Singleton]
+    abstract fun bindAccessibilityServiceProvider(
+        accessibilityServiceProviderImpl: ClipboardServiceHelperImpl
+    ): ClipboardServiceHelper
 }

@@ -1,12 +1,12 @@
 package com.kpstv.xclipper.plugins
 
-
 import AndroidConfig
 import BuildTypeRelease
 import BuildType
 import GradlePluginId
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
+import com.android.build.gradle.LibraryExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -20,6 +20,7 @@ class XClipperAndroidPlugin : Plugin<Project> {
     private fun Project.configureAndroid() {
         configureAndroidInfo()
         configureAndroidApplicationId()
+        configureAndroidLibraryProject()
     }
 
     private fun Project.configureAndroidInfo() {
@@ -29,8 +30,8 @@ class XClipperAndroidPlugin : Plugin<Project> {
 
             defaultConfig {
                 vectorDrawables.useSupportLibrary = true
-                minSdkVersion(AndroidConfig.MIN_SDK_VERSION)
-                targetSdkVersion(AndroidConfig.TARGET_SDK_VERSION)
+                minSdk = AndroidConfig.MIN_SDK_VERSION
+                targetSdk = AndroidConfig.TARGET_SDK_VERSION
                 versionCode = AndroidConfig.VERSION_CODE
                 versionName = AndroidConfig.VERSION_NAME
 
@@ -58,11 +59,19 @@ class XClipperAndroidPlugin : Plugin<Project> {
     }
 
     private fun Project.configureAndroidApplicationId() {
-        plugins.withId(GradlePluginId.ANDROID_APPLICATION){
+        plugins.withId(GradlePluginId.ANDROID_APPLICATION) {
             extensions.findByType<BaseAppModuleExtension>()?.apply {
                 defaultConfig {
                     applicationId = AndroidConfig.ID
                 }
+            }
+        }
+    }
+
+    private fun Project.configureAndroidLibraryProject() {
+        plugins.withId(GradlePluginId.ANDROID_LIBRARY) {
+            extensions.findByType<LibraryExtension>()?.apply {
+                buildFeatures.buildConfig = false
             }
         }
     }

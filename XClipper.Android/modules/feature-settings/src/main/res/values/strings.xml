@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- About Preference -->
+    <string name="author_title">Owner</string>
+    <string name="mail_title">Send me an email</string>
+    <string name="mail_summary">Want to give feedback or a quick chat just hit me up</string>
+    <string name="version_title">Version</string>
+    <string name="package_title">Package</string>
+    <string name="website_title">Official Website</string>
+    <string name="report_title">Report a bug</string>
+    <string name="report_summary">Create a Github issue in the official repository</string>
+    <string name="privacy_policy">Privacy Policy</string>
+
+    <!-- Account Preference -->
+    <string name="connect_summary">Initialize a connection to an online database for cross platform syncing</string>
+    <string name="connect_title">Connect to database</string>
+    <string name="bind_title">Database binding</string>
+    <string name="bind_summary">Enable uploading of device data to the database</string>
+    <string name="logout_summary">Remove all connection with the database</string>
+    <string name="logout_title">Logout</string>
+    <string name="auto_sync_title">Automatic synchronization</string>
+    <string name="auto_sync_summary">Retrieve data from database when app is launched</string>
+    <string name="bind_delete_title">Capture Delete</string>
+    <string name="bind_delete_summary">Enable local removal of item if it is being deleted across device</string>
+    <string name="force_logout_title">Force logout</string>
+    <string name="force_logout_summary">Sometimes logout doesn\'t succeed as expected. Use this to forcefully remove the credentials</string>
+    <string name="force_logout_text">Silently send a logout request</string>
+    <string name="read_guide">Need help?</string>
+    <string name="read_guide_text">Read this step by step tutorial on how to setup synchronization across multiple devices.</string>
+
+    <!-- Backup Preference -->
+    <string name="import_file">Import from file</string>
+    <string name="import_summary">Retrieve all the data from an exported local database</string>
+    <string name="export_file">Export to file</string>
+    <string name="export_summary">Save all the data to a local database</string>
+    <string name="database_exported">Database has been exported!</string>
+    <string name="err_database_export">Error in exporting the database</string>
+    <string name="err_database">Invalid backup structure</string>
+    <string name="database_imported">Database has been imported!</string>
+
+    <!-- Look Preference-->
+    <string name="dark_title">Dark Theme</string>
+    <string name="dark_summary">Sometimes you might\'ve to restart the app for theme to get applied properly.</string>
+
+    <!-- Account Preference -->
+    <string name="alert">Alert</string>
+    <string name="logout_msg">Are you sure you want to log out?</string>
+    <string name="yes">Yes</string>
+    <string name="connection_exist">Already connected to database!</string>
+    <string name="warning">Warning</string>
+    <string name="bind_delete_warning">This may result into unexpected deletion of clips if your remote database has restriction on item limit.</string>
+
+    <!-- General Preference -->
+    <string name="service_title">Clipboard Service</string>
+    <string name="service_summary">Make sure it is turned on to detect clipboard changes (require accessibility service)</string>
+    <string name="adb_mode_summary">Enhance clipboard detection logic by some additional configuration.</string>
+    <string name="blacklist_title">Ignored Apps</string>
+    <string name="blacklist_summary">Apps in which clipboard tracking is disabled</string>
+    <string name="suggest_title">Suggestions</string>
+    <string name="suggest_summary">[BETA] Show a small bubble whenever keyboard pops out containing your latest clips</string>
+    <string name="pin_lock_title">Pin Lock (Biometric)</string>
+    <string name="swipe_title">Swipe to delete</string>
+    <string name="swipe_summary">Swiping item to right will delete it permanently</string>
+    <string name="trim_title">Text trimming</string>
+    <string name="trim_summary">This will trim whitespaces from the clip data while displaying.</string>
+    <string name="image_render_title">Render Image</string>
+    <string name="image_render_summary">[BETA] This will render image in the list. Note that it can have some side effects!</string>
+    <string name="onboard_screens_reset">All onboarding screens has been reset!</string>
+    <string name="blacklist_apps">Select blacklist apps</string>
+    <string name="load_apps">Loading apps metadata…</string>
+
+    <!-- Dialogs -->
+    <string name="pin_lock_dialog_title">Secure with App lock</string>
+    <string name="pin_lock_dialog_text">Unlock the app with fingerprint or pin code. Remember, if you forgot the password then the only way to recover is clear the app data.\n\nTap \"Create Password\" to create &amp; set the lock.</string>
+    <string name="pin_lock_dialog_positive">Create Password</string>
+    <string name="adb_mode_title">Improve detection</string>
+    <string name="adb_mode_long_summary">Enhance clipboard detection logic through additional configuration which requires a PC &amp; some knowledge of using ADB.</string>
+    <string name="adb_enable">Enable</string>
+    <string name="adb_dialog_title">Android Q+ Copy detection</string>
+    <string name="adb_detection_note">The solution requires some configuration to be done via a PC. Run the following ADB commands on your terminal with this device connected &amp; USB debugging enabled.</string>
+
+    <!-- Settings Fragment -->
+    <string name="general">General</string>
+    <string name="account">Synchronization</string>
+    <string name="look_feel"><![CDATA[Look & Feel]]></string>
+    <string name="actions">Actions</string>
+    <string name="backup">Backup</string>
+    <string name="upgrade">Upgrades</string>
+    <string name="about">About</string>
+
+    <!-- Upgrades -->
+    <string name="premium_latest">Couldn\'t fetch the latest data</string>
+    <string name="purchase">\tPurchase</string>
+    <string name="premium_pricing">Synchronize your clipboard activity with PC securely for lifetime.</string>
+    <string name="premium_inactive_footnotes">Will be active when you connect to a database to enable synchronization.</string>
+    <string name="premium_extension_footnotes">One time purchases to unlock additional app capabilities.</string>
+    <string name="upgrades_extensions">Extensions (add-ons)</string>
+    <string name="thank_support">Thank you for supporting :)</string>
+
+</resources>

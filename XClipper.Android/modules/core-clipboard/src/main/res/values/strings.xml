@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="open_accessibility">Opening accessibility</string>
+
+    <!-- Accessibility service enable dialog -->
+    <string name="accessibility_service">Accessibility Service</string>
+    <string name="accessibility_capture">In order to monitor clipboard you need to enable the accessibility service from settings.\n\n1. Click OK to open accessibility settings.\n2. Click on Installed Services (Samsung).\n3. Search for XClipper.\n4. Click and enable it.</string>
+
+    <!-- Accessibility service disable dialog -->
+    <string name="accessibility_service_disable">Disable Service?</string>
+    <string name="accessibility_disable_text">This will stop the clipboard monitoring functionality.</string>
+
+    <!-- Accessibility settings description -->
+    <string name="accessibility_service_description">This will let XClipper to monitor clipboard &amp; will able to capture some of known strategies if system detects any copy/cut action.\n\n\nThis feature is still in BETA for Android 10+ users and may not work always.</string>
+</resources>

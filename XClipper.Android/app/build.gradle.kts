@@ -5,12 +5,12 @@ plugins {
     id(GradlePluginId.ANDROID_APPLICATION)
     id(GradlePluginId.XCLIPPER_ANDROID)
     kotlin(GradlePluginId.ANDROID_KTX)
-//    kotlin(GradlePluginId.ANDROID_EXTENSIONS_KTX)
     kotlin(GradlePluginId.KAPT)
-    id("kotlin-parcelize")
+    id(GradlePluginId.KOTLIN_PARCELIZE)
     id(GradlePluginId.DAGGER_HILT)
     id(GradlePluginId.GOOGLE_SERVICE)
     id(GradlePluginId.CRASHLYTICS)
+    id(GradlePluginId.KSP) version GradlePluginVersion.KSP
 }
 
 android {
@@ -38,15 +38,19 @@ android {
             stringField("SERVER_URI", loadProperty("SERVER_URI", ""))
         }
         getByName(BuildType.RELEASE) {
+//            isMinifyEnabled = true // R8 Works but still needs more testing (PS: ClipboardAccessibilityService does not work)
+//            isShrinkResources = true
             signingConfig = signingConfigs.getByName(BuildType.RELEASE)
         }
         getByName(BuildType.DEBUG) {
+//            isMinifyEnabled = true // Test on debug mode to find any issues.
+//            isShrinkResources = true
             applicationIdSuffix = ".debug"
             isDebuggable = true
         }
         create(BuildType.IAP) {
             initWith(getByName(BuildType.DEBUG))
-            setMatchingFallbacks(BuildType.DEBUG)
+            matchingFallbacks.add(BuildType.DEBUG)
             applicationIdSuffix = applicationIdSuffix?.removePrefix(".debug")
         }
     }
@@ -63,7 +67,6 @@ tasks.register("checkForChangelog") {
 }
 
 dependencies {
-    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     for (moduleId in ModuleDependency.getAllModules().filterNot { it == ModuleDependency.APP })
         implementation(project(moduleId))
     implementation(LibraryDependency.APP_COMPAT)
@@ -76,7 +79,6 @@ dependencies {
     implementation(LibraryDependency.PLAY_CORE)
     implementation(LibraryDependency.PLAY_CORE_KTX)
     implementation(LibraryDependency.COROUTINES_CORE)
-    implementation(LibraryDependency.COROUTINES_TASKS)
     implementation(LibraryDependency.COROUTINES_ANDROID)
     implementation(LibraryDependency.WORK_MANAGER)
     implementation(LibraryDependency.GSON)
@@ -117,7 +119,6 @@ dependencies {
     implementation(LibraryDependency.HVLOG)
     implementation(LibraryDependency.GLIDE)
     implementation(LibraryDependency.CWT)
-    implementation(LibraryDependency.AUTO_BINDINGS)
     implementation(LibraryDependency.REALTIME_EXTENSIONS)
     implementation(LibraryDependency.TIMBER)
     implementation(LibraryDependency.MARKWON)
@@ -131,12 +132,9 @@ dependencies {
 
     kapt(LibraryDependency.HILT_COMPILER)
     kapt(LibraryDependency.HILT_WORK_MANAGER_COMPILER)
-    kapt(LibraryDependency.AUTO_BINDINGS_COMPILER)
 
-    kapt(LibraryDependency.GLIDE_COMPILER)
     kapt(LibraryDependency.ROOM_COMPILER_KAPT)
 
-    debugImplementation(TestLibraryDependency.ANDROID_DEBUG_DB)
     testImplementation(TestLibraryDependency.JUNIT)
     androidTestImplementation(TestLibraryDependency.JUNIT_TEST_EXT)
     androidTestImplementation(TestLibraryDependency.ESPRESSO_CORE)

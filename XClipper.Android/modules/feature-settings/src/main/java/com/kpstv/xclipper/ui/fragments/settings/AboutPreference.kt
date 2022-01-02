@@ -1,0 +1,46 @@
+package com.kpstv.xclipper.ui.fragments.settings
+
+import android.os.Bundle
+import androidx.preference.Preference
+import androidx.preference.PreferenceFragmentCompat
+import com.kpstv.core.BuildConfig
+import com.kpstv.xclipper.feature_settings.R
+import com.kpstv.xclipper.ui.utils.LaunchUtils
+
+class AboutPreference : PreferenceFragmentCompat() {
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        setPreferencesFromResource(R.xml.about_pref, rootKey)
+
+        findPreference<Preference>("author_pref")?.setOnPreferenceClickListener {
+            LaunchUtils.commonUrlLaunch(requireContext(), getString(R.string.author_link))
+            true
+        }
+
+        findPreference<Preference>("mail_pref")?.setOnPreferenceClickListener {
+            LaunchUtils.commonUrlLaunch(requireContext(), "mailto:${getString(R.string.author_mail)}")
+            true
+        }
+
+        findPreference<Preference>("package_pref")?.summary = requireContext().packageName
+        findPreference<Preference>("version_pref")?.summary =
+            "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})"
+
+        findPreference<Preference>("website_pref")?.apply {
+            summary = getString(R.string.app_website)
+            setOnPreferenceClickListener {
+                LaunchUtils.commonUrlLaunch(requireContext(), getString(R.string.app_website))
+                true
+            }
+        }
+
+        findPreference<Preference>("report_pref")?.setOnPreferenceClickListener {
+            LaunchUtils.commonUrlLaunch(requireContext(), getString(R.string.app_github_issues))
+            true
+        }
+
+        findPreference<Preference>("privacy_pref")?.setOnPreferenceClickListener {
+            LaunchUtils.commonUrlLaunch(requireContext(), getString(R.string.app_privacy_policy))
+            true
+        }
+    }
+}

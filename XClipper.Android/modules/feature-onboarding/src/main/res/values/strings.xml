@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="palette1_text">XClipper monitors your clipboard and makes an extensive use of it.\n\n\nIt also provide certain actions according to the data.\n\n\nWith suggestion overlay, you can easily paste from multiple clipboards.</string>
+    <string name="palette2_text">Accessibility,\n\n\nYou need to turn on \"accessibility\" service for this app.\n\n\nThis is due to a restriction imposed by Google which does not allow long running background tasks.\n\n\nThis service will keep running in background capturing your clipboard data.</string>
+    <string name="palette3_text">Suggestions [BETA],\n\n\nGet a small bubble whenever keyboard pops out containing all your clips.\n\n\nEnable it from App Settings > General > Suggestions.</string>
+    <string name="palette4_text">Android 10+ user,\n\n\nSometimes standard copy doesn\'t work, in such case use \"XCopy\".</string>
+    <string name="palette5_text">Android 10+ user,\n\n\nSometimes copy action is not detected, in such case use "Save Clip" feature.</string>
+    <string name="palette6_text">Synchronization,\n\n\nThe application works best with it\'s Windows desktop app.\n\n\nIt allows you to synchronize clipboard data across devices.\n\n\nVisit https://kaustubhpatange.github.io/XClipper/docs for more info.</string>
+    <string name="palette7_text">Wrapping up,\n\n\nWatch video to understand full feature usage of application.\n\n\nhttps://youtube.com</string>
+    <string name="palette_android_text">Android 10+ user,\n\n\nDue to new introduced privacy changes clipboard monitoring has stopped working from Android 10.\n\n\nFind more info about this issue on issue tracker https://issuetracker.google.com/issues/123461156\n\n\nBut through some hacks (not perfect one) we can enable it using an accessibility service.\n\n\nThis feature is still in BETA!</string>
+    <string name="palette_improve_detection">Android 10+ user,\n\n\n\You can \"Improve Clipboard Detection\" through some additional configuration done via PC.\n\n\nRun the following ADB commands with device connected &amp; \"USB Debugging\" enabled.</string>
+
+    <string name="next_1">Next 1/8</string>
+    <string name="next_2">Next 2/8</string>
+    <string name="next_3">Next 3/8</string>
+    <string name="next_4">Next 4/8</string>
+    <string name="next_5">Next 5/8</string>
+    <string name="next_6">Next 6/8</string>
+    <string name="next_7">Next 7/8</string>
+
+    <string name="nextd_1">Next 1/4</string>
+    <string name="nextd_2">Next 2/4</string>
+    <string name="nextd_3">Next 3/4</string>
+    <string name="nextd_4">Next 4/4</string>
+
+    <string name="next_8">Finish</string>
+
+</resources>

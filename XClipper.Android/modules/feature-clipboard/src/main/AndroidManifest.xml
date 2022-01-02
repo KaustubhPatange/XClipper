@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.kpstv.xclipper.feature_clipboard">
+
+    <application>
+        <receiver android:name="com.kpstv.xclipper.service.receiver.ImproveDetectionReceiver" />
+        <receiver
+            android:name="com.kpstv.xclipper.service.receiver.BootCompleteReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="android.intent.action.REBOOT" />
+            </intent-filter>
+        </receiver>
+    </application>
+</manifest>

@@ -26,6 +26,7 @@ import com.kpstv.xclipper.service.worker.GithubCheckWorker
 import com.kpstv.xclipper.service.worker.GithubUpdateWorker
 import com.kpstv.xclipper.ui.dialogs.CustomLottieDialog
 import com.kpstv.xclipper.ui.fragments.Home
+import com.kpstv.xclipper.ui.helpers.AbstractFragmentHelper
 import kotlinx.coroutines.launch
 
 /**
@@ -36,12 +37,11 @@ class UpdateHelper(
     private val activity: FragmentActivity,
 ) : AbstractFragmentHelper<Home>(activity, Home::class) {
 
-    private val retrofitUtils: RetrofitUtils = hiltCommonEntryPoints.retrofitUtils()
-
     companion object {
         const val SETTINGS_URL = "https://github.com/KaustubhPatange/XClipper/raw/master/XClipper.Android/settings.json"
         private const val REPO_OWNER = "KaustubhPatange"
         private const val REPO_NAME = "XClipper"
+        private const val UPDATE_REQUEST_CODE = 555
 
         fun createUpdater() : Updater {
             return Updater.Builder()
@@ -71,7 +71,7 @@ class UpdateHelper(
     }
 
     private suspend fun initialize() {
-        val responseString = retrofitUtils.fetch(SETTINGS_URL).getOrNull()?.asString()
+        val responseString = RetrofitUtils.fetch(SETTINGS_URL).getOrNull()?.asString()
         val webSettings = WebSettingsConverter.fromStringToWebSettings(responseString) ?: WebSettings()
 
         if (webSettings.useNewUpdater) {
@@ -107,7 +107,7 @@ class UpdateHelper(
                         appUpdateInfo,
                         AppUpdateType.FLEXIBLE,
                         this,
-                        com.kpstv.xclipper.App.UPDATE_REQUEST_CODE
+                        UPDATE_REQUEST_CODE
                     )
                 } catch (e: IntentSender.SendIntentException) {
                     Logger.w(e, "In-app updates workflow did not succeed")

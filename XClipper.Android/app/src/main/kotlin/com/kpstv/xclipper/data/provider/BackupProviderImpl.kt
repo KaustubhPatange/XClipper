@@ -3,6 +3,8 @@ package com.kpstv.xclipper.data.provider
 import android.content.Context
 import android.net.Uri
 import com.kpstv.xclipper.data.db.MainDatabase
+import com.kpstv.xclipper.data.model.Definition
+import com.kpstv.xclipper.data.model.DefinitionListConverter
 import com.kpstv.xclipper.data.model.*
 import dagger.hilt.android.qualifiers.ApplicationContext
 import org.json.JSONObject

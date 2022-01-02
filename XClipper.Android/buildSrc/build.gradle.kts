@@ -1,6 +1,7 @@
 plugins {
     `kotlin-dsl`
     `java-gradle-plugin`
+    `kotlin-dsl-precompiled-script-plugins`
 }
 
 gradlePlugin {
@@ -13,12 +14,12 @@ gradlePlugin {
 }
 
 repositories {
+    mavenCentral()
     google()
     jcenter()
 }
 
 dependencies {
-    implementation("com.android.tools.build:gradle:4.1.1")
-    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.10")
+    implementation("com.android.tools.build:gradle:7.0.2")
     implementation(gradleApi())
 }

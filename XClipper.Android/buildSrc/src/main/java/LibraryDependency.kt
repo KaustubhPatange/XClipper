@@ -11,7 +11,6 @@ private object LibraryVersion {
     const val ROOM = "2.2.5"
     const val PAGING = "2.1.2"
     const val LIFECYCLE = "2.2.0"
-    const val KODEIN = "6.2.1"
     const val RETROFIT = "2.9.0"
     const val OKHTTP = "4.7.2"
     const val GSON_CONVERTER = "2.7.0"
@@ -31,7 +30,7 @@ private object LibraryVersion {
     const val FIREBASE_CRASHLYTICS = "18.2.1"
     const val FIREBASE_ANALYTICS = "19.0.1"
     const val PLAY_SERVICE_AUTH = "18.0.0"
-    const val ACTIVITY = "1.3.0-alpha04"
+    const val ACTIVITY = "1.3.1"
     const val FRAGMENT = "1.3.1"
     const val WORK_MANAGER = "2.4.0"
     const val HVLOG = "0.1-alpha06"
@@ -51,6 +50,8 @@ private object LibraryVersion {
     const val PINLOCK = "1.2"
     const val BILLING = "4.0.0"
     const val MARKWON = "4.6.2"
+    const val SENTRY = "5.5.1"
+    const val SWIPE_REFRESH_LAYOUT = "1.1.0"
 }
 
 object LibraryDependency {
@@ -73,15 +74,11 @@ object LibraryDependency {
     const val ROOM_KTX = "androidx.room:room-ktx:${LibraryVersion.ROOM}"
     const val ROOM_RUNTIME = "androidx.room:room-runtime:${LibraryVersion.ROOM}"
     const val ROOM_COMPILER_KAPT = "androidx.room:room-compiler:${LibraryVersion.ROOM}"
-    const val NAVIGATION_FRAGMENT = "androidx.navigation:navigation-fragment-ktx:${CoreVersion.JETPACK_NAVIGATION}"
-    const val NAVIGATION_UI = "androidx.navigation:navigation-ui-ktx:${CoreVersion.JETPACK_NAVIGATION}"
     const val PAGING = "androidx.paging:paging-runtime-ktx:${LibraryVersion.PAGING}"
     const val LIFECYCLE_EXTENSIONS = "androidx.lifecycle:lifecycle-extensions:${LibraryVersion.LIFECYCLE}"
     const val LIFECYCLE_VIEWMODEL = "androidx.lifecycle:lifecycle-viewmodel-ktx:${LibraryVersion.LIFECYCLE}"
     const val LIFECYCLE_COMMON = "androidx.lifecycle:lifecycle-common-java8:${LibraryVersion.LIFECYCLE}"
     const val LIFECYCLE_KTX = "androidx.lifecycle:lifecycle-livedata-ktx:${LibraryVersion.LIFECYCLE}"
-    const val KODEIN_JVM = "org.kodein.di:kodein-di-generic-jvm:${LibraryVersion.KODEIN}"
-    const val KODEIN_ANDROID = "org.kodein.di:kodein-di-framework-android-x:${LibraryVersion.KODEIN}"
     const val RETROFIT = "com.squareup.retrofit2:retrofit:${LibraryVersion.RETROFIT}"
     const val RETROFIT_GSON_CONVERTER = "com.squareup.retrofit2:converter-gson:${LibraryVersion.GSON_CONVERTER}"
     const val OKHTTP = "com.squareup.okhttp3:okhttp:${LibraryVersion.OKHTTP}"
@@ -134,4 +131,9 @@ object LibraryDependency {
     const val MARKWON = "io.noties.markwon:core:${LibraryVersion.MARKWON}"
 
     const val BILLING = "com.android.billingclient:billing-ktx:${LibraryVersion.BILLING}"
+
+    const val LOCAL_BROADCAST_MANAGER = "androidx.localbroadcastmanager:localbroadcastmanager:1.0.0"
+
+    const val SENTRY = "io.sentry:sentry-android:${LibraryVersion.SENTRY}"
+    const val SWIPE_REFRESH_LAYOUT = "androidx.swiperefreshlayout:swiperefreshlayout:${LibraryVersion.SWIPE_REFRESH_LAYOUT}"
 }

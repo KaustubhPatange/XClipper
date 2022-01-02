@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="SimpleSearchViewStyle">
+        <item name="android:hint">@string/search</item>
+        <item name="android:textColor">?colorTextPrimary</item>
+        <item name="hintColor">?colorTextSecondary</item>
+        <item name="searchBackground">?colorForeground</item>
+        <item name="iconsTint">?colorTextPrimary</item>
+    </style>
+</resources>

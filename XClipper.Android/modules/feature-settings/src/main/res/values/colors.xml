@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="upgrade_symbol">#F26F63</color>
+    <color name="golden_yellow">#D6B16A</color>
+    <color name="light_red">#F26F63</color>
+    <color name="activated">#00A17A</color>
+
+</resources>
