@@ -7,6 +7,8 @@
 /local.properties
 /gradle.properties
 google-services.json
+/modules/
+/updater/
 /keystore.properties
 /key.jks
 /buildSrc/build

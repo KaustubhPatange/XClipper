@@ -771,6 +771,7 @@ namespace Components
                         break;
                 }
                 CollectionViewSource.GetDefaultView(_lvClip.ItemsSource).Refresh();
+                AppSingleton.GetInstance.InsertDirectFirebase(clip);
             });
         }
 
