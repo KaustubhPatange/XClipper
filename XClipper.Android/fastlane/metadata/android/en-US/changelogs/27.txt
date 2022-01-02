@@ -1,0 +1,3 @@
+Fixed: Some issues with accessibility & clipboard handling.
+Fixed: Crash while cancelling billing.
+Fixed: Deleting dependent tags is not removed from clip.

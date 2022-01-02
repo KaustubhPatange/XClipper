@@ -28,6 +28,9 @@ interface ClipDataDao {
     @Delete
     suspend fun delete(clip: Clip)
 
+    @Delete
+    suspend fun delete(clip: List<Clip>)
+
     @Query("delete from table_clip where id = :id")
     suspend fun delete(id: Int)
 

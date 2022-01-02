@@ -56,7 +56,7 @@ class MainViewModel @Inject constructor(
     val tagLiveData: LiveData<List<Tag>> = tagRepository.getAllLiveData().asLiveData(viewModelIOContext)
 
     fun postToRepository(clip: Clip) {
-        CoroutineScope(viewModelIOContext).launch { mainRepository.updateRepository(clip, toFirebase = true) }
+        viewModelScope.launch(viewModelIOContext) { mainRepository.updateRepository(clip, toFirebase = true) }
     }
 
     fun changeClipPin(clip: Clip?, boolean: Boolean) {
@@ -84,15 +84,15 @@ class MainViewModel @Inject constructor(
     }
 
     fun deleteFromRepository(clip: Clip) {
-        CoroutineScope(viewModelIOContext).launch { mainRepository.deleteClip(clip) }
+        viewModelScope.launch(viewModelIOContext) { mainRepository.deleteClip(clip) }
     }
 
     fun deleteMultipleFromRepository(clips: List<Clip>) {
-        CoroutineScope(viewModelIOContext).launch { mainRepository.deleteMultiple(clips) }
+        viewModelScope.launch(viewModelIOContext) { mainRepository.deleteMultiple(clips) }
     }
 
     fun postUpdateToRepository(oldClip: Clip, newClip: Clip) {
-        CoroutineScope(viewModelIOContext).launch {
+        viewModelScope.launch(viewModelIOContext) {
             mainRepository.updateClip(newClip, FilterType.Id)
             if (oldClip.data != newClip.data) {
                 firebaseProvider.replaceData(oldClip, newClip)

@@ -112,8 +112,7 @@ class MainRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteMultiple(clips: List<Clip>) {
-        for (clip in clips)
-            clipDao.delete(clip)
+        clipDao.delete(clips)
         firebaseProvider.deleteMultipleData(clips)
     }
 
