@@ -38,15 +38,19 @@ android {
             stringField("SERVER_URI", loadProperty("SERVER_URI", ""))
         }
         getByName(BuildType.RELEASE) {
+//            isMinifyEnabled = true // R8 Works but still needs more testing (PS: ClipboardAccessibilityService does not work)
+//            isShrinkResources = true
             signingConfig = signingConfigs.getByName(BuildType.RELEASE)
         }
         getByName(BuildType.DEBUG) {
+//            isMinifyEnabled = true // Test on debug mode to find any issues.
+//            isShrinkResources = true
             applicationIdSuffix = ".debug"
             isDebuggable = true
         }
         create(BuildType.IAP) {
             initWith(getByName(BuildType.DEBUG))
-            setMatchingFallbacks(BuildType.DEBUG)
+            matchingFallbacks.add(BuildType.DEBUG)
             applicationIdSuffix = applicationIdSuffix?.removePrefix(".debug")
         }
     }

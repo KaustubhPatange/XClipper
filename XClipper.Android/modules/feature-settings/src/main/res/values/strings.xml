@@ -97,7 +97,4 @@
     <string name="upgrades_extensions">Extensions (add-ons)</string>
     <string name="thank_support">Thank you for supporting :)</string>
 
-    <!-- Settings -->
-    <string name="settings">Settings</string>
-
 </resources>

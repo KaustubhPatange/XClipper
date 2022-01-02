@@ -40,4 +40,7 @@
     <string name="synchronize_text">You can synchronize your clipboard data between this device &#38; a desktop companion app. Click on \"Learn more\" to know about it.</string>
     <string name="later">Later</string>
 
+    <string name="write_here">Write here…</string>
+    <string name="sync">Sync</string>
+    <string name="tag">Filter Tag</string>
 </resources>
