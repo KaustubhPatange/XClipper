@@ -115,7 +115,8 @@ class MainViewModel @Inject constructor(
     }
 
     fun deleteFromTagRepository(tag: Tag) {
-        viewModelScope.launch {
+        viewModelScope.launch(viewModelIOContext) {
+            mainRepository.removeTag(tag.name)
             tagRepository.delete(tag)
         }
     }

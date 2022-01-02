@@ -263,7 +263,7 @@ class FirebaseProviderImpl @Inject constructor(
 
     private suspend fun removeData(unencryptedClip: Clip) {
         HVLog.d()
-        removeData(List(1) { unencryptedClip })
+        removeData(listOf(unencryptedClip))
     }
 
     private suspend fun removeData(unencryptedClips: List<Clip>) {

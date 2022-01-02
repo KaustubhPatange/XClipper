@@ -18,7 +18,7 @@
     <string name="add_remove_tags">Edit Tags</string>
 
     <string name="tag_delete_title">Delete \"%1$s\"</string>
-    <string name="tag_delete_message">%1$d clip(s) are dependent on this tag. Do you still want to still remove it?</string>
+    <string name="tag_delete_message">%1$d clip(s) are dependent on this tag. Deleting will remove the tag from the clips?</string>
 
     <string name="error_empty_text">Empty text to update</string>
     <string name="error_duplicate_data">Duplicate data insertion</string>

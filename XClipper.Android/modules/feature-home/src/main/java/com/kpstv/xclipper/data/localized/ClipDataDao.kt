@@ -22,6 +22,9 @@ interface ClipDataDao {
     @Update
     suspend fun update(clip: Clip)
 
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun update(clip: List<Clip>)
+
     @Delete
     suspend fun delete(clip: Clip)
 
@@ -42,6 +45,10 @@ interface ClipDataDao {
 
     @Query("select * from table_clip where data = :data")
     suspend fun getData(data: String): Clip?
+
+    suspend fun getDataByTag(tagName: String): List<Clip> {
+        return getData(createTagSearchQuery(tagName))
+    }
 
     @Query("select exists(select data from table_clip where data = :data)")
     suspend fun isExist(data: String): Boolean
@@ -98,6 +105,11 @@ interface ClipDataDao {
             val query = builder.toString().trimEnd()
             val formatted = if (query.endsWith("and")) query.removeSuffix("and") else query
             return SimpleSQLiteQuery("$formatted order by isPinned desc, time desc", params.toTypedArray())
+        }
+
+        // Used to get List<Clip> from tagName present in ClipTagMap
+        private fun createTagSearchQuery(tagName: String) : SimpleSQLiteQuery {
+            return SimpleSQLiteQuery("select * from table_clip where tags like ?", arrayOf("%\"$tagName\":[%"))
         }
     }
 }

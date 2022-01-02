@@ -27,6 +27,13 @@ data class Clip(
     var id: Int = 0
     var timeString = "while ago"
 
+    fun copyWithFields(data: String = this.data, time: Date = this.time, isPinned: Boolean = this.isPinned, tags: List<ClipTagMap>? = this.tags) : Clip {
+        return copy(data = data, time = time, isPinned = isPinned, tags = tags).apply {
+            id = this@Clip.id
+            timeString = this@Clip.timeString
+        }
+    }
+
     fun getFullFormattedDate(): String {
         return try {
             SimpleDateFormat(FULL_DATA_FORMAT, Locale.getDefault()).format(time)

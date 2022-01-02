@@ -108,6 +108,7 @@ class MainRepositoryImpl @Inject constructor(
     override suspend fun deleteClip(data: String?) {
         if (data == null) return
         clipDao.delete(data)
+        firebaseProvider.deleteData(Clip.from(data))
     }
 
     override suspend fun deleteMultiple(clips: List<Clip>) {
@@ -159,6 +160,13 @@ class MainRepositoryImpl @Inject constructor(
             firebaseProvider.uploadData(finalClip)
 
         return result
+    }
+
+    override suspend fun removeTag(tagName: String): Boolean {
+        val clips = clipDao.getDataByTag(tagName).filter { it.tags != null }
+        val modified = clips.map { clip -> clip.copyWithFields(tags = clip.tags!!.filterNot { it.key == tagName }) }
+        clipDao.update(modified)
+        return clips.isNotEmpty()
     }
 
     override fun getAllTags(): Flow<List<TagMap>> {

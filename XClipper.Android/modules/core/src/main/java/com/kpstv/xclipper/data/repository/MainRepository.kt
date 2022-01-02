@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.paging.PagedList
 import androidx.sqlite.db.SupportSQLiteQuery
 import com.kpstv.xclipper.data.model.Clip
+import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.data.model.TagMap
 import com.kpstv.xclipper.extensions.enumerations.FilterType
 import kotlinx.coroutines.flow.Flow
@@ -48,6 +49,11 @@ interface MainRepository {
      */
     suspend fun updateRepository(data: String?, toFirebase:Boolean = true): Boolean
     suspend fun updateRepository(clip: Clip, toFirebase:Boolean = true): Boolean
+
+    /**
+     * Remove tags specified by the tag names from the clips.
+     */
+    suspend fun removeTag(tagName: String): Boolean
 
     suspend fun getData(data: String): Clip?
 
