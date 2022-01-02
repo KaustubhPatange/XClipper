@@ -88,6 +88,11 @@ class MainViewModel @Inject constructor(
     }
 
     fun deleteMultipleFromRepository(clips: List<Clip>) {
+        if (clips.isEmpty()) return
+        if (clips.size == 1) {
+            deleteFromRepository(clips[0])
+            return
+        }
         viewModelScope.launch(viewModelIOContext) { mainRepository.deleteMultiple(clips) }
     }
 
