@@ -139,7 +139,7 @@ class TagDialog : AppCompatActivity() {
             lifecycleOwner = this,
             dialogState = mainViewModel.stateManager.dialogState,
             tagFilter = mainViewModel.searchManager.tagFilters,
-            tagMapData = mainViewModel.tagCountData,
+            tagMapData = mainViewModel.tagMapData,
             onCloseClick = { tag, count, _ ->
                 if (count > 0) {
                     MaterialAlertDialogBuilder(this)

@@ -1,3 +1,5 @@
+Improved: Filter dialog will now show tag counts based on applied filters & search queries.
 Fixed: Some issues with accessibility & clipboard handling.
 Fixed: Crash while cancelling billing.
 Fixed: Deleting dependent tags is not removed from clip.
+Fixed: Swipe delete item rapidly doesn't remove item.

@@ -1,9 +1,6 @@
 package com.kpstv.xclipper.ui.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.kpstv.xclipper.data.helper.ClipRepositoryHelper
 import com.kpstv.xclipper.data.helper.FirebaseProviderHelper
 import com.kpstv.xclipper.data.localized.ClipDataDao
@@ -25,6 +22,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -47,11 +45,16 @@ class MainViewModel @Inject constructor(
     val currentClip: LiveData<String>
         get() = clipboardProvider.getCurrentClip()
 
-    private val mutableClipLiveData = MutableStateFlow<List<Clip>>(emptyList())
+    private val mutableClipStateFlow = MutableStateFlow<List<Clip>>(emptyList())
 
-    val clipLiveData: LiveData<List<Clip>> = mutableClipLiveData.asLiveData(viewModelIOContext)
+    val clipLiveData: LiveData<List<Clip>> = mutableClipStateFlow.asLiveData(viewModelIOContext)
 
-    val tagCountData: LiveData<List<TagMap>> = mainRepository.getAllTags().asLiveData(viewModelIOContext)
+    val tagMapData: LiveData<List<TagMap>> = mutableClipStateFlow.transform { clips ->
+        val tags = clips.flatMap { it.tags ?: emptyList() }
+            .groupBy { it.key }
+            .map { TagMap(it.key, it.value.size) }
+        emit(tags)
+    }.asLiveData(viewModelIOContext)
 
     val tagLiveData: LiveData<List<Tag>> = tagRepository.getAllLiveData().asLiveData(viewModelIOContext)
 
@@ -136,7 +139,7 @@ class MainViewModel @Inject constructor(
             val filter = ClipDataDao.createQuery(searchFilters, tagFilters, searchString)
             CoroutineScope(viewModelIOContext).launch {
                 val list = mainRepository.executeQuery(filter)
-                mutableClipLiveData.emit(list)
+                mutableClipStateFlow.emit(list)
             }
         }
 
