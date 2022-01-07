@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="CommonThemeDark">
+        <item name="colorSpecialTag">@color/special_tag_dark_color</item>
+    </style>
+
+    <style name="CommonThemeLight">
+        <item name="colorSpecialTag">@color/special_tag_light_color</item>
+    </style>
+</resources>
