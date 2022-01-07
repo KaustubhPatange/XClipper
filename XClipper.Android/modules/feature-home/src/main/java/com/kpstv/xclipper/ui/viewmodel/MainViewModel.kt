@@ -11,6 +11,7 @@ import com.kpstv.xclipper.data.model.TagMap
 import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.repository.MainRepository
+import com.kpstv.xclipper.extension.enumeration.SpecialTagFilter
 import com.kpstv.xclipper.extensions.enumerations.FilterType
 import com.kpstv.xclipper.extension.listener.RepositoryListener
 import com.kpstv.xclipper.extension.listener.StatusListener
@@ -22,7 +23,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.transform
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -49,11 +50,10 @@ class MainViewModel @Inject constructor(
 
     val clipLiveData: LiveData<List<Clip>> = mutableClipStateFlow.asLiveData(viewModelIOContext)
 
-    val tagMapData: LiveData<List<TagMap>> = mutableClipStateFlow.transform { clips ->
-        val tags = clips.flatMap { it.tags ?: emptyList() }
+    val tagMapData: LiveData<List<TagMap>> = mutableClipStateFlow.map { clips ->
+        clips.flatMap { it.tags ?: emptyList() }
             .groupBy { it.key }
             .map { TagMap(it.key, it.value.size) }
-        emit(tags)
     }.asLiveData(viewModelIOContext)
 
     val tagLiveData: LiveData<List<Tag>> = tagRepository.getAllLiveData().asLiveData(viewModelIOContext)
@@ -134,9 +134,13 @@ class MainViewModel @Inject constructor(
             mainRepository.getTotalCount(),
             searchManager.searchString,
             searchManager.tagFilters,
-            searchManager.searchFilters
-        ).observeForever { (_: Int?, searchString: String?, tagFilters: List<Tag>?, searchFilters: List<String>?) ->
-            val filter = ClipDataDao.createQuery(searchFilters, tagFilters, searchString)
+            searchManager.searchFilters,
+            searchManager.specialTagFilters
+        ).observeForever {
+                (_: Int?, searchString: String?, tagFilters: List<Tag>?, searchFilters: List<String>?,
+                    specialTagFilters: List<SpecialTagFilter>?) ->
+
+            val filter = ClipDataDao.createQuery(searchFilters, tagFilters, specialTagFilters, searchString)
             CoroutineScope(viewModelIOContext).launch {
                 val list = mainRepository.executeQuery(filter)
                 mutableClipStateFlow.emit(list)

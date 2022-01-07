@@ -43,4 +43,6 @@
     <string name="write_here">Write here…</string>
     <string name="sync">Sync</string>
     <string name="tag">Filter Tag</string>
+
+    <string name="invert">Invert</string>
 </resources>

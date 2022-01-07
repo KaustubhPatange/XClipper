@@ -22,6 +22,8 @@ fun Context.drawableFrom(@DrawableRes id: Int): Drawable? {
     return ContextCompat.getDrawable(this, id)
 }
 
+fun Fragment.colorFrom(@ColorRes color: Int) =  ContextCompat.getColor(requireContext(), color)
+
 fun Fragment.drawableFrom(@DrawableRes id: Int): Drawable? {
     return ContextCompat.getDrawable(requireContext(), id)
 }
@@ -31,6 +33,7 @@ fun Context.hasThemeColorAttribute(@AttrRes id: Int): Boolean {
         .getColor(0, -1) != -1
 }
 
+fun Fragment.toPx(dp: Int) : Float = (resources.displayMetrics.density * dp)
 fun Context.toPx(dp: Int) : Float = (resources.displayMetrics.density * dp)
 
 @ColorInt

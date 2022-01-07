@@ -31,12 +31,12 @@ import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.di.navigation.SettingsNavigation
 import com.kpstv.xclipper.di.navigation.SpecialSheetNavigation
 import com.kpstv.xclipper.extension.DefaultSearchViewListener
+import com.kpstv.xclipper.extension.enumeration.SpecialTagFilter
 import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.extensions.enumerations.FirebaseState
 import com.kpstv.xclipper.extension.listener.StatusListener
 import com.kpstv.xclipper.extension.recyclerview.RecyclerViewInsetHelper
 import com.kpstv.xclipper.extension.recyclerview.SwipeToDeleteCallback
-import com.kpstv.xclipper.ui.helpers.AppThemeHelper
 import com.kpstv.xclipper.ui.helpers.AppThemeHelper.registerForThemeChange
 import com.kpstv.xclipper.ui.activities.ChangeClipboardActivity
 import com.kpstv.xclipper.ui.adapter.CIAdapter
@@ -50,8 +50,7 @@ import com.kpstv.xclipper.service.ClipboardAccessibilityService
 import com.kpstv.xclipper.extension.enumeration.ToolbarState
 import com.kpstv.xclipper.extension.setOnQueryTextListener
 import com.kpstv.xclipper.feature_home.R
-import com.kpstv.xclipper.ui.helpers.AppSettingKeys
-import com.kpstv.xclipper.ui.helpers.AppSettings
+import com.kpstv.xclipper.ui.helpers.*
 import com.kpstv.xclipper.ui.helpers.fragments.SyncDialogHelper
 import com.kpstv.xclipper.ui.viewmodel.MainViewModel
 import com.zhuinden.livedatacombinetuplekt.combineTuple
@@ -96,6 +95,8 @@ class Home : ValueFragment(R.layout.fragment_home) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        HomeThemeHelper.apply(requireContext())
 
         setRecyclerView()
 
@@ -181,10 +182,10 @@ class Home : ValueFragment(R.layout.fragment_home) {
             if (mainViewModel.stateManager.isMultiSelectionStateActive() && clips?.isEmpty() == true)
                 mainViewModel.stateManager.setToolbarState(ToolbarState.NormalViewState)
         }
-        combineTuple(mainViewModel.searchManager.searchFilters, mainViewModel.searchManager.tagFilters)
-            .observe(viewLifecycleOwner) { (searchFilters: ArrayList<String>?, tagFilters: ArrayList<Tag>?) ->
-                if (searchFilters == null || tagFilters == null) return@observe
-                updateSearchAndTagFilters(searchFilters, tagFilters)
+        combineTuple(mainViewModel.searchManager.searchFilters, mainViewModel.searchManager.tagFilters, mainViewModel.searchManager.specialTagFilters)
+            .observe(viewLifecycleOwner) { (searchFilters: List<String>?, tagFilters: List<Tag>?, specialTagFilters: List<SpecialTagFilter>?) ->
+                if (searchFilters == null || tagFilters == null || specialTagFilters == null) return@observe
+                updateSearchAndTagFilters(searchFilters, tagFilters, specialTagFilters)
             }
     }
 
@@ -382,7 +383,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
         })
     }
 
-    private fun updateSearchAndTagFilters(searches: List<String>, tags: List<Tag>) {
+    private fun updateSearchAndTagFilters(searches: List<String>, tags: List<Tag>, specialTags: List<SpecialTagFilter>) {
         binding.ciChipGroup.removeAllViews()
         searches.forEach { query ->
             binding.ciChipGroup.addView(
@@ -397,13 +398,20 @@ class Home : ValueFragment(R.layout.fragment_home) {
         }
         for (tag in tags) {
             binding.ciChipGroup.addView(
-                Chip(requireContext()).apply {
-                    text = tag.name
-                    setTag(TAG_FILTER_CHIP)
-                    chipIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_tag)
+                TagsUiHelper.createFilterTagChip(requireContext(), tag).apply {
                     isCloseIconVisible = true
                     setOnCloseIconClickListener {
                         mainViewModel.searchManager.removeTagFilter(tag)
+                    }
+                }
+            )
+        }
+        for (tag in specialTags) {
+            binding.ciChipGroup.addView(
+                TagsUiHelper.createSpecialTagFilterChip(requireContext(), tag).apply {
+                    isCloseIconVisible = true
+                    setOnCloseIconClickListener {
+                        mainViewModel.searchManager.removeSpecialTagFilter(tag)
                     }
                 }
             )

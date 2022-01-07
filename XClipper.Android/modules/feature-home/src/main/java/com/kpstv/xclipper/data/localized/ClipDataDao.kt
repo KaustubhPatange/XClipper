@@ -8,6 +8,7 @@ import androidx.sqlite.db.SupportSQLiteQuery
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.PartialClipTagMap
 import com.kpstv.xclipper.data.model.Tag
+import com.kpstv.xclipper.extension.enumeration.SpecialTagFilter
 import kotlinx.coroutines.flow.Flow
 import java.util.*
 
@@ -89,21 +90,22 @@ interface ClipDataDao {
     fun getObservableDataSource(query: SupportSQLiteQuery): DataSource.Factory<Int, Clip>
 
     companion object {
-        fun createQuery(searchFilter: ArrayList<String>?, tagFilter: ArrayList<Tag>?, searchText: String?): SimpleSQLiteQuery {
+        fun createQuery(searchFilters: List<String>?, tagFilters: List<Tag>?, specialTagFilters: List<SpecialTagFilter>?, searchText: String?): SimpleSQLiteQuery {
+            val sqlConditionalLike = if (specialTagFilters?.any { it.isInvert() } == true) "not like" else "like"
             val builder = StringBuilder("select * from table_clip")
             val params = mutableListOf<Any>()
-            if (searchText?.isNotEmpty() == true || (searchFilter?.size ?: 0) > 0 || (tagFilter?.size ?: 0) > 0) builder.append(" where ")
+            if (searchText?.isNotEmpty() == true || (searchFilters?.size ?: 0) > 0 || (tagFilters?.size ?: 0) > 0) builder.append(" where ")
             if (searchText != null && searchText.isNotEmpty()) {
                 params.add("%$searchText%")
-                builder.append("data like ? and ")
+                builder.append("data $sqlConditionalLike ? and ")
             }
-            searchFilter?.forEach { filter ->
+            searchFilters?.forEach { filter ->
                 params.add("%$filter%")
-                builder.append("data like ? and ")
+                builder.append("data $sqlConditionalLike ? and ")
             }
-            tagFilter?.map { it.name }?.forEach { filter ->
+            tagFilters?.map { it.name }?.forEach { filter ->
                 params.add("%\"$filter\":[%")
-                builder.append("tags like ? and ")
+                builder.append("tags $sqlConditionalLike ? and ")
             }
             val query = builder.toString().trimEnd()
             val formatted = if (query.endsWith("and")) query.removeSuffix("and") else query

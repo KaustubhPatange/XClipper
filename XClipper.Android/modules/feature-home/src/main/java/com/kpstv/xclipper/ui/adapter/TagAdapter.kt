@@ -17,7 +17,7 @@ import com.kpstv.xclipper.feature_home.databinding.ItemTagChipBinding
 class TagAdapter(
     private val lifecycleOwner: LifecycleOwner,
     private val dialogState: LiveData<DialogState>,
-    private val tagFilter: LiveData<ArrayList<Tag>>,
+    private val tagFilter: LiveData<List<Tag>>,
     private val tagMapData: LiveData<List<TagMap>>,
     private val onCloseClick: (Tag, count: Int, index: Int) -> Unit,
     private val onClick: (Tag, Int) -> Unit

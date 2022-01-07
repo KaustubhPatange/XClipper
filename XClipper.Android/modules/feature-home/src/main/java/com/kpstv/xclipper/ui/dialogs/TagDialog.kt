@@ -8,20 +8,22 @@ import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
+import androidx.core.view.children
 import androidx.lifecycle.lifecycleScope
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
+import com.google.android.material.chip.Chip
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.kpstv.xclipper.extension.enumeration.DialogState
 import com.kpstv.xclipper.data.model.Tag
-import com.kpstv.xclipper.extensions.collapse
-import com.kpstv.xclipper.extensions.show
-import com.kpstv.xclipper.ui.helpers.AppThemeHelper
-import com.kpstv.xclipper.extensions.viewBinding
+import com.kpstv.xclipper.extension.enumeration.SpecialTagFilter
+import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.feature_home.R
 import com.kpstv.xclipper.feature_home.databinding.DialogCreateTagBinding
 import com.kpstv.xclipper.ui.adapter.TagAdapter
+import com.kpstv.xclipper.ui.helpers.HomeThemeHelper
+import com.kpstv.xclipper.ui.helpers.TagsUiHelper
 import com.kpstv.xclipper.ui.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -37,7 +39,6 @@ class TagDialog : AppCompatActivity() {
     private lateinit var adapter: TagAdapter
     private lateinit var switchCompat: SwitchCompat
 
-
     companion object {
         private const val DELAY_SPAN: Long = 20
     }
@@ -45,11 +46,13 @@ class TagDialog : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        AppThemeHelper.applyDialogTheme(this)
+        HomeThemeHelper.apply(this)
 
         setContentView(binding.root)
 
         setToolbar()
+
+        setSpecialTagFilters()
 
         setRecyclerView()
 
@@ -82,9 +85,9 @@ class TagDialog : AppCompatActivity() {
     }
 
     private fun bindUI() {
-        mainViewModel.tagLiveData.observe(this) {
-            if (it.isEmpty()) mainViewModel.stateManager.setDialogState(DialogState.Edit)
-            adapter.submitList(it)
+        mainViewModel.tagLiveData.observe(this) { tags ->
+            if (tags.isEmpty()) mainViewModel.stateManager.setDialogState(DialogState.Edit)
+            adapter.submitList(tags)
         }
 
         mainViewModel.stateManager.dialogState.observe(this) { state ->
@@ -107,6 +110,8 @@ class TagDialog : AppCompatActivity() {
                 }
             }
         }
+
+        mainViewModel.searchManager.specialTagFilters.observe(this) { updateSpecialTags(it) }
     }
 
     private fun setToolbar() = with(binding) {
@@ -129,11 +134,41 @@ class TagDialog : AppCompatActivity() {
         toolbar.menu.findItem(R.id.action_edit).actionView = switchCompat
     }
 
+    private fun setSpecialTagFilters() = with(binding) {
+        SpecialTagFilter.values().forEach { filter ->
+            specialChipGroup.addView(
+                TagsUiHelper.createSpecialTagFilterChip(this@TagDialog, filter).apply {
+                    setOnClickListener listener@{
+                        if (mainViewModel.stateManager.isEditDialogStateActive()) return@listener
+
+                        if (mainViewModel.searchManager.existSpecialTagFilter(filter)) {
+                            mainViewModel.searchManager.removeSpecialTagFilter(filter)
+                        } else {
+                            mainViewModel.searchManager.addSpecialTagFilter(filter)
+                        }
+
+                        finish()
+                    }
+                }
+            )
+        }
+    }
+
+    private fun updateSpecialTags(filters: List<SpecialTagFilter>) = with(binding) {
+        specialChipGroup.children.map { it as? Chip }.filterNotNull().forEach loop@{ chip ->
+            if (filters.contains(chip.tag)) {
+                chip.chipIcon = drawableFrom(R.drawable.ic_check_circle)
+            } else {
+                chip.chipIcon = drawableFrom((chip.tag as SpecialTagFilter).drawableRes)
+            }
+        }
+    }
+
     private fun setRecyclerView() {
         val layoutManager = FlexboxLayoutManager(this)
         layoutManager.flexDirection = FlexDirection.ROW
         layoutManager.justifyContent = JustifyContent.FLEX_START
-        binding.recyclerView.layoutManager = layoutManager
+        binding.filterRecyclerview.layoutManager = layoutManager
 
         adapter = TagAdapter(
             lifecycleOwner = this,
@@ -166,7 +201,7 @@ class TagDialog : AppCompatActivity() {
                 finish()
             }
         )
-        binding.recyclerView.adapter = adapter
+        binding.filterRecyclerview.adapter = adapter
     }
 
     override fun onDestroy() {

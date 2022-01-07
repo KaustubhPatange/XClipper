@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="swipe_background">#F26F63</color>
+
+    <color name="special_tag_light_color">#A69B63</color>
+    <color name="special_tag_dark_color">#D9D277</color>
 </resources>
