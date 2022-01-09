@@ -13,6 +13,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.view.menu.MenuBuilder
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.fragment.app.viewModels
@@ -21,6 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ferfalk.simplesearchview.SimpleSearchView
 import com.google.android.material.chip.Chip
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.kpstv.navigation.ValueFragment
@@ -181,6 +183,8 @@ class Home : ValueFragment(R.layout.fragment_home) {
         mainViewModel.stateManager.selectedItemClips.observeForever { clips ->
             if (mainViewModel.stateManager.isMultiSelectionStateActive() && clips?.isEmpty() == true)
                 mainViewModel.stateManager.setToolbarState(ToolbarState.NormalViewState)
+
+            binding.toolbar.menu.findItem(R.id.action_mergeAll)?.isVisible = mainViewModel.stateManager.isMultiSelectionStateActive() && clips.size > 1
         }
         combineTuple(mainViewModel.searchManager.searchFilters, mainViewModel.searchManager.tagFilters, mainViewModel.searchManager.specialTagFilters)
             .observe(viewLifecycleOwner) { (searchFilters: List<String>?, tagFilters: List<Tag>?, specialTagFilters: List<SpecialTagFilter>?) ->
@@ -280,7 +284,9 @@ class Home : ValueFragment(R.layout.fragment_home) {
                     binding.btnGoUp.animate().translationY(0f).start()
                 },
                 onScrollUp = {
-                    binding.fabAddItem.show()
+                    if (!mainViewModel.stateManager.isMultiSelectionStateActive()) {
+                        binding.fabAddItem.show()
+                    }
                     binding.btnGoUp.animate().translationY(500f).start()
                 }
             )
@@ -302,6 +308,9 @@ class Home : ValueFragment(R.layout.fragment_home) {
                 }
                 R.id.action_deleteAll -> {
                     deleteAllWithUndo()
+                }
+                R.id.action_mergeAll -> {
+                    mergeAllWithUndo()
                 }
                 R.id.action_search -> {
                     binding.searchView.showSearch(true)
@@ -355,6 +364,58 @@ class Home : ValueFragment(R.layout.fragment_home) {
                 removeCallback(snackBarCallback)
                 adapter.submitList(clonedItems)
                 adapter.notifyDataSetChanged()
+            }
+            addCallback(snackBarCallback)
+            show()
+            undoSnackBar = this
+        }
+    }
+
+    private fun mergeAllWithUndo() {
+        val items = mainViewModel.stateManager.selectedItemClips.value ?: emptyList()
+
+        if (items.size < 2) return
+
+        val dialog = MaterialAlertDialogBuilder(requireContext()).apply {
+            setTitle(getString(R.string.merge_clips_title))
+            setMessage(getString(R.string.merge_clips_text))
+            setNegativeButton(R.string.cancel, null)
+            setPositiveButton(R.string.alright) { _, _ ->
+                showUndoAndMerge(items)
+                mainViewModel.stateManager.clearSelectedList()
+            }
+        }
+        dialog.show()
+    }
+
+    private fun showUndoAndMerge(items: List<Clip>) {
+        undoSnackBar?.dismiss() // clear previous snackbar
+
+        val clip = Clip.from(items)
+
+        val clonedItems = ArrayList(adapter.currentList)
+        val tweakItems = ArrayList(adapter.currentList)
+
+        val index = tweakItems.indexOf(items.last())
+        tweakItems.add(index, clip)
+        tweakItems.removeAll(items)
+
+        adapter.submitList(tweakItems)
+
+        val snackBarCallback = object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
+            override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                mainViewModel.mergeClipsFromRepository(items)
+            }
+        }
+
+        Snackbar.make(
+            binding.ciRecyclerView,
+            getString(R.string.merge_success, items.size),
+            Snackbar.LENGTH_INDEFINITE
+        ).apply {
+            setAction(R.string.undo) {
+                removeCallback(snackBarCallback)
+                adapter.submitList(clonedItems)
             }
             addCallback(snackBarCallback)
             show()
@@ -422,15 +483,18 @@ class Home : ValueFragment(R.layout.fragment_home) {
      * Call this function when ToolbarMultiSelection state is enabled.
      */
     private fun setSelectedToolbar() = with(binding) {
-        toolbar.menu.clear()
+        val menu = toolbar.menu
+        menu.clear()
         toolbar.setBackgroundColor(AppThemeHelper.CARD_SELECTED_COLOR)
         toolbar.inflateMenu(R.menu.selected_menu)
+        if (menu is MenuBuilder) {
+            menu.setOptionalIconsVisible(true)
+        }
         toolbar.navigationIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_cross)
         toolbar.setNavigationOnClickListener {
             mainViewModel.stateManager.setToolbarState(ToolbarState.NormalViewState)
         }
     }
-
 
     /**
      * Call this function when ToolbarNormalState state is enabled.

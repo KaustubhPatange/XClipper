@@ -3,21 +3,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_deleteAll"
-        android:title="@string/delete_all"
-        android:icon="@drawable/ic_delete"
+        android:id="@+id/action_mergeAll"
+        android:icon="@drawable/ic_merge"
+        android:title="@string/merge_all"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_deleteAll"
+        android:icon="@drawable/ic_delete"
+        android:title="@string/delete_all"
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/action_selectAll"
         android:icon="@drawable/ic_select_all"
         android:title="@string/select_all"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/action_selectNone"
         android:icon="@drawable/ic_select_none"
         android:title="@string/select_none"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 
 </menu>

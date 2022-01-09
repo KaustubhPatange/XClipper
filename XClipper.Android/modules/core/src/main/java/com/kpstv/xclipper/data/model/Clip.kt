@@ -74,7 +74,7 @@ data class Clip(
         }
 
         /**
-         * Generates Clip with the properties "data", "time", "tags"
+         * Generates Clip with the properties "data", "time", "tags".
          */
         fun from(unencryptedData: String, tags: List<ClipTagMap>?): Clip {
             val tagMap = tags ?: listOf()
@@ -86,6 +86,20 @@ data class Clip(
             )
         }
 
+        /**
+         * Merges multiple [clips] into a single one.
+         */
+        fun from(clips: List<Clip>) : Clip {
+            val data = clips.joinToString(separator = "\n") { it.data }
+            val tagMap = clips.flatMap { it.tags ?: listOf() }.distinctBy { it.value }
+            val isPinned = clips.any { it.isPinned }
+            return Clip(
+                data = data,
+                time = Calendar.getInstance().time,
+                isPinned = isPinned,
+                tags = tagMap
+            )
+        }
 
         /**
          * Generates Clip data along with the properties "data", "time"

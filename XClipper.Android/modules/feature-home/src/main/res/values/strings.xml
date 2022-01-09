@@ -10,6 +10,7 @@
 
     <string name="layout_empty_text">Copy text or click to create a new empty paste</string>
 
+    <string name="merge_all">Merge</string>
     <string name="delete_all">Delete All</string>
     <string name="select_all">Select All</string>
     <string name="select_none">Deselect All</string>
@@ -45,4 +46,7 @@
     <string name="tag">Filter Tag</string>
 
     <string name="invert">Invert</string>
+    <string name="merge_clips_title">Merge clips?</string>
+    <string name="merge_clips_text">This will merge the selected clips into a single one including custom tags.</string>
+    <string name="merge_success">%1$s items(s) merged</string>
 </resources>

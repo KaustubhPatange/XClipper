@@ -120,7 +120,7 @@ class TagDialog : AppCompatActivity() {
             finish()
         }
 
-        toolbar.inflateMenu(R.menu.dct_menu)
+        toolbar.inflateMenu(R.menu.tag_dialog_menu)
 
         switchCompat =
             LayoutInflater.from(this@TagDialog).inflate(R.layout.switch_layout, null) as SwitchCompat

@@ -108,6 +108,17 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    fun mergeClipsFromRepository(clips: List<Clip>) {
+        if (clips.size < 2) return
+
+        val clip = Clip.from(clips)
+
+        viewModelScope.launch(viewModelIOContext) {
+            mainRepository.updateRepository(clip)
+            mainRepository.deleteMultiple(clips)
+        }
+    }
+
     fun makeASynchronizeRequest(statusListener: StatusListener) {
         viewModelScope.launch {
             if (mainRepository.syncDataFromRemote()) {
