@@ -1,3 +1,5 @@
+Added: Option to merge multiple selected clips into single one.
+Added: Option to invert the applied filters.
 Improved: Filter dialog will now show tag counts based on applied filters & search queries.
 Fixed: Some issues with accessibility & clipboard handling.
 Fixed: Crash while cancelling billing.

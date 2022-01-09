@@ -1,8 +1,8 @@
 package com.kpstv.xclipper.ui.fragments.sheets
 
 import android.content.Context
-import android.content.DialogInterface
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.View
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
@@ -18,34 +18,40 @@ import com.kpstv.xclipper.extensions.viewBinding
 import com.kpstv.xclipper.feature_special.R
 import com.kpstv.xclipper.feature_special.databinding.BottomSheetSpecialBinding
 import com.kpstv.xclipper.ui.helpers.SpecialHelper
+import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
+import kotlinx.parcelize.Parcelize
 
-class SpecialBottomSheet(
-    private val supportFragmentManager: FragmentManager,
-    private val onClose: () -> Unit = {},
-    private val clip: Clip
-) : CustomRoundedBottomSheetFragment(R.layout.bottom_sheet_special) {
+@AndroidEntryPoint
+class SpecialBottomSheet : CustomRoundedBottomSheetFragment(R.layout.bottom_sheet_special) {
 
     private val binding by viewBinding(BottomSheetSpecialBinding::bind)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val args = arguments?.getParcelable<Args>(ARG_CLIP) ?: run { dismiss(); return }
+
         SpecialHelper(
             context = requireContext(),
-            supportFragmentManager = supportFragmentManager,
+            supportFragmentManager = requireFragmentManager(),
             lifecycleScope = viewLifecycleOwner.lifecycleScope,
-            clip = clip
+            clip = args.clip
         ).setActions(binding) {
             dismiss()
         }
     }
 
-    override fun onDismiss(dialog: DialogInterface) {
-        super.onDismiss(dialog)
-        onClose.invoke()
+    @Parcelize
+    data class Args(val clipJson: String) : Parcelable {
+        val clip: Clip get() = Clip.fromJson(clipJson)
+        companion object {
+            fun fromClip(clip: Clip) = Args(clipJson = clip.toJson())
+        }
     }
 
     companion object {
+        private const val ARG_CLIP = "com.kpstv.xclipper:arg:clip_json"
         private const val DICTIONARY_DIALOG = "dictionary_dialog"
         private fun PreferenceProvider.isDialogShown(): Boolean {
             return getBooleanKey(DICTIONARY_DIALOG, false)
@@ -66,11 +72,13 @@ class SpecialBottomSheet(
             val preferenceProvider = CommonReusableEntryPoints.get(context).preferenceProvider()
 
             fun showSheet() {
-               SpecialBottomSheet(
-                   supportFragmentManager = fragmentManager,
-                   onClose = onClose,
-                   clip = clip
-               ).show(fragmentManager, "blank")
+                val sheet = SpecialBottomSheet().apply {
+                    arguments = Bundle().apply {
+                        putParcelable(ARG_CLIP, Args.fromClip(clip))
+                    }
+                }
+                sheet.showNow(fragmentManager, "blank")
+                sheet.dialog?.setOnDismissListener { onClose() }
             }
 
             if (!preferenceProvider.isDialogShown()) {

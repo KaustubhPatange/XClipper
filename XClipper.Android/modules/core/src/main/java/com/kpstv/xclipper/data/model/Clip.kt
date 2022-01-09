@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.JsonElement
+import com.kpstv.bindings.AutoGenerateConverter
 import com.kpstv.bindings.AutoGenerateListConverter
 import com.kpstv.bindings.ConverterType
 import com.kpstv.xclipper.data.converters.DateConverter
@@ -16,6 +17,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 @Entity(tableName = "table_clip")
+@AutoGenerateConverter(using = ConverterType.GSON)
 @AutoGenerateListConverter(using = ConverterType.GSON)
 data class Clip(
     val data: String,
@@ -43,8 +45,12 @@ data class Clip(
         }
     }
 
+    fun toJson(): String = ClipConverter.toStringFromClip(this)!!
+
     companion object {
         private const val FULL_DATA_FORMAT = "dd MMM yyyy, hh:mm a"
+
+        fun fromJson(model: String): Clip = ClipConverter.fromStringToClip(model)!!
 
         /**
          * Generates Clip data along with the properties "data", "time"

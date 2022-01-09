@@ -3,6 +3,7 @@ plugins {
     id(GradlePluginId.XCLIPPER_ANDROID)
     kotlin(GradlePluginId.ANDROID_KTX)
     kotlin(GradlePluginId.KAPT)
+    id(GradlePluginId.KOTLIN_PARCELIZE)
     id(GradlePluginId.DAGGER_HILT)
 }
 

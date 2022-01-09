@@ -335,7 +335,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
         val itemsToRemove = mainViewModel.stateManager.selectedItemClips.value!!
 
         if (itemsToRemove.isNotEmpty())
-            mainViewModel.stateManager.setToolbarState(ToolbarState.NormalViewState)
+            mainViewModel.stateManager.clearSelectedList()
 
         showUndoAndDelete(itemsToRemove)
     }
