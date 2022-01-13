@@ -45,6 +45,8 @@ data class Clip(
         }
     }
 
+    fun updateTime(): Clip = copyWithFields(time = Calendar.getInstance().time)
+
     fun toJson(): String = ClipConverter.toStringFromClip(this)!!
 
     companion object {

@@ -4,6 +4,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Context.CLIPBOARD_SERVICE
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.kpstv.xclipper.extensions.SimpleFunction
@@ -43,9 +44,14 @@ class ClipboardProviderImpl @Inject constructor(@ApplicationContext private val 
     override fun getClipboard() =
         clipboardManager.primaryClip
 
-    override fun setClipboard(item: ClipData?) {
-        if (item == null) return
-        clipboardManager.setPrimaryClip(item)
+    override fun setClipboard(data: String?, flag: ClipboardProviderFlags) {
+        val clipData = ClipData.newPlainText(flag.label, data)
+        clipboardManager.setPrimaryClip(clipData)
+    }
+
+    override fun setClipboard(uri: Uri, flag: ClipboardProviderFlags) {
+        val clipData = ClipData.newRawUri(flag.label, uri)
+        clipboardManager.setPrimaryClip(clipData)
     }
 
     override fun observeClipboardChange(action: (data: String) -> Boolean) {
@@ -67,10 +73,20 @@ class ClipboardProviderImpl @Inject constructor(@ApplicationContext private val 
     private val clipboardListener = object : ClipboardManager.OnPrimaryClipChangedListener {
         override fun onPrimaryClipChanged() {
             if (!isRecording) return
-            val data = clipboardManager.primaryClip?.getItemAt(0)?.coerceToText(context)?.toString()
+            val clipData = clipboardManager.primaryClip ?: return
+            val label = clipData.description.label
+
+            if (label == ClipboardProviderFlags.IgnorePrimaryChangeListener.label) return
+
+            val data = clipData.getItemAt(0)?.coerceToText(context)?.toString()
 
             if (data != null) {
-                if (onPerformAction?.invoke(data) == true) setCurrentClip(data)
+                val predicate = if (label != ClipboardProviderFlags.IgnoreObservedAction.label) {
+                    onPerformAction?.invoke(data) == true
+                } else true
+                if (predicate) {
+                    setCurrentClip(data)
+                }
             }
             Log.e(TAG, "Data: ${clipboardManager.primaryClip?.getItemAt(0)?.text}")
         }

@@ -67,7 +67,7 @@ internal class ShortenUriSheet(
         binding.tvShortUrl.text = urlInfo.shortUrl
         binding.tvLongUrl.text = urlInfo.longUrl
         binding.ivCopyUrl.setOnClickListener {
-            clipboardProvider.setClipboard(ClipData.newRawUri(urlInfo.shortUrl, Uri.parse(urlInfo.shortUrl)))
+            clipboardProvider.setClipboard(urlInfo.shortUrl)
             Toasty.info(requireContext(), getString(R.string.copy_to_clipboard)).show()
 
             onClick.invoke()

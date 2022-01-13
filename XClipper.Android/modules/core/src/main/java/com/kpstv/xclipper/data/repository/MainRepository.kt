@@ -34,6 +34,7 @@ interface MainRepository {
      * The function will change [Clip.isPinned] to the incoming value.
      */
     suspend fun updatePin(clip: Clip?, isPinned: Boolean)
+    suspend fun updateTime(clip: Clip?)
 
     suspend fun deleteClip(clip: Clip)
     suspend fun deleteClip(data: String?)
@@ -55,7 +56,7 @@ interface MainRepository {
      */
     suspend fun removeTag(tagName: String): Boolean
 
-    suspend fun getData(data: String): Clip?
+    suspend fun getClipByData(data: String): Clip?
 
     /**
      * Checks if the clip exist in the database.

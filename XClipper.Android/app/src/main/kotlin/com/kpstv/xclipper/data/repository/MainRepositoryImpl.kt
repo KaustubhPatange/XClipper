@@ -100,6 +100,11 @@ class MainRepositoryImpl @Inject constructor(
         clipDao.updatePin(clip.id, isPinned)
     }
 
+    override suspend fun updateTime(clip: Clip?) {
+        if (clip == null) return
+        clipDao.update(clip.updateTime())
+    }
+
     override suspend fun deleteClip(clip: Clip) {
         clipDao.delete(clip.id)
         firebaseProvider.deleteData(clip)
@@ -131,7 +136,7 @@ class MainRepositoryImpl @Inject constructor(
         return clipDao.getAllLiveData()
     }
 
-    override suspend fun getData(data: String): Clip? = clipDao.getData(data)
+    override suspend fun getClipByData(data: String): Clip? = clipDao.getData(data)
 
     override suspend fun processClipAndSave(clip: Clip?): Boolean {
         if (clip == null) return false

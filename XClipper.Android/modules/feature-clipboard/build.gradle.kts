@@ -16,7 +16,11 @@ dependencies {
     implementation(project(ModuleDependency.CORE_CLIPBOARD))
 
     implementation(LibraryDependency.CORE_KTX)
+    implementation(LibraryDependency.WORK_MANAGER)
 
     implementation(LibraryDependency.HILT_ANDROID)
     kapt(LibraryDependency.HILT_COMPILER)
+
+    implementation(LibraryDependency.HILT_WORK_MANAGER)
+    kapt(LibraryDependency.HILT_WORK_MANAGER_COMPILER)
 }

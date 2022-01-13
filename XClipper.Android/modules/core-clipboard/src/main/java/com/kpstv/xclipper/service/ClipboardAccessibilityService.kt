@@ -16,6 +16,7 @@ import com.kpstv.core.BuildConfig
 import com.kpstv.xclipper.data.helper.ClipRepositoryHelper
 import com.kpstv.xclipper.data.helper.FirebaseProviderHelper
 import com.kpstv.xclipper.data.provider.ClipboardProvider
+import com.kpstv.xclipper.data.provider.ClipboardProviderFlags
 import com.kpstv.xclipper.di.suggestions.SuggestionService
 import com.kpstv.xclipper.extensions.Logger
 import com.kpstv.xclipper.extensions.helper.ClipboardDetection
@@ -304,24 +305,22 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
             return
         }
 
-        clipboardProvider.ignoreChange {
-            logger("Received ${Companion::EXTRA_SERVICE_TEXT.name}, WordLength: ${wordLength}, Text: $pasteData")
+        logger("Received ${Companion::EXTRA_SERVICE_TEXT.name}, WordLength: ${wordLength}, Text: $pasteData")
 
-            val currentClipText = clipboardProvider.getCurrentClip().value
+        val currentClipText = clipboardProvider.getCurrentClip().value
 
-            clipboardProvider.setClipboard(ClipData.newPlainText("copied", pasteData))
+        clipboardProvider.setClipboard(pasteData, flag = ClipboardProviderFlags.IgnorePrimaryChangeListener)
 
-            if (isEditable && wordLength != 0 && textSelectionEnd != -1) {
-                performAction(AccessibilityNodeInfo.ACTION_SET_SELECTION, Bundle().apply {
-                    putInt(AccessibilityNodeInfo.ACTION_ARGUMENT_SELECTION_START_INT, textSelectionEnd - wordLength)
-                    putInt(AccessibilityNodeInfo.ACTION_ARGUMENT_SELECTION_END_INT, textSelectionEnd)
-                })
-            }
-
-            performAction(AccessibilityNodeInfo.ACTION_PASTE)
-
-            clipboardProvider.setClipboard(ClipData.newPlainText(null, currentClipText))
+        if (isEditable && wordLength != 0 && textSelectionEnd != -1) {
+            performAction(AccessibilityNodeInfo.ACTION_SET_SELECTION, Bundle().apply {
+                putInt(AccessibilityNodeInfo.ACTION_ARGUMENT_SELECTION_START_INT, textSelectionEnd - wordLength)
+                putInt(AccessibilityNodeInfo.ACTION_ARGUMENT_SELECTION_END_INT, textSelectionEnd)
+            })
         }
+
+        performAction(AccessibilityNodeInfo.ACTION_PASTE)
+
+        clipboardProvider.setClipboard(currentClipText, flag = ClipboardProviderFlags.IgnorePrimaryChangeListener)
     }
 
     // We will find an editable node. If none of them exist it means we cannot use

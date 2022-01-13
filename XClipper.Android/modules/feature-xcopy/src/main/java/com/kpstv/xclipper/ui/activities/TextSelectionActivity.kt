@@ -28,7 +28,7 @@ class TextSelectionActivity : ComponentActivity() {
                  * This will trigger save twice, one from [MainRepository.updateRepository] &
                  * the other from Accessibility service when we set this data as current clipboard.
                  */
-                clipboardProvider.setClipboard(ClipData.newPlainText(null, textData))
+                clipboardProvider.setClipboard(textData)
                 if (textData != null)
                     clipRepositoryHelper.insertOrUpdateClip(textData)
             }

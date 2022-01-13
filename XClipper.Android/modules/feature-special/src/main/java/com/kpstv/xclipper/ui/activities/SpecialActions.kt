@@ -35,7 +35,7 @@ class SpecialActions : AppCompatActivity() {
         AppThemeHelper.applyDialogTheme(this)
 
         launchInIO {
-            val clip = repository.getData(data)
+            val clip = repository.getClipByData(data)
 
             if (clip == null) {
                 launchInMain { finish() }

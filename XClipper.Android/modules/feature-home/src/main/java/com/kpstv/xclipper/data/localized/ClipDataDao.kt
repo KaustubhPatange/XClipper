@@ -20,7 +20,7 @@ interface ClipDataDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(clips: List<Clip>)
 
-    @Update
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun update(clip: Clip)
 
     @Update(onConflict = OnConflictStrategy.REPLACE)

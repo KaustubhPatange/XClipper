@@ -15,7 +15,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import javax.inject.Singleton
 import kotlin.system.measureTimeMillis
 
 class ClipRepositoryHelperImpl @Inject constructor(
@@ -43,9 +42,9 @@ class ClipRepositoryHelperImpl @Inject constructor(
         if (pendingClipData.size > 1) return
 
         val time = measureTimeMillis {
-            val isInserted = repository.updateRepository(data, toFirebase)
-            if (isInserted && toNotify)
+            if (addOrUpdateData(data, toFirebase) && toNotify) {
                 sendClipNotification(data)
+            }
         }
         if (BuildConfig.DEBUG)
             Log.e(this::class.simpleName, "Data: ${data.take(50)}, Time taken: $time ms")
@@ -63,9 +62,9 @@ class ClipRepositoryHelperImpl @Inject constructor(
             val singleNotify = clips.size <= notifyOffset
             var addedClips = 0
             clips.forEach { clip ->
-                val isAdded = repository.updateRepository(clip, toFirebase)
-                addedClips += isAdded.toInt()
-                if (isAdded && singleNotify && toNotify)
+                val isAddedOrUpdated = addOrUpdateData(clip.data, toFirebase)
+                addedClips += isAddedOrUpdated.toInt()
+                if (isAddedOrUpdated && singleNotify && toNotify)
                     sendClipNotification(clip)
             }
             if (addedClips > 0 && !singleNotify && toNotify) {
@@ -80,6 +79,18 @@ class ClipRepositoryHelperImpl @Inject constructor(
     override fun deleteClip(clipData: List<String>?) {
         launchInIO {
             clipData?.forEach { repository.deleteClip(it) }
+        }
+    }
+
+    private suspend fun addOrUpdateData(data: String, toFirebase: Boolean) : Boolean {
+        return if (repository.checkForDuplicate(data)) {
+            repository.getClipByData(data)?.let { clip ->
+                repository.updateTime(clip)
+                return true
+            }
+            false
+        } else {
+            repository.updateRepository(data, toFirebase)
         }
     }
 

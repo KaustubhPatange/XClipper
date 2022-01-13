@@ -6,9 +6,7 @@ import android.content.Context
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.kpstv.xclipper.R
-import com.kpstv.xclipper.extensions.colorFrom
 import com.kpstv.xclipper.extensions.utils.NotificationUtils
-import com.kpstv.xclipper.service.receiver.ImproveDetectionReceiver
 import com.kpstv.xclipper.service.receiver.SpecialActionsReceiver
 import com.kpstv.xclipper.ui.activities.SpecialActions
 import java.util.*
@@ -19,9 +17,9 @@ object Notifications {
     private val manager: NotificationManager get() = CoreNotifications.getNotificationManager()
 
     fun sendClipboardCopiedNotification(context: Context, text: String, withSpecialActions: Boolean = true): Unit = with(context) {
-        val randomCode = NotificationUtils.getRandomCode()
+        val notificationId = text.hashCode()
 
-        val deleteIntent = SpecialActionsReceiver.createDeleteAction(context, text, randomCode)
+        val deleteIntent = SpecialActionsReceiver.createDeleteAction(context, text, notificationId)
 
         val specialIntent = SpecialActions.launchIntent(context, text)
 
@@ -47,7 +45,7 @@ object Notifications {
             )
         }
 
-        manager.notify(randomCode, notificationBuilder.build())
+        manager.notify(notificationId, notificationBuilder.build())
     }
 
     private fun getRandomPendingCode() = Random().nextInt(400) + 550

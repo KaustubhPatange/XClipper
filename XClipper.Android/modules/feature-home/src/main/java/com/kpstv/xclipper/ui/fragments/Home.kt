@@ -1,7 +1,6 @@
 package com.kpstv.xclipper.ui.fragments
 
 import android.annotation.SuppressLint
-import android.content.ClipData
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -30,6 +29,7 @@ import com.kpstv.xclipper.data.helper.FirebaseProviderHelper
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.data.provider.ClipboardProvider
+import com.kpstv.xclipper.data.provider.ClipboardProviderFlags
 import com.kpstv.xclipper.di.navigation.SettingsNavigation
 import com.kpstv.xclipper.di.navigation.SpecialSheetNavigation
 import com.kpstv.xclipper.extension.DefaultSearchViewListener
@@ -180,7 +180,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
                 else -> { /* no-op */}
             }
         }
-        mainViewModel.stateManager.selectedItemClips.observeForever { clips ->
+        mainViewModel.stateManager.selectedItemClips.observe(viewLifecycleOwner) { clips ->
             if (mainViewModel.stateManager.isMultiSelectionStateActive() && clips?.isEmpty() == true)
                 mainViewModel.stateManager.setToolbarState(ToolbarState.NormalViewState)
 
@@ -232,7 +232,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
         }
 
         adapter.setCopyClick { clip, _ ->
-            clipboardProvider.setClipboard(ClipData.newPlainText(null, clip.data))
+            clipboardProvider.setClipboard(data = clip.data, flag = ClipboardProviderFlags.IgnoreObservedAction)
             Toasty.info(requireContext(), getString(R.string.copy_to_clipboard)).show()
         }
 
