@@ -11,7 +11,6 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
 class ExtensionHelper(private val context: Context, sku: String) {
-    // TODO: Add work manager to also make sure if extensions are not expired.
 
     companion object {
         fun observePurchaseComplete(preferenceProvider: PreferenceProvider, sku: String) = preferenceProvider.observeBooleanKeyAsFlow(sku, false)

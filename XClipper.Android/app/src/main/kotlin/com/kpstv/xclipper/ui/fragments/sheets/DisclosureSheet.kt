@@ -10,11 +10,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.databinding.BottomSheetDisclosureBinding
+import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.extensions.elements.CustomRoundedBottomSheetFragment
-import com.kpstv.xclipper.extensions.getColorAttr
-import com.kpstv.xclipper.extensions.hide
-import com.kpstv.xclipper.extensions.show
-import com.kpstv.xclipper.extensions.viewBinding
 import com.kpstv.xclipper.ui.helpers.AppSettings
 import com.kpstv.xclipper.ui.viewmodel.DisclosureSheetViewModel
 import com.kpstv.xclipper.ui.viewmodel.DisclosureState
@@ -72,16 +69,16 @@ class DisclosureSheet : CustomRoundedBottomSheetFragment(R.layout.bottom_sheet_d
                     binding.progressBar.hide()
                 }
                 when(state) {
-                    DisclosureState.EmptyPolicy -> {
-                        // show cached raw privacy policy
-                        val policyText = resources.openRawResource(R.raw.policy).bufferedReader().readText()
-                        update(policyText = policyText)
-                        Toasty.error(requireContext(), getString(R.string.err_privacy_policy)).show()
-                    }
                     is DisclosureState.UpdatePolicy -> {
                         update(state.data, state.lastUpdated)
                     }
-                    else -> {}
+                    else -> {
+                        // show cached raw privacy policy
+                        val policyText = resources.openRawResource(R.raw.policy).bufferedReader().readText()
+                        update(policyText = policyText)
+                        Logger.w(IllegalStateException(getString(R.string.err_privacy_policy)), null)
+                        Toasty.error(requireContext(), getString(R.string.err_privacy_policy)).show()
+                    }
                 }
             }
         }

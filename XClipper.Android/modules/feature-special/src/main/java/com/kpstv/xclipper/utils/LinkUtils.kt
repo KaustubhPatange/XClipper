@@ -1,6 +1,8 @@
 package com.kpstv.xclipper.utils
 
 import com.kpstv.xclipper.extensions.await
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okio.IOException
@@ -8,7 +10,7 @@ import okio.IOException
 internal data class LinkData(val title: String?, val description: String?, val imageUrl: String?)
 
 internal object LinkUtils {
-    suspend fun fetchUrl(url: String) : LinkData? {
+    suspend fun fetchUrl(url: String) : LinkData? = withContext(Dispatchers.IO) call@{
         try {
             val result = OkHttpClient().newCall(Request.Builder().url(url).build()).await()
             result.onSuccess { response ->
@@ -20,14 +22,14 @@ internal object LinkUtils {
                 val description = matchPattern(body, DESCRIPTION_PATTERN)
                 val imageUrl = matchPattern(body, IMAGE_PATTERN)
 
-                return LinkData(
+                return@call LinkData(
                     title = title,
                     description = description,
                     imageUrl = imageUrl
                 )
             }
         } catch (e: IOException) { /* no-op */ }
-        return null
+        return@call null
     }
 
     private const val TITLE_PATTERN = "property=\"og:title\".*?content=\"(.*?)\""

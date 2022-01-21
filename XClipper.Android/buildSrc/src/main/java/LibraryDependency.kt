@@ -20,7 +20,7 @@ private object LibraryVersion {
     const val FLEXBOX = "2.0.1"
     const val LOTTIE = "3.4.0"
     const val ZXING_QR = "4.1.0"
-    const val TOASTY = "1.4.2"
+    const val TOASTY = "1.5.2"
     const val ROUND_BOTTOM_SHEET = "1.0.1"
     const val FLOATING_BUBBLE = "3.0.3"
     const val GIF_DRAWABLE = "1.2.22"

@@ -6,6 +6,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kpstv.xclipper.ui.helpers.CrashReport
 import org.jetbrains.annotations.NonNls
 import timber.log.Timber
+import java.lang.RuntimeException
 
 // TODO: Move to core-logging
 
@@ -64,7 +65,7 @@ object Logger {
   private class CrashlyticsTree : ExtendedDebugTree() {
     override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
       if (t != null) {
-        val final = Exception("[$tag] - $message", t)
+        val final = RuntimeException("[$tag] - $message", t)
         FirebaseCrashlytics.getInstance().recordException(final) // record non-fatal exceptions
         CrashReport.sendNonFatalException(context = null, throwable = final) // record non-fatal exceptions
       } else {
