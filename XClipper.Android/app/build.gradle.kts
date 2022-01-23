@@ -14,10 +14,19 @@ plugins {
 }
 
 android {
-   buildFeatures.viewBinding = true
+    buildFeatures.viewBinding = true
 
     sourceSets.getByName("main") {
         java.setSrcDirs(listOf("src/main/kotlin"))
+    }
+    sourceSets.getByName("debug").assets.srcDirs(files("$projectDir/schemas")) // Room
+
+    defaultConfig {
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += mapOf("room.schemaLocation" to "$projectDir/schemas")
+            }
+        }
     }
 
     signingConfigs {
@@ -136,7 +145,14 @@ dependencies {
     kapt(LibraryDependency.ROOM_COMPILER_KAPT)
 
     testImplementation(TestLibraryDependency.JUNIT)
+    androidTestImplementation(LibraryDependency.ROOM_TESTING)
     androidTestImplementation(TestLibraryDependency.JUNIT_TEST_EXT)
+    androidTestImplementation("androidx.test:runner:1.4.0")
     androidTestImplementation(TestLibraryDependency.ESPRESSO_CORE)
+
     implementation(kotlin("reflect"))
+}
+
+tasks.withType<Test>() {
+    useJUnitPlatform()
 }

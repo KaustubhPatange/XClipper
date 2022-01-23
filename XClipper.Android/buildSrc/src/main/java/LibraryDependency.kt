@@ -74,6 +74,7 @@ object LibraryDependency {
     const val ROOM_KTX = "androidx.room:room-ktx:${LibraryVersion.ROOM}"
     const val ROOM_RUNTIME = "androidx.room:room-runtime:${LibraryVersion.ROOM}"
     const val ROOM_COMPILER_KAPT = "androidx.room:room-compiler:${LibraryVersion.ROOM}"
+    const val ROOM_TESTING = "androidx.room:room-testing:${LibraryVersion.ROOM}"
     const val PAGING = "androidx.paging:paging-runtime-ktx:${LibraryVersion.PAGING}"
     const val LIFECYCLE_EXTENSIONS = "androidx.lifecycle:lifecycle-extensions:${LibraryVersion.LIFECYCLE}"
     const val LIFECYCLE_VIEWMODEL = "androidx.lifecycle:lifecycle-viewmodel-ktx:${LibraryVersion.LIFECYCLE}"
@@ -136,4 +137,5 @@ object LibraryDependency {
 
     const val SENTRY = "io.sentry:sentry-android:${LibraryVersion.SENTRY}"
     const val SWIPE_REFRESH_LAYOUT = "androidx.swiperefreshlayout:swiperefreshlayout:${LibraryVersion.SWIPE_REFRESH_LAYOUT}"
+
 }

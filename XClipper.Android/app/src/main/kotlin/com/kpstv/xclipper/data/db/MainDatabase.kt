@@ -27,14 +27,14 @@ import javax.inject.Singleton
         UserEntity::class,
         Preview::class
     ],
-    version = 4,
-    exportSchema = false
+    version = 5,
 )
 
 @TypeConverters(
     com.kpstv.xclipper.data.model.ClipListConverter::class,
     com.kpstv.xclipper.data.model.DeviceListConverter::class,
     com.kpstv.xclipper.data.model.UserEntityConverter::class,
+    com.kpstv.xclipper.data.model.TagConverter::class,
     DateConverter::class,
     TagConverter::class
 )
@@ -57,10 +57,11 @@ abstract class MainDatabase : RoomDatabase() {
             val clipTagDao = database.get().clipTagDao()
 
             launchInIO {
-                ClipTag.values().forEach {
-                    clipTagDao.insert(Tag.from(it.small()))
+                ClipTag.values().forEach { tag ->
+                    val type = if (tag.marker == 1) ClipTagType.SPECIAL_TAG else ClipTagType.SYSTEM_TAG
+                    clipTagDao.insert(Tag.from(tag.small(), type))
                 }
-                clipTagDao.insert(Tag.from("sample tag"))
+                clipTagDao.insert(Tag.from("sample tag", ClipTagType.USER_TAG))
             }
         }
     }
