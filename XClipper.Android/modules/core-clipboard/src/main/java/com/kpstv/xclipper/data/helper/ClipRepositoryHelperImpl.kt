@@ -41,13 +41,11 @@ class ClipRepositoryHelperImpl @Inject constructor(
         pendingClipData.addLast(data)
         if (pendingClipData.size > 1) return
 
-        val time = measureTimeMillis {
+        if (!repository.isTopData(data)) {
             if (addOrUpdateData(data, toFirebase) && toNotify) {
                 sendClipNotification(data)
             }
         }
-        if (BuildConfig.DEBUG)
-            Log.e(this::class.simpleName, "Data: ${data.take(50)}, Time taken: $time ms")
 
         pendingClipData.removeFirstOrNull()
         if (pendingClipData.isNotEmpty()) internalInsertOrUpdateClip(pendingClipData.firstOrNull())
@@ -62,10 +60,12 @@ class ClipRepositoryHelperImpl @Inject constructor(
             val singleNotify = clips.size <= notifyOffset
             var addedClips = 0
             clips.forEach { clip ->
-                val isAddedOrUpdated = addOrUpdateData(clip.data, toFirebase)
-                addedClips += isAddedOrUpdated.toInt()
-                if (isAddedOrUpdated && singleNotify && toNotify)
-                    sendClipNotification(clip)
+                if (!repository.isTopData(clip.data)) {
+                    val isAddedOrUpdated = addOrUpdateData(clip.data, toFirebase)
+                    addedClips += isAddedOrUpdated.toInt()
+                    if (isAddedOrUpdated && singleNotify && toNotify)
+                        sendClipNotification(clip)
+                }
             }
             if (addedClips > 0 && !singleNotify && toNotify) {
                 sendClipNotification(
