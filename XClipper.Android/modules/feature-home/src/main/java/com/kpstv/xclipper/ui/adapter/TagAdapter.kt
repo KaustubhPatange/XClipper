@@ -7,10 +7,10 @@ import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.kpstv.xclipper.extension.enumeration.DialogState
-import com.kpstv.xclipper.data.model.ClipTag
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.data.model.TagMap
+import com.kpstv.xclipper.extension.enumeration.DialogState
+import com.kpstv.xclipper.extension.titleRes
 import com.kpstv.xclipper.extensions.layoutInflater
 import com.kpstv.xclipper.feature_home.databinding.ItemTagChipBinding
 
@@ -48,11 +48,16 @@ class TagAdapter(
 
         @SuppressLint("SetTextI18n")
         fun bind(tag: Tag) = with(binding) {
-            chip.text = tag.name
+            val clipTag = tag.getClipTag()
+            if (!tag.type.isUserTag() && clipTag != null) {
+                chip.text = root.context.getString(clipTag.titleRes)
+            } else {
+                chip.text = tag.name
+            }
 
             dialogState.observe(lifecycleOwner) {
                 if (it == DialogState.Edit) {
-                    chip.isCloseIconVisible = ClipTag.fromValue(tag.name) == null
+                    chip.isCloseIconVisible = clipTag == null
                 }
                 else if (it == DialogState.Normal)
                     chip.isCloseIconVisible = false

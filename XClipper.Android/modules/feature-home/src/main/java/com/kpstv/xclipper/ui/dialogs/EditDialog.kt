@@ -14,6 +14,7 @@ import com.kpstv.xclipper.extensions.viewBinding
 import com.kpstv.xclipper.feature_home.R
 import com.kpstv.xclipper.feature_home.databinding.DialogEditLayoutBinding
 import com.kpstv.xclipper.ui.adapter.EditAdapter
+import com.kpstv.xclipper.ui.helpers.HomeThemeHelper
 import com.kpstv.xclipper.ui.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
@@ -44,7 +45,7 @@ class EditDialog : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        AppThemeHelper.applyDialogTheme(this)
+        HomeThemeHelper.apply(this)
 
         setContentView(binding.root)
 

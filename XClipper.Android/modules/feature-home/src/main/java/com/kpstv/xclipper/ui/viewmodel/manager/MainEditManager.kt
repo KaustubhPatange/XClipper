@@ -4,7 +4,9 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.kpstv.xclipper.data.localized.TagDao
-import com.kpstv.xclipper.data.model.*
+import com.kpstv.xclipper.data.model.Clip
+import com.kpstv.xclipper.data.model.ClipTag
+import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.extensions.ClipTagMap
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -35,7 +37,7 @@ class MainEditManager @Inject constructor(
     /**
      * Important whenever want to edit the clip call this function at start
      */
-    fun postClip(clip: Clip) {
+    fun setTagFromClip(clip: Clip) {
         _clip.postValue(clip)
         updateTags(clip)
     }
@@ -73,8 +75,9 @@ class MainEditManager @Inject constructor(
      * Call this function to update tags from the clip tags
      */
     private fun updateTags(clip: Clip) {
-        _selectedTags.postValue(clip.tags?.filter {
-            ClipTag.fromValue(it.key) == null
+        _selectedTags.postValue(clip.tags?.filter { tagMap ->
+            val clipTag = ClipTag.fromValue(tagMap.key)
+            clipTag == null || clipTag.isSpecialTag()
         })
     }
     private val TAG = javaClass.simpleName
@@ -82,9 +85,10 @@ class MainEditManager @Inject constructor(
     init {
         CoroutineScope(Dispatchers.IO).launch {
             tagRepository.getAllLiveData().collect { data ->
-                _tagFixedLiveData.postValue(data.filter { tag ->
-                    ClipTag.fromValue(tag.name) == null
-                })
+                val sortedList = data
+                    .sortedByDescending { it.type.isSpecialTag() }
+                    .filter { it.type.isUserTag() || it.type.isSpecialTag() }
+                _tagFixedLiveData.postValue(sortedList)
             }
         }
     }

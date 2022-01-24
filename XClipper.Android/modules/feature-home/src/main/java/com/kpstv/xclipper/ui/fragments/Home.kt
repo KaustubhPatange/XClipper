@@ -240,7 +240,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
             when (menuType) {
                 CIAdapter.MenuType.Edit -> {
                     /** This will ensure that we are editing the clip */
-                    mainViewModel.editManager.postClip(clip)
+                    mainViewModel.editManager.setTagFromClip(clip)
 
                     val intent = Intent(requireContext(), EditDialog::class.java)
                     startActivity(intent)

@@ -20,6 +20,7 @@ data class Tag(
     val type: ClipTagType
 ) {
 
+    fun getClipTag() : ClipTag? = ClipTag.fromValue(name)
     companion object {
         fun from(text: String, type: ClipTagType): Tag = Tag(name = text, type = type)
     }

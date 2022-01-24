@@ -49,4 +49,12 @@
     <string name="merge_clips_title">Merge clips?</string>
     <string name="merge_clips_text">This will merge the selected clips into a single one including custom tags.</string>
     <string name="merge_success">%1$s items(s) merged</string>
+
+    <!-- Clip tags -->
+    <string name="tag_lock">lock</string>
+    <string name="tag_phone">phone</string>
+    <string name="tag_date">date</string>
+    <string name="tag_url">url</string>
+    <string name="tag_email">email</string>
+    <string name="tag_map">map</string>
 </resources>

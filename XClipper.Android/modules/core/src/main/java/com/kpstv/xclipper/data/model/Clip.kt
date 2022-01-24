@@ -152,6 +152,9 @@ data class PartialClipTagMap(
 enum class ClipTag(val marker: Int) {
     LOCK(1), PHONE(0), DATE(0), URL(0), EMAIL(0), MAP(0);
 
+    fun isSystemTag() : Boolean = marker == 0
+    fun isSpecialTag() : Boolean = marker == 1
+
     companion object {
         fun fromValue(text: String) = getValueOrNull<ClipTag>(text.uppercase(Locale.ROOT))
     }
