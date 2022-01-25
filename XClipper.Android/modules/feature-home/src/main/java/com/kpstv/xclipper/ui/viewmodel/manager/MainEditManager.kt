@@ -47,7 +47,7 @@ class MainEditManager @Inject constructor(
      */
     fun clearClip() {
         _clip.postValue(null)
-        _selectedTags.postValue(null)
+        _selectedTags.postValue(emptyList())
     }
 
     fun getSelectedTags() = _selectedTags.value
@@ -75,10 +75,11 @@ class MainEditManager @Inject constructor(
      * Call this function to update tags from the clip tags
      */
     private fun updateTags(clip: Clip) {
-        _selectedTags.postValue(clip.tags?.filter { tagMap ->
+        val tags = clip.tags?.filter { tagMap ->
             val clipTag = ClipTag.fromValue(tagMap.key)
             clipTag == null || clipTag.isSpecialTag()
-        })
+        } ?: emptyList()
+        _selectedTags.postValue(tags)
     }
     private val TAG = javaClass.simpleName
 
