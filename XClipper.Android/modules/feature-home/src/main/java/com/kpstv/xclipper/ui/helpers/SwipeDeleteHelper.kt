@@ -1,4 +1,4 @@
-package com.kpstv.xclipper.extension.recyclerview
+package com.kpstv.xclipper.ui.helpers
 
 import android.content.Context
 import android.graphics.*
@@ -9,12 +9,13 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.xclipper.extensions.utils.VibrateUtils
 import com.kpstv.xclipper.feature_home.R
+import com.kpstv.xclipper.ui.adapter.ClipAdapterHolder
 
 /**
  * A class which will manage the swipe to delete feature
  * on demand.
  */
-class SwipeToDeleteCallback(
+class SwipeDeleteHelper(
     context: Context,
     private val onSwiped: (Int) -> Unit
 ) : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
@@ -28,6 +29,16 @@ class SwipeToDeleteCallback(
     private val clearPaint = Paint().apply { xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR) }
 
     private var readyToBeRemoved = false
+
+    override fun getSwipeDirs(
+        recyclerView: RecyclerView,
+        viewHolder: RecyclerView.ViewHolder
+    ): Int {
+        if (viewHolder is ClipAdapterHolder && viewHolder.tag.isSwipeEnabled) {
+            return super.getSwipeDirs(recyclerView, viewHolder)
+        }
+        return 0
+    }
 
     override fun onMove(
         recyclerView: RecyclerView,
