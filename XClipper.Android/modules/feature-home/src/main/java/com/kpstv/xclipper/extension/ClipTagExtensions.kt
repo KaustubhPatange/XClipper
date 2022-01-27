@@ -22,3 +22,8 @@ val ClipTag.drawableRes: Int @DrawableRes get() = when(this) {
     ClipTag.EMAIL -> R.drawable.fh_ic_mail
     ClipTag.MAP -> R.drawable.fh_ic_map
 }
+
+val ClipTag.tooltipRes: Int @StringRes get() = when(this) {
+    ClipTag.LOCK -> R.string.tag_lock_tooltip
+    else -> -1
+}

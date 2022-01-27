@@ -52,6 +52,7 @@
 
     <!-- Clip tags -->
     <string name="tag_lock">lock</string>
+    <string name="tag_lock_tooltip">Clip having this tag cannot be deleted.</string>
     <string name="tag_phone">phone</string>
     <string name="tag_date">date</string>
     <string name="tag_url">url</string>
