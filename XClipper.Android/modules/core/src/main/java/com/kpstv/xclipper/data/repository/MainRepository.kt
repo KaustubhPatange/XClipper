@@ -75,4 +75,9 @@ interface MainRepository {
     fun getAllLiveClip(): LiveData<List<Clip>>
     fun getAllTags(): Flow<List<TagMap>>
     fun executeQuery(query: SupportSQLiteQuery): List<Clip>
+
+    /**
+     * Check if the data is the last data i.e the new data in the list.
+     */
+    suspend fun isTopData(data: String) : Boolean
 }

@@ -66,6 +66,9 @@ interface ClipDataDao {
     @Query("update table_clip set isPinned = :isPinned where id = :id")
     suspend fun updatePin(id: Int, isPinned: Boolean): Int
 
+    @Query("select data from table_clip order by time desc limit 1")
+    suspend fun getTopData(): String?
+
     /** We are reversing this result in CIAdapter that is why we are taking
      *  list in ascending order */
     @Query("select * from table_clip order by isPinned desc, time desc")

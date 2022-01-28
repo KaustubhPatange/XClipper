@@ -8,7 +8,7 @@ object AndroidConfig {
     const val VERSION_NAME = "1.2.2"
 
     const val ID = "com.kpstv.xclipper"
-    const val TEST_INSTRUMENTATION_RUNNER = "android.support.test.runner.AndroidJUnitRunner"
+    const val TEST_INSTRUMENTATION_RUNNER = "androidx.test.runner.AndroidJUnitRunner"
 }
 
 interface BuildType {

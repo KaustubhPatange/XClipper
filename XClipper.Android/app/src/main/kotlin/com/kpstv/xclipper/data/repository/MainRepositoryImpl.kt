@@ -181,4 +181,9 @@ class MainRepositoryImpl @Inject constructor(
             emit(tags)
         }
     }
+
+    override suspend fun isTopData(data: String): Boolean {
+        val topData = clipDao.getTopData()
+        return topData != null && topData == data
+    }
 }

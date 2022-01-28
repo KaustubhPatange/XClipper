@@ -1,5 +1,7 @@
 package com.kpstv.xclipper.data.model
 
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -140,12 +142,44 @@ data class PartialClipTagMap(
     val items: List<ClipTagMap> // make sure it's not empty when checked from query.
 )
 
-enum class ClipTag {
-    PHONE, DATE, URL, EMAIL, MAP;
+/*
+ * Marker indicates whether a tag is a system special tag (eg: LOCK) managed completely by XClipper &
+ * has behavior different to the one corresponds to non special tag (eg: PHONE).
+ *
+ * 0 -> Non special tag
+ * 1 -> Special tag
+ */
+enum class ClipTag(val marker: Int) {
+    LOCK(1), PHONE(0), DATE(0), URL(0), EMAIL(0), MAP(0);
+
+    fun isSystemTag() : Boolean = marker == 0
+    fun isSpecialTag() : Boolean = marker == 1
 
     companion object {
         fun fromValue(text: String) = getValueOrNull<ClipTag>(text.uppercase(Locale.ROOT))
     }
+}
+
+enum class ClipTagType {
+    /**
+     * System tags are phone, date, url that are automatically assigned based on text recognition.
+     */
+    SYSTEM_TAG,
+
+    /**
+     * Special tags are "lock" that have a behavior different than the other tags are managed &
+     * controlled by the app.
+     */
+    SPECIAL_TAG,
+
+    /**
+     * These are created by user.
+     */
+    USER_TAG;
+
+    fun isSystemTag() : Boolean = this == SYSTEM_TAG
+    fun isSpecialTag() : Boolean = this == SPECIAL_TAG
+    fun isUserTag() : Boolean = this == USER_TAG
 }
 
 private inline fun <reified T : Enum<T>> getValueOrNull(name: String): T? {

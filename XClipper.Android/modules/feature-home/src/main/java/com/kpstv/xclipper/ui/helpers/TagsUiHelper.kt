@@ -21,7 +21,9 @@ object TagsUiHelper {
             text = tag.name
             setTag(tag) // to identify the tag associated with the chip
             chipIcon = drawableFrom(R.drawable.ic_tag)
+            chipIconTint = ColorStateList.valueOf(getColorAttr(R.attr.colorTextPrimary))
             chipIconSize = toPx(20)
+            chipStartPadding = toPx(10)
         }
     }
 

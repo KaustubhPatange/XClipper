@@ -27,21 +27,23 @@ import com.google.android.material.snackbar.Snackbar
 import com.kpstv.navigation.ValueFragment
 import com.kpstv.xclipper.data.helper.FirebaseProviderHelper
 import com.kpstv.xclipper.data.model.Clip
+import com.kpstv.xclipper.data.model.ClipTag
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.data.provider.ClipboardProviderFlags
 import com.kpstv.xclipper.di.navigation.SettingsNavigation
 import com.kpstv.xclipper.di.navigation.SpecialSheetNavigation
 import com.kpstv.xclipper.extension.DefaultSearchViewListener
+import com.kpstv.xclipper.extension.drawableRes
 import com.kpstv.xclipper.extension.enumeration.SpecialTagFilter
 import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.extensions.enumerations.FirebaseState
 import com.kpstv.xclipper.extension.listener.StatusListener
 import com.kpstv.xclipper.extension.recyclerview.RecyclerViewInsetHelper
-import com.kpstv.xclipper.extension.recyclerview.SwipeToDeleteCallback
+import com.kpstv.xclipper.ui.helpers.SwipeDeleteHelper
 import com.kpstv.xclipper.ui.helpers.AppThemeHelper.registerForThemeChange
 import com.kpstv.xclipper.ui.activities.ChangeClipboardActivity
-import com.kpstv.xclipper.ui.adapter.CIAdapter
+import com.kpstv.xclipper.ui.adapter.ClipAdapter
 import com.kpstv.xclipper.ui.dialogs.EditDialog
 import com.kpstv.xclipper.ui.dialogs.TagDialog
 import com.kpstv.xclipper.extension.recyclerview.RecyclerViewScrollHelper
@@ -51,6 +53,7 @@ import com.kpstv.xclipper.feature_home.databinding.FragmentHomeBinding
 import com.kpstv.xclipper.service.ClipboardAccessibilityService
 import com.kpstv.xclipper.extension.enumeration.ToolbarState
 import com.kpstv.xclipper.extension.setOnQueryTextListener
+import com.kpstv.xclipper.extension.titleRes
 import com.kpstv.xclipper.feature_home.R
 import com.kpstv.xclipper.ui.helpers.*
 import com.kpstv.xclipper.ui.helpers.fragments.SyncDialogHelper
@@ -71,7 +74,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
     @Inject lateinit var settingsNavigation: SettingsNavigation
     @Inject lateinit var specialSheetNavigation: SpecialSheetNavigation
 
-    private lateinit var adapter: CIAdapter
+    private lateinit var adapter: ClipAdapter
     private var undoSnackBar: Snackbar? = null
 
     private val binding by viewBinding(FragmentHomeBinding::bind)
@@ -80,7 +83,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
     private val recyclerViewScrollHelper = RecyclerViewScrollHelper()
     private val swipeToDeleteItemTouch: ItemTouchHelper by lazy {
         ItemTouchHelper(
-            SwipeToDeleteCallback(requireContext()) { pos ->
+            SwipeDeleteHelper(requireContext()) { pos ->
                 val item = adapter.getItemAt(pos)
                 showUndoAndDelete(listOf(item))
             }
@@ -194,7 +197,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
     }
 
     private fun setRecyclerView() {
-        adapter = CIAdapter(
+        adapter = ClipAdapter(
             lifecycleOwner = viewLifecycleOwner,
             selectedClips = mainViewModel.stateManager.selectedItemClips,
             selectedItem = mainViewModel.stateManager.selectedItem,
@@ -238,23 +241,23 @@ class Home : ValueFragment(R.layout.fragment_home) {
 
         adapter.setMenuItemClick { clip, _, menuType ->
             when (menuType) {
-                CIAdapter.MenuType.Edit -> {
+                ClipAdapter.MenuType.Edit -> {
                     /** This will ensure that we are editing the clip */
-                    mainViewModel.editManager.postClip(clip)
+                    mainViewModel.editManager.setTagFromClip(clip)
 
                     val intent = Intent(requireContext(), EditDialog::class.java)
                     startActivity(intent)
                 }
-                CIAdapter.MenuType.Pin -> {
+                ClipAdapter.MenuType.Pin -> {
                     mainViewModel.changeClipPin(clip, !clip.isPinned)
                 }
-                CIAdapter.MenuType.Special -> {
+                ClipAdapter.MenuType.Special -> {
                     specialSheetNavigation.navigate(
                         parentFragment = this,
                         clip = clip
                     )
                 }
-                CIAdapter.MenuType.Share -> {
+                ClipAdapter.MenuType.Share -> {
                     ShareUtils.shareText(requireActivity(), clip)
                 }
             }
@@ -341,23 +344,34 @@ class Home : ValueFragment(R.layout.fragment_home) {
     }
 
     private fun showUndoAndDelete(itemsToRemove: List<Clip>) {
+        val containsLogTagItem = itemsToRemove.any { it.tags?.containsKey(ClipTag.LOCK.small()) == true }
+        if (containsLogTagItem) {
+            Toasty.warning(requireContext(), getString(R.string.error_delete_lock_tag, getString(ClipTag.LOCK.titleRes))).show()
+        }
+
+        val finalItemsToRemove = itemsToRemove.filterNot { it.tags?.containsKey(ClipTag.LOCK.small()) == true }
+
+        if (finalItemsToRemove.isEmpty()) return
+
+        // actual delete logic
+
         undoSnackBar?.dismiss() // clear previous snackbar
 
         val clonedItems = ArrayList(adapter.currentList)
         val tweakItems = ArrayList(adapter.currentList)
 
-        tweakItems.removeAll(itemsToRemove)
+        tweakItems.removeAll(finalItemsToRemove)
         adapter.submitList(tweakItems)
 
         val snackBarCallback = object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-                mainViewModel.deleteMultipleFromRepository(itemsToRemove)
+                mainViewModel.deleteMultipleFromRepository(finalItemsToRemove)
             }
         }
 
         Snackbar.make(
             binding.ciRecyclerView,
-            "${itemsToRemove.size} ${getString(R.string.item_delete)}",
+            "${finalItemsToRemove.size} ${getString(R.string.item_delete)}",
             Snackbar.LENGTH_INDEFINITE
         ).apply {
             setAction(getString(R.string.undo)) {
@@ -458,9 +472,13 @@ class Home : ValueFragment(R.layout.fragment_home) {
             )
         }
         for (tag in tags) {
+            val clipTag = tag.getClipTag()
             binding.ciChipGroup.addView(
                 TagsUiHelper.createFilterTagChip(requireContext(), tag).apply {
                     isCloseIconVisible = true
+                    if (clipTag != null) {
+                        chipIcon = drawableFrom(clipTag.drawableRes)
+                    }
                     setOnCloseIconClickListener {
                         mainViewModel.searchManager.removeTagFilter(tag)
                     }

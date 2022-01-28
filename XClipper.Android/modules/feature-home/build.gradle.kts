@@ -30,6 +30,7 @@ dependencies {
     implementation(LibraryDependency.LIVEDATA_COMBINE_UTIL)
     implementation(LibraryDependency.PAGING)
     implementation(LibraryDependency.TOASTY)
+    implementation(LibraryDependency.BALLOON)
 
     implementation(LibraryDependency.ROOM_KTX)
     kapt(LibraryDependency.ROOM_COMPILER_KAPT)

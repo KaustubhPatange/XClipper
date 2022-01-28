@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.flexbox.FlexboxLayout
 import com.kpstv.xclipper.data.converters.DateFormatConverter
 import com.kpstv.xclipper.data.model.Clip
+import com.kpstv.xclipper.data.model.ClipTag
 import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.extensions.utils.ClipUtils
 import com.kpstv.xclipper.feature_home.R
@@ -21,7 +22,7 @@ import com.kpstv.xclipper.ui.helpers.AppThemeHelper.CARD_CLICK_COLOR
 import com.kpstv.xclipper.ui.helpers.AppThemeHelper.CARD_COLOR
 import com.kpstv.xclipper.ui.helpers.AppThemeHelper.CARD_SELECTED_COLOR
 
-class CIAdapter(
+class ClipAdapter(
     private val lifecycleOwner: LifecycleOwner,
     private val multiSelectionState: LiveData<Boolean>,
     private val selectedItem: LiveData<Clip>,
@@ -29,7 +30,7 @@ class CIAdapter(
     private val onClick: (Clip, Int) -> Unit,
     private val onLongClick: (Clip, Int) -> Unit,
     private val selectedClips: LiveData<List<Clip>>
-) : ListAdapter<Clip, CIAdapter.MainHolder>(DiffCallback.asConfig(isBackground = true)) {
+) : ListAdapter<Clip, ClipAdapterHolder>(DiffCallback.asConfig(isBackground = true)) {
 
     private object DiffCallback : DiffUtil.ItemCallback<Clip>() {
         override fun areItemsTheSame(oldItem: Clip, newItem: Clip): Boolean =
@@ -60,10 +61,10 @@ class CIAdapter(
 
     override fun getItemViewType(position: Int) = 0
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainHolder =
-        MainHolder(ItemClipBinding.inflate(parent.context.layoutInflater(), parent, false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ClipAdapterHolder =
+        ClipAdapterHolder(ItemClipBinding.inflate(parent.context.layoutInflater(), parent, false))
 
-    override fun onBindViewHolder(holder: MainHolder, position: Int) = with(holder.binding) {
+    override fun onBindViewHolder(holder: ClipAdapterHolder, position: Int) = with(holder.binding) {
         val clip = getItem(position)
 
         ciTextView.text = if (trimClipText) clip.data.trim() else clip.data
@@ -84,6 +85,7 @@ class CIAdapter(
         setPinMovements(clip, holder)
 
         setTags(holder, clip)
+        setHolderTagData(holder, clip)
 
         mainCard.setOnClickListener { onClick.invoke(clip, position) }
         mainCard.setOnLongClickListener {
@@ -181,7 +183,11 @@ class CIAdapter(
         selectedClips.observe(lifecycleOwner, selectedClipsObserver).also { selectedClipsObservers[clip.id] = selectedClipsObserver }
     }
 
-    private fun renderImageMarkdown(holder: MainHolder, data: String) : Unit = with(holder.binding) {
+    private fun setHolderTagData(holder: ClipAdapterHolder, clip: Clip) {
+        holder.tag.isSwipeEnabled = (clip.tags?.none { it.key == ClipTag.LOCK.small() } == true)
+    }
+
+    private fun renderImageMarkdown(holder: ClipAdapterHolder, data: String) : Unit = with(holder.binding) {
         if (ClipUtils.isMarkdownImage(data)) {
             val imageUrl = ClipUtils.getMarkdownImageUrl(data)
 
@@ -205,7 +211,7 @@ class CIAdapter(
 
     private fun setPinMovements(
         clip: Clip,
-        holder: MainHolder
+        holder: ClipAdapterHolder
     ) = with(holder.binding) {
         if (clip.isPinned) {
             setButtonDrawable(ciBtnPin, R.drawable.ic_unpin)
@@ -224,7 +230,7 @@ class CIAdapter(
         )
     }
 
-    private fun setTags(holder: MainHolder, clip: Clip) = with(holder.binding) {
+    private fun setTags(holder: ClipAdapterHolder, clip: Clip) = with(holder.binding) {
         ciTagLayout.removeAllViews()
         clip.tags?.keys()?.forEach mainLoop@{ key ->
             if (key.isNotBlank()) {
@@ -260,7 +266,10 @@ class CIAdapter(
     enum class MenuType {
         Edit, Pin, Special, Share
     }
+}
 
-    class MainHolder(val binding: ItemClipBinding) : RecyclerView.ViewHolder(binding.root)
+class ClipAdapterHolder(val binding: ItemClipBinding) : RecyclerView.ViewHolder(binding.root) {
+    var tag: Tag = Tag()
+    inner class Tag(var isSwipeEnabled: Boolean = true)
 }
 

@@ -15,6 +15,7 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import com.google.android.material.chip.Chip
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.kpstv.xclipper.data.model.ClipTagType
 import com.kpstv.xclipper.extension.enumeration.DialogState
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.extension.enumeration.SpecialTagFilter
@@ -79,7 +80,7 @@ class TagDialog : AppCompatActivity() {
 
     private fun sendButton() {
         if (binding.etCreate.text.isNotBlank()) {
-            mainViewModel.postToTagRepository(Tag.from(binding.etCreate.text.trim().toString()))
+            mainViewModel.postToTagRepository(Tag.from(binding.etCreate.text.trim().toString(), ClipTagType.USER_TAG))
             binding.etCreate.text.clear()
         }
     }
