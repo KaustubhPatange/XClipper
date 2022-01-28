@@ -34,6 +34,7 @@ import com.kpstv.xclipper.data.provider.ClipboardProviderFlags
 import com.kpstv.xclipper.di.navigation.SettingsNavigation
 import com.kpstv.xclipper.di.navigation.SpecialSheetNavigation
 import com.kpstv.xclipper.extension.DefaultSearchViewListener
+import com.kpstv.xclipper.extension.drawableRes
 import com.kpstv.xclipper.extension.enumeration.SpecialTagFilter
 import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.extensions.enumerations.FirebaseState
@@ -471,9 +472,13 @@ class Home : ValueFragment(R.layout.fragment_home) {
             )
         }
         for (tag in tags) {
+            val clipTag = tag.getClipTag()
             binding.ciChipGroup.addView(
                 TagsUiHelper.createFilterTagChip(requireContext(), tag).apply {
                     isCloseIconVisible = true
+                    if (clipTag != null) {
+                        chipIcon = drawableFrom(clipTag.drawableRes)
+                    }
                     setOnCloseIconClickListener {
                         mainViewModel.searchManager.removeTagFilter(tag)
                     }
