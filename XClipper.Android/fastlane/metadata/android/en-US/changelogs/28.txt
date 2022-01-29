@@ -1,0 +1,5 @@
+Added: Clip lock tag functionality to prevent accidental delete of clips.
+Improved: UI for displaying filtered tags in the main screen.
+Improved: Clipboard copy will move the existing item to the top along with the notification.
+Fixed: Crash when reading data from the URL (Disclosure sheet).
+Fixed: Crash when not null constraints are null.
