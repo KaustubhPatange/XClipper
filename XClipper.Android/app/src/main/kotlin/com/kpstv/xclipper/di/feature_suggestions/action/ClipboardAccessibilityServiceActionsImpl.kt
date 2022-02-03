@@ -1,7 +1,7 @@
 package com.kpstv.xclipper.di.feature_suggestions.action
 
 import android.content.Context
-import com.kpstv.xcipper.di.action.ClipboardAccessibilityServiceActions
+import com.kpstv.xclipper.di.action.ClipboardAccessibilityServiceActions
 import com.kpstv.xclipper.service.ClipboardAccessibilityService
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject

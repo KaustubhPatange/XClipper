@@ -1,13 +1,12 @@
-package com.kpstv.xcipper.ui.adapters
+package com.kpstv.xclipper.ui.adapters
 
-import android.content.ClipData
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.kpstv.xcipper.di.navigation.SpecialActionsLauncher
+import com.kpstv.xclipper.di.navigation.SpecialActionsLauncher
 import com.kpstv.xcipper.feature_suggestions.R
 import com.kpstv.xcipper.feature_suggestions.databinding.ItemBubbleServiceBinding
 import com.kpstv.xclipper.data.model.Clip

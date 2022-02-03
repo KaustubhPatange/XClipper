@@ -1,7 +1,7 @@
 package com.kpstv.xclipper.di.feature_suggestions
 
-import com.kpstv.xcipper.di.action.ClipboardAccessibilityServiceActions
-import com.kpstv.xcipper.di.navigation.SpecialActionsLauncher
+import com.kpstv.xclipper.di.action.ClipboardAccessibilityServiceActions
+import com.kpstv.xclipper.di.navigation.SpecialActionsLauncher
 import com.kpstv.xclipper.di.feature_suggestions.action.ClipboardAccessibilityServiceActionsImpl
 import com.kpstv.xclipper.di.feature_suggestions.navigation.SpecialActionsLauncherImpl
 import dagger.Binds

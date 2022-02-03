@@ -1,4 +1,4 @@
-package com.kpstv.xcipper.service
+package com.kpstv.xclipper.service
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -14,11 +14,11 @@ import com.bsk.floatingbubblelib.DefaultFloatingBubbleTouchListener
 import com.bsk.floatingbubblelib.FloatingBubbleConfig
 import com.bsk.floatingbubblelib.FloatingBubbleService
 import com.bsk.floatingbubblelib.FloatingBubbleTouchListener
-import com.kpstv.xcipper.di.action.ClipboardAccessibilityServiceActions
-import com.kpstv.xcipper.di.navigation.SpecialActionsLauncher
+import com.kpstv.xclipper.di.action.ClipboardAccessibilityServiceActions
+import com.kpstv.xclipper.di.navigation.SpecialActionsLauncher
 import com.kpstv.xcipper.feature_suggestions.R
 import com.kpstv.xcipper.feature_suggestions.databinding.BubbleViewBinding
-import com.kpstv.xcipper.ui.adapters.PageClipAdapter
+import com.kpstv.xclipper.ui.adapters.PageClipAdapter
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.data.repository.MainRepository

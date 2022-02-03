@@ -2,7 +2,7 @@ package com.kpstv.xclipper.di.core_clipboard.suggestions
 
 import android.content.Context
 import android.content.Intent
-import com.kpstv.xcipper.service.BubbleService
+import com.kpstv.xclipper.service.BubbleService
 import com.kpstv.xclipper.di.suggestions.SuggestionService
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject

@@ -6,6 +6,6 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application>
-        <service android:name="com.kpstv.xcipper.service.BubbleService" />
+        <service android:name="com.kpstv.xclipper.service.BubbleService" />
     </application>
 </manifest>
