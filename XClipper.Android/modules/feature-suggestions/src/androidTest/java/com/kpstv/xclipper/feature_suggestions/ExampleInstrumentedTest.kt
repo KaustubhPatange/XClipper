@@ -1,4 +1,4 @@
-package com.kpstv.xcipper.feature_suggestions
+package com.kpstv.xclipper.feature_suggestions
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

@@ -16,8 +16,8 @@ import com.bsk.floatingbubblelib.FloatingBubbleService
 import com.bsk.floatingbubblelib.FloatingBubbleTouchListener
 import com.kpstv.xclipper.di.action.ClipboardAccessibilityServiceActions
 import com.kpstv.xclipper.di.navigation.SpecialActionsLauncher
-import com.kpstv.xcipper.feature_suggestions.R
-import com.kpstv.xcipper.feature_suggestions.databinding.BubbleViewBinding
+import com.kpstv.xclipper.feature_suggestions.R
+import com.kpstv.xclipper.feature_suggestions.databinding.BubbleViewBinding
 import com.kpstv.xclipper.ui.adapters.PageClipAdapter
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.provider.ClipboardProvider

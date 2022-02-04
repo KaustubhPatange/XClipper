@@ -7,8 +7,8 @@ import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.kpstv.xclipper.di.navigation.SpecialActionsLauncher
-import com.kpstv.xcipper.feature_suggestions.R
-import com.kpstv.xcipper.feature_suggestions.databinding.ItemBubbleServiceBinding
+import com.kpstv.xclipper.feature_suggestions.R
+import com.kpstv.xclipper.feature_suggestions.databinding.ItemBubbleServiceBinding
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.extensions.asConfig
