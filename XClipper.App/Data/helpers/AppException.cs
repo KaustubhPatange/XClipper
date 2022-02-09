@@ -74,7 +74,7 @@ namespace Components
                .AddText(Translation.MSG_IMAGE_SAVE_FAILED_TEXT)
                .build().ShowAsync();
             var dib = new StringBuilder();
-
+            
             try
             {
                 dib.AppendLine("-----------------------------------------------------------");
@@ -89,28 +89,28 @@ namespace Components
                     if (obj.ScreenWidth != null)
                         dib.AppendLine(
                             $"Display: {obj.ScreenWidth}x{obj.ScreenHeight}, {obj.SystemName}, {obj.MonitorType}");
-                    exception?.Data?.Add("Display", $"{obj.ScreenWidth}x{obj.ScreenHeight}, {obj.SystemName}, {obj.MonitorType}");
+                    AddKeyToException(exception, "Display", $"{obj.ScreenWidth}x{obj.ScreenHeight}, {obj.SystemName}, {obj.MonitorType}");
                 }
 
                 // Memory
                 foreach (dynamic obj in GetAllObjects("Win32_PhysicalMemory"))
                 {
                     dib.AppendLine($"Memory: {((long) obj.Capacity).ToFileSizeApi()} {obj.Speed} MHz");
-                    exception?.Data?.Add("Memory", $"{((long)obj.Capacity).ToFileSizeApi()} {obj.Speed} MHz");
+                    AddKeyToException(exception, "Memory", $"{((long)obj.Capacity).ToFileSizeApi()} {obj.Speed} MHz");
                 }
 
                 // Video Controller
                 foreach (dynamic obj in GetAllObjects("Win32_VideoController"))
                 {
                     dib.AppendLine($"VideoController: {obj.Name}, {((long) obj.AdapterRAM).ToFileSizeApi()}");
-                    exception?.Data?.Add("VideoController", $"{obj.Name}, {((long)obj.AdapterRAM).ToFileSizeApi()}");
+                    AddKeyToException(exception, "VideoController", $"{obj.Name}, {((long)obj.AdapterRAM).ToFileSizeApi()}");
                 }
 
                 // Processor
                 foreach (dynamic obj in GetAllObjects("Win32_Processor"))
                 {
                     dib.AppendLine($"ChipSet: {obj.Name} Threads/Cores: ({obj.ThreadCount}/{obj.NumberOfCores})");
-                    exception?.Data?.Add("ChipSet", $"{obj.Name} Threads/Cores: ({obj.ThreadCount}/{obj.NumberOfCores})");
+                    AddKeyToException(exception, "ChipSet", $"{obj.Name} Threads/Cores: ({obj.ThreadCount}/{obj.NumberOfCores})");
                 }
 
                 // BIOS
@@ -184,6 +184,14 @@ namespace Components
             }
 
             return objects;
+        }
+
+        private static void AddKeyToException(Exception? exception, object key, object contents)
+        {
+            if (exception?.Data?.Contains(key) == false)
+            {
+                exception?.Data?.Add(key, contents);
+            }
         }
 
         #endregion

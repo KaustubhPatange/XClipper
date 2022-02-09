@@ -122,8 +122,7 @@ namespace Components
 
             var client = new RestClient(ACTIVATION_SERVER(UID, EM, TI, LT.GetName()));
             var response = await client.ExecuteTaskAsync(new RestRequest(Method.POST)).ConfigureAwait(true);
-            if (response.StatusCode != System.Net.HttpStatusCode.NotFound)
-            {
+            try {
                 var obj = JObject.Parse(response.Content);
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
@@ -140,9 +139,10 @@ namespace Components
                 }
                 else
                     MsgBoxHelper.ShowError(obj["message"].ToString());
-            }
-            else
+            } catch(Exception e)
+            {
                 MsgBoxHelper.ShowError(Translation.MSG_UNKNOWN_ERR);
+            }
 
             IsProgressiveWork = false;
         }
