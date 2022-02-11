@@ -136,6 +136,8 @@ namespace Components
 
         #region Configuration methods
 
+        public bool isInitialized() => isClientInitialized;
+
         public async Task Initialize()
         {
             UID = UniqueID;

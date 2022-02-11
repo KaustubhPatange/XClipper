@@ -29,6 +29,7 @@ namespace Components
             ImportCommand = new RelayCommand(ImportButtonClicked);
             ExportCommand = new RelayCommand(ExportButtonClicked);
             EncryptCommand = new RelayCommand(ChangeDatabaseEncryption);
+            DeleteCommand = new RelayCommand(DeleteConfiguration);
 
             CheckExportEnabled();
         }
@@ -43,6 +44,7 @@ namespace Components
         public ICommand ImportCommand { get; set; }
         public ICommand ExportCommand { get; set; }
         public ICommand EncryptCommand { get; set; }
+        public ICommand DeleteCommand { get; set; }
 
         public bool ProgressiveWork { get; set; } = false;
         public string FBE { get; set; }
@@ -58,7 +60,8 @@ namespace Components
         public bool IAN { get; set; }
         public bool EE { get; set; } // Export enabled
         public bool EFD { get; set; } // To encrypt firebase database?
-
+        public bool isDeleteEnabled { get; set; }
+        
         #endregion
 
         #region IFirebaseDataListener
@@ -71,6 +74,28 @@ namespace Components
         #endregion
 
         #region Methods
+
+        private void DeleteConfiguration()
+        {
+            if (FirebaseCurrent == null) return;
+            
+            var result = MessageBox.Show(Translation.MSG_DELETE_CONFIG_TEXT, Translation.MSG_DELETE_CONFIG_TITLE, MessageBoxButton.YesNoCancel, MessageBoxImage.Information);
+            if (result == MessageBoxResult.Yes)
+            {
+                if (File.Exists(CustomFirebasePath)) File.Delete(CustomFirebasePath);
+
+                FirebaseCurrent = null;
+                LoadDefaultConfigurations();
+                CheckExportEnabled();
+                RemoveFirebaseCredentials();
+                
+                FirebaseHelper.DeInitializeService();
+
+                BindDatabase = false;
+                
+                WriteSettings();
+            }
+        }
 
         private void ChangeDatabaseEncryption()
         {
@@ -246,6 +271,14 @@ namespace Components
                 IAN = FirebaseCurrent.IsAuthNeeded;
                 EFD = FirebaseCurrent?.IsEncrypted ?? false;
             }
+            else
+            {
+                FBE = "";
+                FBAI = "";
+                FBAK = "";
+                IAN = false;
+                EFD = false;
+            }
 
             FDCI = DesktopAuth?.ClientId;
             FDCS = DesktopAuth?.ClientSecret;
@@ -255,6 +288,7 @@ namespace Components
             DMC = DatabaseMaxConnection;
             DMIL = DatabaseMaxItemLength;
             UID = UniqueID;
+            isDeleteEnabled = FirebaseCurrent != null;
         }
 
         private void CheckExportEnabled()

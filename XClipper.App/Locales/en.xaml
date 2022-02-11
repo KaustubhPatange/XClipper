@@ -131,7 +131,7 @@
     <system:String x:Key="msg_firebase_unknown_err">Unknown error with the Firebase Client. Report me if you get this message.</system:String>
     <system:String x:Key="msg_need_auth">In order to connect with the database you first need to Sign-In.</system:String>
     <system:String x:Key="msg_wrong_signin">Account credentials are not valid for this account. You need to sign-In again</system:String>
-    <system:String x:Key="msg_auth_signin_failed">OAuth sign-in failed due to which "Database Binding" is disabled. Enable it from Settings > Connect.</system:String>
+    <system:String x:Key="msg_auth_signin_failed">OAuth sign-in failed due to which &quot;Database Binding&quot; is disabled. Enable it from Settings &gt; Connect.</system:String>
     <system:String x:Key="msg_unknown_err">An unknown error occurred. Report me if you get this message.</system:String>
     <system:String x:Key="msg_license_check">License validation is completed.</system:String>
     <system:String x:Key="msg_license_check_err">No license is associated with this UID.</system:String>
@@ -152,7 +152,9 @@
     <system:String x:Key="msg_purchase_message">Purchase premium to unlock all features as well as support me to continue working on this project.</system:String>
     <system:String x:Key="msg_no_update_title">Update not available.</system:String>
     <system:String x:Key="msg_no_update_text">No new update is available which means you are using the latest version.</system:String>
-    
+    <system:String x:Key="msg_delete_config_title">Are you sure?</system:String>
+    <system:String x:Key="msg_delete_config_text">This will delete the current firebase configuration and will eventually turn off the synchronization.</system:String>
+
     <system:String x:Key="popup_added">Added:</system:String>
     <system:String x:Key="popup_space_focus">...Press (Space) to Focus...</system:String>
     <system:String x:Key="popup_edit_err">Editing is not supported for this format</system:String>
@@ -207,6 +209,7 @@
     <system:String x:Key="sync_import_msg">Enter your end-to-end encryption password.</system:String>
     <system:String x:Key="sync_export">Export configuration</system:String>
     <system:String x:Key="sync_export_success">Configurations are exported to the file.</system:String>
+    <system:String x:Key="sync_delete">Remove configuration</system:String>
     <system:String x:Key="sync_id_default">XClipper will use default App Id for storing data.</system:String>
     <system:String x:Key="sync_id_custom">XClipper will use custom App Id from configuration file.</system:String>
     <system:String x:Key="sync_config_err" xml:space="preserve">No Firebase configuration file found. Would you like to create it?&#10;&#10;You can always create it from System Tray &gt; XClipper &gt; FirebaseConfiguration.</system:String>

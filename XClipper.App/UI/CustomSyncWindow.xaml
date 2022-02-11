@@ -210,6 +210,17 @@
                         <Image Source="pack://application:,,,/Resources/import.png" />
                     </Button>
                     <Button
+                        Width="22"
+                        Height="22"
+                        Margin="5,0,0,0"
+                        Padding="3"
+                        HorizontalAlignment="Left"
+                        Command="{Binding DeleteCommand}"
+                        IsEnabled="{Binding isDeleteEnabled}"
+                        ToolTip="{DynamicResource sync_delete}">
+                        <Image Source="pack://application:,,,/Resources/delete.png" />
+                    </Button>
+                    <Button
                         Width="70"
                         Height="22"
                         HorizontalAlignment="Right"

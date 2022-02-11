@@ -56,7 +56,7 @@ namespace Components
         /// </summary>
         public static void DeInitializeService()
         {
-            if (!BindDatabase)
+            if (FirebaseSingletonV2.GetInstance.isInitialized())
             {
                 FirebaseSingletonV2.GetInstance.Deinitialize();
                 MainHelper.ToggleCurrentQRData();

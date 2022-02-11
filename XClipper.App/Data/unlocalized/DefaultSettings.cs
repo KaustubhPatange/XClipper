@@ -840,6 +840,18 @@ namespace Components
         #endregion
 
         #region Delete
+        
+        /// <summary>
+        /// This will remove current firebase configuration
+        /// </summary>
+        public static void RemoveFirebaseSetting()
+        {
+            if (File.Exists(CustomFirebasePath)) File.Delete(CustomFirebasePath);
+
+            FirebaseCurrent = null;
+            
+            RemoveFirebaseCredentials();
+        }
 
         /// <summary>
         /// This will remove current credentials so that we can re-auth.
