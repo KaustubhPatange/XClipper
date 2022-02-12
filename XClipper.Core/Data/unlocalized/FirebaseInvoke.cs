@@ -4,6 +4,7 @@
     {
         RESET,
         LIST_DEVICES,
+        LIST_CLIPS,
         REMOVE_DEVICE,
         ADD_CLIP,
         REMOVE_CLIP,

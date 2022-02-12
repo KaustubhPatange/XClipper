@@ -31,6 +31,10 @@ namespace Components
             EncryptCommand = new RelayCommand(ChangeDatabaseEncryption);
             DeleteCommand = new RelayCommand(DeleteConfiguration);
 
+            ExportDataCommand = new RelayCommand(ExportDatabaseData);
+            ImportDataCommand = new RelayCommand(ImportDatabaseData);
+            DeleteDataCommand = new RelayCommand(RemoveAllDatabaseData);
+
             CheckExportEnabled();
         }
 
@@ -45,6 +49,9 @@ namespace Components
         public ICommand ExportCommand { get; set; }
         public ICommand EncryptCommand { get; set; }
         public ICommand DeleteCommand { get; set; }
+        public ICommand ExportDataCommand { get; set; }
+        public ICommand ImportDataCommand { get; set; }
+        public ICommand DeleteDataCommand { get; set; }
 
         public bool ProgressiveWork { get; set; } = false;
         public string FBE { get; set; }
@@ -60,7 +67,6 @@ namespace Components
         public bool IAN { get; set; }
         public bool EE { get; set; } // Export enabled
         public bool EFD { get; set; } // To encrypt firebase database?
-        public bool isDeleteEnabled { get; set; }
         
         #endregion
 
@@ -74,6 +80,31 @@ namespace Components
         #endregion
 
         #region Methods
+
+        private async void ExportDatabaseData()
+        {
+            var saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Title = Translation.SETTINGS_EXPORT_DATA;
+            saveFileDialog.DefaultExt = ".json";
+            saveFileDialog.FileName = $"{FBE}.json";
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                string file = saveFileDialog.FileName;
+
+                var clips = await FirebaseSingletonV2.GetInstance.GetClipDataListAsync().ConfigureAwait(false);
+                
+            }
+        }
+
+        private void ImportDatabaseData()
+        {
+
+        }
+
+        private void RemoveAllDatabaseData()
+        {
+
+        }
 
         private void DeleteConfiguration()
         {
@@ -288,7 +319,6 @@ namespace Components
             DMC = DatabaseMaxConnection;
             DMIL = DatabaseMaxItemLength;
             UID = UniqueID;
-            isDeleteEnabled = FirebaseCurrent != null;
         }
 
         private void CheckExportEnabled()

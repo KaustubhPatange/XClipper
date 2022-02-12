@@ -217,7 +217,7 @@ namespace Components
                 newPassword: action == MigrateAction.Encrypt ? DatabaseEncryptPassword : null,
                 onSuccess: onSuccess,
                 onError: onError
-            );
+            ).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -825,6 +825,18 @@ namespace Components
             if (!await RunCommonTask().ConfigureAwait(false)) return new List<Device>();
 
             if (user != null) return user.Devices; else return new List<Device>();
+        }
+
+        /// <summary>
+        /// This will provide the list of clips associated with the UID.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<string>> GetClipDataListAsync()
+        {
+            Log();
+            if (!await RunCommonTask().ConfigureAwait(false)) return new List<string>();
+
+            return (user.Clips ?? new List<Clip>()).Select(c => c.data.DecryptBase64(DatabaseEncryptPassword)).ToList();
         }
 
         /// <summary>

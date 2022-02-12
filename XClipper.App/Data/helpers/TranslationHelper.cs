@@ -32,6 +32,8 @@ namespace Components
 		public static string SETTINGS_TAB_SCRIPTING => GetString("settings_tab_scripting");
 		public static string SETTINGS_TAB_BUFFER => GetString("settings_tab_buffer");
 		public static string SETTINGS_AUTH => GetString("settings_auth");
+		public static string SETTINGS_TOOLS => GetString("settings_tools");
+		public static string SETTINGS_DATA => GetString("settings_data");
 		public static string SETTINGS_NOTIFY => GetString("settings_notify");
 		public static string SETTINGS_COMMON => GetString("settings_common");
 		public static string SETTINGS_RELATE => GetString("settings_relate");
@@ -84,6 +86,12 @@ namespace Components
 		public static string SETTINGS_CAU_TOOLTIP => GetString("settings_cau_tooltip");
 		public static string SETTINGS_ENABLE_FEATURE => GetString("settings_enable_feature");
 		public static string SETTINGS_UNSAVED => GetString("settings_unsaved");
+		public static string SETTINGS_EXPORT_DATA => GetString("settings_export_data");
+		public static string SETTINGS_EXPORT_DATA_DESCRIPTION => GetString("settings_export_data_description");
+		public static string SETTINGS_IMPORT_DATA => GetString("settings_import_data");
+		public static string SETTINGS_IMPORT_DATA_DESCRIPTION => GetString("settings_import_data_description");
+		public static string SETTINGS_DELETE_DATA => GetString("settings_delete_data");
+		public static string SETTINGS_DELETE_DATA_DESCRIPTION => GetString("settings_delete_data_description");
 		public static string FILTER_HEADER => GetString("filter_header");
 		public static string FILTER_TITLE => GetString("filter_title");
 		public static string FILTER_INDEX => GetString("filter_index");

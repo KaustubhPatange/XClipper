@@ -32,6 +32,8 @@
     <system:String x:Key="settings_tab_scripting">Scripting</system:String>
     <system:String x:Key="settings_tab_buffer">Copy Buffers</system:String>
     <system:String x:Key="settings_auth">Authentication</system:String>
+    <system:String x:Key="settings_tools">Tools</system:String>
+    <system:String x:Key="settings_data">Data</system:String>
     <system:String x:Key="settings_notify">Notification</system:String>
     <system:String x:Key="settings_common">Common</system:String>
     <system:String x:Key="settings_relate">Relations</system:String>
@@ -84,6 +86,12 @@
     <system:String x:Key="settings_cau_tooltip">Unlock premium to enable the ability of changing how application updates will show.</system:String>
     <system:String x:Key="settings_enable_feature">Enable this feature</system:String>
     <system:String x:Key="settings_unsaved">Some settings are not saved. Do you want to save them?</system:String>
+    <system:String x:Key="settings_export_data">Export</system:String>
+    <system:String x:Key="settings_export_data_description">The database stores and updates the snapshot of the clipboard items that can be synchronized. This will export them.</system:String>
+    <system:String x:Key="settings_import_data">Import</system:String>
+    <system:String x:Key="settings_import_data_description">Import an existing snapshot of the clipboard items which was created through &quot;Export&quot;. This will be applied on top of the existing items.</system:String>
+    <system:String x:Key="settings_delete_data">Remove All</system:String>
+    <system:String x:Key="settings_delete_data_description">Remove all the clipboard data that is stored on the database.</system:String>
 
     <system:String x:Key="filter_header">Filter</system:String>
     <system:String x:Key="filter_title">Filter Items by:</system:String>

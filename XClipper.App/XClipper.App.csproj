@@ -233,6 +233,9 @@
     <Compile Include="Controls\Settings\ScriptingPage.xaml.cs">
       <DependentUpon>ScriptingPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ToolItem.xaml.cs">
+      <DependentUpon>ToolItem.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\UpgradeTipItem.xaml.cs">
       <DependentUpon>UpgradeTipItem.xaml</DependentUpon>
     </Compile>
@@ -401,6 +404,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\Settings\ScriptingPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ToolItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
