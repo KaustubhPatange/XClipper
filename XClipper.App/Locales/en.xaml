@@ -162,6 +162,7 @@
     <system:String x:Key="msg_no_update_text">No new update is available which means you are using the latest version.</system:String>
     <system:String x:Key="msg_delete_config_title">Are you sure?</system:String>
     <system:String x:Key="msg_delete_config_text">This will delete the current firebase configuration and will eventually turn off the synchronization.</system:String>
+    <system:String x:Key="msg_data_export_success">The data is exported successfully.</system:String>
 
     <system:String x:Key="popup_added">Added:</system:String>
     <system:String x:Key="popup_space_focus">...Press (Space) to Focus...</system:String>
@@ -240,6 +241,7 @@
     <system:String x:Key="sync_timeout_action_text">Click here to take necessary measures.</system:String>
     <system:String x:Key="sync_timeout_error_title">Timed out error occurred</system:String>
     <system:String x:Key="sync_timeout_error_text" xml:space="preserve">Seems like the problem is likely with your Internet connection.&#10;&#10;Firebase client will now shutdown to enable it again restart the application!</system:String>
+    <system:String x:Key="sync_bind_enabled_err">The synchronization feature is not active, enable it in &quot;Settings&quot; &gt; &quot;Connect&quot;.</system:String>
 
     <system:String x:Key="update_title">New version of XClipper is available</system:String>
     <system:String x:Key="update_download_size_error">Oops, the file size did not matched with the one specified on the server! It looks like the update got corrupted, restart the update to see if it fixes automatically.</system:String>

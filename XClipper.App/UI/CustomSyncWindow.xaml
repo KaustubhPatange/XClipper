@@ -95,10 +95,11 @@
                         <TextBlock
                             FontSize="10"
                             FontWeight="Medium"
-                            Foreground="{Binding UID, Converter={x:Static local:SyncIdForegroundConverter.Instance}, UpdateSourceTrigger=PropertyChanged}"
-                            Text="{Binding UID, Converter={x:Static local:SyncIdTextConverter.Instance}, UpdateSourceTrigger=PropertyChanged}"
+                            Foreground="{Binding IsStatusSuccess, Converter={x:Static local:StatusConverter.Instance}, UpdateSourceTrigger=PropertyChanged}"
+                            Text="{Binding DatabaseStatus}"
                             TextAlignment="Center"
-                            Visibility="{c:Binding 'local:DefaultSettings.FirebaseCurrent != null and (local:DefaultSettings.IsPurchaseDone)',
+                            TextWrapping="Wrap"
+                            Visibility="{c:Binding IsStatusVisible,
                                                    FalseToVisibility=Collapsed}" />
                         <StackPanel
                             Margin="0,5,0,0"
@@ -168,7 +169,7 @@
                     </StackPanel>
                 </TabItem>
 
-                <TabItem Header="{DynamicResource settings_tools}">
+                <TabItem Header="{DynamicResource settings_tools}" Visibility="{c:Binding 'local:DefaultSettings.FirebaseCurrent != null and local:DefaultSettings.BindDatabase', FalseToVisibility=Collapsed}">
                     <StackPanel Margin="10" Orientation="Vertical">
                         <control:GroupSeparator Header="{DynamicResource settings_data}" />
 

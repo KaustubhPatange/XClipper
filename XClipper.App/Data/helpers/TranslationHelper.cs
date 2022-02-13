@@ -157,6 +157,7 @@ namespace Components
 		public static string MSG_NO_UPDATE_TEXT => GetString("msg_no_update_text");
 		public static string MSG_DELETE_CONFIG_TITLE => GetString("msg_delete_config_title");
 		public static string MSG_DELETE_CONFIG_TEXT => GetString("msg_delete_config_text");
+		public static string MSG_DATA_EXPORT_SUCCESS => GetString("msg_data_export_success");
 		public static string POPUP_ADDED => GetString("popup_added");
 		public static string POPUP_SPACE_FOCUS => GetString("popup_space_focus");
 		public static string POPUP_EDIT_ERR => GetString("popup_edit_err");
@@ -233,6 +234,7 @@ namespace Components
 		public static string SYNC_TIMEOUT_ACTION_TEXT => GetString("sync_timeout_action_text");
 		public static string SYNC_TIMEOUT_ERROR_TITLE => GetString("sync_timeout_error_title");
 		public static string SYNC_TIMEOUT_ERROR_TEXT => GetString("sync_timeout_error_text");
+		public static string SYNC_BIND_ENABLED_ERR => GetString("sync_bind_enabled_err");
 		public static string UPDATE_TITLE => GetString("update_title");
 		public static string UPDATE_DOWNLOAD_SIZE_ERROR => GetString("update_download_size_error");
 		public static string UPDATE_DOWNLOAD_COMPLETE => GetString("update_download_complete");

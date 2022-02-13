@@ -831,12 +831,12 @@ namespace Components
         /// This will provide the list of clips associated with the UID.
         /// </summary>
         /// <returns></returns>
-        public async Task<List<string>> GetClipDataListAsync()
+        public async Task<List<Clip>> GetClipDataListAsync()
         {
             Log();
-            if (!await RunCommonTask().ConfigureAwait(false)) return new List<string>();
+            if (!await RunCommonTask().ConfigureAwait(false)) return new List<Clip>();
 
-            return (user.Clips ?? new List<Clip>()).Select(c => c.data.DecryptBase64(DatabaseEncryptPassword)).ToList();
+            return (user?.Clips ?? new List<Clip>()).Select(c => c.CopyWithData(c.data.DecryptBase64(DatabaseEncryptPassword))).ToList();
         }
 
         /// <summary>

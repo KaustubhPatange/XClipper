@@ -1,5 +1,7 @@
-﻿using static Components.DefaultSettings;
+﻿using System;
+using static Components.DefaultSettings;
 using static Components.Constants;
+using static Components.LicenseHandler;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
 using System.Windows;
@@ -8,7 +10,7 @@ using Microsoft.Win32;
 using System.Xml.Linq;
 using Components.Controls.Dialog;
 using Components.UI;
-
+using Newtonsoft.Json;
 #nullable enable
 
 namespace Components
@@ -67,6 +69,9 @@ namespace Components
         public bool IAN { get; set; }
         public bool EE { get; set; } // Export enabled
         public bool EFD { get; set; } // To encrypt firebase database?
+        public string DatabaseStatus { get; set; }
+        public bool IsStatusSuccess { get; set; } = false;
+        public bool IsStatusVisible { get; set; } = false;
         
         #endregion
 
@@ -83,16 +88,27 @@ namespace Components
 
         private async void ExportDatabaseData()
         {
+            var fileName = new Uri(FBE).Host;
             var saveFileDialog = new SaveFileDialog();
             saveFileDialog.Title = Translation.SETTINGS_EXPORT_DATA;
             saveFileDialog.DefaultExt = ".json";
-            saveFileDialog.FileName = $"{FBE}.json";
+            saveFileDialog.Filter = "*.json|*.json";
+            saveFileDialog.FileName = $"{fileName}.json";
             if (saveFileDialog.ShowDialog() == true)
             {
+                ProgressiveWork = true;
+                
                 string file = saveFileDialog.FileName;
 
                 var clips = await FirebaseSingletonV2.GetInstance.GetClipDataListAsync().ConfigureAwait(false);
+
+                var text = JsonConvert.SerializeObject(clips);
                 
+                File.WriteAllText(file, text);
+
+                ProgressiveWork = false;
+                
+                MsgBoxHelper.ShowInfo(Translation.MSG_DATA_EXPORT_SUCCESS);
             }
         }
 
@@ -319,6 +335,8 @@ namespace Components
             DMC = DatabaseMaxConnection;
             DMIL = DatabaseMaxItemLength;
             UID = UniqueID;
+
+            CheckAndUpdateStatus();
         }
 
         private void CheckExportEnabled()
@@ -326,6 +344,29 @@ namespace Components
             EE = File.Exists(CustomFirebasePath);
         }
 
+        private void CheckAndUpdateStatus()
+        {
+            UpdateStatus(string.Empty, visible: false);
+            
+            if (!BindDatabase)
+            {
+                UpdateStatus(Translation.SYNC_BIND_ENABLED_ERR, true, false);
+            } else if (FirebaseCurrent != null && IsPurchaseDone)
+            {
+                if (UniqueID == UNIQUE_ID)
+                    UpdateStatus(Translation.SYNC_ID_DEFAULT, true, true);
+                else
+                    UpdateStatus(Translation.SYNC_ID_CUSTOM, true, false);
+            }
+        }
+
+        private void UpdateStatus(string text, bool visible = true, bool success = true)
+        {
+            IsStatusVisible = visible;
+            DatabaseStatus = text;
+            IsStatusSuccess = success;
+        }
+        
         #endregion
     }
 }
