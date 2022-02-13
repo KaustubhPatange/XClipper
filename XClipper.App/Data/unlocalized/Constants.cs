@@ -46,6 +46,7 @@ namespace Components
         public const string GITHUB_RELEASE_URI = "https://api.github.com/repos/KaustubhPatange/XClipper/releases";
         public const string OAUTH_TOKEN_URI = "https://oauth2.googleapis.com/token";
         public const string ACTION_NOT_COMPLETE_WIKI = "https://kaustubhpatange.github.io/XClipper/docs/#/faqs#q-last-x-actions-didnt-complete-what-to-do";
+        public const string ACTION_IMAGE_SYNC_SECURITY_RULES = "https://kaustubhpatange.github.io/XClipper/docs/#/sync-image?id=securing-storage-access";
         public const string SETTINGS = "Settings";
         public const string ENVIRONMENT = "Environment";
         public const string TIMESTAMPS = "Timestamps";

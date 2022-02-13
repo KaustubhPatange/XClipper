@@ -91,7 +91,8 @@
       <HintPath>..\packages\DynamicExpresso.Core.2.3.1\lib\net45\DynamicExpresso.Core.dll</HintPath>
     </Reference>
     <Reference Include="Firebase.Storage, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\FirebaseStorage.net.1.0.3\lib\netstandard1.1\Firebase.Storage.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libraries\Firebase.Storage\Firebase.Storage.dll</HintPath>
     </Reference>
     <Reference Include="FireSharp.Core, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -239,7 +240,7 @@
     <Compile Include="Controls\UpgradeTipItem.xaml.cs">
       <DependentUpon>UpgradeTipItem.xaml</DependentUpon>
     </Compile>
-	<Compile Include="Data\Converters\AbstractConverter.cs" />
+    <Compile Include="Data\Converters\AbstractConverter.cs" />
     <Compile Include="Data\Converters\ActivateButtonConverter.cs" />
     <Compile Include="Data\Converters\CurrentClipConverter.cs" />
     <Compile Include="Data\Converters\CustomSyncTooltipConverter.cs" />

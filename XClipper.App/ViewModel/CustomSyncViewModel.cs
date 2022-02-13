@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using static Components.DefaultSettings;
 using static Components.Constants;
 using static Components.LicenseHandler;
@@ -12,6 +13,7 @@ using Microsoft.Win32;
 using System.Xml.Linq;
 using Components.Controls.Dialog;
 using Components.UI;
+using Firebase.Storage;
 using Newtonsoft.Json;
 #nullable enable
 
@@ -134,23 +136,49 @@ namespace Components
                 }
                 catch (JsonException e)
                 {
-                    MsgBoxHelper.ShowError($"{Translation.MSG_DATA_IMPORT_ERR} ${e.Message}");
+                    MsgBoxHelper.ShowError(string.Format(Translation.MSG_DATA_IMPORT_ERR, e.Message));
                 }
 
                 ProgressiveWork = false;
             }
         }
 
-        private void RemoveAllDatabaseData()
+        private async void RemoveAllDatabaseData()
         {
-            
+            var result = MessageBox.Show(Translation.MSG_DATA_REMOVE_TEXT, Translation.MSG_ARE_YOU_SURE, MessageBoxButton.YesNoCancel, MessageBoxImage.Information);
+            if (result == MessageBoxResult.Yes)
+            {
+                ProgressiveWork = true;
+
+                try
+                {
+                    await FirebaseSingletonV2.GetInstance.RemoveAllClip().ConfigureAwait(false);
+                }
+                catch (FirebaseStorageException e)
+                {
+                    if (e.Message.ToLower().Contains("exception occured while processing the request"))
+                    {
+                        result = MessageBox.Show(Translation.MSG_DATA_REMOVE_UPDATE_STORAGE_TEXT,
+                            Translation.MSG_DATA_REMOVE_UPDATE_STORAGE_TITLE, MessageBoxButton.YesNo, 
+                            MessageBoxImage.Error);
+                        if (result == MessageBoxResult.Yes)
+                        {
+                            Process.Start(ACTION_IMAGE_SYNC_SECURITY_RULES);
+                        }
+                    }
+                }
+
+                ProgressiveWork = false;
+                
+                MsgBoxHelper.ShowInfo(Translation.MSG_DATA_REMOVE_SUCCESS);
+            }
         }
 
         private void DeleteConfiguration()
         {
             if (FirebaseCurrent == null) return;
             
-            var result = MessageBox.Show(Translation.MSG_DELETE_CONFIG_TEXT, Translation.MSG_DELETE_CONFIG_TITLE, MessageBoxButton.YesNoCancel, MessageBoxImage.Information);
+            var result = MessageBox.Show(Translation.MSG_DELETE_CONFIG_TEXT, Translation.MSG_ARE_YOU_SURE, MessageBoxButton.YesNoCancel, MessageBoxImage.Information);
             if (result == MessageBoxResult.Yes)
             {
                 if (File.Exists(CustomFirebasePath)) File.Delete(CustomFirebasePath);

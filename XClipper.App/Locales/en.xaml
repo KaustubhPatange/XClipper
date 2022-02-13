@@ -160,11 +160,15 @@
     <system:String x:Key="msg_purchase_message">Purchase premium to unlock all features as well as support me to continue working on this project.</system:String>
     <system:String x:Key="msg_no_update_title">Update not available.</system:String>
     <system:String x:Key="msg_no_update_text">No new update is available which means you are using the latest version.</system:String>
-    <system:String x:Key="msg_delete_config_title">Are you sure?</system:String>
+    <system:String x:Key="msg_are_you_sure">Are you sure?</system:String>
     <system:String x:Key="msg_delete_config_text">This will delete the current firebase configuration and will eventually turn off the synchronization.</system:String>
     <system:String x:Key="msg_data_export_success">The data is exported successfully.</system:String>
     <system:String x:Key="msg_data_import_success">The data is imported successfully.</system:String>
-    <system:String x:Key="msg_data_import_err">Could not parse data due to .</system:String>
+    <system:String x:Key="msg_data_import_err">Could not parse data due to {0}.</system:String>
+    <system:String x:Key="msg_data_remove_text">This will delete all the clips from the remote database which cannot be undone.</system:String>
+    <system:String x:Key="msg_data_remove_success">All remote data is removed successfully.</system:String>
+    <system:String x:Key="msg_data_remove_update_storage_title">Update security rules</system:String>
+    <system:String x:Key="msg_data_remove_update_storage_text">In order to delete all images from Firebase's storage bucket you need to update the security rules to the latest as mentioned in the docs. Click &quot;Yes&quot; to know how?</system:String>
 
     <system:String x:Key="popup_added">Added:</system:String>
     <system:String x:Key="popup_space_focus">...Press (Space) to Focus...</system:String>

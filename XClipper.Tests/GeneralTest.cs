@@ -289,14 +289,17 @@ namespace XClipper.Tests
             // Debug.WriteLine("offset: " + (milliseconds1 - milliseconds).ToString());
 
 
-            var list = new List<string>
-            {
-                "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q"
-            };
-            
-            list.RemoveRange(0, 5);
-            
-            Debug.WriteLine(string.Join(",", list));
+            // var list = new List<string>
+            // {
+            //     "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q"
+            // };
+            //
+            // list.RemoveRange(0, 5);
+            //
+            // Debug.WriteLine(string.Join(",", list));
+
+            var text = "XClipper/images/2020-11-23 12-34-33.png";
+            Debug.WriteLine(text.Substring(text.LastIndexOf("/") + 1));
         }
 
         [TestMethod]

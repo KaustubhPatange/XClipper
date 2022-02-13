@@ -330,6 +330,10 @@ namespace Components
                         firebaseInvokeStack.Add(FirebaseInvoke.REMOVE_CLIP_ALL);
                         firebaseInvokeStack = firebaseInvokeStack.Distinct().ToList();
                         break;
+                    case FirebaseInvoke.REMOVE_ALL_IMAGE:
+                        firebaseInvokeStack.Add(FirebaseInvoke.REMOVE_CLIP);
+                        firebaseInvokeStack = firebaseInvokeStack.Distinct().ToList();
+                        break;
                     case FirebaseInvoke.REMOVE_DEVICE:
                         removeDeviceStack.Add((string)data);
                         break;
@@ -767,6 +771,7 @@ namespace Components
                 {
                     case FirebaseInvoke.RESET: await ResetUser().ConfigureAwait(false); break;
                     case FirebaseInvoke.REMOVE_CLIP_ALL: await RemoveAllClip().ConfigureAwait(false); break;
+                    case FirebaseInvoke.REMOVE_ALL_IMAGE: await RemoveAllImage().ConfigureAwait(false); break;
                 }
             }
         }
@@ -933,6 +938,10 @@ namespace Components
             isPreviousAddRemaining = false;
         }
 
+        /// <summary>
+        /// Adds a list of data string to the remote database.
+        /// </summary>
+        /// <param name="clipTexts"></param>
         public async Task AddClip(List<string> clipTexts)
         {
             if (clipTexts.IsEmpty()) return;
@@ -1057,10 +1066,7 @@ namespace Components
 
                 if (FirebaseCurrent?.Storage != null)
                 {
-                    await new FirebaseStorage(FirebaseCurrent.Storage)
-                        .Child("XClipper")
-                        .Child("images")
-                        .DeleteAsync().ConfigureAwait(false);  
+                    await RemoveAllImage().ConfigureAwait(false);
                 }
             }
         }
@@ -1192,6 +1198,40 @@ namespace Components
             {
                 await RemoveImage(fileName).ConfigureAwait(false);
             }
+        }
+
+        /// <summary>
+        /// Remove all image list in the Firebase storage bucket of /XClipper/images
+        /// </summary>
+        public async Task RemoveAllImage()
+        {
+            if (AssertUnifiedChecks(FirebaseInvoke.REMOVE_ALL_IMAGE)) return;
+            Log();
+            
+            if (FirebaseCurrent?.Storage == null) return;
+
+            var storageNames = new List<string>();
+
+            string? pageToken = null;
+            var storage = new FirebaseStorage(FirebaseCurrent.Storage);
+            while (true)
+            {
+                var storageList = await storage
+                    .Child("XClipper")
+                    .Child("images")
+                    .ListFiles(pageToken: pageToken);
+                storageNames.AddRange(storageList.Items.Select(c => c.Name.Substring(c.Name.LastIndexOf("/") + 1)));
+                if (storageList.NextPageToken == null)
+                    break;
+                else pageToken = storageList.NextPageToken;
+            }
+
+            foreach (var storageName in storageNames)
+            {
+                await storage.Child("XClipper").Child("images").Child(storageName).DeleteAsync();
+            }
+            
+            Log("Completed");
         }
 
         #endregion
