@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using static Components.DefaultSettings;
 using static Components.Constants;
 using static Components.LicenseHandler;
@@ -6,6 +7,7 @@ using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
 using System.Windows;
 using System.IO;
+using System.Linq;
 using Microsoft.Win32;
 using System.Xml.Linq;
 using Components.Controls.Dialog;
@@ -112,14 +114,36 @@ namespace Components
             }
         }
 
-        private void ImportDatabaseData()
+        private async void ImportDatabaseData()
         {
+            var openFileDialog = new OpenFileDialog();
+            openFileDialog.Title = Translation.SETTINGS_IMPORT_DATA;
+            openFileDialog.Filter = "*.json|*.json";
+            if (openFileDialog.ShowDialog() == true)
+            {
+                ProgressiveWork = true;
 
+                string jsonText = File.ReadAllText(openFileDialog.FileName);
+
+                try
+                {
+                    var clips = JsonConvert.DeserializeObject<List<Clip>>(jsonText)?.Select(c => c.data)?.ToList() ?? new List<string>();
+                    await FirebaseSingletonV2.GetInstance.AddClip(clips).ConfigureAwait(false);
+                    
+                    MsgBoxHelper.ShowInfo(Translation.MSG_DATA_IMPORT_SUCCESS);
+                }
+                catch (JsonException e)
+                {
+                    MsgBoxHelper.ShowError($"{Translation.MSG_DATA_IMPORT_ERR} ${e.Message}");
+                }
+
+                ProgressiveWork = false;
+            }
         }
 
         private void RemoveAllDatabaseData()
         {
-
+            
         }
 
         private void DeleteConfiguration()

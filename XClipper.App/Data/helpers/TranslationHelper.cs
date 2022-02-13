@@ -158,6 +158,8 @@ namespace Components
 		public static string MSG_DELETE_CONFIG_TITLE => GetString("msg_delete_config_title");
 		public static string MSG_DELETE_CONFIG_TEXT => GetString("msg_delete_config_text");
 		public static string MSG_DATA_EXPORT_SUCCESS => GetString("msg_data_export_success");
+		public static string MSG_DATA_IMPORT_SUCCESS => GetString("msg_data_import_success");
+		public static string MSG_DATA_IMPORT_ERR => GetString("msg_data_import_err");
 		public static string POPUP_ADDED => GetString("popup_added");
 		public static string POPUP_SPACE_FOCUS => GetString("popup_space_focus");
 		public static string POPUP_EDIT_ERR => GetString("popup_edit_err");

@@ -283,10 +283,20 @@ namespace XClipper.Tests
             //var d = pinnedItems.Concat(normalItems).ToList();
 
 
-            long milliseconds1 = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+            // long milliseconds1 = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+            //
+            //
+            // Debug.WriteLine("offset: " + (milliseconds1 - milliseconds).ToString());
 
 
-            Debug.WriteLine("offset: " + (milliseconds1 - milliseconds).ToString());
+            var list = new List<string>
+            {
+                "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q"
+            };
+            
+            list.RemoveRange(0, 5);
+            
+            Debug.WriteLine(string.Join(",", list));
         }
 
         [TestMethod]

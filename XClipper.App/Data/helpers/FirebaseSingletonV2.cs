@@ -907,14 +907,11 @@ namespace Components
                     clips.RemoveAt(0);
                 
                 addStack.Insert(0, Text);
-                
-                // Find if duplicate exists (if yes then skip else add the current text)
-                var decryptedClips = clips.Select(c => c.data.DecryptBase64(DatabaseEncryptPassword)).ToList();
                
                 // Also add data from stack
                 foreach (var stackText in addStack)
                 {
-                    bool duplicateExists = decryptedClips.Any(c => c == stackText);
+                    bool duplicateExists = clips.Select(c => c.data.DecryptBase64(DatabaseEncryptPassword)).Any(c => c == stackText);
                     if (!duplicateExists)
                         clips.Add(new Clip { data = stackText.EncryptBase64(DatabaseEncryptPassword), time = DateTime.Now.ToFormattedDateTime(false) });   
                 }
@@ -934,6 +931,45 @@ namespace Components
                 Log("Completed");
             }
             isPreviousAddRemaining = false;
+        }
+
+        public async Task AddClip(List<string> clipTexts)
+        {
+            if (clipTexts.IsEmpty()) return;
+            Log();
+
+            if (await RunCommonTask().ConfigureAwait(false))
+            {
+                var trimmedClips = clipTexts.Select(c => c.Substring(0, Math.Min(c.Length, DatabaseMaxItem)));
+                
+                List<Clip> clips = user.Clips == null ? new List<Clip>() : user.Clips.Select(c => c.DeepClone()).ToList();
+                
+                var decryptedClips = clips.Select(c => c.data.DecryptBase64(DatabaseEncryptPassword)).ToList();
+
+                foreach (var clipText in clipTexts.Distinct())
+                {
+                    bool duplicateExist = decryptedClips.Any(c => c == clipText);
+                    if (!duplicateExist)
+                        clips.Add(new Clip { data = clipText.EncryptBase64(DatabaseEncryptPassword), time = DateTime.Now.ToFormattedDateTime(false) }); 
+                }
+                
+                // trim clips
+                if (clips.Count > DatabaseMaxItem)
+                {
+                    clips.RemoveRange(0, clips.Count - DatabaseMaxItem);
+                }
+
+                if (user.Clips == null)
+                {
+                    // Fake push to the database
+                    var userClone = user.DeepCopy();
+                    userClone.Clips = clips;
+                    await PushUser(userClone).ConfigureAwait(false);
+                }
+                else await client.SafeSetAsync($"{USER_REF}/{UID}/{CLIP_REF}", clips).ConfigureAwait(false);
+                
+                Log("Completed");
+            }
         }
 
         /// <summary>
