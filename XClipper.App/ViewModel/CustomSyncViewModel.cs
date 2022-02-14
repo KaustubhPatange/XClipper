@@ -156,16 +156,7 @@ namespace Components
                 }
                 catch (FirebaseStorageException e)
                 {
-                    if (e.Message.ToLower().Contains("exception occured while processing the request"))
-                    {
-                        result = MessageBox.Show(Translation.MSG_DATA_REMOVE_UPDATE_STORAGE_TEXT,
-                            Translation.MSG_DATA_REMOVE_UPDATE_STORAGE_TITLE, MessageBoxButton.YesNo, 
-                            MessageBoxImage.Error);
-                        if (result == MessageBoxResult.Yes)
-                        {
-                            Process.Start(ACTION_IMAGE_SYNC_SECURITY_RULES);
-                        }
-                    }
+                    FirebaseHelper.HandleFirebaseStorageException(e);
                 }
 
                 ProgressiveWork = false;
