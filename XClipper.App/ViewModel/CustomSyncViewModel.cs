@@ -1,14 +1,20 @@
-﻿using static Components.DefaultSettings;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using static Components.DefaultSettings;
 using static Components.Constants;
+using static Components.LicenseHandler;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
 using System.Windows;
 using System.IO;
+using System.Linq;
 using Microsoft.Win32;
 using System.Xml.Linq;
 using Components.Controls.Dialog;
 using Components.UI;
-
+using Firebase.Storage;
+using Newtonsoft.Json;
 #nullable enable
 
 namespace Components
@@ -31,6 +37,10 @@ namespace Components
             EncryptCommand = new RelayCommand(ChangeDatabaseEncryption);
             DeleteCommand = new RelayCommand(DeleteConfiguration);
 
+            ExportDataCommand = new RelayCommand(ExportDatabaseData);
+            ImportDataCommand = new RelayCommand(ImportDatabaseData);
+            DeleteDataCommand = new RelayCommand(RemoveAllDatabaseData);
+
             CheckExportEnabled();
         }
 
@@ -45,6 +55,9 @@ namespace Components
         public ICommand ExportCommand { get; set; }
         public ICommand EncryptCommand { get; set; }
         public ICommand DeleteCommand { get; set; }
+        public ICommand ExportDataCommand { get; set; }
+        public ICommand ImportDataCommand { get; set; }
+        public ICommand DeleteDataCommand { get; set; }
 
         public bool ProgressiveWork { get; set; } = false;
         public string FBE { get; set; }
@@ -60,7 +73,9 @@ namespace Components
         public bool IAN { get; set; }
         public bool EE { get; set; } // Export enabled
         public bool EFD { get; set; } // To encrypt firebase database?
-        public bool isDeleteEnabled { get; set; }
+        public string DatabaseStatus { get; set; }
+        public bool IsStatusSuccess { get; set; } = false;
+        public bool IsStatusVisible { get; set; } = false;
         
         #endregion
 
@@ -75,11 +90,86 @@ namespace Components
 
         #region Methods
 
+        private async void ExportDatabaseData()
+        {
+            var fileName = new Uri(FBE).Host;
+            var saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Title = Translation.SETTINGS_EXPORT_DATA;
+            saveFileDialog.DefaultExt = ".json";
+            saveFileDialog.Filter = "*.json|*.json";
+            saveFileDialog.FileName = $"{fileName}.json";
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                ProgressiveWork = true;
+                
+                string file = saveFileDialog.FileName;
+
+                var clips = await FirebaseSingletonV2.GetInstance.GetClipDataListAsync().ConfigureAwait(false);
+
+                var text = JsonConvert.SerializeObject(clips);
+                
+                File.WriteAllText(file, text);
+
+                ProgressiveWork = false;
+                
+                MsgBoxHelper.ShowInfo(Translation.MSG_DATA_EXPORT_SUCCESS);
+            }
+        }
+
+        private async void ImportDatabaseData()
+        {
+            var openFileDialog = new OpenFileDialog();
+            openFileDialog.Title = Translation.SETTINGS_IMPORT_DATA;
+            openFileDialog.Filter = "*.json|*.json";
+            if (openFileDialog.ShowDialog() == true)
+            {
+                ProgressiveWork = true;
+
+                string jsonText = File.ReadAllText(openFileDialog.FileName);
+
+                try
+                {
+                    var clips = JsonConvert.DeserializeObject<List<Clip>>(jsonText)?.Select(c => c.data)?.ToList() ?? new List<string>();
+                    await FirebaseSingletonV2.GetInstance.AddClip(clips).ConfigureAwait(false);
+                    
+                    MsgBoxHelper.ShowInfo(Translation.MSG_DATA_IMPORT_SUCCESS);
+                }
+                catch (JsonException e)
+                {
+                    MsgBoxHelper.ShowError(string.Format(Translation.MSG_DATA_IMPORT_ERR, e.Message));
+                }
+
+                ProgressiveWork = false;
+            }
+        }
+
+        private async void RemoveAllDatabaseData()
+        {
+            var result = MessageBox.Show(Translation.MSG_DATA_REMOVE_TEXT, Translation.MSG_ARE_YOU_SURE, MessageBoxButton.YesNoCancel, MessageBoxImage.Information);
+            if (result == MessageBoxResult.Yes)
+            {
+                ProgressiveWork = true;
+
+                try
+                {
+                    await FirebaseSingletonV2.GetInstance.RemoveAllClip().ConfigureAwait(false);
+                }
+                catch (FirebaseStorageException e)
+                {
+                    FirebaseHelper.HandleFirebaseStorageException(e);
+                }
+
+                ProgressiveWork = false;
+                
+                MsgBoxHelper.ShowInfo(Translation.MSG_DATA_REMOVE_SUCCESS);
+            }
+        }
+
         private void DeleteConfiguration()
         {
             if (FirebaseCurrent == null) return;
             
-            var result = MessageBox.Show(Translation.MSG_DELETE_CONFIG_TEXT, Translation.MSG_DELETE_CONFIG_TITLE, MessageBoxButton.YesNoCancel, MessageBoxImage.Information);
+            var result = MessageBox.Show(Translation.MSG_DELETE_CONFIG_TEXT, Translation.MSG_ARE_YOU_SURE, MessageBoxButton.YesNoCancel, MessageBoxImage.Information);
             if (result == MessageBoxResult.Yes)
             {
                 if (File.Exists(CustomFirebasePath)) File.Delete(CustomFirebasePath);
@@ -288,7 +378,8 @@ namespace Components
             DMC = DatabaseMaxConnection;
             DMIL = DatabaseMaxItemLength;
             UID = UniqueID;
-            isDeleteEnabled = FirebaseCurrent != null;
+
+            CheckAndUpdateStatus();
         }
 
         private void CheckExportEnabled()
@@ -296,6 +387,29 @@ namespace Components
             EE = File.Exists(CustomFirebasePath);
         }
 
+        private void CheckAndUpdateStatus()
+        {
+            UpdateStatus(string.Empty, visible: false);
+            
+            if (!BindDatabase)
+            {
+                UpdateStatus(Translation.SYNC_BIND_ENABLED_ERR, true, false);
+            } else if (FirebaseCurrent != null && IsPurchaseDone)
+            {
+                if (UniqueID == UNIQUE_ID)
+                    UpdateStatus(Translation.SYNC_ID_DEFAULT, true, true);
+                else
+                    UpdateStatus(Translation.SYNC_ID_CUSTOM, true, false);
+            }
+        }
+
+        private void UpdateStatus(string text, bool visible = true, bool success = true)
+        {
+            IsStatusVisible = visible;
+            DatabaseStatus = text;
+            IsStatusSuccess = success;
+        }
+        
         #endregion
     }
 }

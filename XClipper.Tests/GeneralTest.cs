@@ -283,12 +283,60 @@ namespace XClipper.Tests
             //var d = pinnedItems.Concat(normalItems).ToList();
 
 
-            long milliseconds1 = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+            // long milliseconds1 = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+            //
+            //
+            // Debug.WriteLine("offset: " + (milliseconds1 - milliseconds).ToString());
 
 
-            Debug.WriteLine("offset: " + (milliseconds1 - milliseconds).ToString());
+            // var list = new List<string>
+            // {
+            //     "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q"
+            // };
+            //
+            // list.RemoveRange(0, 5);
+            //
+            // Debug.WriteLine(string.Join(",", list));
+
+            var text = "XClipper/images/2020-11-23 12-34-33.png";
+            Debug.WriteLine(text.Substring(text.LastIndexOf("/") + 1));
         }
 
+        [TestMethod]
+        public void ReferenceTest()
+        {
+            var c = new DemoClass();
+            c.data = "hello";
+            c.time = "1234";
+
+            var c1 = new DemoClass();
+            c1.data = "world";
+            c1.time = "5678";
+            
+            var list = new List<DemoClass>();
+            list.Add(c);
+            list.Add(c1);
+
+            var newList = list.ToList();
+            newList[0].data = "new";
+
+            var new2List = list.Select(d => d.CopyWith(data: "moth")).ToList();
+            
+            Debug.WriteLine("OldList: " + string.Join(",", list));
+            Debug.WriteLine("NewList: " + string.Join(",", newList));
+            Debug.WriteLine("New2List: " + string.Join(",", new2List));
+        }
+        
+        public class DemoClass
+        {
+            public string data, time;
+
+            public override string ToString()
+            {
+                return $"(data={data}, time={time})";
+            }
+            
+        }
 
         public class Person
         {
@@ -333,6 +381,17 @@ namespace XClipper.Tests
                 person.Status = stat;
                 return this;
             }
+        }
+    }
+    
+    public static class DemoClassExtension
+    {
+        public static GeneralTest.DemoClass CopyWith(this GeneralTest.DemoClass c, string data)
+        {
+            var d = new GeneralTest.DemoClass();
+            d.data = data;
+            d.time = c.time;
+            return d;
         }
     }
 }

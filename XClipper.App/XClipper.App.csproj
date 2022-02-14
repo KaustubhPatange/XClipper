@@ -91,7 +91,8 @@
       <HintPath>..\packages\DynamicExpresso.Core.2.3.1\lib\net45\DynamicExpresso.Core.dll</HintPath>
     </Reference>
     <Reference Include="Firebase.Storage, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\FirebaseStorage.net.1.0.3\lib\netstandard1.1\Firebase.Storage.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libraries\Firebase.Storage\Firebase.Storage.dll</HintPath>
     </Reference>
     <Reference Include="FireSharp.Core, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -233,9 +234,13 @@
     <Compile Include="Controls\Settings\ScriptingPage.xaml.cs">
       <DependentUpon>ScriptingPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ToolItem.xaml.cs">
+      <DependentUpon>ToolItem.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\UpgradeTipItem.xaml.cs">
       <DependentUpon>UpgradeTipItem.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Data\Converters\AbstractConverter.cs" />
     <Compile Include="Data\Converters\ActivateButtonConverter.cs" />
     <Compile Include="Data\Converters\CurrentClipConverter.cs" />
     <Compile Include="Data\Converters\CustomSyncTooltipConverter.cs" />
@@ -243,7 +248,7 @@
     <Compile Include="Data\Converters\ImageQRConverter.cs" />
     <Compile Include="Data\Converters\LicenseTextConverter.cs" />
     <Compile Include="Data\Converters\NullToImageConverter.cs" />
-    <Compile Include="Data\Converters\SyncForegroundConverter.cs" />
+    <Compile Include="Data\Converters\StatusConverter.cs" />
     <Compile Include="Data\Converters\TextForegroundConverter.cs" />
     <Compile Include="Data\Converters\UrlVisibilityConverter.cs" />
     <Compile Include="Data\helpers\AppNotificationHelper.cs" />
@@ -401,6 +406,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\Settings\ScriptingPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ToolItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

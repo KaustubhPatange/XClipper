@@ -9,6 +9,7 @@ using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
+using Firebase.Storage;
 using static Components.Constants;
 using static Components.DefaultSettings;
 
@@ -326,6 +327,31 @@ namespace Components
         private static FirebaseResponse CreateUnAuthorizedException()
         {
             return new FirebaseResponse("error", System.Net.HttpStatusCode.Unauthorized);
+        }
+
+        /// <summary>
+        /// Check if the exception produce is of Firebase storage exception related to the issue where "ListAllFiles()"
+        /// won't work unless the Firebase Storage rules are updated to version 2.
+        ///
+        /// In such case a dialog will be shown where user will be guided to a guide online on how to update security rules.
+        /// </summary>
+        /// <param name="e"></param>
+        /// <returns></returns>
+        public static bool HandleFirebaseStorageException(Exception e)
+        {
+            if (e is FirebaseStorageException && e.Message.ToLower().Contains("exception occured while processing the request"))
+            {
+                var result = MessageBox.Show(Translation.MSG_DATA_REMOVE_UPDATE_STORAGE_TEXT,
+                    Translation.MSG_DATA_REMOVE_UPDATE_STORAGE_TITLE, MessageBoxButton.YesNo, 
+                    MessageBoxImage.Error);
+                if (result == MessageBoxResult.Yes)
+                {
+                    Process.Start(ACTION_IMAGE_SYNC_SECURITY_RULES);
+                }
+
+                return true;
+            }
+            return false;
         }
 
         #endregion

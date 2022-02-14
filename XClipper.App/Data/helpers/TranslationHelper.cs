@@ -32,6 +32,8 @@ namespace Components
 		public static string SETTINGS_TAB_SCRIPTING => GetString("settings_tab_scripting");
 		public static string SETTINGS_TAB_BUFFER => GetString("settings_tab_buffer");
 		public static string SETTINGS_AUTH => GetString("settings_auth");
+		public static string SETTINGS_TOOLS => GetString("settings_tools");
+		public static string SETTINGS_DATA => GetString("settings_data");
 		public static string SETTINGS_NOTIFY => GetString("settings_notify");
 		public static string SETTINGS_COMMON => GetString("settings_common");
 		public static string SETTINGS_RELATE => GetString("settings_relate");
@@ -84,6 +86,12 @@ namespace Components
 		public static string SETTINGS_CAU_TOOLTIP => GetString("settings_cau_tooltip");
 		public static string SETTINGS_ENABLE_FEATURE => GetString("settings_enable_feature");
 		public static string SETTINGS_UNSAVED => GetString("settings_unsaved");
+		public static string SETTINGS_EXPORT_DATA => GetString("settings_export_data");
+		public static string SETTINGS_EXPORT_DATA_DESCRIPTION => GetString("settings_export_data_description");
+		public static string SETTINGS_IMPORT_DATA => GetString("settings_import_data");
+		public static string SETTINGS_IMPORT_DATA_DESCRIPTION => GetString("settings_import_data_description");
+		public static string SETTINGS_DELETE_DATA => GetString("settings_delete_data");
+		public static string SETTINGS_DELETE_DATA_DESCRIPTION => GetString("settings_delete_data_description");
 		public static string FILTER_HEADER => GetString("filter_header");
 		public static string FILTER_TITLE => GetString("filter_title");
 		public static string FILTER_INDEX => GetString("filter_index");
@@ -147,8 +155,15 @@ namespace Components
 		public static string MSG_PURCHASE_MESSAGE => GetString("msg_purchase_message");
 		public static string MSG_NO_UPDATE_TITLE => GetString("msg_no_update_title");
 		public static string MSG_NO_UPDATE_TEXT => GetString("msg_no_update_text");
-		public static string MSG_DELETE_CONFIG_TITLE => GetString("msg_delete_config_title");
+		public static string MSG_ARE_YOU_SURE => GetString("msg_are_you_sure");
 		public static string MSG_DELETE_CONFIG_TEXT => GetString("msg_delete_config_text");
+		public static string MSG_DATA_EXPORT_SUCCESS => GetString("msg_data_export_success");
+		public static string MSG_DATA_IMPORT_SUCCESS => GetString("msg_data_import_success");
+		public static string MSG_DATA_IMPORT_ERR => GetString("msg_data_import_err");
+		public static string MSG_DATA_REMOVE_TEXT => GetString("msg_data_remove_text");
+		public static string MSG_DATA_REMOVE_SUCCESS => GetString("msg_data_remove_success");
+		public static string MSG_DATA_REMOVE_UPDATE_STORAGE_TITLE => GetString("msg_data_remove_update_storage_title");
+		public static string MSG_DATA_REMOVE_UPDATE_STORAGE_TEXT => GetString("msg_data_remove_update_storage_text");
 		public static string POPUP_ADDED => GetString("popup_added");
 		public static string POPUP_SPACE_FOCUS => GetString("popup_space_focus");
 		public static string POPUP_EDIT_ERR => GetString("popup_edit_err");
@@ -225,6 +240,7 @@ namespace Components
 		public static string SYNC_TIMEOUT_ACTION_TEXT => GetString("sync_timeout_action_text");
 		public static string SYNC_TIMEOUT_ERROR_TITLE => GetString("sync_timeout_error_title");
 		public static string SYNC_TIMEOUT_ERROR_TEXT => GetString("sync_timeout_error_text");
+		public static string SYNC_BIND_ENABLED_ERR => GetString("sync_bind_enabled_err");
 		public static string UPDATE_TITLE => GetString("update_title");
 		public static string UPDATE_DOWNLOAD_SIZE_ERROR => GetString("update_download_size_error");
 		public static string UPDATE_DOWNLOAD_COMPLETE => GetString("update_download_complete");

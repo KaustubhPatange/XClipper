@@ -217,7 +217,7 @@ namespace Components
                 newPassword: action == MigrateAction.Encrypt ? DatabaseEncryptPassword : null,
                 onSuccess: onSuccess,
                 onError: onError
-            );
+            ).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -328,6 +328,10 @@ namespace Components
                         break;
                     case FirebaseInvoke.REMOVE_CLIP_ALL:
                         firebaseInvokeStack.Add(FirebaseInvoke.REMOVE_CLIP_ALL);
+                        firebaseInvokeStack = firebaseInvokeStack.Distinct().ToList();
+                        break;
+                    case FirebaseInvoke.REMOVE_ALL_IMAGE:
+                        firebaseInvokeStack.Add(FirebaseInvoke.REMOVE_CLIP);
                         firebaseInvokeStack = firebaseInvokeStack.Distinct().ToList();
                         break;
                     case FirebaseInvoke.REMOVE_DEVICE:
@@ -767,6 +771,7 @@ namespace Components
                 {
                     case FirebaseInvoke.RESET: await ResetUser().ConfigureAwait(false); break;
                     case FirebaseInvoke.REMOVE_CLIP_ALL: await RemoveAllClip().ConfigureAwait(false); break;
+                    case FirebaseInvoke.REMOVE_ALL_IMAGE: await RemoveAllImage().ConfigureAwait(false); break;
                 }
             }
         }
@@ -825,6 +830,18 @@ namespace Components
             if (!await RunCommonTask().ConfigureAwait(false)) return new List<Device>();
 
             if (user != null) return user.Devices; else return new List<Device>();
+        }
+
+        /// <summary>
+        /// This will provide the list of clips associated with the UID.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<Clip>> GetClipDataListAsync()
+        {
+            Log();
+            if (!await RunCommonTask().ConfigureAwait(false)) return new List<Clip>();
+
+            return (user?.Clips ?? new List<Clip>()).Select(c => c.CopyWithData(c.data.DecryptBase64(DatabaseEncryptPassword))).ToList();
         }
 
         /// <summary>
@@ -895,14 +912,11 @@ namespace Components
                     clips.RemoveAt(0);
                 
                 addStack.Insert(0, Text);
-                
-                // Find if duplicate exists (if yes then skip else add the current text)
-                var decryptedClips = clips.Select(c => c.data.DecryptBase64(DatabaseEncryptPassword)).ToList();
                
                 // Also add data from stack
                 foreach (var stackText in addStack)
                 {
-                    bool duplicateExists = decryptedClips.Any(c => c == stackText);
+                    bool duplicateExists = clips.Select(c => c.data.DecryptBase64(DatabaseEncryptPassword)).Any(c => c == stackText);
                     if (!duplicateExists)
                         clips.Add(new Clip { data = stackText.EncryptBase64(DatabaseEncryptPassword), time = DateTime.Now.ToFormattedDateTime(false) });   
                 }
@@ -922,6 +936,49 @@ namespace Components
                 Log("Completed");
             }
             isPreviousAddRemaining = false;
+        }
+
+        /// <summary>
+        /// Adds a list of data string to the remote database.
+        /// </summary>
+        /// <param name="clipTexts"></param>
+        public async Task AddClip(List<string> clipTexts)
+        {
+            if (clipTexts.IsEmpty()) return;
+            Log();
+
+            if (await RunCommonTask().ConfigureAwait(false))
+            {
+                var trimmedClips = clipTexts.Select(c => c.Substring(0, Math.Min(c.Length, DatabaseMaxItem)));
+                
+                List<Clip> clips = user.Clips == null ? new List<Clip>() : user.Clips.Select(c => c.DeepClone()).ToList();
+                
+                var decryptedClips = clips.Select(c => c.data.DecryptBase64(DatabaseEncryptPassword)).ToList();
+
+                foreach (var clipText in clipTexts.Distinct())
+                {
+                    bool duplicateExist = decryptedClips.Any(c => c == clipText);
+                    if (!duplicateExist)
+                        clips.Add(new Clip { data = clipText.EncryptBase64(DatabaseEncryptPassword), time = DateTime.Now.ToFormattedDateTime(false) }); 
+                }
+                
+                // trim clips
+                if (clips.Count > DatabaseMaxItem)
+                {
+                    clips.RemoveRange(0, clips.Count - DatabaseMaxItem);
+                }
+
+                if (user.Clips == null)
+                {
+                    // Fake push to the database
+                    var userClone = user.DeepCopy();
+                    userClone.Clips = clips;
+                    await PushUser(userClone).ConfigureAwait(false);
+                }
+                else await client.SafeSetAsync($"{USER_REF}/{UID}/{CLIP_REF}", clips).ConfigureAwait(false);
+                
+                Log("Completed");
+            }
         }
 
         /// <summary>
@@ -1009,10 +1066,7 @@ namespace Components
 
                 if (FirebaseCurrent?.Storage != null)
                 {
-                    await new FirebaseStorage(FirebaseCurrent.Storage)
-                        .Child("XClipper")
-                        .Child("images")
-                        .DeleteAsync().ConfigureAwait(false);  
+                    await RemoveAllImage().ConfigureAwait(false);
                 }
             }
         }
@@ -1144,6 +1198,40 @@ namespace Components
             {
                 await RemoveImage(fileName).ConfigureAwait(false);
             }
+        }
+
+        /// <summary>
+        /// Remove all image list in the Firebase storage bucket of /XClipper/images
+        /// </summary>
+        public async Task RemoveAllImage()
+        {
+            if (AssertUnifiedChecks(FirebaseInvoke.REMOVE_ALL_IMAGE)) return;
+            Log();
+            
+            if (FirebaseCurrent?.Storage == null) return;
+
+            var storageNames = new List<string>();
+
+            string? pageToken = null;
+            var storage = new FirebaseStorage(FirebaseCurrent.Storage);
+            while (true)
+            {
+                var storageList = await storage
+                    .Child("XClipper")
+                    .Child("images")
+                    .ListFiles(pageToken: pageToken);
+                storageNames.AddRange(storageList.Items.Select(c => c.Name.Substring(c.Name.LastIndexOf("/") + 1)));
+                if (storageList.NextPageToken == null)
+                    break;
+                else pageToken = storageList.NextPageToken;
+            }
+
+            foreach (var storageName in storageNames)
+            {
+                await storage.Child("XClipper").Child("images").Child(storageName).DeleteAsync();
+            }
+            
+            Log("Completed");
         }
 
         #endregion

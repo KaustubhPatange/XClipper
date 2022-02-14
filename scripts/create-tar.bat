@@ -13,6 +13,7 @@ copy "%grandparent%XClipper.App\Data\helpers\LicenseHelper.cs" "%parent%Work\_tm
 xcopy "%grandparent%XClipper.Protect" "%parent%Work\_tmp\XClipper.Protect" /E
 rd /s /q "%parent%Work\_tmp\XClipper.Protect\bin" 
 rd /s /q "%parent%Work\_tmp\XClipper.Protect\obj"
+del "%parent%Work\_tmp\XClipper.Protect\*.user"
 tar -C Work\_tmp -cvzf Work\protect.tar.gz *
 rd /s /q Work\_tmp
 
