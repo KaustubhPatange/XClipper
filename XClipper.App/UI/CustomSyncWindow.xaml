@@ -177,36 +177,26 @@
                             Margin="0,10,0,0"
                             ButtonCommand="{Binding ExportDataCommand}"
                             ButtonText="{DynamicResource settings_export_data}"
-                            Description="{DynamicResource settings_export_data_description}" />
+                            Description="{DynamicResource settings_export_data_description}"
+                            IsButtonEnabled="{c:Binding '!ProgressiveWork'}" />
 
                         <control:ToolItem
                             Margin="0,15,0,0"
                             ButtonCommand="{Binding ImportDataCommand}"
                             ButtonText="{DynamicResource settings_import_data}"
-                            Description="{DynamicResource settings_import_data_description}" />
+                            Description="{DynamicResource settings_import_data_description}"
+                            IsButtonEnabled="{c:Binding '!ProgressiveWork'}" />
 
                         <control:ToolItem
                             Margin="0,15,0,0"
                             ButtonCommand="{Binding DeleteDataCommand}"
                             ButtonText="{DynamicResource settings_delete_data}"
-                            Description="{DynamicResource settings_delete_data_description}" />
+                            Description="{DynamicResource settings_delete_data_description}"
+                            IsButtonEnabled="{c:Binding '!ProgressiveWork'}" />
 
                     </StackPanel>
                 </TabItem>
 
-                <!--<TabItem Header="{DynamicResource settings_notify}">
-                    <StackPanel MinHeight="250" Orientation="Vertical">
-                        <GroupBox Padding="10" Header="{DynamicResource settings_common}">
-                            <StackPanel Orientation="Vertical">
-                                <CheckBox Content="Show when clip is added" />
-                                <CheckBox Margin="0,5,0,0" Content="Show when clip is removed" />
-                                <CheckBox Margin="0,5,0,0" Content="Show when clip is updated" />
-                                <CheckBox Margin="0,5,0,0" Content="Show when device is added" />
-                                <CheckBox Margin="0,5,0,0" Content="Show when device is removed" />
-                            </StackPanel>
-                        </GroupBox>
-                    </StackPanel>
-                </TabItem>-->
             </TabControl>
 
             <StackPanel

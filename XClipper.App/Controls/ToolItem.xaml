@@ -23,6 +23,7 @@
             Width="70"
             Height="22"
             Command="{Binding ButtonCommand}"
-            Content="{Binding ButtonText}" />
+            Content="{Binding ButtonText}"
+            IsEnabled="{Binding IsButtonEnabled}" />
     </Grid>
 </UserControl>

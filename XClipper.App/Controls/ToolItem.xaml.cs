@@ -43,12 +43,21 @@ namespace Components.Controls
         }
 
         public static readonly DependencyProperty ButtonCommandProperty =
-        DependencyProperty.Register(nameof(ButtonCommand), typeof(ICommand), typeof(ToolItem), new PropertyMetadata(null));
+            DependencyProperty.Register(nameof(ButtonCommand), typeof(ICommand), typeof(ToolItem), new PropertyMetadata(null));
 
         public ICommand ButtonCommand
         {
             get => (ICommand) GetValue(ButtonCommandProperty);
             set => SetValue(ButtonCommandProperty, value);
+        }
+        
+        public static readonly DependencyProperty IsButtonEnabledProperty =
+            DependencyProperty.Register(nameof(IsButtonEnabled), typeof(bool), typeof(ToolItem), new PropertyMetadata(true));
+
+        public bool IsButtonEnabled
+        {
+            get => (bool) GetValue(IsButtonEnabledProperty);
+            set => SetValue(IsButtonEnabledProperty, value);
         }
     }
 }
