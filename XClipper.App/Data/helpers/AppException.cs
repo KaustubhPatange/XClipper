@@ -48,6 +48,13 @@ namespace Components
             System.Windows.Forms.Application.ThreadException += Winform_ThreadException;
         }
 
+        public async Task recordNonFatalException(Exception e)
+        {
+            var sentryEvent = new SentryEvent(e);
+            sentryEvent.Level = ErrorLevel.Warning;
+            await ravenClient.CaptureAsync(sentryEvent).ConfigureAwait(false);
+        }
+
         #region Private Members
 
         private async void Winform_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
@@ -139,11 +146,12 @@ namespace Components
 
             // Filter our exceptions
 
-            if (ignoreExceptionsStrings.Any(c => contents.Contains(c))) return;
+            // if (ignoreExceptionsStrings.Any(c => contents.Contains(c))) return;
 
             await ravenClient.CaptureAsync(new SentryEvent(exception)).ConfigureAwait(false);
-
-            await SendReport(Environment.UserName, dib.ToString()).ConfigureAwait(false);
+            
+            if (ExitOnCrash)
+                Environment.Exit(1);
         }
 
         private async Task SendReport(string sender, string content)
@@ -156,9 +164,6 @@ namespace Components
             var request = new RestRequest(queryBuilder.ToString(), Method.POST);
             request.AddParameter("text/plain", content, ParameterType.RequestBody);
             await client.ExecuteTaskAsync(request).ConfigureAwait(false);
-
-            if (ExitOnCrash)
-                Environment.Exit(1);
         }
 
         private string CreateCrashSuffix()
