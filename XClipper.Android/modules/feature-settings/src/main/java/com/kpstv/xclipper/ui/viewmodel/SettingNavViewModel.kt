@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.kpstv.navigation.*
 import com.kpstv.xclipper.data.model.SettingDefinition
 import com.kpstv.xclipper.extensions.FragClazz
+import com.kpstv.xclipper.ui.navigation.AbstractNavigationOptions
 
 class SettingNavViewModel : ViewModel() {
     private val _navigation = MutableLiveData<NavigationOptions>(null)
@@ -35,5 +36,5 @@ class SettingNavViewModel : ViewModel() {
         val clazz: FragClazz,
         @StringRes val titleRes: Int,
         val navOptions: FragmentNavigator.NavOptions
-    )
+    ) : AbstractNavigationOptions()
 }

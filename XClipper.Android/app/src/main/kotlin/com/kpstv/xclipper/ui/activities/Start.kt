@@ -18,6 +18,8 @@ import com.kpstv.xclipper.ui.helpers.ActivityIntentHelper
 import com.kpstv.xclipper.ui.helpers.AppSettings
 import com.kpstv.xclipper.ui.helpers.FirebaseSyncHelper
 import com.kpstv.xclipper.ui.helpers.fragments.*
+import com.kpstv.xclipper.ui.navigation.AbstractNavigationOptions
+import com.kpstv.xclipper.ui.navigation.AbstractNavigationOptionsExtensions.consume
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -45,7 +47,7 @@ class Start : AppCompatActivity(), FragmentNavigator.Transmitter {
         navigator.autoChildElevation()
 
         navViewModel.navigation.observe(this) { options ->
-            navigator.navigateTo(options.clazz, options.navOptions)
+            options?.consume { navigator.navigateTo(options.clazz, options.navOptions) }
         }
 
         registerHelpers()
@@ -109,5 +111,5 @@ class NavViewModel : ViewModel() {
     data class NavigationOptions(
         val clazz: FragClazz,
         val navOptions: FragmentNavigator.NavOptions
-    )
+    ) : AbstractNavigationOptions()
 }

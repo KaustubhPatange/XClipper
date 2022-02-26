@@ -28,6 +28,20 @@ class ConnectionHelper(
     private val fragmentActivity by lazy { fragment.requireActivity() }
     private val connectionViewModel by fragment.viewModels<ConnectionViewModel>()
 
+    private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
+
+    // Register to listen onActivityResult() to carry out QR code scanning result.
+    fun init() {
+        activityResultLauncher = fragment.requireActivity().activityResultRegistry.register(
+            "ConnectionHelper",
+            fragment.viewLifecycleOwner,
+            ActivityResultContracts.StartActivityForResult(),
+        ) { result ->
+            parse(result.resultCode, result.data)
+        }
+
+    }
+
     fun startConnectionRequest() : Unit = with(fragment) {
         val binding = DialogConnectBinding.inflate(layoutInflater)
 
@@ -36,13 +50,6 @@ class ConnectionHelper(
             .show()
 
         binding.btnScanConnect.setOnClickListener {
-            var activityResult : ActivityResultLauncher<Intent?>? = null
-
-            activityResult = fragmentActivity.activityResultRegistry.register("connect_dialog_contract", ActivityResultContracts.StartActivityForResult()) { result ->
-                activityResult?.unregister()
-                parse(result.resultCode, result.data)
-            }
-
             val scanIntent = IntentIntegrator(requireActivity())
                 .setDesiredBarcodeFormats(IntentIntegrator.QR_CODE)
                 .setOrientationLocked(false)
@@ -51,7 +58,7 @@ class ConnectionHelper(
                 .setBarcodeImageEnabled(false)
                 .createScanIntent()
 
-            activityResult.launch(scanIntent)
+            activityResultLauncher.launch(scanIntent)
 
             alert.dismiss()
         }
@@ -89,7 +96,9 @@ class ConnectionHelper(
                 complete = { options ->
                     /** Check if auth is needed, if so make a auth2 call */
                     if (options.isAuthNeeded) {
-                        AuthenticationHelper(fragmentActivity, options.authClientId!!).signIn(
+                        val authenticationHelper = AuthenticationHelper(fragmentActivity, options.authClientId!!)
+                        authenticationHelper.init()
+                        authenticationHelper.signIn(
                             options = options,
                             responseListener = ResponseListener(
                                 complete = {

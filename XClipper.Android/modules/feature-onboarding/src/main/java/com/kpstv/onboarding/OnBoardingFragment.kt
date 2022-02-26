@@ -12,6 +12,7 @@ import com.kpstv.onboarding.internals.OnBoardingRoutes
 import com.kpstv.welcome.R
 import com.kpstv.welcome.databinding.FragmentOnboardingBinding
 import com.kpstv.xclipper.extensions.viewBinding
+import com.kpstv.xclipper.ui.navigation.AbstractNavigationOptionsExtensions.consume
 
 class OnBoardingFragment : ValueFragment(R.layout.fragment_onboarding), FragmentNavigator.Transmitter {
     private val binding by viewBinding(FragmentOnboardingBinding::bind)
@@ -31,6 +32,6 @@ class OnBoardingFragment : ValueFragment(R.layout.fragment_onboarding), Fragment
     }
 
     private val navigationObserver = Observer { options: OnBoardingNavViewModel.NavigationOptions? ->
-        options?.let { navigator.navigateTo(it.clazz, it.navOptions) }
+        options?.consume { navigator.navigateTo(options.clazz, options.navOptions) }
     }
 }

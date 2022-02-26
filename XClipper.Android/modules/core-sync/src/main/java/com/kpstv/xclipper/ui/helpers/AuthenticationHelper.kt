@@ -35,6 +35,8 @@ internal class AuthenticationHelper(
     private lateinit var responseListener: ResponseListener<Unit>
     private lateinit var auth: FirebaseAuth
 
+    private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
+
     private val customContract =
         object : ActivityResultContract<Intent, Task<GoogleSignInAccount>?>() {
             override fun createIntent(context: Context, input: Intent?): Intent {
@@ -47,6 +49,14 @@ internal class AuthenticationHelper(
                 )
             }
         }
+
+    // Register to listen onActivityResult() to carry out QR code scanning result.
+    fun init() {
+        activityResultLauncher = activity.activityResultRegistry
+            .register("AuthenticationHelper", activity, customContract) { task ->
+                parseActivityResultForTask(task)
+            }
+    }
 
     /**
      * Start the auth process.
@@ -77,16 +87,10 @@ internal class AuthenticationHelper(
         )
 
         fun performSignIn() {
-            var getResult : ActivityResultLauncher<Intent?>? = null
-            getResult = activity.activityResultRegistry.register("myContract_1", customContract) { task ->
-                getResult?.unregister()
-                parseActivityResultForTask(task)
-            }
-
             auth = Firebase.auth(app)
 
             val signInIntent = googleSignInClient.signInIntent
-            getResult.launch(signInIntent)
+            activityResultLauncher.launch(signInIntent)
         }
 
         if (GoogleSignIn.getLastSignedInAccount(this) != null) {

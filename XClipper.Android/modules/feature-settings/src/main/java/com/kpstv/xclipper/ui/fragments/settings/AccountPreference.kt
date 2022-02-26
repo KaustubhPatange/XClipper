@@ -1,6 +1,7 @@
 package com.kpstv.xclipper.ui.fragments.settings
 
 import android.os.Bundle
+import android.view.View
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
@@ -31,6 +32,11 @@ class AccountPreference : PreferenceFragmentCompat() {
     private val connectionUID : String? get() = dbConnectionProvider.optionsProvider()?.uid
 
     private val connectionHelper : ConnectionHelper by lazy { ConnectionHelper(this) }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        connectionHelper.init()
+    }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.account_pref, rootKey)

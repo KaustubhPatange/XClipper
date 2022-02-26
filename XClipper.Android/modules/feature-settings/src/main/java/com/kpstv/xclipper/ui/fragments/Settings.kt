@@ -24,6 +24,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.parcelize.Parcelize
 import kotlin.reflect.KClass
 import com.kpstv.xclipper.feature_settings.R
+import com.kpstv.xclipper.ui.navigation.AbstractNavigationOptionsExtensions.consume
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -61,9 +62,9 @@ class Settings : ValueFragment(R.layout.fragment_settings), FragmentNavigator.Tr
     }
 
     private val navigationObserver = Observer { options: SettingNavViewModel.NavigationOptions? ->
-        options?.let { opt ->
-            navigator.navigateTo(opt.clazz, opt.navOptions)
-            binding.toolbar.title = getString(opt.titleRes)
+        options?.consume {
+            navigator.navigateTo(options.clazz, options.navOptions)
+            binding.toolbar.title = getString(options.titleRes)
         }
     }
 
