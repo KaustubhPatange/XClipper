@@ -5,6 +5,8 @@ import android.content.Intent
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -24,21 +26,23 @@ import es.dmoral.toasty.Toasty
 
 /**
  * Helper class to make Firebase auth process simpler
- * @param activity [ComponentActivity] to listen [ActivityResultContract]
- * @param clientId An authentication clientId provided by [FBOptions]
+ * @param activity [ComponentActivity] to listen [ActivityResultContract].
  */
 internal class AuthenticationHelper(
     private val activity: ComponentActivity,
-    private var clientId: String
+    lifecycleOwner: LifecycleOwner
 ) {
+    /**
+     * An authentication clientId provided by [FBOptions].
+     */
+    private lateinit var clientId: String
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var responseListener: ResponseListener<Unit>
     private lateinit var auth: FirebaseAuth
 
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
 
-    private val customContract =
-        object : ActivityResultContract<Intent, Task<GoogleSignInAccount>?>() {
+    private val customContract = object : ActivityResultContract<Intent, Task<GoogleSignInAccount>?>() {
             override fun createIntent(context: Context, input: Intent?): Intent {
                 return input!!
             }
@@ -50,12 +54,26 @@ internal class AuthenticationHelper(
             }
         }
 
+    init {
+        lifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
+            override fun onDestroy(owner: LifecycleOwner) {
+                if (::activityResultLauncher.isInitialized) {
+                    activityResultLauncher.unregister()
+                }
+            }
+        })
+    }
+
     // Register to listen onActivityResult() to carry out QR code scanning result.
     fun init() {
         activityResultLauncher = activity.activityResultRegistry
-            .register("AuthenticationHelper", activity, customContract) { task ->
+            .register("AuthenticationHelper", customContract) { task ->
                 parseActivityResultForTask(task)
             }
+    }
+
+    fun setClientId(clientId: String) {
+        this.clientId = clientId
     }
 
     /**

@@ -7,6 +7,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.zxing.integration.android.IntentIntegrator
@@ -22,24 +24,36 @@ import com.kpstv.xclipper.ui.viewmodels.ConnectionViewModel
 import es.dmoral.toasty.Toasty
 
 class ConnectionHelper(
-    private val fragment: Fragment
+    private val fragment: Fragment,
+    private val lifecycleOwner: LifecycleOwner
 ) {
     private val context by lazy { fragment.requireContext() }
     private val fragmentActivity by lazy { fragment.requireActivity() }
     private val connectionViewModel by fragment.viewModels<ConnectionViewModel>()
 
+    private val authenticationHelper by lazy { AuthenticationHelper(fragmentActivity, lifecycleOwner) }
+
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
+
+    init {
+        lifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
+            override fun onDestroy(owner: LifecycleOwner) {
+                if (::activityResultLauncher.isInitialized) {
+                    activityResultLauncher.unregister()
+                }
+            }
+        })
+    }
 
     // Register to listen onActivityResult() to carry out QR code scanning result.
     fun init() {
         activityResultLauncher = fragment.requireActivity().activityResultRegistry.register(
             "ConnectionHelper",
-            fragment.viewLifecycleOwner,
             ActivityResultContracts.StartActivityForResult(),
         ) { result ->
             parse(result.resultCode, result.data)
         }
-
+        authenticationHelper.init()
     }
 
     fun startConnectionRequest() : Unit = with(fragment) {
@@ -96,8 +110,7 @@ class ConnectionHelper(
                 complete = { options ->
                     /** Check if auth is needed, if so make a auth2 call */
                     if (options.isAuthNeeded) {
-                        val authenticationHelper = AuthenticationHelper(fragmentActivity, options.authClientId!!)
-                        authenticationHelper.init()
+                        authenticationHelper.setClientId(options.authClientId!!)
                         authenticationHelper.signIn(
                             options = options,
                             responseListener = ResponseListener(

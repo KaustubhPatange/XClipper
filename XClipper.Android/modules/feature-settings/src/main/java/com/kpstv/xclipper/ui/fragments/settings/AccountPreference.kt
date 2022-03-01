@@ -31,7 +31,7 @@ class AccountPreference : PreferenceFragmentCompat() {
 
     private val connectionUID : String? get() = dbConnectionProvider.optionsProvider()?.uid
 
-    private val connectionHelper : ConnectionHelper by lazy { ConnectionHelper(this) }
+    private val connectionHelper : ConnectionHelper by lazy { ConnectionHelper(this, viewLifecycleOwner) }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
