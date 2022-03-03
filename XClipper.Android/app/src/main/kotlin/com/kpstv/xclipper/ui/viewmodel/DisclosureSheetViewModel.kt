@@ -19,6 +19,7 @@ class DisclosureSheetViewModel @Inject constructor() : ViewModel() {
         privacyCheckedMutableState.combine(agreementCheckedMutableState) { a, b -> a && b}
 
     internal fun fetchPolicy() : Flow<DisclosureState> = flow {
+        emit(DisclosureState.Loading)
         val body = RetrofitUtils.fetch(POLICY_URL).getOrNull()?.asString()
             ?: run { emit(DisclosureState.EmptyPolicy); return@flow }
         val date = UPDATED_DATE_PATTERN.toRegex().find(body)?.groupValues?.get(1)
