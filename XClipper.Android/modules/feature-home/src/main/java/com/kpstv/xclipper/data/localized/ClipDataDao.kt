@@ -10,7 +10,6 @@ import com.kpstv.xclipper.data.model.PartialClipTagMap
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.extension.enumeration.SpecialTagFilter
 import kotlinx.coroutines.flow.Flow
-import java.util.*
 
 @Dao
 interface ClipDataDao {
@@ -94,10 +93,14 @@ interface ClipDataDao {
 
     companion object {
         fun createQuery(searchFilters: List<String>?, tagFilters: List<Tag>?, specialTagFilters: List<SpecialTagFilter>?, searchText: String?): SimpleSQLiteQuery {
-            val sqlConditionalLike = if (specialTagFilters?.any { it.isInvert() } == true) "not like" else "like"
+            val isInvertApplied = specialTagFilters?.any { it.isInvert() } == true
+            val isPinned = specialTagFilters?.any { it.isPinned() } == true
+            val sqlConditionalLike = if (isInvertApplied) "not like" else "like"
             val builder = StringBuilder("select * from table_clip")
             val params = mutableListOf<Any>()
-            if (searchText?.isNotEmpty() == true || (searchFilters?.size ?: 0) > 0 || (tagFilters?.size ?: 0) > 0) builder.append(" where ")
+            if (searchText?.isNotEmpty() == true || (searchFilters?.isNotEmpty() == true) || (tagFilters?.isNotEmpty() == true) || (isPinned)) {
+                builder.append(" where ")
+            }
             if (searchText != null && searchText.isNotEmpty()) {
                 params.add("%$searchText%")
                 builder.append("data $sqlConditionalLike ? and ")
@@ -109,6 +112,9 @@ interface ClipDataDao {
             tagFilters?.map { it.name }?.forEach { filter ->
                 params.add("%\"$filter\":[%")
                 builder.append("tags $sqlConditionalLike ? and ")
+            }
+            if (isPinned) {
+                builder.append("isPinned = ${if (isInvertApplied) 0 else 1} and ")
             }
             val query = builder.toString().trimEnd()
             val formatted = if (query.endsWith("and")) query.removeSuffix("and") else query

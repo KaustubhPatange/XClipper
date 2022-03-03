@@ -37,6 +37,7 @@ object TagsUiHelper {
             setTextColor(getColorAttr(R.attr.colorForeground))
             chipBackgroundColor = ColorStateList.valueOf(getColorAttr(R.attr.colorSpecialTag))
             chipIcon = drawableFrom(tag.drawableRes)
+            chipIconTint = ColorStateList.valueOf(getColorAttr(R.attr.colorForeground))
             chipIconSize = toPx(20)
             closeIconTint = ColorStateList.valueOf(getColorAttr(R.attr.colorForeground))
         }
