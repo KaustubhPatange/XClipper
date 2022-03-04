@@ -77,8 +77,8 @@ class SpecialBottomSheet : CustomRoundedBottomSheetFragment(R.layout.bottom_shee
                         putParcelable(ARG_CLIP, Args.fromClip(clip))
                     }
                 }
+                sheet.addOnDismissListener { onClose() }
                 sheet.showNow(fragmentManager, "blank")
-                sheet.dialog?.setOnDismissListener { onClose() }
             }
 
             if (!preferenceProvider.isDialogShown()) {
