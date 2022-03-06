@@ -85,10 +85,11 @@ class MainRepositoryImpl @Inject constructor(
             val finalClip = Clip.from(clip.clone(innerClip.id))
 
             /** Merge the existing tags into the clip tags */
-            if (finalClip.tags != null && clip.tags != null)
-                finalClip.tags = (finalClip.tags!! + clip.tags!!)
+            val newClip = if (finalClip.tags != null && clip.tags != null)
+                finalClip.copy(tags = (finalClip.tags!! + clip.tags!!))
+            else finalClip
 
-            clipDao.update(finalClip)
+            clipDao.update(newClip)
             true
         } else {
             processClipAndSave(clip)
