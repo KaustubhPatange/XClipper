@@ -22,6 +22,14 @@ import com.kpstv.xclipper.ui.helpers.AppThemeHelper.CARD_CLICK_COLOR
 import com.kpstv.xclipper.ui.helpers.AppThemeHelper.CARD_COLOR
 import com.kpstv.xclipper.ui.helpers.AppThemeHelper.CARD_SELECTED_COLOR
 
+data class ClipAdapterItem constructor(val clip: Clip) {
+    var expanded: Boolean = false
+
+    companion object {
+        fun from(clip: Clip) = ClipAdapterItem(clip = clip)
+    }
+}
+
 class ClipAdapter(
     private val lifecycleOwner: LifecycleOwner,
     private val multiSelectionState: LiveData<Boolean>,
@@ -61,118 +69,76 @@ class ClipAdapter(
 
     override fun getItemViewType(position: Int) = 0
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ClipAdapterHolder =
-        ClipAdapterHolder(ItemClipBinding.inflate(parent.context.layoutInflater(), parent, false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ClipAdapterHolder {
+        return ClipAdapterHolder(ItemClipBinding.inflate(parent.context.layoutInflater(), parent, false)).apply {
+            with(binding) {
+                mainCard.setOnClickListener {
+                    val clip = getItem(bindingAdapterPosition)
+                    onClick.invoke(clip, bindingAdapterPosition)
+                }
+                mainCard.setOnLongClickListener {
+                    val clip = getItem(bindingAdapterPosition)
+                    onLongClick.invoke(clip, bindingAdapterPosition)
+                    true
+                }
+                ciCopyButton.setOnClickListener {
+                    val clip = getItem(bindingAdapterPosition)
+                    copyClick.invoke(clip, bindingAdapterPosition)
+                }
+                ciBtnEdit.setOnClickListener {
+                    val clip = getItem(bindingAdapterPosition)
+                    menuClick.invoke(clip, bindingAdapterPosition, MenuType.Edit)
+                }
+                ciBtnPin.setOnClickListener {
+                    val clip = getItem(bindingAdapterPosition)
+                    menuClick.invoke(clip, bindingAdapterPosition, MenuType.Pin)
+                }
+                ciBtnSpecial.setOnClickListener {
+                    val clip = getItem(bindingAdapterPosition)
+                    menuClick.invoke(clip, bindingAdapterPosition, MenuType.Special)
+                }
+                ciBtnShare.setOnClickListener {
+                    val clip = getItem(bindingAdapterPosition)
+                    menuClick.invoke(clip, bindingAdapterPosition, MenuType.Share)
+                }
+            }
+        }
+    }
 
-    override fun onBindViewHolder(holder: ClipAdapterHolder, position: Int) = with(holder.binding) {
+    override fun onBindViewHolder(holder: ClipAdapterHolder, position: Int) = with(holder) {
         val clip = getItem(position)
 
-        ciTextView.text = if (trimClipText) clip.data.trim() else clip.data
-        root.tag = clip.id // used for unsubscribing.
+        binding.ciTextView.text = if (trimClipText) clip.data.trim() else clip.data
+        binding.root.tag = clip.id // used for unsubscribing.
 
         if (clip.isPinned) {
-            icPinView.show()
+            binding.icPinView.show()
         } else {
-            icPinView.hide()
+            binding.icPinView.hide()
         }
 
         if (loadImageMarkdownText) {
-            renderImageMarkdown(holder, clip.data)
+            renderImageMarkdown(clip.data)
         }
 
-        ciTimeText.text = DateFormatConverter.getFormattedDate(clip.time)
+        binding.ciTimeText.text = DateFormatConverter.getFormattedDate(clip.time)
 
-        setPinMovements(clip, holder)
+        updatePinButton(clip)
 
-        setTags(holder, clip)
-        setHolderTagData(holder, clip)
-
-        mainCard.setOnClickListener { onClick.invoke(clip, position) }
-        mainCard.setOnLongClickListener {
-            onLongClick.invoke(clip, position)
-            true
-        }
-        ciCopyButton.setOnClickListener { copyClick.invoke(clip, position) }
-        ciBtnEdit.setOnClickListener {
-            menuClick.invoke(
-                clip,
-                position,
-                MenuType.Edit
-            )
-        }
-        ciBtnPin.setOnClickListener {
-            menuClick.invoke(
-                clip,
-                position,
-                MenuType.Pin
-            )
-        }
-        ciBtnSpecial.setOnClickListener {
-            menuClick.invoke(
-                clip,
-                position,
-                MenuType.Special
-            )
-        }
-        ciBtnShare.setOnClickListener {
-            menuClick.invoke(
-                clip,
-                position,
-                MenuType.Share
-            )
-        }
+        updateTags(clip)
+        updateHolderTags(clip)
 
         val selectedDataObserver: Observer<String> = Observer { current ->
-            if (ciTextView.text == current)
-                ciTextView.setTextColor(
-                    holder.itemView.context.getColorAttr(R.attr.colorCurrentClip)
-                )
-            else ciTextView.setTextColor(
-                holder.itemView.context.getColorAttr(R.attr.colorTextPrimary)
-            )
+            applyForCurrentClipboardText(current)
         }
         val selectedItemObserver: Observer<Clip> = Observer { selectedClip ->
-            setPinMovements(clip, holder)
-            if (selectedClip == clip) {
-                hiddenLayout.show()
-                mainCard.setCardBackgroundColor(CARD_CLICK_COLOR)
-                mainCard.cardElevation = holder.itemView.context.toPx(3)
-            } else {
-                mainCard.setCardBackgroundColor(CARD_COLOR)
-                mainCard.cardElevation = holder.itemView.context.toPx(0)
-                hiddenLayout.collapse()
-            }
+            applyForSelectedItem(clip, isExpanded = selectedClip == clip)
         }
         val multiSelectionObserver: Observer<Boolean> = Observer { state ->
-            if (state) {
-                ciCopyButton.hide()
-                ciTimeText.hide()
-                ciTagLayout.hide()
-            } else {
-                ciCopyButton.show()
-                ciTimeText.show()
-                ciTagLayout.show()
-            }
+            applyForMultiSelectionState(clip, isMultiSelectionState = state)
         }
         val selectedClipsObserver: Observer<List<Clip>> = Observer { clips ->
-            if (clips == null) return@Observer
-            when {
-                clips.contains(clip) -> {
-                    mainCard.setCardBackgroundColor(CARD_SELECTED_COLOR)
-                }
-                else -> {
-                    /**
-                     * We are also checking if selected item is this clip. Since for large item set
-                     * it kinda forgets about it due to recreation of whole list.
-                     */
-                    /**
-                     * We are also checking if selected item is this clip. Since for large item set
-                     * it kinda forgets about it due to recreation of whole list.
-                     */
-                    if (selectedItem.value != clip)
-                        mainCard.setCardBackgroundColor(CARD_COLOR)
-                }
-            }
+            applyForSelectedClips(clip, isExpanded = selectedItem.value == clip, clips)
         }
 
         // no need to remove these observers from hashmap as it will guarantee to not create duplicates causing memory leaks.
@@ -183,54 +149,105 @@ class ClipAdapter(
         selectedClips.observe(lifecycleOwner, selectedClipsObserver).also { selectedClipsObservers[clip.id] = selectedClipsObserver }
     }
 
-    private fun setHolderTagData(holder: ClipAdapterHolder, clip: Clip) {
-        holder.tag.isSwipeEnabled = (clip.tags?.none { it.key == ClipTag.LOCK.small() } == true)
+    fun updateSelectedItem(clip: Clip?) {
+//        val position = currentList.i
     }
 
-    private fun renderImageMarkdown(holder: ClipAdapterHolder, data: String) : Unit = with(holder.binding) {
-        if (ClipUtils.isMarkdownImage(data)) {
-            val imageUrl = ClipUtils.getMarkdownImageUrl(data)
+    fun setCopyClick(block: (Clip, Int) -> Unit) {
+        this.copyClick = block
+    }
 
-            ciImageView.show()
+    fun setMenuItemClick(block: (Clip, Int, MenuType) -> Unit) {
+        this.menuClick = block
+    }
 
-            ciImageView.load(
-                uri = imageUrl,
-                onSuccess = {
-                    ciTextView.hide()
-                },
-                onError = {
-                    ciImageView.collapse()
-                    ciTextView.show()
-                }
-            )
+    fun getItemAt(pos: Int): Clip = getItem(pos)
+
+    enum class MenuType {
+        Edit, Pin, Special, Share
+    }
+}
+
+class ClipAdapterHolder(val binding: ItemClipBinding) : RecyclerView.ViewHolder(binding.root) {
+    var tag: Tag = Tag()
+    inner class Tag(var isSwipeEnabled: Boolean = true)
+
+    private val context = binding.root.context
+
+    fun applyForSelectedItem(clip: Clip, isExpanded: Boolean = false): Unit = with(binding) {
+        updatePinButton(clip)
+        if (isExpanded) {
+            hiddenLayout.show()
+            mainCard.setCardBackgroundColor(CARD_CLICK_COLOR)
+            mainCard.cardElevation = context.toPx(3)
         } else {
-            ciTextView.show()
-            ciImageView.collapse()
+            mainCard.setCardBackgroundColor(CARD_COLOR)
+            mainCard.cardElevation = context.toPx(0)
+            hiddenLayout.collapse()
         }
     }
 
-    private fun setPinMovements(
-        clip: Clip,
-        holder: ClipAdapterHolder
-    ) = with(holder.binding) {
+    fun applyForCurrentClipboardText(current: String): Unit = with(binding) {
+        if (ciTextView.text == current)
+            ciTextView.setTextColor(
+                context.getColorAttr(R.attr.colorCurrentClip)
+            )
+        else ciTextView.setTextColor(
+            context.getColorAttr(R.attr.colorTextPrimary)
+        )
+    }
+
+    fun applyForMultiSelectionState(clip: Clip, isMultiSelectionState: Boolean): Unit = with(binding) {
+        if (isMultiSelectionState) {
+            ciCopyButton.hide()
+            ciTimeText.hide()
+            ciTagLayout.hide()
+            ciPinImage.hide()
+        } else {
+            ciCopyButton.show()
+            ciTimeText.show()
+            ciTagLayout.show()
+            if (clip.isPinned) {
+                ciPinImage.show()
+            }
+        }
+    }
+
+    fun applyForSelectedClips(clip: Clip, isExpanded: Boolean, selectedClips: List<Clip>?): Unit = with(binding) {
+        if (selectedClips == null) return
+        when {
+            selectedClips.contains(clip) -> {
+                mainCard.setCardBackgroundColor(CARD_SELECTED_COLOR)
+            }
+            else -> {
+                /**
+                * We are also checking if clip is expanded. Since for large item set
+                * it kinda forgets about it due to recreation of whole list.
+                */
+                if (!isExpanded)
+                    mainCard.setCardBackgroundColor(CARD_COLOR)
+            }
+        }
+    }
+
+    fun updatePinButton(clip: Clip): Unit = with(binding) {
         if (clip.isPinned) {
             setButtonDrawable(ciBtnPin, R.drawable.ic_unpin)
-            ciBtnPin.text = holder.itemView.context.getString(R.string.unpin)
+            ciBtnPin.text = context.getString(R.string.unpin)
             ciPinImage.show()
         } else {
             setButtonDrawable(ciBtnPin, R.drawable.ic_pin)
-            ciBtnPin.text = holder.itemView.context.getString(R.string.pin)
+            ciBtnPin.text = context.getString(R.string.pin)
             ciPinImage.collapse()
         }
     }
-
     private fun setButtonDrawable(view: TextView, @DrawableRes imageId: Int) {
         view.setCompoundDrawablesWithIntrinsicBounds(
             null, ContextCompat.getDrawable(view.context, imageId), null, null
         )
     }
 
-    private fun setTags(holder: ClipAdapterHolder, clip: Clip) = with(holder.binding) {
+    fun updateTags(clip: Clip): Unit = with(binding) {
         ciTagLayout.removeAllViews()
         clip.tags?.keys()?.forEach mainLoop@{ key ->
             if (key.isNotBlank()) {
@@ -252,24 +269,34 @@ class ClipAdapter(
         }
     }
 
-    fun setCopyClick(block: (Clip, Int) -> Unit) {
-        this.copyClick = block
+    fun renderImageMarkdown(data: String) : Unit = with(binding) {
+        if (ClipUtils.isMarkdownImage(data)) {
+            val imageUrl = ClipUtils.getMarkdownImageUrl(data)
+
+            ciImageView.show()
+
+            ciImageView.load(
+                uri = imageUrl,
+                onSuccess = {
+                    ciTextView.hide()
+                },
+                onError = {
+                    ciImageView.collapse()
+                    ciTextView.show()
+                }
+            )
+        } else {
+            ciTextView.show()
+            ciImageView.collapse()
+        }
     }
 
-    fun setMenuItemClick(block: (Clip, Int, MenuType) -> Unit) {
-        this.menuClick = block
+    fun updateHolderTags(clip: Clip) {
+        tag.isSwipeEnabled = (clip.tags?.none { it.key == ClipTag.LOCK.small() } == true)
     }
 
-    fun getItemAt(pos: Int): Clip =
-        getItem(pos)
-
-    enum class MenuType {
-        Edit, Pin, Special, Share
+    enum class Payloads {
+        UpdateSelectedItem
     }
-}
-
-class ClipAdapterHolder(val binding: ItemClipBinding) : RecyclerView.ViewHolder(binding.root) {
-    var tag: Tag = Tag()
-    inner class Tag(var isSwipeEnabled: Boolean = true)
 }
 
