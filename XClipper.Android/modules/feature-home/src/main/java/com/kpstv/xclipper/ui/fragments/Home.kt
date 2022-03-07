@@ -191,8 +191,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
                     binding.fabAddItem.hide()
                     swipeToDeleteItemTouch.attachToRecyclerView(null)
                 }
-                else -> { /* no-op */
-                }
+                else -> { /* no-op */ }
             }
         }
         mainViewModel.stateManager.selectedItemClips.observe(viewLifecycleOwner) { clips ->
@@ -311,11 +310,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
                     swipeToDeleteItemTouch.attachToRecyclerView(null)
             }
 
-            RecyclerViewInsetHelper().attach(
-                ciRecyclerView,
-                RecyclerViewInsetHelper.InsetType.BOTTOM,
-                true
-            )
+            RecyclerViewInsetHelper().attach(ciRecyclerView, RecyclerViewInsetHelper.InsetType.BOTTOM, true)
             recyclerViewScrollHelper.attach(
                 ciRecyclerView,
                 onScrollDown = {
@@ -380,17 +375,12 @@ class Home : ValueFragment(R.layout.fragment_home) {
     }
 
     private fun showUndoAndDelete(itemsToRemove: List<ClipAdapterItem>) {
-        val containsLogTagItem =
-            itemsToRemove.any { it.clip.tags?.containsKey(ClipTag.LOCK.small()) == true }
+        val containsLogTagItem = itemsToRemove.any { it.clip.tags?.containsKey(ClipTag.LOCK.small()) == true }
         if (containsLogTagItem) {
-            Toasty.warning(
-                requireContext(),
-                getString(R.string.error_delete_lock_tag, getString(ClipTag.LOCK.titleRes))
-            ).show()
+            Toasty.warning(requireContext(), getString(R.string.error_delete_lock_tag, getString(ClipTag.LOCK.titleRes))).show()
         }
 
-        val finalItemsToRemove =
-            itemsToRemove.filterNot { it.clip.tags?.containsKey(ClipTag.LOCK.small()) == true }
+        val finalItemsToRemove = itemsToRemove.filterNot { it.clip.tags?.containsKey(ClipTag.LOCK.small()) == true }
 
         if (finalItemsToRemove.isEmpty()) return
 
@@ -492,19 +482,14 @@ class Home : ValueFragment(R.layout.fragment_home) {
                 mainViewModel.searchManager.clearSearch()
             }
         )
-        searchView.setOnSearchViewListener(object :
-            SimpleSearchView.SearchViewListener by DefaultSearchViewListener {
+        searchView.setOnSearchViewListener(object : SimpleSearchView.SearchViewListener by DefaultSearchViewListener {
             override fun onSearchViewClosed() {
                 mainViewModel.searchManager.clearSearch()
             }
         })
     }
 
-    private fun updateSearchAndTagFilters(
-        searches: List<String>,
-        tags: List<Tag>,
-        specialTags: List<SpecialTagFilter>
-    ) {
+    private fun updateSearchAndTagFilters(searches: List<String>, tags: List<Tag>, specialTags: List<SpecialTagFilter>) {
         binding.ciChipGroup.removeAllViews()
         searches.forEach { query ->
             binding.ciChipGroup.addView(
@@ -571,9 +556,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
         toolbar.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
         toolbar.inflateMenu(R.menu.normal_menu)
 
-        val syncImage =
-            LayoutInflater.from(requireContext())
-                .inflate(R.layout.imageview_menu_item, null) as ImageView
+        val syncImage = LayoutInflater.from(requireContext()).inflate(R.layout.imageview_menu_item, null) as ImageView
 
         syncImage.apply {
             setOnClickListener {
@@ -606,8 +589,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
             }
         }
 
-        val settingImage = LayoutInflater.from(requireContext())
-            .inflate(R.layout.imageview_menu_setting, null) as ImageView
+        val settingImage = LayoutInflater.from(requireContext()).inflate(R.layout.imageview_menu_setting, null) as ImageView
         settingImage.setOnClickListener {
             settingsNavigation.navigate()
         }
@@ -641,10 +623,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
             view.children.forEach loop@{ child ->
                 if (child is RecyclerView) {
                     child.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
-                        override fun onInterceptTouchEvent(
-                            rv: RecyclerView,
-                            e: MotionEvent
-                        ): Boolean {
+                        override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
                             return onTouchListener.onTouch(rv, e)
                         }
 
