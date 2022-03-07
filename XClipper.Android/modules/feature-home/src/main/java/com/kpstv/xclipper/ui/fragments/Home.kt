@@ -198,14 +198,9 @@ class Home : ValueFragment(R.layout.fragment_home) {
             if (mainViewModel.stateManager.isMultiSelectionStateActive() && clips?.isEmpty() == true)
                 mainViewModel.stateManager.setToolbarState(ToolbarState.NormalViewState)
 
-            binding.toolbar.menu.findItem(R.id.action_mergeAll)?.isVisible =
-                mainViewModel.stateManager.isMultiSelectionStateActive() && clips.size > 1
+            binding.toolbar.menu.findItem(R.id.action_mergeAll)?.isVisible = mainViewModel.stateManager.isMultiSelectionStateActive() && clips.size > 1
         }
-        combineTuple(
-            mainViewModel.searchManager.searchFilters,
-            mainViewModel.searchManager.tagFilters,
-            mainViewModel.searchManager.specialTagFilters
-        )
+        combineTuple(mainViewModel.searchManager.searchFilters, mainViewModel.searchManager.tagFilters, mainViewModel.searchManager.specialTagFilters)
             .observe(viewLifecycleOwner) { (searchFilters: List<String>?, tagFilters: List<Tag>?, specialTagFilters: List<SpecialTagFilter>?) ->
                 if (searchFilters == null || tagFilters == null || specialTagFilters == null) return@observe
                 updateSearchAndTagFilters(searchFilters, tagFilters, specialTagFilters)
@@ -263,10 +258,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
         }
 
         adapter.setCopyClick { clip, _ ->
-            clipboardProvider.setClipboard(
-                data = clip.data,
-                flag = ClipboardProviderFlags.IgnoreObservedAction
-            )
+            clipboardProvider.setClipboard(data = clip.data, flag = ClipboardProviderFlags.IgnoreObservedAction)
             Toasty.info(requireContext(), getString(R.string.copy_to_clipboard)).show()
         }
 
