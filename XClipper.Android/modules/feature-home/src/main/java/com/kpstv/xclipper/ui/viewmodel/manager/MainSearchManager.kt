@@ -123,6 +123,7 @@ class MainSearchManager @Inject constructor() {
         clearSearch()
         clearAllSearchFilter()
         clearAllTagFilter()
+        clearAllSpecialTag()
     }
     private val TAG = javaClass.simpleName
 }

@@ -145,7 +145,8 @@
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/ci_timeText">
+                app:layout_constraintTop_toBottomOf="@id/ci_timeText"
+                grid:visibility="visible">
 
                 <View
                     android:layout_width="wrap_content"
@@ -169,6 +170,7 @@
                         android:drawableTop="@drawable/ic_edit"
                         android:foreground="?selectableItemBackground"
                         android:text="@string/edit"
+                        app:drawableTint="?colorTextSecondary"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/ci_btn_pin"
                         app:layout_constraintStart_toStartOf="parent"
@@ -182,6 +184,7 @@
                         android:drawableTop="@drawable/ic_pin"
                         android:foreground="?selectableItemBackground"
                         android:text="@string/pin"
+                        app:drawableTint="?colorTextSecondary"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/ci_btn_special"
                         app:layout_constraintStart_toEndOf="@id/ci_btn_edit"
@@ -195,6 +198,7 @@
                         android:drawableTop="@drawable/ic_special"
                         android:foreground="?selectableItemBackground"
                         android:text="@string/more"
+                        app:drawableTint="?colorTextSecondary"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/ci_btn_share"
                         app:layout_constraintStart_toEndOf="@id/ci_btn_pin"
@@ -208,6 +212,7 @@
                         android:drawableTop="@drawable/ic_share"
                         android:foreground="?selectableItemBackground"
                         android:text="@string/share"
+                        app:drawableTint="?colorTextSecondary"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/ci_btn_special"

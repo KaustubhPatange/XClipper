@@ -1,7 +1,5 @@
 package com.kpstv.xclipper.data.model
 
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -25,7 +23,7 @@ data class Clip(
     val data: String,
     val time: Date,
     val isPinned: Boolean = false,
-    var tags: List<ClipTagMap>? = null
+    val tags: List<ClipTagMap>? = null
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0

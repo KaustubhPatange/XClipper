@@ -27,7 +27,7 @@ internal class TurnOnService : AbstractWelcomeFragment() {
     }
 
     private fun conditionalNavigation() {
-        if (ClipboardLogDetector.isDetectionCompatible(requireContext())) {
+        if (shouldShowImproveDetectionScreen()) {
             navigateTo(OnBoardingRoutes.IMPROVE_DETECTION)
         } else {
             navigateTo(OnBoardingRoutes.ENABLE_SUGGESTIONS)
@@ -35,10 +35,18 @@ internal class TurnOnService : AbstractWelcomeFragment() {
     }
 
     private fun conditionalNavigationPalette() : Int {
-        return if (ClipboardLogDetector.isDetectionCompatible(requireContext())) {
+        return if (shouldShowImproveDetectionScreen()) {
             R.color.palette3
         } else {
             R.color.palette_improve
+        }
+    }
+
+    private fun shouldShowImproveDetectionScreen() : Boolean {
+        return if (ClipboardLogDetector.isDetectionVersionCompatible()) {
+            !ClipboardLogDetector.isDetectionCompatible(requireContext())
+        } else {
+            false
         }
     }
 }

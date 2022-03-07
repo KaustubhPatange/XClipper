@@ -36,7 +36,7 @@ private object LibraryVersion {
     const val HVLOG = "0.1-alpha06"
     const val COIL = "1.0.0-rc3"
     const val GLIDE = "4.11.0"
-    const val RECYCLERVIEW = "1.1.0"
+    const val RECYCLERVIEW = "1.2.1"
     const val CWT = "0.1.7"
     const val HILT = "1.0.0"
     const val AUTO_BINDINGS = "1.1-beta04"

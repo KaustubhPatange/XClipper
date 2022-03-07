@@ -72,6 +72,7 @@ class DisclosureSheet : CustomRoundedBottomSheetFragment(R.layout.bottom_sheet_d
                     is DisclosureState.UpdatePolicy -> {
                         update(state.data, state.lastUpdated)
                     }
+                    is DisclosureState.Loading -> {}
                     else -> {
                         // show cached raw privacy policy
                         val policyText = resources.openRawResource(R.raw.policy).bufferedReader().readText()

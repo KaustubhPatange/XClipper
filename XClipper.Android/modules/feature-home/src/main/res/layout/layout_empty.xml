@@ -22,7 +22,7 @@
         <TextView
             android:textColor="?colorSeparator"
             android:layout_marginTop="20dp"
-            android:textAlignment="center"
+            android:gravity="center"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
             android:textSize="20sp"
