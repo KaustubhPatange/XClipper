@@ -1,14 +1,16 @@
 package com.kpstv.xclipper.ui.viewmodel.manager
 
+import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.extension.enumeration.SpecialTagFilter
+import com.kpstv.xclipper.extensions.SaveRestore
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class MainSearchManager @Inject constructor() {
+class MainSearchManager @Inject constructor() : SaveRestore {
 
     private val _searchString = MutableLiveData("")
     private val _searchArrayFilter = MutableLiveData<List<String>>(emptyList())
@@ -124,6 +126,31 @@ class MainSearchManager @Inject constructor() {
         clearAllSearchFilter()
         clearAllTagFilter()
         clearAllSpecialTag()
+    }
+
+    override fun saveState(bundle: Bundle) {
+        val out = Bundle().apply {
+            _searchArrayFilter.value?.let { putStringArrayList(KEY_SEARCH_ARRAY, ArrayList(it)) }
+            _tagArrayFilter.value?.let { putParcelableArrayList(KEY_TAG_ARRAY, ArrayList(it)) }
+            _specialTagFilter.value?.let { putParcelableArrayList(KEY_SPECIAL_ARRAY, ArrayList(it)) }
+        }
+        bundle.putBundle(SAVE_KEY, out)
+    }
+
+    override fun restoreState(bundle: Bundle?) {
+        bundle?.getBundle(SAVE_KEY)?.let { out ->
+            out.getStringArrayList(KEY_SEARCH_ARRAY)?.let { _searchArrayFilter.postValue(it) }
+            out.getParcelableArrayList<Tag>(KEY_TAG_ARRAY)?.let { _tagArrayFilter.postValue(it) }
+            out.getParcelableArrayList<SpecialTagFilter>(KEY_SPECIAL_ARRAY)?.let { _specialTagFilter.postValue(it) }
+        }
+    }
+
+    private companion object {
+        private const val SAVE_KEY = "com.kpstv.xclipper:MainSearchManager"
+
+        private const val KEY_SEARCH_ARRAY = "searchArray"
+        private const val KEY_TAG_ARRAY = "tagArray"
+        private const val KEY_SPECIAL_ARRAY = "specialArray"
     }
     private val TAG = javaClass.simpleName
 }

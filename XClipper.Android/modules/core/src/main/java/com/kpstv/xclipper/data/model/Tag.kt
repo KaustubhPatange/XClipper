@@ -1,15 +1,18 @@
 package com.kpstv.xclipper.data.model
 
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.kpstv.bindings.AutoGenerateConverter
 import com.kpstv.bindings.AutoGenerateListConverter
 import com.kpstv.bindings.ConverterType
+import kotlinx.parcelize.Parcelize
 
 @Entity(tableName = "table_tag")
 @AutoGenerateConverter(using = ConverterType.GSON)
 @AutoGenerateListConverter(using = ConverterType.GSON)
+@Parcelize
 data class Tag(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
@@ -18,7 +21,7 @@ data class Tag(
     val name: String,
     @ColumnInfo(name = "type")
     val type: ClipTagType
-) {
+) : Parcelable {
 
     fun getClipTag() : ClipTag? = ClipTag.fromValue(name)
     companion object {

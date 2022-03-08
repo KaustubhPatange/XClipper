@@ -18,7 +18,6 @@ import com.kpstv.xclipper.feature_home.databinding.ItemClipBinding
 import com.kpstv.xclipper.ui.helpers.AppThemeHelper.CARD_CLICK_COLOR
 import com.kpstv.xclipper.ui.helpers.AppThemeHelper.CARD_COLOR
 import com.kpstv.xclipper.ui.helpers.AppThemeHelper.CARD_SELECTED_COLOR
-import okhttp3.internal.filterList
 
 data class ClipAdapterItem constructor(
     val clip: Clip,

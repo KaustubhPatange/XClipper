@@ -1,5 +1,6 @@
 package com.kpstv.xclipper.data.model
 
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -12,6 +13,7 @@ import com.kpstv.xclipper.data.converters.DateFormatConverter
 import com.kpstv.xclipper.extensions.ClipTagMap
 import com.kpstv.xclipper.extensions.Logger
 import com.kpstv.xclipper.extensions.utils.ClipUtils
+import kotlinx.parcelize.Parcelize
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
@@ -158,7 +160,8 @@ enum class ClipTag(val marker: Int) {
     }
 }
 
-enum class ClipTagType {
+@Parcelize
+enum class ClipTagType : Parcelable {
     /**
      * System tags are phone, date, url that are automatically assigned based on text recognition.
      */
