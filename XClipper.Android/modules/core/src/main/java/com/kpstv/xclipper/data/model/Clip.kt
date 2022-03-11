@@ -54,7 +54,7 @@ data class Clip(
     companion object {
         private const val FULL_DATA_FORMAT = "dd MMM yyyy, hh:mm a"
 
-        fun fromJson(model: String): Clip = ClipConverter.fromStringToClip(model)!!
+        fun fromJson(json: String): Clip = ClipConverter.fromStringToClip(json)!!
 
         /**
          * Generates Clip data along with the properties "data", "time"
