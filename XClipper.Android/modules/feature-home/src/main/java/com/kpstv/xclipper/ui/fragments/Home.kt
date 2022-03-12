@@ -67,17 +67,12 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class Home : ValueFragment(R.layout.fragment_home) {
 
-    @Inject
-    lateinit var clipboardProvider: ClipboardProvider
-    @Inject
-    lateinit var appSettings: AppSettings
-    @Inject
-    lateinit var firebaseProviderHelper: FirebaseProviderHelper
+    @Inject lateinit var clipboardProvider: ClipboardProvider
+    @Inject lateinit var appSettings: AppSettings
+    @Inject lateinit var firebaseProviderHelper: FirebaseProviderHelper
 
-    @Inject
-    lateinit var settingsNavigation: SettingsNavigation
-    @Inject
-    lateinit var specialSheetNavigation: SpecialSheetNavigation
+    @Inject lateinit var settingsNavigation: SettingsNavigation
+    @Inject lateinit var specialSheetNavigation: SpecialSheetNavigation
 
     private lateinit var adapter: ClipAdapter
     private var undoSnackBar: Snackbar? = null

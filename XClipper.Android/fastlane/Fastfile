@@ -20,7 +20,7 @@ platform :android do
   lane :beta do
     gradle(task: "app:checkForChangelog")
     gradle(task: "clean bundleRelease")
-    upload_to_play_store(track: 'beta')
+    upload_to_play_store(track: 'beta', skip_upload_metadata: true, skip_upload_images: true, skip_upload_screenshots: true)
   end
 end
 
