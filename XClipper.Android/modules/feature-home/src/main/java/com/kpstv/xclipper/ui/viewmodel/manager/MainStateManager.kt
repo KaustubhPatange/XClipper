@@ -3,9 +3,9 @@ package com.kpstv.xclipper.ui.viewmodel.manager
 import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.extension.enumeration.DialogState
 import com.kpstv.xclipper.extension.enumeration.ToolbarState
+import com.kpstv.xclipper.ui.adapter.ClipAdapterItem
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -21,12 +21,12 @@ class MainStateManager @Inject constructor() {
     private val _dialogState: MutableLiveData<DialogState> =
         MutableLiveData(DialogState.Normal)
 
-    private val _selectedItemClips = MutableLiveData<List<Clip>>()
+    private val _selectedItemClips = MutableLiveData<List<ClipAdapterItem>>()
     private val _isMultiSelectionEnabled = MutableLiveData<Boolean>()
 
-    private val _selectedItem = MutableLiveData<Clip>()
+    private val _expandedItem = MutableLiveData<ClipAdapterItem>()
 
-    val selectedItemClips: LiveData<List<Clip>>
+    val selectedItemClips: LiveData<List<ClipAdapterItem>>
         get() = _selectedItemClips
 
     val toolbarState: LiveData<ToolbarState>
@@ -35,8 +35,8 @@ class MainStateManager @Inject constructor() {
     val dialogState: LiveData<DialogState>
         get() = _dialogState
 
-    val selectedItem: LiveData<Clip>
-        get() = _selectedItem
+    val expandedItem: LiveData<ClipAdapterItem>
+        get() = _expandedItem
 
     fun setToolbarState(state: ToolbarState) =
         _toolbarState.postValue(state)
@@ -53,7 +53,7 @@ class MainStateManager @Inject constructor() {
     val multiSelectionState: LiveData<Boolean>
         get() = _isMultiSelectionEnabled
 
-    fun addOrRemoveClipFromSelectedList(clip: Clip) {
+    fun addOrRemoveClipFromSelectedList(clip: ClipAdapterItem) {
         var list = _selectedItemClips.value?.toMutableList()
         if (list == null)
             list = ArrayList()
@@ -67,26 +67,30 @@ class MainStateManager @Inject constructor() {
         _selectedItemClips.postValue(list)
     }
 
-    fun addOrRemoveSelectedItem(clip: Clip) {
-        _selectedItem.value?.let {
+    fun addOrRemoveExpandedItem(clip: ClipAdapterItem) {
+        _expandedItem.value?.let {
             if (it == clip) {
-                clearSelectedItem()
+                clearExpandedItem()
                 return
             }
         }
-        _selectedItem.postValue(clip)
+        _expandedItem.postValue(clip)
     }
 
-    fun clearSelectedItem() {
-        _selectedItem.postValue(null)
+    fun clearExpandedItem() {
+        _expandedItem.postValue(null)
     }
 
-    fun addAllToSelectedList(clips: ArrayList<Clip>) {
+    fun addAllToSelectedList(clips: List<ClipAdapterItem>) {
         _selectedItemClips.postValue(clips)
     }
 
     fun clearSelectedList() {
-        _selectedItemClips.postValue(ArrayList())
+        _selectedItemClips.postValue(emptyList())
+    }
+
+    fun repostMultiSelectionState() {
+        _isMultiSelectionEnabled.postValue(_isMultiSelectionEnabled.value)
     }
 
     init {

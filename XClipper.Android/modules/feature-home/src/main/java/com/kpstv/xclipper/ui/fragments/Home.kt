@@ -36,33 +36,33 @@ import com.kpstv.xclipper.di.navigation.SpecialSheetNavigation
 import com.kpstv.xclipper.extension.DefaultSearchViewListener
 import com.kpstv.xclipper.extension.drawableRes
 import com.kpstv.xclipper.extension.enumeration.SpecialTagFilter
-import com.kpstv.xclipper.extensions.*
-import com.kpstv.xclipper.extensions.enumerations.FirebaseState
+import com.kpstv.xclipper.extension.enumeration.ToolbarState
 import com.kpstv.xclipper.extension.listener.StatusListener
 import com.kpstv.xclipper.extension.recyclerview.RecyclerViewInsetHelper
-import com.kpstv.xclipper.ui.helpers.SwipeDeleteHelper
-import com.kpstv.xclipper.ui.helpers.AppThemeHelper.registerForThemeChange
-import com.kpstv.xclipper.ui.activities.ChangeClipboardActivity
-import com.kpstv.xclipper.ui.adapter.ClipAdapter
-import com.kpstv.xclipper.ui.dialogs.EditDialog
-import com.kpstv.xclipper.ui.dialogs.TagDialog
 import com.kpstv.xclipper.extension.recyclerview.RecyclerViewScrollHelper
-import com.kpstv.xclipper.extensions.utils.ClipboardUtils
-import com.kpstv.xclipper.extensions.utils.ShareUtils
-import com.kpstv.xclipper.feature_home.databinding.FragmentHomeBinding
-import com.kpstv.xclipper.service.ClipboardAccessibilityService
-import com.kpstv.xclipper.extension.enumeration.ToolbarState
 import com.kpstv.xclipper.extension.setOnQueryTextListener
 import com.kpstv.xclipper.extension.titleRes
+import com.kpstv.xclipper.extensions.*
+import com.kpstv.xclipper.extensions.enumerations.FirebaseState
+import com.kpstv.xclipper.extensions.utils.ClipboardUtils
+import com.kpstv.xclipper.extensions.utils.ShareUtils
 import com.kpstv.xclipper.feature_home.R
+import com.kpstv.xclipper.feature_home.databinding.FragmentHomeBinding
+import com.kpstv.xclipper.service.ClipboardAccessibilityService
+import com.kpstv.xclipper.ui.activities.ChangeClipboardActivity
+import com.kpstv.xclipper.ui.adapter.ClipAdapter
+import com.kpstv.xclipper.ui.adapter.ClipAdapterItem
+import com.kpstv.xclipper.ui.adapter.ClipAdapterItem.Companion.toClips
+import com.kpstv.xclipper.ui.dialogs.EditDialog
+import com.kpstv.xclipper.ui.dialogs.TagDialog
 import com.kpstv.xclipper.ui.helpers.*
+import com.kpstv.xclipper.ui.helpers.AppThemeHelper.registerForThemeChange
 import com.kpstv.xclipper.ui.helpers.fragments.SyncDialogHelper
 import com.kpstv.xclipper.ui.viewmodel.MainViewModel
 import com.zhuinden.livedatacombinetuplekt.combineTuple
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
 class Home : ValueFragment(R.layout.fragment_home) {
@@ -96,6 +96,16 @@ class Home : ValueFragment(R.layout.fragment_home) {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         registerForThemeChange()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        mainViewModel.searchManager.restoreState(savedInstanceState)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        mainViewModel.searchManager.saveState(outState)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -164,8 +174,14 @@ class Home : ValueFragment(R.layout.fragment_home) {
                 binding.layoutEmptyParent.root.show()
             else
                 binding.layoutEmptyParent.root.collapse()
-            if (clips != null) adapter.submitList(clips)
-            mainViewModel.stateManager.clearSelectedItem()
+            if (clips != null) {
+                val items = clips.map { ClipAdapterItem.from(it) }
+                adapter.submitList(items) {
+                    mainViewModel.stateManager.repostMultiSelectionState()
+                    adapter.updateCurrentClipboardItem(clipboardProvider.getCurrentClip().value)
+                }
+            }
+            mainViewModel.stateManager.clearExpandedItem()
         }
         mainViewModel.stateManager.toolbarState.observe(viewLifecycleOwner) { state ->
             when (state) {
@@ -180,7 +196,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
                     binding.fabAddItem.hide()
                     swipeToDeleteItemTouch.attachToRecyclerView(null)
                 }
-                else -> { /* no-op */}
+                else -> { /* no-op */ }
             }
         }
         mainViewModel.stateManager.selectedItemClips.observe(viewLifecycleOwner) { clips ->
@@ -198,23 +214,35 @@ class Home : ValueFragment(R.layout.fragment_home) {
 
     private fun setRecyclerView() {
         adapter = ClipAdapter(
-            lifecycleOwner = viewLifecycleOwner,
-            selectedClips = mainViewModel.stateManager.selectedItemClips,
-            selectedItem = mainViewModel.stateManager.selectedItem,
-            currentClip = mainViewModel.currentClip,
-            multiSelectionState = mainViewModel.stateManager.multiSelectionState,
-            onClick = { clip, _ ->
+            onClick = { clipAdapterItem, _ ->
                 if (mainViewModel.stateManager.isMultiSelectionStateActive())
-                    mainViewModel.stateManager.addOrRemoveClipFromSelectedList(clip)
+                    mainViewModel.stateManager.addOrRemoveClipFromSelectedList(clipAdapterItem)
                 else
-                    mainViewModel.stateManager.addOrRemoveSelectedItem(clip)
+                    mainViewModel.stateManager.addOrRemoveExpandedItem(clipAdapterItem)
             },
             onLongClick = { clip, _ ->
-                mainViewModel.stateManager.clearSelectedItem()
+                mainViewModel.stateManager.clearExpandedItem()
                 mainViewModel.stateManager.setToolbarState(ToolbarState.MultiSelectionState)
                 mainViewModel.stateManager.addOrRemoveClipFromSelectedList(clip)
             }
         )
+
+        mainViewModel.stateManager.selectedItemClips.observe(viewLifecycleOwner) { clips ->
+            adapter.addToSelectionItems(clips)
+        }
+        mainViewModel.stateManager.expandedItem.observe(viewLifecycleOwner) { clip ->
+            if (clip == null) {
+                adapter.clearExpandedItem()
+            } else {
+                adapter.updateExpandedItem(clip)
+            }
+        }
+        mainViewModel.stateManager.multiSelectionState.observe(viewLifecycleOwner) { value ->
+            adapter.updateItemsForMultiSelectionState(isMultiSelectionState = (value == true))
+        }
+        mainViewModel.currentClip.observe(viewLifecycleOwner) { currentClipText ->
+            adapter.updateCurrentClipboardItem(currentClipText)
+        }
 
         // Adapter settings
 
@@ -343,13 +371,13 @@ class Home : ValueFragment(R.layout.fragment_home) {
         showUndoAndDelete(itemsToRemove)
     }
 
-    private fun showUndoAndDelete(itemsToRemove: List<Clip>) {
-        val containsLogTagItem = itemsToRemove.any { it.tags?.containsKey(ClipTag.LOCK.small()) == true }
+    private fun showUndoAndDelete(itemsToRemove: List<ClipAdapterItem>) {
+        val containsLogTagItem = itemsToRemove.any { it.clip.tags?.containsKey(ClipTag.LOCK.small()) == true }
         if (containsLogTagItem) {
             Toasty.warning(requireContext(), getString(R.string.error_delete_lock_tag, getString(ClipTag.LOCK.titleRes))).show()
         }
 
-        val finalItemsToRemove = itemsToRemove.filterNot { it.tags?.containsKey(ClipTag.LOCK.small()) == true }
+        val finalItemsToRemove = itemsToRemove.filterNot { it.clip.tags?.containsKey(ClipTag.LOCK.small()) == true }
 
         if (finalItemsToRemove.isEmpty()) return
 
@@ -365,7 +393,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
 
         val snackBarCallback = object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-                mainViewModel.deleteMultipleFromRepository(finalItemsToRemove)
+                mainViewModel.deleteMultipleFromRepository(finalItemsToRemove.toClips())
             }
         }
 
@@ -402,23 +430,23 @@ class Home : ValueFragment(R.layout.fragment_home) {
         dialog.show()
     }
 
-    private fun showUndoAndMerge(items: List<Clip>) {
+    private fun showUndoAndMerge(items: List<ClipAdapterItem>) {
         undoSnackBar?.dismiss() // clear previous snackbar
 
-        val clip = Clip.from(items)
+        val clip = Clip.from(items.toClips())
 
         val clonedItems = ArrayList(adapter.currentList)
         val tweakItems = ArrayList(adapter.currentList)
 
         val index = tweakItems.indexOf(items.last())
-        tweakItems.add(index, clip)
+        tweakItems.add(index, ClipAdapterItem.from(clip))
         tweakItems.removeAll(items)
 
         adapter.submitList(tweakItems)
 
         val snackBarCallback = object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-                mainViewModel.mergeClipsFromRepository(items)
+                mainViewModel.mergeClipsFromRepository(items.toClips())
             }
         }
 
@@ -525,9 +553,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
         toolbar.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
         toolbar.inflateMenu(R.menu.normal_menu)
 
-        val syncImage =
-            LayoutInflater.from(requireContext())
-                .inflate(R.layout.imageview_menu_item, null) as ImageView
+        val syncImage = LayoutInflater.from(requireContext()).inflate(R.layout.imageview_menu_item, null) as ImageView
 
         syncImage.apply {
             setOnClickListener {
@@ -591,12 +617,13 @@ class Home : ValueFragment(R.layout.fragment_home) {
         if (view !is TextView)
             view.setOnTouchListener(onTouchListener)
         if (view is ViewGroup) {
-            view.children.forEach loop@ { child ->
+            view.children.forEach loop@{ child ->
                 if (child is RecyclerView) {
                     child.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
                         override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
                             return onTouchListener.onTouch(rv, e)
                         }
+
                         override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
                         override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
                     })

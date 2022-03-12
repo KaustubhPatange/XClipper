@@ -1,6 +1,7 @@
 package com.kpstv.xclipper.ui.viewmodel.manager
 
 import android.annotation.SuppressLint
+import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.kpstv.xclipper.data.localized.TagDao
@@ -8,6 +9,7 @@ import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.ClipTag
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.extensions.ClipTagMap
+import com.kpstv.xclipper.extensions.SaveRestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
@@ -19,7 +21,7 @@ import javax.inject.Singleton
 @Singleton
 class MainEditManager @Inject constructor(
     tagRepository: TagDao
-) {
+) : SaveRestore {
     private val _spanCount = MutableLiveData(-1)
     private val _clip = MutableLiveData<Clip>()
     private val _tagFixedLiveData = MutableLiveData<List<Tag>>()
@@ -94,7 +96,29 @@ class MainEditManager @Inject constructor(
         }
     }
 
+    override fun saveState(bundle: Bundle) {
+        val out = Bundle().apply {
+            _selectedTags.value?.let { putParcelableArrayList(KEY_SELECTED_TAGS, ArrayList(it)) }
+            _clip.value?.let {
+                putString(KEY_CLIP, it.toJson())
+            }
+        }
+        bundle.putBundle(SAVE_KEY, out)
+    }
+
+    override fun restoreState(bundle: Bundle?) {
+        bundle?.getBundle(SAVE_KEY)?.let { out ->
+            out.getParcelableArrayList<ClipTagMap>(KEY_SELECTED_TAGS)?.let { _selectedTags.postValue(it) }
+            out.getString(KEY_CLIP)?.let { _clip.value = Clip.fromJson(it) }
+        }
+    }
+
     private companion object {
         private const val EMPTY_STRING = ""
+
+        private const val SAVE_KEY = "com.kpstv.xclipper:MainEditManager"
+        private const val KEY_CLIP = "clip"
+        private const val KEY_CLIP_TEXT = "clip"
+        private const val KEY_SELECTED_TAGS = "selectedTags"
     }
 }

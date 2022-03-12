@@ -6,10 +6,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.kpstv.xclipper.data.model.Clip
+import com.kpstv.xclipper.extension.listener.RepositoryListener
 import com.kpstv.xclipper.extensions.clone
 import com.kpstv.xclipper.extensions.drawableFrom
-import com.kpstv.xclipper.extension.listener.RepositoryListener
-import com.kpstv.xclipper.ui.helpers.AppThemeHelper
 import com.kpstv.xclipper.extensions.viewBinding
 import com.kpstv.xclipper.feature_home.R
 import com.kpstv.xclipper.feature_home.databinding.DialogEditLayoutBinding
@@ -24,9 +23,9 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class EditDialog : AppCompatActivity() {
 
-    companion object {
-        const val STATE_DIALOG_TEXT_FIELD = "state_dialog_text_field"
-        const val STATE_TAG_RECYCLERVIEW = "state_tag_recyclerview"
+    private companion object {
+        private const val STATE_DIALOG_TEXT_FIELD = "state_dialog_text_field"
+        private const val STATE_TAG_RECYCLERVIEW = "state_tag_recyclerview"
 
         private const val STAGGERED_SPAN_COUNT = 2
         private const val STAGGERED_SPAN_COUNT_MIN = 1
@@ -44,6 +43,8 @@ class EditDialog : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        mainViewModel.editManager.restoreState(savedInstanceState)
 
         HomeThemeHelper.apply(this)
 
@@ -100,18 +101,14 @@ class EditDialog : AppCompatActivity() {
 
     private fun performEditTask(text: String) {
         mainViewModel.checkForDuplicateClip(text, clip.id, RepositoryListener(
-            dataExist = Toasty.error(
-                this,
-                getString(R.string.error_duplicate_data)
-            )::show,
+            dataExist = Toasty.error(this, getString(R.string.error_duplicate_data))::show,
             notFound = {
                 mainViewModel.postUpdateToRepository(
-                    clip,
+                    oldClip = clip,
                     /** In the second parameter we are also supplying the tags as well. */
-                    /** In the second parameter we are also supplying the tags as well. */
-                    clip.clone(text, mainViewModel.editManager.getSelectedTags())
+                    newClip = clip.clone(text, mainViewModel.editManager.getSelectedTags()),
+                    onComplete = ::postSuccess
                 )
-                postSuccess()
             }
         ))
     }
@@ -119,17 +116,15 @@ class EditDialog : AppCompatActivity() {
     private fun performCreateTask(text: String) {
         mainViewModel.checkForDuplicateClip(text,
             RepositoryListener(
-                dataExist = Toasty.error(
-                    this,
-                    getString(R.string.error_duplicate_data)
-                )::show,
+                dataExist = Toasty.error(this, getString(R.string.error_duplicate_data))::show,
                 notFound = {
                     mainViewModel.postToRepository(
-                        Clip.from(text, mainViewModel.editManager.getSelectedTags())
+                        clip = Clip.from(text, mainViewModel.editManager.getSelectedTags()),
+                        onComplete = ::postSuccess
                     )
-                    postSuccess()
                 }
-            ))
+            )
+        )
     }
 
     private fun postSuccess() {
@@ -182,10 +177,18 @@ class EditDialog : AppCompatActivity() {
         val bundle = Bundle().apply {
             if (binding.etMain.text.length < 1000)
                 putString(STATE_DIALOG_TEXT_FIELD, binding.etMain.text.toString())
-            putParcelable(STATE_TAG_RECYCLERVIEW, binding.recyclerView.layoutManager?.onSaveInstanceState())
+            putParcelable(
+                STATE_TAG_RECYCLERVIEW,
+                binding.recyclerView.layoutManager?.onSaveInstanceState()
+            )
         }
         onSaveInstanceState(bundle)
         super.onStop()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        mainViewModel.editManager.saveState(outState)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onDestroy() {

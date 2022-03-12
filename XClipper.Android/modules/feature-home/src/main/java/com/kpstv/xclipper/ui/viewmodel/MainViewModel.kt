@@ -15,6 +15,7 @@ import com.kpstv.xclipper.extension.enumeration.SpecialTagFilter
 import com.kpstv.xclipper.extensions.enumerations.FilterType
 import com.kpstv.xclipper.extension.listener.RepositoryListener
 import com.kpstv.xclipper.extension.listener.StatusListener
+import com.kpstv.xclipper.extensions.SimpleFunction
 import com.kpstv.xclipper.ui.viewmodel.manager.MainEditManager
 import com.kpstv.xclipper.ui.viewmodel.manager.MainSearchManager
 import com.kpstv.xclipper.ui.viewmodel.manager.MainStateManager
@@ -25,6 +26,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -57,10 +59,6 @@ class MainViewModel @Inject constructor(
     }.asLiveData(viewModelIOContext)
 
     val tagLiveData: LiveData<List<Tag>> = tagRepository.getAllLiveData().asLiveData(viewModelIOContext)
-
-    fun postToRepository(clip: Clip) {
-        viewModelScope.launch(viewModelIOContext) { mainRepository.updateRepository(clip, toFirebase = true) }
-    }
 
     fun changeClipPin(clip: Clip?, boolean: Boolean) {
         viewModelScope.launch { mainRepository.updatePin(clip, boolean) }
@@ -99,12 +97,20 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch(viewModelIOContext) { mainRepository.deleteMultiple(clips) }
     }
 
-    fun postUpdateToRepository(oldClip: Clip, newClip: Clip) {
+    fun postUpdateToRepository(oldClip: Clip, newClip: Clip, onComplete: SimpleFunction = {}) {
         viewModelScope.launch(viewModelIOContext) {
             mainRepository.updateClip(newClip, FilterType.Id)
             if (oldClip.data != newClip.data) {
                 firebaseProvider.replaceData(oldClip, newClip)
             }
+            withContext(Dispatchers.Main) { onComplete() }
+        }
+    }
+
+    fun postToRepository(clip: Clip, onComplete: SimpleFunction = {}) {
+        viewModelScope.launch(viewModelIOContext) {
+            mainRepository.updateRepository(clip, toFirebase = true)
+            withContext(Dispatchers.Main) { onComplete() }
         }
     }
 

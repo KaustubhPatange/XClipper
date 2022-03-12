@@ -2,7 +2,7 @@ plugins {
     id(GradlePluginId.ANDROID_LIBRARY)
     id(GradlePluginId.XCLIPPER_ANDROID)
     kotlin(GradlePluginId.ANDROID_KTX)
-    kotlin("kapt")
+    kotlin(GradlePluginId.KAPT)
 }
 
 android {
