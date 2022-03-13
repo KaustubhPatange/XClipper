@@ -2,9 +2,9 @@ package com.kpstv.xclipper.data.provider
 
 import android.content.Context
 import android.net.Uri
+import com.kpstv.xclipper.data.converters.*
 import com.kpstv.xclipper.data.db.MainDatabase
 import com.kpstv.xclipper.data.model.Definition
-import com.kpstv.xclipper.data.model.DefinitionListConverter
 import com.kpstv.xclipper.data.model.*
 import dagger.hilt.android.qualifiers.ApplicationContext
 import org.json.JSONObject
@@ -23,10 +23,10 @@ class BackupProviderImpl @Inject constructor(
         val clipData = database.clipDataDao().getAllData() ?: return false
 
         val obj = JSONObject().apply {
-            put(database::clipTagDao::name.get(), TagListConverter.toStringFromTag(clipTags))
-            put(database::clipUrlDao::name.get(), UrlInfoListConverter.toStringFromUrlInfo(clipUrls))
-            put(database::clipDefineDao::name.get(), DefinitionListConverter.toStringFromDefinition(clipDefines))
-            put(database::clipDataDao::name.get(), ClipListConverter.toStringFromClip(clipData))
+            put(database::clipTagDao::name.get(), TagListConverter.toJsonFromList(clipTags))
+            put(database::clipUrlDao::name.get(), UrlInfoListConverter.toJsonFromList(clipUrls))
+            put(database::clipDefineDao::name.get(), DefinitionListConverter.toJsonFromList(clipDefines))
+            put(database::clipDataDao::name.get(), ClipListConverter.toJsonFromList(clipData))
         }
 
         context.contentResolver.openOutputStream(toUri)?.apply {
@@ -44,10 +44,10 @@ class BackupProviderImpl @Inject constructor(
             stream.close()
 
             JSONObject(json).apply {
-                val clipTags: List<Tag> = TagListConverter.fromStringToTag(getString(database::clipTagDao::name.get())) ?: emptyList()
-                val clipUrls: List<UrlInfo> = UrlInfoListConverter.fromStringToUrlInfo(getString(database::clipUrlDao::name.get())) ?: emptyList()
-                val clipDefines: List<Definition> = DefinitionListConverter.fromStringToDefinition(getString(database::clipDefineDao::name.get())) ?: emptyList()
-                val clipData: List<Clip> = ClipListConverter.fromStringToClip(getString(database::clipDataDao::name.get())) ?: emptyList()
+                val clipTags: List<Tag> = TagListConverter.fromJsonToList(getString(database::clipTagDao::name.get())) ?: emptyList()
+                val clipUrls: List<UrlInfo> = UrlInfoListConverter.fromJsonToList(getString(database::clipUrlDao::name.get())) ?: emptyList()
+                val clipDefines: List<Definition> = DefinitionListConverter.fromJsonToList(getString(database::clipDefineDao::name.get())) ?: emptyList()
+                val clipData: List<Clip> = ClipListConverter.fromJsonToList(getString(database::clipDataDao::name.get())) ?: emptyList()
 
                 database.clipTagDao().deleteAll()
                 database.clipTagDao().insert(clipTags)

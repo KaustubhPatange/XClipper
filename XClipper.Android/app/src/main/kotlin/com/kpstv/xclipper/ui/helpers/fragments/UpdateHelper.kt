@@ -72,7 +72,7 @@ class UpdateHelper(
 
     private suspend fun initialize() {
         val responseString = RetrofitUtils.fetch(SETTINGS_URL).getOrNull()?.asString()
-        val webSettings = WebSettingsConverter.fromStringToWebSettings(responseString) ?: WebSettings()
+        val webSettings = WebSettingsConverter.fromJson(responseString) ?: WebSettings()
 
         if (webSettings.useNewUpdater) {
             checkForUpdatesFromGithub()

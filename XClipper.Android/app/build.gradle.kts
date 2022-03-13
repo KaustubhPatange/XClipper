@@ -10,7 +10,6 @@ plugins {
     id(GradlePluginId.DAGGER_HILT)
     id(GradlePluginId.GOOGLE_SERVICE)
     id(GradlePluginId.CRASHLYTICS)
-    id(GradlePluginId.KSP) version GradlePluginVersion.KSP
 }
 
 android {
@@ -36,10 +35,6 @@ android {
             keyAlias = loadProperty("keyAlias", "")
             keyPassword = loadProperty("keyPassword", "")
         }
-    }
-
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
 
     buildTypes {

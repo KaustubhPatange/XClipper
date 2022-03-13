@@ -22,9 +22,6 @@ android {
             buildConfigField("String","VERSION_NAME", "\"${AndroidConfig.VERSION_NAME}\"")
         }
     }
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
-    }
 }
 
 dependencies {
@@ -61,7 +58,4 @@ dependencies {
 
     implementation(LibraryDependency.HILT_ANDROID)
     kapt(LibraryDependency.HILT_COMPILER)
-
-    implementation(LibraryDependency.AUTO_BINDINGS)
-    kapt(LibraryDependency.AUTO_BINDINGS_COMPILER)
 }

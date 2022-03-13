@@ -7,9 +7,11 @@ buildscript {
     dependencies {
         classpath(GradleDependency.GRADLE_BUILD_TOOLS)
         classpath(GradleDependency.KOTLIN_PLUGIN)
+        classpath(GradleDependency.KSP_PLUGIN)
         classpath(GradleDependency.DAGGER_HILT)
         classpath(GradleDependency.CRASHLYTICS)
         classpath(GradleDependency.GOOGLE_SERVICE)
+        classpath(GradleDependency.SPOTIFY_RULER)
     }
 }
 
@@ -32,6 +34,11 @@ allprojects {
             )
         }
     }
+}
+
+extensions.findByName("buildScan")?.withGroovyBuilder {
+    setProperty("termsOfServiceUrl", "https://gradle.com/terms-of-service")
+    setProperty("termsOfServiceAgree", "yes")
 }
 
 tasks {

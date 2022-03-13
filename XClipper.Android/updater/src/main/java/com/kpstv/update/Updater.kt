@@ -7,6 +7,7 @@ import android.content.pm.PackageInstaller
 import android.net.Uri
 import android.os.Environment
 import com.kpstv.update.Updater.UpdateLogic
+import com.kpstv.update.internals.ReleaseListConverter
 import com.kpstv.update.internals.UpdaterBroadcast
 import okhttp3.OkHttpClient
 import okhttp3.internal.toImmutableList
@@ -34,7 +35,7 @@ class Updater private constructor() {
             val body = response.body?.string() ?: return@onSuccess
             response.close()
 
-            val releases = ReleaseListConverter.fromStringToRelease(body)?.toImmutableList() ?: return@onSuccess
+            val releases = ReleaseListConverter.fromJsonToList(body)?.toImmutableList() ?: return@onSuccess
             val updates = releases.filter { r -> r.assets.any { it.browserDownloadUrl.endsWith(".apk") } }
 
             if (updates.isEmpty()) return@onSuccess

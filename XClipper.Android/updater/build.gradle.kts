@@ -6,14 +6,11 @@ plugins {
 }
 
 dependencies {
+    implementation(project(ModuleDependency.CORE))
     implementation(LibraryDependency.CORE_KTX)
     implementation(LibraryDependency.APP_COMPAT)
     implementation(LibraryDependency.COROUTINES_ANDROID)
     implementation(LibraryDependency.OKHTTP)
     implementation(LibraryDependency.GSON)
     implementation(LibraryDependency.WORK_MANAGER)
-
-    compileOnly(LibraryDependency.AUTO_BINDINGS_ROOM_NOOP)
-    implementation(LibraryDependency.AUTO_BINDINGS)
-    kapt(LibraryDependency.AUTO_BINDINGS_COMPILER)
 }

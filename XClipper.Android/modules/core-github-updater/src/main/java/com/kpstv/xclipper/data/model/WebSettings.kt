@@ -1,9 +1,9 @@
 package com.kpstv.xclipper.data.model
 
-import com.kpstv.bindings.AutoGenerateConverter
-import com.kpstv.bindings.ConverterType
+import com.kpstv.xclipper.extensions.GsonConverter
 
-@AutoGenerateConverter(using = ConverterType.GSON)
 data class WebSettings(
     val useNewUpdater: Boolean = false
 )
+
+object WebSettingsConverter : GsonConverter<WebSettings>(WebSettings::class)

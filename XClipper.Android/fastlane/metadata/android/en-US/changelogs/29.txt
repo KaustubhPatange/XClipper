@@ -1,0 +1,6 @@
+Added: Option to filter list by pinned items.
+Fixed: No loading state when fetching the disclosure policy.
+Fixed: Some memory leaks & optimization.
+Fixed: Special Sheet not dismissing due to incorrect dismiss.
+Fixed: Back press with special filters does not clear items.
+Fixed: Filters & Edit/Create dialog state will be saved across process death.

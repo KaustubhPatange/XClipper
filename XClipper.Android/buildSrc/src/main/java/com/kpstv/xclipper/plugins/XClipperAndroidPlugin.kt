@@ -7,10 +7,15 @@ import GradlePluginId
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 import com.android.build.gradle.LibraryExtension
+import com.android.build.gradle.api.BaseVariant
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.findByType
+import org.gradle.kotlin.dsl.withType
+import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 class XClipperAndroidPlugin : Plugin<Project> {
     override fun apply(target: Project): Unit = with(target) {
@@ -21,6 +26,7 @@ class XClipperAndroidPlugin : Plugin<Project> {
         configureAndroidInfo()
         configureAndroidApplicationId()
         configureAndroidLibraryProject()
+        configureKotlinProject()
     }
 
     private fun Project.configureAndroidInfo() {
@@ -55,6 +61,13 @@ class XClipperAndroidPlugin : Plugin<Project> {
                     )
                 }
             }
+
+            // configure dirs for ksp
+            buildTypes.forEach { buildType ->
+                sourceSets.maybeCreate(buildType.name).apply {
+                    kotlin.srcDir("build/generated/ksp/${buildType.name}/kotlin")
+                }
+            }
         }
     }
 
@@ -72,6 +85,14 @@ class XClipperAndroidPlugin : Plugin<Project> {
         plugins.withId(GradlePluginId.ANDROID_LIBRARY) {
             extensions.findByType<LibraryExtension>()?.apply {
                 buildFeatures.buildConfig = false
+            }
+        }
+    }
+
+    private fun Project.configureKotlinProject() {
+        tasks.withType<KotlinCompile>().configureEach {
+            kotlinOptions {
+                jvmTarget = JavaVersion.VERSION_1_8.toString()
             }
         }
     }

@@ -1,10 +1,7 @@
 package com.kpstv.update
 
 import com.google.gson.annotations.SerializedName
-import com.kpstv.bindings.AutoGenerateListConverter
-import com.kpstv.bindings.ConverterType
 
-@AutoGenerateListConverter(using = ConverterType.GSON)
 data class Release(
     val assets: List<Asset>,
     @SerializedName("assets_url")

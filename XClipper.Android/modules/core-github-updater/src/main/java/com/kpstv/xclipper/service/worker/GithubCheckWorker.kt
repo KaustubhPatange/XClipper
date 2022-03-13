@@ -23,7 +23,7 @@ class GithubCheckWorker @AssistedInject constructor(
 
     override suspend fun doWork(): Result {
         val responseString = RetrofitUtils.fetch(GithubUpdater.SETTINGS_URL).getOrNull()?.asString()
-        val webSettings = WebSettingsConverter.fromStringToWebSettings(responseString) ?: WebSettings()
+        val webSettings = WebSettingsConverter.fromJson(responseString) ?: WebSettings()
 
         if (webSettings.useNewUpdater) {
             githubUpdater.fetch(

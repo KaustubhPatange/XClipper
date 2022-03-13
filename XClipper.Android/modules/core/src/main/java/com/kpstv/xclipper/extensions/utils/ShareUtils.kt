@@ -8,7 +8,7 @@ import com.kpstv.xclipper.data.model.Clip
 
 object ShareUtils {
     fun shareText(context: Activity, clip: Clip) {
-        val intent = ShareCompat.IntentBuilder.from(context)
+        val intent = ShareCompat.IntentBuilder(context)
             .setChooserTitle(context.getString(R.string.share))
             .setType("text/plain")
             .setText(clip.data)

@@ -4,8 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.kpstv.xclipper.data.converters.DateConverter
-import com.kpstv.xclipper.data.converters.TagConverter
+import com.kpstv.xclipper.data.converters.*
 import com.kpstv.xclipper.data.localized.ClipDataDao
 import com.kpstv.xclipper.data.localized.TagDao
 import com.kpstv.xclipper.data.localized.dao.*
@@ -31,12 +30,12 @@ import javax.inject.Singleton
 )
 
 @TypeConverters(
-    com.kpstv.xclipper.data.model.ClipListConverter::class,
-    com.kpstv.xclipper.data.model.DeviceListConverter::class,
-    com.kpstv.xclipper.data.model.UserEntityConverter::class,
-    com.kpstv.xclipper.data.model.TagConverter::class,
+    ClipListConverter::class,
+    DeviceListConverter::class,
+    UserEntityConverter::class,
+    TagConverter::class,
     DateConverter::class,
-    TagConverter::class
+    ClipTagConverter::class
 )
 
 abstract class MainDatabase : RoomDatabase() {

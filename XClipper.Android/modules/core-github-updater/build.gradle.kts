@@ -39,8 +39,4 @@ dependencies {
     implementation(LibraryDependency.GSON)
     implementation(LibraryDependency.HILT_ANDROID)
     implementation(LibraryDependency.HILT_WORK_MANAGER)
-    implementation(LibraryDependency.AUTO_BINDINGS)
-    compileOnly(LibraryDependency.AUTO_BINDINGS_ROOM_NOOP)
-
-    kapt(LibraryDependency.AUTO_BINDINGS_COMPILER)
 }

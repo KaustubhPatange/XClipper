@@ -8,7 +8,7 @@ private object LibraryVersion {
     const val PLAY_CORE = "1.8.2"
     const val PLAY_CORE_KTX = "1.8.1"
     const val GSON = "2.8.6"
-    const val ROOM = "2.2.5"
+    const val ROOM = "2.3.0"
     const val PAGING = "2.1.2"
     const val LIFECYCLE = "2.2.0"
     const val RETROFIT = "2.9.0"

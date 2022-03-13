@@ -8,7 +8,7 @@ import com.kpstv.xclipper.extensions.keys
 import com.kpstv.xclipper.extensions.values
 import org.json.JSONObject
 
-object TagConverter {
+object ClipTagConverter {
 
     @TypeConverter
     @JvmStatic

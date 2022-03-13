@@ -5,9 +5,6 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.JsonElement
-import com.kpstv.bindings.AutoGenerateConverter
-import com.kpstv.bindings.AutoGenerateListConverter
-import com.kpstv.bindings.ConverterType
 import com.kpstv.xclipper.data.converters.DateConverter
 import com.kpstv.xclipper.data.converters.DateFormatConverter
 import com.kpstv.xclipper.extensions.ClipTagMap
@@ -16,11 +13,10 @@ import com.kpstv.xclipper.extensions.utils.ClipUtils
 import kotlinx.parcelize.Parcelize
 import org.json.JSONObject
 import java.text.SimpleDateFormat
+import com.kpstv.xclipper.data.converters.ClipConverter
 import java.util.*
 
 @Entity(tableName = "table_clip")
-@AutoGenerateConverter(using = ConverterType.GSON)
-@AutoGenerateListConverter(using = ConverterType.GSON)
 data class Clip(
     val data: String,
     val time: Date,
@@ -49,12 +45,12 @@ data class Clip(
 
     fun updateTime(): Clip = copyWithFields(time = Calendar.getInstance().time)
 
-    fun toJson(): String = ClipConverter.toStringFromClip(this)!!
+    fun toJson(): String = ClipConverter.toJson(this)!!
 
     companion object {
         private const val FULL_DATA_FORMAT = "dd MMM yyyy, hh:mm a"
 
-        fun fromJson(json: String): Clip = ClipConverter.fromStringToClip(json)!!
+        fun fromJson(json: String): Clip = ClipConverter.fromJson(json)!!
 
         /**
          * Generates Clip data along with the properties "data", "time"

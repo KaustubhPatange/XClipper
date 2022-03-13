@@ -2,13 +2,10 @@ package com.kpstv.xclipper.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.kpstv.bindings.AutoGenerateConverter
-import com.kpstv.bindings.ConverterType
 import com.kpstv.xclipper.extensions.enumerations.LicenseType
 import com.kpstv.xclipper.extensions.mapToClass
 
 @Entity(tableName = UserEntity.TABLE_NAME)
-@AutoGenerateConverter(using = ConverterType.GSON)
 data class UserEntity (
     val IsLicensed: Boolean,
     val TotalConnection: Int,
