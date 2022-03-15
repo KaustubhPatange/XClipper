@@ -13,11 +13,15 @@ android {
     }
     buildTypes {
         defaultConfig {
-            var applicationId = AndroidConfig.ID
             getByName(BuildType.DEBUG) {
-                applicationId += ".debug"
+                val applicationId = "${AndroidConfig.ID}.debug"
+                buildConfigField("String","APPLICATION_ID", "\"${applicationId}\"")
             }
-            buildConfigField("String","APPLICATION_ID", "\"${applicationId}\"")
+            getByName(BuildType.RELEASE) {
+                val applicationId = AndroidConfig.ID
+                buildConfigField("String","APPLICATION_ID", "\"${applicationId}\"")
+            }
+
             buildConfigField("Integer","VERSION_CODE", "${AndroidConfig.VERSION_CODE}")
             buildConfigField("String","VERSION_NAME", "\"${AndroidConfig.VERSION_NAME}\"")
         }
