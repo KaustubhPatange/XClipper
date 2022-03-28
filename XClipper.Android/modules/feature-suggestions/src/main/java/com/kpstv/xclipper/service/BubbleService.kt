@@ -14,19 +14,20 @@ import com.bsk.floatingbubblelib.DefaultFloatingBubbleTouchListener
 import com.bsk.floatingbubblelib.FloatingBubbleConfig
 import com.bsk.floatingbubblelib.FloatingBubbleService
 import com.bsk.floatingbubblelib.FloatingBubbleTouchListener
-import com.kpstv.xclipper.di.action.ClipboardAccessibilityServiceActions
-import com.kpstv.xclipper.di.navigation.SpecialActionsLauncher
-import com.kpstv.xclipper.feature_suggestions.R
-import com.kpstv.xclipper.feature_suggestions.databinding.BubbleViewBinding
-import com.kpstv.xclipper.ui.adapters.PageClipAdapter
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.data.repository.MainRepository
+import com.kpstv.xclipper.di.action.ClipboardAccessibilityServiceActions
+import com.kpstv.xclipper.di.navigation.SpecialActionsLauncher
 import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.extensions.utils.ToastyUtils
+import com.kpstv.xclipper.feature_suggestions.R
+import com.kpstv.xclipper.feature_suggestions.databinding.BubbleViewBinding
+import com.kpstv.xclipper.ui.adapters.PageClipAdapter
 import com.kpstv.xclipper.ui.dialogs.FeatureDialog
 import com.kpstv.xclipper.ui.helpers.AppSettings
 import dagger.hilt.android.AndroidEntryPoint
+import es.dmoral.toasty.Toasty
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -67,16 +68,22 @@ class BubbleService : FloatingBubbleService() {
 
         binding = BubbleViewBinding.inflate(applicationContext.layoutInflater())
 
+        val bubbleCoordinates = appSettings.getSuggestionBubbleCoordinates()
+
         /** Setting adapter and onClick to send PASTE event. */
         adapter = PageClipAdapter(
             clipboardProvider = clipboardProvider,
-            specialActionsLauncher = specialActionsLauncher,
             onClick = { text ->
                 setState(false)
                 clipboardServiceActions.sendClipboardInsertText(
                     wordLength = currentWord.length,
                     text = text
                 )
+            },
+            onLongClick = specialActionsLauncher::launch,
+            onCopyClick = { text ->
+                clipboardProvider.setClipboard(text)
+                Toasty.info(this, getString(R.string.copy_to_clipboard)).show()
             }
         )
 
@@ -109,7 +116,8 @@ class BubbleService : FloatingBubbleService() {
             .bubbleIcon(ContextCompat.getDrawable(applicationContext, R.drawable.bubble_icon))
             .expandableView(binding.root)
             .physicsEnabled(true)
-            .bubbleYOffset(actionBarSize)
+            .bubbleGravity(bubbleCoordinates.first)
+            .bubbleYOffset(bubbleCoordinates.second.toInt())
             .build()
     }
 

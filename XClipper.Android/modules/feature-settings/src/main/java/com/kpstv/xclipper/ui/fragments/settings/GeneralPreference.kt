@@ -24,19 +24,19 @@ import com.kpstv.xclipper.AddOns
 import com.kpstv.xclipper.PinLockHelper
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.di.SettingScreenHandler
-import com.kpstv.xclipper.extensions.layoutInflater
-import com.kpstv.xclipper.service.ClipboardAccessibilityService
+import com.kpstv.xclipper.di.suggestions.SuggestionConfigDialog
 import com.kpstv.xclipper.extensions.helper.ClipboardLogDetector
+import com.kpstv.xclipper.extensions.layoutInflater
 import com.kpstv.xclipper.extensions.utils.PackageUtils
-import com.kpstv.xclipper.extensions.utils.SystemUtils.isSystemOverlayEnabled
 import com.kpstv.xclipper.feature_settings.R
-import com.kpstv.xclipper.ui.CoreDialogs
+import com.kpstv.xclipper.service.ClipboardAccessibilityService
 import com.kpstv.xclipper.ui.dialogs.ClipboardServiceDialogs
 import com.kpstv.xclipper.ui.dialogs.Dialogs
 import com.kpstv.xclipper.ui.dialogs.MultiSelectDialogBuilder
 import com.kpstv.xclipper.ui.dialogs.MultiSelectModel3
 import com.kpstv.xclipper.ui.fragments.custom.AbstractPreferenceFragment
 import com.kpstv.xclipper.ui.helpers.AddOnsHelper
+import com.kpstv.xclipper.ui.helpers.AppSettingKeys
 import com.kpstv.xclipper.ui.helpers.AppSettings
 import com.kpstv.xclipper.ui.viewmodel.SettingNavViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -59,17 +59,12 @@ class GeneralPreference : AbstractPreferenceFragment() {
     @Inject lateinit var preferenceProvider: PreferenceProvider
     @Inject lateinit var appSettings: AppSettings
     @Inject lateinit var settingScreenHandler: SettingScreenHandler
+    @Inject lateinit var suggestionConfigDialog: SuggestionConfigDialog
 
     private val settingsNavViewModel by viewModels<SettingNavViewModel>(ownerProducer = ::requireParentFragment)
 
     private var appsDialog: AlertDialog? = null
 
-    /**
-     * Since overlay permission makes you to leave the activity, the only way
-     * to check the preference is to set a boolean and then in onResume() we
-     * will set the preference.
-     */
-    private var rememberToCheckOverlaySwitch = false
     private var rememberToCheckForPinLock = false
 
     private val pinLockExtensionHelper by lazy { AddOnsHelper.getHelperForPinLock(requireContext()) }
@@ -87,16 +82,9 @@ class GeneralPreference : AbstractPreferenceFragment() {
 
         /** Show suggestion preference */
         overlayPreference = findPreference(SUGGESTION_PREF)
-        overlayPreference?.setOnPreferenceChangeListener { _, newValue ->
-
-            if (!isSystemOverlayEnabled(requireContext()) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                CoreDialogs.showSystemOverlayDialog(requireContext())
-
-                if (newValue == true) rememberToCheckOverlaySwitch = true
-
-                return@setOnPreferenceChangeListener false
-            }
-            appSettings.setShowClipboardSuggestions(newValue as Boolean)
+        overlayPreference?.setOnPreferenceChangeListener { _, _ -> false }
+        overlayPreference?.setOnPreferenceClickListener {
+            suggestionConfigDialog.show(childFragmentManager)
             true
         }
 
@@ -214,6 +202,10 @@ class GeneralPreference : AbstractPreferenceFragment() {
                 }
             }
         }
+        // observe clipboard suggestion changes
+        appSettings.observeChanges(AppSettingKeys.CLIPBOARD_SUGGESTIONS, appSettings.canShowClipboardSuggestions()).observe(viewLifecycleOwner) { value ->
+            overlayPreference?.isChecked = value
+        }
     }
 
     override fun onStart() {
@@ -242,11 +234,7 @@ class GeneralPreference : AbstractPreferenceFragment() {
 
     private fun checkForService() {
         checkPreference?.isChecked = ClipboardAccessibilityService.isRunning(requireContext())
-        if (rememberToCheckOverlaySwitch) {
-            overlayPreference?.isChecked = isSystemOverlayEnabled(requireContext())
-            rememberToCheckOverlaySwitch = false
-            appSettings.setShowClipboardSuggestions(true)
-        }
+
         if (rememberToCheckForPinLock || !pinLockExtensionHelper.isActive()) {
             pinLockPreference?.isChecked = PinLockHelper.isPinLockEnabled()
         }
@@ -305,7 +293,7 @@ class GeneralPreference : AbstractPreferenceFragment() {
         private const val SUGGESTION_PREF = "suggestion_pref"
         private const val SWIPE_DELETE_PREF = "swipe_delete_pref"
         private const val TRIM_CLIP_PREF = "trim_clip_pref"
-        private const val BLACKLIST_PREF = "blacklist_pref"
+        private const val BLACKLIST_PREF = AppSettingKeys.CLIPBOARD_BLACKLIST_APPS
 
         fun checkImproveSettingsOnStart(context: Context, appSettings: AppSettings, preferenceProvider: PreferenceProvider) {
             val checkImprove = preferenceProvider.getBooleanKey(TEMP_CHECK_IMPROVE_ON_START, false)

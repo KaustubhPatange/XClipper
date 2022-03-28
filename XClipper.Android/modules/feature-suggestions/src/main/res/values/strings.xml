@@ -6,4 +6,13 @@
     <string name="bubble_search_subtitle">XClipper can show you suggestions based on the last word from a search query.\nLong press item to show more options.</string>
 
     <string name="bubble_oom_error">"Could not show suggestions due to low memory"</string>
+
+    <string name="bubble_show_demo">Demo</string>
+    <string name="suggestions_description">Whenever you type through the keyboard a small bubble will pop out from where you can paste your existing clips into the field.</string>
+    <string name="bubble_position">Bubble Position</string>
+    <string name="bubble_position_description">Tap on the screen (left) to set the initial position of bubble.\n\nThe bubble will always constraint to the either edge of the screen.</string>
+
+    <string name="bubble_coordinate_x">x=%1$s</string>
+    <string name="bubble_coordinate_y">y=%1$s</string>
+    <string name="bubble_settings_saved">Suggestion settings saved</string>
 </resources>

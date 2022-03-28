@@ -19,8 +19,9 @@ import es.dmoral.toasty.Toasty
 
 class PageClipAdapter(
     private val clipboardProvider: ClipboardProvider,
-    private val specialActionsLauncher: SpecialActionsLauncher,
-    val onClick: (String) -> Unit
+    val onClick: (String) -> Unit,
+    val onLongClick: (String) -> Unit,
+    val onCopyClick: (String) -> Unit,
 ) :
     PagedListAdapter<Clip, PageClipAdapter.PageClipHolder>(DiffUtils.asConfig()) {
 
@@ -75,12 +76,11 @@ class PageClipAdapter(
                 onClick.invoke(clip?.data!!)
             }
             ibcTextView.setOnLongClickListener {
-                specialActionsLauncher.launch(clip?.data!!)
+                onLongClick.invoke(clip?.data!!)
                 true
             }
             btnCopy.setOnClickListener {
-                clipboardProvider.setClipboard(clip?.data!!)
-                Toasty.info(root.context, root.context.getString(R.string.copy_to_clipboard)).show()
+                onCopyClick.invoke(clip?.data!!)
             }
         }
     }

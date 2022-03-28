@@ -56,7 +56,6 @@
     <string name="adb_mode_summary">Enhance clipboard detection logic by some additional configuration.</string>
     <string name="blacklist_title">Ignored Apps</string>
     <string name="blacklist_summary">Apps in which clipboard tracking is disabled</string>
-    <string name="suggest_title">Suggestions</string>
     <string name="suggest_summary">[BETA] Show a small bubble whenever keyboard pops out containing your latest clips</string>
     <string name="pin_lock_title">Pin Lock (Biometric)</string>
     <string name="swipe_title">Swipe to delete</string>
