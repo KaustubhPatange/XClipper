@@ -109,9 +109,6 @@ class BubbleService : FloatingBubbleService() {
         }
         LocalBroadcastManager.getInstance(this).registerReceiver(bubbleBroadcastReceiver, filter)
 
-        val actionBarSize = context.getRawDataAttr(android.R.attr.actionBarSize).run {
-            TypedValue.complexToDimensionPixelSize(this, resources.displayMetrics)
-        }
         return FloatingBubbleConfig.Builder()
             .bubbleIcon(ContextCompat.getDrawable(applicationContext, R.drawable.bubble_icon))
             .expandableView(binding.root)

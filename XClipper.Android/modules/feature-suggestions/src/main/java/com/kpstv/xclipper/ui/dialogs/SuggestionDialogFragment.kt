@@ -94,7 +94,6 @@ class SuggestionDialogFragment : DialogFragment(R.layout.dialog_bubble_config) {
                     binding.ivBubble.y = clampedHeight.toFloat()
                 }
             }
-            println("x: ${event.x}, y: ${event.y}, w: ${binding.lvBubblecontainer.width}, h: ${binding.lvBubblecontainer.height}")
             return@setOnTouchListener true
         }
     }
@@ -115,8 +114,10 @@ class SuggestionDialogFragment : DialogFragment(R.layout.dialog_bubble_config) {
     private fun updateCoordinates() {
         val coordinates = appSettings.getSuggestionBubbleCoordinates()
         if ((coordinates.first and Gravity.END) == Gravity.END) {
-            binding.ivBubble.x = screenWidth.toFloat()
-            updateXCoordinateTextView(screenWidth)
+            binding.ivBubble.doOnLayout {
+                binding.ivBubble.x = screenWidth.toFloat() - binding.ivBubble.width
+                updateXCoordinateTextView(screenWidth)
+            }
         }
         val yOffsetRelative = ((coordinates.second + statusBarInset) * binding.ivScreen.width) / resources.displayMetrics.widthPixels
         binding.ivBubble.y = yOffsetRelative
@@ -125,13 +126,17 @@ class SuggestionDialogFragment : DialogFragment(R.layout.dialog_bubble_config) {
     }
 
     private fun updateXCoordinateTextView(x: Int) {
-        bubbleCoordinates.x = x
-        binding.tvCoordinateX.text = getString(R.string.bubble_coordinate_x, x.toString())
+        // map to correct screen size coordinates
+        val xPoint = (x * resources.displayMetrics.heightPixels) / binding.ivScreen.height.coerceAtLeast(1)
+        bubbleCoordinates.x = xPoint
+        binding.tvCoordinateX.text = getString(R.string.bubble_coordinate_x, xPoint.toString())
     }
 
     private fun updateYCoordinateTextView(y: Int) {
-        bubbleCoordinates.y = y
-        binding.tvCoordinateY.text = getString(R.string.bubble_coordinate_y, y.toString())
+        // map to correct screen size coordinates
+        val yPoint = (resources.displayMetrics.widthPixels * y) / binding.ivScreen.width.coerceAtLeast(1)
+        bubbleCoordinates.y = yPoint
+        binding.tvCoordinateY.text = getString(R.string.bubble_coordinate_y, yPoint.toString())
     }
 
     private fun updateConfigLayout() {
@@ -145,17 +150,20 @@ class SuggestionDialogFragment : DialogFragment(R.layout.dialog_bubble_config) {
     }
 
     private fun showDemoDialog() {
-
+        FeatureDialog(requireContext())
+            .setResourceId(R.drawable.feature_suggestion)
+            .setTitle(R.string.suggestion_title)
+            .setSubtitle(R.string.suggestions_description)
+            .show()
     }
 
     private fun saveOptions() {
-        val gravity = if (bubbleCoordinates.x > screenWidth / 2) {
+        val gravity = if (bubbleCoordinates.x > resources.displayMetrics.widthPixels / 2) {
             Gravity.TOP or Gravity.END
         } else {
             Gravity.TOP or Gravity.START
         }
-        val yOffset = (resources.displayMetrics.widthPixels * (bubbleCoordinates.y)) / screenWidth
-        appSettings.setSuggestionBubbleCoordinates(gravity, yOffset.toFloat() - statusBarInset)
+        appSettings.setSuggestionBubbleCoordinates(gravity, bubbleCoordinates.y.toFloat() - statusBarInset)
         appSettings.setShowClipboardSuggestions(binding.switchEnable.isChecked)
         Toasty.info(requireContext(), getString(R.string.bubble_settings_saved)).show()
         dismiss()

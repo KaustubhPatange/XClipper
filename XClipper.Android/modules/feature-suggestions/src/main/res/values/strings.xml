@@ -8,7 +8,7 @@
     <string name="bubble_oom_error">"Could not show suggestions due to low memory"</string>
 
     <string name="bubble_show_demo">Demo</string>
-    <string name="suggestions_description">Whenever you type through the keyboard a small bubble will pop out from where you can paste your existing clips into the field.</string>
+    <string name="suggestions_description">Whenever you type using the keyboard a small bubble will pop from where you can paste your existing clips into the field.</string>
     <string name="bubble_position">Bubble Position</string>
     <string name="bubble_position_description">Tap on the screen (left) to set the initial position of bubble.\n\nThe bubble will always constraint to the either edge of the screen.</string>
 
