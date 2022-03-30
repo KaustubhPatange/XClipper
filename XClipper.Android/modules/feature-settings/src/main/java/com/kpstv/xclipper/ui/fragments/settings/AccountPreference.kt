@@ -9,6 +9,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.kpstv.xclipper.data.provider.DBConnectionProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.feature_settings.R
+import com.kpstv.xclipper.ui.helpers.AppSettingKeys
 import com.kpstv.xclipper.ui.helpers.AppSettings
 import com.kpstv.xclipper.ui.helpers.ConnectionHelper
 import com.kpstv.xclipper.ui.utils.LaunchUtils
@@ -154,8 +155,8 @@ class AccountPreference : PreferenceFragmentCompat() {
         private const val FORCE_REMOVE_PREF = "forceRemove_pref"
         private const val LOGOUT_PREF = "logout_pref"
         private const val CONNECT_PREF = "connect_pref"
-        private const val AUTO_SYNC_PREF = "autoSync_pref"
-        private const val BIND_PREF = "bind_pref"
-        private const val BIND_DELETE_PREF = "bindDelete_pref"
+        private const val AUTO_SYNC_PREF = AppSettingKeys.DATABASE_AUTO_SYNC
+        private const val BIND_PREF = AppSettingKeys.DATABASE_BINDING
+        private const val BIND_DELETE_PREF = AppSettingKeys.DATABASE_DELETE_BINDING
     }
 }

@@ -21,6 +21,7 @@
             app:key="blacklist_pref" />
 
         <SwitchPreferenceCompat
+            android:defaultValue="true"
             app:dependency="service_pref"
             app:key="suggestion_pref"
             app:summary="@string/suggest_summary"

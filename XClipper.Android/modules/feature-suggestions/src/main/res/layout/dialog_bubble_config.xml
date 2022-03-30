@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?colorForeground"
+    android:padding="20dp">
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/suggest_title"
+        android:textColor="?colorTextPrimary"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/switch_enable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_title" />
+
+    <TextView
+        android:id="@+id/_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:text="@string/suggestions_description"
+        android:textColor="?colorTextSecondary"
+        app:layout_constraintEnd_toStartOf="@id/btn_demo"
+        app:layout_constraintStart_toStartOf="@id/tv_title"
+        app:layout_constraintTop_toBottomOf="@id/tv_title" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_demo"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bubble_show_demo"
+        android:textAllCaps="false"
+        app:cornerRadius="30dp"
+        app:layout_constraintBottom_toBottomOf="@id/_description"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/_description" />
+
+    <View
+        android:id="@+id/_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="20dp"
+        android:alpha="0.4"
+        android:background="?colorBackground"
+        app:layout_constraintTop_toBottomOf="@id/_description" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/lv_config"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/btn_save"
+        app:layout_constraintTop_toBottomOf="@id/_divider">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_screen"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:adjustViewBounds="true"
+            app:layout_constraintEnd_toStartOf="@id/_tv_position"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_max="180dp"
+            tools:layout_height="320dp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="#B9000000"
+            app:layout_constraintBottom_toBottomOf="@id/iv_screen"
+            app:layout_constraintEnd_toEndOf="@id/iv_screen"
+            app:layout_constraintStart_toStartOf="@id/iv_screen"
+            app:layout_constraintTop_toTopOf="@id/iv_screen" />
+
+        <LinearLayout
+            android:id="@+id/lv_bubblecontainer"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintStart_toStartOf="@id/iv_screen"
+            app:layout_constraintEnd_toEndOf="@id/iv_screen"
+            app:layout_constraintTop_toTopOf="@id/iv_screen"
+            app:layout_constraintBottom_toBottomOf="@id/iv_screen">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_bubble"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                app:srcCompat="@drawable/bubble_icon" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/_tv_position"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="5dp"
+            android:text="@string/bubble_position"
+            android:textColor="?colorTextPrimary"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/iv_screen"
+            app:layout_constraintTop_toTopOf="@id/iv_screen" />
+
+        <TextView
+            android:id="@+id/_tv_position_desc"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/bubble_position_description"
+            android:textColor="?colorTextSecondary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/iv_screen"
+            app:layout_constraintTop_toBottomOf="@id/_tv_position" />
+
+        <TextView
+            android:id="@+id/tv_coordinate_x"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/iv_screen"
+            app:layout_constraintTop_toBottomOf="@id/_tv_position_desc"
+            tools:text="@string/bubble_coordinate_x" />
+
+        <TextView
+            android:id="@+id/tv_coordinate_y"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="5dp"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/iv_screen"
+            app:layout_constraintTop_toBottomOf="@id/tv_coordinate_x"
+            tools:text="@string/bubble_coordinate_y" />
+
+        <View
+            android:id="@+id/_divider2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="20dp"
+            android:alpha="0.4"
+            android:background="?colorBackground"
+            app:layout_constraintTop_toBottomOf="@id/iv_screen" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/save"
+        android:textAllCaps="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lv_config" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_cancel"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:text="@string/cancel"
+        android:textAllCaps="false"
+        app:layout_constraintEnd_toStartOf="@id/btn_save"
+        app:layout_constraintTop_toBottomOf="@id/lv_config" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

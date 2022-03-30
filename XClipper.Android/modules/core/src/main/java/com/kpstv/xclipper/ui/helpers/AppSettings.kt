@@ -1,9 +1,13 @@
 package com.kpstv.xclipper.ui.helpers
 
+import android.content.Context
+import android.util.TypedValue
+import android.view.Gravity
 import androidx.annotation.StringDef
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
 import com.kpstv.xclipper.data.provider.PreferenceProvider
+import com.kpstv.xclipper.extensions.getRawDataAttr
 import com.kpstv.xclipper.ui.helpers.AppSettingKeys.Keys.CLIPBOARD_BLACKLIST_APPS
 import com.kpstv.xclipper.ui.helpers.AppSettingKeys.Keys.CLIPBOARD_SUGGESTIONS
 import com.kpstv.xclipper.ui.helpers.AppSettingKeys.Keys.CLIP_TEXT_TRIMMING
@@ -15,8 +19,12 @@ import com.kpstv.xclipper.ui.helpers.AppSettingKeys.Keys.IMPROVE_DETECTION
 import com.kpstv.xclipper.ui.helpers.AppSettingKeys.Keys.ON_BOARDING_SCREEN
 import com.kpstv.xclipper.ui.helpers.AppSettingKeys.Keys.POLICY_DISCLOSURE
 import com.kpstv.xclipper.ui.helpers.AppSettingKeys.Keys.SHOW_SEARCH_FEATURE
+import com.kpstv.xclipper.ui.helpers.AppSettingKeys.Keys.SUGGESTION_BUBBLE_COORDINATES
+import com.kpstv.xclipper.ui.helpers.AppSettingKeys.Keys.SUGGESTION_BUBBLE_X_GRAVITY
+import com.kpstv.xclipper.ui.helpers.AppSettingKeys.Keys.SUGGESTION_BUBBLE_Y_POS
 import com.kpstv.xclipper.ui.helpers.AppSettingKeys.Keys.SWIPE_DELETE_CLIP_ITEM
 import com.kpstv.xclipper.ui.helpers.AppSettings.Listener
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.sendBlocking
 import kotlinx.coroutines.flow.callbackFlow
@@ -25,6 +33,7 @@ import javax.inject.Singleton
 
 @Singleton
 class AppSettings @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val preferenceProvider: PreferenceProvider
 ) {
     private val listeners = arrayListOf<Listener>()
@@ -110,6 +119,23 @@ class AppSettings @Inject constructor(
     }
 
     /**
+     * Pair.first is horizontal [Gravity] & Pair.second is y offset.
+     */
+    fun getSuggestionBubbleCoordinates(): Pair<Int, Float> {
+        val actionBarSize = context.getRawDataAttr(android.R.attr.actionBarSize).run {
+            TypedValue.complexToDimensionPixelSize(this, context.resources.displayMetrics)
+        }
+        val gravity = preferenceProvider.getIntKey(SUGGESTION_BUBBLE_X_GRAVITY, Gravity.TOP or Gravity.START)
+        val yOffset = preferenceProvider.getFloatKey(SUGGESTION_BUBBLE_Y_POS, actionBarSize.toFloat())
+        return gravity to yOffset
+    }
+    fun setSuggestionBubbleCoordinates(gravity: Int, yOffset: Float) {
+        preferenceProvider.putIntKey(SUGGESTION_BUBBLE_X_GRAVITY, gravity)
+        preferenceProvider.putFloatKey(SUGGESTION_BUBBLE_Y_POS, yOffset)
+        notifyListeners(SUGGESTION_BUBBLE_COORDINATES, (gravity to yOffset))
+    }
+
+    /**
      * Observe the changes of the settings. The [default] value will emitted as soon as the [LiveData]
      * will start observing.
      */
@@ -148,7 +174,10 @@ class AppSettings @Inject constructor(
     SHOW_SEARCH_FEATURE,
     DATABASE_AUTO_SYNC,
     DATABASE_BINDING,
-    DATABASE_DELETE_BINDING
+    DATABASE_DELETE_BINDING,
+    SUGGESTION_BUBBLE_X_GRAVITY,
+    SUGGESTION_BUBBLE_Y_POS,
+    SUGGESTION_BUBBLE_COORDINATES
 )
 @Retention(AnnotationRetention.SOURCE)
 annotation class AppSettingKeys {
@@ -157,6 +186,9 @@ annotation class AppSettingKeys {
         const val POLICY_DISCLOSURE = "policy_disclosure"
         const val IMAGE_MARKDOWN = "render_image_markdown"
         const val CLIPBOARD_SUGGESTIONS = "clipboard_suggestions"
+        const val SUGGESTION_BUBBLE_COORDINATES = "suggestion_bubble_coordinates"
+        internal const val SUGGESTION_BUBBLE_Y_POS = "suggestion_bubble_y_pos"
+        internal const val SUGGESTION_BUBBLE_X_GRAVITY = "suggestion_bubble_x_gravity"
         const val SWIPE_DELETE_CLIP_ITEM = "swipe_delete_clip_item"
         const val CLIP_TEXT_TRIMMING = "clip_text_trimming"
         const val ON_BOARDING_SCREEN = "tutorial_pref"

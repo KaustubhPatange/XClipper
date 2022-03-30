@@ -13,6 +13,7 @@
     <string name="close">Close</string>
 
     <string name="alright">Alright</string>
+    <string name="save">Save</string>
     <string name="cancel">Cancel</string>
 
     <string name="activate">Activate</string>
@@ -25,6 +26,7 @@
     <string name="subscribed">Subscribed</string>
     <string name="do_not_show">Do not show</string>
 
+    <string name="suggest_title">Suggestions</string>
     <string name="suggestion_title">Suggestions [BETA]</string>
     <string name="suggestion_capture">You need to enable System overlay permission.\n\n1. Click OK to open Display Overlay settings.\n2. Enable \"Allow display over other apps\".</string>
 
