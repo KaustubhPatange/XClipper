@@ -80,7 +80,7 @@
         <View
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="#99000000"
+            android:background="#B9000000"
             app:layout_constraintBottom_toBottomOf="@id/iv_screen"
             app:layout_constraintEnd_toEndOf="@id/iv_screen"
             app:layout_constraintStart_toStartOf="@id/iv_screen"
