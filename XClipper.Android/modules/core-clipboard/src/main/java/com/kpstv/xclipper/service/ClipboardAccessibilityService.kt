@@ -126,15 +126,20 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
             val source = event?.source
             if (source != null) {
                 var node: AccessibilityNodeInfo = source
-                if (!node.isEditable) recursivelyFindRequiredNodeForSuggestion(node)?.let { node = it }
+                if (!node.isEditable) {
+                    recursivelyFindRequiredNodeForSuggestion(node)?.let { node = it }
+                }
                 with(node) {
-                    if (isEditable) editableNode = this
+                    if (isEditable) {
+                        editableNode = this
+                    } else {
+                        editableNode = null
+                    }
                     if (textSelectionStart == textSelectionEnd && text != null) {
                         suggestionService.broadcastNodeInfo(text.toString(), textSelectionEnd)
                     }
                 }
                 nodeInfo = node
-                if (editableNode?.packageName != currentPackage) editableNode = null
             }
 
             if (powerManager.isInteractive) {
@@ -325,10 +330,21 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
 
     // We will find an editable node. If none of them exist it means we cannot use
     // search suggestions feature & we will directly paste the content.
+    // The one which is currently focused will always be given priority.
     private fun recursivelyFindRequiredNodeForSuggestion(node: AccessibilityNodeInfo?) : AccessibilityNodeInfo? {
-        if (node?.isEditable == true) return node
+        if (node?.isEditable == true) {
+            val editableNode = editableNode
+            if (editableNode?.isEditable == true && editableNode.isFocused && editableNode.refresh()) {
+                return editableNode
+            }
+            return node
+        }
         for(i in 0 until (node?.childCount ?: 0)) {
             return recursivelyFindRequiredNodeForSuggestion(node?.getChild(i))
+        }
+        val editableNode = editableNode
+        if (editableNode?.isEditable == true && editableNode.isFocused && editableNode.refresh()) {
+            return editableNode
         }
         return null
     }
