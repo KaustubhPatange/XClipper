@@ -24,7 +24,7 @@
     <string name="bind_delete_summary">Enable local removal of item if it is being deleted across device</string>
     <string name="force_logout_title">Force logout</string>
     <string name="force_logout_summary">Sometimes logout doesn\'t succeed as expected. Use this to forcefully remove the credentials</string>
-    <string name="force_logout_text">Silently send a logout request</string>
+    <string name="force_logout_text">Silently sent a logout request</string>
     <string name="read_guide">Need help?</string>
     <string name="read_guide_text">Read this step by step tutorial on how to setup synchronization across multiple devices.</string>
 

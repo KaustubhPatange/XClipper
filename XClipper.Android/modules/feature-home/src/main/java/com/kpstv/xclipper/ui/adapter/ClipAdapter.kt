@@ -61,17 +61,22 @@ class ClipAdapter(
         loadImageMarkdownText = value
     }
 
+    private fun getSafeItem(position: Int) : ClipAdapterItem? {
+        if (position == RecyclerView.NO_POSITION) return null
+        return getItem(position)
+    }
+
     override fun getItemViewType(position: Int) = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ClipAdapterHolder {
         return ClipAdapterHolder(ItemClipBinding.inflate(parent.context.layoutInflater(), parent, false)).apply {
             with(binding) {
-                mainCard.setOnClickListener {
-                    val clip = getItem(bindingAdapterPosition)
+                mainCard.setOnClickListener call@{
+                    val clip = getSafeItem(bindingAdapterPosition) ?: return@call
                     onClick.invoke(clip, bindingAdapterPosition)
                 }
-                mainCard.setOnLongClickListener {
-                    val clip = getItem(bindingAdapterPosition)
+                mainCard.setOnLongClickListener call@{
+                    val clip = getItem(bindingAdapterPosition) ?: return@call false
                     onLongClick.invoke(clip, bindingAdapterPosition)
                     true
                 }

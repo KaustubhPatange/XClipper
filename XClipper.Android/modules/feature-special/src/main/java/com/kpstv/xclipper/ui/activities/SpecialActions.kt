@@ -5,12 +5,14 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.extensions.launchInIO
 import com.kpstv.xclipper.extensions.launchInMain
 import com.kpstv.xclipper.ui.fragments.sheets.SpecialBottomSheet
 import com.kpstv.xclipper.ui.helpers.AppThemeHelper
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -38,11 +40,11 @@ class SpecialActions : AppCompatActivity() {
             val clip = repository.getClipByData(data)
 
             if (clip == null) {
-                launchInMain { finish() }
+                lifecycleScope.launch { finish() }
                 return@launchInIO
             }
 
-            launchInMain {
+            lifecycleScope.launch {
                 SpecialBottomSheet.show(
                     activity = this@SpecialActions,
                     onClose = ::finish,
