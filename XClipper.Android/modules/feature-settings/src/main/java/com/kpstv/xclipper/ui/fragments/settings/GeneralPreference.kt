@@ -65,8 +65,6 @@ class GeneralPreference : AbstractPreferenceFragment() {
 
     private var appsDialog: AlertDialog? = null
 
-    private var rememberToCheckForPinLock = false
-
     private val pinLockExtensionHelper by lazy { AddOnsHelper.getHelperForPinLock(requireContext()) }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -128,13 +126,11 @@ class GeneralPreference : AbstractPreferenceFragment() {
                         context = requireContext(),
                         onPositive = {
                             PinLockHelper.createANewPinLock(requireContext())
-                            rememberToCheckForPinLock = true
                         }
                     )
                 } else if (!value && PinLockHelper.isPinLockEnabled()) {
-                    // trying to disable it
+                    // trying to disable it in other cases
                     PinLockHelper.disablePinLock(requireActivity())
-                    rememberToCheckForPinLock = true
                 } else if (value && PinLockHelper.isPinLockEnabled()) {
                     // must be error from our side so we should just set pin lock
                     return@call true
@@ -234,10 +230,7 @@ class GeneralPreference : AbstractPreferenceFragment() {
 
     private fun checkForService() {
         checkPreference?.isChecked = ClipboardAccessibilityService.isRunning(requireContext())
-
-        if (rememberToCheckForPinLock || !pinLockExtensionHelper.isActive()) {
-            pinLockPreference?.isChecked = PinLockHelper.isPinLockEnabled()
-        }
+        pinLockPreference?.isChecked = PinLockHelper.isPinLockEnabled()
     }
 
     private fun showBlacklistAppDialog() {

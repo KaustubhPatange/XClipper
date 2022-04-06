@@ -56,7 +56,7 @@ class ExtensionHelper(private val context: Context, sku: String) {
         /**
          * Initialize before purchase
          */
-        fun init(onComplete: () -> Unit = {}, onError: () -> Unit= {}) {
+        internal fun init(onComplete: (valid: Boolean) -> Unit = {}, onError: () -> Unit= {}) {
             val connection = object : BillingClientStateListener {
                 override fun onBillingSetupFinished(billingResult: BillingResult) {
                     if (billingResult.responseCode ==  BillingClient.BillingResponseCode.OK) {
@@ -78,9 +78,9 @@ class ExtensionHelper(private val context: Context, sku: String) {
             billingClient.startConnection(connection)
         }
 
-        suspend fun init() : Boolean = suspendCancellableCoroutine { continuation ->
+        suspend fun isValidPurchase() : Boolean = suspendCancellableCoroutine { continuation ->
             init(
-                onComplete = { continuation.resume(true) },
+                onComplete = { continuation.resume(it) },
                 onError = { continuation.resume(false) }
             )
             continuation.invokeOnCancellation { billingClient.endConnection() }
@@ -129,10 +129,11 @@ class ExtensionHelper(private val context: Context, sku: String) {
             }
         }
 
-        private fun validatePurchase(onComplete: () -> Unit) {
+        private fun validatePurchase(onComplete: (valid: Boolean) -> Unit) {
             billingClient.queryPurchasesAsync(BillingClient.SkuType.INAPP) call@{ _, purchaseList ->
                 if (purchaseList.isEmpty()) {
                     deactivatePurchase()
+                    onComplete(false)
                 } else {
                     val hasPurchased = purchaseList.any { record -> record.skus.contains(sku) }
                     if (hasPurchased) {
@@ -140,9 +141,8 @@ class ExtensionHelper(private val context: Context, sku: String) {
                     } else {
                         deactivatePurchase()
                     }
+                    onComplete(hasPurchased)
                 }
-
-                onComplete.invoke()
             }
         }
 
