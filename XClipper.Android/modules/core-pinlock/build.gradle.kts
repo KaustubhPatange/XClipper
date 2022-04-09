@@ -2,10 +2,14 @@ plugins {
     id(GradlePluginId.ANDROID_LIBRARY)
     id(GradlePluginId.XCLIPPER_ANDROID)
     kotlin(GradlePluginId.ANDROID_KTX)
+    kotlin(GradlePluginId.KAPT)
 }
 
 android {
-    buildFeatures.buildConfig = false
+    buildFeatures {
+        buildConfig = false
+        viewBinding = true
+    }
 }
 
 dependencies {
@@ -14,7 +18,7 @@ dependencies {
 
     implementation(LibraryDependency.CORE_KTX)
 
-    implementation(LibraryDependency.CORE_KTX)
+    implementation(LibraryDependency.CONSTRAINT_LAYOUT)
     implementation(LibraryDependency.APP_COMPAT)
     implementation(LibraryDependency.MATERIAL)
     implementation(LibraryDependency.PINLOCK)

@@ -14,6 +14,6 @@
             android:name="com.kpstv.xclipper.ui.dialogs.FeatureDialog$DialogActivity"
             android:launchMode="singleInstance"
             android:noHistory="true"
-            android:theme="@style/Theme.AppCompat.Translucent" />
+            android:theme="@style/TranslucentTheme.Dark" />
     </application>
 </manifest>

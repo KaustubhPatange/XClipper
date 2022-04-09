@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingStart="20dp"
+    android:paddingEnd="20dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?colorForeground"
+        android:padding="20dp">
+
+        <TextView
+            android:id="@+id/_tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pin_lock_access_title"
+            android:textColor="?colorTextPrimary"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/_app_logo"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="25dp"
+            app:layout_constraintEnd_toStartOf="@id/_add_icon"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/_tv_title"
+            app:srcCompat="@drawable/app_icon_round" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/_add_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            app:layout_constraintBottom_toBottomOf="@id/_app_logo"
+            app:layout_constraintEnd_toStartOf="@id/_pin_icon"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toEndOf="@id/_app_logo"
+            app:layout_constraintTop_toTopOf="@id/_app_logo"
+            app:srcCompat="@drawable/ic_add" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/_pin_icon"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:tint="?colorTextSecondaryLight"
+            app:layout_constraintBottom_toBottomOf="@id/_app_logo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toEndOf="@id/_add_icon"
+            app:layout_constraintTop_toTopOf="@id/_app_logo"
+            app:srcCompat="@drawable/pin_ic_lock_outline" />
+
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/_app_logo" />
+
+        <TextView
+            android:id="@+id/_tv_grant"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="15dp"
+            android:gravity="center"
+            android:text="@string/pin_lock_access_summary"
+            android:textColor="?colorTextError"
+            android:textSize="14sp"
+            app:layout_constraintTop_toBottomOf="@id/spinner" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_deny"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="30dp"
+            android:text="@string/deny"
+            android:textColor="?colorTextSecondary"
+            app:layout_constraintEnd_toStartOf="@id/btn_grant"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/_tv_grant" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_grant"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="30dp"
+            android:text="@string/grant"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/btn_deny"
+            app:layout_constraintTop_toBottomOf="@id/_tv_grant" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

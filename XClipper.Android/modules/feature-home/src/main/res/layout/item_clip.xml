@@ -165,7 +165,7 @@
 
                     <Button
                         android:id="@+id/ci_btn_edit"
-                        style="@style/ButtonStyle"
+                        style="@style/ClipItemButtonStyle"
                         android:layout_columnWeight="1"
                         android:drawableTop="@drawable/ic_edit"
                         android:foreground="?selectableItemBackground"
@@ -179,7 +179,7 @@
 
                     <Button
                         android:id="@+id/ci_btn_pin"
-                        style="@style/ButtonStyle"
+                        style="@style/ClipItemButtonStyle"
                         android:layout_columnWeight="1"
                         android:drawableTop="@drawable/ic_pin"
                         android:foreground="?selectableItemBackground"
@@ -193,7 +193,7 @@
 
                     <Button
                         android:id="@+id/ci_btn_special"
-                        style="@style/ButtonStyle"
+                        style="@style/ClipItemButtonStyle"
                         android:layout_columnWeight="1"
                         android:drawableTop="@drawable/ic_special"
                         android:foreground="?selectableItemBackground"
@@ -207,7 +207,7 @@
 
                     <Button
                         android:id="@+id/ci_btn_share"
-                        style="@style/ButtonStyle"
+                        style="@style/ClipItemButtonStyle"
                         android:layout_columnWeight="1"
                         android:drawableTop="@drawable/ic_share"
                         android:foreground="?selectableItemBackground"

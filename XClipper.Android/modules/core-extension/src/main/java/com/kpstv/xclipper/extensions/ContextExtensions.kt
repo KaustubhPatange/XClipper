@@ -1,9 +1,11 @@
 package com.kpstv.xclipper.extensions
 
 import android.content.Context
+import android.content.ContextWrapper
 import android.graphics.drawable.Drawable
 import android.util.TypedValue
 import android.view.LayoutInflater
+import androidx.activity.ComponentActivity
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
@@ -52,3 +54,9 @@ fun Context.getRawDataAttr(@AttrRes id: Int, typedValue: TypedValue = TypedValue
 }
 
 fun Context.broadcastManager() = LocalBroadcastManager.getInstance(this)
+
+fun Context.findActivityOrNull() : ComponentActivity? {
+    if (this is ComponentActivity) return this
+    if (this is ContextWrapper) return this.baseContext.findActivityOrNull()
+    return null
+}

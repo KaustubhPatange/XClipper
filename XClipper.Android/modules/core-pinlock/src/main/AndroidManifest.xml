@@ -3,6 +3,13 @@
     package="com.kpstv.xclipper.core_pinlock">
 
     <application>
-        <activity android:theme="@style/PinModuleTheme" android:name="com.kpstv.xclipper.ui.activities.CustomPinLockActivity"/>
+        <activity
+            android:name="com.kpstv.xclipper.ui.activities.CustomPinLockActivity"
+            android:theme="@style/PinModuleTheme" />
+        <activity
+            android:name="com.kpstv.xclipper.ui.dialog.PinGrantDialog$PinGrantDialogActivity"
+            android:excludeFromRecents="false"
+            android:noHistory="true"
+            android:theme="@style/TranslucentTheme.Dark" />
     </application>
 </manifest>

@@ -14,6 +14,7 @@ import com.kpstv.core.R
 import com.kpstv.core.databinding.DialogFeatureBinding
 import com.kpstv.xclipper.extensions.hasThemeColorAttribute
 import com.kpstv.xclipper.extensions.layoutInflater
+import com.kpstv.xclipper.ui.helpers.AppThemeHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -101,6 +102,8 @@ class FeatureDialog(ctx: Context) {
     class DialogActivity : AppCompatActivity() {
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
+
+            AppThemeHelper.applyDialogTheme(this)
 
             val data: DialogData = intent?.getParcelableExtra<DialogData>(DIALOG_DATA) as DialogData
             val dialog = create(this, data).apply {

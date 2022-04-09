@@ -19,6 +19,9 @@
     <string name="activate">Activate</string>
     <string name="dismiss">Dismiss</string>
 
+    <string name="grant">Grant</string>
+    <string name="deny">Deny</string>
+
     <string name="settings">Settings</string>
 
     <string name="delete">Delete</string>

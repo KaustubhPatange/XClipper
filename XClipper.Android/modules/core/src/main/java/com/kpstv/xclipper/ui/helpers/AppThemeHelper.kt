@@ -107,6 +107,7 @@ object AppThemeHelper {
             setLightColors(activity)
             activity.setTheme(R.style.CustomDialogStyle_Light)
         } else {
+            activity.setTheme(R.style.CustomDialogStyle_Dark)
             setDarkColors(activity)
         }
     }

@@ -30,9 +30,4 @@
     <color name="errorColor">#A8011F</color>
     <color name="successColor">#028180</color>
 
-    <!-- Strings -->
-
-    <string name="pin_lock_disabled">Pin lock is disabled</string>
-    <string name="pin_lock_attempt_reach">Maximum password attempts reached (4)</string>
-
 </resources>

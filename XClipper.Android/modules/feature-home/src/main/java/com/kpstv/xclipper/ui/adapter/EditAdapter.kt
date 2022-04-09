@@ -42,9 +42,9 @@ class EditAdapter(
         with(binding) {
             chip.chipIconSize = root.context.toPx(20)
             chip.isCloseIconVisible = false
-            chip.setOnClickListener { onClick(this@EditAdapter.getItem(holder.adapterPosition), holder.adapterPosition) }
+            chip.setOnClickListener { onClick(this@EditAdapter.getItem(holder.bindingAdapterPosition), holder.bindingAdapterPosition) }
             chip.setOnLongClickListener {
-                val clipTag = this@EditAdapter.getItem(holder.adapterPosition).getClipTag()
+                val clipTag = this@EditAdapter.getItem(holder.bindingAdapterPosition).getClipTag()
                 if (clipTag != null) {
                     createBalloon(root.context) {
                         text = root.context.getString(clipTag.tooltipRes)

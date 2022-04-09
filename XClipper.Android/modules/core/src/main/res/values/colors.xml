@@ -34,4 +34,7 @@
 
     <color name="colorTextPrimary">#F1EEEE</color>
     <color name="colorTextPrimary_Light">#0e1111</color>
+
+    <color name="colorTextError">#EE6A67</color>
+    <color name="colorTextError_Light">#C32020</color>
 </resources>
