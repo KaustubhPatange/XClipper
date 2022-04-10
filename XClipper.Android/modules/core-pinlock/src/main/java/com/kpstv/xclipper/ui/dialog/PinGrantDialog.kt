@@ -14,11 +14,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.kpstv.xclipper.PinLockHelper
 import com.kpstv.xclipper.core_pinlock.R
 import com.kpstv.xclipper.core_pinlock.databinding.ActivityDialogPinGrantBinding
 import com.kpstv.xclipper.di.CommonReusableEntryPoints
 import com.kpstv.xclipper.extensions.SimpleFunction
-import com.kpstv.xclipper.extensions.toPx
+import com.kpstv.xclipper.extensions.utils.ToastyUtils
 import com.kpstv.xclipper.extensions.viewBinding
 import com.kpstv.xclipper.ui.helpers.AppThemeHelper
 
@@ -98,12 +99,30 @@ class PinGrantDialog(private val context: Context, private val key: String) {
 
         private val preferenceProvider by lazy { CommonReusableEntryPoints.get(applicationContext).preferenceProvider() }
 
+        private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
+
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
             AppThemeHelper.applyDialogTheme(this)
             setContentView(binding.root)
 
             val key = intent.getStringExtra(KEY)!!
+
+            activityResultLauncher = activityResultRegistry.register("pin-grant-activity", ActivityResultContracts.StartActivityForResult()) { result ->
+                if (PinLockHelper.Result.isSuccess(result)) {
+                    activityResultLauncher.unregister()
+                    val position = binding.spinner.selectedItemPosition
+                    val currentTimeMillis = System.currentTimeMillis()
+
+                    preferenceProvider.putIntKey("$SAVE_TYPE$key", position)
+                    preferenceProvider.putLongKey("$GRANT_ACCESS_MILLIS$key", currentTimeMillis)
+
+                    setResult(Activity.RESULT_OK)
+
+                    ToastyUtils.showInfo(this, getString(R.string.pin_lock_access_success))
+                }
+                finish()
+            }
 
             binding.spinner.adapter = CustomSpinnerAdapter(this)
             binding.spinner.setSelection(preferenceProvider.getIntKey("$SAVE_TYPE$key", 1))
@@ -113,14 +132,7 @@ class PinGrantDialog(private val context: Context, private val key: String) {
             }
 
             binding.btnGrant.setOnClickListener {
-                val position = binding.spinner.selectedItemPosition
-                val currentTimeMillis = System.currentTimeMillis()
-
-                preferenceProvider.putIntKey("$SAVE_TYPE$key", position)
-                preferenceProvider.putLongKey("$GRANT_ACCESS_MILLIS$key", currentTimeMillis)
-
-                setResult(Activity.RESULT_OK)
-                finish()
+                PinLockHelper.checkPinLock(this, activityResultLauncher)
             }
         }
 

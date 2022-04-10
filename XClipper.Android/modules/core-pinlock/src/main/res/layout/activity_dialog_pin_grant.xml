@@ -73,12 +73,13 @@
             android:id="@+id/_tv_grant"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
             android:layout_marginTop="15dp"
             android:gravity="center"
             android:text="@string/pin_lock_access_summary"
             android:textColor="?colorTextError"
             android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="@id/btn_grant"
+            app:layout_constraintStart_toStartOf="@id/btn_deny"
             app:layout_constraintTop_toBottomOf="@id/spinner" />
 
         <com.google.android.material.button.MaterialButton
