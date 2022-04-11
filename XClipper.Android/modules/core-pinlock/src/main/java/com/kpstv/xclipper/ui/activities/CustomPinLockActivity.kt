@@ -60,4 +60,11 @@ internal class CustomPinLockActivity : AppLockActivity() {
             else -> super.onBackPressed()
         }
     }
+
+    override fun finish() {
+        super.finish()
+
+        //Animate if greater than 2.3.3
+        overridePendingTransition(R.anim.nothing, R.anim.slide_down)
+    }
 }

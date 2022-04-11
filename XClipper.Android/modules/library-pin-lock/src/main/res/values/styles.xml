@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="DefaultPinLockStyle">
+        <item name="lp_empty_pin_dot">@drawable/pin_code_round_empty</item>
+        <item name="lp_full_pin_dot">@drawable/pin_code_round_full</item>
+        <item name="lp_divider_color">@color/light_gray_bar</item>
+        <item name="lp_finger_print_drawable">@drawable/ic_fp_40px</item>
+        <item name="lp_finger_print_color">@color/dark_grey_color</item>
+        <item name="lp_finger_print_success_color">@color/success_color</item>
+        <item name="lp_finger_print_error_color">@color/warning_color</item>
+        <item name="lp_finger_print_success_drawable">@drawable/ic_fingerprint_success</item>
+        <item name="lp_finger_print_error_drawable">@drawable/ic_fingerprint_error</item>
+    </style>
+
+</resources>
