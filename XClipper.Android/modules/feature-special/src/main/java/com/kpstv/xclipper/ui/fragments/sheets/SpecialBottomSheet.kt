@@ -13,6 +13,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.di.CommonReusableEntryPoints
+import com.kpstv.xclipper.di.action.SpecialActionOption
 import com.kpstv.xclipper.extensions.elements.CustomRoundedBottomSheetFragment
 import com.kpstv.xclipper.extensions.viewBinding
 import com.kpstv.xclipper.feature_special.R
@@ -31,12 +32,14 @@ class SpecialBottomSheet : CustomRoundedBottomSheetFragment(R.layout.bottom_shee
         super.onViewCreated(view, savedInstanceState)
 
         val args = arguments?.getParcelable<Args>(ARG_CLIP) ?: run { dismiss(); return }
+        val option = arguments?.getParcelable(ARG_SPECIAL_OPTIONS) ?: SpecialActionOption()
 
         SpecialHelper(
             context = requireContext(),
             supportFragmentManager = requireFragmentManager(),
             lifecycleScope = viewLifecycleOwner.lifecycleScope,
-            clip = args.clip
+            clip = args.clip,
+            option = option
         ).setActions(binding) {
             dismiss()
         }
@@ -52,6 +55,7 @@ class SpecialBottomSheet : CustomRoundedBottomSheetFragment(R.layout.bottom_shee
 
     companion object {
         private const val ARG_CLIP = "com.kpstv.xclipper:arg:clip_json"
+        private const val ARG_SPECIAL_OPTIONS = "com.kpstv.xclipper:arg:special_actions"
         private const val DICTIONARY_DIALOG = "dictionary_dialog"
         private fun PreferenceProvider.isDialogShown(): Boolean {
             return getBooleanKey(DICTIONARY_DIALOG, false)
@@ -60,21 +64,22 @@ class SpecialBottomSheet : CustomRoundedBottomSheetFragment(R.layout.bottom_shee
             putBooleanKey(DICTIONARY_DIALOG, value)
         }
 
-        fun show(clip: Clip, activity: FragmentActivity, onClose: () -> Unit = {}) {
-            show(clip, activity, activity.supportFragmentManager, onClose)
+        fun show(activity: FragmentActivity, clip: Clip, option: SpecialActionOption = SpecialActionOption(), onClose: () -> Unit = {}) {
+            show(clip, activity, activity.supportFragmentManager, onClose, option)
         }
 
-        fun show(clip: Clip, fragment: Fragment, onClose: () -> Unit = {}) {
-            show(clip, fragment.requireContext(), fragment.childFragmentManager, onClose)
+        fun show(fragment: Fragment, clip: Clip, option: SpecialActionOption = SpecialActionOption(), onClose: () -> Unit = {}) {
+            show(clip, fragment.requireContext(), fragment.childFragmentManager, onClose, option)
         }
 
-        private fun show(clip: Clip, context: Context, fragmentManager: FragmentManager, onClose: () -> Unit = {}) {
+        private fun show(clip: Clip, context: Context, fragmentManager: FragmentManager, onClose: () -> Unit = {}, option: SpecialActionOption = SpecialActionOption()) {
             val preferenceProvider = CommonReusableEntryPoints.get(context).preferenceProvider()
 
             fun showSheet() {
                 val sheet = SpecialBottomSheet().apply {
                     arguments = Bundle().apply {
                         putParcelable(ARG_CLIP, Args.fromClip(clip))
+                        putParcelable(ARG_SPECIAL_OPTIONS, option)
                     }
                 }
                 sheet.addOnDismissListener { onClose() }

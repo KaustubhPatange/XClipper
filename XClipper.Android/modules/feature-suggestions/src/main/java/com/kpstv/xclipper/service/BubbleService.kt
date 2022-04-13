@@ -18,7 +18,8 @@ import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.di.action.ClipboardAccessibilityServiceActions
-import com.kpstv.xclipper.di.navigation.SpecialActionsLauncher
+import com.kpstv.xclipper.di.action.SpecialActionOption
+import com.kpstv.xclipper.di.action.SpecialActionsLauncher
 import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.extensions.utils.ToastyUtils
 import com.kpstv.xclipper.feature_suggestions.R
@@ -83,7 +84,9 @@ class BubbleService : FloatingBubbleService() {
                     text = text
                 )
             },
-            onLongClick = specialActionsLauncher::launch,
+            onLongClick = { data ->
+                specialActionsLauncher.launch(data, SpecialActionOption(showShareOption = true))
+            },
             onCopyClick = { text ->
                 clipboardProvider.setClipboard(text)
                 Toasty.info(this, getString(R.string.copy_to_clipboard)).show()

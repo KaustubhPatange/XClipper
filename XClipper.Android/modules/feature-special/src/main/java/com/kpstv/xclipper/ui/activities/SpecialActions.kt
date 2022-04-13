@@ -7,8 +7,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.kpstv.xclipper.data.repository.MainRepository
+import com.kpstv.xclipper.di.action.SpecialActionOption
 import com.kpstv.xclipper.extensions.launchInIO
-import com.kpstv.xclipper.extensions.launchInMain
 import com.kpstv.xclipper.ui.fragments.sheets.SpecialBottomSheet
 import com.kpstv.xclipper.ui.helpers.AppThemeHelper
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,6 +28,7 @@ class SpecialActions : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         val data = intent.getStringExtra(APP_CLIP_DATA)
+        val option = intent.getParcelableExtra(SPECIAL_OPTIONS) ?: SpecialActionOption()
 
         if (data == null) {
             finish()
@@ -47,8 +48,9 @@ class SpecialActions : AppCompatActivity() {
             lifecycleScope.launch {
                 SpecialBottomSheet.show(
                     activity = this@SpecialActions,
-                    onClose = ::finish,
-                    clip = clip
+                    clip = clip,
+                    option = option,
+                    onClose = ::finish
                 )
             }
         }
@@ -56,16 +58,18 @@ class SpecialActions : AppCompatActivity() {
 
     companion object {
         private const val APP_CLIP_DATA = "com.kpstv.xclipper.clip_data"
-        fun launch(context: Context, clipData: String) {
-            val newIntent = launchIntent(context, clipData)
+        private const val SPECIAL_OPTIONS = "com.kpstv.xclipper.special_options"
+        fun launch(context: Context, clipData: String, option: SpecialActionOption = SpecialActionOption()) {
+            val newIntent = launchIntent(context, clipData, option)
             context.startActivity(newIntent)
         }
 
-        fun launchIntent(context: Context, clipData: String): Intent =
+        fun launchIntent(context: Context, clipData: String, option: SpecialActionOption = SpecialActionOption()): Intent =
             Intent(context, SpecialActions::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 data = Uri.parse(clipData)
                 putExtra(APP_CLIP_DATA, clipData)
+                putExtra(SPECIAL_OPTIONS, option)
             }
     }
 }

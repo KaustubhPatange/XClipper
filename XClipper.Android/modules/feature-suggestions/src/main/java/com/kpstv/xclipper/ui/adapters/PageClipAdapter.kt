@@ -6,7 +6,6 @@ import androidx.core.content.ContextCompat
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.kpstv.xclipper.di.navigation.SpecialActionsLauncher
 import com.kpstv.xclipper.feature_suggestions.R
 import com.kpstv.xclipper.feature_suggestions.databinding.ItemBubbleServiceBinding
 import com.kpstv.xclipper.data.model.Clip
@@ -15,7 +14,6 @@ import com.kpstv.xclipper.extensions.asConfig
 import com.kpstv.xclipper.extensions.hide
 import com.kpstv.xclipper.extensions.layoutInflater
 import com.kpstv.xclipper.extensions.show
-import es.dmoral.toasty.Toasty
 
 class PageClipAdapter(
     private val clipboardProvider: ClipboardProvider,
