@@ -11,4 +11,4 @@ interface SpecialActionsLauncher {
 }
 
 @Parcelize
-data class SpecialActionOption(val showShareOption: Boolean = true) : Parcelable
+data class SpecialActionOption(val showShareOption: Boolean = false) : Parcelable

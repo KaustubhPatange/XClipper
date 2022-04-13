@@ -6,6 +6,7 @@ import android.content.Context
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.kpstv.xclipper.R
+import com.kpstv.xclipper.di.action.SpecialActionOption
 import com.kpstv.xclipper.extensions.utils.NotificationUtils
 import com.kpstv.xclipper.service.receiver.SpecialActionsReceiver
 import com.kpstv.xclipper.ui.activities.SpecialActions
@@ -21,7 +22,7 @@ object Notifications {
 
         val deleteIntent = SpecialActionsReceiver.createDeleteAction(context, text, notificationId)
 
-        val specialIntent = SpecialActions.launchIntent(context, text)
+        val specialIntent = SpecialActions.launchIntent(context, text, SpecialActionOption(showShareOption = true))
 
         val notificationBuilder = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_logo_white)
