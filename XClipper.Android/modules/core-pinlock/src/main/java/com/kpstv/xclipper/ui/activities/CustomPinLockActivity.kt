@@ -5,6 +5,7 @@ import android.content.Intent
 import com.github.omadahealth.lollipin.lib.managers.AppLock
 import com.github.omadahealth.lollipin.lib.managers.AppLockActivity
 import com.github.omadahealth.lollipin.lib.managers.LockManager
+import com.kpstv.xclipper.PinLockHelper.Result.PIN_LOCK_RESULT_SUCCESS
 import com.kpstv.xclipper.core_pinlock.R
 import es.dmoral.toasty.Toasty
 
@@ -42,6 +43,9 @@ internal class CustomPinLockActivity : AppLockActivity() {
     }
 
     override fun onPinSuccess(attempts: Int) {
+        if (mType != AppLock.CHANGE_PIN) {
+            setResult(PIN_LOCK_RESULT_SUCCESS)
+        }
         if (intent.action == DISABLING_PIN_LOCK) {
             val lockManager = LockManager.getInstance()
             lockManager.appLock.setPasscode(null)
@@ -55,5 +59,12 @@ internal class CustomPinLockActivity : AppLockActivity() {
             VERIFICATION_ENABLED -> finishAffinity()
             else -> super.onBackPressed()
         }
+    }
+
+    override fun finish() {
+        super.finish()
+
+        //Animate if greater than 2.3.3
+        overridePendingTransition(R.anim.nothing, R.anim.slide_down)
     }
 }

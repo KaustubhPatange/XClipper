@@ -8,4 +8,21 @@
     <style name="CommonThemeLight">
         <item name="colorSpecialTag">@color/special_tag_light_color</item>
     </style>
+
+    <style name="CustomSwitchTheme" parent="Theme.AppCompat.Light">
+        <item name="colorControlActivated">@color/colorCustomBlue</item>
+        <item name="colorSwitchThumbNormal">@color/colorTextPrimary</item>
+        <item name="android:colorForeground">@android:color/white</item>
+    </style>
+
+    <style name="ClipItemButtonStyle" parent="TextAppearance.MaterialComponents.Button">
+        <item name="android:textColor">?colorTextSecondary</item>
+        <item name="android:textSize">12sp</item>
+        <item name="fontFamily">@font/google_sans_regular</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="textAllCaps">false</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
 </resources>

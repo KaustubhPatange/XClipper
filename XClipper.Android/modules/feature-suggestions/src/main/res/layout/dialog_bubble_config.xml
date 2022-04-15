@@ -99,7 +99,7 @@
                 android:id="@+id/iv_bubble"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                app:srcCompat="@drawable/bubble_icon" />
+                app:srcCompat="@drawable/app_icon_round" />
 
         </LinearLayout>
 

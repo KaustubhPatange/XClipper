@@ -331,7 +331,7 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
     // We will find an editable node. If none of them exist it means we cannot use
     // search suggestions feature & we will directly paste the content.
     // The one which is currently focused will always be given priority.
-    private fun recursivelyFindRequiredNodeForSuggestion(node: AccessibilityNodeInfo?) : AccessibilityNodeInfo? {
+    private tailrec fun recursivelyFindRequiredNodeForSuggestion(node: AccessibilityNodeInfo?) : AccessibilityNodeInfo? {
         if (node?.isEditable == true) {
             val editableNode = editableNode
             if (editableNode?.isEditable == true && editableNode.isFocused && editableNode.refresh()) {

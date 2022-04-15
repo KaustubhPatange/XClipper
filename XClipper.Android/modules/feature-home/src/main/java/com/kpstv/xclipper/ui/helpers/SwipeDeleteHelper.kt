@@ -47,7 +47,7 @@ class SwipeDeleteHelper(
     ) = false
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-        onSwiped.invoke(viewHolder.adapterPosition)
+        onSwiped.invoke(viewHolder.bindingAdapterPosition)
     }
 
     override fun onChildDraw(

@@ -11,7 +11,7 @@
             android:name="com.kpstv.xclipper.ui.activities.ChangeClipboardActivity"
             android:excludeFromRecents="true"
             android:launchMode="singleInstance"
-            android:theme="@style/Theme.AppCompat.Translucent" />
+            android:theme="@style/TranslucentTheme.Dark" />
 
         <service
             android:name="com.kpstv.xclipper.service.ClipboardAccessibilityService"

@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.util.TypedValue
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -14,16 +13,19 @@ import com.bsk.floatingbubblelib.DefaultFloatingBubbleTouchListener
 import com.bsk.floatingbubblelib.FloatingBubbleConfig
 import com.bsk.floatingbubblelib.FloatingBubbleService
 import com.bsk.floatingbubblelib.FloatingBubbleTouchListener
+import com.kpstv.xclipper.PinLockHelper
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.di.action.ClipboardAccessibilityServiceActions
-import com.kpstv.xclipper.di.navigation.SpecialActionsLauncher
+import com.kpstv.xclipper.di.action.SpecialActionOption
+import com.kpstv.xclipper.di.action.SpecialActionsLauncher
 import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.extensions.utils.ToastyUtils
 import com.kpstv.xclipper.feature_suggestions.R
 import com.kpstv.xclipper.feature_suggestions.databinding.BubbleViewBinding
 import com.kpstv.xclipper.ui.adapters.PageClipAdapter
+import com.kpstv.xclipper.ui.dialog.PinGrantDialog
 import com.kpstv.xclipper.ui.dialogs.FeatureDialog
 import com.kpstv.xclipper.ui.helpers.AppSettings
 import dagger.hilt.android.AndroidEntryPoint
@@ -62,6 +64,8 @@ class BubbleService : FloatingBubbleService() {
         private const val ACTION_NODE_INFO = "com.kpstv.xclipper.action_node_text"
         private const val EXTRA_NODE_CURSOR = "com.kpstv.xclipper.extra_node_cursor"
         private const val EXTRA_NODE_TEXT = "com.kpstv.xclipper.extra_node_text"
+
+        private const val PIN_GRANT_KEY = "bubble_pin_key"
     }
 
     override fun getConfig(): FloatingBubbleConfig {
@@ -80,7 +84,9 @@ class BubbleService : FloatingBubbleService() {
                     text = text
                 )
             },
-            onLongClick = specialActionsLauncher::launch,
+            onLongClick = { data ->
+                specialActionsLauncher.launch(data, SpecialActionOption(showShareOption = true))
+            },
             onCopyClick = { text ->
                 clipboardProvider.setClipboard(text)
                 Toasty.info(this, getString(R.string.copy_to_clipboard)).show()
@@ -110,7 +116,7 @@ class BubbleService : FloatingBubbleService() {
         LocalBroadcastManager.getInstance(this).registerReceiver(bubbleBroadcastReceiver, filter)
 
         return FloatingBubbleConfig.Builder()
-            .bubbleIcon(ContextCompat.getDrawable(applicationContext, R.drawable.bubble_icon))
+            .bubbleIcon(ContextCompat.getDrawable(applicationContext, R.drawable.app_icon_round))
             .expandableView(binding.root)
             .physicsEnabled(true)
             .bubbleGravity(bubbleCoordinates.first)
@@ -148,11 +154,23 @@ class BubbleService : FloatingBubbleService() {
     override fun getTouchListener(): FloatingBubbleTouchListener {
         return object : DefaultFloatingBubbleTouchListener() {
             override fun onTap(expanded: Boolean) {
-                if (!showSearchFeatureDialog(context, appSettings)) {
-                    if (expanded && shouldResubscribe) subscribeSuggestions()
-                } else {
+                if (showSearchFeatureDialog(context, appSettings)) {
                     setState(false)
+                    return
                 }
+
+                if (PinLockHelper.isPinLockEnabled()) {
+                    val dialog = PinGrantDialog(this@BubbleService, PIN_GRANT_KEY)
+                    if (dialog.shouldShow()) {
+                        dialog.launch()
+                        setState(false)
+
+                        ToastyUtils.showInfo(this@BubbleService, getString(R.string.bubble_request_pin_access))
+                        return
+                    }
+                }
+
+                if (expanded && shouldResubscribe) subscribeSuggestions()
             }
 
             override fun onRemove() {

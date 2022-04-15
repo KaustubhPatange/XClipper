@@ -31,8 +31,8 @@ import com.kpstv.xclipper.data.model.ClipTag
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.data.provider.ClipboardProviderFlags
+import com.kpstv.xclipper.di.action.SpecialActionsLauncher
 import com.kpstv.xclipper.di.navigation.SettingsNavigation
-import com.kpstv.xclipper.di.navigation.SpecialSheetNavigation
 import com.kpstv.xclipper.extension.DefaultSearchViewListener
 import com.kpstv.xclipper.extension.drawableRes
 import com.kpstv.xclipper.extension.enumeration.SpecialTagFilter
@@ -72,7 +72,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
     @Inject lateinit var firebaseProviderHelper: FirebaseProviderHelper
 
     @Inject lateinit var settingsNavigation: SettingsNavigation
-    @Inject lateinit var specialSheetNavigation: SpecialSheetNavigation
+    @Inject lateinit var specialActionsLauncher: SpecialActionsLauncher
 
     private lateinit var adapter: ClipAdapter
     private var undoSnackBar: Snackbar? = null
@@ -280,13 +280,13 @@ class Home : ValueFragment(R.layout.fragment_home) {
                     mainViewModel.changeClipPin(clip, !clip.isPinned)
                 }
                 ClipAdapter.MenuType.Special -> {
-                    specialSheetNavigation.navigate(
+                    specialActionsLauncher.launch(
                         parentFragment = this,
                         clip = clip
                     )
                 }
                 ClipAdapter.MenuType.Share -> {
-                    ShareUtils.shareText(requireActivity(), clip)
+                    ShareUtils.shareText(requireActivity(), clip.data)
                 }
             }
         }

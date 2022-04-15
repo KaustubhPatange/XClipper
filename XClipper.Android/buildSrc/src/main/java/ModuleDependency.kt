@@ -25,6 +25,8 @@ object ModuleDependency {
     const val FEATURE_SETTINGS = ":modules:feature-settings"
     const val FEATURE_CLIPBOARD = ":modules:feature-clipboard"
 
+    const val LIBRARY_PINLOCK = ":modules:library-pin-lock"
+
     fun getAllModules(): Set<String> = ModuleDependency::class.memberProperties
         .filter { it.isConst }
         .map { it.getter.call().toString() }

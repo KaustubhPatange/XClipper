@@ -1,80 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="?background"
-    android:paddingBottom="10dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingBottom="10dp">
 
-   <include android:id="@+id/bsm_notch" layout="@layout/common_sheet_notch"/>
-
-    <LinearLayout
+    <include
+        android:id="@+id/bsm_notch"
+        layout="@layout/common_sheet_notch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_special"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="20dp"
         android:paddingTop="10dp"
-        android:paddingBottom="15dp"
-        android:orientation="vertical">
+        android:text="@string/specials_title"
+        android:textColor="?colorTextPrimary"
+        android:textSize="19sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bsm_notch" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/btn_share"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="10dp"
+        android:background="?selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="15dp"
+        android:tint="?colorTextPrimary"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/tv_special"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/sp_ic_share"
+        tools:visibility="visible" />
+
+    <LinearLayout
+        android:id="@+id/defineLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:paddingHorizontal="20dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_special"
+        tools:visibility="visible">
+
         <TextView
-            android:layout_width="match_parent"
+            android:id="@+id/edit_define_word"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="?colorTextPrimary"
-            android:textSize="19sp"
-            android:text="@string/specials_title" />
+            android:text="@string/define"
+            android:textColor="?colorTextSecondaryLight"
+            android:textSize="11sp"
+            android:textStyle="bold" />
 
-        <LinearLayout
-            android:visibility="gone"
-            android:id="@+id/defineLayout"
-            android:layout_marginTop="10dp"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/edit_define"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:visibility="visible"
-            android:orientation="horizontal">
-            <TextView
-                android:textStyle="bold"
-                android:id="@+id/edit_define_word"
-                android:textSize="11sp"
-                android:textColor="?colorTextSecondaryLight"
-                android:text="@string/define"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <TextView
-                android:id="@+id/edit_define"
-                android:layout_marginStart="5dp"
-                android:autoLink="web"
-                android:clickable="true"
-                android:focusable="true"
-                android:linksClickable="true"
-                android:textColor="?colorTextSecondary"
-                android:textSize="11sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
-
+            android:layout_marginStart="5dp"
+            android:autoLink="web"
+            android:clickable="true"
+            android:focusable="true"
+            android:linksClickable="true"
+            android:textColor="?colorTextSecondary"
+            android:textSize="11sp" />
     </LinearLayout>
 
     <com.kpstv.xclipper.ui.elements.LinkPreview
         android:id="@+id/link_preview"
-        app:titleTextColor="?colorTextSecondaryLight"
-        app:subtitleTextColor="?colorTextSecondary"
-        app:urlTextColor="?colorSeparator"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:paddingHorizontal="20dp"
+        app:layout_constraintTop_toBottomOf="@id/defineLayout"
+        app:subtitleTextColor="?colorTextSecondary"
+        app:titleTextColor="?colorTextSecondaryLight"
+        app:urlTextColor="?colorSeparator" />
 
     <View
-        android:layout_marginBottom="10dp"
+        android:id="@+id/_separator"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="?colorForeground"/>
+        android:layout_marginBottom="10dp"
+        android:background="?colorForeground"
+        app:layout_constraintTop_toBottomOf="@id/link_preview" />
 
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/bsm_recyclerView"
-        android:overScrollMode="never"
-        tools:listitem="@layout/item_special"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-</LinearLayout>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:overScrollMode="never"
+        app:layout_constraintTop_toBottomOf="@id/_separator"
+        tools:listitem="@layout/item_special" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

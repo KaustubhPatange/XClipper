@@ -7,14 +7,20 @@ import com.kpstv.xclipper.extensions.drawableFrom
 import es.dmoral.toasty.Toasty
 
 object ToastyUtils {
+    fun showInfo(context: Context, message: String): Unit = with(context) {
+        showToast(context, message, colorFrom(R.color.infoColor), colorFrom(R.color.colorBackground_Light))
+    }
     fun showWarning(context: Context, message: String) : Unit = with(context) {
-        val backgroundColor = colorFrom(R.color.colorBackground)
+        showToast(context, message, colorFrom(R.color.warningColor), colorFrom(R.color.colorBackground))
+    }
+
+    private fun showToast(context: Context, message: String, color: Int, tintColor: Int) : Unit = with(context)  {
         Toasty.custom(
             context,
             message,
-            drawableFrom(R.drawable.ic_logo_white)?.apply { setTint(backgroundColor) },
-            colorFrom(R.color.warningColor),
-            backgroundColor,
+            drawableFrom(R.drawable.ic_logo_white)?.apply { setTint(tintColor) },
+            color,
+            tintColor,
             Toasty.LENGTH_SHORT,
             true,
             true

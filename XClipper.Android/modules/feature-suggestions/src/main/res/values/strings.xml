@@ -15,4 +15,6 @@
     <string name="bubble_coordinate_x">x=%1$s</string>
     <string name="bubble_coordinate_y">y=%1$s</string>
     <string name="bubble_settings_saved">Suggestion settings saved</string>
+
+    <string name="bubble_request_pin_access">Requesting access to grant pin lock</string>
 </resources>

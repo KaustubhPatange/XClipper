@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pin_lock_disabled">Pin lock is disabled</string>
+    <string name="pin_lock_attempt_reach">Maximum password attempts reached (4)</string>
+
+    <string name="grant_15m">15 mins</string>
+    <string name="grant_1h">1 hour</string>
+    <string name="grant_6h">6 hours</string>
+    <string name="grant_12h">12 hours</string>
+    <string name="grant_24h">1 day</string>
+    <string name="grant_forever">Forever</string>
+
+    <string name="pin_lock_access_title">Pin Lock Request</string>
+    <string name="pin_lock_access_summary">This action can leak your clip data.\nGrant to continue!</string>
+    <string name="pin_lock_access_success">Granted access for Pin Lock</string>
+</resources>

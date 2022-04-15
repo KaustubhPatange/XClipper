@@ -20,6 +20,7 @@ import com.kpstv.xclipper.data.model.ClipTag
 import com.kpstv.xclipper.data.model.Preview
 import com.kpstv.xclipper.data.model.SingleMenuItem
 import com.kpstv.xclipper.di.SpecialEntryPoints
+import com.kpstv.xclipper.di.action.SpecialActionOption
 import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.extensions.listeners.ResponseListener
 import com.kpstv.xclipper.extensions.utils.PackageUtils
@@ -27,6 +28,7 @@ import com.kpstv.xclipper.ui.adapters.SingleMenuAdapter
 import com.kpstv.xclipper.ui.fragments.sheets.MoreChooserSheet
 import com.kpstv.xclipper.ui.fragments.sheets.ShortenUriSheet
 import com.kpstv.xclipper.extensions.SpecialAction
+import com.kpstv.xclipper.extensions.utils.ShareUtils
 import com.kpstv.xclipper.feature_special.R
 import com.kpstv.xclipper.feature_special.databinding.BottomSheetSpecialBinding
 import com.kpstv.xclipper.ui.utils.LaunchUtils
@@ -42,6 +44,7 @@ internal class SpecialHelper(
     private val supportFragmentManager: FragmentManager,
     private val lifecycleScope: CoroutineScope,
     private val clip: Clip,
+    private val option: SpecialActionOption,
 ) {
     private val dictionaryApiHelper: DictionaryApiHelper = SpecialEntryPoints.get(context).dictionaryApiHelper()
     private val linkPreviewDao: PreviewDao = SpecialEntryPoints.get(context).linkPreviewDao()
@@ -60,6 +63,8 @@ internal class SpecialHelper(
     fun setActions(binding: BottomSheetSpecialBinding, onItemClick: SimpleFunction) = with(binding) {
         this@SpecialHelper.onItemClick = onItemClick
 
+        setShowButton(this)
+
         setDefineTag(this)
 
         setLinkPreview(this)
@@ -77,6 +82,17 @@ internal class SpecialHelper(
         setDateSpecials()
 
         setRecyclerView(this)
+    }
+
+    private fun setShowButton(binding: BottomSheetSpecialBinding) = with(binding) {
+        if (option.showShareOption) {
+            btnShare.show()
+        } else {
+            btnShare.hide()
+        }
+        btnShare.setOnClickListener {
+            ShareUtils.shareText(context, data)
+        }
     }
 
     private fun createChooser(tagName: String, onItemSelected: (String) -> Unit) {

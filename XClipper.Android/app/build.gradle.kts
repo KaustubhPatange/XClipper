@@ -126,7 +126,6 @@ dependencies {
     implementation(LibraryDependency.REALTIME_EXTENSIONS)
     implementation(LibraryDependency.TIMBER)
     implementation(LibraryDependency.MARKWON)
-    implementation(LibraryDependency.PINLOCK)
 
     implementation(LibraryDependency.NAVIGATOR)
     implementation(LibraryDependency.NAVIGATOR_EXTENSIONS)
