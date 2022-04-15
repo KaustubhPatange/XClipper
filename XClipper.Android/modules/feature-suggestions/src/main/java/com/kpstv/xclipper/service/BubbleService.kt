@@ -164,6 +164,8 @@ class BubbleService : FloatingBubbleService() {
                     if (dialog.shouldShow()) {
                         dialog.launch()
                         setState(false)
+
+                        ToastyUtils.showInfo(this@BubbleService, getString(R.string.bubble_request_pin_access))
                         return
                     }
                 }
