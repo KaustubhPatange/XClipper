@@ -59,7 +59,10 @@ jobs:
           cd XClipper.Android
           chmod +x gradlew
       - name: Assemble release
-        run: cd XClipper.Android && ./gradlew app:assembleRelease --stacktrace --scan
+        run: |
+          cd XClipper.Android
+          ./gradlew app:assembleRelease --stacktrace --scan
+          ./gradlew --stop
 
       - name: Draft Release
         id: create_release

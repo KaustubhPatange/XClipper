@@ -10,6 +10,7 @@ import com.kpstv.license.Encryption.EncryptPref
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.sendBlocking
+import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
@@ -100,7 +101,7 @@ class PreferenceProviderImpl @Inject constructor(
     override fun observeBooleanKeyAsFlow(key: String, default: Boolean): Flow<Boolean> = callbackFlow {
         fun sendUpdatedValue() {
             val value = preference.getBoolean(key, default)
-            sendBlocking(value)
+            trySendBlocking(value)
         }
         val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, prefKey ->
             if (key == prefKey) sendUpdatedValue()
