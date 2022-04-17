@@ -1,16 +1,11 @@
 package com.kpstv.xclipper.extensions.utils
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.ShareCompat
 import com.kpstv.core.R
 
 object ShareUtils {
-    fun shareText(context: Activity, text: String) {
-        shareText(context, text)
-    }
-
     fun shareText(context: Context, text: String) {
         val intent = ShareCompat.IntentBuilder(context)
             .setChooserTitle(context.getString(R.string.share))

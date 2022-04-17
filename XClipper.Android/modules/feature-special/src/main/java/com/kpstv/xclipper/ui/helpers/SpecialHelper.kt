@@ -63,7 +63,7 @@ internal class SpecialHelper(
     fun setActions(binding: BottomSheetSpecialBinding, onItemClick: SimpleFunction) = with(binding) {
         this@SpecialHelper.onItemClick = onItemClick
 
-        setShowButton(this)
+        setShareButton(this)
 
         setDefineTag(this)
 
@@ -84,7 +84,7 @@ internal class SpecialHelper(
         setRecyclerView(this)
     }
 
-    private fun setShowButton(binding: BottomSheetSpecialBinding) = with(binding) {
+    private fun setShareButton(binding: BottomSheetSpecialBinding) = with(binding) {
         if (option.showShareOption) {
             btnShare.show()
         } else {
@@ -92,6 +92,7 @@ internal class SpecialHelper(
         }
         btnShare.setOnClickListener {
             ShareUtils.shareText(context, data)
+            onItemClick.invoke()
         }
     }
 
