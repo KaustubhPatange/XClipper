@@ -1,0 +1,6 @@
+Added: Pin Grant dialog when accessing items through suggestions.
+Added: Share button in special action sheet when open from notifications or suggestions.
+Improved: Bubble suggestion feature where it can now capture editable node quickly.
+Fixed: Pin gets reset everytime when you open the app.
+Fixed: Crash when clip item is clicked/long-clicked.
+Fixed: Some crashes due to auto backup enabled & accessibility service.
