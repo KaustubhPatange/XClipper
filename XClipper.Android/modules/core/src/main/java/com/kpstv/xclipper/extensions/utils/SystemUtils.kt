@@ -45,7 +45,7 @@ object SystemUtils {
     private const val EXTRA_FRAGMENT_ARG_KEY = ":settings:fragment_args_key"
     private const val EXTRA_SHOW_FRAGMENT_ARGUMENTS = ":settings:show_fragment_args"
 
-    fun openAccessibilitySettings(context: Context, componentName: ComponentName? = null) = with(context) {
+    fun openAccessibilitySettings(context: Context, componentName: ComponentName? = null) : Boolean = with(context) {
         val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
             if (componentName != null) {
@@ -54,7 +54,7 @@ object SystemUtils {
                 putExtra(EXTRA_SHOW_FRAGMENT_ARGUMENTS, bundleOf(EXTRA_FRAGMENT_ARG_KEY to finalizedComponentName))
             }
         }
-        startActivity(intent)
+        return@with runCatching { startActivity(intent) }.isSuccess
     }
 
     // TODO: Make this work for all accessibility service & not limited to app's accessibility services.

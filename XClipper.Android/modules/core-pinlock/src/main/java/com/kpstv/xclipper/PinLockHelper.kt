@@ -19,14 +19,17 @@ object PinLockHelper {
         fun isSuccess(result: ActivityResult) : Boolean = result.resultCode == PIN_LOCK_RESULT_SUCCESS
     }
 
-
-    fun isPinLockEnabled() : Boolean {
+    fun isPinLockEnabled(context: Context) : Boolean {
         val lockManager = LockManager.getInstance()
+        internalSetPinLock(context)
         return lockManager.appLock.isPasscodeSet
     }
-    fun checkPinLock(context: Context, activityResultLauncher: ActivityResultLauncher<Intent>? = null) {
+    fun checkPinLock(context: Context) {
+        checkPinLock(context, null)
+    }
+    internal fun checkPinLock(context: Context, activityResultLauncher: ActivityResultLauncher<Intent>? = null) {
         internalSetPinLock(context)
-        if (isPinLockEnabled()) {
+        if (isPinLockEnabled(context)) {
             val intent = CustomPinLockActivity.createIntentForLockVerification(context).apply {
                 if (context !is Activity) flags = Intent.FLAG_ACTIVITY_NEW_TASK
             }
@@ -38,7 +41,7 @@ object PinLockHelper {
         }
     }
     fun disablePinLock(activity: ComponentActivity) = with(activity) {
-        if (isPinLockEnabled()) {
+        if (isPinLockEnabled(this)) {
             startActivity(CustomPinLockActivity.createIntentForDisablingPinLock(this))
         }
     }

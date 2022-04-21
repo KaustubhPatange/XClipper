@@ -120,7 +120,8 @@ class GeneralPreference : AbstractPreferenceFragment() {
         pinLockPreference?.setOnPreferenceChangeListener call@{ _, newValue ->
             if (pinLockExtensionHelper.isActive()) {
                 val value = newValue as Boolean
-                if (value && !PinLockHelper.isPinLockEnabled()) {
+                val isPinLockEnabled = PinLockHelper.isPinLockEnabled(requireContext())
+                if (value && !isPinLockEnabled) {
                     // trying to create a new pin
                     Dialogs.showPinLockInfoDialog(
                         context = requireContext(),
@@ -128,10 +129,10 @@ class GeneralPreference : AbstractPreferenceFragment() {
                             PinLockHelper.createANewPinLock(requireContext())
                         }
                     )
-                } else if (!value && PinLockHelper.isPinLockEnabled()) {
+                } else if (!value && isPinLockEnabled) {
                     // trying to disable it in other cases
                     PinLockHelper.disablePinLock(requireActivity())
-                } else if (value && PinLockHelper.isPinLockEnabled()) {
+                } else if (value && isPinLockEnabled) {
                     // must be error from our side so we should just set pin lock
                     return@call true
                 }
@@ -230,7 +231,7 @@ class GeneralPreference : AbstractPreferenceFragment() {
 
     private fun checkForService() {
         checkPreference?.isChecked = ClipboardAccessibilityService.isRunning(requireContext())
-        pinLockPreference?.isChecked = PinLockHelper.isPinLockEnabled()
+        pinLockPreference?.isChecked = PinLockHelper.isPinLockEnabled(requireContext())
     }
 
     private fun showBlacklistAppDialog() {

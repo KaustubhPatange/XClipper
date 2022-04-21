@@ -159,7 +159,7 @@ class BubbleService : FloatingBubbleService() {
                     return
                 }
 
-                if (PinLockHelper.isPinLockEnabled()) {
+                if (PinLockHelper.isPinLockEnabled(this@BubbleService)) {
                     val dialog = PinGrantDialog(this@BubbleService, PIN_GRANT_KEY)
                     if (dialog.shouldShow()) {
                         dialog.launch()

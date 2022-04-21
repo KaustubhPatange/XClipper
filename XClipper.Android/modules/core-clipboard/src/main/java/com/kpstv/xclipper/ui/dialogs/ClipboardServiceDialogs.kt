@@ -7,6 +7,7 @@ import com.kpstv.xclipper.core_clipboard.R
 import com.kpstv.xclipper.extensions.SimpleFunction
 import com.kpstv.xclipper.extensions.utils.ClipboardUtils
 import com.kpstv.xclipper.service.ClipboardAccessibilityService
+import es.dmoral.toasty.Toasty
 
 object ClipboardServiceDialogs {
 
@@ -21,7 +22,10 @@ object ClipboardServiceDialogs {
             .setTitle(getString(R.string.accessibility_service))
             .setMessage(context.getString(R.string.accessibility_capture))
             .setPositiveButton(getString(R.string.ok)) { _, _ ->
-                ClipboardUtils.openServiceAccessibilitySetting(this)
+                val isSuccess = ClipboardUtils.openServiceAccessibilitySetting(this)
+                if (!isSuccess) {
+                    Toasty.error(this, getString(R.string.accessibility_setting_err), Toasty.LENGTH_LONG).show()
+                }
                 onPositiveButtonClick.invoke()
             }
             .setCancelable(false)
@@ -41,7 +45,12 @@ object ClipboardServiceDialogs {
             .setPositiveButton(R.string.ok) { _, _ ->
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     ClipboardAccessibilityService.disableService(context)
-                } else ClipboardUtils.openServiceAccessibilitySetting(context)
+                } else {
+                    val isSuccess = ClipboardUtils.openServiceAccessibilitySetting(context)
+                    if (!isSuccess) {
+                        Toasty.error(this, getString(R.string.accessibility_setting_err), Toasty.LENGTH_LONG).show()
+                    }
+                }
                 onPositiveButtonClick.invoke()
             }
             .setNegativeButton(R.string.cancel) { _, _ -> onNegativeButtonClick.invoke() }

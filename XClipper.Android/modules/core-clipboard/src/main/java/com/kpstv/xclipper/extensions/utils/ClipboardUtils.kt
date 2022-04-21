@@ -6,7 +6,7 @@ import com.kpstv.core.BuildConfig
 import com.kpstv.xclipper.service.ClipboardAccessibilityService
 
 object ClipboardUtils {
-    fun openServiceAccessibilitySetting(context: Context) = with(context) {
+    fun openServiceAccessibilitySetting(context: Context) : Boolean = with(context) {
         SystemUtils.openAccessibilitySettings(
             context = this,
             componentName = ComponentName(
