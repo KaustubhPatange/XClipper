@@ -7,8 +7,10 @@ import com.kpstv.xclipper.extensions.utils.RetrofitUtils
 import com.kpstv.xclipper.extensions.utils.asString
 import com.kpstv.xclipper.feature_settings.R
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,7 +25,9 @@ class UpgradeViewModel @Inject constructor() : ViewModel() {
             result.fold(
                 onSuccess = { response ->
                     if (!response.isSuccessful) throw Exception()
-                    val body = response.asString()
+                    val body = withContext(Dispatchers.IO) {
+                        response.asString()
+                    }
                     val amount = PREMIUM_PRICE_REGEX.toRegex().find(body!!)?.groups?.get(1)?.value!!
 
                     emit(ResponseResult.complete(amount))

@@ -4,10 +4,12 @@ import androidx.lifecycle.ViewModel
 import com.kpstv.xclipper.extensions.utils.RetrofitUtils
 import com.kpstv.xclipper.extensions.utils.asString
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -20,8 +22,9 @@ class DisclosureSheetViewModel @Inject constructor() : ViewModel() {
 
     internal fun fetchPolicy() : Flow<DisclosureState> = flow {
         emit(DisclosureState.Loading)
-        val body = RetrofitUtils.fetch(POLICY_URL).getOrNull()?.asString()
-            ?: run { emit(DisclosureState.EmptyPolicy); return@flow }
+        val body = withContext(Dispatchers.IO) {
+            RetrofitUtils.fetch(POLICY_URL).getOrNull()?.asString()
+        } ?: run { emit(DisclosureState.EmptyPolicy); return@flow }
         val date = UPDATED_DATE_PATTERN.toRegex().find(body)?.groupValues?.get(1)
         if (date != null) {
             emit(DisclosureState.UpdatePolicy(body, date))
