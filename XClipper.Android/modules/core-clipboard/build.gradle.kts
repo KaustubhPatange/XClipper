@@ -10,7 +10,6 @@ dependencies {
     implementation(project(ModuleDependency.CORE))
     implementation(project(ModuleDependency.CORE_EXTENSIONS))
 
-    implementation(LibraryDependency.CORE_KTX)
     implementation(LibraryDependency.COROUTINES_ANDROID)
     implementation(LibraryDependency.ACTIVITY_KTX)
     implementation(LibraryDependency.LOCAL_BROADCAST_MANAGER)

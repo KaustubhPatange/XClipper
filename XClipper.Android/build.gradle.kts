@@ -5,13 +5,13 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath(GradleDependency.GRADLE_BUILD_TOOLS)
-        classpath(GradleDependency.KOTLIN_PLUGIN)
-        classpath(GradleDependency.KSP_PLUGIN)
-        classpath(GradleDependency.DAGGER_HILT)
-        classpath(GradleDependency.CRASHLYTICS)
-        classpath(GradleDependency.GOOGLE_SERVICE)
-        classpath(GradleDependency.SPOTIFY_RULER)
+        classpath(libs.android.gradlePlugin)
+        classpath(libs.kotlin.gradlePlugin)
+        classpath(libs.kotlin.ksp.gradlePlugin)
+        classpath(libs.android.hilt.gradlePlugin)
+        classpath(libs.firebase.crashlytics.gradlePlugin)
+        classpath(libs.google.gms.gradlePlugin)
+        classpath(libs.spotify.ruler.gradlePlugin)
     }
 }
 

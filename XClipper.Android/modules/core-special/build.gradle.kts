@@ -14,8 +14,6 @@ dependencies {
     implementation(project(ModuleDependency.CORE))
     implementation(project(ModuleDependency.CORE_EXTENSIONS))
 
-    implementation(LibraryDependency.CORE_KTX)
-    implementation(LibraryDependency.MATERIAL)
     implementation(LibraryDependency.CONSTRAINT_LAYOUT)
     implementation(LibraryDependency.RETROFIT)
     implementation(LibraryDependency.RETROFIT_GSON_CONVERTER)

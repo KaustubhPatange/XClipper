@@ -17,10 +17,6 @@ dependencies {
     implementation(project(ModuleDependency.CORE_EXTENSIONS))
     implementation(project(ModuleDependency.LIBRARY_PINLOCK))
 
-    implementation(LibraryDependency.CORE_KTX)
-
     implementation(LibraryDependency.CONSTRAINT_LAYOUT)
-    implementation(LibraryDependency.APP_COMPAT)
-    implementation(LibraryDependency.MATERIAL)
     implementation(LibraryDependency.TOASTY)
 }

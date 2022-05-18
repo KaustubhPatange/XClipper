@@ -1,0 +1,20 @@
+[versions]
+androidGradlePlugin = "7.1.0"
+kotlin = "1.5.31"
+hilt = "2.39.1"
+kspGradlePlugin = "1.5.31-1.0.0"
+crashlyticsGradlePlugin = "2.7.1"
+gmsGradlePlugin = "4.3.10"
+spotifyRulerGradlePlugin = "1.1.1"
+
+[libraries]
+android-gradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "androidGradlePlugin" }
+kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+android-hilt-gradlePlugin = { group = "com.google.dagger", name = "hilt-android-gradle-plugin", version.ref = "hilt" }
+kotlin-ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "kspGradlePlugin" }
+firebase-crashlytics-gradlePlugin = { module = "com.google.firebase:firebase-crashlytics-gradle", version.ref = "crashlyticsGradlePlugin" }
+google-gms-gradlePlugin = { group = "com.google.gms", name = "google-services", version.ref = "gmsGradlePlugin" }
+spotify-ruler-gradlePlugin = { module = "com.spotify.ruler:ruler-gradle-plugin", version.ref = "spotifyRulerGradlePlugin" }
+
+[plugins]
+hilt = { id = "dagger.hilt.android.plugin", version.ref = "hilt" }

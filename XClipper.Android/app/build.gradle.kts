@@ -58,6 +58,12 @@ android {
             applicationIdSuffix = applicationIdSuffix?.removePrefix(".debug")
         }
     }
+
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging = true
+        }
+    }
 }
 
 tasks.register("checkForChangelog") {
@@ -72,8 +78,9 @@ tasks.register("checkForChangelog") {
 
 dependencies {
     for (moduleId in ModuleDependency.getAllModules().filterNot { it == ModuleDependency.APP })
-        implementation(project(moduleId))
+        api(project(moduleId))
     implementation(LibraryDependency.APP_COMPAT)
+    implementation(LibraryDependency.ACTIVITY_KTX)
     implementation(LibraryDependency.FRAGMENT_KTX)
     implementation(LibraryDependency.CORE_KTX)
     implementation(LibraryDependency.COLLECTIONS_KTX)
@@ -86,7 +93,6 @@ dependencies {
     implementation(LibraryDependency.COROUTINES_ANDROID)
     implementation(LibraryDependency.WORK_MANAGER)
     implementation(LibraryDependency.GSON)
-    implementation(LibraryDependency.ROOM_KTX)
     implementation(LibraryDependency.ROOM_RUNTIME)
     implementation(LibraryDependency.OKHTTP)
 
@@ -96,7 +102,7 @@ dependencies {
     implementation(LibraryDependency.FIREBASE_CRASHLYTICS)
     implementation(LibraryDependency.FIREBASE_ANALYTICS)
     implementation(LibraryDependency.PLAY_SERVICE_AUTH)
-
+//
     implementation(LibraryDependency.PAGING)
     implementation(LibraryDependency.LIFECYCLE_EXTENSIONS)
     implementation(LibraryDependency.LIFECYCLE_VIEWMODEL)
@@ -107,7 +113,7 @@ dependencies {
     implementation(LibraryDependency.RETROFIT) {
         exclude("okhttp")
     }
-    implementation(LibraryDependency.OKHTTP)
+//    implementation(LibraryDependency.OKHTTP)
     implementation(LibraryDependency.OKHTTP_LOGGING_INTERCEPTOR)
     implementation(LibraryDependency.RETROFIT_GSON_CONVERTER)
     implementation(LibraryDependency.RETROFIT_COROUTINES_ADAPTER)
@@ -117,7 +123,6 @@ dependencies {
     implementation(LibraryDependency.LOTTIE)
     implementation(LibraryDependency.ZXING_ANDROID_QR)
     implementation(LibraryDependency.TOASTY)
-    implementation(LibraryDependency.ROUND_BOTTOM_SHEET)
     implementation(LibraryDependency.FLOATING_BUBBLE)
     implementation(LibraryDependency.GIF_DRAWABLE)
     implementation(LibraryDependency.HVLOG)
@@ -127,6 +132,7 @@ dependencies {
     implementation(LibraryDependency.TIMBER)
     implementation(LibraryDependency.MARKWON)
 
+    implementation(LibraryDependency.ROOM_KTX)
     implementation(LibraryDependency.NAVIGATOR)
     implementation(LibraryDependency.NAVIGATOR_EXTENSIONS)
 

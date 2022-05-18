@@ -17,11 +17,9 @@ dependencies {
     implementation(project(ModuleDependency.CORE))
     implementation(project(ModuleDependency.CORE_EXTENSIONS))
     implementation(project(ModuleDependency.CORE_SPECIAL))
+    implementation(project(ModuleDependency.LIBRARY_ROUNDED_SHEET))
 
-    implementation(LibraryDependency.APP_COMPAT)
-    implementation(LibraryDependency.CORE_KTX)
     implementation(LibraryDependency.CONSTRAINT_LAYOUT)
-    implementation(LibraryDependency.MATERIAL)
     implementation(LibraryDependency.COROUTINES_ANDROID)
     implementation(LibraryDependency.OKHTTP)
     implementation(LibraryDependency.TOASTY)

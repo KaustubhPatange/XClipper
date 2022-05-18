@@ -18,9 +18,7 @@ dependencies {
     implementation(project(ModuleDependency.CORE_CLIPBOARD))
     implementation(project(ModuleDependency.CORE_EXTENSIONS))
 
-    implementation(LibraryDependency.CORE_KTX)
     implementation(LibraryDependency.CONSTRAINT_LAYOUT)
-    implementation(LibraryDependency.MATERIAL)
     implementation(LibraryDependency.LIFECYCLE_KTX)
     implementation(LibraryDependency.FRAGMENT_KTX)
     implementation(LibraryDependency.NAVIGATOR)

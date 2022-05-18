@@ -20,7 +20,6 @@ dependencies {
 
     implementation(LibraryDependency.ACTIVITY_KTX)
     implementation(LibraryDependency.FRAGMENT_KTX)
-    implementation(LibraryDependency.MATERIAL)
     implementation(LibraryDependency.RECYCLERVIEW)
     implementation(LibraryDependency.CONSTRAINT_LAYOUT)
     implementation(LibraryDependency.FLEXBOX)

@@ -13,8 +13,6 @@ android {
 }
 
 dependencies {
-    implementation(LibraryDependency.CORE_KTX)
-    implementation(LibraryDependency.APP_COMPAT)
     implementation(LibraryDependency.MATERIAL)
     implementation(LibraryDependency.CONSTRAINT_LAYOUT)
     implementation(LibraryDependency.OKHTTP)

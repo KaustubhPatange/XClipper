@@ -26,6 +26,7 @@ object ModuleDependency {
     const val FEATURE_CLIPBOARD = ":modules:feature-clipboard"
 
     const val LIBRARY_PINLOCK = ":modules:library-pin-lock"
+    const val LIBRARY_ROUNDED_SHEET = ":modules:library-rounded-sheet"
 
     fun getAllModules(): Set<String> = ModuleDependency::class.memberProperties
         .filter { it.isConst }

@@ -31,10 +31,12 @@ android {
 dependencies {
     implementation(project(ModuleDependency.CORE_PRIVATE))
     implementation(project(ModuleDependency.CORE_EXTENSIONS))
+    implementation(project(ModuleDependency.LIBRARY_ROUNDED_SHEET))
 
-    implementation(LibraryDependency.CORE_KTX)
-    implementation(LibraryDependency.APP_COMPAT)
-    implementation(LibraryDependency.MATERIAL)
+    api(LibraryDependency.CORE_KTX)
+    api(LibraryDependency.APP_COMPAT)
+    api(LibraryDependency.MATERIAL)
+
     implementation(LibraryDependency.NAVIGATOR)
     implementation(LibraryDependency.GSON)
     implementation(LibraryDependency.ANDROIDX_PREFERENCES)
@@ -56,7 +58,6 @@ dependencies {
     implementation(LibraryDependency.GIF_DRAWABLE)
     implementation(LibraryDependency.SENTRY)
     api(LibraryDependency.RETROFIT)
-    api(LibraryDependency.ROUND_BOTTOM_SHEET)
 
     implementation(kotlin("reflect"))
 
