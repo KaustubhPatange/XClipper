@@ -14,6 +14,8 @@
 - [FAQs](faq)
   **Android**
 - [Improve Clipboard Detection](android-detection)
+  **Premium 👑**
+- [Buy with Google Pay](gpay)
   **Developers**
 - [Compilation guide](compile)
 
