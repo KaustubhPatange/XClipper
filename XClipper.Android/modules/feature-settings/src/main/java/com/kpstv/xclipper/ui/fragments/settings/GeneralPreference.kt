@@ -186,6 +186,7 @@ class GeneralPreference : AbstractPreferenceFragment() {
         if (hasKeyArgs<Args>()) {
             val args = getKeyArgs<Args>()
             if (args.highlightImproveDetection) highlightItemWithTitle(getString(R.string.adb_mode_title))
+            if (args.highlightAccessibilityService) highlightItemWithTitle(getString(R.string.service_title))
         }
 
         pinLockExtensionHelper.observePurchaseComplete().asLiveData().observe(viewLifecycleOwner) { unlock ->
@@ -307,5 +308,8 @@ class GeneralPreference : AbstractPreferenceFragment() {
     }
 
     @Parcelize
-    data class Args(val highlightImproveDetection: Boolean = false) : BaseArgs(), Parcelable
+    data class Args(
+        val highlightImproveDetection: Boolean = false,
+        val highlightAccessibilityService: Boolean = false
+    ) : BaseArgs(), Parcelable
 }

@@ -96,4 +96,8 @@
     <string name="upgrades_extensions">Extensions (add-ons)</string>
     <string name="thank_support">Thank you for supporting :)</string>
 
+    <!-- Quick Tip Accessibility -->
+    <string name="qt_service_title">Accessibility Service is disabled</string>
+    <string name="qt_service_summary">Clipboard monitoring &amp; other functionalities will not work. Tap to enable.</string>
+
 </resources>

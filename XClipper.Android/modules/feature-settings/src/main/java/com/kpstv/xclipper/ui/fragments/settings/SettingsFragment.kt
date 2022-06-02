@@ -12,6 +12,7 @@ import com.kpstv.xclipper.extensions.viewBinding
 import com.kpstv.xclipper.feature_settings.R
 import com.kpstv.xclipper.feature_settings.databinding.FragmentSettingsMainBinding
 import com.kpstv.xclipper.ui.adapters.SingleMenuAdapter
+import com.kpstv.xclipper.ui.helpers.AccessibilityQuickTipHelper
 import com.kpstv.xclipper.ui.viewmodel.SettingNavViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -56,6 +57,14 @@ class SettingsFragment : ValueFragment(R.layout.fragment_settings_main) {
     }
 
     private fun setUpQuickTips() {
+        /* Clipboard Service tip */
+        AccessibilityQuickTipHelper.addQuickTip(binding.tipContainer) {
+            navViewModel.navigateTo(
+                screenDefinition = settingScreenHandler.screenGeneral(),
+                args = GeneralPreference.Args(highlightAccessibilityService = true)
+            )
+        }
+
         /* Improve detection tip */
         improveDetectionQuickTip.add(binding.tipContainer) {
             navViewModel.navigateTo(
