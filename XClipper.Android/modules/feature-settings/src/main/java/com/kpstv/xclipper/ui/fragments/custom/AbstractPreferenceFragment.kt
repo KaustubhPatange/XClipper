@@ -2,6 +2,7 @@ package com.kpstv.xclipper.ui.fragments.custom
 
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.view.children
@@ -42,28 +43,34 @@ abstract class AbstractPreferenceFragment : PreferenceFragmentCompat() {
             val first = recyclerView.children.firstOrNull { it.findViewById<TextView>(android.R.id.title).text == preference.title }
             if (first != null) {
                 block()
-                return@doOnLayout
             }
             recyclerView.addOnChildAttachStateChangeListener(object : RecyclerView.OnChildAttachStateChangeListener {
+                var isViewRemoved = false
                 override fun onChildViewAttachedToWindow(child: View) {
-                    if (child.findViewById<TextView>(android.R.id.title).text == preference.title) {
+                    if (isViewRemoved && child.findViewById<TextView>(android.R.id.title).text == preference.title) {
                         block()
-                        recyclerView.removeOnChildAttachStateChangeListener(this)
                     }
                 }
-                override fun onChildViewDetachedFromWindow(view: View) {}
+                override fun onChildViewDetachedFromWindow(child: View) {
+                    if (child.findViewById<TextView>(android.R.id.title).text == preference.title) {
+                        isViewRemoved = true
+                    }
+                }
             })
         }
-    }
-
-    val Preference.view : View? get() {
-        val view = requireView()
-        return view.findViewByText(title.toString())?.findParent<LinearLayout>()
     }
 
     val Preference.titleView : TextView? get() {
         val view = requireView()
         return view.findViewByText(title.toString())
+    }
+
+    val Preference.view : View? get() {
+        return titleView?.findParent<LinearLayout>()
+    }
+
+    val Preference.imageView: ImageView? get() {
+        return view?.findViewById(android.R.id.icon)
     }
 
 }

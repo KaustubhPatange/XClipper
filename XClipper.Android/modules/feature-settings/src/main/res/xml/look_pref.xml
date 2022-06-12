@@ -1,10 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <SwitchPreferenceCompat
         app:defaultValue="true"
         app:key="dark_pref"
         app:summary="@string/dark_summary"
         app:title="@string/dark_title" />
+
+    <PreferenceCategory app:title="@string/category_customize">
+
+        <Preference
+            app:icon="@android:color/transparent"
+            app:key="color_primary_pref"
+            app:summary="@string/color_primary_summary"
+            app:title="@string/color_primary_title" />
+
+        <Preference
+            app:icon="@android:color/transparent"
+            app:key="color_accent_pref"
+            app:summary="@string/color_accent_summary"
+            app:title="@string/color_accent_title" />
+
+    </PreferenceCategory>
 
 </PreferenceScreen>

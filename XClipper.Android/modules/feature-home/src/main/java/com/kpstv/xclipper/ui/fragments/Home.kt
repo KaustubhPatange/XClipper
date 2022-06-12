@@ -550,7 +550,7 @@ class Home : ValueFragment(R.layout.fragment_home) {
         toolbar.navigationIcon = null
         toolbar.setNavigationOnClickListener(null)
         toolbar.menu.clear()
-        toolbar.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
+        toolbar.setBackgroundColor(requireContext().getColorAttr(R.attr.colorPrimary))
         toolbar.inflateMenu(R.menu.normal_menu)
 
         val syncImage = LayoutInflater.from(requireContext()).inflate(R.layout.imageview_menu_item, null) as ImageView

@@ -6,6 +6,9 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.view.View
+import androidx.annotation.ColorInt
+import androidx.annotation.ColorRes
+import androidx.annotation.IntRange
 import androidx.annotation.StyleRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -25,14 +28,23 @@ enum class AppTheme(@StyleRes val style: Int) {
 object AppThemeHelper {
 
     private const val IS_DARK_THEME = "app_theme"
+    private const val COLOR_PRIMARY_RES_ID_PREF = "color_primary_res_id_pref"
+    private const val COLOR_ACCENT_RES_ID_PREF = "color_accent_res_id_pref"
 
-    @Volatile
-    private var DARK_THEME = true
+    // do not change order of the colors
+    val baseColors = listOf(R.color.colorPrimary, R.color.colorAccent, R.color.colorSelectedClip)
+    val baseColorAccentStyles = listOf(R.style.AppThemeOverlay_AccentDefault, R.style.AppThemeOverlay_AccentTeal, R.style.AppThemeOverlay_AccentYellow)
+    val baseColorPrimaryStyles = listOf(R.style.AppThemeOverlay_PrimaryDefault, R.style.AppThemeOverlay_PrimaryTeal, R.style.AppThemeOverlay_PrimaryYellow)
+
+    @Volatile private var DARK_THEME = true
+    @Volatile private var COLOR_PRIMARY_RES_ID_INDEX = 0
+    @Volatile private var COLOR_ACCENT_RES_ID_INDEX = 0
 
     fun loadTheme(context: Context) {
-        DARK_THEME = context.getSharedPreferences("theme", Context.MODE_PRIVATE).getBoolean(
-            IS_DARK_THEME, DARK_THEME
-        )
+        val pref = context.getSharedPreferences("theme", Context.MODE_PRIVATE)
+        DARK_THEME = pref.getBoolean(IS_DARK_THEME, DARK_THEME)
+        COLOR_PRIMARY_RES_ID_INDEX = pref.getInt(COLOR_PRIMARY_RES_ID_PREF, 0)
+        COLOR_ACCENT_RES_ID_INDEX = pref.getInt(COLOR_ACCENT_RES_ID_PREF, 0)
     }
 
     fun setTheme(context: Context, style: AppTheme) {
@@ -42,8 +54,26 @@ object AppThemeHelper {
         }
     }
 
+    fun setColorPrimaryResIndex(context: Context, @IntRange(from = 0, to = 2) index: Int) {
+        context.getSharedPreferences("theme", Context.MODE_PRIVATE).edit {
+            putInt(COLOR_PRIMARY_RES_ID_PREF, index)
+            COLOR_PRIMARY_RES_ID_INDEX = index
+        }
+    }
+
+    fun setColorAccentResIndex(context: Context, @IntRange(from = 0, to = 3) index: Int) {
+        context.getSharedPreferences("theme", Context.MODE_PRIVATE).edit {
+            putInt(COLOR_ACCENT_RES_ID_PREF, index)
+            COLOR_ACCENT_RES_ID_INDEX = index
+        }
+    }
+
     fun isDarkVariant() : Boolean = DARK_THEME
     fun isLightVariant() : Boolean = !DARK_THEME
+    @ColorRes
+    fun colorPrimaryRes() : Int = baseColors.toList()[COLOR_PRIMARY_RES_ID_INDEX]
+    @ColorRes
+    fun colorAccentRes() : Int = baseColors.toList()[COLOR_ACCENT_RES_ID_INDEX]
 
     @Suppress("DEPRECATION")
     fun Context.updateTheme(activity: FragmentActivity) {
@@ -57,6 +87,10 @@ object AppThemeHelper {
         }
 
         theme.applyStyle(style, true)
+
+        // apply colors
+        theme.applyStyle(baseColorPrimaryStyles[COLOR_PRIMARY_RES_ID_INDEX], true)
+        theme.applyStyle(baseColorAccentStyles[COLOR_ACCENT_RES_ID_INDEX], true)
 
         if (Build.VERSION.SDK_INT < 23) {
             activity.window.statusBarColor = Color.BLACK

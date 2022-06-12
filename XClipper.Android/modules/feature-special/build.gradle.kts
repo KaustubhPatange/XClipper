@@ -28,6 +28,5 @@ dependencies {
     implementation(LibraryDependency.NAVIGATOR)
 
     implementation(LibraryDependency.HILT_ANDROID)
-
     kapt(LibraryDependency.HILT_COMPILER)
 }

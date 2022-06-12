@@ -29,6 +29,8 @@ dependencies {
     implementation(LibraryDependency.LOCAL_BROADCAST_MANAGER)
     implementation(LibraryDependency.LIFECYCLE_KTX)
 
+    implementation(LibraryDependency.COLOR_PICKER)
+
     implementation(LibraryDependency.HILT_ANDROID)
     kapt(LibraryDependency.HILT_COMPILER)
 }

@@ -10,10 +10,6 @@ gradlePlugin {
             id = "com.kpstv.xclipper"
             implementationClass = "com.kpstv.xclipper.plugins.XClipperAndroidPlugin"
         }
-        create("kspPlugin") {
-            id = "com.kpstv.xclipper.ksp"
-            implementationClass = "com.kpstv.xclipper.plugins.KSPPlugin"
-        }
     }
 }
 

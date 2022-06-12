@@ -53,6 +53,7 @@ private object LibraryVersion {
     const val SENTRY = "5.5.1"
     const val SWIPE_REFRESH_LAYOUT = "1.1.0"
     const val BALLOON = "1.3.6"
+    const val COLOR_PICKER = "1.0.1"
 }
 
 object LibraryDependency {
@@ -140,4 +141,5 @@ object LibraryDependency {
     const val SWIPE_REFRESH_LAYOUT = "androidx.swiperefreshlayout:swiperefreshlayout:${LibraryVersion.SWIPE_REFRESH_LAYOUT}"
 
     const val BALLOON = "com.github.skydoves:balloon:${LibraryVersion.BALLOON}"
+    const val COLOR_PICKER = "dev.sasikanth:colorsheet:${LibraryVersion.COLOR_PICKER}"
 }

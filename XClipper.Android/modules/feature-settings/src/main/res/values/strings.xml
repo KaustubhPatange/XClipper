@@ -41,6 +41,11 @@
     <!-- Look Preference-->
     <string name="dark_title">Dark Theme</string>
     <string name="dark_summary">Sometimes you might\'ve to restart the app for theme to get applied properly.</string>
+    <string name="category_customize">Customize</string>
+    <string name="color_accent_title">Accent Color</string>
+    <string name="color_accent_summary">Set the supplementary color which dominates the app.</string>
+    <string name="color_primary_title">Primary Color</string>
+    <string name="color_primary_summary">Set the most frequently displayed color.</string>
 
     <!-- Account Preference -->
     <string name="alert">Alert</string>

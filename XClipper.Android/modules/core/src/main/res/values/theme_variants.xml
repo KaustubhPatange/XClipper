@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppThemeOverlay"/>
+    <!-- Accent Colors-->
+    <style name="AppThemeOverlay.AccentDefault">
+        <item name="colorAccent">@color/colorPrimary</item>
+    </style>
+    <style name="AppThemeOverlay.AccentTeal">
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+    <style name="AppThemeOverlay.AccentYellow">
+        <item name="colorAccent">@color/colorSelectedClip</item>
+    </style>
+
+    <!-- Primary Colors -->
+    <style name="AppThemeOverlay.PrimaryDefault">
+        <item name="colorPrimary">@color/colorPrimary</item>
+    </style>
+    <style name="AppThemeOverlay.PrimaryTeal">
+        <item name="colorPrimary">@color/colorAccent</item>
+    </style>
+    <style name="AppThemeOverlay.PrimaryYellow">
+        <item name="colorPrimary">@color/colorSelectedClip</item>
+    </style>
+
+</resources>

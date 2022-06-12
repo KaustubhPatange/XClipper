@@ -5,7 +5,9 @@ import com.kpstv.xclipper.ui.dialogs.SingleSelectDialogBuilder
 import com.kpstv.xclipper.ui.dialogs.SingleSelectModel2
 import com.kpstv.xclipper.extensions.SpecialAction
 import com.kpstv.xclipper.feature_special.R
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SpecialActionFragment : ActionFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
