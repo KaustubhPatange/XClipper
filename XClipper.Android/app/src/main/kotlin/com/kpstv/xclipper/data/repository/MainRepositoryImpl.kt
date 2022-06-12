@@ -39,7 +39,10 @@ class MainRepositoryImpl @Inject constructor(
         if (clipDao.isExist(clip.data)) return false
 
         if (clipDao.getClipSize() > LOCAL_MAX_ITEM_STORAGE) {
-            clipDao.deleteFirst()
+            val result = clipDao.deleteFirst()
+            if (result <= 0) {
+                clipDao.deleteUnsafeFirst()
+            }
         }
 
         clipDao.insert(clip)

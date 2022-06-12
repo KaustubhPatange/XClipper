@@ -45,7 +45,7 @@ fun View.runBlinkEffect(color: Int = -1, times: Int = 3) {
     ValueAnimator.ofArgb(fromColor, finalColor, fromColor).apply {
         addUpdateListener {
             setBackgroundColor(it.animatedValue as Int)
-            if (this is CardView) setCardBackgroundColor(it.animatedValue as Int)
+            if (this@runBlinkEffect is CardView) setCardBackgroundColor(it.animatedValue as Int)
         }
         addListener(object : Animator.AnimatorListener{
             override fun onAnimationStart(animation: Animator?) {}

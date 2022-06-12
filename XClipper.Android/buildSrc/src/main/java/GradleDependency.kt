@@ -9,6 +9,7 @@ object GradlePluginVersion {
 
 object GradlePluginId {
     const val XCLIPPER_ANDROID = "com.kpstv.xclipper.plugins"
+    const val XCLIPPER_KSP = "com.kpstv.xclipper.ksp"
     const val ANDROID_APPLICATION = "com.android.application"
     const val ANDROID_LIBRARY = "com.android.library"
     const val ANDROID_KTX = "android"

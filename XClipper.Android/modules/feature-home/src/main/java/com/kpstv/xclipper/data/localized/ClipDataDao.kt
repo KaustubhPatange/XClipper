@@ -37,8 +37,11 @@ interface ClipDataDao {
     @Query("delete from table_clip where data = :data")
     suspend fun delete(data: String): Int
 
+    @Query("delete from table_clip where id in (select id from (select * from table_clip where (tags not like '%\"lock\":[%')) order by time asc limit 1);")
+    suspend fun deleteFirst() : Int
+
     @Query("delete from table_clip where id = (select MIN(id) from table_clip);")
-    suspend fun deleteFirst()
+    suspend fun deleteUnsafeFirst() : Int
 
     @Query("delete from table_clip")
     suspend fun deleteAll()
