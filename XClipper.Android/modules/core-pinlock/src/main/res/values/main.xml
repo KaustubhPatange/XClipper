@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="PinModuleTheme" parent="Theme.MaterialComponents">
+    <style name="PinModuleTheme" parent="AppTheme">
         <item name="pinCodeTheme">@style/CustomPinLockStyle</item>
-        <item name="android:windowBackground">@color/appColor</item>
+        <item name="android:windowBackground">?colorPrimary</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>

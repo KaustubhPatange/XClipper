@@ -32,9 +32,9 @@ object AppThemeHelper {
     private const val COLOR_ACCENT_RES_ID_PREF = "color_accent_res_id_pref"
 
     // do not change order of the colors
-    val baseColors = listOf(R.color.colorPrimary, R.color.colorAccent, R.color.colorSelectedClip)
-    val baseColorAccentStyles = listOf(R.style.AppThemeOverlay_AccentDefault, R.style.AppThemeOverlay_AccentTeal, R.style.AppThemeOverlay_AccentYellow)
-    val baseColorPrimaryStyles = listOf(R.style.AppThemeOverlay_PrimaryDefault, R.style.AppThemeOverlay_PrimaryTeal, R.style.AppThemeOverlay_PrimaryYellow)
+    val baseColors = listOf(R.color.colorPrimary, R.color.magenta, R.color.purple, R.color.orange, R.color.orange_light, R.color.yellow, R.color.yellow_2, R.color.yellow_3, R.color.yellow_4, R.color.green, R.color.blue, R.color.blue_2, R.color.blue_3)
+    val baseColorAccentStyles = listOf(R.style.AppThemeOverlay_AccentDefault, R.style.AppThemeOverlay_AccentMagenta, R.style.AppThemeOverlay_AccentPurple, R.style.AppThemeOverlay_AccentOrange, R.style.AppThemeOverlay_AccentOrangeLight, R.style.AppThemeOverlay_AccentYellow, R.style.AppThemeOverlay_AccentYellow2, R.style.AppThemeOverlay_AccentYellow3, R.style.AppThemeOverlay_AccentYellow4, R.style.AppThemeOverlay_AccentGreen, R.style.AppThemeOverlay_AccentBlue, R.style.AppThemeOverlay_AccentBlue2, R.style.AppThemeOverlay_AccentBlue3)
+    val baseColorPrimaryStyles = listOf(R.style.AppThemeOverlay_AccentDefault, R.style.AppThemeOverlay_PrimaryMagenta, R.style.AppThemeOverlay_PrimaryPurple, R.style.AppThemeOverlay_PrimaryOrange, R.style.AppThemeOverlay_PrimaryOrangeLight, R.style.AppThemeOverlay_PrimaryYellow, R.style.AppThemeOverlay_PrimaryYellow2, R.style.AppThemeOverlay_PrimaryYellow3, R.style.AppThemeOverlay_PrimaryYellow4, R.style.AppThemeOverlay_PrimaryGreen, R.style.AppThemeOverlay_PrimaryBlue, R.style.AppThemeOverlay_PrimaryBlue2, R.style.AppThemeOverlay_PrimaryBlue3)
 
     @Volatile private var DARK_THEME = true
     @Volatile private var COLOR_PRIMARY_RES_ID_INDEX = 0
@@ -76,7 +76,7 @@ object AppThemeHelper {
     fun colorAccentRes() : Int = baseColors.toList()[COLOR_ACCENT_RES_ID_INDEX]
 
     @Suppress("DEPRECATION")
-    fun Context.updateTheme(activity: FragmentActivity) {
+    fun Context.updateTheme(activity: Activity) {
         val decorView = activity.window.decorView
         val style = if (isDarkVariant()) {
             setDarkColors(activity)
@@ -89,8 +89,7 @@ object AppThemeHelper {
         theme.applyStyle(style, true)
 
         // apply colors
-        theme.applyStyle(baseColorPrimaryStyles[COLOR_PRIMARY_RES_ID_INDEX], true)
-        theme.applyStyle(baseColorAccentStyles[COLOR_ACCENT_RES_ID_INDEX], true)
+        applyThemeColors()
 
         if (Build.VERSION.SDK_INT < 23) {
             activity.window.statusBarColor = Color.BLACK
@@ -127,23 +126,30 @@ object AppThemeHelper {
     var CARD_CLICK_COLOR: Int = 0
     var CARD_SELECTED_COLOR : Int = 0
 
-    fun applyActivityTheme(activity: AppCompatActivity) {
+    fun applyActivityTheme(activity: Activity) = with(activity) {
         if (isLightVariant()) {
             setLightColors(activity)
-            activity.setTheme(R.style.AppTheme_Light)
+            setTheme(R.style.AppTheme_Light)
         } else {
             setDarkColors(activity)
         }
+        applyThemeColors()
     }
 
-    fun applyDialogTheme(activity: Activity) {
+    fun applyDialogTheme(activity: Activity) = with(activity) {
         if (isLightVariant()) {
             setLightColors(activity)
-            activity.setTheme(R.style.CustomDialogStyle_Light)
+            setTheme(R.style.CustomDialogStyle_Light)
         } else {
-            activity.setTheme(R.style.CustomDialogStyle_Dark)
+            setTheme(R.style.CustomDialogStyle_Dark)
             setDarkColors(activity)
         }
+        applyThemeColors()
+    }
+
+    private fun Context.applyThemeColors() {
+        theme.applyStyle(baseColorPrimaryStyles[COLOR_PRIMARY_RES_ID_INDEX], true)
+        theme.applyStyle(baseColorAccentStyles[COLOR_ACCENT_RES_ID_INDEX], true)
     }
 
     private fun setDarkColors(activity: Activity) = with(activity) {

@@ -37,4 +37,18 @@
 
     <color name="colorTextError">#EE6A67</color>
     <color name="colorTextError_Light">#C32020</color>
+
+    <!-- Base colors -->
+    <color name="magenta">#A7184B</color>
+    <color name="orange">#FF2711</color>
+    <color name="orange_light">#FD5307</color>
+    <color name="yellow">#FB9902</color>
+    <color name="yellow_2">#FABC02</color>
+    <color name="yellow_3">#FFFE32</color>
+    <color name="yellow_4">#D0E92B</color>
+    <color name="green">#66B132</color>
+    <color name="blue">#0291CD</color>
+    <color name="blue_2">#0246FE</color>
+    <color name="blue_3">#3E01A4</color>
+    <color name="purple">#8601B0</color>
 </resources>

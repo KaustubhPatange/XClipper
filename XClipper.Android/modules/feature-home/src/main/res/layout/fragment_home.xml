@@ -50,8 +50,8 @@
         android:drawableLeft="@drawable/ic_arrow_up"
         android:text="@string/go_top"
         android:textAllCaps="false"
-        android:textColor="?background"
         android:translationY="150dp"
+        app:backgroundTint="?colorAccent"
         app:cornerRadius="20dp"
         tools:translationY="0dp" />
 

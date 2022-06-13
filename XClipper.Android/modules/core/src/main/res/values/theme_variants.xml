@@ -5,22 +5,82 @@
     <style name="AppThemeOverlay.AccentDefault">
         <item name="colorAccent">@color/colorPrimary</item>
     </style>
-    <style name="AppThemeOverlay.AccentTeal">
-        <item name="colorAccent">@color/colorAccent</item>
+    <style name="AppThemeOverlay.AccentMagenta">
+        <item name="colorAccent">@color/magenta</item>
+    </style>
+    <style name="AppThemeOverlay.AccentOrange">
+        <item name="colorAccent">@color/orange</item>
+    </style>
+    <style name="AppThemeOverlay.AccentOrangeLight">
+        <item name="colorAccent">@color/orange_light</item>
     </style>
     <style name="AppThemeOverlay.AccentYellow">
-        <item name="colorAccent">@color/colorSelectedClip</item>
+        <item name="colorAccent">@color/yellow</item>
+    </style>
+    <style name="AppThemeOverlay.AccentYellow2">
+        <item name="colorAccent">@color/yellow_2</item>
+    </style>
+    <style name="AppThemeOverlay.AccentYellow3">
+        <item name="colorAccent">@color/yellow_3</item>
+    </style>
+    <style name="AppThemeOverlay.AccentYellow4">
+        <item name="colorAccent">@color/yellow_4</item>
+    </style>
+    <style name="AppThemeOverlay.AccentGreen">
+        <item name="colorAccent">@color/green</item>
+    </style>
+    <style name="AppThemeOverlay.AccentBlue">
+        <item name="colorAccent">@color/blue</item>
+    </style>
+    <style name="AppThemeOverlay.AccentBlue2">
+        <item name="colorAccent">@color/blue_2</item>
+    </style>
+    <style name="AppThemeOverlay.AccentBlue3">
+        <item name="colorAccent">@color/blue_3</item>
+    </style>
+    <style name="AppThemeOverlay.AccentPurple">
+        <item name="colorAccent">@color/purple</item>
     </style>
 
     <!-- Primary Colors -->
     <style name="AppThemeOverlay.PrimaryDefault">
         <item name="colorPrimary">@color/colorPrimary</item>
     </style>
-    <style name="AppThemeOverlay.PrimaryTeal">
-        <item name="colorPrimary">@color/colorAccent</item>
+    <style name="AppThemeOverlay.PrimaryMagenta">
+        <item name="colorPrimary">@color/magenta</item>
+    </style>
+    <style name="AppThemeOverlay.PrimaryOrange">
+        <item name="colorPrimary">@color/orange</item>
+    </style>
+    <style name="AppThemeOverlay.PrimaryOrangeLight">
+        <item name="colorPrimary">@color/orange_light</item>
     </style>
     <style name="AppThemeOverlay.PrimaryYellow">
-        <item name="colorPrimary">@color/colorSelectedClip</item>
+        <item name="colorPrimary">@color/yellow</item>
+    </style>
+    <style name="AppThemeOverlay.PrimaryYellow2">
+        <item name="colorPrimary">@color/yellow_2</item>
+    </style>
+    <style name="AppThemeOverlay.PrimaryYellow3">
+        <item name="colorPrimary">@color/yellow_3</item>
+    </style>
+    <style name="AppThemeOverlay.PrimaryYellow4">
+        <item name="colorPrimary">@color/yellow_4</item>
+    </style>
+    <style name="AppThemeOverlay.PrimaryGreen">
+        <item name="colorPrimary">@color/green</item>
+    </style>
+    <style name="AppThemeOverlay.PrimaryBlue">
+        <item name="colorPrimary">@color/blue</item>
+    </style>
+    <style name="AppThemeOverlay.PrimaryBlue2">
+        <item name="colorPrimary">@color/blue_2</item>
+    </style>
+    <style name="AppThemeOverlay.PrimaryBlue3">
+        <item name="colorPrimary">@color/blue_3</item>
+    </style>
+    <style name="AppThemeOverlay.PrimaryPurple">
+        <item name="colorPrimary">@color/purple</item>
     </style>
 
 </resources>
