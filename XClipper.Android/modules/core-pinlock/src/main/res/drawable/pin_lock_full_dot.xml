@@ -7,9 +7,4 @@
         android:color="@color/appColor_dark" >
     </solid>
 
-    <stroke
-        android:width="1dp"
-        android:color="@color/appColor_dark" >
-    </stroke>
-
 </shape>

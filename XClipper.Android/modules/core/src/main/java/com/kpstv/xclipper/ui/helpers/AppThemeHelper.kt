@@ -45,6 +45,8 @@ object AppThemeHelper {
         DARK_THEME = pref.getBoolean(IS_DARK_THEME, DARK_THEME)
         COLOR_PRIMARY_RES_ID_INDEX = pref.getInt(COLOR_PRIMARY_RES_ID_PREF, 0)
         COLOR_ACCENT_RES_ID_INDEX = pref.getInt(COLOR_ACCENT_RES_ID_PREF, 0)
+
+        context.applyThemeColors()
     }
 
     fun setTheme(context: Context, style: AppTheme) {
@@ -88,8 +90,9 @@ object AppThemeHelper {
 
         theme.applyStyle(style, true)
 
-        // apply colors
+        // apply colors to context & application context
         applyThemeColors()
+        applicationContext.applyThemeColors()
 
         if (Build.VERSION.SDK_INT < 23) {
             activity.window.statusBarColor = Color.BLACK

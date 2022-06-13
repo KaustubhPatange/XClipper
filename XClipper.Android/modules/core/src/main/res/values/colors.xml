@@ -40,6 +40,7 @@
 
     <!-- Base colors -->
     <color name="magenta">#A7184B</color>
+    <color name="purple">#9C27B0</color>
     <color name="orange">#FF2711</color>
     <color name="orange_light">#FD5307</color>
     <color name="yellow">#FB9902</color>
@@ -49,6 +50,5 @@
     <color name="green">#66B132</color>
     <color name="blue">#0291CD</color>
     <color name="blue_2">#0246FE</color>
-    <color name="blue_3">#3E01A4</color>
-    <color name="purple">#8601B0</color>
+    <color name="blue_3">#3F51B5</color>
 </resources>

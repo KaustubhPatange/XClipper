@@ -4,7 +4,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import androidx.core.app.NotificationCompat
-import com.kpstv.xclipper.extensions.colorFrom
+import com.kpstv.xclipper.extensions.getColorAttr
 import com.kpstv.xclipper.extensions.utils.NotificationUtils
 import com.kpstv.xclipper.feature_clipboard.R
 import com.kpstv.xclipper.service.receiver.ImproveDetectionReceiver
@@ -26,7 +26,7 @@ object FeatureClipboardNotifications {
                 NotificationCompat.BigTextStyle()
                 .bigText(getString(R.string.improve_detection_notify_text)))
             .setSmallIcon(R.drawable.ic_logo_white)
-            .setColor(colorFrom(R.color.colorPrimaryDark))
+            .setColor(getColorAttr(R.attr.colorAccent))
             .setColorized(true)
             .setAutoCancel(true)
             .addAction(

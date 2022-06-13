@@ -9,16 +9,15 @@ import com.github.omadahealth.lollipin.lib.managers.LockManager
 import com.kpstv.xclipper.PinLockHelper.Result.PIN_LOCK_RESULT_SUCCESS
 import com.kpstv.xclipper.core_pinlock.R
 import com.kpstv.xclipper.ui.helpers.AppThemeHelper
-import com.kpstv.xclipper.ui.helpers.AppThemeHelper.applyActivityTheme
-import com.kpstv.xclipper.ui.helpers.AppThemeHelper.updateTheme
 import es.dmoral.toasty.Toasty
 
 internal class CustomPinLockActivity : AppLockActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        applyActivityTheme(this)
+        AppThemeHelper.applyActivityTheme(this)
         super.onCreate(savedInstanceState)
     }
+
     companion object {
         private const val VERIFICATION_ENABLED = "verification_enabled"
         private const val DISABLING_PIN_LOCK = "disabling_pin_lock"

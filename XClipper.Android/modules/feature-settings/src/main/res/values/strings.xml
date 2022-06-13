@@ -43,7 +43,7 @@
     <string name="dark_summary">Sometimes you might\'ve to restart the app for theme to get applied properly.</string>
     <string name="category_customize">Customize</string>
     <string name="color_accent_title">Accent Color</string>
-    <string name="color_accent_summary">Appears on switches, FABs, etc.</string>
+    <string name="color_accent_summary">Appears on switches, FABs, progress bar, notifications etc.</string>
     <string name="color_primary_title">Primary Color</string>
     <string name="color_primary_summary">Appears on status bar, toolbar, button, etc.</string>
 

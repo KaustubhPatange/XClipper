@@ -67,7 +67,7 @@
         android:layout_marginLeft="@dimen/light_gray_bar_margin_sides"
         android:layout_marginRight="@dimen/light_gray_bar_margin_sides"
         android:layout_marginBottom="30dp"
-        android:background="?attr/lp_divider_color"
+        android:background="?lp_dominant_color"
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@id/pin_code_keyboard_view"
         app:layout_constraintEnd_toEndOf="parent"
