@@ -19,6 +19,7 @@ dependencies {
     implementation(project(ModuleDependency.CORE_SYNC))
     implementation(project(ModuleDependency.CORE_ADDONS))
     implementation(project(ModuleDependency.LIBRARY_ROUNDED_SHEET))
+    implementation(project(ModuleDependency.LIBRARY_COLOR_SHEET))
 
     implementation(LibraryDependency.FRAGMENT_KTX)
     implementation(LibraryDependency.CONSTRAINT_LAYOUT)
@@ -28,8 +29,6 @@ dependencies {
     implementation(LibraryDependency.TOASTY)
     implementation(LibraryDependency.LOCAL_BROADCAST_MANAGER)
     implementation(LibraryDependency.LIFECYCLE_KTX)
-
-    implementation(LibraryDependency.COLOR_PICKER)
 
     implementation(LibraryDependency.HILT_ANDROID)
     kapt(LibraryDependency.HILT_COMPILER)

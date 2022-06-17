@@ -46,6 +46,10 @@
     <string name="color_accent_summary">Appears on switches, FABs, progress bar, notifications etc.</string>
     <string name="color_primary_title">Primary Color</string>
     <string name="color_primary_summary">Appears on status bar, toolbar, button, etc.</string>
+    <string name="launcher_icon_title">Launcher Icon</string>
+    <string name="launcher_icon_summary">Appears in the app drawer.</string>
+    <string name="dialog_icon_title">Change Icon?</string>
+    <string name="dialog_icon_message">This will change the app launcher icon &amp; would automatically close the app.</string>
 
     <!-- Account Preference -->
     <string name="alert">Alert</string>
@@ -105,4 +109,6 @@
     <string name="qt_service_title">Accessibility Service is disabled</string>
     <string name="qt_service_summary">Clipboard monitoring &amp; other functionalities will not work. Tap to enable.</string>
 
+    <!-- Launcher Icon Sheet Picker -->
+    <string name="li_sheet_title">Pick an icon</string>
 </resources>

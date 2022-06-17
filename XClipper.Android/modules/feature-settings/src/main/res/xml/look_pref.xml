@@ -22,6 +22,12 @@
             app:summary="@string/color_accent_summary"
             app:title="@string/color_accent_title" />
 
+        <Preference
+            app:icon="@android:color/transparent"
+            app:key="launcher_icon_pref"
+            app:summary="@string/launcher_icon_summary"
+            app:title="@string/launcher_icon_title" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>

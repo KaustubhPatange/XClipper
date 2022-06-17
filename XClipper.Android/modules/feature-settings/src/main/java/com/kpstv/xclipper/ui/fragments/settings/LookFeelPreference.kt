@@ -9,16 +9,18 @@ import androidx.annotation.AttrRes
 import androidx.core.view.updateLayoutParams
 import androidx.preference.Preference
 import androidx.preference.SwitchPreferenceCompat
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.feature_settings.R
 import com.kpstv.xclipper.ui.fragments.custom.AbstractPreferenceFragment
 import com.kpstv.xclipper.ui.helpers.AppTheme
 import com.kpstv.xclipper.ui.helpers.AppThemeHelper
+import com.kpstv.xclipper.ui.sheet.LauncherIconSelectionSheet
 import dagger.hilt.android.AndroidEntryPoint
 import dev.sasikanth.colorsheet.ColorSheet
 
 @AndroidEntryPoint
-class LookFeelPreference : AbstractPreferenceFragment() {
+class LookFeelPreference : AbstractPreferenceFragment(), LauncherIconSelectionSheet.Callback {
     interface ThemeChangeCallbacks {
         fun onThemeChanged(viewRect: Rect? = null, animate: Boolean = true)
     }
@@ -48,6 +50,25 @@ class LookFeelPreference : AbstractPreferenceFragment() {
             )
             true
         }
+
+        findPreference<Preference>(LAUNCHER_ICON_PREF)?.setOnPreferenceClickListener {
+            LauncherIconSelectionSheet.show(
+                fragmentManager = childFragmentManager
+            )
+            true
+        }
+    }
+
+    override fun onIconSelected(index: Int) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setIcon(drawableFrom(AppThemeHelper.baseIcons[index]))
+            .setTitle(R.string.dialog_icon_title)
+            .setMessage(R.string.dialog_icon_message)
+            .setPositiveButton(getString(R.string.alright)) { _, _ ->
+                AppThemeHelper.setLauncherIconFromResIndex(requireContext(), index)
+            }
+            .setNegativeButton(getString(R.string.cancel), null)
+            .show()
     }
 
     private fun openForColorSelection(selectedColoRes: Int, onChange: (index: Int) -> Unit) {
@@ -73,6 +94,18 @@ class LookFeelPreference : AbstractPreferenceFragment() {
 
         observeColorPreference(prefName = COLOR_PRIMARY_PREF, attr = R.attr.colorPrimary)
         observeColorPreference(prefName = COLOR_ACCENT_PREF, attr = R.attr.colorAccent)
+
+        // for launcher icon
+        val launcherIconPref = findPreference<Preference>(LAUNCHER_ICON_PREF)!!
+        observeOnPreferenceInvalidate(launcherIconPref) call@{
+            val imageView = launcherIconPref.imageView ?: return@call
+            imageView.updateLayoutParams<ViewGroup.LayoutParams> {
+                val dp24 = requireContext().toPx(32).toInt()
+                width = dp24
+                height = dp24
+            }
+            imageView.setImageDrawable(AppThemeHelper.launcherIconDrawable(requireContext()))
+        }
     }
 
     private fun observeColorPreference(prefName: String, @AttrRes attr: Int) {
@@ -91,6 +124,7 @@ class LookFeelPreference : AbstractPreferenceFragment() {
     private companion object {
         private const val COLOR_ACCENT_PREF = "color_accent_pref"
         private const val COLOR_PRIMARY_PREF = "color_primary_pref"
+        private const val LAUNCHER_ICON_PREF = "launcher_icon_pref"
         const val DARK_PREF = "dark_pref"
     }
 }
