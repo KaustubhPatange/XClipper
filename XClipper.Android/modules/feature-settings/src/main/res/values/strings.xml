@@ -48,8 +48,12 @@
     <string name="color_primary_summary">Appears on status bar, toolbar, button, etc.</string>
     <string name="launcher_icon_title">Launcher Icon</string>
     <string name="launcher_icon_summary">Appears in the app drawer.</string>
+
     <string name="dialog_icon_title">Change Icon?</string>
     <string name="dialog_icon_message">This will change the app launcher icon &amp; would automatically close the app.</string>
+
+    <string name="ct_premium_title">Premium feature</string>
+    <string name="ct_premium_text">Ability to customize primary, accent colors as well as launcher icons.</string>
 
     <!-- Account Preference -->
     <string name="alert">Alert</string>

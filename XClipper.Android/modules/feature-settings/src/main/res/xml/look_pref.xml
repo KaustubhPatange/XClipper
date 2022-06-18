@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <SwitchPreferenceCompat
         app:defaultValue="true"
@@ -9,6 +10,11 @@
         app:title="@string/dark_title" />
 
     <PreferenceCategory app:title="@string/category_customize">
+
+        <com.kpstv.xclipper.ui.fragments.settings.look_feel.CustomizeQuickTipPreference
+            app:isPreferenceVisible="false"
+            app:key="customize_tip_pref"
+            tools:isPreferenceVisible="true" />
 
         <Preference
             app:icon="@android:color/transparent"

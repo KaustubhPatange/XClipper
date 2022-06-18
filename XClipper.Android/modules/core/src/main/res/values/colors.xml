@@ -38,6 +38,8 @@
     <color name="colorTextError">#EE6A67</color>
     <color name="colorTextError_Light">#C32020</color>
 
+    <color name="colorPalette">#BA4AF4</color>
+
     <!-- Base colors -->
     <color name="magenta">#A7184B</color>
     <color name="purple">#9C27B0</color>

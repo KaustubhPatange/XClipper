@@ -96,6 +96,15 @@ object AppThemeHelper {
         baseIconsActivityAlias.filterNot { it == currentAliasSuffix }.forEach { changeComponentSetting(it, false) }
     }
 
+    fun resetColors(context: Context) {
+        setColorPrimaryResIndex(context, 0)
+        setColorAccentResIndex(context, 0)
+    }
+
+    fun resetLauncherIconRes(context: Context) {
+        setLauncherIconFromResIndex(context, 0)
+    }
+
     fun isDarkVariant() : Boolean = DARK_THEME
     fun isLightVariant() : Boolean = !DARK_THEME
     @ColorRes

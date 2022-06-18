@@ -14,6 +14,9 @@ object AddOnsHelper {
     fun getHelperForPinLock(context: Context) : ExtensionHelper {
         return ExtensionHelper(context, context.getString(R.string.pin_sku))
     }
+    fun getHelperForCustomizeTheme(context: Context) : ExtensionHelper {
+        return ExtensionHelper(context, context.getString(R.string.ct_sku))
+    }
 
     fun showExtensionDialog(context: Context, onClick: SimpleFunction) {
         MaterialAlertDialogBuilder(context)
@@ -44,6 +47,12 @@ object AddOnsHelper {
                 when(item) {
                     AddOns.getPinExtension(context) -> {
                         PinLockHelper.internalRemoveAppLock(context)
+                    }
+                    AddOns.getCustomizeThemeExtension(context) -> {
+                        AppThemeHelper.apply {
+                            resetColors(context)
+                            resetLauncherIconRes(context)
+                        }
                     }
                 }
             }

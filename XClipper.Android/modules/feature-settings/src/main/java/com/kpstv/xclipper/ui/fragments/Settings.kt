@@ -14,7 +14,7 @@ import com.kpstv.xclipper.extensions.drawableFrom
 import com.kpstv.xclipper.extensions.viewBinding
 import com.kpstv.xclipper.feature_settings.R
 import com.kpstv.xclipper.feature_settings.databinding.FragmentSettingsBinding
-import com.kpstv.xclipper.ui.fragments.settings.LookFeelPreference
+import com.kpstv.xclipper.ui.fragments.settings.look_feel.LookFeelPreference
 import com.kpstv.xclipper.ui.fragments.settings.SettingsFragment
 import com.kpstv.xclipper.ui.helpers.AppThemeHelper.registerForThemeChange
 import com.kpstv.xclipper.ui.navigation.AbstractNavigationOptionsExtensions.consume
