@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import com.kpstv.navigation.*
 import com.kpstv.xclipper.di.SettingScreenHandler
 import com.kpstv.xclipper.extensions.applyTopInsets
+import com.kpstv.xclipper.extensions.consumeArgs
 import com.kpstv.xclipper.extensions.drawableFrom
 import com.kpstv.xclipper.extensions.viewBinding
 import com.kpstv.xclipper.feature_settings.R
@@ -71,7 +72,7 @@ class Settings : ValueFragment(R.layout.fragment_settings), FragmentNavigator.Tr
     }
 
     private fun manageArguments() {
-        val keys = getKeyArgs<Args>()
+        val keys = consumeArgs<Args>()
         if (keys.openLookFeel) {
             viewModel.navigateTo(settingScreenHandler.screenLookFeel(), animation = AnimationDefinition.None)
         }
