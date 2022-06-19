@@ -27,6 +27,7 @@ object ModuleDependency {
 
     const val LIBRARY_PINLOCK = ":modules:library-pin-lock"
     const val LIBRARY_ROUNDED_SHEET = ":modules:library-rounded-sheet"
+    const val LIBRARY_COLOR_SHEET = ":modules:library-color-sheet"
 
     fun getAllModules(): Set<String> = ModuleDependency::class.memberProperties
         .filter { it.isConst }

@@ -5,8 +5,8 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat
 import com.kpstv.core.R
+import com.kpstv.xclipper.extensions.getColorAttr
 import com.kpstv.xclipper.extensions.utils.NotificationUtils
 
 object CoreNotifications {
@@ -39,7 +39,7 @@ object CoreNotifications {
             .setAutoCancel(true)
             .setContentIntent(NotificationUtils.getAppLaunchPendingIntent(this))
             .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
+            .setColor(getColorAttr(R.attr.colorAccent))
             .build()
 
         getNotificationManager().notify(randomCode, notification)

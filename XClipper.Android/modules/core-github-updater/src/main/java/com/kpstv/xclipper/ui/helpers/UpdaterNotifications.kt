@@ -7,6 +7,7 @@ import android.content.Context
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.kpstv.xclipper.extensions.colorFrom
+import com.kpstv.xclipper.extensions.getColorAttr
 import com.kpstv.xclipper.extensions.utils.NotificationUtils
 import com.kpstv.xclipper.extensions.utils.SizeUtils
 import com.kpstv.xclipper.github_updater.R
@@ -108,7 +109,7 @@ object UpdaterNotifications {
             .setContentTitle(getString(R.string.app_name_full))
             .setContentText(getString(R.string.update_message))
             .setSmallIcon(R.drawable.ic_logo_white)
-            .setColor(colorFrom(R.color.colorPrimaryDark))
+            .setColor(getColorAttr(R.attr.colorAccent))
             .setColorized(true)
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)

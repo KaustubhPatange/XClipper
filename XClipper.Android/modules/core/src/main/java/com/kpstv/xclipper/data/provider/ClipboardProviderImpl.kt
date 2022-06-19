@@ -5,6 +5,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Context.CLIPBOARD_SERVICE
 import android.net.Uri
+import android.os.Build
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.kpstv.xclipper.extensions.SimpleFunction
@@ -52,6 +53,14 @@ class ClipboardProviderImpl @Inject constructor(@ApplicationContext private val 
     override fun setClipboard(uri: Uri, flag: ClipboardProviderFlags) {
         val clipData = ClipData.newRawUri(flag.label, uri)
         clipboardManager.setPrimaryClip(clipData)
+    }
+
+    override fun clearClipboard() {
+        if (Build.VERSION.SDK_INT >= 28) {
+            clipboardManager.clearPrimaryClip()
+        } else {
+            setClipboard(null, flag = ClipboardProviderFlags.IgnorePrimaryChangeListener)
+        }
     }
 
     override fun observeClipboardChange(action: (data: String) -> Boolean) {

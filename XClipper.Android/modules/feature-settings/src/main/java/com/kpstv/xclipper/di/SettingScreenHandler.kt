@@ -7,7 +7,7 @@ import com.kpstv.xclipper.extensions.FragClazz
 import com.kpstv.xclipper.feature_settings.R
 import com.kpstv.xclipper.ui.fragments.Upgrades
 import com.kpstv.xclipper.ui.fragments.settings.GeneralPreference
-import com.kpstv.xclipper.ui.fragments.settings.LookFeelPreference
+import com.kpstv.xclipper.ui.fragments.settings.look_feel.LookFeelPreference
 import com.kpstv.xclipper.ui.fragments.settings.SettingsFragment
 import javax.inject.Inject
 

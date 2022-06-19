@@ -1,10 +1,15 @@
 package com.github.omadahealth.lollipin.lib.managers;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.Bundle;
+
+import androidx.appcompat.widget.ThemeUtils;
+import androidx.core.graphics.ColorUtils;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
@@ -113,6 +118,9 @@ public abstract class AppLockActivity extends PinActivity implements KeyboardBut
         enableAppLockerIfDoesNotExist();
         mLockManager.getAppLock().setPinChallengeCancelled(false);
 
+        @SuppressLint("RestrictedApi")
+        int dominantColor = ThemeUtils.getThemeAttrColor(this, R.attr.lp_dominant_color);
+        findViewById(R.id.pin_code_gray_bar).setBackgroundColor(ColorUtils.blendARGB(dominantColor, Color.BLACK, 0.2f));
         mStepTextView = (TextView) this.findViewById(R.id.pin_code_step_textview);
         mPinCodeRoundView = (PinCodeRoundView) this.findViewById(R.id.pin_code_round_view);
         mPinCodeRoundView.setPinLength(this.getPinLength());

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <attr name="dialogPrimary" format="color" />
+    <attr name="dialogPrimaryVariant" format="color" />
+
+    <declare-styleable name="ColorSheetTitle">
+        <attr name="colorSheetTitleFont" format="reference" />
+        <attr name="colorSheetTitleLineHeightHint" format="dimension" />
+        <attr name="colorSheetTitleLetterSpacing" format="float" />
+    </declare-styleable>
+
+</resources>

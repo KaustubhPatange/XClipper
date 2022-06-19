@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.kpstv.xclipper.core_clipboard.R
+import com.kpstv.xclipper.extensions.getColorAttr
 import com.kpstv.xclipper.extensions.utils.NotificationUtils
 import com.kpstv.xclipper.service.receiver.ClipboardBroadcastReceiver
 import com.kpstv.xclipper.ui.helpers.CoreNotifications
@@ -28,7 +29,7 @@ object ClipboardNotifications {
             .setContentText(getString(R.string.clipboard_disabled_content))
             .setAutoCancel(true)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
+            .setColor(getColorAttr(R.attr.colorAccent))
             .setContentIntent(openIntent)
             .build()
 

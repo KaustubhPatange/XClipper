@@ -21,6 +21,10 @@ android {
                 val applicationId = AndroidConfig.ID
                 buildConfigField("String","APPLICATION_ID", "\"${applicationId}\"")
             }
+            getByName(BuildType.IAP) {
+                val applicationId = AndroidConfig.ID
+                buildConfigField("String","APPLICATION_ID", "\"${applicationId}\"")
+            }
 
             buildConfigField("Integer","VERSION_CODE", "${AndroidConfig.VERSION_CODE}")
             buildConfigField("String","VERSION_NAME", "\"${AndroidConfig.VERSION_NAME}\"")

@@ -57,6 +57,7 @@ class XClipperAndroidPlugin : Plugin<Project> {
                         getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
                     )
                 }
+                create(BuildType.IAP)
             }
 
             // configure dirs for ksp

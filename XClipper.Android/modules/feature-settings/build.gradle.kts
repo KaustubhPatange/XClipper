@@ -19,6 +19,7 @@ dependencies {
     implementation(project(ModuleDependency.CORE_SYNC))
     implementation(project(ModuleDependency.CORE_ADDONS))
     implementation(project(ModuleDependency.LIBRARY_ROUNDED_SHEET))
+    implementation(project(ModuleDependency.LIBRARY_COLOR_SHEET))
 
     implementation(LibraryDependency.FRAGMENT_KTX)
     implementation(LibraryDependency.CONSTRAINT_LAYOUT)

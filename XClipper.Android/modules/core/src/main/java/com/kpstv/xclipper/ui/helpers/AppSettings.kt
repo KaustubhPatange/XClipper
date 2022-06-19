@@ -9,6 +9,7 @@ import androidx.lifecycle.asLiveData
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.extensions.getRawDataAttr
 import com.kpstv.xclipper.ui.helpers.AppSettingKeys.Keys.CLIPBOARD_BLACKLIST_APPS
+import com.kpstv.xclipper.ui.helpers.AppSettingKeys.Keys.CLIPBOARD_CLEAR_PREF
 import com.kpstv.xclipper.ui.helpers.AppSettingKeys.Keys.CLIPBOARD_SUGGESTIONS
 import com.kpstv.xclipper.ui.helpers.AppSettingKeys.Keys.CLIP_TEXT_TRIMMING
 import com.kpstv.xclipper.ui.helpers.AppSettingKeys.Keys.DATABASE_AUTO_SYNC
@@ -118,6 +119,8 @@ class AppSettings @Inject constructor(
         notifyListeners(DATABASE_DELETE_BINDING, value)
     }
 
+    fun isClipboardClearEnabled(): Boolean = preferenceProvider.getBooleanKey(CLIPBOARD_CLEAR_PREF, false)
+
     /**
      * Pair.first is horizontal [Gravity] & Pair.second is y offset.
      */
@@ -177,7 +180,8 @@ class AppSettings @Inject constructor(
     DATABASE_DELETE_BINDING,
     SUGGESTION_BUBBLE_X_GRAVITY,
     SUGGESTION_BUBBLE_Y_POS,
-    SUGGESTION_BUBBLE_COORDINATES
+    SUGGESTION_BUBBLE_COORDINATES,
+    CLIPBOARD_CLEAR_PREF
 )
 @Retention(AnnotationRetention.SOURCE)
 annotation class AppSettingKeys {
@@ -197,5 +201,6 @@ annotation class AppSettingKeys {
         const val DATABASE_AUTO_SYNC = "autoSync_pref"
         const val DATABASE_BINDING = "bind_pref"
         const val DATABASE_DELETE_BINDING = "bindDelete_pref"
+        const val CLIPBOARD_CLEAR_PREF = "clipboard_clear_pref"
     }
 }

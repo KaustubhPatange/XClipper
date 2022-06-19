@@ -4,12 +4,12 @@ import com.kpstv.xclipper.data.model.SettingDefinition
 import com.kpstv.xclipper.feature_settings.R
 import com.kpstv.xclipper.ui.fragments.Upgrades
 import com.kpstv.xclipper.ui.fragments.settings.*
+import com.kpstv.xclipper.ui.fragments.settings.look_feel.LookFeelPreference
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.FragmentComponent
 import dagger.multibindings.IntoMap
-import dagger.multibindings.IntoSet
 
 @Module
 @InstallIn(FragmentComponent::class)

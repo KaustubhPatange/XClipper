@@ -8,7 +8,7 @@
       android:pathData="M86,20.64c-36.097,0 -65.36,29.263 -65.36,65.36c0,36.097 29.263,65.36 65.36,65.36c36.097,0 65.36,-29.263 65.36,-65.36c0,-36.097 -29.263,-65.36 -65.36,-65.36z"
       android:strokeLineJoin="miter"
       android:strokeWidth="1"
-      android:fillColor="#f9dbd2"
+      android:fillColor="#D5D5D5"
       android:fillType="nonZero"
       android:strokeColor="#00000000"
       android:strokeLineCap="butt"/>

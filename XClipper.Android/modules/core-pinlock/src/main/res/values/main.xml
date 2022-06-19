@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="PinModuleTheme" parent="Theme.MaterialComponents">
+    <style name="PinModuleTheme" parent="AppTheme.Dark">
         <item name="pinCodeTheme">@style/CustomPinLockStyle</item>
-        <item name="android:windowBackground">@color/appColor</item>
+        <item name="android:windowBackground">?colorPrimary</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
 
     <style name="CustomPinLockStyle" parent="DefaultPinLockStyle">
-        <item name="lp_full_pin_dot">@drawable/pin_lock_full_dot</item>
-        <item name="lp_empty_pin_dot">@drawable/pin_lock_empty_dot</item>
-        <item name="lp_divider_color">@color/divider</item>
+        <item name="lp_dominant_color">?colorPrimary</item>
         <item name="lp_finger_print_drawable">@drawable/pin_ic_fingerprint</item>
         <item name="lp_finger_print_color">@android:color/transparent</item>
         <item name="lp_finger_print_success_drawable">@drawable/pin_ic_fingerprint_success</item>

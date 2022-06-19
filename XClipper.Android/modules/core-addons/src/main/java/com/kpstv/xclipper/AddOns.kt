@@ -16,9 +16,20 @@ object AddOns {
             sku = getString(R.string.pin_sku)
         )
     }
+    fun getCustomizeThemeExtension(context: Context) : ExtensionItem = with(context) {
+        return ExtensionItem(
+            title = getString(R.string.ct_title),
+            smallDescription = getString(R.string.ct_short_desc),
+            fullDescription = getString(R.string.ct_full_desc),
+            icon = R.drawable.ic_palette,
+            dominantColor = context.colorFrom(R.color.colorPalette),
+            sku = getString(R.string.ct_sku)
+        )
+    }
     fun getAllExtensions(context: Context) : List<ExtensionItem> = with(context) {
         return listOf(
-            getPinExtension(this)
+            getPinExtension(this),
+            getCustomizeThemeExtension(this)
         )
     }
 }

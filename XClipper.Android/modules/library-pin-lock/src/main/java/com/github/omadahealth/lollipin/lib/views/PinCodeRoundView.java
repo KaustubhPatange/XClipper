@@ -2,12 +2,17 @@ package com.github.omadahealth.lollipin.lib.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.ColorUtils;
 
 import com.github.omadahealth.lollipin.lib.R;
 
@@ -47,14 +52,17 @@ public class PinCodeRoundView extends RelativeLayout {
             final TypedArray attributes = mContext.getTheme().obtainStyledAttributes(attrs, R.styleable.PinCodeView,
                     defStyleAttr, 0);
 
-            mEmptyDotDrawableId = attributes.getDrawable(R.styleable.PinCodeView_lp_empty_pin_dot);
-            if (mEmptyDotDrawableId == null) {
-                mEmptyDotDrawableId = getResources().getDrawable(R.drawable.pin_code_round_empty);
-            }
-            mFullDotDrawableId = attributes.getDrawable(R.styleable.PinCodeView_lp_full_pin_dot);
-            if (mFullDotDrawableId == null) {
-                mFullDotDrawableId = getResources().getDrawable(R.drawable.pin_code_round_full);
-            }
+            int color = attributes.getColor(R.styleable.PinCodeView_lp_dominant_color, ContextCompat.getColor(mContext, R.color.light_blue_500));
+ 
+            GradientDrawable emptyDotDrawable = new GradientDrawable();
+            emptyDotDrawable.setColor(ColorUtils.blendARGB(color, Color.WHITE, 0.4f));
+            emptyDotDrawable.setShape(GradientDrawable.OVAL);
+            mEmptyDotDrawableId = emptyDotDrawable;
+
+            GradientDrawable fullDotDrawable = new GradientDrawable();
+            fullDotDrawable.setColor(ColorUtils.blendARGB(color, Color.BLACK, 0.4f));
+            fullDotDrawable.setShape(GradientDrawable.OVAL);
+            mFullDotDrawableId = fullDotDrawable;
 
             attributes.recycle();
 

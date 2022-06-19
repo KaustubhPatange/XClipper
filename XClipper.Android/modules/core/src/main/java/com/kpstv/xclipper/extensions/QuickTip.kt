@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.annotation.*
 import androidx.core.graphics.ColorUtils
@@ -33,9 +34,12 @@ class QuickTipContainer @JvmOverloads constructor(
     }
 }
 
-class QuickTip(private val containerView: ViewGroup) {
-    private val context = containerView.context
-    private val binding = CustomQuickTipBinding.inflate(context.layoutInflater())
+class QuickTip(private val quickTipView: FrameLayout) {
+
+    constructor(containerView: ViewGroup) : this(CustomQuickTipBinding.inflate(containerView.context.layoutInflater()).root)
+
+    private val context = quickTipView.context
+    private val binding = CustomQuickTipBinding.bind(quickTipView)
 
     init {
         binding.root.tag = QUICK_TIP_TAG
@@ -141,7 +145,7 @@ class QuickTip(private val containerView: ViewGroup) {
     }
 
     fun dismiss() {
-        containerView.removeView(binding.root)
+        quickTipView.removeView(binding.root)
     }
 
     fun create(): View = binding.root

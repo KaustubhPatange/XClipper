@@ -39,7 +39,7 @@
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
         android:src="@drawable/ic_add"
-        app:backgroundTint="?colorPrimary" />
+        app:backgroundTint="?colorAccent" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_go_up"
@@ -50,8 +50,8 @@
         android:drawableLeft="@drawable/ic_arrow_up"
         android:text="@string/go_top"
         android:textAllCaps="false"
-        android:textColor="?background"
         android:translationY="150dp"
+        app:backgroundTint="?colorAccent"
         app:cornerRadius="20dp"
         tools:translationY="0dp" />
 

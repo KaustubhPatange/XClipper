@@ -5,26 +5,23 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.View
-import androidx.annotation.StringRes
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.kpstv.navigation.*
 import com.kpstv.xclipper.di.SettingScreenHandler
 import com.kpstv.xclipper.extensions.applyTopInsets
+import com.kpstv.xclipper.extensions.consumeArgs
 import com.kpstv.xclipper.extensions.drawableFrom
-import com.kpstv.xclipper.ui.helpers.AppThemeHelper.registerForThemeChange
 import com.kpstv.xclipper.extensions.viewBinding
+import com.kpstv.xclipper.feature_settings.R
 import com.kpstv.xclipper.feature_settings.databinding.FragmentSettingsBinding
-import com.kpstv.xclipper.ui.fragments.settings.*
-//import com.kpstv.xclipper.ui.activities.NavViewModel
-//import com.kpstv.xclipper.ui.activities.Start
+import com.kpstv.xclipper.ui.fragments.settings.look_feel.LookFeelPreference
+import com.kpstv.xclipper.ui.fragments.settings.SettingsFragment
+import com.kpstv.xclipper.ui.helpers.AppThemeHelper.registerForThemeChange
+import com.kpstv.xclipper.ui.navigation.AbstractNavigationOptionsExtensions.consume
 import com.kpstv.xclipper.ui.viewmodel.SettingNavViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.parcelize.Parcelize
-import kotlin.reflect.KClass
-import com.kpstv.xclipper.feature_settings.R
-import com.kpstv.xclipper.ui.navigation.AbstractNavigationOptionsExtensions.consume
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -75,18 +72,20 @@ class Settings : ValueFragment(R.layout.fragment_settings), FragmentNavigator.Tr
     }
 
     private fun manageArguments() {
-        val keys = getKeyArgs<Args>()
+        val keys = consumeArgs<Args>()
         if (keys.openLookFeel) {
             viewModel.navigateTo(settingScreenHandler.screenLookFeel(), animation = AnimationDefinition.None)
         }
     }
 
-    override fun onThemeChanged(viewRect: Rect) {
+    override fun onThemeChanged(viewRect: Rect?, animate: Boolean) {
         val navOptions = FragmentNavigator.NavOptions(
             args = Args(openLookFeel = true),
-            animation = AnimationDefinition.CircularReveal(
-                fromTarget = viewRect
-            ),
+            animation = if (animate) {
+                AnimationDefinition.CircularReveal(fromTarget = viewRect)
+            } else {
+                AnimationDefinition.None
+            },
             historyOptions = HistoryOptions.SingleTopInstance
         )
         parentNavigator.navigateTo(

@@ -7,6 +7,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.di.action.SpecialActionOption
+import com.kpstv.xclipper.extensions.getColorAttr
 import com.kpstv.xclipper.extensions.utils.NotificationUtils
 import com.kpstv.xclipper.service.receiver.SpecialActionsReceiver
 import com.kpstv.xclipper.ui.activities.SpecialActions
@@ -30,7 +31,7 @@ object Notifications {
             .setContentText(text)
             .setAutoCancel(true)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
+            .setColor(getColorAttr(R.attr.colorAccent))
             .setContentIntent(NotificationUtils.getAppLaunchPendingIntent(this))
 
         if (withSpecialActions) {

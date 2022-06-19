@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="PinCodeView">
-        <attr name="lp_empty_pin_dot" format="integer" />
-        <attr name="lp_full_pin_dot" format="integer" />
-        <attr name="lp_divider_color" format="color" />
+        <attr name="lp_dominant_color" format="reference|color" />
         <attr name="lp_finger_print_drawable" format="reference"/>
         <attr name="lp_finger_print_color" format="color"/>
         <attr name="lp_finger_print_success_color" format="color"/>
