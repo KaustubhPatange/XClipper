@@ -80,6 +80,8 @@
     <string name="onboard_screens_reset">All onboarding screens has been reset!</string>
     <string name="blacklist_apps">Select blacklist apps</string>
     <string name="load_apps">Loading apps metadata…</string>
+    <string name="clipboard_clear_title">Clear clipboard</string>
+    <string name="clipboard_clear_summary">When clip is deleted from notification, it will also clear the clipboard history.</string>
 
     <!-- Dialogs -->
     <string name="pin_lock_dialog_title">Secure with App lock</string>

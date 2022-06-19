@@ -18,6 +18,7 @@ interface ClipboardProvider {
     fun setClipboard(data: String?, flag: ClipboardProviderFlags = ClipboardProviderFlags.None)
     fun setClipboard(uri: Uri, flag: ClipboardProviderFlags = ClipboardProviderFlags.None)
     fun getClipboard(): ClipData?
+    fun clearClipboard()
     fun stopObserving()
     fun ignoreChange(block: SimpleFunction)
     fun setCurrentClip(text: String)

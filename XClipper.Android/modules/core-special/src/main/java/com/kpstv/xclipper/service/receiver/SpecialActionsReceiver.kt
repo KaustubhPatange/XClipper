@@ -4,17 +4,20 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.ACTION_CLOSE_SYSTEM_DIALOGS
+import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.extensions.elements.AbstractBroadcastReceiver
 import com.kpstv.xclipper.extensions.launchInIO
+import com.kpstv.xclipper.ui.helpers.AppSettings
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class SpecialActionsReceiver : AbstractBroadcastReceiver() {
 
-    @Inject
-    lateinit var repository: MainRepository
+    @Inject lateinit var repository: MainRepository
+    @Inject lateinit var appSettings: AppSettings
+    @Inject lateinit var clipboardProvider: ClipboardProvider
 
     companion object {
         private const val ACTION_CLIP_DELETE = "com.kpstv.xclipper.clip_delete"
@@ -41,6 +44,10 @@ class SpecialActionsReceiver : AbstractBroadcastReceiver() {
             ACTION_CLIP_DELETE -> {
                 launchInIO {
                     repository.deleteClip(data)
+                }
+
+                if (appSettings.isClipboardClearEnabled() && clipboardProvider.getCurrentClip().value == data) {
+                    clipboardProvider.clearClipboard()
                 }
 
                 dismissNotification(context, notifyId)

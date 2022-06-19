@@ -52,6 +52,12 @@
             app:summary="@string/trim_summary"
             app:title="@string/trim_title" />
 
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            app:key="clipboard_clear_pref"
+            app:summary="@string/clipboard_clear_summary"
+            app:title="@string/clipboard_clear_title" />
+
         <Preference
             app:key="reset_intro_pref"
             app:summary="This also includes the dialogs that are shown to demonstrate a particular feature."
