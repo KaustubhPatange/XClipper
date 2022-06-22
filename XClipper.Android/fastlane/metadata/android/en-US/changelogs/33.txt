@@ -1,0 +1,6 @@
+Added: Ability to customize theme colors & app launcher icon.
+Added: Accessibility service disabled tip.
+Improved: Delete logic to only delete items ascended by time & no lock tag present.
+Improved: Clear clipboard history when clip is removed from notification.
+Fixed: Network fetching on IO thread to prevent timeouts.
+Fixed: Rotation after theme change requires twice backpress to close screen.
