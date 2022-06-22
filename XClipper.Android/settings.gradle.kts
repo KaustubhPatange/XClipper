@@ -11,8 +11,8 @@ rootDir
     .filter { file ->
         file.name != "buildSrc" && file != rootDir && file.isDirectory && file("${file.absolutePath}/build.gradle.kts").exists()
     }
-    .map { it.absolutePath.replace("${rootDir.absolutePath}\\", "") }
-    .map { it.replace("\\",":") }
+    .map { it.absolutePath.replace("${rootDir.absolutePath}", "") }
+    .map { it.replace("\\",":").replace("/", ":") }
     .map { File(it).name }
     .filter { it.isNotEmpty() }
-    .forEach { include(":$it") }
+    .forEach { include(it) }
