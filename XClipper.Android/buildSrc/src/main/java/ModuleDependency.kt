@@ -24,6 +24,7 @@ object ModuleDependency {
     const val FEATURE_CRASH_REPORT = ":modules:feature-crash-report"
     const val FEATURE_SETTINGS = ":modules:feature-settings"
     const val FEATURE_CLIPBOARD = ":modules:feature-clipboard"
+    const val FEATURE_NOTIFICATION = ":modules:feature-notification"
 
     const val LIBRARY_PINLOCK = ":modules:library-pin-lock"
     const val LIBRARY_ROUNDED_SHEET = ":modules:library-rounded-sheet"

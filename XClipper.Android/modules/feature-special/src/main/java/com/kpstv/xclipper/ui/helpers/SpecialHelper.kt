@@ -173,7 +173,6 @@ internal class SpecialHelper(
             SingleMenuItem(title = context.getString(R.string.sp_set_calender_event), image = R.drawable.sp_ic_calender) {
                 createChooser(ClipTag.DATE.small()) { data ->
                     /** Parse the date now */
-                    /** Parse the date now */
                     val dateValues = data.split("/", ".", "-", " ")
 
                     val year = if (dateValues[0].length == 4) dateValues[0] else dateValues[2]
