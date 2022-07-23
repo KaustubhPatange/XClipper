@@ -27,6 +27,8 @@ dependencies {
     implementation(LibraryDependency.FRAGMENT_KTX)
     implementation(LibraryDependency.NAVIGATOR)
 
+    implementation(LibraryDependency.LIFECYCLE_KTX)
+
     implementation(LibraryDependency.HILT_ANDROID)
     kapt(LibraryDependency.HILT_COMPILER)
 }

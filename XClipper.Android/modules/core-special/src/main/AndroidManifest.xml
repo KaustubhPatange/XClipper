@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application>
+        <activity android:exported="false" android:name="com.kpstv.xclipper.ui.helpers.special.CustomCaptureActivity"/>
         <receiver android:name="com.kpstv.xclipper.service.receiver.SpecialActionsReceiver" />
     </application>
 </manifest>

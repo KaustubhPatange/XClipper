@@ -31,6 +31,8 @@ import com.kpstv.xclipper.extensions.SpecialAction
 import com.kpstv.xclipper.extensions.utils.ShareUtils
 import com.kpstv.xclipper.feature_special.R
 import com.kpstv.xclipper.feature_special.databinding.BottomSheetSpecialBinding
+import com.kpstv.xclipper.ui.activities.QRDialog
+import com.kpstv.xclipper.ui.helpers.special.QRActionHelper
 import com.kpstv.xclipper.ui.utils.LaunchUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.CoroutineScope
@@ -81,6 +83,8 @@ internal class SpecialHelper(
 
         setDateSpecials()
 
+        setQRCode()
+
         setRecyclerView(this)
     }
 
@@ -124,6 +128,20 @@ internal class SpecialHelper(
                     runAction(intent)
                 }
             )
+        }
+    }
+
+    /** Show QR code for text if they are not large */
+    private fun setQRCode() {
+        if (enabledActions.contains(SpecialAction.QR_CODE) && QRActionHelper.canGenerateQR(data)) {
+            val item = SingleMenuItem(
+                image = R.drawable.sp_ic_qrcode, // change
+                title = context.getString(R.string.sp_qr_code),
+                onClick = {
+                    QRDialog.launch(context, data)
+                }
+            )
+            specialList.add(item)
         }
     }
 

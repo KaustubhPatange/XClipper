@@ -23,6 +23,9 @@ dependencies {
     implementation(LibraryDependency.TOASTY)
     implementation(LibraryDependency.NAVIGATOR)
     implementation(LibraryDependency.ANDROIDX_PREFERENCES)
+    implementation(LibraryDependency.LIFECYCLE_COMMON)
+
+    implementation(LibraryDependency.ZXING_ANDROID_QR)
     
     implementation(LibraryDependency.HILT_ANDROID)
     kapt(LibraryDependency.HILT_COMPILER)
