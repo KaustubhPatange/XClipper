@@ -14,10 +14,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.qrcode.QRCodeWriter
-import com.journeyapps.barcodescanner.CaptureActivity
-import com.journeyapps.barcodescanner.ScanContract
-import com.journeyapps.barcodescanner.ScanIntentResult
-import com.journeyapps.barcodescanner.ScanOptions
+import com.journeyapps.barcodescanner.*
 import com.kpstv.xclipper.specials.R
 
 object QRActionHelper {
@@ -61,7 +58,9 @@ object QRActionHelper {
 
         fun init(lifecycleOwner: LifecycleOwner, listener: (text: String) -> Unit) {
             activityResultLauncher = activity.activityResultRegistry.register("qr_capture_1", ScanContract()) { result ->
-                listener.invoke(result.contents)
+                if (result.contents != null) {
+                    listener.invoke(result.contents)
+                }
             }
 
             lifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
@@ -82,11 +81,15 @@ internal class CustomCaptureActivity : CaptureActivity() {
     private var isDataConfirmed: Boolean = false
 
     override fun finish() {
-        val code = resultCode.getInt(this)
-        if (isDataConfirmed || code != RESULT_OK) {
+        if (isDataConfirmed) {
             super.finish()
         }
-        if (code == RESULT_OK) {
+        // just save from reflection
+        val code = resultCode.getInt(this)
+        if (code != RESULT_OK) {
+            super.finish()
+        }
+        if (code == RESULT_OK && !isDataConfirmed) {
             (resultIntent.get(this) as? Intent)?.let { intent ->
                 val result = ScanIntentResult.parseActivityResult(code, intent)
                 showConfirmationDialog(result.contents)
@@ -98,11 +101,16 @@ internal class CustomCaptureActivity : CaptureActivity() {
     private fun showConfirmationDialog(data: String) {
         MaterialAlertDialogBuilder(this)
             .setMessage(data)
-            .setNegativeButton(R.string.cancel, null)
+            .setNegativeButton(R.string.cancel) { _, _ ->
+                resultCode.setInt(this, RESULT_CANCELED)
+                isDataConfirmed = false
+                finish()
+            }
             .setPositiveButton(R.string.csp_add_to_data) { _, _ ->
                 isDataConfirmed = true
                 finish()
             }
+            .setCancelable(false)
             .show()
     }
 

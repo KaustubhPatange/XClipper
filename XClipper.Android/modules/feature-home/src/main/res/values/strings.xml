@@ -5,6 +5,9 @@
     <string name="unpin">Unpin</string>
     <string name="more">More</string>
 
+    <string name="qr_paste">Paste from QR</string>
+    <string name="qr_paste_complete">Successfully pasted text from QR</string>
+
     <string name="search">Search</string>
     <string name="go_top">Go top</string>
 
