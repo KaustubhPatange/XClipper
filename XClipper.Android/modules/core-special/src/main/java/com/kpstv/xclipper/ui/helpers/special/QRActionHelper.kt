@@ -6,9 +6,15 @@ import android.content.Intent
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.view.KeyEvent
+import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.ColorInt
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -76,49 +82,78 @@ object QRActionHelper {
     }
 }
 
-@SuppressLint("DiscouragedPrivateApi")
-internal class CustomCaptureActivity : CaptureActivity() {
-    private var isDataConfirmed: Boolean = false
+internal class CustomCaptureManager(
+    private val activity: Activity,
+    private val barcodeView: DecoratedBarcodeView
+) : CaptureManager(activity, barcodeView) {
+    private val handler = Handler(Looper.getMainLooper())
 
-    override fun finish() {
-        if (isDataConfirmed) {
-            super.finish()
-        }
-        // just save from reflection
-        val code = resultCode.getInt(this)
-        if (code != RESULT_OK) {
-            super.finish()
-        }
-        if (code == RESULT_OK && !isDataConfirmed) {
-            (resultIntent.get(this) as? Intent)?.let { intent ->
-                val result = ScanIntentResult.parseActivityResult(code, intent)
-                showConfirmationDialog(result.contents)
-                return
-            }
-        }
+    private val callback = BarcodeCallback call@{ result ->
+        barcodeView.pause()
+        if (result == null) return@call
+        handler.post { showConfirmationDialog(result) }
     }
 
-    private fun showConfirmationDialog(data: String) {
-        MaterialAlertDialogBuilder(this)
-            .setMessage(data)
+    override fun decode() {
+        barcodeView.decodeContinuous(callback)
+    }
+
+    private fun showConfirmationDialog(rawResult: BarcodeResult) {
+        MaterialAlertDialogBuilder(activity)
+            .setMessage(rawResult.text)
             .setNegativeButton(R.string.cancel) { _, _ ->
-                resultCode.setInt(this, RESULT_CANCELED)
-                isDataConfirmed = false
-                finish()
+                barcodeView.resume()
             }
             .setPositiveButton(R.string.csp_add_to_data) { _, _ ->
-                isDataConfirmed = true
-                finish()
+                returnResult(rawResult)
             }
             .setCancelable(false)
             .show()
     }
+}
 
-    private val resultCode get() = Activity::class.java.getDeclaredField("mResultCode").apply {
-        isAccessible = true
+internal class CustomCaptureActivity : AppCompatActivity() {
+    private lateinit var barcodeView: DecoratedBarcodeView
+    private val capture: CustomCaptureManager by lazy { CustomCaptureManager(this, barcodeView) }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        barcodeView = initializeContent()
+        capture.initializeFromIntent(intent, savedInstanceState)
+        capture.decode()
     }
-    private val resultIntent get() = Activity::class.java.getDeclaredField("mResultData").apply {
-        isAccessible = true
+
+    fun initializeContent(): DecoratedBarcodeView {
+        setContentView(R.layout.zxing_capture)
+        return findViewById<View>(R.id.zxing_barcode_scanner) as DecoratedBarcodeView
+    }
+
+    override fun onResume() {
+        super.onResume()
+        capture.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        capture.onPause()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        capture.onDestroy()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        capture.onSaveInstanceState(outState)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String?>, grantResults: IntArray) {
+        capture.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        return barcodeView.onKeyDown(keyCode, event) || super.onKeyDown(keyCode, event)
     }
 }
 
