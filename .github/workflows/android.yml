@@ -63,6 +63,7 @@ jobs:
           cd XClipper.Android
           ./gradlew app:assembleRelease --stacktrace --scan
           ./gradlew --stop
+          if (-Not (Test-Path -Path '${{github.workspace}}\XClipper.Android\app\build\outputs\apk\release\app-release.apk' -PathType Leaf)) { exit 1 }
 
       - name: Draft Release
         id: create_release

@@ -100,6 +100,14 @@ class SpecialActionFragment : ActionFragment() {
             action = SpecialAction.SEND_MAIL
         )
 
+        /* QR Code action */
+        setCheckedItem(
+            title = getString(R.string.qr_code_title),
+            message = getString(R.string.qr_code_summary),
+            icon = R.drawable.sp_ic_qrcode,
+            action = SpecialAction.QR_CODE
+        )
+
         /* Set Lang code for define */ // TODO: Later move into separate setting fragment where you can enable & disable it
         setCommonItem(
             title = getString(R.string.lang_title),

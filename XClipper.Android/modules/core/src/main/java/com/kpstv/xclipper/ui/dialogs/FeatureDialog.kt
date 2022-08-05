@@ -109,10 +109,7 @@ class FeatureDialog(ctx: Context) {
             val dialog = create(this, data).apply {
                 setOnClickListener { alert ->
                     alert.setOnDismissListener {
-                        CoroutineScope(Dispatchers.Main).launch {
-                            delay(500)
-                            finish()
-                        }
+                        finish()
                     }
                     alert.dismiss()
                 }

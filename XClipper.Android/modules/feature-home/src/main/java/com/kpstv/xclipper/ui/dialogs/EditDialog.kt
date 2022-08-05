@@ -14,6 +14,7 @@ import com.kpstv.xclipper.feature_home.R
 import com.kpstv.xclipper.feature_home.databinding.DialogEditLayoutBinding
 import com.kpstv.xclipper.ui.adapter.EditAdapter
 import com.kpstv.xclipper.ui.helpers.HomeThemeHelper
+import com.kpstv.xclipper.ui.helpers.special.QRActionHelper
 import com.kpstv.xclipper.ui.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
@@ -35,6 +36,8 @@ class EditDialog : AppCompatActivity() {
     private val binding by viewBinding(DialogEditLayoutBinding::inflate)
     private val mainViewModel: MainViewModel by viewModels()
 
+    private val qrCodeReader by lazy { QRActionHelper.QRCodeReader(this) }
+
     private var spanCount = 2
 
     private lateinit var clip: Clip
@@ -50,13 +53,16 @@ class EditDialog : AppCompatActivity() {
 
         setContentView(binding.root)
 
-        binding.toolbar.navigationIcon = drawableFrom(R.drawable.ic_cross)
-        binding.toolbar.setNavigationOnClickListener {
-            finish()
-        }
+        setToolbar()
         binding.btnSave.setOnClickListener { saveClick() }
 
         setRecyclerView()
+
+        /* Setup QR reader */
+        qrCodeReader.init(this) { text ->
+            binding.etMain.text.insert(binding.etMain.selectionStart, text)
+            Toasty.info(this, getString(R.string.qr_paste_complete)).show()
+        }
 
         edType = if (mainViewModel.editManager.getClip() != null) {
 
@@ -130,6 +136,20 @@ class EditDialog : AppCompatActivity() {
     private fun postSuccess() {
         Toasty.info(this, getString(R.string.edit_success)).show()
         finish()
+    }
+
+    private fun setToolbar() {
+        binding.toolbar.navigationIcon = drawableFrom(R.drawable.ic_cross)
+        binding.toolbar.setNavigationOnClickListener {
+            finish()
+        }
+        binding.toolbar.inflateMenu(R.menu.edit_menu)
+        binding.toolbar.setOnMenuItemClickListener { item ->
+            when(item.itemId) {
+                R.id.action_qr_paste -> qrCodeReader.start()
+            }
+            true
+        }
     }
 
     private fun setRecyclerView() {

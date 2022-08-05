@@ -17,6 +17,7 @@
     <string name="sp_open_link">Open with…</string>
     <string name="sp_private_browse">Open in private</string>
     <string name="sp_shorten_link">Shorten link</string>
+    <string name="sp_qr_code">Generate QR code</string>
 
 
     <string name="err_action">Couldn\'t find the action</string>
@@ -28,6 +29,10 @@
     <string name="disclosure_deny">Cannot use this service without agreeing the policy.</string>
     <string name="accept">Accept</string>
     <string name="deny">Deny</string>
+
+    <!-- QR Dialog -->
+
+    <string name="dialog_qr_tip">Tip: Click on add (+) in the app then select QR icon to paste this data.</string>
 
     <!-- Special Action Fragment -->
 
@@ -56,5 +61,7 @@
     <string name="lang_title">Language Code</string>
     <string name="lang_summary">Define language for finding definition of word (usually seen in special actions)</string>
     <string name="lang_dialog_title">Select dictionary language</string>
+    <string name="qr_code_title">QR Code</string>
+    <string name="qr_code_summary">Generate a QR Code for your text data.</string>
 
 </resources>

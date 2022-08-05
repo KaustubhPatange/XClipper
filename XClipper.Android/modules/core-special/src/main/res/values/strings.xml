@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="error_shorten">Requested url cannot be shorten</string>
+
+    <!-- QR Special action -->
+    <string name="csp_scan_qr_code">Scan to paste text from QR code</string>
+    <string name="csp_add_to_data">Paste</string>
+    <string name="csp_error_qr_code_limit">QR code limit exceeds 4000 characters</string>
 </resources>

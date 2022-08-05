@@ -16,6 +16,7 @@ android {
 dependencies {
     implementation(project(ModuleDependency.CORE))
     implementation(project(ModuleDependency.CORE_CLIPBOARD))
+    implementation(project(ModuleDependency.CORE_SPECIAL))
     implementation(project(ModuleDependency.CORE_EXTENSIONS))
 
     implementation(LibraryDependency.ACTIVITY_KTX)
