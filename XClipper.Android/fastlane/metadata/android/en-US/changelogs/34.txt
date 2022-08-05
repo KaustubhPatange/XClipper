@@ -1,0 +1,3 @@
+Added: Option to generate QR code through Special Action.
+Added: Feature to paste text from QR.
+Fixed: Feature dialog will now exit quickly instead of delaying.

@@ -4,8 +4,8 @@ object AndroidConfig {
     const val TARGET_SDK_VERSION = 30
     const val BUILD_TOOLS_VERSION = "30.0.3"
 
-    const val VERSION_CODE = 33
-    const val VERSION_NAME = "1.2.8"
+    const val VERSION_CODE = 35
+    const val VERSION_NAME = "1.3.0"
 
     const val ID = "com.kpstv.xclipper"
     const val TEST_INSTRUMENTATION_RUNNER = "androidx.test.runner.AndroidJUnitRunner"
