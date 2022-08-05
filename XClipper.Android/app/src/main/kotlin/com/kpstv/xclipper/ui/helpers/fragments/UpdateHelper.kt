@@ -38,7 +38,7 @@ class UpdateHelper(
 ) : AbstractFragmentHelper<Home>(activity, Home::class) {
 
     companion object {
-        const val SETTINGS_URL = "https://github.com/KaustubhPatange/XClipper/raw/master/XClipper.Android/settings.json"
+        const val SETTINGS_URL = "https://github.com/KaustubhPatange/XClipper/  raw/master/XClipper.Android/settings.json"
         private const val REPO_OWNER = "KaustubhPatange"
         private const val REPO_NAME = "XClipper"
         private const val UPDATE_REQUEST_CODE = 555
@@ -71,8 +71,19 @@ class UpdateHelper(
     }
 
     private suspend fun initialize() {
-        val responseString = RetrofitUtils.fetch(SETTINGS_URL).getOrNull()?.asString()
-        val webSettings = WebSettingsConverter.fromJson(responseString) ?: WebSettings()
+        val responseString = RetrofitUtils.fetch(
+            url = SETTINGS_URL,
+            cacheControl = RetrofitUtils.CacheStrategy.cache24Hours()
+        ).getOrNull()?.asString()
+
+        // github may sometimes return invalid response.
+        val webSettings = try {
+            WebSettingsConverter.fromJson(responseString) ?: throw IllegalStateException("Data is null")
+        }
+        catch (e: Exception) {
+            Logger.w(e, "Response: $responseString")
+            WebSettings()
+        }
 
         if (webSettings.useNewUpdater) {
             checkForUpdatesFromGithub()

@@ -3,6 +3,7 @@ package com.kpstv.xclipper.extensions.utils
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.kpstv.xclipper.extensions.Logger
 import com.kpstv.xclipper.extensions.await
+import okhttp3.CacheControl
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -13,6 +14,13 @@ import java.net.UnknownHostException
 import java.util.concurrent.TimeUnit
 
 object RetrofitUtils {
+
+    object CacheStrategy {
+        fun cache24Hours() : CacheControl = CacheControl.Builder()
+            .maxAge(1, TimeUnit.DAYS)
+            .build()
+        fun noCache() : CacheControl = CacheControl.Builder().noCache().build()
+    }
 
     fun getRetrofitBuilder(): Retrofit.Builder {
         return Retrofit.Builder().apply {
@@ -34,9 +42,11 @@ object RetrofitUtils {
 
     fun getHttpClient() = getHttpBuilder().build()
 
-    suspend fun fetch(url: String): Result<Response> {
+    suspend fun fetch(url: String, cacheControl: CacheControl = CacheStrategy.noCache()): Result<Response> {
         return try {
-            getHttpClient().newCall(Request.Builder().url(url).build()).await()
+            getHttpClient().newCall(
+                Request.Builder().cacheControl(cacheControl).url(url).build()
+            ).await()
         } catch (e: UnknownHostException) { // no-internet connection
             Result.failure(e)
         }

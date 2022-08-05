@@ -47,7 +47,8 @@ object Logger {
       Timber.Tree::class.java.name,
       Timber.DebugTree::class.java.name,
       Logger::class.java.name,
-      ExtendedDebugTree::class.java.name
+      ExtendedDebugTree::class.java.name,
+      CrashlyticsTree::class.java.name
     )
 
     private fun fetchTag(): String? {
