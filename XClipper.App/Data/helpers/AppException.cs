@@ -162,6 +162,7 @@ namespace Components
                 .Append("&category=0"); // 0 means Desktop
             var client = new RestClient();
             var request = new RestRequest(queryBuilder.ToString(), Method.POST);
+            request.AddHeaders(COMMON_HEADERS());
             request.AddParameter("text/plain", content, ParameterType.RequestBody);
             await client.ExecuteTaskAsync(request).ConfigureAwait(false);
         }

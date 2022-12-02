@@ -68,7 +68,7 @@ namespace Components
             IsProgressiveWork = true;
 
             var client = new RestClient(MIGRATION_SERVER(UID, MTI, DOP.ToFormattedDate()));
-            var response = await client.ExecuteTaskAsync(new RestRequest(Method.POST)).ConfigureAwait(true);
+            var response = await client.ExecuteTaskAsync(new RestRequest(Method.POST).AddHeaders(COMMON_HEADERS())).ConfigureAwait(true);
             if (response.StatusCode != System.Net.HttpStatusCode.NotFound)
             {
                 var obj = JObject.Parse(response.Content);
@@ -121,7 +121,7 @@ namespace Components
             IsProgressiveWork = true;
 
             var client = new RestClient(ACTIVATION_SERVER(UID, EM, TI, LT.GetName()));
-            var response = await client.ExecuteTaskAsync(new RestRequest(Method.POST)).ConfigureAwait(true);
+            var response = await client.ExecuteTaskAsync(new RestRequest(Method.POST).AddHeaders(COMMON_HEADERS())).ConfigureAwait(true);
             try {
                 var obj = JObject.Parse(response.Content);
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
