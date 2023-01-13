@@ -41,6 +41,11 @@
     <PreferenceCategory app:title="Other">
 
         <SwitchPreferenceCompat
+            app:icon="@drawable/ic_delete"
+            app:key="auto_delete_pref"
+            app:title="@string/auto_delete_title" />
+
+        <SwitchPreferenceCompat
             android:defaultValue="true"
             app:key="swipe_delete_pref"
             app:summary="@string/swipe_summary"

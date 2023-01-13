@@ -21,10 +21,13 @@ import com.kpstv.navigation.BaseArgs
 import com.kpstv.navigation.getKeyArgs
 import com.kpstv.navigation.hasKeyArgs
 import com.kpstv.xclipper.AddOns
+import com.kpstv.xclipper.AutoDeleteHelper
 import com.kpstv.xclipper.PinLockHelper
+import com.kpstv.xclipper.data.model.ExtensionItem
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.di.SettingScreenHandler
 import com.kpstv.xclipper.di.suggestions.SuggestionConfigDialog
+import com.kpstv.xclipper.extensions.collectIn
 import com.kpstv.xclipper.extensions.helper.ClipboardLogDetector
 import com.kpstv.xclipper.extensions.layoutInflater
 import com.kpstv.xclipper.extensions.utils.PackageUtils
@@ -55,6 +58,7 @@ class GeneralPreference : AbstractPreferenceFragment() {
     private var improveDetectPreference: SwitchPreferenceCompat? = null
     private var overlayPreference: SwitchPreferenceCompat? = null
     private var pinLockPreference: SwitchPreferenceCompat? = null
+    private var autoDeletePreference: SwitchPreferenceCompat? = null
 
     @Inject lateinit var preferenceProvider: PreferenceProvider
     @Inject lateinit var appSettings: AppSettings
@@ -66,6 +70,7 @@ class GeneralPreference : AbstractPreferenceFragment() {
     private var appsDialog: AlertDialog? = null
 
     private val pinLockExtensionHelper by lazy { AddOnsHelper.getHelperForPinLock(requireContext()) }
+    private val autoDeleteExtensionHelper by lazy { AddOnsHelper.getHelperForAutoDelete(requireContext()) }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.general_pref, rootKey)
@@ -137,19 +142,18 @@ class GeneralPreference : AbstractPreferenceFragment() {
                     return@call true
                 }
             } else {
-                AddOnsHelper.showExtensionDialog(
-                    context = requireContext(),
-                    onClick = {
-                        val upgradeDefinition = settingScreenHandler.screenUpgrade()
-                        val upgradeArgs = settingScreenHandler.argsScreenUpgrade {
-                            setHighlightExtensionPosition(requireContext(), AddOns.getPinExtension(requireContext()))
-                        }
-                        settingsNavViewModel.navigateTo(
-                            screenDefinition = upgradeDefinition,
-                            args = upgradeArgs
-                        )
-                    }
-                )
+                showExtensionDialog(AddOns.getPinExtension(requireContext()))
+            }
+            false
+        }
+
+        /** Auto delete preference */
+        autoDeletePreference = findPreference(AUTO_DELETE_PREF)
+        autoDeletePreference?.setOnPreferenceChangeListener { _, _ ->
+            if (autoDeleteExtensionHelper.isActive()) {
+                AutoDeleteHelper.showConfigSheet(childFragmentManager)
+            } else {
+                showExtensionDialog(AddOns.getAutoDeleteExtension(requireContext()))
             }
             false
         }
@@ -187,6 +191,7 @@ class GeneralPreference : AbstractPreferenceFragment() {
             val args = getKeyArgs<Args>()
             if (args.highlightImproveDetection) highlightItemWithTitle(getString(R.string.adb_mode_title))
             if (args.highlightAccessibilityService) highlightItemWithTitle(getString(R.string.service_title))
+            if (args.highlightAutoDelete) highlightItemWithTitle(getString(R.string.auto_delete_title))
         }
 
         pinLockExtensionHelper.observePurchaseComplete().asLiveData().observe(viewLifecycleOwner) { unlock ->
@@ -200,9 +205,24 @@ class GeneralPreference : AbstractPreferenceFragment() {
                 }
             }
         }
+        autoDeleteExtensionHelper.observePurchaseComplete().collectIn(viewLifecycleOwner) { unlock ->
+            val preference = autoDeletePreference ?: return@collectIn
+            observeOnPreferenceInvalidate(preference) {
+                val titleView = preference.titleView!!
+                if (!unlock) {
+                    AddOnsHelper.addPremiumIcon(titleView)
+                } else {
+                    AddOnsHelper.removePremiumIcon(titleView)
+                }
+            }
+        }
         // observe clipboard suggestion changes
         appSettings.observeChanges(AppSettingKeys.CLIPBOARD_SUGGESTIONS, appSettings.canShowClipboardSuggestions()).observe(viewLifecycleOwner) { value ->
             overlayPreference?.isChecked = value
+        }
+        // observe auto delete changes
+        appSettings.observeChanges(AppSettingKeys.AUTO_DELETE_PREF, appSettings.canAutoDeleteClips()).observe(viewLifecycleOwner) { value ->
+            autoDeletePreference?.isChecked = value
         }
     }
 
@@ -233,6 +253,22 @@ class GeneralPreference : AbstractPreferenceFragment() {
     private fun checkForService() {
         checkPreference?.isChecked = ClipboardAccessibilityService.isRunning(requireContext())
         pinLockPreference?.isChecked = PinLockHelper.isPinLockEnabled(requireContext())
+    }
+
+    private fun showExtensionDialog(item: ExtensionItem) {
+        AddOnsHelper.showExtensionDialog(
+            context = requireContext(),
+            onClick = {
+                val upgradeDefinition = settingScreenHandler.screenUpgrade()
+                val upgradeArgs = settingScreenHandler.argsScreenUpgrade {
+                    setHighlightExtensionPosition(requireContext(), item)
+                }
+                settingsNavViewModel.navigateTo(
+                    screenDefinition = upgradeDefinition,
+                    args = upgradeArgs
+                )
+            }
+        )
     }
 
     private fun showBlacklistAppDialog() {
@@ -282,6 +318,7 @@ class GeneralPreference : AbstractPreferenceFragment() {
         private const val RESET_PREF = "reset_intro_pref"
         private const val TEMP_CHECK_IMPROVE_ON_START = "temp_check_improve_on_start"
         private const val PIN_LOCK_PREF = "pin_lock_pref"
+        private const val AUTO_DELETE_PREF = "auto_delete_pref"
         private const val ACTIVE_ADB_MODE_PREF = "adb_mode_pref"
         private const val IMAGE_MARKDOWN_PREF = "image_markdown_pref"
         private const val SERVICE_PREF = "service_pref"
@@ -310,6 +347,7 @@ class GeneralPreference : AbstractPreferenceFragment() {
     @Parcelize
     data class Args(
         val highlightImproveDetection: Boolean = false,
-        val highlightAccessibilityService: Boolean = false
+        val highlightAccessibilityService: Boolean = false,
+        val highlightAutoDelete: Boolean = false,
     ) : BaseArgs(), Parcelable
 }

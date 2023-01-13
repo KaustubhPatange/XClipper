@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ad_sheet_title">Auto delete clips</string>
+    <string name="ad_sheet_summary">Automatically delete clips which are created %1$d days ago</string>
+    <string name="ad_sheet_info"><![CDATA[Scroll the dial horizontally to pick a <b>day</b> for deleting clips created ago, current selected is %1$d.]]></string>
+    <string name="ad_sheet_delete_remote">Delete from remote database?</string>
+</resources>

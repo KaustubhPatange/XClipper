@@ -8,6 +8,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.extensions.getRawDataAttr
+import com.kpstv.xclipper.ui.helpers.AppSettingKeys.Keys.AUTO_DELETE_DAY_PREF
+import com.kpstv.xclipper.ui.helpers.AppSettingKeys.Keys.AUTO_DELETE_PREF
+import com.kpstv.xclipper.ui.helpers.AppSettingKeys.Keys.AUTO_DELETE_REMOTE_PREF
 import com.kpstv.xclipper.ui.helpers.AppSettingKeys.Keys.CLIPBOARD_BLACKLIST_APPS
 import com.kpstv.xclipper.ui.helpers.AppSettingKeys.Keys.CLIPBOARD_CLEAR_PREF
 import com.kpstv.xclipper.ui.helpers.AppSettingKeys.Keys.CLIPBOARD_SUGGESTIONS
@@ -138,6 +141,25 @@ class AppSettings @Inject constructor(
         notifyListeners(SUGGESTION_BUBBLE_COORDINATES, (gravity to yOffset))
     }
 
+    fun canAutoDeleteClips(): Boolean = preferenceProvider.getBooleanKey(AUTO_DELETE_PREF, false)
+    fun setAutoDeleteClips(value: Boolean) {
+        preferenceProvider.putBooleanKey(AUTO_DELETE_PREF, value)
+        notifyListeners(AUTO_DELETE_PREF, value)
+    }
+
+    fun shouldAutoDeleteRemoteClips(): Boolean = preferenceProvider.getBooleanKey(AUTO_DELETE_REMOTE_PREF, false)
+    fun setShouldAutoDeleteRemoteClips(value: Boolean) {
+        preferenceProvider.putBooleanKey(AUTO_DELETE_REMOTE_PREF, value)
+        notifyListeners(AUTO_DELETE_REMOTE_PREF, value)
+    }
+
+    fun getAutoDeleteDayNumber(): Int = preferenceProvider.getIntKey(AUTO_DELETE_DAY_PREF, 1)
+    fun setAutoDeleteDayNumber(value: Int) {
+        preferenceProvider.putIntKey(AUTO_DELETE_DAY_PREF, value)
+        notifyListeners(AUTO_DELETE_DAY_PREF, value)
+    }
+
+
     /**
      * Observe the changes of the settings. The [default] value will emitted as soon as the [LiveData]
      * will start observing.
@@ -181,7 +203,10 @@ class AppSettings @Inject constructor(
     SUGGESTION_BUBBLE_X_GRAVITY,
     SUGGESTION_BUBBLE_Y_POS,
     SUGGESTION_BUBBLE_COORDINATES,
-    CLIPBOARD_CLEAR_PREF
+    CLIPBOARD_CLEAR_PREF,
+    AUTO_DELETE_PREF,
+    AUTO_DELETE_DAY_PREF,
+    AUTO_DELETE_REMOTE_PREF,
 )
 @Retention(AnnotationRetention.SOURCE)
 annotation class AppSettingKeys {
@@ -202,5 +227,8 @@ annotation class AppSettingKeys {
         const val DATABASE_BINDING = "bind_pref"
         const val DATABASE_DELETE_BINDING = "bindDelete_pref"
         const val CLIPBOARD_CLEAR_PREF = "clipboard_clear_pref"
+        const val AUTO_DELETE_PREF = "auto_delete_pref"
+        internal const val AUTO_DELETE_DAY_PREF = "auto_delete_day_pref"
+        internal const val AUTO_DELETE_REMOTE_PREF = "auto_delete_remote_pref"
     }
 }

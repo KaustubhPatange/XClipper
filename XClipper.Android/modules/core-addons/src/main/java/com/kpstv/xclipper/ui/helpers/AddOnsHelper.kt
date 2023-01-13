@@ -4,6 +4,7 @@ import android.content.Context
 import android.widget.TextView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.kpstv.xclipper.AddOns
+import com.kpstv.xclipper.AutoDeleteHelper
 import com.kpstv.xclipper.PinLockHelper
 import com.kpstv.xclipper.core_addons.R
 import com.kpstv.xclipper.extensions.SimpleFunction
@@ -16,6 +17,9 @@ object AddOnsHelper {
     }
     fun getHelperForCustomizeTheme(context: Context) : ExtensionHelper {
         return ExtensionHelper(context, context.getString(R.string.ct_sku))
+    }
+    fun getHelperForAutoDelete(context: Context) : ExtensionHelper {
+        return ExtensionHelper(context, context.getString(R.string.ad_sku))
     }
 
     fun showExtensionDialog(context: Context, onClick: SimpleFunction) {
@@ -53,6 +57,9 @@ object AddOnsHelper {
                             resetColors(context)
                             resetLauncherIconRes(context)
                         }
+                    }
+                    AddOns.getAutoDeleteExtension(context) -> {
+                        AutoDeleteHelper.reset(context)
                     }
                 }
             }

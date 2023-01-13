@@ -71,6 +71,7 @@
     <string name="blacklist_summary">Apps in which clipboard tracking is disabled</string>
     <string name="suggest_summary">[BETA] Show a small bubble whenever keyboard pops out containing your latest clips</string>
     <string name="pin_lock_title">Pin Lock (Biometric)</string>
+    <string name="auto_delete_title">Auto-delete clips</string>
     <string name="swipe_title">Swipe to delete</string>
     <string name="swipe_summary">Swiping item to right will delete it permanently</string>
     <string name="trim_title">Text trimming</string>

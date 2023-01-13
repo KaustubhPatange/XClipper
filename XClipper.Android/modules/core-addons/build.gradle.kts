@@ -15,6 +15,7 @@ dependencies {
     implementation(project(ModuleDependency.CORE))
     implementation(project(ModuleDependency.CORE_EXTENSIONS))
     implementation(project(ModuleDependency.CORE_PINLOCK))
+    implementation(project(ModuleDependency.CORE_AUTO_DELETE))
     implementation(project(ModuleDependency.LIBRARY_ROUNDED_SHEET))
 
     implementation(LibraryDependency.FRAGMENT_KTX)

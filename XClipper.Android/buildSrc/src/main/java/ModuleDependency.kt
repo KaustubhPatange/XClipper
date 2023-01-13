@@ -14,6 +14,7 @@ object ModuleDependency {
     const val CORE_SPECIAL = ":modules:core-special"
     const val CORE_PINLOCK = ":modules:core-pinlock"
     const val CORE_ADDONS = ":modules:core-addons"
+    const val CORE_AUTO_DELETE = ":modules:core-auto-delete"
 
     const val FEATURE_ONBOARDING = ":modules:feature-onboarding"
     const val FEATURE_XCOPY = ":modules:feature-xcopy"
