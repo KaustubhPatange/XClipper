@@ -74,6 +74,7 @@
             android:clipToPadding="false"
             android:orientation="horizontal"
             android:overScrollMode="never"
+            android:paddingVertical="5dp"
             android:paddingStart="20dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:ignore="RtlSymmetry"

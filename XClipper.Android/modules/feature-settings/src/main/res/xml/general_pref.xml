@@ -41,7 +41,7 @@
     <PreferenceCategory app:title="Other">
 
         <SwitchPreferenceCompat
-            app:icon="@drawable/ic_delete"
+            app:icon="@drawable/ic_delete_outlined"
             app:key="auto_delete_pref"
             app:title="@string/auto_delete_title" />
 
