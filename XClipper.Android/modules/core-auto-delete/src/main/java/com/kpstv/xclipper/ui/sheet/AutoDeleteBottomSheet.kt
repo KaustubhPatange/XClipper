@@ -1,17 +1,23 @@
 package com.kpstv.xclipper.ui.sheet
 
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.View
 import androidx.core.text.HtmlCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.transition.Fade
 import androidx.transition.TransitionManager
+import com.google.android.material.chip.Chip
 import com.kpstv.xclipper.auto_delete.R
 import com.kpstv.xclipper.auto_delete.databinding.BottomSheetAutoDeleteBinding
+import com.kpstv.xclipper.data.model.ClipTag
 import com.kpstv.xclipper.extensions.collapse
 import com.kpstv.xclipper.extensions.collectIn
+import com.kpstv.xclipper.extensions.drawableFrom
 import com.kpstv.xclipper.extensions.elements.CustomRoundedBottomSheetFragment
+import com.kpstv.xclipper.extensions.getColorAttr
 import com.kpstv.xclipper.extensions.show
+import com.kpstv.xclipper.extensions.small
 import com.kpstv.xclipper.extensions.viewBinding
 import com.kpstv.xclipper.ui.helpers.AppSettings
 import dagger.hilt.android.AndroidEntryPoint
@@ -31,6 +37,8 @@ internal class AutoDeleteBottomSheet : CustomRoundedBottomSheetFragment(R.layout
 
     private var autoDeleteDayNumberFlow = MutableStateFlow<Int>(1)
 
+    private val autoDeleteSetting by lazy { appSettings.getAutoDeleteSetting() }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -39,25 +47,39 @@ internal class AutoDeleteBottomSheet : CustomRoundedBottomSheetFragment(R.layout
             updateConfigLayout()
         }
 
-        binding.cbDeleteRemote.isChecked = appSettings.shouldAutoDeleteRemoteClips()
+        binding.cbDeleteRemote.isChecked = autoDeleteSetting.shouldDeleteRemoteClip
+        binding.cbDeletePinned.isChecked = autoDeleteSetting.shouldDeletePinnedClip
 
-        binding.npDays.value = appSettings.getAutoDeleteDayNumber()
+        binding.npDays.value = autoDeleteSetting.dayNumber
         binding.npDays.setOnValueChangedListener { _, _, value ->
             updateAutoDeleteNumber(value)
         }
+
+        updateConfigLayout()
+        setupTagExcludeChipGroup()
 
         observeAutoDeleteNumberFlow()
 
         binding.btnClose.setOnClickListener { dismiss() }
         binding.btnSave.setOnClickListener {
             saveOptions()
+            dismiss()
         }
     }
 
     private fun saveOptions() {
+        val excludeTags = binding.cgDeleteTags.checkedChipIds.map {
+            binding.cgDeleteTags.findViewById<Chip>(it).text.toString()
+        }.toSet()
+
+        val updatedSettings = autoDeleteSetting.copy(
+            shouldDeleteRemoteClip = binding.cbDeleteRemote.isChecked,
+            shouldDeletePinnedClip = binding.cbDeletePinned.isChecked,
+            dayNumber = autoDeleteDayNumberFlow.value,
+            excludeTags = excludeTags
+        )
+        appSettings.setAutoDeleteSetting(updatedSettings)
         appSettings.setAutoDeleteClips(binding.swEnable.isChecked)
-        appSettings.setShouldAutoDeleteRemoteClips(binding.cbDeleteRemote.isChecked)
-        appSettings.setAutoDeleteDayNumber(autoDeleteDayNumberFlow.value)
     }
 
     private fun updateAutoDeleteNumber(value: Int) {
@@ -66,17 +88,40 @@ internal class AutoDeleteBottomSheet : CustomRoundedBottomSheetFragment(R.layout
         }
     }
 
+    private fun setupTagExcludeChipGroup() {
+        val excludeTags = autoDeleteSetting.excludeTags
+
+        val foregroundColor =
+            ColorStateList.valueOf(requireContext().getColorAttr(R.attr.colorForeground))
+        ClipTag.values().forEach {
+            binding.cgDeleteTags.addView(
+                Chip(requireContext()).apply {
+                    id = it.small().hashCode()
+                    checkedIcon = drawableFrom(R.drawable.ic_check_white_24dp)
+                    text = it.small()
+                    chipBackgroundColor = foregroundColor
+                    isCheckable = true
+                    isChecked = excludeTags.contains(it.small())
+                }
+            )
+        }
+    }
+
     private fun observeAutoDeleteNumberFlow() {
+        fun update(value: Int) {
+            binding.tvSummary.text = getString(R.string.ad_sheet_summary, value)
+            binding.tvInfo.text = HtmlCompat.fromHtml(
+                getString(R.string.ad_sheet_info, value),
+                HtmlCompat.FROM_HTML_MODE_COMPACT
+            )
+        }
+
+        update(autoDeleteDayNumberFlow.value)
+
         // so that we don't make getString calls every millisecond
         autoDeleteDayNumberFlow.debounce(300L)
             .distinctUntilChanged()
-            .collectIn(viewLifecycleOwner) { value ->
-                binding.tvSummary.text = getString(R.string.ad_sheet_summary, value)
-                binding.tvInfo.text = HtmlCompat.fromHtml(
-                    getString(R.string.ad_sheet_info, value),
-                    HtmlCompat.FROM_HTML_MODE_COMPACT
-                )
-            }
+            .collectIn(viewLifecycleOwner) { update(it) }
     }
 
     private fun updateConfigLayout() {
@@ -88,5 +133,6 @@ internal class AutoDeleteBottomSheet : CustomRoundedBottomSheetFragment(R.layout
             binding.mainLayout.collapse()
         }
     }
+
 
 }

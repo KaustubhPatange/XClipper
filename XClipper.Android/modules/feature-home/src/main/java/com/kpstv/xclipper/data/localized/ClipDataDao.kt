@@ -6,10 +6,13 @@ import androidx.room.*
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import com.kpstv.xclipper.data.model.Clip
+import com.kpstv.xclipper.data.model.DateFilter
 import com.kpstv.xclipper.data.model.PartialClipTagMap
 import com.kpstv.xclipper.data.model.Tag
-import com.kpstv.xclipper.extension.enumeration.SpecialTagFilter
+import com.kpstv.xclipper.extensions.enumerations.SpecialTagFilter
+import com.kpstv.xclipper.extensions.getFormattedDate
 import kotlinx.coroutines.flow.Flow
+import java.util.Date
 
 @Dao
 interface ClipDataDao {
@@ -56,6 +59,9 @@ interface ClipDataDao {
         return getData(createTagSearchQuery(tagName))
     }
 
+    @Query("select * from table_clip where time >= :min")
+    suspend fun getDataCreatedAfter(min: Date): List<Clip>
+
     @Query("select exists(select data from table_clip where data = :data)")
     suspend fun isExist(data: String): Boolean
 
@@ -95,13 +101,13 @@ interface ClipDataDao {
     fun getObservableDataSource(query: SupportSQLiteQuery): DataSource.Factory<Int, Clip>
 
     companion object {
-        fun createQuery(searchFilters: List<String>?, tagFilters: List<Tag>?, specialTagFilters: List<SpecialTagFilter>?, searchText: String?): SimpleSQLiteQuery {
+        fun createQuery(searchFilters: List<String>?, tagFilters: List<Tag>?, specialTagFilters: List<SpecialTagFilter>?, dateFilter: DateFilter?, searchText: String?): SimpleSQLiteQuery {
             val isInvertApplied = specialTagFilters?.any { it.isInvert() } == true
             val isPinned = specialTagFilters?.any { it.isPinned() } == true
             val sqlConditionalLike = if (isInvertApplied) "not like" else "like"
             val builder = StringBuilder("select * from table_clip")
             val params = mutableListOf<Any>()
-            if (searchText?.isNotEmpty() == true || (searchFilters?.isNotEmpty() == true) || (tagFilters?.isNotEmpty() == true) || (isPinned)) {
+            if (searchText?.isNotEmpty() == true || (searchFilters?.isNotEmpty() == true) || (tagFilters?.isNotEmpty() == true) || (isPinned) || dateFilter != null) {
                 builder.append(" where ")
             }
             if (searchText != null && searchText.isNotEmpty()) {
@@ -118,6 +124,14 @@ interface ClipDataDao {
             }
             if (isPinned) {
                 builder.append("isPinned = ${if (isInvertApplied) 0 else 1} and ")
+            }
+            if (dateFilter != null) {
+                val symbol = when (dateFilter.type) {
+                    DateFilter.Type.LESS_THAN -> "<"
+                    DateFilter.Type.GREATER_THAN -> ">"
+                }
+                builder.append("time $symbol ? and")
+                params.add(dateFilter.date.getFormattedDate())
             }
             val query = builder.toString().trimEnd()
             val formatted = if (query.endsWith("and")) query.removeSuffix("and") else query

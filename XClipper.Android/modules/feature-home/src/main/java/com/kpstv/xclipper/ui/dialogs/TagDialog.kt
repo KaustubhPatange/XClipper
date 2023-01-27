@@ -18,7 +18,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.kpstv.xclipper.data.model.ClipTagType
 import com.kpstv.xclipper.extension.enumeration.DialogState
 import com.kpstv.xclipper.data.model.Tag
-import com.kpstv.xclipper.extension.enumeration.SpecialTagFilter
+import com.kpstv.xclipper.extensions.enumerations.SpecialTagFilter
 import com.kpstv.xclipper.extensions.*
 import com.kpstv.xclipper.feature_home.R
 import com.kpstv.xclipper.feature_home.databinding.DialogCreateTagBinding

@@ -6,12 +6,13 @@ import com.kpstv.xclipper.data.helper.FirebaseProviderHelper
 import com.kpstv.xclipper.data.localized.ClipDataDao
 import com.kpstv.xclipper.data.localized.TagDao
 import com.kpstv.xclipper.data.model.Clip
+import com.kpstv.xclipper.data.model.DateFilter
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.data.model.TagMap
 import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.repository.MainRepository
-import com.kpstv.xclipper.extension.enumeration.SpecialTagFilter
+import com.kpstv.xclipper.extensions.enumerations.SpecialTagFilter
 import com.kpstv.xclipper.extensions.enumerations.FilterType
 import com.kpstv.xclipper.extension.listener.RepositoryListener
 import com.kpstv.xclipper.extension.listener.StatusListener
@@ -152,14 +153,16 @@ class MainViewModel @Inject constructor(
             searchManager.searchString,
             searchManager.tagFilters,
             searchManager.searchFilters,
-            searchManager.specialTagFilters
+            searchManager.specialTagFilters,
+            searchManager.dateFilter
         ).observeForever {
                 (_: Int?, searchString: String?, tagFilters: List<Tag>?, searchFilters: List<String>?,
-                    specialTagFilters: List<SpecialTagFilter>?) ->
+                    specialTagFilters: List<SpecialTagFilter>?, dateFilter: DateFilter?) ->
 
-            val filter = ClipDataDao.createQuery(searchFilters, tagFilters, specialTagFilters, searchString)
             CoroutineScope(viewModelIOContext).launch {
-                val list = mainRepository.executeQuery(filter)
+                val list = mainRepository.getDataByFilter(
+                    searchString!!, searchFilters!!, dateFilter, tagFilters!!, specialTagFilters!!
+                )
                 mutableClipStateFlow.emit(list)
             }
         }

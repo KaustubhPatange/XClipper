@@ -35,7 +35,7 @@ import com.kpstv.xclipper.di.action.SpecialActionsLauncher
 import com.kpstv.xclipper.di.navigation.SettingsNavigation
 import com.kpstv.xclipper.extension.DefaultSearchViewListener
 import com.kpstv.xclipper.extension.drawableRes
-import com.kpstv.xclipper.extension.enumeration.SpecialTagFilter
+import com.kpstv.xclipper.extensions.enumerations.SpecialTagFilter
 import com.kpstv.xclipper.extension.enumeration.ToolbarState
 import com.kpstv.xclipper.extension.listener.StatusListener
 import com.kpstv.xclipper.extension.recyclerview.RecyclerViewInsetHelper

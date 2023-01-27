@@ -75,7 +75,7 @@
             android:orientation="horizontal"
             android:overScrollMode="never"
             android:paddingVertical="5dp"
-            android:paddingStart="20dp"
+            android:paddingHorizontal="20dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:ignore="RtlSymmetry"
             tools:listitem="@layout/item_extension" />

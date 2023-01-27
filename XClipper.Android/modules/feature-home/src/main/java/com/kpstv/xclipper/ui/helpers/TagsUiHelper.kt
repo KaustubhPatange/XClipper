@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.res.ColorStateList
 import com.google.android.material.chip.Chip
 import com.kpstv.xclipper.data.model.Tag
-import com.kpstv.xclipper.extension.enumeration.SpecialTagFilter
+import com.kpstv.xclipper.extensions.enumerations.SpecialTagFilter
 import com.kpstv.xclipper.extensions.drawableFrom
 import com.kpstv.xclipper.extensions.getColorAttr
 import com.kpstv.xclipper.extensions.toPx

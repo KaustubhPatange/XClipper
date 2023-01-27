@@ -25,7 +25,6 @@ dependencies {
     implementation(LibraryDependency.LOTTIE)
     implementation(LibraryDependency.TOASTY)
     implementation(LibraryDependency.WORK_MANAGER)
-    implementation(LibraryDependency.WORK_MANAGER)
 
     implementation(LibraryDependency.HILT_WORK_MANAGER)
     kapt(LibraryDependency.HILT_WORK_MANAGER_COMPILER)

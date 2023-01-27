@@ -10,9 +10,11 @@ import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.extensions.Logger
 import com.kpstv.xclipper.extensions.helper.ClipboardLogDetector
+import com.kpstv.xclipper.service.AutoDeleteWorker
 import com.kpstv.xclipper.service.worker.ClipboardServiceNotifyWorker
 import com.kpstv.xclipper.service.ExtensionWorker
 import com.kpstv.xclipper.ui.fragments.settings.GeneralPreference
+import com.kpstv.xclipper.ui.helper.AutoDeleteNotifications
 import com.kpstv.xclipper.ui.helper.CrashHelper
 import com.kpstv.xclipper.ui.helpers.*
 import dagger.hilt.android.HiltAndroidApp
@@ -37,6 +39,7 @@ class XClipperApplication : Application(), Configuration.Provider {
 
         CoreNotifications.initialize(this)
         UpdaterNotifications.initialize(this)
+        AutoDeleteNotifications.initialize(this)
 
         Logger.init(BuildConfig.DEBUG)
 
@@ -77,6 +80,8 @@ class XClipperApplication : Application(), Configuration.Provider {
 
         ExtensionWorker.schedule(this)
         ExtensionWorker.scheduleForOnce(this)
+
+        AutoDeleteWorker.schedule(this)
     }
 
     override fun getWorkManagerConfiguration() =

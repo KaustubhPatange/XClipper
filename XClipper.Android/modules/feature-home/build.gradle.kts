@@ -36,6 +36,7 @@ dependencies {
 
     implementation(LibraryDependency.ROOM_KTX)
     kapt(LibraryDependency.ROOM_COMPILER_KAPT)
+    kapt("org.xerial:sqlite-jdbc:3.34.0")
 
     implementation(LibraryDependency.HILT_ANDROID)
     kapt(LibraryDependency.HILT_COMPILER)

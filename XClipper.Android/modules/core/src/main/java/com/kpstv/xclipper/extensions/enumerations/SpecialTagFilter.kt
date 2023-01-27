@@ -1,9 +1,9 @@
-package com.kpstv.xclipper.extension.enumeration
+package com.kpstv.xclipper.extensions.enumerations
 
 import android.os.Parcelable
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import com.kpstv.xclipper.feature_home.R
+import com.kpstv.core.R
 import kotlinx.parcelize.Parcelize
 
 /**

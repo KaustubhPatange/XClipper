@@ -9,6 +9,7 @@ import android.os.PowerManager
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
+import android.view.accessibility.AccessibilityWindowInfo
 import androidx.annotation.RequiresApi
 import androidx.core.os.bundleOf
 import androidx.lifecycle.MutableLiveData
@@ -22,15 +23,20 @@ import com.kpstv.xclipper.extensions.Logger
 import com.kpstv.xclipper.extensions.helper.ClipboardDetection
 import com.kpstv.xclipper.extensions.helper.ClipboardLogDetector
 import com.kpstv.xclipper.extensions.helper.LanguageDetector
+import com.kpstv.xclipper.extensions.utils.KeyboardUtils
 import com.kpstv.xclipper.ui.helpers.AppSettingKeys
 import com.kpstv.xclipper.ui.helpers.AppSettings
-import com.kpstv.xclipper.extensions.utils.KeyboardUtils
 import com.kpstv.xclipper.extensions.utils.SystemUtils
 import com.kpstv.xclipper.extensions.utils.SystemUtils.isSystemOverlayEnabled
 import com.kpstv.xclipper.ui.actions.SettingUIActions
 import com.kpstv.xclipper.ui.activities.ChangeClipboardActivity
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -56,11 +62,13 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
     companion object {
         private const val EXTRA_SERVICE_TEXT = "com.kpstv.xclipper.service_text"
         private const val EXTRA_SERVICE_TEXT_LENGTH = "com.kpstv.xclipper.service_text_word_length"
+        private const val EXTRA_BUBBLE_IS_EXPANDED = "com.kpstv.xclipper.bubble_is_expanded"
 
         private const val ACTION_INSERT_TEXT = "com.kpstv.xclipper.insert_text"
         private const val ACTION_DISABLE_SERVICE = "com.kpstv.xclipper.disable_service"
         private const val ACTION_ENABLE_IMPROVE_DETECTION = "com.kpstv.xclipper.action_enable_improve_detection"
         private const val ACTION_DISABLE_IMPROVE_DETECTION = "com.kpstv.xclipper.action_disable_improve_detection"
+        private const val ACTION_GET_BUBBLE_EXPANDED_STATE = "com.kpstv.xclipper.action_get_bubble_expanded_state"
 
         @RequiresApi(Build.VERSION_CODES.N)
         fun disableService(context: Context) = with(context) {
@@ -75,8 +83,25 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
 
     private val keyboardVisibility: MutableLiveData<Boolean> = MutableLiveData()
 
-    private fun postKeyboardValue(value: Boolean) {
-        if (keyboardVisibility.value != value) keyboardVisibility.postValue(value)
+    private var isBubbleExpanded: Boolean = false
+    private var job = SupervisorJob()
+    private fun updateKeyboardVisibilityStatus() {
+        fun update(isVisible: Boolean) {
+            if (keyboardVisibility.value != isVisible) keyboardVisibility.postValue(isVisible)
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            job.cancel()
+            job = SupervisorJob()
+            CoroutineScope(Dispatchers.IO + job).launch {
+                delay(500)
+                if (isBubbleExpanded) return@launch
+                val isVisible = windows.any { it.type == AccessibilityWindowInfo.TYPE_INPUT_METHOD }
+                update(isVisible)
+            }
+        } else {
+            update(KeyboardUtils.isKeyboardVisible(applicationContext))
+        }
     }
 
     private lateinit var powerManager: PowerManager
@@ -121,7 +146,7 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
                 clipboardDetector.addEvent(event.eventType)
 
             if (event?.eventType != AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED)
-                postKeyboardValue(KeyboardUtils.isKeyboardVisible(applicationContext))
+                updateKeyboardVisibilityStatus()
 
             val source = event?.source
             if (source != null) {
@@ -180,6 +205,7 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
             eventTypes =
                 AccessibilityEvent.TYPE_VIEW_CLICKED or AccessibilityEvent.TYPE_VIEW_FOCUSED or AccessibilityEvent.TYPE_VIEW_LONG_CLICKED or AccessibilityEvent.TYPE_VIEW_SELECTED or AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED or AccessibilityEvent.TYPE_VIEW_TEXT_SELECTION_CHANGED or AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED or AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED or AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED
             feedbackType = AccessibilityServiceInfo.FEEDBACK_ALL_MASK
+            flags = flags or AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS
             notificationTimeout = 120
         }
 
@@ -239,6 +265,9 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
             }
             ACTION_DISABLE_IMPROVE_DETECTION -> {
                 if (clipboardLogDetector.isStarted()) clipboardLogDetector.stopDetecting()
+            }
+            ACTION_GET_BUBBLE_EXPANDED_STATE -> {
+                isBubbleExpanded = intent.getBooleanExtra(EXTRA_BUBBLE_IS_EXPANDED, false)
             }
         }
         return super.onStartCommand(intent, flags, startId)
@@ -394,6 +423,13 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
                 putExtra(EXTRA_SERVICE_TEXT, text)
             }
             startService(sendIntent)
+        }
+        fun sendExpandedStateStatus(context: Context, isExpanded: Boolean) : Unit = with(context) {
+            val intent = Intent(this, ClipboardAccessibilityService::class.java).apply {
+                action = ACTION_GET_BUBBLE_EXPANDED_STATE
+                putExtra(EXTRA_BUBBLE_IS_EXPANDED, isExpanded)
+            }
+            startService(intent)
         }
     }
 }
