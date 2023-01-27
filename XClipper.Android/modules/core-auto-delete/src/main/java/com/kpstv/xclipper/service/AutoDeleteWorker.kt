@@ -60,7 +60,9 @@ class AutoDeleteWorker @AssistedInject constructor(
                 MainRepository.DeleteType.LOCAL)
 
 
-        createAutoDeleteSuccessNotification(appContext, clips.size, setting.dayNumber)
+        if (clips.isNotEmpty()) {
+            createAutoDeleteSuccessNotification(appContext, clips.size, setting.dayNumber)
+        }
 
         return Result.success()
     }
