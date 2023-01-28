@@ -5,17 +5,16 @@ import androidx.hilt.work.HiltWorker
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.ExistingWorkPolicy
-import androidx.work.NetworkType
-import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
+import com.kpstv.xclipper.data.model.ClipTagType
 import com.kpstv.xclipper.data.model.DateFilter
+import com.kpstv.xclipper.data.model.Tag
+import com.kpstv.xclipper.data.model.TagFilter
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.extensions.enumerations.SpecialTagFilter
-import com.kpstv.xclipper.ui.helper.AutoDeleteNotifications
 import com.kpstv.xclipper.ui.helper.AutoDeleteNotifications.createAutoDeleteProgressForegroundInfo
 import com.kpstv.xclipper.ui.helper.AutoDeleteNotifications.createAutoDeleteSuccessNotification
 import com.kpstv.xclipper.ui.helpers.AppSettings
@@ -48,10 +47,15 @@ class AutoDeleteWorker @AssistedInject constructor(
         }
         val clips = mainRepository.getDataByFilter(
             dateFilter = DateFilter(minDate.time, DateFilter.Type.LESS_THAN),
+            tagFilter = TagFilter(
+                tags = setting.excludeTags.map { Tag.from(it, ClipTagType.SYSTEM_TAG) },
+                type = TagFilter.Type.EXCLUDE
+            ),
             specialTagFilters = buildList {
                 if (setting.shouldDeletePinnedClip) add(SpecialTagFilter.Pin)
             }
         )
+
         mainRepository.deleteMultiple(
             clips = clips,
             deleteType = if (setting.shouldDeleteRemoteClip)

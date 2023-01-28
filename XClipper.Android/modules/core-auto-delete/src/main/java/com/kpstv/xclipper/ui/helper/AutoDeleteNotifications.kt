@@ -8,6 +8,7 @@ import androidx.core.app.NotificationCompat
 import androidx.work.ForegroundInfo
 import com.kpstv.xclipper.auto_delete.R
 import com.kpstv.xclipper.extensions.getColorAttr
+import com.kpstv.xclipper.extensions.utils.NotificationUtils
 import com.kpstv.xclipper.ui.helpers.CoreNotifications
 
 object AutoDeleteNotifications {
@@ -49,7 +50,9 @@ object AutoDeleteNotifications {
             .setContentText(getString(R.string.ad_nt_success_text, total, days))
             .setStyle(NotificationCompat.BigTextStyle())
             .setSmallIcon(R.drawable.ic_logo_white)
+            .setContentIntent(NotificationUtils.getAppLaunchPendingIntent(this))
             .setColor(getColorAttr(R.attr.colorAccent))
+            .setAutoCancel(true)
 
         manager.notify(AUTO_DELETE_SUCCESS_NOTIFICATION_ID, builder.build())
     }

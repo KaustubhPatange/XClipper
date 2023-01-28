@@ -2,11 +2,9 @@ package com.kpstv.xclipper.data.repository
 
 import androidx.lifecycle.LiveData
 import androidx.paging.PagedList
-import androidx.sqlite.db.SimpleSQLiteQuery
-import androidx.sqlite.db.SupportSQLiteQuery
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.DateFilter
-import com.kpstv.xclipper.data.model.Tag
+import com.kpstv.xclipper.data.model.TagFilter
 import com.kpstv.xclipper.data.model.TagMap
 import com.kpstv.xclipper.extensions.enumerations.FilterType
 import com.kpstv.xclipper.extensions.enumerations.SpecialTagFilter
@@ -82,7 +80,7 @@ interface MainRepository {
         searchText: String = "",
         searchFilters: List<String> = emptyList(),
         dateFilter: DateFilter? = null,
-        tagFilters: List<Tag> = emptyList(),
+        tagFilter: TagFilter? = null,
         specialTagFilters: List<SpecialTagFilter> = emptyList(),
     ): List<Clip>
 

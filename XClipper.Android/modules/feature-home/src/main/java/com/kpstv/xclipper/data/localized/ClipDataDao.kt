@@ -9,6 +9,7 @@ import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.DateFilter
 import com.kpstv.xclipper.data.model.PartialClipTagMap
 import com.kpstv.xclipper.data.model.Tag
+import com.kpstv.xclipper.data.model.TagFilter
 import com.kpstv.xclipper.extensions.enumerations.SpecialTagFilter
 import com.kpstv.xclipper.extensions.getFormattedDate
 import kotlinx.coroutines.flow.Flow
@@ -101,13 +102,13 @@ interface ClipDataDao {
     fun getObservableDataSource(query: SupportSQLiteQuery): DataSource.Factory<Int, Clip>
 
     companion object {
-        fun createQuery(searchFilters: List<String>?, tagFilters: List<Tag>?, specialTagFilters: List<SpecialTagFilter>?, dateFilter: DateFilter?, searchText: String?): SimpleSQLiteQuery {
+        fun createQuery(searchFilters: List<String>?, tagFilter: TagFilter?, specialTagFilters: List<SpecialTagFilter>?, dateFilter: DateFilter?, searchText: String?): SimpleSQLiteQuery {
             val isInvertApplied = specialTagFilters?.any { it.isInvert() } == true
             val isPinned = specialTagFilters?.any { it.isPinned() } == true
             val sqlConditionalLike = if (isInvertApplied) "not like" else "like"
             val builder = StringBuilder("select * from table_clip")
             val params = mutableListOf<Any>()
-            if (searchText?.isNotEmpty() == true || (searchFilters?.isNotEmpty() == true) || (tagFilters?.isNotEmpty() == true) || (isPinned) || dateFilter != null) {
+            if (searchText?.isNotEmpty() == true || (searchFilters?.isNotEmpty() == true) || (tagFilter?.tags?.isNotEmpty() == true) || (isPinned) || dateFilter != null) {
                 builder.append(" where ")
             }
             if (searchText != null && searchText.isNotEmpty()) {
@@ -118,9 +119,10 @@ interface ClipDataDao {
                 params.add("%$filter%")
                 builder.append("data $sqlConditionalLike ? and ")
             }
-            tagFilters?.map { it.name }?.forEach { filter ->
+            tagFilter?.tags?.map { it.name }?.forEach { filter ->
                 params.add("%\"$filter\":[%")
-                builder.append("tags $sqlConditionalLike ? and ")
+                val condition = if (tagFilter.type == TagFilter.Type.CONTAINS && !isInvertApplied) "like" else "not like"
+                builder.append("tags $condition ? and ")
             }
             if (isPinned) {
                 builder.append("isPinned = ${if (isInvertApplied) 0 else 1} and ")

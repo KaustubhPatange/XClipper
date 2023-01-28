@@ -8,6 +8,7 @@ import com.kpstv.xclipper.data.localized.TagDao
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.DateFilter
 import com.kpstv.xclipper.data.model.Tag
+import com.kpstv.xclipper.data.model.TagFilter
 import com.kpstv.xclipper.data.model.TagMap
 import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.data.provider.FirebaseProvider
@@ -161,7 +162,7 @@ class MainViewModel @Inject constructor(
 
             CoroutineScope(viewModelIOContext).launch {
                 val list = mainRepository.getDataByFilter(
-                    searchString!!, searchFilters!!, dateFilter, tagFilters!!, specialTagFilters!!
+                    searchString!!, searchFilters!!, dateFilter, TagFilter(tagFilters!!), specialTagFilters!!
                 )
                 mutableClipStateFlow.emit(list)
             }

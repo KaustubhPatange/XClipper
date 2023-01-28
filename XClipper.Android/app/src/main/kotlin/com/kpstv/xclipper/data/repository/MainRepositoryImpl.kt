@@ -4,16 +4,14 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.paging.PagedList
 import androidx.paging.toLiveData
-import androidx.sqlite.db.SupportSQLiteQuery
 import com.kpstv.xclipper.data.localized.ClipDataDao
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.model.DateFilter
 import com.kpstv.xclipper.data.model.PartialClipTagMap
-import com.kpstv.xclipper.data.model.Tag
+import com.kpstv.xclipper.data.model.TagFilter
 import com.kpstv.xclipper.data.model.TagMap
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.extensions.clone
-import com.kpstv.xclipper.extensions.decrypt
 import com.kpstv.xclipper.extensions.enumerations.FilterType
 import com.kpstv.xclipper.extensions.enumerations.SpecialTagFilter
 import kotlinx.coroutines.flow.Flow
@@ -40,11 +38,11 @@ class MainRepositoryImpl @Inject constructor(
         searchText: String,
         searchFilters: List<String>,
         dateFilter: DateFilter?,
-        tagFilters: List<Tag>,
+        tagFilter: TagFilter?,
         specialTagFilters: List<SpecialTagFilter>
     ): List<Clip> {
         val query = ClipDataDao.createQuery(
-            searchFilters, tagFilters, specialTagFilters, dateFilter, searchText
+            searchFilters, tagFilter, specialTagFilters, dateFilter, searchText
         )
         return clipDao.getData(query)
     }
