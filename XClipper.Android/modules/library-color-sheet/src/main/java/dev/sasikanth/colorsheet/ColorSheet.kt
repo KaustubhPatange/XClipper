@@ -77,7 +77,7 @@ open class ColorSheet : BottomSheetDialogFragment() {
                 val behavior = dialog.behavior
                 behavior.state = BottomSheetBehavior.STATE_EXPANDED
                 behavior.peekHeight = 0
-                behavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+                behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
                     override fun onSlide(bottomSheet: View, slideOffset: Float) {
                     }
 

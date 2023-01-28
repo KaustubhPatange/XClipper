@@ -23,6 +23,7 @@
 
         <activity
             android:name=".ui.activities.Start"
+            android:exported="true"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme">
             <intent-filter>
@@ -38,6 +39,7 @@
         <activity-alias
             android:name=".Default"
             android:enabled="true"
+            android:exported="true"
             android:icon="@mipmap/ic_launcher"
             android:targetActivity=".ui.activities.Start">
             <intent-filter>
@@ -49,6 +51,7 @@
         <activity-alias
             android:name=".Magenta"
             android:enabled="false"
+            android:exported="true"
             android:icon="@mipmap/ic_launcher_magenta"
             android:targetActivity=".ui.activities.Start">
             <intent-filter>
@@ -60,6 +63,7 @@
         <activity-alias
             android:name=".Purple"
             android:enabled="false"
+            android:exported="true"
             android:icon="@mipmap/ic_launcher_purple"
             android:targetActivity=".ui.activities.Start">
             <intent-filter>
@@ -71,6 +75,7 @@
         <activity-alias
             android:name=".Orange_Light"
             android:enabled="false"
+            android:exported="true"
             android:icon="@mipmap/ic_launcher_orange_light"
             android:targetActivity=".ui.activities.Start">
             <intent-filter>
@@ -82,6 +87,7 @@
         <activity-alias
             android:name=".Yellow"
             android:enabled="false"
+            android:exported="true"
             android:icon="@mipmap/ic_launcher_yellow"
             android:targetActivity=".ui.activities.Start">
             <intent-filter>
@@ -93,6 +99,7 @@
         <activity-alias
             android:name=".Green"
             android:enabled="false"
+            android:exported="true"
             android:icon="@mipmap/ic_launcher_green"
             android:targetActivity=".ui.activities.Start">
             <intent-filter>
@@ -104,6 +111,7 @@
         <activity-alias
             android:name=".Blue"
             android:enabled="false"
+            android:exported="true"
             android:icon="@mipmap/ic_launcher_blue"
             android:targetActivity=".ui.activities.Start">
             <intent-filter>
@@ -115,6 +123,7 @@
         <activity-alias
             android:name=".Blue_3"
             android:enabled="false"
+            android:exported="true"
             android:icon="@mipmap/ic_launcher_blue_3"
             android:targetActivity=".ui.activities.Start">
             <intent-filter>
@@ -123,6 +132,11 @@
             </intent-filter>
         </activity-alias>
 
+        <activity
+            android:name="com.kpstv.cwt.ui.Web"
+            android:exported="false"
+            tools:node="merge" />
+        
     </application>
 
 </manifest>

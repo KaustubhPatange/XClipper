@@ -23,6 +23,7 @@ scripts/Work
 *.userosscache
 *.sln.docstates
 XClipper.Android/app/google-services.json
+.DS_Store
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

@@ -48,7 +48,7 @@ open class BaselineGridTextView @JvmOverloads constructor(
         lineHeightHint =
             a.getDimensionPixelSize(R.styleable.BaselineGridTextView_lineHeightHint, 0).toFloat()
         maxLinesByHeight = a.getBoolean(R.styleable.BaselineGridTextView_maxLinesByHeight, false)
-        a?.recycle()
+        a.recycle()
 
         fourDip = TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP, 4f, resources.displayMetrics
