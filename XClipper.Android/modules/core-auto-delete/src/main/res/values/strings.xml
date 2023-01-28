@@ -8,7 +8,7 @@
     <string name="ad_sheet_delete_tags">Exclude tags for deletion</string>
 
     <string name="ad_channel_name">Auto Delete</string>
-    <string name="ad_nt_progress_title">Checking clips for Auto deletion</string>
+    <string name="ad_nt_progress_title">Checking clips for auto deletion</string>
 
     <string name="ad_nt_success_title">Auto Delete</string>
     <string name="ad_nt_success_text">Deleted %1$d clips older than %2$d days</string>

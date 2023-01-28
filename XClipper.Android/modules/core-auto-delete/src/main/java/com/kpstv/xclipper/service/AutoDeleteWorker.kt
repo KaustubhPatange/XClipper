@@ -28,7 +28,6 @@ class AutoDeleteWorker @AssistedInject constructor(
     @Assisted private val appContext: Context,
     @Assisted workerParams: WorkerParameters,
     private val appSettings: AppSettings,
-    private val firebaseProvider: FirebaseProvider,
     private val mainRepository: MainRepository
 ) : CoroutineWorker(appContext, workerParams) {
 
@@ -56,15 +55,14 @@ class AutoDeleteWorker @AssistedInject constructor(
             }
         )
 
-        mainRepository.deleteMultiple(
-            clips = clips,
-            deleteType = if (setting.shouldDeleteRemoteClip)
-                MainRepository.DeleteType.ALL
-            else
-                MainRepository.DeleteType.LOCAL)
-
-
         if (clips.isNotEmpty()) {
+            mainRepository.deleteMultiple(
+                clips = clips,
+                deleteType = if (setting.shouldDeleteRemoteClip)
+                    MainRepository.DeleteType.ALL
+                else
+                    MainRepository.DeleteType.LOCAL)
+
             createAutoDeleteSuccessNotification(appContext, clips.size, setting.dayNumber)
         }
 
