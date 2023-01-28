@@ -12,6 +12,7 @@ import androidx.annotation.Px
 import androidx.cardview.widget.CardView
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.children
+import com.kpstv.xclipper.defaults.DefaultAnimator
 import com.kpstv.xclipper.extensions.ColorExUtils.isDarkColor
 import kotlin.reflect.KClass
 
@@ -47,14 +48,11 @@ fun View.runBlinkEffect(color: Int = -1, times: Int = 3) {
             setBackgroundColor(it.animatedValue as Int)
             if (this@runBlinkEffect is CardView) setCardBackgroundColor(it.animatedValue as Int)
         }
-        addListener(object : Animator.AnimatorListener{
-            override fun onAnimationStart(animation: Animator?) {}
-            override fun onAnimationEnd(animation: Animator?) {
+        addListener(object : Animator.AnimatorListener by DefaultAnimator {
+            override fun onAnimationEnd(animation: Animator) {
                 if (this@runBlinkEffect is CardView) setCardBackgroundColor((drawable as ColorDrawable).color)
                 else background = drawable
             }
-            override fun onAnimationCancel(animation: Animator?) {}
-            override fun onAnimationRepeat(animation: Animator?) {}
         })
         repeatCount = (times - 1).coerceAtLeast(0)
         repeatMode = ValueAnimator.REVERSE

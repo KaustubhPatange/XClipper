@@ -4,6 +4,8 @@
 
 
     <application>
-        <receiver android:name="com.kpstv.xclipper.service.receiver.GithubUpdateReceiver"/>
+        <receiver
+            android:name="com.kpstv.xclipper.service.receiver.GithubUpdateReceiver"
+            android:exported="false" />
     </application>
 </manifest>

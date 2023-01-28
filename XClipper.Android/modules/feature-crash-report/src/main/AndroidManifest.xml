@@ -13,8 +13,10 @@
          -->
         <meta-data
             android:name="io.sentry.uncaught-exception-handler.enable"
-            android:value="false"/>
+            android:value="false" />
 
-        <activity android:name="com.kpstv.xclipper.ui.activities.Crash" />
+        <activity
+            android:name="com.kpstv.xclipper.ui.activities.Crash"
+            android:exported="false" />
     </application>
 </manifest>
