@@ -10,6 +10,7 @@ import com.kpstv.xclipper.data.model.ClipTag
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.extensions.ClipTagMap
 import com.kpstv.xclipper.extensions.SaveRestore
+import com.kpstv.xclipper.extensions.getParcelableArrayListExt
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
@@ -108,7 +109,7 @@ class MainEditManager @Inject constructor(
 
     override fun restoreState(bundle: Bundle?) {
         bundle?.getBundle(SAVE_KEY)?.let { out ->
-            out.getParcelableArrayList<ClipTagMap>(KEY_SELECTED_TAGS)?.let { _selectedTags.postValue(it) }
+            out.getParcelableArrayListExt<ClipTagMap>(KEY_SELECTED_TAGS)?.let { _selectedTags.postValue(it) }
             out.getString(KEY_CLIP)?.let { _clip.value = Clip.fromJson(it) }
         }
     }

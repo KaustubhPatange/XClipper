@@ -32,7 +32,7 @@ private object LibraryVersion {
     const val PLAY_SERVICE_AUTH = "20.4.0"
     const val ACTIVITY = "1.6.1"
     const val FRAGMENT = "1.5.5"
-    const val WORK_MANAGER = "2.7.1" // TODO
+    const val WORK_MANAGER = "2.7.1"
     const val HVLOG = "0.1-alpha06"
     const val COIL = "1.0.0-rc3"
     const val GLIDE = "4.11.0"
