@@ -5,12 +5,12 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.kpstv.navigation.*
 import com.kpstv.onboarding.OnBoardingFragment
 import com.kpstv.xclipper.PinLockHelper
+import com.kpstv.xclipper.extensions.BackPressCompatActivity
 import com.kpstv.xclipper.extensions.FragClazz
 import com.kpstv.xclipper.extensions.applyEdgeToEdgeMode
 import com.kpstv.xclipper.ui.fragments.Home
@@ -27,7 +27,7 @@ import javax.inject.Inject
 
 @SuppressLint("overrideBackPress")
 @AndroidEntryPoint
-class Start : AppCompatActivity(), FragmentNavigator.Transmitter {
+class Start : BackPressCompatActivity(), FragmentNavigator.Transmitter {
     private val navViewModel by viewModels<NavViewModel>()
     private lateinit var navigator: FragmentNavigator
 
@@ -44,7 +44,7 @@ class Start : AppCompatActivity(), FragmentNavigator.Transmitter {
         applyEdgeToEdgeMode()
         super.onCreate(savedInstanceState)
 
-        setBackPressDispatcher()
+        setOnBackPressListener { navigator.canFinish() }
 
         val startScreen = if (appSettings.isOnBoardingScreensShowed()) Screen.HOME.clazz else Screen.ONBOARDING.clazz
         navigator = FragmentNavigator.with(this, savedInstanceState)
@@ -73,15 +73,6 @@ class Start : AppCompatActivity(), FragmentNavigator.Transmitter {
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         intentHelper.handle(intent)
-    }
-
-    private fun setBackPressDispatcher() {
-        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                if (navigator.canFinish())
-                    finish()
-            }
-        })
     }
 
     enum class Screen(val clazz: FragClazz) {
