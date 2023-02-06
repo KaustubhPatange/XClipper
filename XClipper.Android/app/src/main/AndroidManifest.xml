@@ -133,10 +133,18 @@
             </intent-filter>
         </activity-alias>
 
+        <!-- For CWT library to mark as non exported -->
         <activity
             android:name="com.kpstv.cwt.ui.Web"
             android:exported="false"
             tools:node="merge" />
+
+        <!-- To disable work manager automatic initialization completely -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            tools:node="remove">
+        </provider>
 
     </application>
 
