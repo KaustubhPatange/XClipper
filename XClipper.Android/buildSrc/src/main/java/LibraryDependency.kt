@@ -1,6 +1,6 @@
 private object LibraryVersion {
     const val CORE_KTX = "1.9.0"
-    const val APP_COMPAT = "1.4.1"
+    const val APP_COMPAT = "1.6.0"
     const val BROWSER = "1.3.0"
     const val COLLECTIONS_KTX = "1.1.0"
     const val CONSTRAINT_LAYOUT = "1.1.3"

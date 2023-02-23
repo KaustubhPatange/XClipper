@@ -21,19 +21,16 @@ open class BackPressCompatActivity : AppCompatActivity() {
         listener = block
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            onBackInvokedDispatcher.registerOnBackInvokedCallback(1000, object: OnBackInvokedCallback {
-                override fun onBackInvoked() {
-                    if (block()) {
-                        onBackInvokedDispatcher.unregisterOnBackInvokedCallback(this)
-                        onBackPressedDispatcher.onBackPressed()
-                        onBackInvokedDispatcher.registerOnBackInvokedCallback(1000, this)
-                    }
+            onBackInvokedDispatcher.registerOnBackInvokedCallback(1000) {
+                if (block()) {
+                    onBackPressedDispatcher.onBackPressed()
                 }
-            })
+            }
         }
     }
 
-    override fun onBackPressed() {
+    @Deprecated("Deprecated in Java")
+    final override fun onBackPressed() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
             if (listener?.invoke() == false) {
                 return
