@@ -69,7 +69,7 @@ android {
 tasks.register("checkForChangelog") {
     doFirst {
         val versionCode = project.android.defaultConfig.versionCode
-        val file = File("$rootDir\\fastlane\\metadata\\android\\en-US\\changelogs\\${versionCode}.txt")
+        val file = File("$rootDir/fastlane/metadata/android/en-US/changelogs/${versionCode}.txt")
         if (!file.exists()) {
             throw BuildCancelledException("Error: Please define a changelog for the versionCode $versionCode at \"fastlane\\metadata\\android\\en-US\\changelogs\"")
         }
@@ -104,7 +104,6 @@ dependencies {
     implementation(LibraryDependency.PLAY_SERVICE_AUTH)
 //
     implementation(LibraryDependency.PAGING)
-    implementation(LibraryDependency.LIFECYCLE_EXTENSIONS)
     implementation(LibraryDependency.LIFECYCLE_VIEWMODEL)
     implementation(LibraryDependency.LIFECYCLE_COMMON)
     implementation(LibraryDependency.LIFECYCLE_KTX)

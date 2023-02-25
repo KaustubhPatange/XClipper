@@ -43,11 +43,11 @@ internal class AuthenticationHelper(
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
 
     private val customContract = object : ActivityResultContract<Intent, Task<GoogleSignInAccount>?>() {
-            override fun createIntent(context: Context, input: Intent?): Intent {
-                return input!!
+            override fun createIntent(context: Context, input: Intent): Intent {
+                return input
             }
 
-            override fun parseResult(resultCode: Int, intent: Intent?): Task<GoogleSignInAccount>? {
+            override fun parseResult(resultCode: Int, intent: Intent?): Task<GoogleSignInAccount> {
                 return GoogleSignIn.getSignedInAccountFromIntent(
                     intent
                 )

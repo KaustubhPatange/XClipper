@@ -1,8 +1,8 @@
 [versions]
-androidGradlePlugin = "7.1.0"
-kotlin = "1.6.10"
-hilt = "2.39.1"
-kspGradlePlugin = "1.6.10-1.0.4"
+androidGradlePlugin = "7.4.0"
+kotlin = "1.7.0"
+hilt = "2.44"
+kspGradlePlugin = "1.7.0-1.0.6"
 crashlyticsGradlePlugin = "2.7.1"
 gmsGradlePlugin = "4.3.10"
 spotifyRulerGradlePlugin = "1.1.1"

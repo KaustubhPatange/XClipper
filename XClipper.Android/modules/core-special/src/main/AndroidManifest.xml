@@ -2,10 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.kpstv.xclipper.specials">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application>
-        <activity android:exported="false" android:name="com.kpstv.xclipper.ui.helpers.special.CustomCaptureActivity"/>
-        <receiver android:name="com.kpstv.xclipper.service.receiver.SpecialActionsReceiver" />
+        <activity
+            android:name="com.kpstv.xclipper.ui.helpers.special.CustomCaptureActivity"
+            android:exported="false" />
+        <receiver
+            android:name="com.kpstv.xclipper.service.receiver.SpecialActionsReceiver"
+            android:exported="false" />
     </application>
 </manifest>

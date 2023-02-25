@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.kpstv.xclipper.data.model.Tag
 import com.kpstv.xclipper.extension.enumeration.SpecialTagFilter
 import com.kpstv.xclipper.extensions.SaveRestore
+import com.kpstv.xclipper.extensions.getParcelableArrayListExt
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -140,8 +141,8 @@ class MainSearchManager @Inject constructor() : SaveRestore {
     override fun restoreState(bundle: Bundle?) {
         bundle?.getBundle(SAVE_KEY)?.let { out ->
             out.getStringArrayList(KEY_SEARCH_ARRAY)?.let { _searchArrayFilter.postValue(it) }
-            out.getParcelableArrayList<Tag>(KEY_TAG_ARRAY)?.let { _tagArrayFilter.postValue(it) }
-            out.getParcelableArrayList<SpecialTagFilter>(KEY_SPECIAL_ARRAY)?.let { _specialTagFilter.postValue(it) }
+            out.getParcelableArrayListExt<Tag>(KEY_TAG_ARRAY)?.let { _tagArrayFilter.postValue(it) }
+            out.getParcelableArrayListExt   <SpecialTagFilter>(KEY_SPECIAL_ARRAY)?.let { _specialTagFilter.postValue(it) }
         }
     }
 

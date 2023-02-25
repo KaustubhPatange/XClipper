@@ -79,7 +79,7 @@ class ExtensionBottomSheet : CustomRoundedBottomSheetFragment(R.layout.bottom_sh
                         binding.viewProgress.hide()
                         binding.viewLottie.show()
                         binding.viewLottie.addAnimatorListener(object : Animator.AnimatorListener by DefaultAnimator {
-                            override fun onAnimationEnd(animation: Animator?) {
+                            override fun onAnimationEnd(animation: Animator) {
                                 dismiss()
                             }
                         })
