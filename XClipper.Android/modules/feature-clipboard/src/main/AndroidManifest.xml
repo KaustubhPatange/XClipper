@@ -3,7 +3,9 @@
     package="com.kpstv.xclipper.feature_clipboard">
 
     <application>
-        <receiver android:name="com.kpstv.xclipper.service.receiver.ImproveDetectionReceiver" />
+        <receiver
+            android:name="com.kpstv.xclipper.service.receiver.ImproveDetectionReceiver"
+            android:exported="false" />
         <receiver
             android:name="com.kpstv.xclipper.service.receiver.BootCompleteReceiver"
             android:enabled="true"

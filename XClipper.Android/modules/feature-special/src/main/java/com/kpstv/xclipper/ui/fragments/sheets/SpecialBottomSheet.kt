@@ -15,6 +15,7 @@ import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.di.CommonReusableEntryPoints
 import com.kpstv.xclipper.di.action.SpecialActionOption
 import com.kpstv.xclipper.extensions.elements.CustomRoundedBottomSheetFragment
+import com.kpstv.xclipper.extensions.getParcelableExt
 import com.kpstv.xclipper.extensions.viewBinding
 import com.kpstv.xclipper.feature_special.R
 import com.kpstv.xclipper.feature_special.databinding.BottomSheetSpecialBinding
@@ -31,12 +32,12 @@ class SpecialBottomSheet : CustomRoundedBottomSheetFragment(R.layout.bottom_shee
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val args = arguments?.getParcelable<Args>(ARG_CLIP) ?: run { dismiss(); return }
-        val option = arguments?.getParcelable(ARG_SPECIAL_OPTIONS) ?: SpecialActionOption()
+        val args = arguments?.getParcelableExt<Args>(ARG_CLIP) ?: run { dismiss(); return }
+        val option = arguments?.getParcelableExt(ARG_SPECIAL_OPTIONS) ?: SpecialActionOption()
 
         SpecialHelper(
             context = requireContext(),
-            supportFragmentManager = requireFragmentManager(),
+            supportFragmentManager = parentFragmentManager,
             lifecycleScope = viewLifecycleOwner.lifecycleScope,
             clip = args.clip,
             option = option

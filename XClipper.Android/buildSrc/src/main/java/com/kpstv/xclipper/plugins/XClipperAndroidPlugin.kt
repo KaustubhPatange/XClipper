@@ -29,7 +29,6 @@ class XClipperAndroidPlugin : Plugin<Project> {
     private fun Project.configureAndroidInfo() {
         extensions.findByType<BaseExtension>()?.apply {
             compileSdkVersion(AndroidConfig.COMPILE_SDK_VERSION)
-            buildToolsVersion(AndroidConfig.BUILD_TOOLS_VERSION)
 
             defaultConfig {
                 vectorDrawables.useSupportLibrary = true

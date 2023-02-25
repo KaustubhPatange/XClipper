@@ -1,6 +1,4 @@
 ## What's new in version v0.1.x.x? 
 <!-- Loaded from scripts\changes.txt -->
 <!-- Make sure you update version number in XClipper.sln for this new release -->
-- Added: "Tools" section in Firebase Configuration window where user can export, import & delete all the data on Firebase.
-- Improved: Proper message when activating license fails.
-- Fixed: Incorrect exception reporting data handling.
+- Fixed: Licensing issues.

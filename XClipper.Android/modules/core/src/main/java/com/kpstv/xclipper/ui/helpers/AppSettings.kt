@@ -36,6 +36,7 @@ import com.kpstv.xclipper.ui.helpers.AppSettings.Listener
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.sendBlocking
+import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -173,10 +174,10 @@ class AppSettings @Inject constructor(
     @Suppress("UNCHECKED_CAST")
     fun <T> observeChanges(@AppSettingKeys key: String, default: T): LiveData<T> = callbackFlow {
         val listener = Listener { localKey, value ->
-            if (key == localKey) this.sendBlocking(value as T)
+            if (key == localKey) trySendBlocking(value as T)
         }
         listeners.add(listener)
-        sendBlocking(default)
+        trySendBlocking(default)
         awaitClose { listeners.remove(listener) }
     }.asLiveData()
 

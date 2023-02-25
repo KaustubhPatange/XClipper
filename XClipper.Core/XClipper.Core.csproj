@@ -55,6 +55,9 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="RestSharp, Version=104.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.104.4.0\lib\net4\RestSharp.dll</HintPath>
+    </Reference>
     <Reference Include="SQLite-net, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\sqlite-net-sqlcipher.1.6.292\lib\netstandard1.1\SQLite-net.dll</HintPath>
     </Reference>
@@ -113,6 +116,7 @@
     <Compile Include="Data\Extensions\GenericExtensions.cs" />
     <Compile Include="Data\Extensions\Misc\AuthEventArgs.cs" />
     <Compile Include="Data\Extensions\Misc\AuthManager.cs" />
+    <Compile Include="Data\Extensions\RestClientExtensions.cs" />
     <Compile Include="Data\Extensions\ScrollViewerExtensions.cs" />
     <Compile Include="Data\Extensions\TypeSpecific\CollectionExtensions.cs" />
     <Compile Include="Data\Extensions\TypeSpecific\IntegerExtensions.cs" />

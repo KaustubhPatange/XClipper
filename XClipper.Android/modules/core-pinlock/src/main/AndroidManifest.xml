@@ -5,9 +5,11 @@
     <application>
         <activity
             android:name="com.kpstv.xclipper.ui.activities.CustomPinLockActivity"
+            android:exported="false"
             android:theme="@style/PinModuleTheme" />
         <activity
             android:name="com.kpstv.xclipper.ui.dialog.PinGrantDialog$PinGrantDialogActivity"
+            android:exported="false"
             android:launchMode="singleInstance"
             android:theme="@style/TranslucentTheme.Dark" />
     </application>

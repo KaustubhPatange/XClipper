@@ -4,12 +4,15 @@
     package="com.kpstv.xclipper.core_clipboard">
 
     <!-- Used for adb clipboard detection -->
-    <uses-permission android:name="android.permission.READ_LOGS" tools:ignore="ProtectedPermissions" />
+    <uses-permission
+        android:name="android.permission.READ_LOGS"
+        tools:ignore="ProtectedPermissions" />
 
     <application>
         <activity
             android:name="com.kpstv.xclipper.ui.activities.ChangeClipboardActivity"
             android:excludeFromRecents="true"
+            android:exported="false"
             android:launchMode="singleInstance"
             android:theme="@style/TranslucentTheme.Dark" />
 
@@ -27,7 +30,9 @@
                 android:resource="@xml/clip_service" />
         </service>
 
-        <receiver android:name="com.kpstv.xclipper.service.receiver.ClipboardBroadcastReceiver" />
+        <receiver
+            android:name="com.kpstv.xclipper.service.receiver.ClipboardBroadcastReceiver"
+            android:exported="false" />
 
     </application>
 </manifest>
