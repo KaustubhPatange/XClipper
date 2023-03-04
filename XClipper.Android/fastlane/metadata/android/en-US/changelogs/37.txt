@@ -1,0 +1,2 @@
+Added: Auto delete feature to delete clips after certain days.
+Fixed: Suggestion bubble not working in Android 13.
