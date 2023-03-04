@@ -3,7 +3,8 @@
     package="com.kpstv.update">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <!-- Disabled because of Google Play, we'll see if we need to enable it in future -->
+<!--    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />-->
 
     <application>
         <receiver

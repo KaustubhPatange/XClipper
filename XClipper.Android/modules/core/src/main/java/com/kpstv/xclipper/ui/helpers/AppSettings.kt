@@ -245,7 +245,7 @@ annotation class AppSettingKeys {
         const val DATABASE_DELETE_BINDING = "bindDelete_pref"
         const val CLIPBOARD_CLEAR_PREF = "clipboard_clear_pref"
         const val AUTO_DELETE_PREF = "auto_delete_pref"
-        internal const val AUTO_DELETE_DAY_PREF = "auto_delete_day_pref"
+        const val AUTO_DELETE_DAY_PREF = "auto_delete_day_pref"
         internal const val AUTO_DELETE_REMOTE_PREF = "auto_delete_remote_pref"
         internal const val AUTO_DELETE_PINNED_PREF = "auto_delete_pinned_pref"
         internal const val AUTO_DELETE_EXCLUDE_TAGS_PREF = "auto_delete_exclude_tags_pref"
