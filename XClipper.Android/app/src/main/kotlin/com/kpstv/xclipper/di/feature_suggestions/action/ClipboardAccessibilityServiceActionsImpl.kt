@@ -9,6 +9,12 @@ import javax.inject.Inject
 class ClipboardAccessibilityServiceActionsImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : ClipboardAccessibilityServiceActions {
+    override fun sendBubbleExpandedState(isExpanded: Boolean) {
+        ClipboardAccessibilityService.Actions.sendExpandedStateStatus(
+            context = context,
+            isExpanded = isExpanded
+        )
+    }
     override fun sendClipboardInsertText(wordLength: Int, text: String) {
         ClipboardAccessibilityService.Actions.sendClipboardInsertText(
             context = context,

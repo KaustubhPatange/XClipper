@@ -13,8 +13,8 @@ fun RecyclerView.highlightChildPosition(index: Int, @ColorInt color: Int = -1) {
 
     doOnLayout {
         val itemView = layoutManager.findViewByPosition(index)
+        smoothScrollToPosition(index)
         if (itemView == null) {
-            smoothScrollToPosition(index)
             doOnLayout {
                 layoutManager.findViewByPosition(index)?.runBlinkEffect(color)
             }

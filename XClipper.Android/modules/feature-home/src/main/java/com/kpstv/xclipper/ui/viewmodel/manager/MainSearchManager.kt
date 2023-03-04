@@ -3,8 +3,9 @@ package com.kpstv.xclipper.ui.viewmodel.manager
 import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.kpstv.xclipper.data.model.DateFilter
 import com.kpstv.xclipper.data.model.Tag
-import com.kpstv.xclipper.extension.enumeration.SpecialTagFilter
+import com.kpstv.xclipper.extensions.enumerations.SpecialTagFilter
 import com.kpstv.xclipper.extensions.SaveRestore
 import com.kpstv.xclipper.extensions.getParcelableArrayListExt
 import javax.inject.Inject
@@ -17,6 +18,7 @@ class MainSearchManager @Inject constructor() : SaveRestore {
     private val _searchArrayFilter = MutableLiveData<List<String>>(emptyList())
     private val _tagArrayFilter = MutableLiveData<List<Tag>>(emptyList())
     private val _specialTagFilter = MutableLiveData<List<SpecialTagFilter>>(emptyList())
+    private val _dateFilter = MutableLiveData<DateFilter>(null)
 
     val searchString: LiveData<String>
         get() = _searchString
@@ -29,6 +31,9 @@ class MainSearchManager @Inject constructor() : SaveRestore {
 
     val searchFilters: LiveData<List<String>>
         get() = _searchArrayFilter
+
+    val dateFilter: LiveData<DateFilter>
+        get() = _dateFilter
 
     /* Search Filters */
 

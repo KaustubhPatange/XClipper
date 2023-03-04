@@ -10,8 +10,14 @@
     <!-- AddOn: Customize Theme -->
     <string name="ct_title">Customize</string>
     <string name="ct_short_desc">Change theme colors &amp; app icon</string>
-    <string name="ct_full_desc">Ability to customize theme colors like primary &amp; accent that appears on toolbar, buttons, notification, etc. along with app launcher icon.\n\nEnable: Settings > Look &amp; Feel</string>
+    <string name="ct_full_desc">Ability to customize theme colors like primary &amp; accent that appears on toolbar, buttons, notification, etc. along with app launcher icon.\n\nEnable: Settings > Look &amp; Feel.</string>
     <string name="ct_sku">extension_customize_theme</string>
+
+    <!-- AddOn: Auto Delete -->
+    <string name="ad_title">Auto Delete</string>
+    <string name="ad_short_desc">Delete clips created after x days</string>
+    <string name="ad_full_desc">Automatically delete clips which are created x days ago.\n\nEnable: Settings > General > Auto Delete clips.</string>
+    <string name="ad_sku">extension_auto_delete</string>
 
     <string name="extension_title">Add-on Extension</string>
     <string name="extension_message">This is an add-on extension that unlocks certain capabilities of the app which requires a small purchase to unlock.</string>

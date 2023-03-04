@@ -26,10 +26,21 @@ object AddOns {
             sku = getString(R.string.ct_sku)
         )
     }
+    fun getAutoDeleteExtension(context: Context) : ExtensionItem = with(context) {
+        return ExtensionItem(
+            title = getString(R.string.ad_title),
+            smallDescription = getString(R.string.ad_short_desc),
+            fullDescription = getString(R.string.ad_full_desc),
+            icon = R.drawable.ic_delete_outlined,
+            dominantColor = context.colorFrom(R.color.magenta),
+            sku = getString(R.string.ad_sku)
+        )
+    }
     fun getAllExtensions(context: Context) : List<ExtensionItem> = with(context) {
         return listOf(
             getPinExtension(this),
-            getCustomizeThemeExtension(this)
+            getCustomizeThemeExtension(this),
+            getAutoDeleteExtension(this)
         )
     }
 }

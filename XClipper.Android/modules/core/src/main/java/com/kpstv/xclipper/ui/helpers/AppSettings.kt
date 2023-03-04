@@ -6,8 +6,16 @@ import android.view.Gravity
 import androidx.annotation.StringDef
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
+import com.kpstv.xclipper.data.model.ClipTag
 import com.kpstv.xclipper.data.provider.PreferenceProvider
 import com.kpstv.xclipper.extensions.getRawDataAttr
+import com.kpstv.xclipper.extensions.small
+import com.kpstv.xclipper.ui.helpers.AppSettingKeys.Keys.AUTO_DELETE_DATA_PREF
+import com.kpstv.xclipper.ui.helpers.AppSettingKeys.Keys.AUTO_DELETE_DAY_PREF
+import com.kpstv.xclipper.ui.helpers.AppSettingKeys.Keys.AUTO_DELETE_EXCLUDE_TAGS_PREF
+import com.kpstv.xclipper.ui.helpers.AppSettingKeys.Keys.AUTO_DELETE_PINNED_PREF
+import com.kpstv.xclipper.ui.helpers.AppSettingKeys.Keys.AUTO_DELETE_PREF
+import com.kpstv.xclipper.ui.helpers.AppSettingKeys.Keys.AUTO_DELETE_REMOTE_PREF
 import com.kpstv.xclipper.ui.helpers.AppSettingKeys.Keys.CLIPBOARD_BLACKLIST_APPS
 import com.kpstv.xclipper.ui.helpers.AppSettingKeys.Keys.CLIPBOARD_CLEAR_PREF
 import com.kpstv.xclipper.ui.helpers.AppSettingKeys.Keys.CLIPBOARD_SUGGESTIONS
@@ -139,6 +147,26 @@ class AppSettings @Inject constructor(
         notifyListeners(SUGGESTION_BUBBLE_COORDINATES, (gravity to yOffset))
     }
 
+    fun canAutoDeleteClips(): Boolean = preferenceProvider.getBooleanKey(AUTO_DELETE_PREF, false)
+    fun setAutoDeleteClips(value: Boolean) {
+        preferenceProvider.putBooleanKey(AUTO_DELETE_PREF, value)
+        notifyListeners(AUTO_DELETE_PREF, value)
+    }
+
+    fun getAutoDeleteSetting(): AutoDeleteSetting = AutoDeleteSetting(
+        shouldDeleteRemoteClip = preferenceProvider.getBooleanKey(AUTO_DELETE_REMOTE_PREF, false),
+        shouldDeletePinnedClip = preferenceProvider.getBooleanKey(AUTO_DELETE_PINNED_PREF, false),
+        dayNumber = preferenceProvider.getIntKey(AUTO_DELETE_DAY_PREF, 1),
+        excludeTags = preferenceProvider.getStringSet(AUTO_DELETE_EXCLUDE_TAGS_PREF, setOf(ClipTag.LOCK.small()))
+    )
+    fun setAutoDeleteSetting(setting: AutoDeleteSetting) {
+        preferenceProvider.putBooleanKey(AUTO_DELETE_REMOTE_PREF, setting.shouldDeleteRemoteClip)
+        preferenceProvider.putBooleanKey(AUTO_DELETE_PINNED_PREF, setting.shouldDeletePinnedClip)
+        preferenceProvider.putIntKey(AUTO_DELETE_DAY_PREF, setting.dayNumber)
+        preferenceProvider.setStringSet(AUTO_DELETE_EXCLUDE_TAGS_PREF, setting.excludeTags)
+        notifyListeners(AUTO_DELETE_DATA_PREF, setting)
+    }
+
     /**
      * Observe the changes of the settings. The [default] value will emitted as soon as the [LiveData]
      * will start observing.
@@ -164,6 +192,13 @@ class AppSettings @Inject constructor(
     private fun notifyListeners(key: String, value: Any) {
         listeners.forEach { it.onChangeListener(key, value) }
     }
+
+    data class AutoDeleteSetting(
+        val shouldDeleteRemoteClip: Boolean,
+        val shouldDeletePinnedClip: Boolean,
+        val dayNumber: Int,
+        val excludeTags: Set<String>,
+    )
 }
 
 @StringDef(
@@ -182,7 +217,13 @@ class AppSettings @Inject constructor(
     SUGGESTION_BUBBLE_X_GRAVITY,
     SUGGESTION_BUBBLE_Y_POS,
     SUGGESTION_BUBBLE_COORDINATES,
-    CLIPBOARD_CLEAR_PREF
+    CLIPBOARD_CLEAR_PREF,
+    AUTO_DELETE_PREF,
+    AUTO_DELETE_DAY_PREF,
+    AUTO_DELETE_REMOTE_PREF,
+    AUTO_DELETE_PINNED_PREF,
+    AUTO_DELETE_EXCLUDE_TAGS_PREF,
+    AUTO_DELETE_DATA_PREF,
 )
 @Retention(AnnotationRetention.SOURCE)
 annotation class AppSettingKeys {
@@ -203,5 +244,11 @@ annotation class AppSettingKeys {
         const val DATABASE_BINDING = "bind_pref"
         const val DATABASE_DELETE_BINDING = "bindDelete_pref"
         const val CLIPBOARD_CLEAR_PREF = "clipboard_clear_pref"
+        const val AUTO_DELETE_PREF = "auto_delete_pref"
+        const val AUTO_DELETE_DAY_PREF = "auto_delete_day_pref"
+        internal const val AUTO_DELETE_REMOTE_PREF = "auto_delete_remote_pref"
+        internal const val AUTO_DELETE_PINNED_PREF = "auto_delete_pinned_pref"
+        internal const val AUTO_DELETE_EXCLUDE_TAGS_PREF = "auto_delete_exclude_tags_pref"
+        internal const val AUTO_DELETE_DATA_PREF = "auto_delete_data_pref"
     }
 }

@@ -1,6 +1,7 @@
 package com.kpstv.xclipper.extensions.utils
 
 import android.content.Context
+import android.view.WindowInsets
 import android.view.inputmethod.InputMethodManager
 
 object KeyboardUtils {

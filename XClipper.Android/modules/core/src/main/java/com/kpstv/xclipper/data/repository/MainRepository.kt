@@ -2,11 +2,12 @@ package com.kpstv.xclipper.data.repository
 
 import androidx.lifecycle.LiveData
 import androidx.paging.PagedList
-import androidx.sqlite.db.SupportSQLiteQuery
 import com.kpstv.xclipper.data.model.Clip
-import com.kpstv.xclipper.data.model.Tag
+import com.kpstv.xclipper.data.model.DateFilter
+import com.kpstv.xclipper.data.model.TagFilter
 import com.kpstv.xclipper.data.model.TagMap
 import com.kpstv.xclipper.extensions.enumerations.FilterType
+import com.kpstv.xclipper.extensions.enumerations.SpecialTagFilter
 import kotlinx.coroutines.flow.Flow
 
 interface MainRepository {
@@ -36,10 +37,10 @@ interface MainRepository {
     suspend fun updatePin(clip: Clip?, isPinned: Boolean)
     suspend fun updateTime(clip: Clip?)
 
-    suspend fun deleteClip(clip: Clip)
-    suspend fun deleteClip(data: String?)
+    suspend fun deleteClip(clip: Clip, deleteType: DeleteType = DeleteType.ALL)
+    suspend fun deleteClip(data: String?, deleteType: DeleteType = DeleteType.ALL)
 
-    suspend fun deleteMultiple(clips: List<Clip>)
+    suspend fun deleteMultiple(clips: List<Clip>, deleteType: DeleteType = DeleteType.ALL)
 
     /**
      * Use this function when you are saving data to local as well as firebase
@@ -74,10 +75,29 @@ interface MainRepository {
 
     fun getAllLiveClip(): LiveData<List<Clip>>
     fun getAllTags(): Flow<List<TagMap>>
-    fun executeQuery(query: SupportSQLiteQuery): List<Clip>
+
+    fun getDataByFilter(
+        searchText: String = "",
+        searchFilters: List<String> = emptyList(),
+        dateFilter: DateFilter? = null,
+        tagFilter: TagFilter? = null,
+        specialTagFilters: List<SpecialTagFilter> = emptyList(),
+    ): List<Clip>
 
     /**
      * Check if the data is the last data i.e the new data in the list.
      */
     suspend fun isTopData(data: String) : Boolean
+
+    enum class DeleteType {
+        /** Delete only local clips. */
+        LOCAL,
+        /** Delete only remote clips */
+        REMOTE,
+        /** Delete both from local as well as from remote. */
+        ALL;
+
+        fun canDeleteLocal(): Boolean = this == LOCAL || this == ALL
+        fun canDeleteRemote(): Boolean = this == REMOTE || this == ALL
+    }
 }

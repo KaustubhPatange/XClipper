@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="channel_update_progress">Update progress channel</string>
-    <string name="channel_update">Update progress channel</string>
+    <string name="channel_update_progress">In App Update (Progress)</string>
+    <string name="channel_update">In App Update (Core)</string>
 
     <string name="update_available">Update available</string>
     <string name="update_available_text">Click "Update" to start downloading it.</string>

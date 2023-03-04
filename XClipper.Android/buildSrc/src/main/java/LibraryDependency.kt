@@ -53,6 +53,7 @@ private object LibraryVersion {
     const val SENTRY = "5.5.1"
     const val SWIPE_REFRESH_LAYOUT = "1.1.0"
     const val BALLOON = "1.3.6"
+    const val NUMBER_PICKER = "2.4.13"
 }
 
 object LibraryDependency {
@@ -139,4 +140,5 @@ object LibraryDependency {
     const val SWIPE_REFRESH_LAYOUT = "androidx.swiperefreshlayout:swiperefreshlayout:${LibraryVersion.SWIPE_REFRESH_LAYOUT}"
 
     const val BALLOON = "com.github.skydoves:balloon:${LibraryVersion.BALLOON}"
+    const val NUMBER_PICKER = "io.github.ShawnLin013:number-picker:${LibraryVersion.NUMBER_PICKER}"
 }

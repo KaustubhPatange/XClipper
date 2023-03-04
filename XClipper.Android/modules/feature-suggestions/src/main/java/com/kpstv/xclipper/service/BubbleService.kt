@@ -124,6 +124,11 @@ class BubbleService : FloatingBubbleService() {
             .build()
     }
 
+    override fun setState(expanded: Boolean) {
+        super.setState(expanded)
+        clipboardServiceActions.sendBubbleExpandedState(expanded)
+    }
+
     private val bubbleBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == null) return
@@ -170,6 +175,7 @@ class BubbleService : FloatingBubbleService() {
                     }
                 }
 
+                clipboardServiceActions.sendBubbleExpandedState(expanded)
                 if (expanded && shouldResubscribe) subscribeSuggestions()
             }
 

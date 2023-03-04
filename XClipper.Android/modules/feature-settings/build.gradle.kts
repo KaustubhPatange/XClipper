@@ -18,6 +18,7 @@ dependencies {
     implementation(project(ModuleDependency.CORE_CLIPBOARD))
     implementation(project(ModuleDependency.CORE_SYNC))
     implementation(project(ModuleDependency.CORE_ADDONS))
+    implementation(project(ModuleDependency.CORE_AUTO_DELETE))
     implementation(project(ModuleDependency.LIBRARY_ROUNDED_SHEET))
     implementation(project(ModuleDependency.LIBRARY_COLOR_SHEET))
 

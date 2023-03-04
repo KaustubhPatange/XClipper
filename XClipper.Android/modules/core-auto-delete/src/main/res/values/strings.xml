@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ad_sheet_title">Auto delete clips</string>
+    <string name="ad_sheet_summary">Automatically delete clips which are created %1$d days ago</string>
+    <string name="ad_sheet_info"><![CDATA[Scroll the dial horizontally to pick a <b>day</b> for deleting clips created ago, current selected is %1$d.]]></string>
+    <string name="ad_sheet_delete_remote">Delete from remote database?</string>
+    <string name="ad_sheet_delete_pinned">Include pinned clips?</string>
+    <string name="ad_sheet_delete_tags">Exclude tags for deletion</string>
+
+    <string name="ad_channel_name">Auto Delete</string>
+    <string name="ad_nt_progress_title">Checking clips for auto deletion</string>
+
+    <string name="ad_nt_success_title">Auto Delete</string>
+    <string name="ad_nt_success_text">Deleted %1$d clips older than %2$d days</string>
+</resources>

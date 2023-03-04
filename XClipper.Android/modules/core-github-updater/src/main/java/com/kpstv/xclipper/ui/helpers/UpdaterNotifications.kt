@@ -45,7 +45,7 @@ object UpdaterNotifications {
         }
     }
 
-    fun sendUpdateProgressNotification(
+    internal fun sendUpdateProgressNotification(
         context: Context,
         currentBytes: Long,
         totalBytes: Long,
@@ -73,9 +73,9 @@ object UpdaterNotifications {
         manager.notify(UPDATE_PROGRESS_NOTIFICATION_ID, notification)
     }
 
-    fun removeUpdateProgressNotification() = manager.cancel(UPDATE_PROGRESS_NOTIFICATION_ID)
+    internal fun removeUpdateProgressNotification() = manager.cancel(UPDATE_PROGRESS_NOTIFICATION_ID)
 
-    fun sendDownloadCompleteNotification(context: Context, file: File) = with(context) {
+    internal fun sendDownloadCompleteNotification(context: Context, file: File) = with(context) {
         val installIntent = GithubUpdateReceiver.createInstallApk(context, file)
 
         val pendingIntent = PendingIntent.getBroadcast(this, NotificationUtils.getRandomCode(), installIntent, NotificationUtils.getPendingIntentFlags())
@@ -94,7 +94,7 @@ object UpdaterNotifications {
         manager.notify(UPDATE_NOTIFICATION_ID,  notification.build())
     }
 
-    fun sendUpdateAvailableNotification(context: Context) = with(context) {
+    internal fun sendUpdateAvailableNotification(context: Context) = with(context) {
         val updateIntent = packageManager.getLaunchIntentForPackage(packageName)?.apply {
             action = GithubUpdater.ACTION_FORCE_CHECK_UPDATE
         }

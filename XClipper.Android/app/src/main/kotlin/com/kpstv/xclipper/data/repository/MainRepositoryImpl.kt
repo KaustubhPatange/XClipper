@@ -4,14 +4,16 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.paging.PagedList
 import androidx.paging.toLiveData
-import androidx.sqlite.db.SupportSQLiteQuery
 import com.kpstv.xclipper.data.localized.ClipDataDao
 import com.kpstv.xclipper.data.model.Clip
+import com.kpstv.xclipper.data.model.DateFilter
 import com.kpstv.xclipper.data.model.PartialClipTagMap
+import com.kpstv.xclipper.data.model.TagFilter
 import com.kpstv.xclipper.data.model.TagMap
 import com.kpstv.xclipper.data.provider.FirebaseProvider
 import com.kpstv.xclipper.extensions.clone
 import com.kpstv.xclipper.extensions.enumerations.FilterType
+import com.kpstv.xclipper.extensions.enumerations.SpecialTagFilter
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.transform
 import javax.inject.Inject
@@ -32,7 +34,18 @@ class MainRepositoryImpl @Inject constructor(
 
     override fun getTotalCount(): LiveData<Int> = clipDao.getTotalCount()
 
-    override fun executeQuery(query: SupportSQLiteQuery): List<Clip> = clipDao.getData(query)
+    override fun getDataByFilter(
+        searchText: String,
+        searchFilters: List<String>,
+        dateFilter: DateFilter?,
+        tagFilter: TagFilter?,
+        specialTagFilters: List<SpecialTagFilter>
+    ): List<Clip> {
+        val query = ClipDataDao.createQuery(
+            searchFilters, tagFilter, specialTagFilters, dateFilter, searchText
+        )
+        return clipDao.getData(query)
+    }
 
     private suspend fun saveClip(clip: Clip?): Boolean {
         if (clip == null) return false
@@ -110,20 +123,20 @@ class MainRepositoryImpl @Inject constructor(
         clipDao.update(clip.updateTime())
     }
 
-    override suspend fun deleteClip(clip: Clip) {
-        clipDao.delete(clip.id)
-        firebaseProvider.deleteData(clip)
+    override suspend fun deleteClip(clip: Clip, deleteType: MainRepository.DeleteType) {
+        if (deleteType.canDeleteLocal()) clipDao.delete(clip.id)
+        if (deleteType.canDeleteRemote()) firebaseProvider.deleteData(clip)
     }
 
-    override suspend fun deleteClip(data: String?) {
+    override suspend fun deleteClip(data: String?, deleteType: MainRepository.DeleteType) {
         if (data == null) return
-        clipDao.delete(data)
-        firebaseProvider.deleteData(Clip.from(data))
+        if (deleteType.canDeleteLocal()) clipDao.delete(data)
+        if (deleteType.canDeleteRemote()) firebaseProvider.deleteData(Clip.from(data))
     }
 
-    override suspend fun deleteMultiple(clips: List<Clip>) {
-        clipDao.delete(clips)
-        firebaseProvider.deleteMultipleData(clips)
+    override suspend fun deleteMultiple(clips: List<Clip>, deleteType: MainRepository.DeleteType) {
+        if (deleteType.canDeleteLocal()) clipDao.delete(clips)
+        if (deleteType.canDeleteRemote()) firebaseProvider.deleteMultipleData(clips)
     }
 
     override suspend fun checkForDuplicate(data: String?): Boolean {
