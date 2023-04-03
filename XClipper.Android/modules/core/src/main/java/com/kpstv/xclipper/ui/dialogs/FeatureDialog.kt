@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ContextThemeWrapper
 import com.kpstv.core.R
 import com.kpstv.core.databinding.DialogFeatureBinding
+import com.kpstv.xclipper.extensions.getParcelableExt
 import com.kpstv.xclipper.extensions.hasThemeColorAttribute
 import com.kpstv.xclipper.extensions.layoutInflater
 import com.kpstv.xclipper.ui.helpers.AppThemeHelper
@@ -105,7 +106,7 @@ class FeatureDialog(ctx: Context) {
 
             AppThemeHelper.applyDialogTheme(this)
 
-            val data: DialogData = intent?.getParcelableExtra<DialogData>(DIALOG_DATA) as DialogData
+            val data: DialogData = intent?.extras?.getParcelableExt<DialogData>(DIALOG_DATA) as DialogData
             val dialog = create(this, data).apply {
                 setOnClickListener { alert ->
                     alert.setOnDismissListener {
