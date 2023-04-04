@@ -27,6 +27,8 @@ interface PreferenceProvider {
 
     fun removeKey(key: String)
 
+    fun getAllKeys(): Set<String>
+
     fun observePreference(block: (SharedPreferences, String) -> Unit)
 
     fun observeBooleanKeyAsFlow(key: String, default: Boolean) : Flow<Boolean>

@@ -6,6 +6,7 @@ import android.os.Bundle
 import com.github.omadahealth.lollipin.lib.managers.AppLock
 import com.github.omadahealth.lollipin.lib.managers.AppLockActivity
 import com.github.omadahealth.lollipin.lib.managers.LockManager
+import com.kpstv.xclipper.PinLockHelper
 import com.kpstv.xclipper.PinLockHelper.Result.PIN_LOCK_RESULT_SUCCESS
 import com.kpstv.xclipper.core_pinlock.R
 import com.kpstv.xclipper.ui.helpers.AppThemeHelper
@@ -48,6 +49,7 @@ internal class CustomPinLockActivity : AppLockActivity() {
             Toasty.error(this, getString(R.string.pin_lock_attempt_reach)).show()
             onBackPressed()
         }
+        PinLockHelper.updateListenerStatus(PinLockHelper.Status.Failed)
     }
 
     override fun onPinSuccess(attempts: Int) {
@@ -59,6 +61,7 @@ internal class CustomPinLockActivity : AppLockActivity() {
             lockManager.appLock.setPasscode(null)
             Toasty.info(this, getString(R.string.pin_lock_disabled)).show()
         }
+        PinLockHelper.updateListenerStatus(PinLockHelper.Status.Success)
     }
 
     override fun onBackPressed() {

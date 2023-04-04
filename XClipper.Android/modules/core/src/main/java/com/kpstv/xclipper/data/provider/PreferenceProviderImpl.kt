@@ -92,6 +92,10 @@ class PreferenceProviderImpl @Inject constructor(
 
     override fun getFloatKey(key: String, default: Float) = preference.getFloat(key, default)
 
+    override fun getAllKeys(): Set<String> {
+        return preference.all.keys.toSet()
+    }
+
     override fun observePreference(block: (SharedPreferences, String) -> Unit) {
         _keyLiveData.observeForever {
             block.invoke(preference, it)

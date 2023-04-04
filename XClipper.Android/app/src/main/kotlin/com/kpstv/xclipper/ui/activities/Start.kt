@@ -17,6 +17,7 @@ import com.kpstv.xclipper.ui.fragments.Home
 import com.kpstv.xclipper.ui.fragments.Settings
 import com.kpstv.xclipper.ui.fragments.sheets.DisclosureSheet
 import com.kpstv.xclipper.ui.helpers.ActivityIntentHelper
+import com.kpstv.xclipper.ui.helpers.ActivityPinLockHelper
 import com.kpstv.xclipper.ui.helpers.AppSettings
 import com.kpstv.xclipper.ui.helpers.FirebaseSyncHelper
 import com.kpstv.xclipper.ui.helpers.fragments.*
@@ -36,11 +37,12 @@ class Start : BackPressCompatActivity(), FragmentNavigator.Transmitter {
 
     val updateHelper by lazy { UpdateHelper(this) }
     private val intentHelper by lazy { ActivityIntentHelper(this) }
+    private val pinLockHelper by lazy { ActivityPinLockHelper(this) }
 
     override fun getNavigator(): FragmentNavigator = navigator
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        PinLockHelper.checkPinLock(this)
+        pinLockHelper.init()
         applyEdgeToEdgeMode()
         super.onCreate(savedInstanceState)
 

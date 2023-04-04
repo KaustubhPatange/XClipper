@@ -63,6 +63,7 @@ class PinGrantDialog(private val context: Context, private val key: String) {
             GrantType.Hour6 -> differenceMinutes > 60 * 6
             GrantType.Hour12 -> differenceMinutes > 60 * 12
             GrantType.Hour24 -> differenceMinutes > 60 * 24
+            GrantType.Locked -> false
             else -> false
         }
     }
@@ -85,12 +86,13 @@ class PinGrantDialog(private val context: Context, private val key: String) {
         Hour6(R.string.grant_6h),
         Hour12(R.string.grant_12h),
         Hour24(R.string.grant_24h),
+        Locked(R.string.grant_locked),
         Forever(R.string.grant_forever),
     }
 
     companion object {
-        private const val SAVE_TYPE = "pin_grant:save_type:"
-        private const val GRANT_ACCESS_MILLIS = "pin_grant:access_millis:"
+        internal const val SAVE_TYPE = "pin_grant:save_type:"
+        internal const val GRANT_ACCESS_MILLIS = "pin_grant:access_millis:"
     }
 
     class PinGrantDialogActivity : AppCompatActivity() {

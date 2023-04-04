@@ -1,8 +1,10 @@
 package com.kpstv.xclipper.di.core_clipboard
 
 import com.kpstv.xclipper.di.core_clipboard.notification.ClipboardNotificationImpl
+import com.kpstv.xclipper.di.core_clipboard.pinlock.PinLockGlobalActionImpl
 import com.kpstv.xclipper.di.core_clipboard.suggestions.SuggestionServiceImpl
 import com.kpstv.xclipper.di.notifications.ClipboardNotification
+import com.kpstv.xclipper.di.pinlock.PinLockGlobalAction
 import com.kpstv.xclipper.di.suggestions.SuggestionService
 import dagger.Binds
 import dagger.Module
@@ -17,4 +19,7 @@ abstract class ClipboardModule {
 
   @Binds
   abstract fun suggestionService(suggestionServiceImpl: SuggestionServiceImpl) : SuggestionService
+
+  @Binds
+  abstract fun pinLockAction(pinLockActionImpl: PinLockGlobalActionImpl) : PinLockGlobalAction
 }

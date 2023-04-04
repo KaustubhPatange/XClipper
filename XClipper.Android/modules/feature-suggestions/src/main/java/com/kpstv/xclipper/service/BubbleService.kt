@@ -65,7 +65,7 @@ class BubbleService : FloatingBubbleService() {
         private const val EXTRA_NODE_CURSOR = "com.kpstv.xclipper.extra_node_cursor"
         private const val EXTRA_NODE_TEXT = "com.kpstv.xclipper.extra_node_text"
 
-        private const val PIN_GRANT_KEY = "bubble_pin_key"
+        const val PIN_GRANT_KEY = "bubble_pin_key"
     }
 
     override fun getConfig(): FloatingBubbleConfig {

@@ -18,6 +18,7 @@ import com.kpstv.xclipper.data.helper.ClipRepositoryHelper
 import com.kpstv.xclipper.data.helper.FirebaseProviderHelper
 import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.data.provider.ClipboardProviderFlags
+import com.kpstv.xclipper.di.pinlock.PinLockGlobalAction
 import com.kpstv.xclipper.di.suggestions.SuggestionService
 import com.kpstv.xclipper.extensions.Logger
 import com.kpstv.xclipper.extensions.helper.ClipboardDetection
@@ -54,6 +55,8 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
     lateinit var suggestionService: SuggestionService
     @Inject
     lateinit var settingUIActions: SettingUIActions
+    @Inject
+    lateinit var pinLockAction: PinLockGlobalAction
 
     private lateinit var clipboardDetector: ClipboardDetection
     private lateinit var clipboardLogDetector: ClipboardLogDetector
@@ -239,6 +242,12 @@ class ClipboardAccessibilityService : ServiceInterface by ServiceInterfaceImpl()
                     } catch (e: Exception) {
                         logger("Bubble launched failed", e)
                     }
+            }
+        }
+
+        screenInteraction.observeForever { interactive ->
+            if (!interactive) {
+                pinLockAction.onScreenLocked()
             }
         }
 
