@@ -12,6 +12,7 @@
     <string name="grant_forever">Forever</string>
 
     <string name="pin_lock_access_title">Pin Lock Request</string>
+    <string name="pin_lock_access_remeber">Remember selection</string>
     <string name="pin_lock_access_summary">This action can leak your clip data.\nGrant to continue!</string>
     <string name="pin_lock_access_success">Granted access for Pin Lock</string>
 </resources>

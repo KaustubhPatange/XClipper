@@ -67,20 +67,35 @@
             android:layout_marginTop="15dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/spinner"
             app:layout_constraintTop_toBottomOf="@id/_app_logo" />
+
+        <CheckBox
+            android:id="@+id/cb_remember"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:scaleX="0.90"
+            android:scaleY="0.90"
+            android:paddingHorizontal="5dp"
+            android:text="@string/pin_lock_access_remeber"
+            android:textColor="?colorTextSecondaryLight"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/spinner" />
 
         <TextView
             android:id="@+id/_tv_grant"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="5dp"
             android:gravity="center"
             android:text="@string/pin_lock_access_summary"
             android:textColor="?colorTextError"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="@id/btn_grant"
             app:layout_constraintStart_toStartOf="@id/btn_deny"
-            app:layout_constraintTop_toBottomOf="@id/spinner" />
+            app:layout_constraintTop_toBottomOf="@id/cb_remember" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_deny"

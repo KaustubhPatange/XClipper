@@ -103,6 +103,8 @@ class PinGrantDialog(private val context: Context, private val key: String) {
 
         private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
 
+        private var shouldRemember = true
+
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
             AppThemeHelper.applyDialogTheme(this)
@@ -116,7 +118,9 @@ class PinGrantDialog(private val context: Context, private val key: String) {
                     val position = binding.spinner.selectedItemPosition
                     val currentTimeMillis = System.currentTimeMillis()
 
-                    preferenceProvider.putIntKey("$SAVE_TYPE$key", position)
+                    if (shouldRemember) {
+                        preferenceProvider.putIntKey("$SAVE_TYPE$key", position)
+                    }
                     preferenceProvider.putLongKey("$GRANT_ACCESS_MILLIS$key", currentTimeMillis)
 
                     setResult(Activity.RESULT_OK)
@@ -128,6 +132,10 @@ class PinGrantDialog(private val context: Context, private val key: String) {
 
             binding.spinner.adapter = CustomSpinnerAdapter(this)
             binding.spinner.setSelection(preferenceProvider.getIntKey("$SAVE_TYPE$key", 1))
+
+            binding.cbRemember.setOnCheckedChangeListener { _, isChecked ->
+                shouldRemember = isChecked
+            }
 
             binding.btnDeny.setOnClickListener {
                 finish()
@@ -145,7 +153,7 @@ class PinGrantDialog(private val context: Context, private val key: String) {
                 val view = super.getView(position, convertView, parent)
                 view.findViewById<TextView>(android.R.id.text1).apply {
                     text = getItem(position)
-                    setTextSize(TypedValue.COMPLEX_UNIT_SP, 13f)
+                    setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f)
                 }
                 return view
             }
