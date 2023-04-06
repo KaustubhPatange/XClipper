@@ -8,9 +8,11 @@
     <string name="grant_6h">6 hours</string>
     <string name="grant_12h">12 hours</string>
     <string name="grant_24h">1 day</string>
+    <string name="grant_locked">Screen Locked</string>
     <string name="grant_forever">Forever</string>
 
     <string name="pin_lock_access_title">Pin Lock Request</string>
+    <string name="pin_lock_access_remeber">Remember selection</string>
     <string name="pin_lock_access_summary">This action can leak your clip data.\nGrant to continue!</string>
     <string name="pin_lock_access_success">Granted access for Pin Lock</string>
 </resources>

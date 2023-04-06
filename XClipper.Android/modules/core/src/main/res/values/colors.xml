@@ -50,7 +50,10 @@
     <color name="yellow_3">#FFFE32</color>
     <color name="yellow_4">#D0E92B</color>
     <color name="green">#66B132</color>
+    <color name="dark_green">#008080</color>
     <color name="blue">#0291CD</color>
     <color name="blue_2">#0246FE</color>
     <color name="blue_3">#3F51B5</color>
+    <color name="black">#000000</color>
+    <color name="dark_grey">#5A5A5A</color>
 </resources>

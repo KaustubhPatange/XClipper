@@ -63,6 +63,7 @@ class PinGrantDialog(private val context: Context, private val key: String) {
             GrantType.Hour6 -> differenceMinutes > 60 * 6
             GrantType.Hour12 -> differenceMinutes > 60 * 12
             GrantType.Hour24 -> differenceMinutes > 60 * 24
+            GrantType.Locked -> false
             else -> false
         }
     }
@@ -85,12 +86,13 @@ class PinGrantDialog(private val context: Context, private val key: String) {
         Hour6(R.string.grant_6h),
         Hour12(R.string.grant_12h),
         Hour24(R.string.grant_24h),
+        Locked(R.string.grant_locked),
         Forever(R.string.grant_forever),
     }
 
     companion object {
-        private const val SAVE_TYPE = "pin_grant:save_type:"
-        private const val GRANT_ACCESS_MILLIS = "pin_grant:access_millis:"
+        internal const val SAVE_TYPE = "pin_grant:save_type:"
+        internal const val GRANT_ACCESS_MILLIS = "pin_grant:access_millis:"
     }
 
     class PinGrantDialogActivity : AppCompatActivity() {
@@ -100,6 +102,8 @@ class PinGrantDialog(private val context: Context, private val key: String) {
         private val preferenceProvider by lazy { CommonReusableEntryPoints.get(applicationContext).preferenceProvider() }
 
         private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
+
+        private var shouldRemember = true
 
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
@@ -114,7 +118,9 @@ class PinGrantDialog(private val context: Context, private val key: String) {
                     val position = binding.spinner.selectedItemPosition
                     val currentTimeMillis = System.currentTimeMillis()
 
-                    preferenceProvider.putIntKey("$SAVE_TYPE$key", position)
+                    if (shouldRemember) {
+                        preferenceProvider.putIntKey("$SAVE_TYPE$key", position)
+                    }
                     preferenceProvider.putLongKey("$GRANT_ACCESS_MILLIS$key", currentTimeMillis)
 
                     setResult(Activity.RESULT_OK)
@@ -126,6 +132,10 @@ class PinGrantDialog(private val context: Context, private val key: String) {
 
             binding.spinner.adapter = CustomSpinnerAdapter(this)
             binding.spinner.setSelection(preferenceProvider.getIntKey("$SAVE_TYPE$key", 1))
+
+            binding.cbRemember.setOnCheckedChangeListener { _, isChecked ->
+                shouldRemember = isChecked
+            }
 
             binding.btnDeny.setOnClickListener {
                 finish()
@@ -143,7 +153,7 @@ class PinGrantDialog(private val context: Context, private val key: String) {
                 val view = super.getView(position, convertView, parent)
                 view.findViewById<TextView>(android.R.id.text1).apply {
                     text = getItem(position)
-                    setTextSize(TypedValue.COMPLEX_UNIT_SP, 13f)
+                    setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f)
                 }
                 return view
             }

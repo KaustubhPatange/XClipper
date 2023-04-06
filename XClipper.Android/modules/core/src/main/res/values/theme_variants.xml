@@ -41,6 +41,15 @@
     <style name="AppThemeOverlay.AccentPurple">
         <item name="colorAccent">@color/purple</item>
     </style>
+    <style name="AppThemeOverlay.AccentDarkGreen">
+        <item name="colorAccent">@color/dark_green</item>
+    </style>
+    <style name="AppThemeOverlay.AccentBlack">
+        <item name="colorAccent">@color/black</item>
+    </style>
+    <style name="AppThemeOverlay.AccentDarkGrey">
+        <item name="colorAccent">@color/dark_grey</item>
+    </style>
 
     <!-- Primary Colors -->
     <style name="AppThemeOverlay.PrimaryDefault">
@@ -81,6 +90,15 @@
     </style>
     <style name="AppThemeOverlay.PrimaryPurple">
         <item name="colorPrimary">@color/purple</item>
+    </style>
+    <style name="AppThemeOverlay.PrimaryDarkGreen">
+        <item name="colorPrimary">@color/dark_green</item>
+    </style>
+    <style name="AppThemeOverlay.PrimaryBlack">
+        <item name="colorPrimary">@color/black</item>
+    </style>
+    <style name="AppThemeOverlay.PrimaryDarkGrey">
+        <item name="colorPrimary">@color/dark_grey</item>
     </style>
 
 </resources>

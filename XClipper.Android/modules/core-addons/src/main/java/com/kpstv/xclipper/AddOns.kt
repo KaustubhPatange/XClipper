@@ -38,9 +38,9 @@ object AddOns {
     }
     fun getAllExtensions(context: Context) : List<ExtensionItem> = with(context) {
         return listOf(
-            getPinExtension(this),
+            getAutoDeleteExtension(this),
             getCustomizeThemeExtension(this),
-            getAutoDeleteExtension(this)
+            getPinExtension(this),
         )
     }
 }

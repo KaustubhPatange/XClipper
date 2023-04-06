@@ -2,7 +2,7 @@ private object TestLibraryVersion {
     const val DEBUG_DB = "1.0.4"
     const val JUNIT = "4.13"
     const val JUNIT_TEST = "1.1.1"
-    const val ESPRESSO = "3.2.0"
+    const val ESPRESSO = "3.5.1"
 }
 
 object TestLibraryDependency {

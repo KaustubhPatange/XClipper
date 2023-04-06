@@ -12,5 +12,9 @@
             android:exported="false"
             android:launchMode="singleInstance"
             android:theme="@style/TranslucentTheme.Dark" />
+
+        <receiver
+            android:name="com.kpstv.xclipper.service.receiver.PinGrantScreenLockReceiver"
+            android:exported="false" />
     </application>
 </manifest>

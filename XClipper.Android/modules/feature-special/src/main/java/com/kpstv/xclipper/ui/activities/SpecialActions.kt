@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.kpstv.xclipper.data.repository.MainRepository
 import com.kpstv.xclipper.di.action.SpecialActionOption
+import com.kpstv.xclipper.extensions.getParcelableExt
 import com.kpstv.xclipper.extensions.launchInIO
 import com.kpstv.xclipper.ui.fragments.sheets.SpecialBottomSheet
 import com.kpstv.xclipper.ui.helpers.AppThemeHelper
@@ -28,7 +29,7 @@ class SpecialActions : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         val data = intent.getStringExtra(APP_CLIP_DATA)
-        val option = intent.getParcelableExtra(SPECIAL_OPTIONS) ?: SpecialActionOption()
+        val option = intent.extras?.getParcelableExt(SPECIAL_OPTIONS) ?: SpecialActionOption()
 
         if (data == null) {
             finish()
