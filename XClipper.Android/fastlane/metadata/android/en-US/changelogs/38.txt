@@ -1,0 +1,2 @@
+Added: Screen lock option in Pin Lock.
+Added: More colors for Look And Feel
