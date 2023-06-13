@@ -16,11 +16,11 @@ dependencies {
     implementation(project(ModuleDependency.CORE))
     implementation(project(ModuleDependency.CORE_PINLOCK))
     implementation(project(ModuleDependency.CORE_EXTENSIONS))
+    implementation(project(ModuleDependency.LIBRARY_FLOATING_BUBBLE))
 
     implementation(LibraryDependency.CONSTRAINT_LAYOUT)
     implementation(LibraryDependency.PAGING)
     implementation(LibraryDependency.TOASTY)
-    implementation(LibraryDependency.FLOATING_BUBBLE)
     implementation(LibraryDependency.LOCAL_BROADCAST_MANAGER)
 
     implementation(LibraryDependency.HILT_ANDROID)
