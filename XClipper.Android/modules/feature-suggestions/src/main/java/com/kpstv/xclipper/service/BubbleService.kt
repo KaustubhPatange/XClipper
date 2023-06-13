@@ -2,6 +2,7 @@ package com.kpstv.xclipper.service
 
 import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
 import android.content.IntentFilter
 import android.view.Gravity
@@ -29,6 +30,7 @@ import com.kpstv.xclipper.ui.adapters.PageClipAdapter
 import com.kpstv.xclipper.ui.dialog.PinGrantDialog
 import com.kpstv.xclipper.ui.dialogs.FeatureDialog
 import com.kpstv.xclipper.ui.helpers.AppSettings
+import com.kpstv.xclipper.ui.helpers.AppThemeHelper
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import javax.inject.Inject
@@ -69,9 +71,14 @@ class BubbleService : FloatingBubbleService() {
         const val PIN_GRANT_KEY = "bubble_pin_key"
     }
 
+    override fun onCreate() {
+        super.onCreate()
+        AppThemeHelper.applyTheme(baseContext)
+    }
+
     override fun getConfig(): FloatingBubbleConfig {
 
-        binding = BubbleViewBinding.inflate(applicationContext.layoutInflater())
+        binding = BubbleViewBinding.inflate(layoutInflater())
 
         val bubbleCoordinates = appSettings.getSuggestionBubbleCoordinates()
 

@@ -11,6 +11,7 @@ import com.kpstv.xclipper.feature_suggestions.databinding.ItemBubbleServiceBindi
 import com.kpstv.xclipper.data.model.Clip
 import com.kpstv.xclipper.data.provider.ClipboardProvider
 import com.kpstv.xclipper.extensions.asConfig
+import com.kpstv.xclipper.extensions.getColorAttr
 import com.kpstv.xclipper.extensions.hide
 import com.kpstv.xclipper.extensions.layoutInflater
 import com.kpstv.xclipper.extensions.show
@@ -56,17 +57,11 @@ class PageClipAdapter(
 
             if (clipboardProvider.getCurrentClip().value == clip?.data)
                 ibcTextView.setTextColor(
-                    ContextCompat.getColor(
-                        ibcTextView.context,
-                        R.color.colorSelectedClip
-                    )
+                    ibcTextView.context.getColorAttr(R.attr.colorCurrentClip)
                 )
             else
                 ibcTextView.setTextColor(
-                    ContextCompat.getColor(
-                        ibcTextView.context,
-                        android.R.color.white
-                    )
+                    ibcTextView.context.getColorAttr(R.attr.colorTextPrimary)
                 )
 
             ibcTextView.text = clip?.data
