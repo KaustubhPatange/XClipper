@@ -2,8 +2,10 @@ package com.kpstv.xclipper.service
 
 import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
 import android.content.IntentFilter
+import android.view.Gravity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -28,6 +30,7 @@ import com.kpstv.xclipper.ui.adapters.PageClipAdapter
 import com.kpstv.xclipper.ui.dialog.PinGrantDialog
 import com.kpstv.xclipper.ui.dialogs.FeatureDialog
 import com.kpstv.xclipper.ui.helpers.AppSettings
+import com.kpstv.xclipper.ui.helpers.AppThemeHelper
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import javax.inject.Inject
@@ -68,9 +71,14 @@ class BubbleService : FloatingBubbleService() {
         const val PIN_GRANT_KEY = "bubble_pin_key"
     }
 
+    override fun onCreate() {
+        super.onCreate()
+        AppThemeHelper.applyTheme(baseContext)
+    }
+
     override fun getConfig(): FloatingBubbleConfig {
 
-        binding = BubbleViewBinding.inflate(applicationContext.layoutInflater())
+        binding = BubbleViewBinding.inflate(layoutInflater())
 
         val bubbleCoordinates = appSettings.getSuggestionBubbleCoordinates()
 
@@ -119,8 +127,8 @@ class BubbleService : FloatingBubbleService() {
             .bubbleIcon(ContextCompat.getDrawable(applicationContext, R.drawable.app_icon_round))
             .expandableView(binding.root)
             .physicsEnabled(true)
-            .bubbleGravity(bubbleCoordinates.first)
             .bubbleYOffset(bubbleCoordinates.second.toInt())
+            .bubbleXOffset(calculateBubbleXCoordinate(bubbleCoordinates.first).toInt())
             .build()
     }
 
@@ -170,7 +178,10 @@ class BubbleService : FloatingBubbleService() {
                         dialog.launch()
                         setState(false)
 
-                        ToastyUtils.showInfo(this@BubbleService, getString(R.string.bubble_request_pin_access))
+                        ToastyUtils.showInfo(
+                            this@BubbleService,
+                            getString(R.string.bubble_request_pin_access)
+                        )
                         return
                     }
                 }
@@ -237,6 +248,14 @@ class BubbleService : FloatingBubbleService() {
             return true
         }
         return false
+    }
+
+    private fun calculateBubbleXCoordinate(gravity: Int): Float {
+        val config = FloatingBubbleConfig.Builder().build()
+        val end = (Gravity.TOP or Gravity.END)
+        return if (gravity and end == end)
+            (resources.displayMetrics.widthPixels - dpToPixels(config.bubbleIconDp).toFloat())
+        else 0f
     }
 
     object Actions {

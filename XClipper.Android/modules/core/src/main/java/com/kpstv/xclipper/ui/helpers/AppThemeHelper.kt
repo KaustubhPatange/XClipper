@@ -192,6 +192,15 @@ object AppThemeHelper {
         applyThemeColors()
     }
 
+    fun applyTheme(context: Context) = with(context) {
+        if (isLightVariant()) {
+            setTheme(R.style.AppTheme_Light)
+        } else {
+            setTheme(R.style.AppTheme_Dark)
+        }
+        applyThemeColors()
+    }
+
     private fun Context.applyThemeColors() {
         theme.applyStyle(baseColorPrimaryStyles[COLOR_PRIMARY_RES_ID_INDEX], true)
         theme.applyStyle(baseColorAccentStyles[COLOR_ACCENT_RES_ID_INDEX], true)

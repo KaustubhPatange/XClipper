@@ -122,7 +122,6 @@ dependencies {
     implementation(LibraryDependency.LOTTIE)
     implementation(LibraryDependency.ZXING_ANDROID_QR)
     implementation(LibraryDependency.TOASTY)
-    implementation(LibraryDependency.FLOATING_BUBBLE)
     implementation(LibraryDependency.GIF_DRAWABLE)
     implementation(LibraryDependency.HVLOG)
     implementation(LibraryDependency.GLIDE)
