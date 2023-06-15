@@ -57,11 +57,11 @@ public class FloatingBubblePhysics extends DefaultFloatingBubbleTouchListener {
     addSelectively(x, y);
     Log.d(FloatingBubblePhysics.class.getSimpleName(), previous.toString());
 
-    if (previous[0] == null) {
-      moveToCorner();
-    } else {
-      moveLinearlyToCorner();
-    }
+    moveLinearlyToCorner();
+//    if (previous[0] == null) {
+//      moveToCorner();
+//    } else {
+//    }
   }
 
   private void moveLinearlyToCorner() {
@@ -70,13 +70,15 @@ public class FloatingBubblePhysics extends DefaultFloatingBubbleTouchListener {
     int x2 = previous[1].x;
     int y2 = previous[1].y;
 
-    if (x2 == x1) {
-      moveToCorner();
-      return;
-    }
+//    if (x2 == x1) {
+//      moveToCorner();
+//      return;
+//    }
 
-    int xf = x1 < x2 ? sizeX - bubbleView.getWidth() : 0;
-    int yf = y1 + (y2 - y1) * (xf - x1) / (x2 - x1);
+    int xf = x2 >= (sizeX / 2) ? sizeX - bubbleView.getWidth() : 0;
+    int yf = y2;
+//    int xf = x1 < x2 ? sizeX - bubbleView.getWidth() : 0;
+//    int yf = y1 + (y2 - y1) * (xf - x1) / (x2 - x1);
     animator.animate(xf, yf);
   }
 
