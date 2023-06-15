@@ -9,6 +9,13 @@
     <!-- For VibrateUtils -->
     <uses-permission android:name="android.permission.VIBRATE" />
 
+    <!-- For Querying package list -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.MAIN"/>
+        </intent>
+    </queries>
+
     <application>
         <activity
             android:name="com.kpstv.xclipper.ui.dialogs.FeatureDialog$DialogActivity"
