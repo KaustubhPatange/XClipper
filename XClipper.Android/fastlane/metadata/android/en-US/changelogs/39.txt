@@ -1,0 +1,2 @@
+Fix: Suggestion bubble touch controls invert on right side.
+Fix: Suggestion window theme in light mode.
