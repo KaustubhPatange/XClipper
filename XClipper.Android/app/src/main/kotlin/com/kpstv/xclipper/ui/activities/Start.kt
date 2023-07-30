@@ -20,6 +20,7 @@ import com.kpstv.xclipper.ui.helpers.ActivityIntentHelper
 import com.kpstv.xclipper.ui.helpers.ActivityPinLockHelper
 import com.kpstv.xclipper.ui.helpers.AppSettings
 import com.kpstv.xclipper.ui.helpers.FirebaseSyncHelper
+import com.kpstv.xclipper.ui.helpers.Notifications
 import com.kpstv.xclipper.ui.helpers.fragments.*
 import com.kpstv.xclipper.ui.navigation.AbstractNavigationOptions
 import com.kpstv.xclipper.ui.navigation.AbstractNavigationOptionsExtensions.consume
@@ -47,6 +48,8 @@ class Start : BackPressCompatActivity(), FragmentNavigator.Transmitter {
         super.onCreate(savedInstanceState)
 
         setOnBackPressListener { navigator.canFinish() }
+
+        Notifications.init(this)
 
         val startScreen = if (appSettings.isOnBoardingScreensShowed()) Screen.HOME.clazz else Screen.ONBOARDING.clazz
         navigator = FragmentNavigator.with(this, savedInstanceState)

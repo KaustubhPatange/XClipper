@@ -1,14 +1,20 @@
 package com.kpstv.xclipper.ui.helpers
 
+import android.Manifest
+import android.app.Activity
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
+import android.os.Build
+import androidx.activity.ComponentActivity
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat
+import com.kpstv.xclipper.BuildConfig
 import com.kpstv.xclipper.R
 import com.kpstv.xclipper.di.action.SpecialActionOption
 import com.kpstv.xclipper.extensions.getColorAttr
 import com.kpstv.xclipper.extensions.utils.NotificationUtils
+import com.kpstv.xclipper.extensions.utils.ToastyUtils
 import com.kpstv.xclipper.service.receiver.SpecialActionsReceiver
 import com.kpstv.xclipper.ui.activities.SpecialActions
 import java.util.*
@@ -18,12 +24,29 @@ object Notifications {
 
     private val manager: NotificationManager get() = CoreNotifications.getNotificationManager()
 
-    fun sendClipboardCopiedNotification(context: Context, text: String, withSpecialActions: Boolean = true): Unit = with(context) {
+    fun init(context: ComponentActivity) = with(context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val launcher =
+                registerForActivityResult(ActivityResultContracts.RequestPermission()) { result ->
+                    if (!result) {
+                        ToastyUtils.showWarning(this, getString(R.string.err_notification_permission))
+                    }
+                }
+            launcher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
+    }
+
+    fun sendClipboardCopiedNotification(
+        context: Context,
+        text: String,
+        withSpecialActions: Boolean = true
+    ): Unit = with(context) {
         val notificationId = text.hashCode()
 
         val deleteIntent = SpecialActionsReceiver.createDeleteAction(context, text, notificationId)
 
-        val specialIntent = SpecialActions.launchIntent(context, text, SpecialActionOption(showShareOption = true))
+        val specialIntent =
+            SpecialActions.launchIntent(context, text, SpecialActionOption(showShareOption = true))
 
         val notificationBuilder = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_logo_white)
@@ -38,12 +61,22 @@ object Notifications {
             notificationBuilder.addAction(
                 R.drawable.ic_delete_white,
                 context.getString(R.string.delete),
-                PendingIntent.getBroadcast(context, getRandomPendingCode(), deleteIntent, NotificationUtils.getPendingIntentFlags())
+                PendingIntent.getBroadcast(
+                    context,
+                    getRandomPendingCode(),
+                    deleteIntent,
+                    NotificationUtils.getPendingIntentFlags()
+                )
             )
             notificationBuilder.addAction(
                 R.drawable.ic_special,
                 getString(R.string.more_actions),
-                PendingIntent.getActivity(context, getRandomPendingCode(), specialIntent, NotificationUtils.getPendingIntentFlags())
+                PendingIntent.getActivity(
+                    context,
+                    getRandomPendingCode(),
+                    specialIntent,
+                    NotificationUtils.getPendingIntentFlags()
+                )
             )
         }
 

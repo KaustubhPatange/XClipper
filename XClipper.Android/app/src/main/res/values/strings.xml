@@ -21,4 +21,6 @@
     <string name="terms_check_agreement"><![CDATA[I agree with the <b>Agreement</b>]]></string>
     <string name="err_privacy_policy">Couldn\'t fetch latest privacy policy</string>
 
+    <!-- General -->
+    <string name="err_notification_permission">Notification permission denied, enable it from settings</string>
 </resources>
