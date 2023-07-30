@@ -1,0 +1,2 @@
+Fix: Suggestion bubble randomly jumping on release.
+Fix: App blocking functionality not showing all apps.
