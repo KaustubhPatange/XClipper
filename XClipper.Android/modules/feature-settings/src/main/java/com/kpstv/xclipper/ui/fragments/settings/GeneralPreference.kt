@@ -60,17 +60,25 @@ class GeneralPreference : AbstractPreferenceFragment() {
     private var pinLockPreference: SwitchPreferenceCompat? = null
     private var autoDeletePreference: SwitchPreferenceCompat? = null
 
-    @Inject lateinit var preferenceProvider: PreferenceProvider
-    @Inject lateinit var appSettings: AppSettings
-    @Inject lateinit var settingScreenHandler: SettingScreenHandler
-    @Inject lateinit var suggestionConfigDialog: SuggestionConfigDialog
+    @Inject
+    lateinit var preferenceProvider: PreferenceProvider
+    @Inject
+    lateinit var appSettings: AppSettings
+    @Inject
+    lateinit var settingScreenHandler: SettingScreenHandler
+    @Inject
+    lateinit var suggestionConfigDialog: SuggestionConfigDialog
 
     private val settingsNavViewModel by viewModels<SettingNavViewModel>(ownerProducer = ::requireParentFragment)
 
     private var appsDialog: AlertDialog? = null
 
     private val pinLockExtensionHelper by lazy { AddOnsHelper.getHelperForPinLock(requireContext()) }
-    private val autoDeleteExtensionHelper by lazy { AddOnsHelper.getHelperForAutoDelete(requireContext()) }
+    private val autoDeleteExtensionHelper by lazy {
+        AddOnsHelper.getHelperForAutoDelete(
+            requireContext()
+        )
+    }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.general_pref, rootKey)
@@ -178,6 +186,14 @@ class GeneralPreference : AbstractPreferenceFragment() {
             true
         }
 
+        /** Experimental Notification Copy Button */
+        val notifCopyPref = findPreference<SwitchPreferenceCompat>(NOTIFICATION_COPY_PREF)
+        notifCopyPref?.isChecked = appSettings.isNotificationCopyButtonEnabled()
+        notifCopyPref?.setOnPreferenceChangeListener { _, newValue ->
+            appSettings.setNotificationCopyButtonEnabled(newValue as Boolean)
+            true
+        }
+
         /** Experimental Image loading */
         findPreference<SwitchPreferenceCompat>(IMAGE_MARKDOWN_PREF)?.setOnPreferenceChangeListener { _, newValue ->
             appSettings.setRenderMarkdownImage(newValue as Boolean)
@@ -194,34 +210,42 @@ class GeneralPreference : AbstractPreferenceFragment() {
             if (args.highlightAutoDelete) highlightItemWithTitle(getString(R.string.auto_delete_title))
         }
 
-        pinLockExtensionHelper.observePurchaseComplete().asLiveData().observe(viewLifecycleOwner) { unlock ->
-            val preference = pinLockPreference ?: return@observe
-            observeOnPreferenceInvalidate(preference) {
-                val titleView = preference.titleView!!
-                if (!unlock) {
-                    AddOnsHelper.addPremiumIcon(titleView)
-                } else {
-                    AddOnsHelper.removePremiumIcon(titleView)
+        pinLockExtensionHelper.observePurchaseComplete().asLiveData()
+            .observe(viewLifecycleOwner) { unlock ->
+                val preference = pinLockPreference ?: return@observe
+                observeOnPreferenceInvalidate(preference) {
+                    val titleView = preference.titleView!!
+                    if (!unlock) {
+                        AddOnsHelper.addPremiumIcon(titleView)
+                    } else {
+                        AddOnsHelper.removePremiumIcon(titleView)
+                    }
                 }
             }
-        }
-        autoDeleteExtensionHelper.observePurchaseComplete().collectIn(viewLifecycleOwner) { unlock ->
-            val preference = autoDeletePreference ?: return@collectIn
-            observeOnPreferenceInvalidate(preference) {
-                val titleView = preference.titleView!!
-                if (!unlock) {
-                    AddOnsHelper.addPremiumIcon(titleView)
-                } else {
-                    AddOnsHelper.removePremiumIcon(titleView)
+        autoDeleteExtensionHelper.observePurchaseComplete()
+            .collectIn(viewLifecycleOwner) { unlock ->
+                val preference = autoDeletePreference ?: return@collectIn
+                observeOnPreferenceInvalidate(preference) {
+                    val titleView = preference.titleView!!
+                    if (!unlock) {
+                        AddOnsHelper.addPremiumIcon(titleView)
+                    } else {
+                        AddOnsHelper.removePremiumIcon(titleView)
+                    }
                 }
             }
-        }
         // observe clipboard suggestion changes
-        appSettings.observeChanges(AppSettingKeys.CLIPBOARD_SUGGESTIONS, appSettings.canShowClipboardSuggestions()).observe(viewLifecycleOwner) { value ->
+        appSettings.observeChanges(
+            AppSettingKeys.CLIPBOARD_SUGGESTIONS,
+            appSettings.canShowClipboardSuggestions()
+        ).observe(viewLifecycleOwner) { value ->
             overlayPreference?.isChecked = value
         }
         // observe auto delete changes
-        appSettings.observeChanges(AppSettingKeys.AUTO_DELETE_PREF, appSettings.canAutoDeleteClips()).observe(viewLifecycleOwner) { value ->
+        appSettings.observeChanges(
+            AppSettingKeys.AUTO_DELETE_PREF,
+            appSettings.canAutoDeleteClips()
+        ).observe(viewLifecycleOwner) { value ->
             autoDeletePreference?.isChecked = value
         }
     }
@@ -246,7 +270,8 @@ class GeneralPreference : AbstractPreferenceFragment() {
     }
 
     override fun onDestroyView() {
-        LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(localBroadcastReceiver)
+        LocalBroadcastManager.getInstance(requireContext())
+            .unregisterReceiver(localBroadcastReceiver)
         super.onDestroyView()
     }
 
@@ -281,7 +306,8 @@ class GeneralPreference : AbstractPreferenceFragment() {
                 appsDialog = MultiSelectDialogBuilder(
                     context = requireContext(),
                     itemsCheckedState = { itemsCheckedState ->
-                        val packages = itemsCheckedState.filter { it.value }.map { apps[it.key].packageName?.toString() }
+                        val packages = itemsCheckedState.filter { it.value }
+                            .map { apps[it.key].packageName?.toString() }
                             .filterNotNull().toSet()
                         appSettings.setClipboardMonitoringBlackListApps(packages)
                     }
@@ -320,6 +346,7 @@ class GeneralPreference : AbstractPreferenceFragment() {
         private const val PIN_LOCK_PREF = "pin_lock_pref"
         private const val AUTO_DELETE_PREF = "auto_delete_pref"
         private const val ACTIVE_ADB_MODE_PREF = "adb_mode_pref"
+        private const val NOTIFICATION_COPY_PREF = "notification_copy_pref"
         private const val IMAGE_MARKDOWN_PREF = "image_markdown_pref"
         private const val SERVICE_PREF = "service_pref"
         private const val SUGGESTION_PREF = "suggestion_pref"
@@ -327,7 +354,11 @@ class GeneralPreference : AbstractPreferenceFragment() {
         private const val TRIM_CLIP_PREF = "trim_clip_pref"
         private const val BLACKLIST_PREF = AppSettingKeys.CLIPBOARD_BLACKLIST_APPS
 
-        fun checkImproveSettingsOnStart(context: Context, appSettings: AppSettings, preferenceProvider: PreferenceProvider) {
+        fun checkImproveSettingsOnStart(
+            context: Context,
+            appSettings: AppSettings,
+            preferenceProvider: PreferenceProvider
+        ) {
             val checkImprove = preferenceProvider.getBooleanKey(TEMP_CHECK_IMPROVE_ON_START, false)
             val canDetect = ClipboardLogDetector.isDetectionCompatible(context)
             if (checkImprove) {
@@ -340,7 +371,8 @@ class GeneralPreference : AbstractPreferenceFragment() {
         }
 
         fun refreshSettings(context: Context) {
-            LocalBroadcastManager.getInstance(context).sendBroadcast(Intent(ACTION_CHECK_PREFERENCES))
+            LocalBroadcastManager.getInstance(context)
+                .sendBroadcast(Intent(ACTION_CHECK_PREFERENCES))
         }
     }
 

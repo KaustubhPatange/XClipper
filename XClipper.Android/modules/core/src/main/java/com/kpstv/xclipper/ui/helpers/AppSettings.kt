@@ -25,6 +25,7 @@ import com.kpstv.xclipper.ui.helpers.AppSettingKeys.Keys.DATABASE_BINDING
 import com.kpstv.xclipper.ui.helpers.AppSettingKeys.Keys.DATABASE_DELETE_BINDING
 import com.kpstv.xclipper.ui.helpers.AppSettingKeys.Keys.IMAGE_MARKDOWN
 import com.kpstv.xclipper.ui.helpers.AppSettingKeys.Keys.IMPROVE_DETECTION
+import com.kpstv.xclipper.ui.helpers.AppSettingKeys.Keys.NOTIFICATION_COPY_BUTTON
 import com.kpstv.xclipper.ui.helpers.AppSettingKeys.Keys.ON_BOARDING_SCREEN
 import com.kpstv.xclipper.ui.helpers.AppSettingKeys.Keys.POLICY_DISCLOSURE
 import com.kpstv.xclipper.ui.helpers.AppSettingKeys.Keys.SHOW_SEARCH_FEATURE
@@ -84,6 +85,12 @@ class AppSettings @Inject constructor(
     fun setSwipeDeleteEnabledForClipItem(value: Boolean) {
         preferenceProvider.putBooleanKey(SWIPE_DELETE_CLIP_ITEM, value)
         notifyListeners(SWIPE_DELETE_CLIP_ITEM, value)
+    }
+
+    fun isNotificationCopyButtonEnabled(): Boolean = preferenceProvider.getBooleanKey(NOTIFICATION_COPY_BUTTON, false)
+    fun setNotificationCopyButtonEnabled(value: Boolean) {
+        preferenceProvider.putBooleanKey(NOTIFICATION_COPY_BUTTON, value)
+        notifyListeners(NOTIFICATION_COPY_BUTTON, value)
     }
 
     fun isTextTrimmingEnabled(): Boolean = preferenceProvider.getBooleanKey(CLIP_TEXT_TRIMMING, false)
@@ -207,6 +214,7 @@ class AppSettings @Inject constructor(
     IMAGE_MARKDOWN,
     CLIPBOARD_SUGGESTIONS,
     SWIPE_DELETE_CLIP_ITEM,
+    NOTIFICATION_COPY_BUTTON,
     CLIP_TEXT_TRIMMING,
     ON_BOARDING_SCREEN,
     CLIPBOARD_BLACKLIST_APPS,
@@ -236,6 +244,7 @@ annotation class AppSettingKeys {
         internal const val SUGGESTION_BUBBLE_Y_POS = "suggestion_bubble_y_pos"
         internal const val SUGGESTION_BUBBLE_X_GRAVITY = "suggestion_bubble_x_gravity"
         const val SWIPE_DELETE_CLIP_ITEM = "swipe_delete_clip_item"
+        const val NOTIFICATION_COPY_BUTTON = "notification_copy_button"
         const val CLIP_TEXT_TRIMMING = "clip_text_trimming"
         const val ON_BOARDING_SCREEN = "tutorial_pref"
         const val CLIPBOARD_BLACKLIST_APPS = "blacklist_pref"

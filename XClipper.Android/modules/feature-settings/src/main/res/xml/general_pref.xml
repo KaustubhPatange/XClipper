@@ -73,6 +73,12 @@
     <PreferenceCategory app:title="Experimental">
 
         <SwitchPreferenceCompat
+            android:defaultValue="false"
+            app:key="notification_copy_pref"
+            app:summary="@string/notif_copy_summary"
+            app:title="@string/notif_copy_title" />
+
+        <SwitchPreferenceCompat
             android:defaultValue="true"
             app:key="image_markdown_pref"
             app:summary="@string/image_render_summary"

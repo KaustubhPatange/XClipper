@@ -10,6 +10,7 @@ import com.kpstv.xclipper.di.notifications.ClipboardNotification
 import com.kpstv.xclipper.extensions.launchInIO
 import com.kpstv.xclipper.extensions.launchInMain
 import com.kpstv.xclipper.extensions.toInt
+import com.kpstv.xclipper.ui.helpers.AppSettings
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,6 +22,7 @@ class ClipRepositoryHelperImpl @Inject constructor(
     @ApplicationContext private val context: Context,
     private val clipboardNotification: ClipboardNotification,
     private val repository: MainRepository,
+    private val appSettings: AppSettings,
 ) : ClipRepositoryHelper {
     private val pendingClipData = ArrayDeque<String>()
 
@@ -35,7 +37,11 @@ class ClipRepositoryHelperImpl @Inject constructor(
     }
 
     // A concurrent way to inserting clips into database.
-    private suspend fun internalInsertOrUpdateClip(data: String?, toNotify: Boolean = true, toFirebase: Boolean = true) {
+    private suspend fun internalInsertOrUpdateClip(
+        data: String?,
+        toNotify: Boolean = true,
+        toFirebase: Boolean = true
+    ) {
         if (data == null || data.isBlank()) return
         if (pendingClipData.contains(data)) return
         pendingClipData.addLast(data)
@@ -55,7 +61,12 @@ class ClipRepositoryHelperImpl @Inject constructor(
      * @param notifyOffset An offset value to show combined (eg: x clips added) instead of individual
      *                     notifications.
      */
-    override fun insertOrUpdateClip(clips: List<Clip>, toFirebase: Boolean, toNotify: Boolean, notifyOffset: Int) {
+    override fun insertOrUpdateClip(
+        clips: List<Clip>,
+        toFirebase: Boolean,
+        toNotify: Boolean,
+        notifyOffset: Int
+    ) {
         launchInIO {
             val singleNotify = clips.size <= notifyOffset
             var addedClips = 0
@@ -82,7 +93,7 @@ class ClipRepositoryHelperImpl @Inject constructor(
         }
     }
 
-    private suspend fun addOrUpdateData(data: String, toFirebase: Boolean) : Boolean {
+    private suspend fun addOrUpdateData(data: String, toFirebase: Boolean): Boolean {
         return if (repository.checkForDuplicate(data)) {
             repository.getClipByData(data)?.let { clip ->
                 repository.updateTime(clip)
@@ -100,7 +111,11 @@ class ClipRepositoryHelperImpl @Inject constructor(
 
     private fun sendClipNotification(data: String, withAction: Boolean = true) {
         launchInMain {
-            clipboardNotification.notifyOnCopy(data, withAction)
+            clipboardNotification.notifyOnCopy(
+                data = data,
+                withCopyButton = appSettings.isNotificationCopyButtonEnabled(),
+                withSpecialActions = withAction
+            )
         }
     }
 }
