@@ -39,11 +39,13 @@ object Notifications {
     fun sendClipboardCopiedNotification(
         context: Context,
         text: String,
+        withCopyButton: Boolean = false,
         withSpecialActions: Boolean = true
     ): Unit = with(context) {
         val notificationId = text.hashCode()
 
         val deleteIntent = SpecialActionsReceiver.createDeleteAction(context, text, notificationId)
+        val copyIntent = SpecialActionsReceiver.createCopyAction(context, text, notificationId)
 
         val specialIntent =
             SpecialActions.launchIntent(context, text, SpecialActionOption(showShareOption = true))
@@ -57,6 +59,18 @@ object Notifications {
             .setColor(getColorAttr(R.attr.colorAccent))
             .setContentIntent(NotificationUtils.getAppLaunchPendingIntent(this))
 
+        if (withCopyButton) {
+            notificationBuilder.addAction(
+                R.drawable.ic_copy,
+                context.getString(android.R.string.copy),
+                PendingIntent.getBroadcast(
+                    context,
+                    getRandomPendingCode(),
+                    copyIntent,
+                    NotificationUtils.getPendingIntentFlags()
+                )
+            )
+        }
         if (withSpecialActions) {
             notificationBuilder.addAction(
                 R.drawable.ic_delete_white,

@@ -76,6 +76,8 @@
     <string name="swipe_summary">Swiping item to right will delete it permanently</string>
     <string name="trim_title">Text trimming</string>
     <string name="trim_summary">This will trim whitespaces from the clip data while displaying.</string>
+    <string name="notif_copy_title">Copy from notification</string>
+    <string name="notif_copy_summary">This will add a \"Copy\" button to the notification. It can cause incorrect display of notification.</string>
     <string name="image_render_title">Render Image</string>
     <string name="image_render_summary">[BETA] This will render image in the list. Note that it can have some side effects!</string>
     <string name="onboard_screens_reset">All onboarding screens has been reset!</string>
