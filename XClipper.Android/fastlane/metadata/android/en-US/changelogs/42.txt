@@ -1,0 +1,2 @@
+Add: "Copy" button in notification (Toggle from Settings > General > Experimental).
+Fix: Crash when "Delete" button is clicked from notification.
