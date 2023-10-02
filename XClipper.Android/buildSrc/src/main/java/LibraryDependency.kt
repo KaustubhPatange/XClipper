@@ -48,7 +48,7 @@ private object LibraryVersion {
     const val WEBKIT = "1.2.0"
     const val TIMBER = "5.0.1"
     const val PINLOCK = "1.2"
-    const val BILLING = "4.0.0"
+    const val BILLING = "6.0.0"
     const val MARKWON = "4.6.2"
     const val SENTRY = "5.5.1"
     const val SWIPE_REFRESH_LAYOUT = "1.1.0"

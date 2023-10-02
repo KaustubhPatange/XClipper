@@ -65,8 +65,8 @@ public class FloatingBubblePhysics extends DefaultFloatingBubbleTouchListener {
   }
 
   private void moveLinearlyToCorner() {
-    int x1 = previous[0].x;
-    int y1 = previous[0].y;
+//    int x1 = previous[0].x;
+//    int y1 = previous[0].y;
     int x2 = previous[1].x;
     int y2 = previous[1].y;
 
