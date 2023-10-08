@@ -7,8 +7,12 @@ import com.kpstv.xclipper.extensions.small
 
 class ClipUtils {
     companion object {
-        private const val PHONE_PATTERN_REGEX = "(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}" // matches international numbers
-        private const val PHONE_PATTERN_REGEX1 = "(\\+[\\d-]{1,4})[\\s\\.]?(\\d{5})[\\s\\.]?(\\d{5})" // matches some specific number patterns
+        private const val PHONE_PATTERN_REGEX =
+            "(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}" // matches international numbers
+        private const val PHONE_PATTERN_REGEX1 =
+            "(\\+[\\d-]{1,4})[\\s\\.]?(\\d{5})[\\s\\.]?(\\d{5})" // matches some specific number patterns
+        private const val PHONE_PATTERN_REGEX2 =
+            "(\\+[\\d-]{1,4})?((\\d{3})\\s?(\\d{3})\\s?(\\d{4})|((\\d{5})\\s?(\\d{5})))" // should match all
         private const val EMAIL_PATTERN_REGEX =
             "([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)"
         private const val URL_PATTERN_REGEX =
@@ -19,8 +23,13 @@ class ClipUtils {
             "(?:(?:31(\\/|-|\\.)(?:0?[13578]|1[02]))\\1|(?:(?:29|30)(\\/|-|\\.)(?:0?[13-9]|1[0-2])\\2))(?:(?:1[6-9]|[2-9]\\d)?\\d{2})\$|^(?:29(\\/|-|\\.)0?2\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))\$|^(?:0?[1-9]|1\\d|2[0-8])(\\/|-|\\.)(?:(?:0?[1-9])|(?:1[0-2]))\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})"
         private const val MARKDOWN_IMAGE_ONLY_REGEX = "^(!\\[)(.*?)(])(\\((https?://.*?)\\))$"
 
-        fun isMarkdownImage(data: String) : Boolean = (MARKDOWN_IMAGE_ONLY_REGEX.toRegex().matches(data))
-        fun getMarkdownImageUrl(data: String) : String? {
+        private val PHONE_PATTERN_REGEX_LIST =
+            listOf(PHONE_PATTERN_REGEX2, PHONE_PATTERN_REGEX, PHONE_PATTERN_REGEX1)
+
+        fun isMarkdownImage(data: String): Boolean =
+            (MARKDOWN_IMAGE_ONLY_REGEX.toRegex().matches(data))
+
+        fun getMarkdownImageUrl(data: String): String? {
             return MARKDOWN_IMAGE_ONLY_REGEX.toRegex().matchEntire(data)?.groupValues?.get(5)
         }
 
@@ -37,10 +46,9 @@ class ClipUtils {
                 return dictList
 
             /** Matches the phone number pattern. */
-            if (!patternAdder(PHONE_PATTERN_REGEX, data, ClipTag.PHONE, dictList)
-            ) {
-                /** If not matched by first pattern we will try second one.  */
-                patternAdder(PHONE_PATTERN_REGEX1, data, ClipTag.PHONE, dictList)
+            PHONE_PATTERN_REGEX_LIST.forEach { pattern ->
+                if (patternAdder(pattern, data, ClipTag.PHONE, dictList))
+                    return@forEach
             }
 
             /** Date pattern matcher */
@@ -55,7 +63,12 @@ class ClipUtils {
             return dictList
         }
 
-        private fun patternAdder(pattern: String, data: String, tag: ClipTag, dictList: ArrayList<ClipTagMap>): Boolean {
+        private fun patternAdder(
+            pattern: String,
+            data: String,
+            tag: ClipTag,
+            dictList: ArrayList<ClipTagMap>
+        ): Boolean {
             val regex: Regex = pattern.toRegex()
             if (regex.containsMatchIn(data)) {
                 val results: Sequence<MatchResult> = regex.findAll(data)

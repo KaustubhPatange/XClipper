@@ -294,10 +294,8 @@ internal class SpecialHelper(
                 val whatsAppTextMenu =
                     SingleMenuItem(image = R.drawable.sp_ic_whatsapp, title = context.getString(R.string.sp_send_whatsapp)) {
                         createChooser(ClipTag.PHONE.small()) { data ->
-                            val numberToWhatsApp = when (data.length) {
-                                10 -> "+${getCountryDialCode(context)} $data"
-                                else -> data
-                            }
+                            val numberToWhatsApp = if (data.startsWith("+")) data
+                            else "+${getCountryDialCode(context)} $data"
                             val intent = Intent(Intent.ACTION_VIEW).apply {
                                 setData(Uri.parse("https://wa.me/$numberToWhatsApp"))
                                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
