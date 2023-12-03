@@ -63,7 +63,7 @@ class UpdateHelper(
     }
 
     override fun onFragmentResumed() {
-        registerCallbackOnResume()
+//        registerCallbackOnResume()
     }
 
     override fun onFragmentDestroyed() {
